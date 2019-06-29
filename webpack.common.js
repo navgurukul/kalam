@@ -6,7 +6,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 module.exports = {
   entry: './src/app.js',
   plugins: [
-    new BundleAnalyzerPlugin(),
+    // new BundleAnalyzerPlugin(),
     // new CleanWebpackPlugin(),
     // new HtmlWebpackPlugin({
     //   title: 'Production'

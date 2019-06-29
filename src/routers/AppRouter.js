@@ -23,7 +23,7 @@ const AppRouter = () => (
         <PrivateRoute path="/home" component={HomePage} />
   
         <Route path="/login" component={LoginPage}  />
-        <PublicRoute path="/dashboard/:partnerid" component={DashboardPage} />
+        <PublicRoute path="/partner/:partnerid" component={DashboardPage} />
         <PublicRoute path="/products" component={ProductsPage} />
         <PublicRoute path="/forms" component={FormsPage} />
         

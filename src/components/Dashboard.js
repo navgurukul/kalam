@@ -1,11 +1,16 @@
 import React from 'react';
 import { forwardRef } from 'react';
-import MaterialTable from "material-table";
+
+import MaterialTable, { MTableToolbar } from "material-table";
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
 
 import Moment from 'react-moment';
 
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
 
 import AddBox from '@material-ui/icons/AddBox';
 // import Assessment from '@material-ui/icons/Assessment';
@@ -47,25 +52,70 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
+// const cities = [
+//   { value: 'chocolate', label: 'Chocolate' },
+//   { value: 'strawberry', label: 'Strawberry' },
+//   { value: 'vanilla', label: 'Vanilla' },
+// ];
+
+const animatedComponents = makeAnimated();
+
+const useStyles = makeStyles({
+  root: {
+    border: 0,
+  },
+  searchBar: {
+    width: '50%',
+  }
+});
+
+const styledMTBar = withStyles({
+  root: {
+    width: '50%',
+    float: 'left'
+  }
+})(MTableToolbar);
+
 export class DashboardPage extends React.Component {
+
   constructor(props) {
+
     super(props);
     this.state = {
       isFetching: false,
       dataURL : 'http://join.navgurukul.org/api/partners/'+this.props.match.params.partnerid+'/students',
-      data: []
+      data: [],
+      sData: [], //subsetData
+      selectedCity: null
     }
   }
 
+  handleChange = selectedCity => {
+    this.setState({ selectedCity });
+    if (selectedCity) {
+      this.state.sData = this.state.data.filter((x)=>{
+        return selectedCity.filter((m)=>{return m.value == x.city}).length;
+      })
+    } else {
+      this.state.sData = [];
+    }
+    this.forceUpdate();
+  };
+
   render = () => {
+    const { selectedCity } = this.state;
+
     function dConvert(x) {
       x['number'] = x['contacts'][0]['mobile'];
       return x;
     }
   
     this.state.data = this.state.data.map(dConvert)
-   
+    this.state.cities = [...new Set(this.state.data.map((x) => x.city))]
+    this.state.cities = this.state.cities.map((x)=>{return {label: x, value: x}})
+
     const columns=[
+      {title: 'Set', field: 'setName', filtering: false},
       {title: 'Name', field: 'name', filtering: false},
       {title: 'City', field: 'city' },
       {title: 'Number', field: 'number', 
@@ -95,50 +145,65 @@ export class DashboardPage extends React.Component {
       }}
     ]
 
-    return <MaterialTable
-      columns={columns}
-      data={this.state.data}
-      icons={tableIcons}
-      detailPanel={rowData => {
-        return (
-          <Box width={1/3} mx="auto" my={2}>
-            <MaterialTable
-              columns={columnsTransitions}
-              data={rowData.transitions}
-              options={{
-                search: false,
-                paging: false,
-                toolbar: false,
-                showTitle: false
-              }}
-            />
-          </Box>
-        )
-      }}
-      options={{
-        exportButton: true,
-        pageSize: 20,
-        showTitle: false,
-        filtering: true
-      }}
-      // actions={[
-      //   {
-      //     icon: 'Assessment',
-      //     tooltip: 'Details',
-      //     onClick: (event, rowData) => {
-      //       alert("POP UP COMING SOON");
-      //     }
-      //   }
-      // ]}
-      // components={{
-      //   Action: props => (
-      //     <Assessment
-      //       onClick={(event) => props.action.onClick(event, props.data)}
-      //     >
-      //     </Assessment>
-      //   ),
-      // }}
-    />
+    // const classes = useStyles();
+
+    return <Box>
+        <MaterialTable
+        columns={columns}
+        data={this.state.sData.length ? this.state.sData : this.state.data}
+        icons={tableIcons}
+        detailPanel={rowData => {
+          return (
+            <Box width={1/3} mx="auto" my={2}>
+              <MaterialTable
+                columns={columnsTransitions}
+                data={rowData.transitions}
+                options={{
+                  search: false,
+                  paging: false,
+                  toolbar: false,
+                  showTitle: false
+                }}
+              />
+            </Box>
+          )
+        }}
+        options={{
+          exportButton: true,
+          pageSize: 100,
+          showTitle: false,
+          // filtering: true
+        }}
+        // actions={[
+        //   {
+        //     icon: 'Assessment',
+        //     tooltip: 'Details',
+        //     onClick: (event, rowData) => {
+        //       alert("POP UP COMING SOON");
+        //     }
+        //   }
+        // ]}
+        components={{
+          Toolbar: props => (
+            <div>
+              <Select
+                className="filterSelect"
+                value={selectedCity}
+                isMulti
+                onChange={this.handleChange}
+                options={this.state.cities}
+                placeholder="Select City ..."
+                isClearable={true}
+                components={animatedComponents}
+                closeMenuOnSelect={true}
+              />  
+              <MTableToolbar {...props} />
+              {/* classes={{root: classes.searchBar}} */}
+            </div>
+          ),
+        }}
+      />
+    </Box>
   }
 
   componentDidMount() {

@@ -1,26 +1,20 @@
-
-
 import {createMuiTheme } from '@material-ui/core/styles';
 
 
 export const theme = createMuiTheme({
   palette: {
-
-      type: 'light',
+    type: 'light',
     primary: {
-        main:'#1565c0' // customise your main color here
+        main:'#f05f40' // customise your main color here
     },
     secondary: {main:'#673ab7' },
-
-     error: {main:'#ca0909' },
-
-     sand:{main:'#F4DECB'},
-     shell:{main:'#F8EEE7'},
-     status:{
-         danger:'#b71c1c'
-     },
-
-    
+    error: {main:'#ca0909' },
+    sand:{main:'#F4DECB'},
+    shell:{main:'#F8EEE7'},
+    status:{
+      danger:'#b71c1c'
+    },
+  
     // Used by `getContrastText()` to maximize the contrast between the background and
     // the text.
     contrastThreshold: 3,

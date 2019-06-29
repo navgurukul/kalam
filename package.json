@@ -4,7 +4,7 @@
   "description": "react-boiler-plate-code",
   "main": "app.js",
   "scripts": {
-    "build": "NODE_ENV=production webpack -p --config webpack.prod.js",
+    "build": "NODE_ENV=production webpack -p --config webpack.prod.js && cp public/index.html dist/index.html",
     "dev": "webpack-dev-server --open --config webpack.dev.js"
   },
   "author": "NavGurukul",

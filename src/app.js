@@ -9,7 +9,6 @@ import {theme} from './theme/theme';
 import configureStore from './store/config/configureStore';
 import {login,logout} from './store/actions/auth';
 
-
 const store = configureStore();
 store.subscribe(()=>{
   console.log(store.getState());

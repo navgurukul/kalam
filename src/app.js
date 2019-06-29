@@ -11,10 +11,8 @@ import {login,logout} from './store/actions/auth';
 
 const store = configureStore();
 store.subscribe(()=>{
-  console.log(store.getState());
+  // console.log(store.getState());
 });
-
-
 
 const App = () => (
   <Provider store={store}>
@@ -24,8 +22,6 @@ const App = () => (
   </Provider>
 );
 
-
 store.dispatch(logout());
-
 
 render(<App />, document.getElementById('app'));

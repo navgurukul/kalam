@@ -13,9 +13,10 @@ const LandingPage = () => (
   <div className="landingPagebodyComponent">
 
 <br/>
-<Typography variant="display3" gutterBottom align="center">
-        NavGurukul Student Admissions DAshboard
-      </Typography>
+
+  <Typography variant="h4" mx="auto" mt={8} gutterBottom align="center">
+    NavGurukul Student Admissions Dashboard
+  </Typography>
     
    {/* <Grid container spacing={24} >
         <Grid item xs={12} md={12}>

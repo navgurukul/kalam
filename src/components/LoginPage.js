@@ -16,57 +16,41 @@ import Button from '@material-ui/core/Button';
 export class LoginPage extends React.Component{
 
 OnClickLogin = ()=>{
-
-
-  this.props.startLogin('1284565ertr');
-  
+  this.props.startLogin('1284565ertr');  
   this.props.history.push('/home');
-
 };
 
 render(){
   return (
     <div className="login-page-class">
-  
-
-
       <Paper className="loginPaper">
-          <div className="loginheaderpart">
-               <Typography variant="display3" gutterBottom className="loginpageheader">
-        Login
-      </Typography>
-              </div>
+        <div className="loginheaderpart">
+          <Typography variant="display3" gutterBottom className="loginpageheader">
+            Login
+          </Typography>
+        </div>
         <Typography variant="headline" component="h3">
           Login to your account
         </Typography>
         <form>
-    <div className="loginformgroup">
-       
-            <AccountCircle />
-         
+          <div className="loginformgroup">
+            <AccountCircle />          
             <TextField id="input-username" label="Username" />
-         
-        </div>
-        <div className="loginformgroup">
-
-
-          
+          </div>
+          <div className="loginformgroup">
             <Key />
-          
             <TextField type="password" id="input-password" label="Password" />
-         
-        </div>
+          </div>
         </form>
-
-        <Button  variant="raised" color="primary" onClick={this.OnClickLogin}><Typography variant="button" gutterBottom className="logintypography">
-        Login
-      </Typography></Button>
+        <Button  variant="raised" color="primary" onClick={this.OnClickLogin}>
+          <Typography variant="button" gutterBottom className="logintypography">
+            Login
+          </Typography>
+        </Button>
       </Paper>
   </div>
   );
 }
-
-
 }
 
 

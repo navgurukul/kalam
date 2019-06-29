@@ -66,22 +66,26 @@ export class DashboardPage extends React.Component {
     this.state.data = this.state.data.map(dConvert)
    
     const columns=[
-      {title: 'Name', field: 'name'},
+      {title: 'Name', field: 'name', filtering: false},
       {title: 'City', field: 'city' },
       {title: 'Number', field: 'number', 
         render: rowData => {
           return '+91 ' + rowData.number;
-        }
+        },
+        filtering: false
       },
       {title: 'Gender', field: 'gender', 
         render: rowData => {
           return rowData.gender==1 ? 'Female' : 'Male';
-        }
+        },
+        filtering: false
       },
       {title: 'Stage', field: 'stage'},
       {title: 'Added At', field: 'createdAt', render: rowData=> {
-        return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
-      }}
+          return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
+        },
+      filtering: false
+      }
     ]
 
     const columnsTransitions = [
@@ -114,8 +118,8 @@ export class DashboardPage extends React.Component {
       options={{
         exportButton: true,
         pageSize: 20,
-        showTitle: false
-        // filtering: true
+        showTitle: false,
+        filtering: true
       }}
       // actions={[
       //   {

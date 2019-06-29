@@ -7,8 +7,8 @@ import { spacing } from '@material-ui/system';
 
 export default () => (
 
-    <Box className="footer-container-box" p={1} mt={3}>
-      <Typography variant="h6" gutterBottom>
+    <Box className="footer-container-box" p={1}>
+      <Typography variant="body" gutterBottom>
         Managed and run by NavGurukul
       </Typography>
     </Box>

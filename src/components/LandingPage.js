@@ -5,7 +5,6 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Image from 'material-ui-image';
-import bulb from '../assets/img/bulb1.png';
 import {Link} from 'react-router-dom';
 
 
@@ -37,14 +36,6 @@ const LandingPage = () => (
         Know More
       </Button>
       </Typography>
-        </Grid>
-         <Grid item xs={6}>
-          <Image
-        src={bulb}
-      color="inherit" style={{height:40}} imageStyle={{ width: '50', height: '50' }} />
-        </Grid>
-        <Grid item xs={12}>
-         
         </Grid>
         </Grid>
 

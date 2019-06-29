@@ -2,7 +2,7 @@ import React from 'react';
 import { forwardRef } from 'react';
 
 import MaterialTable, { MTableToolbar } from "material-table";
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
@@ -11,6 +11,7 @@ import Moment from 'react-moment';
 
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
+import { theme } from '../theme/theme';
 
 import AddBox from '@material-ui/icons/AddBox';
 // import Assessment from '@material-ui/icons/Assessment';
@@ -60,21 +61,21 @@ const tableIcons = {
 
 const animatedComponents = makeAnimated();
 
-const useStyles = makeStyles({
-  root: {
-    border: 0,
-  },
-  searchBar: {
-    width: '50%',
+const styles = theme => ({
+  innerTable: {
+    marginLeft: '3vw',
+    marginRight: '3vw',
+    width: '94vw',
+    marginTop: '5',
+    marginBottom: '5',
+    [theme.breakpoints.up('md')]: {
+      margin: 'auto',
+      width: '33%',
+      marginTop: 5,
+      marginBottom: 5
+    },
   }
-});
-
-const styledMTBar = withStyles({
-  root: {
-    width: '50%',
-    float: 'left'
-  }
-})(MTableToolbar);
+})
 
 export class DashboardPage extends React.Component {
 
@@ -83,7 +84,7 @@ export class DashboardPage extends React.Component {
     super(props);
     this.state = {
       isFetching: false,
-      dataURL : 'http://join.navgurukul.org/api/partners/'+this.props.match.params.partnerid+'/students',
+      dataURL: 'http://join.navgurukul.org/api/partners/' + this.props.match.params.partnerid + '/students',
       data: [],
       sData: [], //subsetData
       selectedCity: null
@@ -93,8 +94,8 @@ export class DashboardPage extends React.Component {
   handleChange = selectedCity => {
     this.setState({ selectedCity });
     if (selectedCity) {
-      this.state.sData = this.state.data.filter((x)=>{
-        return selectedCity.filter((m)=>{return m.value == x.city}).length;
+      this.state.sData = this.state.data.filter((x) => {
+        return selectedCity.filter((m) => { return m.value == x.city }).length;
       })
     } else {
       this.state.sData = [];
@@ -104,105 +105,115 @@ export class DashboardPage extends React.Component {
 
   render = () => {
     const { selectedCity } = this.state;
+    const { classes } = this.props;
 
     function dConvert(x) {
       x['number'] = x['contacts'][0]['mobile'];
       return x;
     }
-  
+
     this.state.data = this.state.data.map(dConvert)
     this.state.cities = [...new Set(this.state.data.map((x) => x.city))]
-    this.state.cities = this.state.cities.map((x)=>{return {label: x, value: x}})
+    this.state.cities = this.state.cities.map((x) => { return { label: x, value: x } })
 
-    const columns=[
-      {title: 'Set', field: 'setName', filtering: false},
-      {title: 'Name', field: 'name', filtering: false},
-      {title: 'City', field: 'city' },
-      {title: 'Number', field: 'number', 
+    const columns = [
+      { title: 'Set', field: 'setName', filtering: false },
+      { title: 'Name', field: 'name', filtering: false },
+      { title: 'City', field: 'city' },
+      {
+        title: 'Number', field: 'number',
         render: rowData => {
           return '+91 ' + rowData.number;
         },
         filtering: false
       },
-      {title: 'Gender', field: 'gender', 
+      {
+        title: 'Gender', field: 'gender',
         render: rowData => {
-          return rowData.gender==1 ? 'Female' : 'Male';
+          return rowData.gender == 1 ? 'Female' : 'Male';
         },
         filtering: false
       },
-      {title: 'Stage', field: 'stage'},
-      {title: 'Added At', field: 'createdAt', render: rowData=> {
+      { title: 'Stage', field: 'stage' },
+      {
+        title: 'Added At', field: 'createdAt', render: rowData => {
           return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
         },
-      filtering: false
+        filtering: false
       }
     ]
 
     const columnsTransitions = [
-      {title: 'Stage', field: 'toStage'},
-      {title: 'When?', field: 'createdAt', render: rowData=> {
-        return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
-      }}
+      { title: 'Stage', field: 'toStage' },
+      {
+        title: 'When?', field: 'createdAt', render: rowData => {
+          return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
+        }
+      }
     ]
 
-    // const classes = useStyles();
-
+    // console.log('theme', theme.palette.primary.main);
+    
     return <Box>
+      <MuiThemeProvider theme={theme}>
         <MaterialTable
-        columns={columns}
-        data={this.state.sData.length ? this.state.sData : this.state.data}
-        icons={tableIcons}
-        detailPanel={rowData => {
-          return (
-            <Box width={1/3} mx="auto" my={2}>
-              <MaterialTable
-                columns={columnsTransitions}
-                data={rowData.transitions}
-                options={{
-                  search: false,
-                  paging: false,
-                  toolbar: false,
-                  showTitle: false
-                }}
-              />
-            </Box>
-          )
-        }}
-        options={{
-          exportButton: true,
-          pageSize: 100,
-          showTitle: false,
-          // filtering: true
-        }}
-        // actions={[
-        //   {
-        //     icon: 'Assessment',
-        //     tooltip: 'Details',
-        //     onClick: (event, rowData) => {
-        //       alert("POP UP COMING SOON");
-        //     }
-        //   }
-        // ]}
-        components={{
-          Toolbar: props => (
-            <div>
-              <Select
-                className="filterSelect"
-                value={selectedCity}
-                isMulti
-                onChange={this.handleChange}
-                options={this.state.cities}
-                placeholder="Select City ..."
-                isClearable={true}
-                components={animatedComponents}
-                closeMenuOnSelect={true}
-              />  
-              <MTableToolbar {...props} />
-              {/* classes={{root: classes.searchBar}} */}
-            </div>
-          ),
-        }}
-      />
+          columns={columns}
+          data={this.state.sData.length ? this.state.sData : this.state.data}
+          icons={tableIcons}
+          detailPanel={rowData => {
+            return (
+              <Box width={1 / 3} className={classes.innerTable} my={2}>
+                <MaterialTable
+                  columns={columnsTransitions}
+                  data={rowData.transitions}
+                  options={{
+                    search: false,
+                    paging: false,
+                    toolbar: false,
+                    showTitle: false
+                  }}
+                />
+              </Box>
+            )
+          }}
+          options={{
+            headerStyle: {
+              color: theme.palette.primary.main
+            },
+            exportButton: true,
+            pageSize: 100,
+            showTitle: false,
+            // filtering: true
+          }}
+          // actions={[
+          //   {
+          //     icon: 'Assessment',
+          //     tooltip: 'Details',
+          //     onClick: (event, rowData) => {
+          //       alert("POP UP COMING SOON");
+          //     }
+          //   }
+          // ]}
+          components={{
+            Toolbar: props => (
+              <div>
+                <Select
+                  className="filterSelect"
+                  value={selectedCity}
+                  isMulti
+                  onChange={this.handleChange}
+                  options={this.state.cities}
+                  placeholder="Select City ..."
+                  isClearable={true}
+                  components={animatedComponents}
+                  closeMenuOnSelect={true}
+                />
+                <MTableToolbar {...props} />
+              </div>
+            ),
+          }}
+        />
+      </MuiThemeProvider>
     </Box>
   }
 
@@ -212,14 +223,14 @@ export class DashboardPage extends React.Component {
 
   async fetchUsers() {
     try {
-        this.setState({...this.state, isFetching: true});
-        const response = await axios.get(this.state.dataURL);
-        this.setState({data: response.data.data, isFetching: false});
+      this.setState({ ...this.state, isFetching: true });
+      const response = await axios.get(this.state.dataURL);
+      this.setState({ data: response.data.data, isFetching: false });
     } catch (e) {
-        console.log(e);
-        this.setState({...this.state, isFetching: false});
+      console.log(e);
+      this.setState({ ...this.state, isFetching: false });
     }
-  };  
+  };
 };
 
 // const DashboardPage = ({match}) => (
@@ -272,4 +283,4 @@ export class DashboardPage extends React.Component {
 // }
 
 
-export default DashboardPage;
+export default withStyles(styles)(DashboardPage);

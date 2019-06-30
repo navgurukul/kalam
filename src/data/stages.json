@@ -1,111 +1,111 @@
 {
   "data": {
     "testPassed": {
-      "to": "Logical Interview Pending",
+      "title": "Logical Interview Pending",
       "description": "Student has passed the Multiple Choice Test and is eligible for the further interviews."
     },
     "pendingAlgebraInterview": {
-      "to": "Logical Interview Pending",
+      "title": "Logical Interview Pending",
       "description": "The Logical Level Interview of the student is pending."
     },
     "pendingAlgebraReInterview": {
-      "to": "Logical Interview Pending"
+      "title": "Logical Interview Pending"
     },
     "forReviewAlgebraInterviewDone": {
-      "to": "Logical Interview Pending",
+      "title": "Logical Interview Pending",
       "description": "The logical level interview of the student has been done. It will be reviewed soon and a final decision will be made"
     },
     "pendingEnglishInterview": {
-      "to": "English Interview Pending",
+      "title": "English Interview Pending",
       "description": "The student has cleared both the multiple choice test and logical level interview. Now there will be a short round to test their english skills."
     },
     "forReviewEnglishInterview": {
-      "to": "English Interview Pending",
+      "title": "English Interview Pending",
       "description": "The English Interview of the student has been done. It will be reviewed soon and a final decision will be made."
     },
     "englishInterviewWaitlisted": {
-      "to": "English Interview Pending"
+      "title": "English Interview Pending"
     },
     "pendingCultureFitInterview": {
-      "to": "Culture Fit Interview Pending",
+      "title": "Culture Fit Interview Pending",
       "description": "Student has cleared the first 3 stages. The last culture fit interview is pending."
     },
     "forReviewCultureFitInterviewDone": {
-      "to": "Culture Fit Interview Pending",
+      "title": "Culture Fit Interview Pending",
       "description": "The culture fit interview has been done. It will be reviewed soon and a final decision will be made."
     },
     "cultureFitInterviewWaitlisted": {
-      "to": "Culture Fit Interview Pending",
+      "title": "Culture Fit Interview Pending",
       "description": "Student is not the right fit for the NavGurukul culture."
     },
     "requestCallback": {
-      "to": "Requested Callback"
+      "title": "Requested Callback"
     },
     "pendingCallbackForQuery": {
-      "to": "Pending Callback???"
+      "title": "Pending Callback???"
     },
     "forReviewCallbackQueryResolved": {
-      "to": "Waiting for Response"
+      "title": "Waiting for Response"
     },
     "queryResolvedAfterCallback": {
-      "to": "Waiting for Response"
+      "title": "Waiting for Response"
     },
     "testFailed": {
-      "to": "Test not Cleared",
+      "title": "Test not Cleared",
       "description": "Student has failed the multiple choice test and is not eligible for any further round."
     },
     "completedTest": {
-      "to": "Test completed"
+      "title": "Test completed"
     },
     "algebraInterviewFail": {
-      "to": "Algebra Interview not Cleared",
+      "title": "Algebra Interview not Cleared",
       "description": "The student couldn't get through the logical level interview. He/she is disqualified from the process."
     },
     "englishInterviewFail": {
-      "to": "English Interview not Cleared",
+      "title": "English Interview not Cleared",
       "description": "Student has not been not clear the english interview. He/She is not eligible for further rounds."
     },
     "cultureFitInterviewFail": {
-      "to": "Culture Interview not Cleared"
+      "title": "Culture Interview not Cleared"
     },
     "parentConversationFail": {
-      "to": "Parents not Willing"
+      "title": "Parents not Willing"
     },
     "droppedOut": {
-      "to": "Dropped Out"
+      "title": "Dropped Out"
     },
     "sentBackAfterProbation": {
-      "to": "Probation not Cleared"
+      "title": "Probation not Cleared"
     },
     "becameDisIntersested": {
-      "to": "Dropped Out"
+      "title": "Dropped Out"
     },
     "possibleDuplicate": {
-      "to": "Already Applied"
+      "title": "Already Applied"
     },
     "needAction": {
-      "to": "Not Clear???"
+      "title": "Not Clear???"
     },
     "demo": {
-      "to": "Not Clear???"
+      "title": "Not Clear???"
     },
     "disqualifiedUnreachable": {
-      "to": "Can't reach Student"
+      "title": "Can't reach Student"
     },
     "pendingParentConversation": {
-      "to": "Selected & Joining Awaited"
+      "title": "Selected & Joining Awaited"
     },
     "pendingTravelPlanning": {
-      "to": "Selected & Joining Awaited"
+      "title": "Selected & Joining Awaited"
     },
     "finalisedTravelPlans": {
-      "to": "Selected & Joining Awaited"
+      "title": "Selected & Joining Awaited"
     },
     "probation": {
-      "to": "Already Joined"
+      "title": "Already Joined"
     },
     "finallyJoined": {
-      "to": "Selected & Joining Awaited"
+      "title": "Selected & Joining Awaited"
     }
   }
 }

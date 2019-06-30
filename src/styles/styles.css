@@ -14,12 +14,12 @@ body {
     min-height: 48px !important;
 }
 
-.MuiAppBar-positionFixed {
+.MuiAppBar-root.MuiAppBar-positionFixed {
     z-index: 10000;
 }
 
 #app {
-    padding-top: 55px;
+    padding-top: 48px;
 }
 
 /*a{

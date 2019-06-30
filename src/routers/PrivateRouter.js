@@ -14,11 +14,8 @@ export const PrivateRoute = ({
         <div>
           <Header />
           <div className="bodyComponent">
-        <Component {...props} />
-
-              </div>
-         
-          
+            <Component {...props} />
+          </div>
           <Footer/>
         </div>
       ) : (

@@ -53,9 +53,6 @@ render(){
 }
 }
 
-
-
-
 const mapDispatchToProps = (dispatch)=>({
   startLogin: (userid)=> dispatch(login(userid))
 });

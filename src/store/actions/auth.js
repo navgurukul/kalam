@@ -1,7 +1,12 @@
-export const login =(uid)=>({
+export const login = (uid) => ({
     type:'LOGIN',
     uid
 });
+
+export const changeFetching = (isFetchingStatus) => ({
+    type:'FETCHING_STATUS',
+    isFetchingStatus
+})
 
 // Asynchronous login action which will be used in other functions
 
@@ -20,7 +25,6 @@ export const login =(uid)=>({
 
 // };
 
-export const logout =()=>({
+export const logout = () => ({
     type:'LOGOUT',
-    
 });

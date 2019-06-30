@@ -4,6 +4,8 @@ import AppBar from '@material-ui/core/AppBar';
 import { connect } from 'react-redux';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -70,7 +72,17 @@ class Header extends React.Component {
   };
 
   conditRenderEssential = () => this.props.userid ? (
-    <Button color="inherit" align="right" onClick={this.props.startLogout}> Logout</Button>) : (<Button color="inherit" align="right"><Link to="/login"> Login</Link></Button>)
+    <Button color="inherit" align="right" onClick={this.props.startLogout}>
+      Logout
+    </Button>) 
+    : ( 
+    <Button color="inherit" align="right">
+      <Link to="/login">
+        Login
+      </Link>
+    </Button>)
+
+  renderProgressBar = () => this.props.isFetching ? (<LinearProgress/>) : (<span></span>)
 
   render() {
     const { classes } = this.props;
@@ -96,7 +108,8 @@ class Header extends React.Component {
           <AppBar
             position="fixed"
             color="default"
-          > 
+          >
+          {this.renderProgressBar()}
            {/* classes={{ root: classes.root }}> */}
             <Toolbar>
               {/* <IconButton className="iconbuttonsyle" color="inherit" aria-label="Menu" onClick={this.onLeftIconButtonClick}>
@@ -120,7 +133,8 @@ class Header extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  userid: state.auth.uid
+  userid: state.auth.uid,
+  isFetching: state.auth.isFetching
 });
 
 const mapDispatchToProps = (dispatch, props) => ({

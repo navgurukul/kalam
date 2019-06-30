@@ -1,5 +1,6 @@
 import React from 'react';
 import { forwardRef } from 'react';
+import { connect } from 'react-redux';
 
 import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles, withStyles, MuiThemeProvider } from '@material-ui/core/styles';
@@ -8,7 +9,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
 
-import * as stages from '../data/stages.json'
+import * as Stages from '../data/stages.json'
 
 import Moment from 'react-moment';
 
@@ -32,6 +33,9 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+
+import { changeFetching } from '../store/actions/auth';
+
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 
@@ -83,13 +87,82 @@ const styles = theme => ({
   }
 })
 
+const columns = [
+  { title: 'Set', field: 'setName', filtering: false },
+  { title: 'Name', field: 'name', filtering: false },
+  { title: 'City', field: 'city' },
+  { title: 'State', field: 'state' },
+  {
+    title: 'Number', field: 'number',
+    render: rowData => {
+      return '+91 ' + rowData.number;
+    },
+    filtering: false
+  },
+  {
+    title: 'Gender', field: 'gender',
+    // render: rowData => {
+    //   return rowData.gender == 1 ? 'Female' : 'Male';
+    // },
+    filtering: false
+  },
+  { 
+    title: 'Stage',
+    // field: 'stageTitle',
+    render: rowData => {
+      return  <Tooltip title={rowData.stageDesc}>
+                <Box data-id={rowData.stage}>
+                  {rowData.stageTitle}
+                </Box>
+              </Tooltip>
+    }
+  },
+  {
+    title: 'Added At', field: 'createdAt', render: rowData => {
+      return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
+    },
+    filtering: false
+  },
+  {
+    title: 'Last Updated',
+    field: 'lastUpdated',
+    render: rowData => {
+      return <Moment format="D MMM YYYY" withTitle>{rowData.lastUpdated}</Moment>
+    },
+    filtering: false
+  }
+]
+
+const columnsTransitions = [
+  { 
+    title: 'Stage',
+    field: 'toStage',
+    render: rowData => {
+      return rowData['toStage'] in Stages.data ? Stages.data[rowData['toStage']].title : rowData['toStage'];;
+    }
+  },
+  {
+    title: 'When?',
+    field: 'createdAt',
+    render: rowData => {
+      return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
+    },
+    defaultSort: 'desc'
+  },
+  {
+    title: 'Description',
+    render: rowData => {
+      return rowData['toStage'] in Stages.data && 'description' in Stages.data[rowData['toStage']] ? Stages.data[rowData['toStage']].description : "No Description Added Yet.";
+    }
+  }
+]
+
 export class DashboardPage extends React.Component {
 
   constructor(props) {
 
     super(props);
     this.state = {
-      isFetching: false,
       dataURL: 'http://join.navgurukul.org/api/partners/' + this.props.match.params.partnerid + '/students',
       data: [],
       sData: undefined, //subsetData
@@ -101,12 +174,21 @@ export class DashboardPage extends React.Component {
   handleChange = () => {
     const { selectedCity, selectedStages } = this.state
 
-    console.log(selectedCity, selectedStages)
+    //change code to handle - constraint addition & deletion differently
+    // Addition
+    // When an option is added where already an option was there
+    // When an option is removed such that zero options are left now
+
+    // Deletion
+    // When an option is added where there was no option
+    // When an option is removed such that there were more options already
+
+    // Create a more generic way of doing this so that it can be scaled up
 
     if (selectedCity || selectedStages ) {
       //or of all the cities & and of all the stages
 
-      this.state.sData = this.state.data.filter((x) => {
+      let sData = this.state.data.filter((x) => {
 
         const ifCityFilter = !selectedCity || !selectedCity.length || selectedCity.filter((m) => { 
             if (x.city) {
@@ -127,121 +209,89 @@ export class DashboardPage extends React.Component {
         return ifCityFilter && ifStagesFilter
       })
 
-      this.forceUpdate();
+      this.setState({
+        sData: sData
+      })
+
     } else {
-      this.state.sData = undefined;
-      this.forceUpdate();
+      this.setState({
+        sData: undefined
+      })
     }
   }
 
   handleCityChange = selectedCity => {
-    this.setState({ selectedCity }, function() {
-      this.handleChange()
-    })
-  };
+    this.state.selectedCity = selectedCity
+    this.handleChange()
+  }
 
   handleStageChange = selectedStages => {
-    this.setState({ selectedStages }, function() {
-      this.handleChange()
+    this.state.selectedStages = selectedStages
+    this.handleChange()
+  }
+
+  dConvert = (x) => {
+    x['number'] = x['contacts'][0]['mobile'];
+    x['gender'] = x['gender'] == 1 ? 'Female' : 'Male';
+    x['stageTitle'] = x['stage'] in Stages.data ? Stages.data[x['stage']].title : x['stage'];
+    x['stageDesc'] = x['stage'] in Stages.data && 'description' in Stages.data[x['stage']] ? Stages.data[x['stage']].description : "No Description Added Yet."
+    // x['lastUpdated'] = getLastUpdated(x.transitions)
+
+    let transitions = x['transitions'];
+    let latestTS = transitions[0].createdAt
+  
+    if (transitions.length>1) {
+      for (let i=1; i<transitions.length; i++) {
+        latestTS = transitions[i]['createdAt'] > latestTS ? transitions[i]['createdAt'] : latestTS
+      }
+    }
+
+    x['lastUpdated'] = latestTS;
+
+    return x
+  }
+
+  dataSetup = (data) => {
+    // getLastUpdated = (transitions) => {
+    //   let latestTS = transitions[0].createdAt
+    
+    //   if (transitions.length>1) {
+    //     for (let i=1; i<transitions.length; i++) {
+    //       latestTS = transitions[i]['createdAt'] > latestTS ? transitions[i]['createdAt'] : latestTS
+    //     }
+    //   }
+    
+    //   return latestTS
+    // }    
+
+    let cities = []
+    let stages = []
+
+    for (let i=0; i<data.length; i++) {
+      let row = this.dConvert(data[i])
+
+      if (cities.indexOf(row.city)==-1) {
+        cities.push(row.city)
+      }
+
+      if (stages.indexOf(row.stageTitle)==-1) {
+        stages.push(row.stageTitle)
+      }
+
+      data[i] = row
+    }
+
+    this.state.cities = cities.map((x)=> {return {label: x, value: x}})
+    this.state.stages = stages.map((x)=> {return {label: x, value: x}})
+
+    this.setState({'data': data}, function(){
+      this.props.fetchingFinish()
     })
-  };
+  }
 
   render = () => {
     const { selectedCity, selectedStages } = this.state;
     const { classes } = this.props;
-
-    function dConvert(x) {
-      x['number'] = x['contacts'][0]['mobile'];
-      x['gender'] = x['gender'] == 1 ? 'Female' : 'Male';
-      x['stageTitle'] = x['stage'] in stages.data ? stages.data[x['stage']].title : x['stage'];
-      x['stageDesc'] = x['stage'] in stages.data && 'description' in stages.data[x['stage']] ? stages.data[x['stage']].description : "No Description Added Yet.";
-      return x;
-    }
-
-    this.state.data = this.state.data.map(dConvert)
-    
-    this.state.cities = [...new Set(this.state.data.map((x) => x.city))]
-    this.state.cities = this.state.cities.map((x) => { return { label: x, value: x } })
-    
-    this.state.stages = [...new Set(this.state.data.map((x) => x.stageTitle))]
-    this.state.stages = this.state.stages.map((x) => { return { label: x, value: x } })
-
-    const columns = [
-      { title: 'Set', field: 'setName', filtering: false },
-      { title: 'Name', field: 'name', filtering: false },
-      { title: 'City', field: 'city' },
-      { title: 'State', field: 'state' },
-      {
-        title: 'Number', field: 'number',
-        render: rowData => {
-          return '+91 ' + rowData.number;
-        },
-        filtering: false
-      },
-      {
-        title: 'Gender', field: 'gender',
-        // render: rowData => {
-        //   return rowData.gender == 1 ? 'Female' : 'Male';
-        // },
-        filtering: false
-      },
-      { 
-        title: 'Stage',
-        // field: 'stageTitle',
-        render: rowData => {
-          return  <Tooltip title={rowData.stageDesc}>
-                    <Box data-id={rowData.stage}>
-                      {rowData.stageTitle}
-                    </Box>
-                  </Tooltip>
-        }
-      },
-      {
-        title: 'Added At', field: 'createdAt', render: rowData => {
-          return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
-        },
-        filtering: false
-      },
-      {
-        title: 'Last Updated',
-        render: rowData => {
-          let transitions = rowData.transitions;
-          let latestTS = transitions[0].createdAt;
-
-          if (transitions.length>1) {
-            for (let i=1; i<transitions.length; i++) {
-              latestTS = transitions[i]['createdAt'] > latestTS ? transitions[i]['createdAt'] : latestTS
-            }
-          }
-          return <Moment format="D MMM YYYY" withTitle>{latestTS}</Moment>
-        },
-        filtering: false
-      }
-    ]
-
-    const columnsTransitions = [
-      { 
-        title: 'Stage',
-        field: 'toStage',
-        render: rowData => {
-          return rowData['toStage'] in stages.data ? stages.data[rowData['toStage']].title : rowData['toStage'];;
-        }
-      },
-      {
-        title: 'When?',
-        field: 'createdAt',
-        render: rowData => {
-          return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
-        },
-        defaultSort: 'desc'
-      },
-      {
-        title: 'Description',
-        render: rowData => {
-          return rowData['toStage'] in stages.data && 'description' in stages.data[rowData['toStage']] ? stages.data[rowData['toStage']].description : "No Description Added Yet.";
-        }
-      }
-    ]
 
     return <Box>
       <MuiThemeProvider theme={theme}>
@@ -325,12 +375,18 @@ export class DashboardPage extends React.Component {
 
   async fetchUsers() {
     try {
-      this.setState({ ...this.state, isFetching: true });
+      this.props.fetchingStart()
       const response = await axios.get(this.state.dataURL);
-      this.setState({ data: response.data.data, isFetching: false });
+      this.dataSetup(response.data.data);
+      // this.setState({ 
+      //                 data: this.dataSetup(response.data.data),
+      //                 isFetching: false
+      //               }, function() {
+      //                 // dataSetup();
+      //             });
     } catch (e) {
       console.log(e);
-      this.setState({ ...this.state, isFetching: false });
+      this.props.fetchingFinish()
     }
   };
 };
@@ -384,5 +440,9 @@ export class DashboardPage extends React.Component {
 //   }
 // }
 
+const mapDispatchToProps = (dispatch)=>({
+  fetchingStart: () => dispatch(changeFetching(true)),
+  fetchingFinish: () => dispatch(changeFetching(false))
+});
 
-export default withStyles(styles)(DashboardPage);
+export default withStyles(styles)(connect(undefined, mapDispatchToProps)(DashboardPage))

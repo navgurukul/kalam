@@ -1,11 +1,5 @@
 import React from 'react';
-import Header from './Header';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Image from 'material-ui-image';
-import {Link} from 'react-router-dom';
 
 
 const LandingPage = () => (

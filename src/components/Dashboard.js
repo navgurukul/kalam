@@ -3,6 +3,7 @@ import { forwardRef } from 'react';
 
 import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles, withStyles, MuiThemeProvider } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
@@ -83,8 +84,6 @@ export class DashboardPage extends React.Component {
 
   constructor(props) {
 
-    console.log(stages.data);
-
     super(props);
     this.state = {
       isFetching: false,
@@ -113,6 +112,9 @@ export class DashboardPage extends React.Component {
 
     function dConvert(x) {
       x['number'] = x['contacts'][0]['mobile'];
+      x['gender'] = x['gender'] == 1 ? 'Female' : 'Male';
+      x['stageTitle'] = x['stage'] in stages.data ? stages.data[x['stage']].title : x['stage'];
+      x['stageDesc'] = x['stage'] in stages.data && 'description' in stages.data[x['stage']] ? stages.data[x['stage']].description : "No Description Added Yet.";
       return x;
     }
 
@@ -134,12 +136,22 @@ export class DashboardPage extends React.Component {
       },
       {
         title: 'Gender', field: 'gender',
-        render: rowData => {
-          return rowData.gender == 1 ? 'Female' : 'Male';
-        },
+        // render: rowData => {
+        //   return rowData.gender == 1 ? 'Female' : 'Male';
+        // },
         filtering: false
       },
-      { title: 'Stage', field: 'stage' },
+      { 
+        title: 'Stage',
+        // field: 'stageTitle',
+        render: rowData => {
+          return  <Tooltip title={rowData.stageDesc}>
+                    <Box data-id={rowData.stage}>
+                      {rowData.stageTitle}
+                    </Box>
+                  </Tooltip>
+        }
+      },
       {
         title: 'Added At', field: 'createdAt', render: rowData => {
           return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>

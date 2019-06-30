@@ -7,6 +7,8 @@ import { makeStyles, withStyles, MuiThemeProvider } from '@material-ui/core/styl
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
 
+import * as stages from '../data/stages.json'
+
 import Moment from 'react-moment';
 
 import Select from 'react-select';
@@ -81,6 +83,8 @@ export class DashboardPage extends React.Component {
 
   constructor(props) {
 
+    console.log(stages.data);
+
     super(props);
     this.state = {
       isFetching: false,
@@ -120,6 +124,7 @@ export class DashboardPage extends React.Component {
       { title: 'Set', field: 'setName', filtering: false },
       { title: 'Name', field: 'name', filtering: false },
       { title: 'City', field: 'city' },
+      { title: 'State', field: 'state' },
       {
         title: 'Number', field: 'number',
         render: rowData => {

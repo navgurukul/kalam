@@ -157,20 +157,48 @@ export class DashboardPage extends React.Component {
           return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
         },
         filtering: false
+      },
+      {
+        title: 'Last Updated',
+        render: rowData => {
+          let transitions = rowData.transitions;
+          let latestTS = transitions[0].createdAt;
+
+          if (transitions.length>1) {
+            for (let i=1; i<transitions.length; i++) {
+              latestTS = transitions[i]['createdAt'] > latestTS ? transitions[i]['createdAt'] : latestTS
+            }
+          }
+          return <Moment format="D MMM YYYY" withTitle>{latestTS}</Moment>
+        },
+        filtering: false
       }
     ]
 
     const columnsTransitions = [
-      { title: 'Stage', field: 'toStage' },
+      { 
+        title: 'Stage',
+        field: 'toStage',
+        render: rowData => {
+          return rowData['toStage'] in stages.data ? stages.data[rowData['toStage']].title : rowData['toStage'];;
+        }
+      },
       {
-        title: 'When?', field: 'createdAt', render: rowData => {
+        title: 'When?',
+        field: 'createdAt',
+        render: rowData => {
           return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
+        },
+        defaultSort: 'desc'
+      },
+      {
+        title: 'Description',
+        render: rowData => {
+          return rowData['toStage'] in stages.data && 'description' in stages.data[rowData['toStage']] ? stages.data[rowData['toStage']].description : "No Description Added Yet.";
         }
       }
     ]
 
-    // console.log('theme', theme.palette.primary.main);
-    
     return <Box>
       <MuiThemeProvider theme={theme}>
         <MaterialTable
@@ -179,7 +207,7 @@ export class DashboardPage extends React.Component {
           icons={tableIcons}
           detailPanel={rowData => {
             return (
-              <Box width={1 / 3} className={classes.innerTable} my={2}>
+              <Box width={1/2} className={classes.innerTable} my={2}>
                 <MaterialTable
                   columns={columnsTransitions}
                   data={rowData.transitions}

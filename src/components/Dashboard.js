@@ -73,7 +73,7 @@ const styles = theme => ({
     marginBottom: '5',
     [theme.breakpoints.up('md')]: {
       margin: 'auto',
-      width: '33%',
+      width: '50%',
       marginTop: 5,
       marginBottom: 5
     },
@@ -90,24 +90,49 @@ export class DashboardPage extends React.Component {
       dataURL: 'http://join.navgurukul.org/api/partners/' + this.props.match.params.partnerid + '/students',
       data: [],
       sData: [], //subsetData
-      selectedCity: null
+      selectedCity: [],
+      selectedStages: []
     }
   }
 
-  handleChange = selectedCity => {
-    this.setState({ selectedCity });
-    if (selectedCity) {
+  handleChange = () => {
+    const { selectedCity, selectedStages } = this.state
+
+    console.log(selectedCity, selectedStages)
+
+    if (selectedCity || selectedStages ) {
+      //or of all the cities & and of all the stages
+
       this.state.sData = this.state.data.filter((x) => {
-        return selectedCity.filter((m) => { return m.value == x.city }).length;
+
+        const ifCityFilter = !selectedCity || !selectedCity.length || selectedCity.filter((m) => { return m.value.toLowerCase() == x.city.toLowerCase() }).length
+        const ifStagesFilter = !selectedStages || !selectedStages.length || selectedStages.filter((m) => { return m.value == x.stageTitle }).length
+
+        console.log(x.city, x.stageTitle, ifCityFilter, ifStagesFilter)
+        return ifCityFilter && ifStagesFilter
       })
+      console.log("Now the length is", this.state.sData.length)
+      this.forceUpdate();
     } else {
       this.state.sData = [];
+      this.forceUpdate();
     }
-    this.forceUpdate();
+  }
+
+  handleCityChange = selectedCity => {
+    this.setState({ selectedCity }, function() {
+      this.handleChange()
+    })
+  };
+
+  handleStageChange = selectedStages => {
+    this.setState({ selectedStages }, function() {
+      this.handleChange()
+    })
   };
 
   render = () => {
-    const { selectedCity } = this.state;
+    const { selectedCity, selectedStages } = this.state;
     const { classes } = this.props;
 
     function dConvert(x) {
@@ -119,8 +144,12 @@ export class DashboardPage extends React.Component {
     }
 
     this.state.data = this.state.data.map(dConvert)
+    
     this.state.cities = [...new Set(this.state.data.map((x) => x.city))]
     this.state.cities = this.state.cities.map((x) => { return { label: x, value: x } })
+    
+    this.state.stages = [...new Set(this.state.data.map((x) => x.stageTitle))]
+    this.state.stages = this.state.stages.map((x) => { return { label: x, value: x } })
 
     const columns = [
       { title: 'Set', field: 'setName', filtering: false },
@@ -207,7 +236,7 @@ export class DashboardPage extends React.Component {
           icons={tableIcons}
           detailPanel={rowData => {
             return (
-              <Box width={1/2} className={classes.innerTable} my={2}>
+              <Box className={classes.innerTable} my={2}>
                 <MaterialTable
                   columns={columnsTransitions}
                   data={rowData.transitions}
@@ -243,12 +272,23 @@ export class DashboardPage extends React.Component {
             Toolbar: props => (
               <div>
                 <Select
-                  className="filterSelect"
+                  className="citySelect"
                   value={selectedCity}
                   isMulti
-                  onChange={this.handleChange}
+                  onChange={this.handleCityChange}
                   options={this.state.cities}
                   placeholder="Select City ..."
+                  isClearable={true}
+                  components={animatedComponents}
+                  closeMenuOnSelect={true}
+                />
+                <Select
+                  className="stagesSelect"
+                  value={selectedStages}
+                  isMulti
+                  onChange={this.handleStageChange}
+                  options={this.state.stages}
+                  placeholder="Select Stage ..."
                   isClearable={true}
                   components={animatedComponents}
                   closeMenuOnSelect={true}

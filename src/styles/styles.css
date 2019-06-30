@@ -2,13 +2,22 @@ body {
   margin: 0px;
 }
 
-.filterSelect {
-  z-index: 9995;
-  width: 40%;
-  float: left;
-  padding-left: 16px;
-  padding-top: 8px;
+.citySelect {
+    z-index: 9995;
+    width: 30%;
+    float: left;
+    padding-left: 16px;
+    padding-top: 8px;
 }
+
+.stagesSelect {
+    z-index: 9995;
+    width: 30%;
+    float: left;
+    padding-left: 16px;
+    padding-top: 8px;
+}
+
 
 .MuiToolbar-regular {
     min-height: 48px !important;

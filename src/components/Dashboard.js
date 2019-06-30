@@ -77,6 +77,9 @@ const styles = theme => ({
       marginTop: 5,
       marginBottom: 5
     },
+  },
+  clear: {
+    clear: 'both'
   }
 })
 
@@ -89,7 +92,7 @@ export class DashboardPage extends React.Component {
       isFetching: false,
       dataURL: 'http://join.navgurukul.org/api/partners/' + this.props.match.params.partnerid + '/students',
       data: [],
-      sData: [], //subsetData
+      sData: undefined, //subsetData
       selectedCity: [],
       selectedStages: []
     }
@@ -105,16 +108,28 @@ export class DashboardPage extends React.Component {
 
       this.state.sData = this.state.data.filter((x) => {
 
-        const ifCityFilter = !selectedCity || !selectedCity.length || selectedCity.filter((m) => { return m.value.toLowerCase() == x.city.toLowerCase() }).length
-        const ifStagesFilter = !selectedStages || !selectedStages.length || selectedStages.filter((m) => { return m.value == x.stageTitle }).length
+        const ifCityFilter = !selectedCity || !selectedCity.length || selectedCity.filter((m) => { 
+            if (x.city) {
+              return m.value.toLowerCase() == x.city.toLowerCase()
+            } else {
+              return false
+            }
+          }).length
+        
+        const ifStagesFilter = !selectedStages || !selectedStages.length || selectedStages.filter((m) => {
+            if (x.stageTitle) {
+              return m.value == x.stageTitle 
+            } else {
+              return false
+            }
+          }).length
 
-        console.log(x.city, x.stageTitle, ifCityFilter, ifStagesFilter)
         return ifCityFilter && ifStagesFilter
       })
-      console.log("Now the length is", this.state.sData.length)
+
       this.forceUpdate();
     } else {
-      this.state.sData = [];
+      this.state.sData = undefined;
       this.forceUpdate();
     }
   }
@@ -230,9 +245,32 @@ export class DashboardPage extends React.Component {
 
     return <Box>
       <MuiThemeProvider theme={theme}>
+        <Select
+          className="citySelect"
+          value={selectedCity}
+          isMulti
+          onChange={this.handleCityChange}
+          options={this.state.cities}
+          placeholder="Select City ..."
+          isClearable={true}
+          components={animatedComponents}
+          closeMenuOnSelect={true}
+        />
+        <Select
+          className="stagesSelect"
+          value={selectedStages}
+          isMulti
+          onChange={this.handleStageChange}
+          options={this.state.stages}
+          placeholder="Select Stage ..."
+          isClearable={true}
+          components={animatedComponents}
+          closeMenuOnSelect={true}
+        />
+        <div className={classes.clear}></div>
         <MaterialTable
           columns={columns}
-          data={this.state.sData.length ? this.state.sData : this.state.data}
+          data={this.state.sData ? this.state.sData : this.state.data}
           icons={tableIcons}
           detailPanel={rowData => {
             return (
@@ -257,6 +295,7 @@ export class DashboardPage extends React.Component {
             exportButton: true,
             pageSize: 100,
             showTitle: false,
+            toolbar: false,
             // filtering: true
           }}
           // actions={[
@@ -269,33 +308,11 @@ export class DashboardPage extends React.Component {
           //   }
           // ]}
           components={{
-            Toolbar: props => (
-              <div>
-                <Select
-                  className="citySelect"
-                  value={selectedCity}
-                  isMulti
-                  onChange={this.handleCityChange}
-                  options={this.state.cities}
-                  placeholder="Select City ..."
-                  isClearable={true}
-                  components={animatedComponents}
-                  closeMenuOnSelect={true}
-                />
-                <Select
-                  className="stagesSelect"
-                  value={selectedStages}
-                  isMulti
-                  onChange={this.handleStageChange}
-                  options={this.state.stages}
-                  placeholder="Select Stage ..."
-                  isClearable={true}
-                  components={animatedComponents}
-                  closeMenuOnSelect={true}
-                />
-                <MTableToolbar {...props} />
-              </div>
-            ),
+            // Toolbar: props => (
+            //   <div>
+            //     <MTableToolbar {...props} />
+            //   </div>
+            // ),
           }}
         />
       </MuiThemeProvider>

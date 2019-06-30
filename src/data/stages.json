@@ -1,0 +1,148 @@
+{
+  "stages": [
+    {
+      "from": "testPassed",
+      "to": "Logical Interview Pending",
+      "description": "Student has passed the Multiple Choice Test and is eligible for the further interviews."
+    },
+    {
+      "from": "pendingAlgebraInterview",
+      "to": "Logical Interview Pending",
+      "description": "The Logical Level Interview of the student is pending."
+    },
+    {
+      "from": "pendingAlgebraReInterview",
+      "to": "Logical Interview Pending"
+    },
+    {
+      "from": "forReviewAlgebraInterviewDone",
+      "to": "Logical Interview Pending",
+      "description": "The logical level interview of the student has been done. It will be reviewed soon and a final decision will be made"
+    },
+    {
+      "from": "forReviewAlgebraInterviewDone",
+      "to": "Logical Interview Pending"
+    },
+    {
+      "from": "pendingEnglishInterview",
+      "to": "English Interview Pending",
+      "description": "The student has cleared both the multiple choice test and logical level interview. Now there will be a short round to test their english skills."
+    },
+    {
+      "from": "forReviewEnglishInterview",
+      "to": "English Interview Pending",
+      "description": "The English Interview of the student has been done. It will be reviewed soon and a final decision will be made."
+    },
+    {
+      "from": "englishInterviewWaitlisted",
+      "to": "English Interview Pending"
+    },
+    {
+      "from": "pendingCultureFitInterview",
+      "to": "Culture Fit Interview Pending",
+      "description": "Student has cleared the first 3 stages. The last culture fit interview is pending."
+    },
+    {
+      "from": "forReviewCultureFitInterviewDone",
+      "to": "Culture Fit Interview Pending",
+      "description": "The culture fit interview has been done. It will be reviewed soon and a final decision will be made."
+    },
+    {
+      "from": "cultureFitInterviewWaitlisted",
+      "to": "Culture Fit Interview Pending",
+      "description": "Student is not the right fit for the NavGurukul culture."
+    },
+    {
+      "from": "requestCallback",
+      "to": "Requested Callback"
+    },
+    {
+      "from": "pendingCallbackForQuery",
+      "to": "Pending Callback???"
+    },
+    {
+      "from": "forReviewCallbackQueryResolved",
+      "to": "Waiting for Response"
+    },
+    {
+      "from": "queryResolvedAfterCallback",
+      "to": "Waiting for Response"
+    },
+    {
+      "from": "testFailed",
+      "to": "Test not Cleared",
+      "description": "Student has failed the multiple choice test and is not eligible for any further round."
+    },
+    {
+      "from": "completedTest",
+      "to": "Test completed"
+    },
+    {
+      "from": "algebraInterviewFail",
+      "to": "Algebra Interview not Cleared",
+      "description": "The student couldn't get through the logical level interview. He/she is disqualified from the process."
+    },
+    {
+      "from": "englishInterviewFail",
+      "to": "English Interview not Cleared",
+      "description": "Student has not been not clear the english interview. He/She is not eligible for further rounds."
+    },
+    {
+      "from": "cultureFitInterviewFail",
+      "to": "Culture Interview not Cleared"
+    },
+    {
+      "from": "parentConversationFail",
+      "to": "Parents not Willing"
+    },
+    {
+      "from": "droppedOut",
+      "to": "Dropped Out"
+    },
+    {
+      "from": "sentBackAfterProbation",
+      "to": "Probation not Cleared"
+    },
+    {
+      "from": "becameDisIntersested",
+      "to": "Dropped Out"
+    },
+    {
+      "from": "possibleDuplicate",
+      "to": "Already Applied"
+    },
+    {
+      "from": "needAction",
+      "to": "Not Clear???"
+    },
+    {
+      "from": "demo",
+      "to": "Not Clear???"
+    },
+    {
+      "from": "disqualifiedUnreachable",
+      "to": "Can't reach Student"
+    },
+    {
+      "from": "pendingParentConversation",
+      "to": "Selected & Joining Awaited"
+    },
+    {
+      "from": "pendingTravelPlanning",
+      "to": "Selected & Joining Awaited"
+    },
+    {
+      "from": "finalisedTravelPlans",
+      "to": "Selected & Joining Awaited"
+    },
+    {
+      "from": "probation",
+      "to": "Already Joined"
+    },
+    {
+      "from": "finallyJoined",
+      "to": "Selected & Joining Awaited"
+    },
+
+  ]
+}

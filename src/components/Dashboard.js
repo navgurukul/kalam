@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import { connect } from 'react-redux';
 
 import MaterialTable, { MTableToolbar } from "material-table";
-import { makeStyles, withStyles, MuiThemeProvider } from '@material-ui/core/styles';
+import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import axios from 'axios';
@@ -18,7 +18,7 @@ import makeAnimated from 'react-select/animated';
 import { theme } from '../theme/theme';
 
 import AddBox from '@material-ui/icons/AddBox';
-// import Assessment from '@material-ui/icons/Assessment';
+
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Check from '@material-ui/icons/Check';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
@@ -36,16 +36,16 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 
 import { changeFetching } from '../store/actions/auth';
 
+import {withRouter} from 'react-router-dom';
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-  // Assessment: forwardRef((props, ref) => <Assessment {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
   Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
   Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-  DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  DetailPanel: forwardRef((props, ref) => <ChevronRight color="primary" {...props} ref={ref} />),
   Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
   Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
@@ -332,8 +332,11 @@ export class DashboardPage extends React.Component {
                     search: false,
                     paging: false,
                     toolbar: false,
-                    showTitle: false
-                  }}
+                    showTitle: false,
+                    headerStyle: {
+                      color: theme.palette.primary.main
+                    },
+                    }}
                 />
               </Box>
             )
@@ -391,58 +394,9 @@ export class DashboardPage extends React.Component {
   };
 };
 
-// const DashboardPage = ({match}) => (
-//   <div>
-//     This is from my dashboard component {match.params.partnerid} OK
-//   </div>
-// );
-
-
-// export class DashboardPage extends React.Component {
-//   render() {
-//     return (
-//       <MaterialTable
-//         title="Student Dashboard"
-//         columns={[
-//           // {
-//           //   title: 'Avatar',
-//           //   field: 'avatar',
-//           //   render: rowData => (
-//           //     <
-//           //     // <img
-//           //     //   style={{ height: 36, borderRadius: '50%' }}
-//           //     //   src={rowData.avatar}
-//           //     // />
-//           //   ),
-//           // },
-//           // { title: 'Id', field: 'id' },
-//           { title: 'First Name', field: 'name' },
-//           { title: 'City', field: 'city' },
-//         ]}
-//         data={query =>
-//           new Promise((resolve, reject) => {
-//             let url = 'http://join.navgurukul.org/api/partners/'+this.props.match.params.partnerid+'/students';
-//             url += 'per_page=' + query.pageSize;
-//             url += '&page=' + (query.page + 1);
-//             fetch(url)
-//               .then(response => response.json())
-//               .then(result => {
-//                 resolve({
-//                   data: result.data,
-//                   page: 10, //result.page - 1,
-//                   totalCount: 300,
-//                 })
-//               })
-//           })
-//         }
-//       />
-//     )
-//   }
-// }
-
 const mapDispatchToProps = (dispatch)=>({
   fetchingStart: () => dispatch(changeFetching(true)),
   fetchingFinish: () => dispatch(changeFetching(false))
 });
 
-export default withStyles(styles)(connect(undefined, mapDispatchToProps)(DashboardPage))
+export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(DashboardPage)))

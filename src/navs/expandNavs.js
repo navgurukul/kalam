@@ -13,21 +13,21 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import StarBorder from '@material-ui/icons/StarBorder';
 import LabelIcon from '@material-ui/icons/Label';
-import {NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 
-class ExpandNav extends React.Component{
+class ExpandNav extends React.Component {
 
-state={
-    componentsmenuopen:false
-};
-
-  handleClick=()=>{
-    console.log('clicked');
-    this.setState({componentsmenuopen:!this.state.componentsmenuopen});
+  state = {
+    componentsmenuopen: false
   };
 
-handleClose = event => {
+  handleClick = () => {
+    console.log('clicked');
+    this.setState({ componentsmenuopen: !this.state.componentsmenuopen });
+  };
+
+  handleClose = event => {
     if (this.target1.contains(event.target) || this.target2.contains(event.target)) {
       return;
     }
@@ -35,29 +35,29 @@ handleClose = event => {
     this.setState({ componentsmenuopen: false });
   };
 
-render(){
-    
+  render() {
+
     return (<List component="nav">
- <ListItem button onClick={this.handleClick}>
+      <ListItem button onClick={this.handleClick}>
+        <ListItemIcon className="innernavitem">
+          <LabelIcon />
+        </ListItemIcon>
+        <ListItemText inset primary="Components" />
+        {this.state.componentsmenuopen ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={this.state.componentsmenuopen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <NavLink to="/forms" className="NavLinkItem"><ListItem button >
             <ListItemIcon className="innernavitem">
-              <LabelIcon />
+              <StarBorder />
             </ListItemIcon>
-            <ListItemText inset primary="Components" />
-            {this.state.componentsmenuopen ? <ExpandLess /> : <ExpandMore />}
+            <ListItemText inset primary="Forms" />
           </ListItem>
-          <Collapse in={this.state.componentsmenuopen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <NavLink to="/forms"  className="NavLinkItem"><ListItem button >
-                <ListItemIcon className="innernavitem">
-                  <StarBorder />
-                </ListItemIcon>
-                <ListItemText inset primary="Forms" />
-              </ListItem>
-              </NavLink>
-            </List>
-          </Collapse>
-           </List>); 
-}
+          </NavLink>
+        </List>
+      </Collapse>
+    </List>);
+  }
 
 }
 

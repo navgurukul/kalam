@@ -3,7 +3,7 @@ body {
 }
 
 .citySelect {
-    z-index: 9995;
+    z-index: 900;
     width: 30%;
     float: left;
     padding-left: 16px;
@@ -11,7 +11,7 @@ body {
 }
 
 .stagesSelect {
-    z-index: 9995;
+    z-index: 900;
     width: 30%;
     float: left;
     padding-left: 16px;

@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import DialogContent from '@material-ui/core/DialogContent';
 
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -15,8 +15,6 @@ import Paper from '@material-ui/core/Paper';
 
 import logo from '../assets/img/logo.png';
 
-import { withStyles } from '@material-ui/core/styles';
-
 import { Link } from 'react-router-dom';
 import PublicNavList from '../navs/publicNav';
 import PrivateNavList from '../navs/privateNav';
@@ -24,31 +22,27 @@ import ExpandNavList from '../navs/expandNavs'
 import { logout } from '../store/actions/auth';
 import { NavLink } from 'react-router-dom';
 
-import Image from 'material-ui-image';
+import {withRouter} from 'react-router-dom';
 
-const styles = {
-  root: {
-    height: '40px'
-  }
-};
+import Image from 'material-ui-image';
+import ModalStages from './ModalStages'
 
 class Header extends React.Component {
-
+  
   constructor(props) {
     super(props);
     this.state = {
       value: 1,
       open: false,
-      componentsmenuopen: false
+      componentsmenuopen: false,
+      modalOpen: false
     };
 
     console.log('inside header component ', this.props.userid);
-
   }
 
   handleChange = (event, index, value) => this.setState({ value });
   onLeftIconButtonClick = (event, index, value) => {
-    console.log('hi;');
     this.setState({ open: !this.state.open });
   };
 
@@ -59,7 +53,6 @@ class Header extends React.Component {
   };
 
   handleClick = () => {
-    console.log('clicked');
     this.setState({ componentsmenuopen: !this.state.componentsmenuopen });
   };
 
@@ -82,10 +75,15 @@ class Header extends React.Component {
       </Link>
     </Button>)
 
+  dashboardModal = () => {
+    if (this.props.location.pathname.indexOf('partner')>-1) 
+      return <ModalStages />
+    return
+  }
+
   renderProgressBar = () => this.props.isFetching ? (<LinearProgress/>) : (<span></span>)
 
   render() {
-    const { classes } = this.props;
     const { open } = this.state.componentsmenuopen;
 
     return (
@@ -110,20 +108,18 @@ class Header extends React.Component {
             color="default"
           >
           {this.renderProgressBar()}
-           {/* classes={{ root: classes.root }}> */}
-            <Toolbar>
+            <Toolbar justify="space-between">
               {/* <IconButton className="iconbuttonsyle" color="inherit" aria-label="Menu" onClick={this.onLeftIconButtonClick}>
                 <MenuIcon />
               </IconButton> */}
               <Image
                 src={logo}
                 color="inherit"
-                style={{height:40, width: 165, paddingTop: 0}}
+                style={{height:40, width: 165, paddingTop: 0, flex: 1}}
                 imageStyle={{height: 40, width: 165}}
               />
-              {
-                // this.conditRenderEssential()
-              }
+              {/* { this.conditRenderEssential() } */}
+              { this.dashboardModal() }
             </Toolbar>
           </AppBar>
         </div>
@@ -141,5 +137,4 @@ const mapDispatchToProps = (dispatch, props) => ({
   startLogout: () => dispatch(logout())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
-// export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Header));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header))

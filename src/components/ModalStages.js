@@ -83,19 +83,19 @@ export class ModalStages extends React.Component {
           <Typography variant="subtitle1" id="simple-modal-description">All the stages are documented below.</Typography>
           <br/>
   
-          <p><Typography variant="h6">Multiple Choice Test</Typography>
-          Students answer this test either on their mobile or pen/paper. It gauges the logical aptitude of the student.</p>
+          <Typography variant="h6">Multiple Choice Test</Typography>
+          <p>Students answer this test either on their mobile or pen/paper. It gauges the logical aptitude of the student.</p>
 
-          <p><Typography variant="h6">Logical Level Interview</Typography>
-          Similar to the multiple choice test, this interview is also used to gauge the logical aptitude of the student.<br/>
+          <Typography variant="h6">Logical Level Interview</Typography>
+          <p>Similar to the multiple choice test, this interview is also used to gauge the logical aptitude of the student.<br/>
           Having a humane interview helps us give more space to students and understand them better. This step is also used to account for cheating in the previous step.</p>
 
-          <p><Typography variant="h6">English Interview</Typography>
-          We don't require high english levels. Most of our students haven't had access to a good english learning environment.<br/>
+          <Typography variant="h6">English Interview</Typography>
+          <p>We don't require high english levels. Most of our students haven't had access to a good english learning environment.<br/>
           We just require them to understand basic 6th grade English.</p>
 
-          <p><Typography variant="h6">Culture Fit Interview</Typography>
-          This helps us understand if the students will be a good fit for the NavGurukul culture.</p>
+          <Typography variant="h6">Culture Fit Interview</Typography>
+          <p>This helps us understand if the students will be a good fit for the NavGurukul culture.</p>
 
         </div>
       </Modal>

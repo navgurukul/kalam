@@ -6,6 +6,8 @@ import MaterialTable, { MTableToolbar } from "material-table";
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import FilterSelect from './FilterSelect'
+
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
 
@@ -13,8 +15,6 @@ import * as Stages from '../data/stages.json'
 
 import Moment from 'react-moment';
 
-import Select from 'react-select';
-import makeAnimated from 'react-select/animated';
 import { theme } from '../theme/theme';
 
 import AddBox from '@material-ui/icons/AddBox';
@@ -60,14 +60,6 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-// const cities = [
-//   { value: 'chocolate', label: 'Chocolate' },
-//   { value: 'strawberry', label: 'Strawberry' },
-//   { value: 'vanilla', label: 'Vanilla' },
-// ];
-
-const animatedComponents = makeAnimated();
-
 const styles = theme => ({
   innerTable: {
     marginLeft: '3vw',
@@ -87,10 +79,16 @@ const styles = theme => ({
   }
 })
 
-const columns = [
+let columns = [
   { title: 'Set', field: 'setName', filtering: false },
   { title: 'Name', field: 'name', filtering: false },
-  { title: 'City', field: 'city' },
+  {
+    title: 'City',
+    field: 'city',
+    selectFilter: true,
+    sfType: 'multi',
+    sfTitle: 'cities'
+  },
   { title: 'State', field: 'state' },
   {
     title: 'Number', field: 'number',
@@ -100,7 +98,8 @@ const columns = [
     filtering: false
   },
   {
-    title: 'Gender', field: 'gender',
+    title: 'Gender',
+    field: 'gender',
     // render: rowData => {
     //   return rowData.gender == 1 ? 'Female' : 'Male';
     // },
@@ -108,7 +107,10 @@ const columns = [
   },
   { 
     title: 'Stage',
-    // field: 'stageTitle',
+    field: 'stageTitle',
+    selectFilter: true,
+    sfType: 'multi',
+    sfTitle: 'stages',
     render: rowData => {
       return  <Tooltip title={rowData.stageDesc}>
                 <Box data-id={rowData.stage}>
@@ -157,6 +159,8 @@ const columnsTransitions = [
   }
 ]
 
+const filterFns = []
+
 export class DashboardPage extends React.Component {
 
   constructor(props) {
@@ -166,68 +170,29 @@ export class DashboardPage extends React.Component {
       dataURL: 'http://join.navgurukul.org/api/partners/' + this.props.match.params.partnerid + '/students',
       data: [],
       sData: undefined, //subsetData
-      selectedCity: [],
-      selectedStages: []
     }
   }
 
-  handleChange = () => {
-    const { selectedCity, selectedStages } = this.state
+  handleChange = (field, filterFn) => {
 
-    //change code to handle - constraint addition & deletion differently
-    // Addition
-    // When an option is added where already an option was there
-    // When an option is removed such that zero options are left now
+    filterFns[field] = filterFn
+    const fieldKeys = Object.keys(filterFns)
 
-    // Deletion
-    // When an option is added where there was no option
-    // When an option is removed such that there were more options already
+    let sData = this.state.data.filter((x) => {
+      let result = true
+      for (var key in filterFns) {
+        result = result && filterFns[key](x)
+      }
+      return result
+    })
 
-    // Create a more generic way of doing this so that it can be scaled up
+    // sData [] and undefined are different
+    // sData [] = when no results are returned
+    // sData undefined = when all results are returned
+    this.setState({
+      sData: sData
+    })
 
-    if (selectedCity || selectedStages ) {
-      //or of all the cities & and of all the stages
-
-      let sData = this.state.data.filter((x) => {
-
-        const ifCityFilter = !selectedCity || !selectedCity.length || selectedCity.filter((m) => { 
-            if (x.city) {
-              return m.value.toLowerCase() == x.city.toLowerCase()
-            } else {
-              return false
-            }
-          }).length
-        
-        const ifStagesFilter = !selectedStages || !selectedStages.length || selectedStages.filter((m) => {
-            if (x.stageTitle) {
-              return m.value == x.stageTitle 
-            } else {
-              return false
-            }
-          }).length
-
-        return ifCityFilter && ifStagesFilter
-      })
-
-      this.setState({
-        sData: sData
-      })
-
-    } else {
-      this.setState({
-        sData: undefined
-      })
-    }
-  }
-
-  handleCityChange = selectedCity => {
-    this.state.selectedCity = selectedCity
-    this.handleChange()
-  }
-
-  handleStageChange = selectedStages => {
-    this.state.selectedStages = selectedStages
-    this.handleChange()
   }
 
   dConvert = (x) => {
@@ -235,7 +200,6 @@ export class DashboardPage extends React.Component {
     x['gender'] = x['gender'] == 1 ? 'Female' : 'Male';
     x['stageTitle'] = x['stage'] in Stages.data ? Stages.data[x['stage']].title : x['stage'];
     x['stageDesc'] = x['stage'] in Stages.data && 'description' in Stages.data[x['stage']] ? Stages.data[x['stage']].description : "No Description Added Yet."
-    // x['lastUpdated'] = getLastUpdated(x.transitions)
 
     let transitions = x['transitions'];
     let latestTS = transitions[0].createdAt
@@ -252,37 +216,30 @@ export class DashboardPage extends React.Component {
   }
 
   dataSetup = (data) => {
-    // getLastUpdated = (transitions) => {
-    //   let latestTS = transitions[0].createdAt
-    
-    //   if (transitions.length>1) {
-    //     for (let i=1; i<transitions.length; i++) {
-    //       latestTS = transitions[i]['createdAt'] > latestTS ? transitions[i]['createdAt'] : latestTS
-    //     }
-    //   }
-    
-    //   return latestTS
-    // }    
 
-    let cities = []
-    let stages = []
+    columns = columns.map( (x) => {
+      if ('selectFilter' in x)
+        x.options = []
+    })
 
     for (let i=0; i<data.length; i++) {
       let row = this.dConvert(data[i])
 
-      if (cities.indexOf(row.city)==-1) {
-        cities.push(row.city)
-      }
-
-      if (stages.indexOf(row.stageTitle)==-1) {
-        stages.push(row.stageTitle)
-      }
-
+      columns = columns.map( (x) => {
+        if ('selectFilter' in x) {
+          if (x.options.indexOf(row[field])==-1) {
+            x.options.push(row[field])
+          }
+          x.options = []
+        }
+      })
       data[i] = row
     }
 
-    this.state.cities = cities.map((x)=> {return {label: x, value: x}})
-    this.state.stages = stages.map((x)=> {return {label: x, value: x}})
+    columns = columns.map( (x) => {
+      if ('selectFilter' in x)
+        x.options = x.options.map((x)=> {return {label: x, value: x}})
+    })
 
     this.setState({'data': data}, function(){
       this.props.fetchingFinish()
@@ -290,33 +247,27 @@ export class DashboardPage extends React.Component {
   }
 
   render = () => {
-    const { selectedCity, selectedStages } = this.state;
     const { classes } = this.props;
+
+    let filterSelectRows = []
+    columns = columns.map( (x) => {
+      if ('selectFilter' in x)
+        filterSelectRows.push(
+          <FilterSelect
+            filter={{
+              name : x.sfTitle,
+              field : x.field
+            }} 
+            key={x.field}
+            options={x.options}
+            handleChange={this.handleChange}
+          />      
+        )
+    })
 
     return <Box>
       <MuiThemeProvider theme={theme}>
-        <Select
-          className="citySelect"
-          value={selectedCity}
-          isMulti
-          onChange={this.handleCityChange}
-          options={this.state.cities}
-          placeholder="Select City ..."
-          isClearable={true}
-          components={animatedComponents}
-          closeMenuOnSelect={true}
-        />
-        <Select
-          className="stagesSelect"
-          value={selectedStages}
-          isMulti
-          onChange={this.handleStageChange}
-          options={this.state.stages}
-          placeholder="Select Stage ..."
-          isClearable={true}
-          components={animatedComponents}
-          closeMenuOnSelect={true}
-        />
+        {filterSelectRows}
         <div className={classes.clear}></div>
         <MaterialTable
           columns={columns}
@@ -381,12 +332,6 @@ export class DashboardPage extends React.Component {
       this.props.fetchingStart()
       const response = await axios.get(this.state.dataURL);
       this.dataSetup(response.data.data);
-      // this.setState({ 
-      //                 data: this.dataSetup(response.data.data),
-      //                 isFetching: false
-      //               }, function() {
-      //                 // dataSetup();
-      //             });
     } catch (e) {
       console.log(e);
       this.props.fetchingFinish()

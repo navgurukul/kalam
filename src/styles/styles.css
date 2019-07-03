@@ -10,7 +10,7 @@ body {
     padding-top: 8px;
 }
 
-.stagesSelect {
+.stageTitleSelect {
     z-index: 900;
     width: 30%;
     float: left;

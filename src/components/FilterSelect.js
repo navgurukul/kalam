@@ -16,7 +16,6 @@ export class FilterSelect extends React.Component {
 
   getFilter = x => {
     const {selectedValues} = this.state
-    console.log("val selected :", selectedValues, this.props.filter.field)
 
     if (!selectedValues || selectedValues == []) {
       //no values mean - this filter isn't a barrier - it is filtering in - hence true
@@ -45,8 +44,6 @@ export class FilterSelect extends React.Component {
   // }
 
   render = () => {
-    console.log('props : ', this.props)
-
     const { selectedValues } = this.state
 
     return (<Select

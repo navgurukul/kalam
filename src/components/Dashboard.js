@@ -220,27 +220,32 @@ export class DashboardPage extends React.Component {
     columns = columns.map( (x) => {
       if ('selectFilter' in x)
         x.options = []
+      return x
     })
-
+    
     for (let i=0; i<data.length; i++) {
+
       let row = this.dConvert(data[i])
 
       columns = columns.map( (x) => {
         if ('selectFilter' in x) {
-          if (x.options.indexOf(row[field])==-1) {
-            x.options.push(row[field])
+          if (x.options.indexOf(row[x.field])==-1) {
+            x.options.push(row[x.field])
           }
-          x.options = []
         }
+        return x
       })
       data[i] = row
     }
-
+    
     columns = columns.map( (x) => {
       if ('selectFilter' in x)
-        x.options = x.options.map((x)=> {return {label: x, value: x}})
+        x.options = x.options.map((x)=> {
+          return {label: x, value: x}
+        })
+      return x
     })
-
+    
     this.setState({'data': data}, function(){
       this.props.fetchingFinish()
     })
@@ -249,8 +254,12 @@ export class DashboardPage extends React.Component {
   render = () => {
     const { classes } = this.props;
 
+    if (!this.state.data.length) {
+      return <Box></Box>
+    }
+
     let filterSelectRows = []
-    columns = columns.map( (x) => {
+    columns.map( (x) => {
       if ('selectFilter' in x)
         filterSelectRows.push(
           <FilterSelect

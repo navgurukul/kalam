@@ -17,19 +17,31 @@ export class FilterSelect extends React.Component {
   getFilter = x => {
     const {selectedValues} = this.state
 
-    if (!selectedValues || selectedValues == []) {
+    if (!selectedValues) {
       //no values mean - this filter isn't a barrier - it is filtering in - hence true
       return true
     }
+  
+    if ("value" in selectedValues) {
+      return selectedValues.value.toLowerCase() == x[this.props.filter.field].toLowerCase()
+    }
+    else {
+      // selectedValues is now an array
 
-    // check if koi bhi m.value (kisi bhi option ki value) aur x.field same hai kya
-    return selectedValues.filter((m) => { 
-      if (x[this.props.filter.field]) {
-        return m.value.toLowerCase() == x[this.props.filter.field].toLowerCase()
-      } else {
-        return false
+      if ( !selectedValues.length ) {
+        //no values mean - this filter isn't a barrier - it is filtering in - hence true
+        return true
       }
-    }).length
+  
+      // check if koi bhi m.value (kisi bhi option ki value) aur x.field same hai kya
+      return selectedValues.filter((m) => { 
+        if (x[this.props.filter.field]) {
+          return m.value.toLowerCase() == x[this.props.filter.field].toLowerCase()
+        } else {
+          return false
+        }
+      }).length
+    }
   }
 
   handleChange = selectedVals => {
@@ -47,9 +59,10 @@ export class FilterSelect extends React.Component {
     const { selectedValues } = this.state
 
     return (<Select
-      className={this.props.filter.field+"Select"}
+      className={"filterSelect"}
+      // className={this.props.filter.field+"Select"}
       value={selectedValues}
-      isMulti
+      isMulti={this.props.ifMulti}
       onChange={this.handleChange}
       options={this.props.options}
       placeholder={"Select "+this.props.filter.name+" ..."}

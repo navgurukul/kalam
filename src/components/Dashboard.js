@@ -80,13 +80,20 @@ const styles = theme => ({
 })
 
 let columns = [
-  { title: 'Set', field: 'setName', filtering: false },
+  {
+    title: 'Set',
+    field: 'setName',
+    filtering: false,
+    selectFilter: true,
+    sfMulti: false,
+    sfTitle: 'set',
+  },
   { title: 'Name', field: 'name', filtering: false },
   {
     title: 'City',
     field: 'city',
     selectFilter: true,
-    sfType: 'multi',
+    sfMulti: true,
     sfTitle: 'cities'
   },
   { title: 'State', field: 'state' },
@@ -100,6 +107,9 @@ let columns = [
   {
     title: 'Gender',
     field: 'gender',
+    selectFilter: true,
+    sfMulti: false,
+    sfTitle: 'gender',
     // render: rowData => {
     //   return rowData.gender == 1 ? 'Female' : 'Male';
     // },
@@ -109,7 +119,7 @@ let columns = [
     title: 'Stage',
     field: 'stageTitle',
     selectFilter: true,
-    sfType: 'multi',
+    sfMulti: true,
     sfTitle: 'stages',
     render: rowData => {
       return  <Tooltip title={rowData.stageDesc}>
@@ -266,7 +276,8 @@ export class DashboardPage extends React.Component {
             filter={{
               name : x.sfTitle,
               field : x.field
-            }} 
+            }}
+            ifMulti={x.sfMulti}
             key={x.field}
             options={x.options}
             handleChange={this.handleChange}

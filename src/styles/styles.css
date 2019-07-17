@@ -2,12 +2,20 @@ body {
   margin: 0px;
 }
 
-.citySelect {
+.filterSelect {
     z-index: 900;
-    width: 30%;
+    width: 23%;
     float: left;
     padding-left: 16px;
     padding-top: 8px;
+}
+/* 
+.genderSelect {
+  z-index: 900;
+  width: 30%;
+  float: left;
+  padding-left: 16px;
+  padding-top: 8px;
 }
 
 .stageTitleSelect {
@@ -16,7 +24,7 @@ body {
     float: left;
     padding-left: 16px;
     padding-top: 8px;
-}
+} */
 
 
 .MuiToolbar-regular {

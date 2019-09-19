@@ -96,11 +96,21 @@ let columns = [
     sfMulti: true,
     sfTitle: 'cities'
   },
-  { title: 'State', field: 'state' },
+  {
+    title: 'State',
+    field: 'state'
+  },
   {
     title: 'Number', field: 'number',
     render: rowData => {
       return '+91 ' + rowData.number;
+    },
+    filtering: false
+  },
+  {
+    title: 'Marks',
+    render: rowData => {
+      return rowData.enrolmentKey[0].totalMarks;
     },
     filtering: false
   },
@@ -130,7 +140,9 @@ let columns = [
     }
   },
   {
-    title: 'Added At', field: 'createdAt', render: rowData => {
+    title: 'Added At',
+    field: 'createdAt',
+    render: rowData => {
       return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
     },
     filtering: false
@@ -245,6 +257,7 @@ export class DashboardPage extends React.Component {
         }
         return x
       })
+
       data[i] = row
     }
     

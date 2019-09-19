@@ -85,7 +85,7 @@ let columns = [
     field: 'setName',
     filtering: false,
     selectFilter: true,
-    sfMulti: false,
+    sfMulti: true,
     sfTitle: 'set',
   },
   { title: 'Name', field: 'name', filtering: false },

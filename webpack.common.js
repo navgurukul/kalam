@@ -21,7 +21,7 @@ module.exports = {
     //   }
     // }),
   ],
-  outputOptions: {
+  output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js' // this is the compiled final javascript file which we will include in the index.html
   },

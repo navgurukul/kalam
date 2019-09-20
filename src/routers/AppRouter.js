@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Switch, Link, NavLink } from 'react-router-dom';
 import LandingPage from '../components/LandingPage';
 import DashboardPage from '../components/Dashboard';
+import PartnerList from '../components/PartnerList';
 import HomePage from '../components/HomePage';
 import ContactPage from '../components/ContactPage';
 import FAQPage from '../components/FAQPage';
@@ -24,6 +25,7 @@ const AppRouter = () => (
   
         <Route path="/login" component={LoginPage}  />
         <PublicRoute path="/partner/:partnerid" component={DashboardPage} />
+        <PublicRoute path="/partners" component={PartnerList} />
         <PublicRoute path="/products" component={ProductsPage} />
         <PublicRoute path="/forms" component={FormsPage} />
         

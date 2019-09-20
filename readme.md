@@ -7,5 +7,5 @@ Download and install the dependenices:
 
 Run the dev-server by running the command
 ```
-    npm run dev-server
+    npm run dev
 ```

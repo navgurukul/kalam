@@ -1,6 +1,7 @@
 # Logs
 package-lock.json
 node_modules
+dist
 
 docs/bundle.js
 logs

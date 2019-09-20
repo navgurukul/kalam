@@ -2,7 +2,7 @@ import React from 'react';
 import { forwardRef } from 'react';
 import { connect } from 'react-redux';
 
-import MaterialTable, { MTableToolbar } from "material-table";
+import MaterialTable from "material-table";
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -188,8 +188,9 @@ export class DashboardPage extends React.Component {
   constructor(props) {
 
     super(props);
+    this.dataURL = 'http://join.navgurukul.org/api/partners/' + this.props.match.params.partnerid + '/students';
+
     this.state = {
-      dataURL: 'http://join.navgurukul.org/api/partners/' + this.props.match.params.partnerid + '/students',
       data: [],
       sData: undefined, //subsetData
     }
@@ -363,7 +364,7 @@ export class DashboardPage extends React.Component {
   async fetchUsers() {
     try {
       this.props.fetchingStart()
-      const response = await axios.get(this.state.dataURL);
+      const response = await axios.get(this.dataURL);
       this.dataSetup(response.data.data);
     } catch (e) {
       console.log(e);

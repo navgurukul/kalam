@@ -4,6 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import { connect } from 'react-redux';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
+import Box from '@material-ui/core/Box';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DialogContent from '@material-ui/core/DialogContent';
 
@@ -108,18 +109,22 @@ class Header extends React.Component {
             color="default"
           >
           {this.renderProgressBar()}
-            <Toolbar justify="space-between">
+            <Toolbar style={{display: 'flex', justifyContent: 'space-between'}}>
               {/* <IconButton className="iconbuttonsyle" color="inherit" aria-label="Menu" onClick={this.onLeftIconButtonClick}>
                 <MenuIcon />
               </IconButton> */}
-              <Image
-                src={logo}
-                color="inherit"
-                style={{height:40, width: 165, paddingTop: 0, flex: 1}}
-                imageStyle={{height: 40, width: 165}}
-              />
+            <Box>
+              <Link to="/">
+                <Image
+                  src={logo}
+                  color="inherit"
+                  style={{height:40, width: 165, paddingTop: 0, flex: 1}}
+                  imageStyle={{height: 40, width: 165}}
+                />
+              </Link>
+            </Box>
               {/* { this.conditRenderEssential() } */}
-              { this.dashboardModal() }
+            { this.dashboardModal() }
             </Toolbar>
           </AppBar>
         </div>

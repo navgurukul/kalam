@@ -6,16 +6,13 @@ import MaterialTable from "material-table";
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
 import axios from 'axios';
-import Box from '@material-ui/core/Box';
+import {Box} from '@material-ui/core';
 
 import { theme } from '../theme/theme';
 
-import AddBox from '@material-ui/icons/AddBox';
-
-import AssessmentIcon from '@material-ui/icons/Assessment';
-
 import ViewAssessments from './ViewAssessments';
 
+import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Check from '@material-ui/icons/Check';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
@@ -34,6 +31,7 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import { changeFetching } from '../store/actions/auth';
 
 import {withRouter} from 'react-router-dom';
+import CreateAssessment from './CreateAssessment';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -74,26 +72,6 @@ const styles = theme => ({
   }
 })
 
-const columns = [
-  {
-    title: 'ID',
-    field: 'id',
-  },
-  {
-    title: 'Name',
-    field: 'name',
-    filtering: true,
-  },
-  {
-    title: 'Assessments',
-    field: 'name',
-    filtering: false,
-    render: rowData => {
-      return <ViewAssessments partnerId={rowData.id}/>
-    }
-  }
-]
-
 const filterFns = []
 
 export class PartnerList extends React.Component {
@@ -102,7 +80,34 @@ export class PartnerList extends React.Component {
 
     super(props);
     this.dataURL = 'http://join.navgurukul.org/api/partners';
-      
+    this.columns = [
+      {
+        title: 'ID',
+        field: 'id',
+      },
+      {
+        title: 'Name',
+        field: 'name',
+        filtering: true,
+      },
+      {
+        title: 'View Assessments',
+        field: 'name',
+        filtering: false,
+        render: rowData => {
+          return <ViewAssessments partnerId={rowData.id}/>
+        }
+      },
+      {
+        title: 'Create Assessment',
+        field: 'name',
+        filtering: false,
+        render: rowData => {
+          return <CreateAssessment partnerId={rowData.id} partnerName={rowData.name}/>
+        }
+      } 
+    ]
+          
     this.state = {
       data: [],
     }
@@ -129,7 +134,7 @@ export class PartnerList extends React.Component {
       <MuiThemeProvider theme={theme}>
         <div className={classes.clear}></div>
         <MaterialTable
-          columns={columns}
+          columns={this.columns}
           data={this.state.data}
           icons={tableIcons}
           options={{

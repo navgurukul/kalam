@@ -12,6 +12,10 @@ import { theme } from '../theme/theme';
 
 import AddBox from '@material-ui/icons/AddBox';
 
+import AssessmentIcon from '@material-ui/icons/Assessment';
+
+import ViewAssessments from './ViewAssessments';
+
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Check from '@material-ui/icons/Check';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
@@ -70,7 +74,7 @@ const styles = theme => ({
   }
 })
 
-let columns = [
+const columns = [
   {
     title: 'ID',
     field: 'id',
@@ -79,6 +83,14 @@ let columns = [
     title: 'Name',
     field: 'name',
     filtering: true,
+  },
+  {
+    title: 'Assessments',
+    field: 'name',
+    filtering: false,
+    render: rowData => {
+      return <ViewAssessments partnerId={rowData.id}/>
+    }
   }
 ]
 
@@ -130,7 +142,7 @@ export class PartnerList extends React.Component {
             showTitle: false,
             toolbar: false,
           }}
-          onRowClick={this.onRowClick}
+          // onRowClick={this.onRowClick}
           style={{maxWidth: 500, margin: '0 auto', marginTop: 25}}
         />
       </MuiThemeProvider>

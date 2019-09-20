@@ -84,7 +84,7 @@ let columns = [
 
 const filterFns = []
 
-export class DashboardPage extends React.Component {
+export class PartnerList extends React.Component {
 
   constructor(props) {
 
@@ -158,4 +158,4 @@ const mapDispatchToProps = (dispatch)=>({
   fetchingFinish: () => dispatch(changeFetching(false))
 });
 
-export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(DashboardPage)))
+export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(PartnerList)))

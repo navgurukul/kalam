@@ -4,6 +4,8 @@ import LandingPage from '../components/LandingPage';
 import DashboardPage from '../components/Dashboard';
 import PartnerList from '../components/PartnerList';
 import AddPartner from '../components/AddPartner';
+import AssessmentAttempts from '../components/AssessmentAttempts';
+import ViewAssessments from '../components/ViewAssessments';
 
 import HomePage from '../components/HomePage';
 import ContactPage from '../components/ContactPage';
@@ -29,8 +31,10 @@ const AppRouter = () => (
         <Route path="/login" component={LoginPage}  />
 
         <PublicRoute path="/partner/add" component={AddPartner} />
-        <PublicRoute path="/partner/:partnerid" component={DashboardPage} />
+        <PublicRoute path="/partner/:partnerId" component={DashboardPage} />
+        <PublicRoute path="/partner/:partnerId/assessments" component={ViewAssessments} />
         <PublicRoute path="/partners" component={PartnerList} />
+        <PublicRoute path="/partners/:partnerId/assessments/:assessmentId" component={AssessmentAttempts} />
 
         <PublicRoute path="/products" component={ProductsPage} />
         <PublicRoute path="/forms" component={FormsPage} />

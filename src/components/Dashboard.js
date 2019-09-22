@@ -188,7 +188,7 @@ export class DashboardPage extends React.Component {
   constructor(props) {
 
     super(props);
-    this.dataURL = 'http://join.navgurukul.org/api/partners/' + this.props.match.params.partnerid + '/students';
+    this.dataURL = 'http://join.navgurukul.org/api/partners/' + this.props.match.params.partnerId + '/students';
 
     this.state = {
       data: [],

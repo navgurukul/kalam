@@ -9,8 +9,11 @@ import axios from 'axios';
 import {Box} from '@material-ui/core';
 
 import { theme } from '../theme/theme';
+import Link from 'react-router-dom';
 
 import ViewAssessments from './ViewAssessments';
+import PartnerLink from './PartnerLink';
+import CreateAssessment from './CreateAssessment';
 
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
@@ -31,7 +34,6 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import { changeFetching } from '../store/actions/auth';
 
 import {withRouter} from 'react-router-dom';
-import CreateAssessment from './CreateAssessment';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -84,6 +86,10 @@ export class PartnerList extends React.Component {
       {
         title: 'ID',
         field: 'id',
+        render: rowData => {
+          return <PartnerLink partnerId={rowData.id}/>
+        }
+
       },
       {
         title: 'Name',
@@ -105,7 +111,7 @@ export class PartnerList extends React.Component {
         render: rowData => {
           return <CreateAssessment partnerId={rowData.id} partnerName={rowData.name}/>
         }
-      } 
+      }
     ]
           
     this.state = {
@@ -148,7 +154,7 @@ export class PartnerList extends React.Component {
             toolbar: false,
           }}
           // onRowClick={this.onRowClick}
-          style={{maxWidth: 500, margin: '0 auto', marginTop: 25}}
+          style={{maxWidth: 700, margin: '0 auto', marginTop: 25}}
         />
       </MuiThemeProvider>
     </Box>

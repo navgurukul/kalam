@@ -8,6 +8,7 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import MaterialTable from "material-table";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Check from '@material-ui/icons/Check';
@@ -44,10 +45,6 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
-
 function getModalStyle() {
   const top = 54 // + rand()
   const left = 50 //+ rand()
@@ -78,36 +75,6 @@ const useStyles = theme => ({
   },
 })
 
-const columns = [
-  {
-    title: 'Name',
-    field: 'name',
-  },
-  {
-    title: 'Assessment URL',
-    field: 'assessmentUrl',
-    render: rowData => {
-      return <Link target="_blank" to={rowData.assessmentUrl}>Link to Assessment</Link>
-    }
-  },
-  {
-    title: 'Answer Key URL',
-    field: 'answerKeyUrl',
-    render: rowData => {
-      return <Link target="_blank" to={rowData.answerKeyUrl}>Link to Answer Key</Link>
-    }
-  },
-  {
-    title: 'Question Set ID',
-    field: 'questionSetId',
-  },
-  {
-    title: 'Created At',
-    field: 'createdAt',
-  }
-
-]
-
 export class ModalStages extends React.Component {
 
   constructor(props) {
@@ -117,6 +84,40 @@ export class ModalStages extends React.Component {
       data: [],
       partnerId: null,
     }
+
+    this.columns = [
+      {
+        title: 'Name',
+        field: 'name',
+      },
+      {
+        title: 'Assessment URL',
+        field: 'assessmentUrl',
+        render: rowData => {
+          return <Link target="_blank" to={rowData.assessmentUrl}>Link to Assessment</Link>
+        }
+      },
+      {
+        title: 'Answer Key URL',
+        field: 'answerKeyUrl',
+        render: rowData => {
+          return <Link target="_blank" to={rowData.answerKeyUrl}>Link to Answer Key</Link>
+        }
+      },
+      {
+        title: 'Question Set ID',
+        field: 'questionSetId',
+        render: rowData => {
+          const url = "/partners/"+this.props.partnerId+"/assessments/"+rowData.questionSetId;
+          return <Link to={url}>{rowData.questionSetId}</Link>
+        }
+      },
+      {
+        title: 'Created At',
+        field: 'createdAt',
+      }
+    ]
+    
   }
 
   handleClose = () => {
@@ -136,6 +137,7 @@ export class ModalStages extends React.Component {
     try {
         const response = await axios.get(this.dataURL);
         this.setState({data: response.data.data})
+        console.log(response.data.data);
       } catch (e) {
         console.log(e);
       }  
@@ -166,7 +168,7 @@ export class ModalStages extends React.Component {
           </Typography>
 
           <MaterialTable
-            columns={columns}
+            columns={this.columns}
             data={this.state.data}
             icons={tableIcons}
             options={{
@@ -184,4 +186,4 @@ export class ModalStages extends React.Component {
   }
 }
 
-export default withStyles(useStyles)(ModalStages)
+export default withRouter(withStyles(useStyles)(ModalStages))

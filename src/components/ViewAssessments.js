@@ -87,6 +87,10 @@ export class ModalStages extends React.Component {
 
     this.columns = [
       {
+        title: 'ID',
+        field: 'id',
+      },
+      {
         title: 'Name',
         field: 'name',
       },

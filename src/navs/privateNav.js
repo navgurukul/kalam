@@ -10,47 +10,43 @@ import ExtensionIcon from '@material-ui/icons/Extension';
 import PhoneIcon from '@material-ui/icons/Phone';
 
 /* import your desired icon from material-ui icons library */
-import {NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 
 export const publicNavs = [
     {
-        url:'/home',
-        name:'Home',
-        icon:<HomeIcon/>
+        url: '/home',
+        name: 'Home',
+        icon: <HomeIcon />
     },
     {
-        url:'/contacts',
-        name:'Contacts',
-        icon:<ExtensionIcon/>
+        url: '/contacts',
+        name: 'Contacts',
+        icon: <ExtensionIcon />
     }, {
-        url:'/expenses',
-        name:'Expenses',
-        icon:<ExtensionIcon/>
+        url: '/expenses',
+        name: 'Expenses',
+        icon: <ExtensionIcon />
     },
     {
-        url:'/movies',
-        name:'Movies',
-        icon:<PhoneIcon/>
+        url: '/movies',
+        name: 'Movies',
+        icon: <PhoneIcon />
     },
     // add new Nav links here as a json object, in this file the public navigations
 ];
 
 
 
-export default  ()=>(
-publicNavs.map((navItem)=>{
-return <NavLink to={navItem.url}  className="NavLinkItem" key={navItem.url} activeClassName="NavLinkItem-selected"> <List component="nav" >  <ListItem button>
-          <ListItemIcon className="innernavitem"> 
- {navItem.icon}
-          </ListItemIcon>
-          <ListItemText primary={navItem.name} className="innernavitem" color="black"/>
+export default () => (
+    publicNavs.map((navItem) => {
+        return <NavLink to={navItem.url} className="NavLinkItem" key={navItem.url} activeClassName="NavLinkItem-selected"> <List component="nav" >  <ListItem button>
+            <ListItemIcon className="innernavitem">
+                {navItem.icon}
+            </ListItemIcon>
+            <ListItemText primary={navItem.name} className="innernavitem" color="black" />
         </ListItem></List> </NavLink>
-})
-
-
-     
-
+    })
 );
 
 

@@ -7,7 +7,6 @@ export default (state = { isFetching : false }, action) => {
     case 'LOGOUT': return {}
 
     case 'FETCHING_STATUS': {
-      console.log(action.isFetchingStatus, " status changing")
       return {
         isFetching: action.isFetchingStatus
       }

@@ -2,21 +2,29 @@ body {
   margin: 0px;
 }
 
-.citySelect {
-    z-index: 9995;
-    width: 30%;
+.filterSelect {
+    z-index: 900;
+    width: 23%;
     float: left;
     padding-left: 16px;
     padding-top: 8px;
+}
+/* 
+.genderSelect {
+  z-index: 900;
+  width: 30%;
+  float: left;
+  padding-left: 16px;
+  padding-top: 8px;
 }
 
-.stagesSelect {
-    z-index: 9995;
+.stageTitleSelect {
+    z-index: 900;
     width: 30%;
     float: left;
     padding-left: 16px;
     padding-top: 8px;
-}
+} */
 
 
 .MuiToolbar-regular {

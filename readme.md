@@ -1,9 +1,8 @@
 # React - Redux with Material-UI
 
-# install webpack-cli and webpack using below script.
+Global Installs
 ```
-  npm install --save-dev webpack-cli@3.3.5*
-  npm install -g webpack@latest*
+  npm install -g webpack@latest
 ```
 
 Download and install the dependenices:

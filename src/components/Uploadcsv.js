@@ -52,10 +52,10 @@ export class CsvUpload extends React.Component {
         const response = await axios.post(url, {
           "csvUrl": this.state.data[0].fileUrl
         });
-        if(!response.data.sucess){
+        if(response.data.errors != undefined){
           alert("In your csv file something is wrong in a student details or answers option is not correct.")
         }else{
-          alert('You have succssesfully uploaded students')
+          alert('You have succssesfully uploaded students details.')
         }
       }      
     }catch(e){

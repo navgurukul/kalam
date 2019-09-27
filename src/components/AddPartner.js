@@ -54,7 +54,7 @@ export class AddPartnerPage extends React.Component {
 
   constructor(props) {
     super(props);
-    this.dataURL = 'http://join.navgurukul.org/api/partners';
+    this.dataURL = 'http://localhost:3000/partners';
 
     this.state = {
       "name": "",

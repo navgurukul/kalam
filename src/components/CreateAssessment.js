@@ -7,7 +7,7 @@ export class CreateAssessment extends React.Component {
 
   constructor(props) {
     super(props);
-    this.dataURL = 'http://join.navgurukul.org/api/partners/'+this.props.partnerId+'/assessments';
+    this.dataURL = 'http://localhost:3000/partners/'+this.props.partnerId+'/assessments';
     this.partnerName = this.props.partnerName;
   }
 

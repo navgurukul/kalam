@@ -24,6 +24,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import CsvUpload from './Uploadcsv';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -119,6 +120,14 @@ export class ModalStages extends React.Component {
       {
         title: 'Created At',
         field: 'createdAt',
+      },
+      {
+        title: 'Upload Data',
+        field: 'uploadData',
+        filtering: true,
+        render: rowData => {
+          return <CsvUpload partnerId= {rowData.partnerId} assessmentId = {rowData.id}/>
+        }
       }
     ]
     
@@ -141,14 +150,13 @@ export class ModalStages extends React.Component {
     try {
         const response = await axios.get(this.dataURL);
         this.setState({data: response.data.data})
-        console.log(response.data.data);
       } catch (e) {
         console.log(e);
       }  
   }
 
   componentDidMount() {
-    this.dataURL = 'http://join.navgurukul.org/api/partners/' + this.props.partnerId + '/assessments'
+    this.dataURL = 'http://localhost:3000/partners/' + this.props.partnerId + '/assessments'
     this.fetchAssessments();
   }
 

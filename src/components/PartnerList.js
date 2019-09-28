@@ -34,6 +34,16 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import { changeFetching } from '../store/actions/auth';
 
 import {withRouter} from 'react-router-dom';
+import BaseUrl from '../config/config.json'
+
+const DEBUG = false; // If you woek on localhost then change DEBUGing mode as true 
+let baseUrl = "";
+
+if (DEBUG){
+  baseUrl = BaseUrl.development;
+}else{
+  baseUrl = BaseUrl.production;
+}
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -81,7 +91,7 @@ export class PartnerList extends React.Component {
   constructor(props) {
 
     super(props);
-    this.dataURL = 'http://localhost:3000/partners';
+    this.dataURL = baseUrl + 'partners';
     this.columns = [
       {
         title: 'ID',

@@ -2,12 +2,22 @@ import React from 'react';
 import axios from 'axios';
 import AddBox from '@material-ui/icons/AddBox';
 import {Box} from '@material-ui/core';
+import BaseUrl from '../config/config.json'
+
+const DEBUG = false; // If you woek on localhost then change DEBUGing mode as true 
+let baseUrl = "";
+
+if (DEBUG){
+  baseUrl = BaseUrl.development;
+}else{
+  baseUrl = BaseUrl.production;
+}
 
 export class CreateAssessment extends React.Component {
 
   constructor(props) {
     super(props);
-    this.dataURL = 'http://localhost:3000/partners/'+this.props.partnerId+'/assessments';
+    this.dataURL = baseUrl + 'partners/'+this.props.partnerId+'/assessments';
     this.partnerName = this.props.partnerName;
   }
 

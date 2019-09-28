@@ -25,6 +25,16 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import CsvUpload from './Uploadcsv';
+import BaseUrl from '../config/config.json'
+
+const DEBUG = false; // If you woek on localhost then change DEBUGing mode as true 
+let baseUrl = "";
+
+if (DEBUG){
+  baseUrl = BaseUrl.development;
+}else{
+  baseUrl = BaseUrl.production;
+}
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -156,7 +166,7 @@ export class ModalStages extends React.Component {
   }
 
   componentDidMount() {
-    this.dataURL = 'http://localhost:3000/partners/' + this.props.partnerId + '/assessments'
+    this.dataURL =  baseUrl+'partners/'+this.props.partnerId+'/assessments'
     this.fetchAssessments();
   }
 

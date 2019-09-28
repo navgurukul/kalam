@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { forwardRef } from 'react';
 import { connect } from 'react-redux';
 
@@ -6,6 +6,18 @@ import { withStyles } from '@material-ui/core/styles';
 import axios, { post } from 'axios';
 import Button from '@material-ui/core/Button';
 import {withRouter} from 'react-router-dom';
+import ReactJson from 'react-json-view'
+import { Modal, Box } from '@material-ui/core';
+import BaseUrl from '../config/config.json'
+
+const DEBUG = false; // If you woek on localhost then change DEBUGing mode as true 
+let baseUrl = "";
+
+if (DEBUG){
+  baseUrl = BaseUrl.development;
+}else{
+  baseUrl = BaseUrl.production;
+}
 
 const styles = theme => ({
   innerTable: {
@@ -24,45 +36,83 @@ const styles = theme => ({
   clear: {
     clear: 'both'
   }
-})
+});
+
+function getModalStyle() {
+  // const top = 50 // + rand()
+  // const left = 50 //+ rand()
+  return {
+    // top: `${top}%`,
+    // left: `${left}%`,
+    backgroundColor: "white",
+    border: '2px solid #000',
+    padding: "10px",
+    marginLeft: '3vw', 
+    marginRight: '3vw',
+    marginTop: '3vw',
+    width: '85vw',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  };
+}
 
 export class CsvUpload extends React.Component {
   constructor(props) {
-    super(props);    
-    
+    super(props);
     this.state = {
       data: [],
-      file: ''
+      file: '',
+      modalOpen : false,
+      errors: ''
     }
-    
+
     this.onFormSubmit = this.onFormSubmit.bind(this)
     this.onChange = this.onChange.bind(this)
     this.fileUpload = this.fileUpload.bind(this)
   }
 
   onsubmit = () => {
-    this.addAttempts();    
+    this.addAttempts();
   };
 
   async addAttempts(){
     try{
       if (this.state.data[0]){
-        console.log(this.state.data)
-        const url = "http://localhost:3000/partners/" + this.props.partnerId + "/assessments/" + this.props.assessmentId + "/attempts"
+        const url = baseUrl+"partners/"+this.props.partnerId+"/assessments/"+this.props.assessmentId+"/attempts"
         const response = await axios.post(url, {
           "csvUrl": this.state.data[0].fileUrl
         });
         if(response.data.errors != undefined){
-          alert("In your csv file something is wrong in a student details or answers option is not correct.")
+          this.setState({
+            modalOpen:true,
+            errors: response.data
+          })
         }else{
-          alert('You have succssesfully uploaded students details.')
+          this.setState({
+            modalOpen:true,
+            errors: "sucess"
+          })
         }
       }      
     }catch(e){
       console.log(e)
     }
   }
-  
+
+  errorHandler = () => {
+    if (typeof(this.state.errors) == 'object') {
+      return <div>
+          <h3 style={{color: 'green'}}>Please coreect your csv file according to the detailsErrors and answerErrors using following  instructions.</h3>
+          <ReactJson src={this.state.errors}/>
+        </div>
+    }else if (this.state.errors == "sucess"){
+      return <div>
+          <h1 style={{ alignItems: "center"}}>You have succssesfully uploaded students details!</h1>
+        </div>
+    }
+  }
+
   async onFormSubmit(e){
     e.preventDefault() // Stop form submit
 
@@ -80,7 +130,7 @@ export class CsvUpload extends React.Component {
   }
   
   async fileUpload(file){
-    const url = 'http://localhost:3000/general/upload_file/answerCSV';
+    const url = baseUrl+'general/upload_file/answerCSV';
     const formData = new FormData();
     formData.append('file',file)
     const config = {
@@ -91,17 +141,32 @@ export class CsvUpload extends React.Component {
     return  await post(url, formData,config)
   }
 
+  handleClose = () => {
+    this.setState({
+      modalOpen: false
+    })
+  };
+
   render = () => {
+    const modalStyle = getModalStyle()
+    const { classes } = this.props
     return <div>
         <form onSubmit={this.onFormSubmit} style={{padding:"10px"}}>
-            <h3>File Upload</h3>
-            <input type="file" onChange={this.onChange} style={{color: 'green'}} />
-            <Button variant="contained" color="primary" 
-              type="submit" onClick={this.onsubmit()} style={{top: "5px"}}> Upload </Button>
+          <h3>File Upload</h3>
+          <input type="file" onChange={this.onChange} style={{color: 'green'}} />
+          <Button variant="contained" color="primary" 
+            type="submit" onClick={ () => this.onsubmit()} style={{top: "5px"}}> Upload </Button>
         </form>
-    </div>
+        <Modal
+          open={this.state.modalOpen}
+          onClose={this.handleClose}
+          >
+          <div style={modalStyle} className={classes.errors}>
+              { this.errorHandler() }
+          </div>
+        </Modal>
+      </div>
   }
-
 };
 
 export default withRouter(withStyles(styles)(CsvUpload))

@@ -10,7 +10,7 @@ import ReactJson from 'react-json-view'
 import { Modal, Box } from '@material-ui/core';
 import BaseUrl from '../config/config.json'
 
-const DEBUG = false; // If you woek on localhost then change DEBUGing mode as true 
+const DEBUG = true; // If you woek on localhost then change DEBUGing mode as true 
 let baseUrl = "";
 
 if (DEBUG){
@@ -39,21 +39,17 @@ const styles = theme => ({
 });
 
 function getModalStyle() {
-  // const top = 50 // + rand()
-  // const left = 50 //+ rand()
   return {
-    // top: `${top}%`,
-    // left: `${left}%`,
-    backgroundColor: "white",
-    border: '2px solid #000',
-    padding: "10px",
-    marginLeft: '3vw', 
-    marginRight: '3vw',
-    marginTop: '3vw',
-    width: '85vw',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
+    marginLeft: 'auto', 
+    marginRight: 'auto',
+    width: '72vw',
+    backgroundColor: 'white',
+    border: '2px solid rgb(0, 0, 0)',
+    marginTop: '5vw',
+    overflow: 'auto',
+    height: '670px',
+    padding: '10px'
+  
   };
 }
 
@@ -103,12 +99,12 @@ export class CsvUpload extends React.Component {
   errorHandler = () => {
     if (typeof(this.state.errors) == 'object') {
       return <div>
-          <h3 style={{color: 'green'}}>Please coreect your csv file according to the detailsErrors and answerErrors using following  instructions.</h3>
+          <h3 style={{color: 'green',textAlign: 'center'}}>Please coreect your csv file according to the detailsErrors and answerErrors using following  instructions.</h3>
           <ReactJson src={this.state.errors}/>
         </div>
     }else if (this.state.errors == "sucess"){
       return <div>
-          <h1 style={{ alignItems: "center"}}>You have succssesfully uploaded students details!</h1>
+          <h1 style={{textAlign: 'center',marginTop: '30%'}}>You have successfully uploaded students details!</h1>
         </div>
     }
   }

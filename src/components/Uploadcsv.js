@@ -10,7 +10,7 @@ import ReactJson from 'react-json-view'
 import { Modal, Box } from '@material-ui/core';
 import BaseUrl from '../config/config.json'
 
-const DEBUG = true; // If you woek on localhost then change DEBUGing mode as true 
+const DEBUG = false; // If you woek on localhost then change DEBUGing mode as true 
 let baseUrl = "";
 
 if (DEBUG){

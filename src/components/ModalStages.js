@@ -23,7 +23,7 @@ function getModalStyle() {
 const useStyles = theme => ({
   paper: {
     position: 'absolute',
-    marginLeft: '3vw',
+    marginLeft: '3vw', 
     marginRight: '3vw',
     width: '94vw',
     [theme.breakpoints.up('md')]: {

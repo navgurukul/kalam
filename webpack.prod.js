@@ -3,6 +3,7 @@ const common = require('./webpack.common.js');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 // const BrotliPlugin = require('brotli-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = merge(common, {
   mode: 'production',
@@ -12,6 +13,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new CompressionPlugin(),
+    new webpack.DefinePlugin({ "process.env.API_URL": JSON.stringify("http://join.navgurukul.org/api/")})
     // new CompressionPlugin({
     //     asset: '[path].gz[query]',
     //     algorithm: 'gzip',

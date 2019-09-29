@@ -2,16 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import AddBox from '@material-ui/icons/AddBox';
 import {Box} from '@material-ui/core';
-import BaseUrl from '../config/config.json'
 
-const DEBUG = false; // If you woek on localhost then change DEBUGing mode as true 
-let baseUrl = "";
-
-if (DEBUG){
-  baseUrl = BaseUrl.development;
-}else{
-  baseUrl = BaseUrl.production;
-}
+const baseUrl = process.env.API_URL;
 
 export class CreateAssessment extends React.Component {
 

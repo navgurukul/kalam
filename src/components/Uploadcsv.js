@@ -8,17 +8,8 @@ import Button from '@material-ui/core/Button';
 import {withRouter} from 'react-router-dom';
 import ReactJson from 'react-json-view'
 import { Modal, Box } from '@material-ui/core';
-import BaseUrl from '../config/config.json'
 
-const DEBUG = false; // If you woek on localhost then change DEBUGing mode as true 
-let baseUrl = "";
-
-if (DEBUG){
-  baseUrl = BaseUrl.development;
-}else{
-  baseUrl = BaseUrl.production;
-}
-
+const baseUrl = process.env.API_URL;
 const styles = theme => ({
   innerTable: {
     marginLeft: '3vw',
@@ -42,13 +33,13 @@ function getModalStyle() {
   return {
     marginLeft: 'auto', 
     marginRight: 'auto',
-    width: '72vw',
+    maxWidth: '85vh',
     backgroundColor: 'white',
     border: '2px solid rgb(0, 0, 0)',
-    marginTop: '5vw',
+    marginTop: '4vw',
     overflow: 'auto',
-    height: '670px',
-    padding: '10px'
+    maxHeight: '92vh',
+    padding: '20px'
   
   };
 }
@@ -104,7 +95,7 @@ export class CsvUpload extends React.Component {
         </div>
     }else if (this.state.errors == "sucess"){
       return <div>
-          <h1 style={{textAlign: 'center',marginTop: '30%'}}>You have successfully uploaded students details!</h1>
+          <h1 style={{textAlign: 'center', color:'green'}}>You have successfully uploaded students details!</h1>
         </div>
     }
   }

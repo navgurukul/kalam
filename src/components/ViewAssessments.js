@@ -25,17 +25,8 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import CsvUpload from './Uploadcsv';
-import BaseUrl from '../config/config.json'
 
-const DEBUG = false; // If you woek on localhost then change DEBUGing mode as true 
-let baseUrl = "";
-
-if (DEBUG){
-  baseUrl = BaseUrl.development;
-}else{
-  baseUrl = BaseUrl.production;
-}
-
+const baseUrl = process.env.API_URL;
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -65,7 +56,8 @@ function getModalStyle() {
     left: `${left}%`,
     transform: `translate(-${top}%, -${left}%)`,
     overflowY: 'scroll',
-    maxHeight: '80vh'
+    maxHeight: '80vh',
+    width: "75%"
   };
 }
 

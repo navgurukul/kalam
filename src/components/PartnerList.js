@@ -9,7 +9,6 @@ import axios from 'axios';
 import {Box} from '@material-ui/core';
 
 import { theme } from '../theme/theme';
-import Link from 'react-router-dom';
 
 import ViewAssessments from './ViewAssessments';
 import PartnerLink from './PartnerLink';

@@ -77,8 +77,10 @@ class Header extends React.Component {
     </Button>)
 
   dashboardModal = () => {
-    if (this.props.location.pathname.indexOf('partner')>-1) 
+    if(this.props.location) {
+      if (this.props.location.pathname.indexOf('partner')>-1) 
       return <ModalStages />
+    }
     return
   }
 

@@ -101,22 +101,34 @@ export class ModalStages extends React.Component {
         title: 'Assessment URL',
         field: 'assessmentUrl',
         render: rowData => {
-          return <Link target="_blank" to={rowData.assessmentUrl}>Link to Assessment</Link>
-        }
+          if (rowData.assessmentUrl) {
+            return <Link target="_blank" to={rowData.assessmentUrl}>Link to Assessment</Link>
+          } else {
+            return ""
+          }
+         }
       },
       {
         title: 'Answer Key URL',
         field: 'answerKeyUrl',
         render: rowData => {
-          return <Link target="_blank" to={rowData.answerKeyUrl}>Link to Answer Key</Link>
+          if (rowData.answerKeyUrl) {
+            return <Link target="_blank" to={rowData.answerKeyUrl}>Link to Answer Key</Link>
+          } else {
+            return ""
+          }
         }
       },
       {
         title: 'Question Set ID',
         field: 'questionSetId',
         render: rowData => {
-          const url = "/partners/"+this.props.partnerId+"/assessments/"+rowData.questionSetId;
-          return <Link to={url}>{rowData.questionSetId}</Link>
+          if (rowData.questionSetId) {
+            const url = "/partners/"+this.props.partnerId+"/assessments/"+rowData.questionSetId;
+            return <Link to={url}>{rowData.questionSetId}</Link>  
+          } else {
+            return ""
+          }
         }
       },
       {

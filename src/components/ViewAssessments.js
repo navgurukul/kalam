@@ -102,7 +102,7 @@ export class ModalStages extends React.Component {
         field: 'assessmentUrl',
         render: rowData => {
           if (rowData.assessmentUrl) {
-            return <Link target="_blank" to={rowData.assessmentUrl}>Link to Assessment</Link>
+            return <a target="_blank" href={rowData.assessmentUrl}>Link to Assessment</a>
           } else {
             return ""
           }
@@ -113,7 +113,7 @@ export class ModalStages extends React.Component {
         field: 'answerKeyUrl',
         render: rowData => {
           if (rowData.answerKeyUrl) {
-            return <Link target="_blank" to={rowData.answerKeyUrl}>Link to Answer Key</Link>
+            return <a target="_blank" href={rowData.answerKeyUrl}>Link to Answer Key</a>
           } else {
             return ""
           }

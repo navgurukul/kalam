@@ -1,24 +1,13 @@
 import React, { useRef, useEffect } from 'react';
-import { forwardRef } from 'react';
-import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 import axios, { post } from 'axios';
-import Button from '@material-ui/core/Button';
 import {withRouter} from 'react-router-dom';
 import ReactJson from 'react-json-view'
 import { Modal, Box } from '@material-ui/core';
-import BaseUrl from '../config/config.json'
+import Spinner from 'react-spinner-material';
 
-const DEBUG = false; // If you woek on localhost then change DEBUGing mode as true 
-let baseUrl = "";
-
-if (DEBUG){
-  baseUrl = BaseUrl.development;
-}else{
-  baseUrl = BaseUrl.production;
-}
-
+const baseUrl = process.env.API_URL;
 const styles = theme => ({
   innerTable: {
     marginLeft: '3vw',
@@ -42,13 +31,13 @@ function getModalStyle() {
   return {
     marginLeft: 'auto', 
     marginRight: 'auto',
-    width: '72vw',
+    maxWidth: '85vh',
     backgroundColor: 'white',
     border: '2px solid rgb(0, 0, 0)',
-    marginTop: '5vw',
+    marginTop: '4vw',
     overflow: 'auto',
-    height: '670px',
-    padding: '10px'
+    maxHeight: '92vh',
+    padding: '20px'
   
   };
 }
@@ -57,37 +46,35 @@ export class CsvUpload extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
-      file: '',
       modalOpen : false,
-      errors: ''
+      errors: '',
+      file: '',
+      loading: false
     }
 
     this.onFormSubmit = this.onFormSubmit.bind(this)
     this.onChange = this.onChange.bind(this)
     this.fileUpload = this.fileUpload.bind(this)
   }
-
-  onsubmit = () => {
-    this.addAttempts();
-  };
-
-  async addAttempts(){
+  
+  async addAttempts(fileUrl){
     try{
-      if (this.state.data[0]){
+      if (fileUrl){
         const url = baseUrl+"partners/"+this.props.partnerId+"/assessments/"+this.props.assessmentId+"/attempts"
         const response = await axios.post(url, {
-          "csvUrl": this.state.data[0].fileUrl
+          "csvUrl": fileUrl
         });
         if(response.data.errors != undefined){
           this.setState({
             modalOpen:true,
-            errors: response.data
+            errors: response.data,
+            loading: false
           })
         }else{
           this.setState({
             modalOpen:true,
-            errors: "sucess"
+            errors: "sucess",
+            loading:false
           })
         }
       }      
@@ -104,7 +91,7 @@ export class CsvUpload extends React.Component {
         </div>
     }else if (this.state.errors == "sucess"){
       return <div>
-          <h1 style={{textAlign: 'center',marginTop: '30%'}}>You have successfully uploaded students details!</h1>
+          <h1 style={{textAlign: 'center', color:'green'}}>You have successfully uploaded students details!</h1>
         </div>
     }
   }
@@ -114,7 +101,11 @@ export class CsvUpload extends React.Component {
 
     this.fileUpload(this.state.file).then((response)=>{
         try{
-            this.setState({data: [response.data]})
+            if (response.data.errors == undefined){
+              this.addAttempts(response.data.fileUrl)
+            }else{
+              alert("It is enternal server error please refresh the page.")
+            }
         }catch (e) {
             console.log(e);
         }
@@ -122,7 +113,8 @@ export class CsvUpload extends React.Component {
   }
 
   async onChange(e) {
-    this.setState({file: e.target.files[0]})
+    await this.setState({file: e.target.files[0], loading: true})
+    await this.onFormSubmit(e)
   }
   
   async fileUpload(file){
@@ -146,12 +138,12 @@ export class CsvUpload extends React.Component {
   render = () => {
     const modalStyle = getModalStyle()
     const { classes } = this.props
+    const { loading } = this.state
     return <div>
-        <form onSubmit={this.onFormSubmit} style={{padding:"10px"}}>
+        <form style={{padding:"10px"}}>
           <h3>File Upload</h3>
-          <input type="file" onChange={this.onChange} style={{color: 'green'}} />
-          <Button variant="contained" color="primary" 
-            type="submit" onClick={ () => this.onsubmit()} style={{top: "5px"}}> Upload </Button>
+          <input type="file"  accept=".csv" onChange={this.onChange} style={{color: 'green'}} />
+          <Spinner size={50} spinnerColor={"#ed343d"} spinnerWidth={2} visible={loading} style={{padding: '10px'}} />
         </form>
         <Modal
           open={this.state.modalOpen}

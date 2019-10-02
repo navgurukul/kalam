@@ -10,17 +10,8 @@ import { FormControl, InputLabel, Input, FormHelperText } from '@material-ui/cor
 import { changeFetching } from '../store/actions/auth';
 
 import {withRouter} from 'react-router-dom';
-import BaseUrl from '../config/config.json'
 
-const DEBUG = false; // If you woek on localhost then change DEBUGing mode as true 
-let baseUrl = "";
-
-if (DEBUG){
-  baseUrl = BaseUrl.development;
-}else{
-  baseUrl = BaseUrl.production;
-}
-
+const baseUrl = process.env.API_URL;
 const styles = theme => ({
   container: {
     display: 'flex',

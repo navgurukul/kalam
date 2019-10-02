@@ -1,4 +1,0 @@
-{
-    "development": "http://localhost:3000/",
-    "production": "http://join.navgurukul.org/api/"
-}

@@ -143,7 +143,7 @@ export class CsvUpload extends React.Component {
         <form style={{padding:"10px"}}>
           <h3>File Upload</h3>
           <input type="file"  accept=".csv" onChange={this.onChange} style={{color: 'green'}} />
-          <Spinner size={50} spinnerColor={"#ed343d"} spinnerWidth={2} visible={loading} style={{padding: '10px'}} />
+          <Spinner size={35} spinnerColor={"#ed343d"} spinnerWidth={5} visible={loading} style={{padding: '10px'}} />
         </form>
         <Modal
           open={this.state.modalOpen}

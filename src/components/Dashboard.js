@@ -110,7 +110,7 @@ let columns = [
   {
     title: 'Marks',
     render: rowData => {
-      return rowData.enrolmentKey[0].totalMarks;
+      return rowData.marks;
     },
     filtering: false
   },
@@ -223,6 +223,7 @@ export class DashboardPage extends React.Component {
     x['gender'] = x['gender'] == 1 ? 'Female' : 'Male';
     x['stageTitle'] = x['stage'] in Stages.data ? Stages.data[x['stage']].title : x['stage'];
     x['stageDesc'] = x['stage'] in Stages.data && 'description' in Stages.data[x['stage']] ? Stages.data[x['stage']].description : "No Description Added Yet."
+    x['marks'] = x.enrolmentKey[0].totalMarks;
 
     let transitions = x['transitions'];
     let latestTS = transitions[0].createdAt

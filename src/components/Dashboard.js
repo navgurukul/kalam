@@ -109,10 +109,11 @@ let columns = [
   },
   {
     title: 'Marks',
+    field: 'marks',
     render: rowData => {
       return rowData.marks;
     },
-    filtering: false
+    filtering: false,
   },
   {
     title: 'Gender',
@@ -223,7 +224,7 @@ export class DashboardPage extends React.Component {
     x['gender'] = x['gender'] == 1 ? 'Female' : 'Male';
     x['stageTitle'] = x['stage'] in Stages.data ? Stages.data[x['stage']].title : x['stage'];
     x['stageDesc'] = x['stage'] in Stages.data && 'description' in Stages.data[x['stage']] ? Stages.data[x['stage']].description : "No Description Added Yet."
-    x['marks'] = x.enrolmentKey[0].totalMarks;
+    x['marks'] = parseInt(x.enrolmentKey[0].totalMarks, 10);
 
     let transitions = x['transitions'];
     let latestTS = transitions[0].createdAt

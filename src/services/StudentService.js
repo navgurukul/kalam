@@ -123,7 +123,12 @@ const StudentService = {
     })
   },
   dConvert: (x) => {
-    x['number'] = x['contacts'][0]['mobile'];
+    try {
+      x['number'] = x['contacts'][0]['mobile'];
+    } catch (e) {
+      x['number'] = null;
+    }
+    
     x['gender'] = x['gender'] == 1 ? 'Female' : 'Male';
     x['stageTitle'] = x['stage'] in Stages.data ? Stages.data[x['stage']].title : x['stage'];
     x['stageDesc'] = x['stage'] in Stages.data && 'description' in Stages.data[x['stage']] ? Stages.data[x['stage']].description : "No Description Added Yet."
@@ -132,7 +137,7 @@ const StudentService = {
     x.marks = isNaN(x.marks) ? null : x.marks;
 
     let transitions = x['transitions'];
-    let latestTS = transitions[0].createdAt
+    let latestTS = transitions.length ? transitions[0].createdAt : null;
 
     if (transitions.length > 1) {
       for (let i = 1; i < transitions.length; i++) {

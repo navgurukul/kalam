@@ -1,10 +1,13 @@
+import 'date-fns';
 import React from 'react';
 import { connect } from 'react-redux';
+import DateFnsUtils from '@date-io/date-fns';
 
 import MaterialTable from "material-table";
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
 import FilterSelect from './FilterSelect'
+import Select from 'react-select';
 
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
@@ -13,13 +16,18 @@ import { theme } from '../theme/theme';
 
 import { changeFetching } from '../store/actions/auth';
 
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
-import StudentService from '../services/StudentService';
 import GlobalService from '../services/GlobalService';
+import StudentService from '../services/StudentService';
+
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+
+import makeAnimated from 'react-select/animated';
+const animatedComponents = makeAnimated();
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
-const baseUrl = process.env.API_URL;
+const baseURL = process.env.API_URL;
 
 const styles = theme => ({
   innerTable: {
@@ -40,20 +48,41 @@ const styles = theme => ({
   }
 })
 
-let columns
+let columns;
 let filterFns = []
 
-export class DashboardPage extends React.Component {
+export class AdmissionsDash extends React.Component {
 
   constructor(props) {
 
     super(props);
-    this.dataURL = baseUrl+'partners/'+this.props.match.params.partnerId+'/students';
+
+    if (this.props.match.params.dataType) {
+      this.dataType = this.props.match.params.dataType;
+    } else {
+      this.dataType = 'softwareCourse'
+    }
+    this.dataURL = baseURL + 'students';
 
     this.state = {
       data: [],
       sData: undefined, //subsetData
     }
+  }
+
+  changeDataType = dataType => {
+    this.dataType = dataType;
+    this.fetchUsers();
+  }
+
+  changeFromDate = date => {
+    this.fromDate = date;
+    this.fetchUsers();
+  }
+
+  changeToDate = date => {
+    this.toDate = date;
+    this.fetchUsers();
   }
 
   handleChange = (field, filterFn) => {
@@ -80,15 +109,15 @@ export class DashboardPage extends React.Component {
 
   dataSetup = (data) => {
     columns = StudentService.setupPre(StudentService.columns);
- 
-    for (let i=0; i<data.length; i++) {
+
+    for (let i = 0; i < data.length; i++) {
       data[i] = StudentService.dConvert(data[i])
       columns = StudentService.addOptions(columns, data[i]);
     }
-        
+
     columns = StudentService.setupPost(columns);
-    
-    this.setState({'data': data}, function(){
+
+    this.setState({ 'data': data }, function () {
       this.props.fetchingFinish()
     })
   }
@@ -101,24 +130,61 @@ export class DashboardPage extends React.Component {
     }
 
     let filterSelectRows = []
-    columns.map( (x) => {
+    columns.map((x) => {
       if ('selectFilter' in x)
         filterSelectRows.push(
           <FilterSelect
             filter={{
-              name : x.sfTitle,
-              field : x.field
+              name: x.sfTitle,
+              field: x.field
             }}
             ifMulti={x.sfMulti}
             key={x.field}
             options={x.options}
             handleChange={this.handleChange}
-          />      
+          />
         )
     })
 
     return <Box>
       <MuiThemeProvider theme={theme}>
+        <Select
+          className={"filterSelect"}
+          value={this.dataType}
+          onChange={this.changeDataType}
+          options={["requestCallback","softwareCourse"]}
+          placeholder={"Select Data Type"}
+          isClearable={false}
+          components={animatedComponents}
+          closeMenuOnSelect={true}
+        />
+
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            margin="normal"
+            value={this.fromDate}
+            id="date-picker-dialog"
+            label="From Date"
+            format="MM/dd/yyyy"
+            onChange={this.changeFromDate}
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+          />
+
+          <KeyboardDatePicker
+            margin="normal"
+            value={this.toDate}
+            id="date-picker-dialog"
+            label="Date picker dialog"
+            format="MM/dd/yyyy"
+            onChange={this.changeToDate}
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+          />  
+        </MuiPickersUtilsProvider>
+        
         {filterSelectRows}
         <div className={classes.clear}></div>
         <MaterialTable
@@ -129,7 +195,7 @@ export class DashboardPage extends React.Component {
             return (
               <Box className={classes.innerTable} my={2}>
                 <MaterialTable
-                  columns={studentService.columnsTransitions}
+                  columns={StudentService.columnsTransitions}
                   data={rowData.transitions}
                   options={{
                     search: false,
@@ -139,7 +205,7 @@ export class DashboardPage extends React.Component {
                     headerStyle: {
                       color: theme.palette.primary.main
                     },
-                    }}
+                  }}
                 />
               </Box>
             )
@@ -165,18 +231,27 @@ export class DashboardPage extends React.Component {
   async fetchUsers() {
     try {
       this.props.fetchingStart()
-      const response = await axios.get(this.dataURL);
-      this.dataSetup(response.data.data);
+      const response = await axios.get(this.dataURL, {
+        params: {
+          dataType: this.dataType,
+          fromDate: this.fromDate,
+          toDate: this.toDate
+        }
+      }
+      );
+      console.log(response.data)
+      this.dataSetup(response.data.data)
     } catch (e) {
-      console.log(e);
+      console.log(this.dataURL)
+      console.log(e)
       this.props.fetchingFinish()
     }
   };
 };
 
-const mapDispatchToProps = (dispatch)=>({
+const mapDispatchToProps = (dispatch) => ({
   fetchingStart: () => dispatch(changeFetching(true)),
   fetchingFinish: () => dispatch(changeFetching(false))
 });
 
-export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(DashboardPage)))
+export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(AdmissionsDash)))

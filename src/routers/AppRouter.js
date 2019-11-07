@@ -4,6 +4,7 @@ import LandingPage from '../components/LandingPage';
 import DashboardPage from '../components/Dashboard';
 import PartnerList from '../components/PartnerList';
 import AddPartner from '../components/AddPartner';
+import AdmissionsDash from '../components/AdmissionsDash';
 import AssessmentAttempts from '../components/AssessmentAttempts';
 import ViewAssessments from '../components/ViewAssessments';
 
@@ -29,6 +30,9 @@ const AppRouter = () => (
         <PrivateRoute path="/home" component={HomePage} />
   
         <Route path="/login" component={LoginPage}  />
+
+        <PublicRoute path="/students" component={AdmissionsDash} />
+        <PublicRoute path="/students/:dataType" component={AdmissionsDash} />
 
         <PublicRoute path="/partner/add" component={AddPartner} />
         <PublicRoute path="/partner/:partnerId" component={DashboardPage} />

@@ -50,11 +50,6 @@ export class FilterSelect extends React.Component {
     this.props.handleChange(this.props.filter.field, this.getFilter)
   }
 
-  // handleWrapperChange = selectedCities => {
-  //   this.state.selectedCities = selectedCities
-  //   this.props.handleChange()
-  // }
-
   render = () => {
     const { selectedValues } = this.state
 
@@ -70,18 +65,6 @@ export class FilterSelect extends React.Component {
       components={animatedComponents}
       closeMenuOnSelect={true}
     />)
-  // <Select
-  //   className="stagesSelect"
-  //   value={selectedStages}
-  //   isMulti
-  //   onChange={this.handleStageChange}
-  //   options={this.state.stages}
-  //   placeholder="Select Stage ..."
-  //   isClearable={true}
-  //   components={animatedComponents}
-  //   closeMenuOnSelect={true}
-  // />
-
   }
 }
 

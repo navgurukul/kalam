@@ -1,5 +1,17 @@
 {
   "data": {
+    "enrolmentKeyGenerated": {
+      "title": "Enrolment Key Generated",
+      "description": "Enrolment Key has been generated"
+    },
+    "basicDetailsEntered": {
+      "title": "Basic Details Entered",
+      "description": "Basic Details Entered"
+    },
+    "completedTestWithDetails": {
+      "title": "Completed Test Wtih Details",
+      "description": "Completed Test Wtih Details"
+    },
     "testPassed": {
       "title": "Logical Interview Pending",
       "description": "Student has passed the Multiple Choice Test and is eligible for the further interviews."

@@ -1,5 +1,17 @@
 {
   "data": {
+    "caughtCheating": {
+      "title": "Caught Cheating",
+      "description": "Caught Cheating"
+    },
+    "pendingCultureFitReinterview": {
+      "title": "Pending Culture Fit Re-Interview",
+      "description": "Pending Culture Fit Re-Interview"
+    },
+    "diversityBasedDecisionPending": {
+      "title": "Decision Pending based on Diversity",
+      "description": "Decision Pending based on Diversity"
+    },
     "enrolmentKeyGenerated": {
       "title": "Enrolment Key Generated",
       "description": "Enrolment Key has been generated"

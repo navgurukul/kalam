@@ -70,8 +70,8 @@ export class AdmissionsDash extends React.Component {
     }
   }
 
-  changeDataType = dataType => {
-    this.dataType = dataType;
+  changeDataType = option => {
+    this.dataType = option.value;
     this.fetchUsers();
   }
 
@@ -125,8 +125,50 @@ export class AdmissionsDash extends React.Component {
   render = () => {
     const { classes } = this.props;
 
+    const options = <Box>
+    <Select
+      className={"filterSelectGlobal"}
+      value={this.dataType}
+      onChange={this.changeDataType}
+      options={[{value: "requestCallback", label: "Request Callback"},
+                {value: "softwareCourse", label: "Other Data"}]}
+      placeholder={"Select Data Type"}
+      isClearable={false}
+      components={animatedComponents}
+      closeMenuOnSelect={true}
+    />
+
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <KeyboardDatePicker
+        margin="dense"
+        style={{marginLeft: 16}}
+        value={this.fromDate}
+        id="date-picker-dialog"
+        label="From Date"
+        format="MM/dd/yyyy"
+        onChange={this.changeFromDate}
+        KeyboardButtonProps={{
+          'aria-label': 'change date',
+        }}
+      />
+
+      <KeyboardDatePicker
+        margin="dense"
+        style={{marginLeft: 16}}
+        value={this.toDate}
+        id="date-picker-dialog"
+        label="To Date"
+        format="MM/dd/yyyy"
+        onChange={this.changeToDate}
+        KeyboardButtonProps={{
+          'aria-label': 'change date',
+        }}
+      />
+    </MuiPickersUtilsProvider>
+  </Box>;
+
     if (!this.state.data.length) {
-      return <Box></Box>
+      return options;
     }
 
     let filterSelectRows = []
@@ -148,43 +190,7 @@ export class AdmissionsDash extends React.Component {
 
     return <Box>
       <MuiThemeProvider theme={theme}>
-        <Select
-          className={"filterSelect"}
-          value={this.dataType}
-          onChange={this.changeDataType}
-          options={["requestCallback","softwareCourse"]}
-          placeholder={"Select Data Type"}
-          isClearable={false}
-          components={animatedComponents}
-          closeMenuOnSelect={true}
-        />
-
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            margin="normal"
-            value={this.fromDate}
-            id="date-picker-dialog"
-            label="From Date"
-            format="MM/dd/yyyy"
-            onChange={this.changeFromDate}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
-            }}
-          />
-
-          <KeyboardDatePicker
-            margin="normal"
-            value={this.toDate}
-            id="date-picker-dialog"
-            label="Date picker dialog"
-            format="MM/dd/yyyy"
-            onChange={this.changeToDate}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
-            }}
-          />  
-        </MuiPickersUtilsProvider>
-        
+        {options}
         {filterSelectRows}
         <div className={classes.clear}></div>
         <MaterialTable

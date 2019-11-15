@@ -17,103 +17,15 @@ import Spinner from 'react-spinner-material';
 import AddBox from '@material-ui/icons/AddBox';
 import {Box} from '@material-ui/core';
 
-const student_stage = [
-    // related to the mcq test
-    'enrolmentKeyGenerated',
-    'basicDetailsEntered',
-    'completedTest',
-    'completedTestWithDetails',
-    'testPassed',
-    'testFailed',
-
-    // related to incoming query calls
-    'requestCallback',
-    'pendingCallbackForQuery',
-    'forReviewCallbackQueryResolved',
-    'queryResolvedAfterCallback',
-
-    // algebra interviews
-    'pendingAlgebraInterview',
-    'pendingAlgebraReInterview', // algebra re-interview
-    'forReviewAlgebraInterviewDone',
-    'algebraInterviewFail',
-    'algebraInterviewWaitlisted',
-
-    // english interviews
-    'pendingEnglishInterview',
-    'forReviewEnglishInterview',
-    'englishInterviewFail',
-    'englishInterviewWaitlisted',
-
-    // culture fit interviews
-    'pendingCultureFitInterview',
-    'forReviewCultureFitInterviewDone',
-    'cultureFitInterviewWaitlisted',
-    'pendingCultureFitReinterview',
-    'cultureFitInterviewFail',
-
-    // parent conversations
-    'pendingParentConversation',
-    'parentConversationFail',
-
-    // travel planning
-    'pendingTravelPlanning',
-    'finalisedTravelPlans',
-
-    // probation etc. once when the student has joined navgurukul
-    'probation',
-    'finallyJoined',
-    'droppedOut',
-    'sentBackAfterProbation',
-
-    // is not reachable
-    'becameDisIntersested',
-    'disqualifiedUnreachable',
-
-    // diversity based decision
-    'disqualifiedAfterDiversityFilter',
-    'diversityBasedDecisionPending',
-
-    // random stages for internal use
-    'possibleDuplicate',
-    'needAction',
-    'demo',
-    'caughtCheating',
-    // liveStudentStages
-    'pendingAlgebraInterview',
-    'pendingAlgebraReInterview', // algebra re-interview
-    'forReviewAlgebraInterviewDone',
-
-    'pendingEnglishInterview',
-    'forReviewEnglishInterview',
-
-    'pendingCultureFitInterview',
-    'forReviewCultureFitInterviewDone',
-
-    'pendingParentConversation',
-
-    'pendingTravelPlanning',
-    'finalisedTravelPlans',
-]
-const feedback_type = [
-    'rqcCallFeedback', 
-    'tutionGroupFeedback', 
-    'algIntCallFeedback', 
-    'reAlgIntFeedback', 
-    'cultFitCallRawInfo', 
-    'englishIntCallFeedback', 
-    'parentConversation', 
-    'travelPlanning'
-]
-const status = ['pass', 'failed', 'pending', 'forReview']
-
+const CONSTANTS = require('../constant');
 const baseUrl = process.env.API_URL;
+
 const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'column',
-    maxWidth: 400, 
+    maxWidth: 400,
   },
   textField: {
     marginLeft: theme.spacing(1),
@@ -130,12 +42,11 @@ export class StudentFeedback extends React.Component {
   async addFeedbck() {
     try {
       this.props.fetchingStart()
-      console.log(this.state, "pralhad")
       const response = await axios.post(this.dataURL, {
-        "student_stage": student_stage[this.state.student_stage],
+        "student_stage": CONSTANTS.studentStages[this.state.student_stage],
         "feedback": this.state.feedback,
-        "state": status[this.state.status],
-        "feedback_type": feedback_type[this.state.feedback_type]
+        "state": CONSTANTS.status[this.state.status],
+        "feedback_type": CONSTANTS.feedback_type[this.state.feedback_type]
         }).then(response => {
             this.setState({
                 loading:false
@@ -143,7 +54,6 @@ export class StudentFeedback extends React.Component {
             alert("Feedback submited", response);
         })
       this.props.fetchingFinish();
-      this.props.history.push("/students");
     } catch (e) {
       console.log(e);
       this.props.fetchingFinish();
@@ -209,6 +119,7 @@ export class StudentFeedback extends React.Component {
                 onClose={this.handleClose}
             >
                 <form className={classes.container}>
+                    <h1 style={{color: '#f05f40',textAlign: 'center'}}>Student Feedback</h1>
                     <FormControl>
                         <InputLabel id="demo-simple-select-readonly-label">Feedback Type</InputLabel>
                         <Select
@@ -219,7 +130,7 @@ export class StudentFeedback extends React.Component {
                           onChange={this.handleChange('feedback_type')}
                         >
                             <MenuItem value=""><em>None</em></MenuItem>
-                            {feedback_type.map((type, index)=> {
+                            {CONSTANTS.feedback_type.map((type, index)=> {
                                 return <MenuItem key={index} value={index}>{type}</MenuItem>
                             })}
                         </Select>
@@ -235,7 +146,7 @@ export class StudentFeedback extends React.Component {
                           onChange={this.handleChange('student_stage')}
                         >
                             <MenuItem value=""><em>None</em></MenuItem>
-                            {student_stage.map((stage, index)=> {
+                            {CONSTANTS.studentStages.map((stage, index)=> {
                                 return <MenuItem key={index} value={index}>{stage}</MenuItem>
                             })}
                         </Select>
@@ -251,11 +162,11 @@ export class StudentFeedback extends React.Component {
                           onChange={this.handleChange('status')}
                         >
                             <MenuItem value=""><em>None</em></MenuItem>
-                            {status.map((status, index)=> {
+                            {CONSTANTS.status.map((status, index)=> {
                                 return <MenuItem key={index} value={index}>{status}</MenuItem>
                             })}
                         </Select>
-                        <FormHelperText>Student ke Feedback ke hisab uska status bataye.</FormHelperText>
+                        <FormHelperText>Student ke Feedback par uska status bataye.</FormHelperText>
                     </FormControl>
                     <TextField
                       id="outlined-multiline-static"

@@ -4,9 +4,7 @@ import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
 import axios from 'axios';
 import { Button } from '@material-ui/core';
-
 import { FormControl, InputLabel, Input, FormHelperText } from '@material-ui/core';
-
 import { changeFetching } from '../store/actions/auth';
 import {withRouter} from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
@@ -16,16 +14,15 @@ import { Dialog } from '@material-ui/core';
 import Spinner from 'react-spinner-material';
 import AddBox from '@material-ui/icons/AddBox';
 import {Box} from '@material-ui/core';
-
-const status = ['pass', 'failed', 'pending', 'forReview']
-
+const CONSTANTS = require('../constant');
 const baseUrl = process.env.API_URL;
+
 const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'column',
-    maxWidth: 400, 
+    maxWidth: 400,
   },
   textField: {
     marginLeft: theme.spacing(1),
@@ -44,7 +41,7 @@ export class UpdateFeedback extends React.Component {
       this.props.fetchingStart()
       const response = await axios.put(this.dataURL, {
         "feedback": this.state.feedback,    
-        "state": status[this.state.status],
+        "state": CONSTANTS.status[this.state.status],
         }).then(response => {
             this.setState({
                 loading:false
@@ -52,7 +49,6 @@ export class UpdateFeedback extends React.Component {
             alert("Feedback updated", response);
         })
       this.props.fetchingFinish();
-      this.props.history.push("/students");
     } catch (e) {
       console.log(e);
       this.props.fetchingFinish();
@@ -116,6 +112,7 @@ export class UpdateFeedback extends React.Component {
                 onClose={this.handleClose}
             >
                 <form className={classes.container}>
+                    <h1 style={{color: '#f05f40',textAlign: 'center'}}>Update Feedback</h1>
                     <FormControl>
                         <InputLabel id="demo-simple-select-readonly-label">Status</InputLabel>
                         <Select
@@ -126,11 +123,11 @@ export class UpdateFeedback extends React.Component {
                           onChange={this.handleChange('status')}
                         >
                             <MenuItem value=""><em>None</em></MenuItem>
-                            {status.map((status, index)=> {
+                            {CONSTANTS.status.map((status, index)=> {
                                 return <MenuItem key={index} value={index}>{status}</MenuItem>
                             })}
                         </Select>
-                        <FormHelperText>Student ke Feedback ke hisab se uska status bataye.</FormHelperText>
+                        <FormHelperText>Student ke Feedback par uska status bataye.</FormHelperText>
                     </FormControl>
                     <TextField
                       id="outlined-multiline-static"

@@ -3,6 +3,8 @@ import * as Stages from '../data/stages.json'
 import Moment from 'react-moment';
 import Tooltip from '@material-ui/core/Tooltip';
 import Box from '@material-ui/core/Box';
+import StudentFeedback from '../components/FeedbackPage';
+import UpdateFeedback from '../components/UpdateFeedback';
 
 const StudentService = {
   columns: [
@@ -81,7 +83,23 @@ const StudentService = {
         return <Moment format="D MMM YYYY" withTitle>{rowData.lastUpdated}</Moment>
       },
       filtering: false
-    }
+    },
+    {
+      title: 'Feedback',
+      field: 'id',
+      filtering: false,
+      render: rowData => {
+        return <StudentFeedback studentId={rowData.id} userId={rowData.userId}/>
+      }
+    },
+    {
+      title: 'Update Feedback',
+      field: 'id',
+      filtering: false,
+      render: rowData => {
+        return <UpdateFeedback studentId={rowData.id} />
+      }
+    },
   ],
   columnsTransitions: [
     {
@@ -146,7 +164,7 @@ const StudentService = {
     }
 
     x['lastUpdated'] = latestTS;
-
+    
     return x
   },
   addOptions: (columns, dataRow) => {

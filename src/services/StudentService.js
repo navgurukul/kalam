@@ -112,14 +112,26 @@ const updateFeedbackColumn = {
 
 const StudentService = {
   columns: {
-    'requestCallback': [
+    requestCallback: [
       numberColumn,
       addedAtColumn,
       lastUpdatedColumn,
       feedbackColumn,
       updateFeedbackColumn
     ],
-    'softwareCourse': [
+    partnerDashboard : [
+      nameColumn,
+      titleColumn,
+      cityColumn,
+      stateColumn,
+      numberColumn,
+      marksColumn,
+      genderColumn,
+      stageColumn,
+      addedAtColumn,
+      lastUpdatedColumn
+    ],
+    softwareCourse: [
       nameColumn,
       titleColumn,
       cityColumn,

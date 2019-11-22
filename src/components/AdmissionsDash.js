@@ -69,7 +69,7 @@ export class AdmissionsDash extends React.Component {
       sData: undefined, //subsetData
     }
   }
-
+  
   changeDataType = option => {
     this.dataType = option.value;
     this.fetchUsers();
@@ -109,8 +109,9 @@ export class AdmissionsDash extends React.Component {
 
   dataSetup = (data) => {
     columns = StudentService.setupPre(StudentService.columns);
-
+    const userId = this.props.location.state.id;
     for (let i = 0; i < data.length; i++) {
+      data[i]['userId'] = userId;
       data[i] = StudentService.dConvert(data[i])
       columns = StudentService.addOptions(columns, data[i]);
     }

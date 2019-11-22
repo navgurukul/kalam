@@ -23,6 +23,7 @@
     "material-table": "^1.40.0",
     "material-ui-image": "^3.0.0",
     "moment": "^2.24.0",
+    "react-google-login": "^5.0.7",
     "react-json-view": "^1.19.1",
     "react-moment": "^0.9.2",
     "react-redux": "^5.0.7",

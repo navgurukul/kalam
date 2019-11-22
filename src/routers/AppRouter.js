@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch, Link, NavLink } from 'react-router-dom';
+import { BrowserRouter, Router, Route, Switch, Link, NavLink } from 'react-router-dom';
 import LandingPage from '../components/LandingPage';
 import DashboardPage from '../components/Dashboard';
 import PartnerList from '../components/PartnerList';
@@ -22,14 +22,16 @@ import GetStartedPage from '../components/GetStartedPage';
 import ProductsPage from '../components/ProductsPage';
 import FormsPage from '../components/FormsPage';
 
+import history from '../utils/history';
+
 const AppRouter = () => (
-  <BrowserRouter>
+  <Router history={history}>
     <div>
       <Switch>        
         <PublicRoute path="/" component={LandingPage} exact={true} />
         <PrivateRoute path="/home" component={HomePage} />
   
-        <Route path="/login" component={LoginPage}  />
+        <PublicRoute path="/login" component={LoginPage}  />
 
         <PublicRoute path="/students" component={AdmissionsDash} />
         <PublicRoute path="/students/:dataType" component={AdmissionsDash} />
@@ -52,7 +54,7 @@ const AppRouter = () => (
       </Switch>
       
     </div>
-  </BrowserRouter>
+  </Router>
 );
 
 export default AppRouter;

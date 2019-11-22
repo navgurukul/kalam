@@ -97,7 +97,7 @@ const feedbackColumn = {
   field: 'id',
   filtering: false,
   render: rowData => {
-    return <StudentFeedback studentId={rowData.id} userId={rowData.userId}/>
+    return <StudentFeedback studentId={rowData.id} userId={rowData.userId} />
   }
 }
 
@@ -108,6 +108,7 @@ const updateFeedbackColumn = {
   render: rowData => {
     return <UpdateFeedback studentId={rowData.id} />
   }
+}
 
 const StudentService = {
   columns: {
@@ -115,8 +116,8 @@ const StudentService = {
       numberColumn,
       addedAtColumn,
       lastUpdatedColumn,
-	    feedbackColumn,
-	    updateFeedbackColumn
+      feedbackColumn,
+      updateFeedbackColumn
     ],
     'softwareCourse': [
       nameColumn,
@@ -129,8 +130,8 @@ const StudentService = {
       stageColumn,
       addedAtColumn,
       lastUpdatedColumn,
-	    feedbackColumn,
-	    updateFeedbackColumn
+      feedbackColumn,
+      updateFeedbackColumn
     ]
   },
   columnsTransitions: [
@@ -157,17 +158,17 @@ const StudentService = {
     }
   ],
   setupPre: (columns) => {
-    return columns.map( (x) => {
+    return columns.map((x) => {
       if ('selectFilter' in x)
         x.options = []
       return x
     })
   },
   setupPost: (columns) => {
-    return columns.map( (x) => {
+    return columns.map((x) => {
       if ('selectFilter' in x)
-        x.options = x.options.map((x)=> {
-          return {label: x, value: x}
+        x.options = x.options.map((x) => {
+          return { label: x, value: x }
         })
       return x
     })
@@ -196,13 +197,13 @@ const StudentService = {
     }
 
     x['lastUpdated'] = latestTS;
-    
+
     return x
   },
   addOptions: (columns, dataRow) => {
     return columns.map((column) => {
       if ('selectFilter' in column) {
-        if (column.options.indexOf(dataRow[column.field])==-1) {
+        if (column.options.indexOf(dataRow[column.field]) == -1) {
           column.options.push(dataRow[column.field])
         }
       }

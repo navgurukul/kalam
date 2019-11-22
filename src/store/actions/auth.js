@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 // export const login = (uid) => ({
 //     type:'LOGIN',
 //     uid

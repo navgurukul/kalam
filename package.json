@@ -20,6 +20,7 @@
     "css-loader": "^0.28.11",
     "date-fns": "^2.6.0",
     "file-loader": "^1.1.11",
+    "localStorage": "^1.0.4",
     "material-table": "^1.40.0",
     "material-ui-image": "^3.0.0",
     "moment": "^2.24.0",

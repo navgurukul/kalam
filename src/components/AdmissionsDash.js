@@ -1,3 +1,6 @@
+// Todo
+// Logic of RQC Columns
+
 import 'date-fns';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -30,22 +33,22 @@ const animatedComponents = makeAnimated();
 const baseURL = process.env.API_URL;
 
 const styles = theme => ({
-  innerTable: {
-    marginLeft: '3vw',
-    marginRight: '3vw',
-    width: '94vw',
-    marginTop: '5',
-    marginBottom: '5',
-    [theme.breakpoints.up('md')]: {
-      margin: 'auto',
-      width: '50%',
-      marginTop: 5,
-      marginBottom: 5
-    },
-  },
-  clear: {
-    clear: 'both'
-  }
+innerTable: {
+marginLeft: '3vw',
+marginRight: '3vw',
+width: '94vw',
+marginTop: '5',
+marginBottom: '5',
+[theme.breakpoints.up('md')]: {
+margin: 'auto',
+width: '50%',
+marginTop: 5,
+marginBottom: 5
+},
+},
+clear: {
+clear: 'both'
+}
 })
 
 let columns;
@@ -53,63 +56,64 @@ let filterFns = []
 
 export class AdmissionsDash extends React.Component {
 
-  constructor(props) {
+constructor(props) {
 
-    super(props);
+super(props);
 
-    if (this.props.match.params.dataType) {
-      this.dataType = this.props.match.params.dataType;
-    } else {
-      this.dataType = 'softwareCourse'
-    }
-    this.dataURL = baseURL + 'students';
+if (this.props.match.params.dataType) {
+this.dataType = this.props.match.params.dataType;
+} else {
+this.dataType = 'softwareCourse'
+}
+this.dataURL = baseURL + 'students';
 
-    this.state = {
-      data: [],
-      sData: undefined, //subsetData
-    }
-  }
-  
-  changeDataType = option => {
-    this.dataType = option.value;
-    this.fetchUsers();
-  }
+this.state = {
+data: [],
+sData: undefined, //subsetData
+}
+}
 
-  changeFromDate = date => {
-    this.fromDate = date;
-    this.fetchUsers();
-  }
+changeDataType = option => {
+this.dataType = option.value;
+this.fetchUsers();
+}
 
-  changeToDate = date => {
-    this.toDate = date;
-    this.fetchUsers();
-  }
+changeFromDate = date => {
+this.fromDate = date;
+this.fetchUsers();
+}
 
-  handleChange = (field, filterFn) => {
+changeToDate = date => {
+this.toDate = date;
+this.fetchUsers();
+}
 
-    filterFns[field] = filterFn
-    const fieldKeys = Object.keys(filterFns)
+handleChange = (field, filterFn) => {
 
-    let sData = this.state.data.filter((x) => {
-      let result = true
-      for (var key in filterFns) {
-        result = result && filterFns[key](x)
-      }
-      return result
-    })
+filterFns[field] = filterFn
+const fieldKeys = Object.keys(filterFns)
 
-    // sData [] and undefined are different
-    // sData [] = when no results are returned
-    // sData undefined = when all results are returned
-    this.setState({
-      sData: sData
-    })
+let sData = this.state.data.filter((x) => {
+let result = true
+for (var key in filterFns) {
+result = result && filterFns[key](x)
+}
+return result
+})
 
-  }
+// sData [] and undefined are different
+// sData [] = when no results are returned
+// sData undefined = when all results are returned
+this.setState({
+sData: sData
+})
 
-  dataSetup = (data) => {
-    columns = StudentService.setupPre(StudentService.columns);
+}
+
+dataSetup = (data) => {
+    columns = StudentService.setupPre(StudentService.columns[this.dataType]);
     const userId = this.props.location.state.id;
+    
     for (let i = 0; i < data.length; i++) {
       data[i]['userId'] = userId;
       data[i] = StudentService.dConvert(data[i])

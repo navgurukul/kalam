@@ -42,9 +42,11 @@ export class UpdateFeedback extends React.Component {
       const response = await axios.put(this.dataURL, {
         "feedback": this.state.feedback,    
         "state": CONSTANTS.status[this.state.status],
+        "feedback_type": CONSTANTS.feedback_type[this.state.feedback_type]
         }).then(response => {
             this.setState({
-                loading:false
+                loading:false,
+                dialogOpen: false,
             })
             alert("Feedback updated", response);
         })
@@ -69,6 +71,7 @@ export class UpdateFeedback extends React.Component {
     this.dataURL = baseUrl+'students/feedback/'+this.props.studentId;
 
     this.state = {
+      "feedback_type": "",
       "status": "",
       "feedback": "",
       "dialogOpen": false,
@@ -113,6 +116,22 @@ export class UpdateFeedback extends React.Component {
             >
                 <form className={classes.container}>
                     <h1 style={{color: '#f05f40',textAlign: 'center'}}>Update Feedback</h1>
+                    <FormControl>
+                        <InputLabel id="demo-simple-select-readonly-label">Feedback Type</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-readonly-label"
+                          id="demo-simple-select-readonly"
+                          name = "feedback_type"
+                          value={this.state.feedback_type}
+                          onChange={this.handleChange('feedback_type')}
+                        >
+                            <MenuItem value=""><em>None</em></MenuItem>
+                            {CONSTANTS.feedback_type.map((type, index)=> {
+                                return <MenuItem key={index} value={index}>{type}</MenuItem>
+                            })}
+                        </Select>
+                        <FormHelperText>Feedback ka type bataye.</FormHelperText>
+                    </FormControl>
                     <FormControl>
                         <InputLabel id="demo-simple-select-readonly-label">Status</InputLabel>
                         <Select

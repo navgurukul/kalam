@@ -79,7 +79,7 @@ export class DashboardPage extends React.Component {
   }
 
   dataSetup = (data) => {
-    columns = StudentService.setupPre(StudentService.columns);
+    columns = StudentService.setupPre(StudentService.columns["partnerDashboard"]);
  
     for (let i=0; i<data.length; i++) {
       data[i] = StudentService.dConvert(data[i])

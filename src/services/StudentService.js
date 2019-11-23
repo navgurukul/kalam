@@ -6,101 +6,146 @@ import Box from '@material-ui/core/Box';
 import StudentFeedback from '../components/FeedbackPage';
 import UpdateFeedback from '../components/UpdateFeedback';
 
+const nameColumn = {
+  title: 'Set',
+  field: 'setName',
+  filtering: false,
+  selectFilter: true,
+  sfMulti: true,
+  sfTitle: 'set',
+};
+
+const titleColumn = { title: 'Name', field: 'name', filtering: false };
+
+const cityColumn = {
+  title: 'City',
+  field: 'city',
+  selectFilter: true,
+  sfMulti: true,
+  sfTitle: 'cities'
+};
+
+const stateColumn = {
+  title: 'State',
+  field: 'state'
+}
+
+const numberColumn = {
+  title: 'Number', field: 'number',
+  render: rowData => {
+    return '+91 ' + rowData.number;
+  },
+  filtering: false
+}
+
+const marksColumn = {
+  title: 'Marks',
+  field: 'marks',
+  render: rowData => {
+    return rowData.marks;
+  },
+  filtering: false,
+}
+
+const genderColumn = {
+  title: 'Gender',
+  field: 'gender',
+  selectFilter: true,
+  sfMulti: false,
+  sfTitle: 'gender',
+  // render: rowData => {
+  //   return rowData.gender == 1 ? 'Female' : 'Male';
+  // },
+  filtering: false
+}
+
+const stageColumn = {
+  title: 'Stage',
+  field: 'stageTitle',
+  selectFilter: true,
+  sfMulti: true,
+  sfTitle: 'stages',
+  render: rowData => {
+    return <Tooltip title={rowData.stageDesc}>
+      <Box data-id={rowData.stage}>
+        {rowData.stageTitle}
+      </Box>
+    </Tooltip>
+  }
+}
+
+const addedAtColumn = {
+  title: 'Added At',
+  field: 'createdAt',
+  render: rowData => {
+    return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
+  },
+  filtering: false
+}
+
+const lastUpdatedColumn = {
+  title: 'Last Updated',
+  field: 'lastUpdated',
+  render: rowData => {
+    return <Moment format="D MMM YYYY" withTitle>{rowData.lastUpdated}</Moment>
+  },
+  filtering: false
+}
+
+const feedbackColumn = {
+  title: 'Feedback',
+  field: 'id',
+  filtering: false,
+  render: rowData => {
+    return <StudentFeedback studentId={rowData.id} userId={rowData.userId} />
+  }
+}
+
+const updateFeedbackColumn = {
+  title: 'Update Feedback',
+  field: 'id',
+  filtering: false,
+  render: rowData => {
+    return <UpdateFeedback studentId={rowData.id} />
+  }
+}
+
 const StudentService = {
-  columns: [
-    {
-      title: 'Set',
-      field: 'setName',
-      filtering: false,
-      selectFilter: true,
-      sfMulti: true,
-      sfTitle: 'set',
-    },
-    { title: 'Name', field: 'name', filtering: false },
-    {
-      title: 'City',
-      field: 'city',
-      selectFilter: true,
-      sfMulti: true,
-      sfTitle: 'cities'
-    },
-    {
-      title: 'State',
-      field: 'state'
-    },
-    {
-      title: 'Number', field: 'number',
-      render: rowData => {
-        return '+91 ' + rowData.number;
-      },
-      filtering: false
-    },
-    {
-      title: 'Marks',
-      field: 'marks',
-      render: rowData => {
-        return rowData.marks;
-      },
-      filtering: false,
-    },
-    {
-      title: 'Gender',
-      field: 'gender',
-      selectFilter: true,
-      sfMulti: false,
-      sfTitle: 'gender',
-      // render: rowData => {
-      //   return rowData.gender == 1 ? 'Female' : 'Male';
-      // },
-      filtering: false
-    },
-    {
-      title: 'Stage',
-      field: 'stageTitle',
-      selectFilter: true,
-      sfMulti: true,
-      sfTitle: 'stages',
-      render: rowData => {
-        return <Tooltip title={rowData.stageDesc}>
-          <Box data-id={rowData.stage}>
-            {rowData.stageTitle}
-          </Box>
-        </Tooltip>
-      }
-    },
-    {
-      title: 'Added At',
-      field: 'createdAt',
-      render: rowData => {
-        return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
-      },
-      filtering: false
-    },
-    {
-      title: 'Last Updated',
-      field: 'lastUpdated',
-      render: rowData => {
-        return <Moment format="D MMM YYYY" withTitle>{rowData.lastUpdated}</Moment>
-      },
-      filtering: false
-    },
-    {
-      title: 'Feedback',
-      field: 'id',
-      filtering: false,
-      render: rowData => {
-        return <StudentFeedback studentId={rowData.id} userId={rowData.userId}/>
-      }
-    },
-    {
-      title: 'Update Feedback',
-      field: 'id',
-      filtering: false,
-      render: rowData => {
-        return <UpdateFeedback studentId={rowData.id} />
-      }
-    },
-  ],
+  columns: {
+    requestCallback: [
+      numberColumn,
+      addedAtColumn,
+      lastUpdatedColumn,
+      feedbackColumn,
+      updateFeedbackColumn
+    ],
+    partnerDashboard : [
+      nameColumn,
+      titleColumn,
+      cityColumn,
+      stateColumn,
+      numberColumn,
+      marksColumn,
+      genderColumn,
+      stageColumn,
+      addedAtColumn,
+      lastUpdatedColumn
+    ],
+    softwareCourse: [
+      nameColumn,
+      titleColumn,
+      cityColumn,
+      stateColumn,
+      numberColumn,
+      marksColumn,
+      genderColumn,
+      stageColumn,
+      addedAtColumn,
+      lastUpdatedColumn,
+      feedbackColumn,
+      updateFeedbackColumn
+    ]
+  },
   columnsTransitions: [
     {
       title: 'Stage',
@@ -125,17 +170,17 @@ const StudentService = {
     }
   ],
   setupPre: (columns) => {
-    return columns.map( (x) => {
+    return columns.map((x) => {
       if ('selectFilter' in x)
         x.options = []
       return x
     })
   },
   setupPost: (columns) => {
-    return columns.map( (x) => {
+    return columns.map((x) => {
       if ('selectFilter' in x)
-        x.options = x.options.map((x)=> {
-          return {label: x, value: x}
+        x.options = x.options.map((x) => {
+          return { label: x, value: x }
         })
       return x
     })
@@ -146,7 +191,7 @@ const StudentService = {
     } catch (e) {
       x['number'] = null;
     }
-    
+
     x['gender'] = x['gender'] == 1 ? 'Female' : 'Male';
     x['stageTitle'] = x['stage'] in Stages.data ? Stages.data[x['stage']].title : x['stage'];
     x['stageDesc'] = x['stage'] in Stages.data && 'description' in Stages.data[x['stage']] ? Stages.data[x['stage']].description : "No Description Added Yet."
@@ -164,13 +209,13 @@ const StudentService = {
     }
 
     x['lastUpdated'] = latestTS;
-    
+
     return x
   },
   addOptions: (columns, dataRow) => {
     return columns.map((column) => {
       if ('selectFilter' in column) {
-        if (column.options.indexOf(dataRow[column.field])==-1) {
+        if (column.options.indexOf(dataRow[column.field]) == -1) {
           column.options.push(dataRow[column.field])
         }
       }

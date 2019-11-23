@@ -1,3 +1,6 @@
+// Todo
+// Logic of RQC Columns
+
 import 'date-fns';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -69,7 +72,7 @@ export class AdmissionsDash extends React.Component {
       sData: undefined, //subsetData
     }
   }
-  
+
   changeDataType = option => {
     this.dataType = option.value;
     this.fetchUsers();
@@ -108,8 +111,9 @@ export class AdmissionsDash extends React.Component {
   }
 
   dataSetup = (data) => {
-    columns = StudentService.setupPre(StudentService.columns);
+    columns = StudentService.setupPre(StudentService.columns[this.dataType]);
     const userId = this.props.location.state.id;
+
     for (let i = 0; i < data.length; i++) {
       data[i]['userId'] = userId;
       data[i] = StudentService.dConvert(data[i])
@@ -127,46 +131,46 @@ export class AdmissionsDash extends React.Component {
     const { classes } = this.props;
 
     const options = <Box>
-    <Select
-      className={"filterSelectGlobal"}
-      value={this.dataType}
-      onChange={this.changeDataType}
-      options={[{value: "requestCallback", label: "Request Callback"},
-                {value: "softwareCourse", label: "Other Data"}]}
-      placeholder={"Select Data Type"}
-      isClearable={false}
-      components={animatedComponents}
-      closeMenuOnSelect={true}
-    />
-
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <KeyboardDatePicker
-        margin="dense"
-        style={{marginLeft: 16}}
-        value={this.fromDate}
-        id="date-picker-dialog"
-        label="From Date"
-        format="MM/dd/yyyy"
-        onChange={this.changeFromDate}
-        KeyboardButtonProps={{
-          'aria-label': 'change date',
-        }}
+      <Select
+        className={"filterSelectGlobal"}
+        value={this.dataType}
+        onChange={this.changeDataType}
+        options={[{ value: "requestCallback", label: "Request Callback" },
+        { value: "softwareCourse", label: "Other Data" }]}
+        placeholder={"Select Data Type"}
+        isClearable={false}
+        components={animatedComponents}
+        closeMenuOnSelect={true}
       />
 
-      <KeyboardDatePicker
-        margin="dense"
-        style={{marginLeft: 16}}
-        value={this.toDate}
-        id="date-picker-dialog"
-        label="To Date"
-        format="MM/dd/yyyy"
-        onChange={this.changeToDate}
-        KeyboardButtonProps={{
-          'aria-label': 'change date',
-        }}
-      />
-    </MuiPickersUtilsProvider>
-  </Box>;
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <KeyboardDatePicker
+          margin="dense"
+          style={{ marginLeft: 16 }}
+          value={this.fromDate}
+          id="date-picker-dialog"
+          label="From Date"
+          format="MM/dd/yyyy"
+          onChange={this.changeFromDate}
+          KeyboardButtonProps={{
+            'aria-label': 'change date',
+          }}
+        />
+
+        <KeyboardDatePicker
+          margin="dense"
+          style={{ marginLeft: 16 }}
+          value={this.toDate}
+          id="date-picker-dialog"
+          label="To Date"
+          format="MM/dd/yyyy"
+          onChange={this.changeToDate}
+          KeyboardButtonProps={{
+            'aria-label': 'change date',
+          }}
+        />
+      </MuiPickersUtilsProvider>
+    </Box>;
 
     if (!this.state.data.length) {
       return options;

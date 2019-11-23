@@ -45,7 +45,8 @@ export class UpdateFeedback extends React.Component {
         "feedback_type": CONSTANTS.feedback_type[this.state.feedback_type]
         }).then(response => {
             this.setState({
-                loading:false
+                loading:false,
+                dialogOpen: false,
             })
             alert("Feedback updated", response);
         })

@@ -11,8 +11,6 @@ import axios from 'axios';
 import { login } from '../store/actions/auth';
 import { connect } from 'react-redux';
 
-import ngFetch from '../utils/ngFetch';
-
 const baseUrl = process.env.API_URL;
 
 const styles = theme => ({
@@ -35,14 +33,12 @@ export class LandingPage extends React.Component {
   
   
   responseGoogle = (response) => {
-    console.log(response);
     axios.post(`${baseUrl}users/login/google`, { idToken: response.tokenObj.id_token })
       .then((resp) => {
         const { userToken, user } = resp.data;
-        this.props.login(user, userToken);
         localStorage.setItem('jwt', userToken);
-        this.props.history.push('/students', user);
-        console.log(ngFetch);
+        localStorage.setItem('user', JSON.stringify(user));
+        this.props.history.push('/students');
       });
   }
 
@@ -80,7 +76,6 @@ export class LandingPage extends React.Component {
   render = () => {
     const { classes } = this.props;
     const quote = this.getQuote();
-    console.log(ngFetch);
 
     return (
       <MuiThemeProvider theme={theme}>
@@ -122,8 +117,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  login: (user, jwt) => dispatch(login(user, jwt)),
-});
-
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(LandingPage));
+export default withStyles(styles)(connect(mapStateToProps, undefined)(LandingPage));

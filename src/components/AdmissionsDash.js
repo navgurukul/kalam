@@ -66,6 +66,7 @@ export class AdmissionsDash extends React.Component {
       this.dataType = 'softwareCourse'
     }
     this.dataURL = baseURL + 'students';
+    this.loggedInUser = this.props.loggedInUser;
 
     this.state = {
       data: [],
@@ -112,10 +113,8 @@ export class AdmissionsDash extends React.Component {
 
   dataSetup = (data) => {
     columns = StudentService.setupPre(StudentService.columns[this.dataType]);
-    const userId = this.props.location.state.id;
 
     for (let i = 0; i < data.length; i++) {
-      data[i]['userId'] = userId;
       data[i] = StudentService.dConvert(data[i])
       columns = StudentService.addOptions(columns, data[i]);
     }
@@ -129,7 +128,7 @@ export class AdmissionsDash extends React.Component {
 
   render = () => {
     const { classes } = this.props;
-
+    
     const options = <Box>
       <Select
         className={"filterSelectGlobal"}
@@ -203,11 +202,13 @@ export class AdmissionsDash extends React.Component {
           data={this.state.sData ? this.state.sData : this.state.data}
           icons={GlobalService.tableIcons}
           detailPanel={rowData => {
+            let newData = rowData.transitions.map(v => ({...v, loggedInUser: this.loggedInUser}))            
             return (
               <Box className={classes.innerTable} my={2}>
                 <MaterialTable
                   columns={StudentService.columnsTransitions}
-                  data={rowData.transitions}
+                  data={newData}
+                  icons={GlobalService.tableIcons}
                   options={{
                     search: false,
                     paging: false,
@@ -242,6 +243,14 @@ export class AdmissionsDash extends React.Component {
   async fetchUsers() {
     try {
       this.props.fetchingStart()
+      // response = ngFetch(this.dataURL, 'GET', {
+      //   params: {
+      //     dataType: this.dataType,
+      //     fromDate: this.fromDate,
+      //     toDate: this.toDate
+      //   }
+      // }, true);
+
       const response = await axios.get(this.dataURL, {
         params: {
           dataType: this.dataType,
@@ -250,19 +259,22 @@ export class AdmissionsDash extends React.Component {
         }
       }
       );
-      console.log(response.data)
       this.dataSetup(response.data.data)
     } catch (e) {
-      console.log(this.dataURL)
       console.log(e)
       this.props.fetchingFinish()
     }
   };
 };
 
+const mapStateToProps = (state) => ({
+  loggedInUser: state.auth.loggedInUser,
+  isAuthenticated: state.auth.isAuthenticated
+});
+
 const mapDispatchToProps = (dispatch) => ({
   fetchingStart: () => dispatch(changeFetching(true)),
   fetchingFinish: () => dispatch(changeFetching(false))
 });
 
-export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(AdmissionsDash)))
+export default withRouter(withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(AdmissionsDash)))

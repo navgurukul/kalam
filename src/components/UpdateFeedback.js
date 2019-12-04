@@ -14,6 +14,8 @@ import { Dialog } from '@material-ui/core';
 import Spinner from 'react-spinner-material';
 import AddBox from '@material-ui/icons/AddBox';
 import {Box} from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+import { th } from 'date-fns/locale';
 const CONSTANTS = require('../constant');
 const baseUrl = process.env.API_URL;
 
@@ -42,7 +44,7 @@ export class UpdateFeedback extends React.Component {
       const response = await axios.put(this.dataURL, {
         "feedback": this.state.feedback,    
         "state": CONSTANTS.status[this.state.status],
-        "feedback_type": CONSTANTS.feedback_type[this.state.feedback_type]
+        "feedback_type": this.feedback_type 
         }).then(response => {
             this.setState({
                 loading:false,
@@ -69,9 +71,8 @@ export class UpdateFeedback extends React.Component {
   constructor(props) {
     super(props);
     this.dataURL = baseUrl+'students/feedback/'+this.props.studentId;
-
+    this.feedback_type= this.props.feedback_type;
     this.state = {
-      "feedback_type": "",
       "status": "",
       "feedback": "",
       "dialogOpen": false,
@@ -101,13 +102,18 @@ export class UpdateFeedback extends React.Component {
     })
   }
   
+  getFeedbackEditable = (feedbackDetails) => {
+    console.log(feedbackDetails.user)
+    return feedbackDetails.user + ": \n\n"+ feedbackDetails.feedback;
+  }
+
   render = () => {
     const { classes } = this.props;
     const { loading } = this.state;
     return (
         <Fragment>
             <Box onClick={this.handleOpen}>
-                <AddBox/>
+                <EditIcon/>
                 <Spinner size={35} spinnerColor={"#ed343d"} spinnerWidth={5} visible={loading} />
             </Box>
             <Dialog
@@ -116,22 +122,6 @@ export class UpdateFeedback extends React.Component {
             >
                 <form className={classes.container}>
                     <h1 style={{color: '#f05f40',textAlign: 'center'}}>Update Feedback</h1>
-                    <FormControl>
-                        <InputLabel id="demo-simple-select-readonly-label">Feedback Type</InputLabel>
-                        <Select
-                          labelId="demo-simple-select-readonly-label"
-                          id="demo-simple-select-readonly"
-                          name = "feedback_type"
-                          value={this.state.feedback_type}
-                          onChange={this.handleChange('feedback_type')}
-                        >
-                            <MenuItem value=""><em>None</em></MenuItem>
-                            {CONSTANTS.feedback_type.map((type, index)=> {
-                                return <MenuItem key={index} value={index}>{type}</MenuItem>
-                            })}
-                        </Select>
-                        <FormHelperText>Feedback ka type bataye.</FormHelperText>
-                    </FormControl>
                     <FormControl>
                         <InputLabel id="demo-simple-select-readonly-label">Status</InputLabel>
                         <Select
@@ -154,7 +144,7 @@ export class UpdateFeedback extends React.Component {
                       multiline
                       rows="6"
                       name='feedback'
-                      value={this.state.feedback}
+                      defaultValue={this.getFeedbackEditable(this.props)}
                       onChange={this.handleChange('feedback')}
                       className={classes.textField}
                       margin="normal"

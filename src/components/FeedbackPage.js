@@ -16,6 +16,7 @@ import { Dialog } from '@material-ui/core';
 import Spinner from 'react-spinner-material';
 import AddBox from '@material-ui/icons/AddBox';
 import {Box} from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
 
 const CONSTANTS = require('../constant');
 const baseUrl = process.env.API_URL;
@@ -43,10 +44,9 @@ export class StudentFeedback extends React.Component {
     try {
       this.props.fetchingStart()
       const response = await axios.post(this.dataURL, {
-        "student_stage": CONSTANTS.studentStages[this.state.student_stage],
+        "student_stage": this.stage,
         "feedback": this.state.feedback,
         "state": CONSTANTS.status[this.state.status],
-        "feedback_type": CONSTANTS.feedback_type[this.state.feedback_type]
         }).then(response => {
             this.setState({
                 loading:false,
@@ -73,10 +73,8 @@ export class StudentFeedback extends React.Component {
   constructor(props) {
     super(props);
     this.dataURL = baseUrl+'students/feedback/'+this.props.studentId +'/' + this.props.userId;
-
+    this.stage = this.props.stage;
     this.state = {
-      "feedback_type": "",
-      "student_stage": "",
       "status": "",
       "feedback": "",
       "dialogOpen": false,
@@ -105,14 +103,17 @@ export class StudentFeedback extends React.Component {
       dialogOpen: true
     })
   }
-  
+  addFeedbackDetails = (feedbackDetails) => {
+    return feedbackDetails.user + ": \n\n";
+  }
+
   render = () => {
     const { classes } = this.props;
     const { loading } = this.state;
     return (
         <Fragment>
             <Box onClick={this.handleOpen}>
-                <AddBox/>
+                <EditIcon/>
                 <Spinner size={35} spinnerColor={"#ed343d"} spinnerWidth={5} visible={loading} />
             </Box>
             <Dialog
@@ -121,38 +122,6 @@ export class StudentFeedback extends React.Component {
             >
                 <form className={classes.container}>
                     <h1 style={{color: '#f05f40',textAlign: 'center'}}>Student Feedback</h1>
-                    <FormControl>
-                        <InputLabel id="demo-simple-select-readonly-label">Feedback Type</InputLabel>
-                        <Select
-                          labelId="demo-simple-select-readonly-label"
-                          id="demo-simple-select-readonly"
-                          name = "feedback_type"
-                          value={this.state.feedback_type}
-                          onChange={this.handleChange('feedback_type')}
-                        >
-                            <MenuItem value=""><em>None</em></MenuItem>
-                            {CONSTANTS.feedback_type.map((type, index)=> {
-                                return <MenuItem key={index} value={index}>{type}</MenuItem>
-                            })}
-                        </Select>
-                        <FormHelperText>Feedback ka type bataye.</FormHelperText>
-                    </FormControl>
-                    <FormControl>
-                        <InputLabel id="demo-simple-select-readonly-label">Student Stage</InputLabel>
-                        <Select
-                          labelId="demo-simple-select-readonly-label"
-                          id="demo-simple-select-readonly"
-                          name = "student_stage"
-                          value={this.state.student_stage}
-                          onChange={this.handleChange('student_stage')}
-                        >
-                            <MenuItem value=""><em>None</em></MenuItem>
-                            {CONSTANTS.studentStages.map((stage, index)=> {
-                                return <MenuItem key={index} value={index}>{stage}</MenuItem>
-                            })}
-                        </Select>
-                        <FormHelperText>studentKi next stage fill kare.</FormHelperText>
-                    </FormControl>
                     <FormControl>
                         <InputLabel id="demo-simple-select-readonly-label">Status</InputLabel>
                         <Select
@@ -175,7 +144,7 @@ export class StudentFeedback extends React.Component {
                       multiline
                       rows="6"
                       name='feedback'
-                      value={this.state.feedback}
+                      defaultValue={this.addFeedbackDetails(this.props)}
                       onChange={this.handleChange('feedback')}
                       className={classes.textField}
                       margin="normal"

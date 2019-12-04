@@ -92,32 +92,12 @@ const lastUpdatedColumn = {
   filtering: false
 }
 
-const feedbackColumn = {
-  title: 'Feedback',
-  field: 'id',
-  filtering: false,
-  render: rowData => {
-    return <StudentFeedback studentId={rowData.id} userId={rowData.userId} />
-  }
-}
-
-const updateFeedbackColumn = {
-  title: 'Update Feedback',
-  field: 'id',
-  filtering: false,
-  render: rowData => {
-    return <UpdateFeedback studentId={rowData.id} />
-  }
-}
-
 const StudentService = {
   columns: {
     requestCallback: [
       numberColumn,
       addedAtColumn,
       lastUpdatedColumn,
-      feedbackColumn,
-      updateFeedbackColumn
     ],
     partnerDashboard : [
       nameColumn,
@@ -142,8 +122,6 @@ const StudentService = {
       stageColumn,
       addedAtColumn,
       lastUpdatedColumn,
-      feedbackColumn,
-      updateFeedbackColumn
     ]
   },
   columnsTransitions: [
@@ -152,6 +130,13 @@ const StudentService = {
       field: 'toStage',
       render: rowData => {
         return rowData['toStage'] in Stages.data ? Stages.data[rowData['toStage']].title : rowData['toStage'];;
+      }
+    },
+    {
+      title: 'Status',
+      field: 'status',
+      render: rowData => {
+        return rowData['feedback'] ? rowData['feedback']['state'] : null;
       }
     },
     {
@@ -167,7 +152,32 @@ const StudentService = {
       render: rowData => {
         return rowData['toStage'] in Stages.data && 'description' in Stages.data[rowData['toStage']] ? Stages.data[rowData['toStage']].description : "No Description Added Yet.";
       }
-    }
+    },
+    {
+      title: 'When Feedback Created?',
+      field: 'createdAt',
+      render: rowData => {
+        return rowData['feedback'] ? <Moment format="D MMM YYYY" withTitle>{rowData['feedback'].createdAt}</Moment> : null;
+      },
+      defaultSort: 'desc'
+    },
+    {
+      title: 'Feedback description',
+      field: 'feedback',
+      render: rowData => {
+        return <div>
+          {rowData['feedback'] ? <div><UpdateFeedback studentId = {rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={ '@'+ rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div>: null }
+          {rowData['toStage'] in Stages.feedbackable ? <StudentFeedback user={ '@'+ rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id}/>: null }
+        </div> 
+      }
+    },
+    {
+      title: 'Feedback user',
+      field: 'user',
+      render: rowData => {
+        return rowData['feedback'] ? rowData['feedback']['user'].user_name : null;
+      }
+    },
   ],
   setupPre: (columns) => {
     return columns.map((x) => {

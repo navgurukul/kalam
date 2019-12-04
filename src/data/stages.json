@@ -131,5 +131,24 @@
     "finallyJoined": {
       "title": "Selected & Joining Awaited"
     }
+  },
+  "feedbackable": {
+    "pendingCultureFitInterview": {
+      "title": "Pending Culture Fit Interview",
+      "description": "Pending Culture Fit Interview"
+    },
+    "pendingAlgebraInterview": {
+      "title": "Logical Interview Pending",
+      "description": "The Logical Level Interview of the student is pending."
+    },
+    "pendingAlgebraReInterview": {
+      "title": "Logical Re-Interview Pending"
+    },
+    "rqcCallFeedback": {
+      "title": "Requested query call back feedback"
+    },
+    "parentConversation": {
+      "title": "Parent conversation feedback"
+    }
   }
 }

@@ -11,7 +11,7 @@ export const PublicRoute = ({
 }) => (
     <Route {...rest} component={(props) => (
       isAuthenticated ? (
-        <Redirect to="/home" />
+        <Redirect to="/students" />
       ) : (
         <React.Fragment>
           <Header/>
@@ -23,7 +23,7 @@ export const PublicRoute = ({
   );
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: !!state.auth.uid
+  isAuthenticated: state.auth.isAuthenticated
 });
 
 export default connect(mapStateToProps)(PublicRoute);

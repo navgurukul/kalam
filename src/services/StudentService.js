@@ -71,10 +71,10 @@ const stageColumn = {
   sfTitle: 'stages',
   render: rowData => {
     const selectedValue = {"value": rowData.stage, "label": rowData.stageTitle};
-
     return <StageSelect
       selectedValue={selectedValue}
       allStagesOptions={allStagesOptions}
+      studentId= {rowData['id']}
     />
     
     // return <Tooltip title={rowData.stageDesc}>

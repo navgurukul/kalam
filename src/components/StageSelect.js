@@ -1,6 +1,8 @@
 import React from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
+import axios from 'axios';
+const baseUrl = process.env.API_URL;
 
 const animatedComponents = makeAnimated();
 
@@ -16,7 +18,11 @@ export class StageSelect extends React.Component {
   handleChange = selectedValue => {
     // const { selectedOption } = this.state
     this.state.selectedOption = selectedValue;
-    console.log("changing stage to ", selectedValue);
+    const {value} = this.state.selectedOption;
+    axios.post(`${baseUrl}students/chnageStage/${this.props.studentId}`, { stage: value })
+    .then(() => {
+      alert("stage is successfully changed")
+    })
   }
 
   render = () => {

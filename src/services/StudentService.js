@@ -3,8 +3,12 @@ import * as Stages from '../data/stages.json'
 import Moment from 'react-moment';
 import Tooltip from '@material-ui/core/Tooltip';
 import Box from '@material-ui/core/Box';
+import StageSelect from '../components/StageSelect';
 import StudentFeedback from '../components/FeedbackPage';
 import UpdateFeedback from '../components/UpdateFeedback';
+import Select from 'react-select';
+
+const allStagesOptions = Object.keys(Stages.data).map(x => { return {value: x, label : x in Stages.data ? Stages.data[x].title : x }} );
 
 const nameColumn = {
   title: 'Set',
@@ -66,11 +70,18 @@ const stageColumn = {
   sfMulti: true,
   sfTitle: 'stages',
   render: rowData => {
-    return <Tooltip title={rowData.stageDesc}>
-      <Box data-id={rowData.stage}>
-        {rowData.stageTitle}
-      </Box>
-    </Tooltip>
+    const selectedValue = {"value": rowData.stage, "label": rowData.stageTitle};
+
+    return <StageSelect
+      selectedValue={selectedValue}
+      allStagesOptions={allStagesOptions}
+    />
+    
+    // return <Tooltip title={rowData.stageDesc}>
+    //   <Box data-id={rowData.stage}>
+    //     {rowData.stageTitle}
+    //   </Box>
+    // </Tooltip>
   }
 }
 
@@ -99,7 +110,7 @@ const StudentService = {
       addedAtColumn,
       lastUpdatedColumn,
     ],
-    partnerDashboard : [
+    partnerDashboard: [
       nameColumn,
       titleColumn,
       cityColumn,
@@ -129,7 +140,7 @@ const StudentService = {
       title: 'Stage',
       field: 'toStage',
       render: rowData => {
-        return rowData['toStage'] in Stages.data ? Stages.data[rowData['toStage']].title : rowData['toStage'];;
+        return rowData['toStage'] in Stages.data ? Stages.data[rowData['toStage']].title : rowData['toStage'];
       }
     },
     {
@@ -166,9 +177,9 @@ const StudentService = {
       field: 'feedback',
       render: rowData => {
         return <div>
-          {rowData['feedback'] ? <div><UpdateFeedback studentId = {rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={ '@'+ rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div>: null }
-          {rowData['toStage'] in Stages.feedbackable ? <StudentFeedback user={ '@'+ rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id}/>: null }
-        </div> 
+          {rowData['feedback'] ? <div><UpdateFeedback studentId={rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div> : null}
+          {rowData['toStage'] in Stages.feedbackable ? <StudentFeedback user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id} /> : null}
+        </div>
       }
     },
     {

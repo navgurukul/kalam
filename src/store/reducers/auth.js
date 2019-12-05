@@ -8,6 +8,11 @@ export default (state = {
       return Object.assign({}, state, {
         isFetching: action.isFetchingStatus
       });
+    case 'LOGIN':
+      return Object.assign({}, state, {
+        isAuthenticated: localStorage.getItem('jwt') ? true: false,
+        loggedInUser: JSON.parse(localStorage.getItem('user'))
+      })
     default: return state
   }
 };

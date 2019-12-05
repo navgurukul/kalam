@@ -1,6 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
+import { EventEmitter } from './events';
 
 const animatedComponents = makeAnimated();
 
@@ -15,8 +16,9 @@ export class StageSelect extends React.Component {
 
   handleChange = selectedValue => {
     // const { selectedOption } = this.state
+    const { rowData } = this.props
     this.state.selectedOption = selectedValue;
-    console.log("changing stage to ", selectedValue);
+    EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
   }
 
   render = () => {

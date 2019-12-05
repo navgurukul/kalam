@@ -75,6 +75,7 @@ const stageColumn = {
     return <StageSelect
       selectedValue={selectedValue}
       allStagesOptions={allStagesOptions}
+      rowData={rowData}
     />
     
     // return <Tooltip title={rowData.stageDesc}>

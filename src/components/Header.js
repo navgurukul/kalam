@@ -39,7 +39,7 @@ class Header extends React.Component {
       modalOpen: false
     };
 
-    console.log('inside header component ', this.props.userid);
+    console.log('inside header component ', this.props.isAuthenticated);
   }
 
   handleChange = (event, index, value) => this.setState({ value });
@@ -65,7 +65,7 @@ class Header extends React.Component {
     this.setState({ componentsmenuopen: false });
   };
 
-  conditRenderEssential = () => this.props.userid ? (
+  conditRenderEssential = () => this.props.isAuthenticated ? (
     <Button color="inherit" align="right" onClick={this.props.startLogout}>
       Logout
     </Button>) 
@@ -97,8 +97,8 @@ class Header extends React.Component {
             role="button"
           >
             <div className="sidelistwrapper">
-              {!this.props.userid && (<React.Fragment><PublicNavList /> <ExpandNavList /></React.Fragment>)}
-              {this.props.userid && (<React.Fragment>
+              {!this.props.isAuthenticated && (<React.Fragment><PublicNavList /> <ExpandNavList /></React.Fragment>)}
+              {this.props.isAuthenticated && (<React.Fragment>
                 <PrivateNavList />
               </React.Fragment>
               )}
@@ -125,7 +125,7 @@ class Header extends React.Component {
                 />
               </Link>
             </Box>
-              {/* { this.conditRenderEssential() } */}
+              { this.conditRenderEssential() }
             { this.dashboardModal() }
             </Toolbar>
           </AppBar>
@@ -136,7 +136,7 @@ class Header extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  userid: state.auth.uid,
+  isAuthenticated: state.auth.isAuthenticated,
   isFetching: state.auth.isFetching
 });
 

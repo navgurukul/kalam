@@ -269,6 +269,10 @@ export class AdmissionsDash extends React.Component {
     this.fetchUsers();
   }
 
+  componentWillUnmount() {
+    EventEmitter.unsubscribe('stageChange');
+  }
+
   async fetchUsers() {
     try {
       this.props.fetchingStart()

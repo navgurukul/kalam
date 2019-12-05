@@ -244,7 +244,8 @@ export class AdmissionsDash extends React.Component {
                     toolbar: false,
                     showTitle: false,
                     headerStyle: {
-                      color: theme.palette.primary.main
+                      color: theme.palette.primary.main,
+                      zIndex: 0
                     },
                   }}
                 />

@@ -3,7 +3,7 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
 const baseUrl = process.env.API_URL;
-
+import { EventEmitter } from './events';
 const animatedComponents = makeAnimated();
 
 export class StageSelect extends React.Component {
@@ -17,12 +17,14 @@ export class StageSelect extends React.Component {
 
   handleChange = selectedValue => {
     // const { selectedOption } = this.state
+    const { rowData } = this.props
     this.state.selectedOption = selectedValue;
     const {value} = this.state.selectedOption;
     axios.post(`${baseUrl}students/chnageStage/${this.props.studentId}`, { stage: value })
     .then(() => {
       alert("stage is successfully changed")
     })
+    EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
   }
 
   render = () => {

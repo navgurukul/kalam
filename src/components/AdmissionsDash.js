@@ -25,6 +25,7 @@ import GlobalService from '../services/GlobalService';
 import StudentService from '../services/StudentService';
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import { EventEmitter } from './events';
 
 import makeAnimated from 'react-select/animated';
 const animatedComponents = makeAnimated();
@@ -72,6 +73,24 @@ export class AdmissionsDash extends React.Component {
       data: [],
       sData: undefined, //subsetData
     }
+
+    EventEmitter.subscribe('stageChange', this.stageChangeEvent);
+  }
+
+  stageChangeEvent = (iData) => {
+    // const data = this.state.data;
+    if (this.state.sData) {
+      const rowIds = this.state.sData.map(x=>x.id)
+      const sRowIndex = rowIds.indexOf(iData.rowData.id)
+      if (sRowIndex) {
+        this.state.sData[sRowIndex].stageTitle = iData.selectedValue.label;
+        this.state.sData[sRowIndex].stage = iData.selectedValue.value;   
+      }
+    }
+    const rowIds = this.state.data.map(x=>x.id)
+    const rowIndex = rowIds.indexOf(iData.rowData.id);
+    this.state.data[rowIndex].stageTitle = iData.selectedValue.label;
+    this.state.data[rowIndex].stage = iData.selectedValue.value;
   }
 
   changeDataType = option => {

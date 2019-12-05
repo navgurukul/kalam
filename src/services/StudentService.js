@@ -75,6 +75,7 @@ const stageColumn = {
       selectedValue={selectedValue}
       allStagesOptions={allStagesOptions}
       studentId= {rowData['id']}
+      rowData={rowData}
     />
     
     // return <Tooltip title={rowData.stageDesc}>

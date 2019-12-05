@@ -79,18 +79,56 @@ export class AdmissionsDash extends React.Component {
 
   stageChangeEvent = (iData) => {
     // const data = this.state.data;
-    if (this.state.sData) {
-      const rowIds = this.state.sData.map(x=>x.id)
-      const sRowIndex = rowIds.indexOf(iData.rowData.id)
-      if (sRowIndex) {
-        this.state.sData[sRowIndex].stageTitle = iData.selectedValue.label;
-        this.state.sData[sRowIndex].stage = iData.selectedValue.value;   
-      }
-    }
+    // if (this.state.sData) {
+    //   const rowIds = this.state.sData.map(x=>x.id)
+    //   const sRowIndex = rowIds.indexOf(iData.rowData.id)
+    //   if (sRowIndex) {
+    //     this.setState(({items}) => ({
+    //         items: [
+    //             ...items.slice(0,1),
+    //             {
+    //                 ...items[1],
+    //                 name: 'newName',
+    //             },
+    //             ...items.slice(2)
+    //         ]
+    //     }));
+    //     let dataElem = this.state.sData[sRowIndex];
+    //     dataElem.stageTitle = iData.selectedValue.label;
+    //     dataElem.stage = iData.selectedValue.value;
+        
+    //     let newSData = this.state.sData;
+    //     newSData[sRowIndex] = dataElem;
+
+    //     this.setState({sData:newSData });
+    //   }
+    // }
     const rowIds = this.state.data.map(x=>x.id)
     const rowIndex = rowIds.indexOf(iData.rowData.id);
-    this.state.data[rowIndex].stageTitle = iData.selectedValue.label;
-    this.state.data[rowIndex].stage = iData.selectedValue.value;
+    // this.setState(({data}) => ({
+    //   data: [
+    //     ...data.slice(0,rowIndex),
+    //     {
+    //       ...data[rowIndex],
+    //       stage: iData.selectedValue.value,
+    //       stageTitle: iData.selectedValue.label
+    //     },
+    //     ...data.slice(rowIndex+1)
+    //   ]
+    // }))
+
+    let dataElem = this.state.data[rowIndex];
+    dataElem.stageTitle = iData.selectedValue.label;
+    dataElem.stage = iData.selectedValue.value;
+    
+    let newData = this.state.data;
+    newData[rowIndex] = dataElem;
+
+    this.setState({data:newData });
+
+
+    // this.state.data[rowIndex].stageTitle = iData.selectedValue.label;
+    // this.state.data[rowIndex].stage = iData.selectedValue.value;
   }
 
   changeDataType = option => {

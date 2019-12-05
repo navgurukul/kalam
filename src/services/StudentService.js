@@ -70,10 +70,8 @@ const stageColumn = {
   sfMulti: true,
   sfTitle: 'stages',
   render: rowData => {
-    const selectedValue = {"value": rowData.stage, "label": rowData.stageTitle};
 
     return <StageSelect
-      selectedValue={selectedValue}
       allStagesOptions={allStagesOptions}
       rowData={rowData}
     />

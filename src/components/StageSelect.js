@@ -9,26 +9,24 @@ export class StageSelect extends React.Component {
 
   constructor (props) {
     super(props);
-    this.state = {
-      selectedOption: undefined
-    }
+    const { rowData } = props;
   }
 
   handleChange = selectedValue => {
     // const { selectedOption } = this.state
     const { rowData } = this.props
-    this.state.selectedOption = selectedValue;
+    // this.state.selectedOption = selectedValue;
     EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
   }
 
   render = () => {
-    const { selectedOption } = this.state;
-    const { selectedValue, allStagesOptions } = this.props;
+    const { allStagesOptions, rowData } = this.props;
+    const selectedValue = { value: rowData.stage, label: rowData.stageTitle }
 
     return <Select
         className={"filterSelectStage"}
-        defaultValue={selectedValue}
-        value={selectedOption}
+        // defaultValue={selectedValue}
+        value={selectedValue}
         onChange={this.handleChange}
         options={allStagesOptions}
         // placeholder={"Select "+this.props.filter.name+" ..."}

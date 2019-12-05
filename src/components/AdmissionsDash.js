@@ -75,6 +75,7 @@ export class AdmissionsDash extends React.Component {
     }
 
     EventEmitter.subscribe('stageChange', this.stageChangeEvent);
+    EventEmitter.subscribe('transitionsChange', this.transitionsChangeEvent);
   }
 
   stageChangeEvent = (iData) => {
@@ -100,7 +101,14 @@ export class AdmissionsDash extends React.Component {
     newData[rowIndex] = dataElem;
 
     this.setState({data:newData });
+  }
 
+  transitionsChangeEvent = () => {
+    // do api call for new transitions data
+    // set new data 
+    // call setData
+    // fire this event on updating the owner, status or the feedback of the user
+    // this.setData({data: newData})
   }
 
   changeDataType = option => {
@@ -231,7 +239,7 @@ export class AdmissionsDash extends React.Component {
           data={this.state.sData ? this.state.sData : this.state.data}
           icons={GlobalService.tableIcons}
           detailPanel={rowData => {
-            let newData = rowData.transitions.map(v => ({...v, loggedInUser: this.loggedInUser}))            
+            let newData = rowData.transitions.map(v => ({...v, loggedInUser: this.loggedInUser}))
             return (
               <Box className={classes.innerTable} my={2}>
                 <MaterialTable
@@ -272,6 +280,7 @@ export class AdmissionsDash extends React.Component {
 
   componentWillUnmount() {
     EventEmitter.unsubscribe('stageChange');
+    EventEmitter.unsubscribe('transitionsChange');
   }
 
   async fetchUsers() {

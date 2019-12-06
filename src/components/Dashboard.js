@@ -95,6 +95,7 @@ export class DashboardPage extends React.Component {
 
   render = () => {
     const { classes } = this.props;
+    const columnTransitions = StudentService.columnTransitions["partnerDashboard"];
 
     if (!this.state.data.length) {
       return <Box></Box>
@@ -129,7 +130,7 @@ export class DashboardPage extends React.Component {
             return (
               <Box className={classes.innerTable} my={2}>
                 <MaterialTable
-                  columns={StudentService.columnsTransitions}
+                  columns={columnTransitions}
                   data={rowData.transitions}
                   options={{
                     search: false,

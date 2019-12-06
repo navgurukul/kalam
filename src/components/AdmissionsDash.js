@@ -244,6 +244,8 @@ export class AdmissionsDash extends React.Component {
         )
     })
 
+    console.log("column transitions", StudentService.columnTransitions[this.dataType])
+
     return <Box>
       <MuiThemeProvider theme={theme}>
         {options}
@@ -258,7 +260,7 @@ export class AdmissionsDash extends React.Component {
             return (
               <Box className={classes.innerTable} my={2}>
                 <MaterialTable
-                  columns={StudentService.columnsTransitions}
+                  columns={StudentService.columnTransitions[this.dataType]}
                   data={newData}
                   icons={GlobalService.tableIcons}
                   options={{

@@ -123,7 +123,6 @@ export class StudentFeedback extends React.Component {
                     <FormControl>
                         <InputLabel id="demo-simple-select-readonly-label">Status</InputLabel>
                         <Select
-                          labelId="demo-simple-select-readonly-label"
                           id="demo-simple-select-readonly"
                           name = "status"
                           value={this.state.status}

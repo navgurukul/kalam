@@ -74,7 +74,6 @@ const stageColumn = {
   render: rowData => {
     const selectedValue = {"value": rowData.stage, "label": rowData.stageTitle};
     return <StageSelect
-      selectedValue={selectedValue}
       allStagesOptions={allStagesOptions}
       studentId= {rowData['id']}
       rowData={rowData}
@@ -174,9 +173,9 @@ const StudentService = {
       title: 'Owner',
       field: 'user',
       render: rowData => {
+        const allUserOptions = (rowData['users']).map(v => { return {"value": v.id, "label": v.user_name}})
         return rowData['feedback'] ? <div><AssingedWork  
-          selectedValue={CONSTANTS.allMoblizationTeam}
-          allStagesOptions={CONSTANTS.allMoblizationTeam}
+          allUserOptions={allUserOptions}
           studentId= {rowData['id']}
           rowData={rowData} /> </div>: null;
       }

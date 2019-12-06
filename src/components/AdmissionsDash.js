@@ -75,22 +75,40 @@ export class AdmissionsDash extends React.Component {
     }
 
     EventEmitter.subscribe('stageChange', this.stageChangeEvent);
+    EventEmitter.subscribe('transitionsChange', this.transitionsChangeEvent);
   }
 
   stageChangeEvent = (iData) => {
-    // const data = this.state.data;
-    if (this.state.sData) {
-      const rowIds = this.state.sData.map(x=>x.id)
-      const sRowIndex = rowIds.indexOf(iData.rowData.id)
-      if (sRowIndex) {
-        this.state.sData[sRowIndex].stageTitle = iData.selectedValue.label;
-        this.state.sData[sRowIndex].stage = iData.selectedValue.value;   
-      }
-    }
     const rowIds = this.state.data.map(x=>x.id)
     const rowIndex = rowIds.indexOf(iData.rowData.id);
-    this.state.data[rowIndex].stageTitle = iData.selectedValue.label;
-    this.state.data[rowIndex].stage = iData.selectedValue.value;
+    // this.setState(({data}) => ({
+    //   data: [
+    //     ...data.slice(0,rowIndex),
+    //     {
+    //       ...data[rowIndex],
+    //       stage: iData.selectedValue.value,
+    //       stageTitle: iData.selectedValue.label
+    //     },
+    //     ...data.slice(rowIndex+1)
+    //   ]
+    // }))
+
+    let dataElem = this.state.data[rowIndex];
+    dataElem.stageTitle = iData.selectedValue.label;
+    dataElem.stage = iData.selectedValue.value;
+    
+    let newData = this.state.data;
+    newData[rowIndex] = dataElem;
+
+    this.setState({data:newData });
+  }
+
+  transitionsChangeEvent = () => {
+    // do api call for new transitions data
+    // set new data 
+    // call setData
+    // fire this event on updating the owner, status or the feedback of the user
+    // this.setData({data: newData})
   }
 
   changeDataType = option => {
@@ -130,10 +148,12 @@ export class AdmissionsDash extends React.Component {
 
   }
 
-  dataSetup = (data) => {
+  dataSetup = (response) => {
     columns = StudentService.setupPre(StudentService.columns[this.dataType]);
-
+    const data = response.data;
+    const users = response.users;
     for (let i = 0; i < data.length; i++) {
+      data[i]['users'] = users; 
       data[i] = StudentService.dConvert(data[i])
       columns = StudentService.addOptions(columns, data[i]);
     }
@@ -221,7 +241,7 @@ export class AdmissionsDash extends React.Component {
           data={this.state.sData ? this.state.sData : this.state.data}
           icons={GlobalService.tableIcons}
           detailPanel={rowData => {
-            let newData = rowData.transitions.map(v => ({...v, loggedInUser: this.loggedInUser}))            
+            let newData = rowData.transitions.map(v => ({...v, loggedInUser: this.loggedInUser, users: rowData.users}))
             return (
               <Box className={classes.innerTable} my={2}>
                 <MaterialTable
@@ -234,7 +254,8 @@ export class AdmissionsDash extends React.Component {
                     toolbar: false,
                     showTitle: false,
                     headerStyle: {
-                      color: theme.palette.primary.main
+                      color: theme.palette.primary.main,
+                      zIndex: 0
                     },
                   }}
                 />
@@ -259,6 +280,11 @@ export class AdmissionsDash extends React.Component {
     this.fetchUsers();
   }
 
+  componentWillUnmount() {
+    EventEmitter.unsubscribe('stageChange');
+    EventEmitter.unsubscribe('transitionsChange');
+  }
+
   async fetchUsers() {
     try {
       this.props.fetchingStart()
@@ -278,7 +304,7 @@ export class AdmissionsDash extends React.Component {
         }
       }
       );
-      this.dataSetup(response.data.data)
+      this.dataSetup(response.data)
     } catch (e) {
       console.log(e)
       this.props.fetchingFinish()

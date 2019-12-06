@@ -8,12 +8,13 @@ const baseUrl = process.env.API_URL;
 import { EventEmitter } from './events';
 const animatedComponents = makeAnimated();
 
-export class AssingedWork extends React.Component {
+export class StageSelect extends React.Component {
 
   constructor (props) {
     super(props);
+    const { rowData } = props;
     this.state = {
-      selectedOption: undefined
+      selectedOption: undefined,
     }
   }
   
@@ -21,24 +22,29 @@ export class AssingedWork extends React.Component {
     // const { selectedOption } = this.state
     const { rowData } = this.props
     this.state.selectedOption = selectedValue;
-    const {value} = this.state.selectedOption;
-    axios.post(`${baseUrl}students/chnageStage/${this.props.studentId}`, { stage: value })
+    const { value } = this.state.selectedOption;
+    axios.post(`${baseUrl}students/assinge_feedback_work/${this.props.studentId}`, { 
+        howAssinge: rowData['loggedInUser'].user_name,
+        toAssinge: value,
+     })
     .then(() => {
-      this.props.enqueueSnackbar('stage is successfully changed!',{ variant: 'success' });
+      this.props.enqueueSnackbar(`successfully Assinged work for ${value}`,{ variant: 'success' });
       EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
     })
+    // this.state.selectedOption = selectedValue;
+    EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
   }
 
   render = () => {
-    const { selectedOption } = this.state;
-    const { selectedValue, allStagesOptions } = this.props;
+    const { allUserOptions, rowData } = this.props;
+    const selectedValue = { value: rowData['loggedInUser'].user_name, label: rowData['loggedInUser'].user_name }
 
     return <Select
         className={"filterSelectStage"}
-        defaultValue={selectedValue}
-        value={selectedOption}
+        // defaultValue={selectedValue}
+        value={selectedValue}
         onChange={this.handleChange}
-        options={allStagesOptions}
+        options={allUserOptions}
         // placeholder={"Select "+this.props.filter.name+" ..."}
         isClearable={false}
         components={animatedComponents}
@@ -47,4 +53,4 @@ export class AssingedWork extends React.Component {
   }
 }
 
-export default withSnackbar(AssingedWork);
+export default withSnackbar(StageSelect);

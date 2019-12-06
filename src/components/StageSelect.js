@@ -12,8 +12,9 @@ export class StageSelect extends React.Component {
 
   constructor (props) {
     super(props);
+    const { rowData } = props;
     this.state = {
-      selectedOption: undefined
+      selectedOption: undefined,
     }
   }
   
@@ -27,16 +28,17 @@ export class StageSelect extends React.Component {
       this.props.enqueueSnackbar('stage is successfully changed!',{ variant: 'success' });
       EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
     })
+    // this.state.selectedOption = selectedValue;
+    EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
   }
 
   render = () => {
-    const { selectedOption } = this.state;
-    const { selectedValue, allStagesOptions } = this.props;
-
+    const { allStagesOptions, rowData } = this.props;
+    const selectedValue = { value: rowData.stage, label: rowData.stageTitle }
     return <Select
         className={"filterSelectStage"}
-        defaultValue={selectedValue}
-        value={selectedOption}
+        // defaultValue={selectedValue}
+        value={selectedValue}
         onChange={this.handleChange}
         options={allStagesOptions}
         // placeholder={"Select "+this.props.filter.name+" ..."}

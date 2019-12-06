@@ -165,4 +165,4 @@ const mapDispatchToProps = (dispatch)=>({
   fetchingFinish: () => dispatch(changeFetching(false))
 });
 
-export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(withSnackbar(UpdateFeedback))))
+export default withSnackbar(withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(UpdateFeedback))))

@@ -4,7 +4,7 @@ import Moment from 'react-moment';
 import Tooltip from '@material-ui/core/Tooltip';
 import Box from '@material-ui/core/Box';
 import StageSelect from '../components/StageSelect';
-import AssingedWork from '../components/AssingedWork'
+import AssignedWork from '../components/AssignedWork'
 import StudentFeedback from '../components/FeedbackPage';
 import UpdateFeedback from '../components/UpdateFeedback';
 import Select from 'react-select';
@@ -174,7 +174,7 @@ const StudentService = {
       field: 'user',
       render: rowData => {
         const allUserOptions = (rowData['users']).map(v => { return {"value": v.id, "label": v.user_name}})
-        return rowData['feedback'] || rowData['toStage'] in Stages.feedbackable ? <div><AssingedWork  
+        return rowData['feedback'] || rowData['toStage'] in Stages.feedbackable ? <div><AssignedWork  
           allUserOptions={allUserOptions}
           rowData={rowData} /> </div>: null;
       }

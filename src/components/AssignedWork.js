@@ -20,14 +20,14 @@ export class StageSelect extends React.Component {
     try{
       const { rowData } = this.props
       const { label } =  selectedValue;
-      axios.post(`${baseUrl}students/assinge_feedback_work`, { 
-          whoAssinge: rowData['loggedInUser'].user_name,
-          toAssinge: label,
+      axios.post(`${baseUrl}students/assign_feedback_work`, { 
+          whoAssign: rowData['loggedInUser'].user_name,
+          toAssign: label,
           student_stage: rowData['toStage'],
           studentId: rowData['studentId']
       })
       .then(() => {
-        this.props.enqueueSnackbar(`successfully Assinged work for ${label}`,{ variant: 'success' });
+        this.props.enqueueSnackbar(`successfully Assigned work for ${label}`,{ variant: 'success' });
         EventEmitter.dispatch("transitionsChange", {selectedValue: selectedValue, rowData: rowData});
       })
       // this.state.selectedOption = selectedValue;
@@ -42,7 +42,7 @@ export class StageSelect extends React.Component {
     let selectedValue = { value: null, label: null };
     
     if (rowData['feedback']) {
-      selectedValue = { value: rowData['feedback']['toAssinge'], label: rowData['feedback']['toAssinge'] };
+      selectedValue = { value: rowData['feedback']['toAssign'], label: rowData['feedback']['toAssign'] };
     }
 
     return <Select

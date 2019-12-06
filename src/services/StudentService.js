@@ -162,9 +162,10 @@ const StudentService = {
       title: 'Feedback',
       field: 'feedback',
       render: rowData => {
+        console.log(rowData['feedback'])
         return <div>
-          {rowData['feedback'] && rowData['feedback']['feedback'] ? <div><UpdateFeedback student_stage={rowData['toStage']} studentId={rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div> : null}
-          {rowData['toStage'] in Stages.feedbackable && !rowData['feedback']['feedback'] ? <StudentFeedback user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id} /> : null}
+          {rowData['feedback'] && rowData['feedback']['feedback'] && rowData['toStage'] in Stages.feedbackable ? <div><UpdateFeedback student_stage={rowData['toStage']} studentId={rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div> : null}
+          {rowData['toStage'] in Stages.feedbackable && (!rowData['feedback'] || !rowData['feedback']['feedback'] ) ? <StudentFeedback user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id} /> : null}
         </div>
       }
     },

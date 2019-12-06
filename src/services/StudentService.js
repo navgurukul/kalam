@@ -64,6 +64,21 @@ const genderColumn = {
   filtering: false
 }
 
+const stagePartnerColumn = {
+  title: 'Stage',
+  field: 'stageTitle',
+  selectFilter: true,
+  sfMulti: true,
+  sfTitle: 'stages',
+  render: rowData => {
+    return <Tooltip title={rowData.stageDesc}>
+      <Box data-id={rowData.stage}>
+        {rowData.stageTitle}
+      </Box>
+    </Tooltip>
+  }
+}
+
 const stageColumn = {
   title: 'Stage',
   field: 'stageTitle',
@@ -119,7 +134,7 @@ const StudentService = {
       numberColumn,
       marksColumn,
       genderColumn,
-      stageColumn,
+      stagePartnerColumn,
       addedAtColumn,
       lastUpdatedColumn
     ],

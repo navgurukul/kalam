@@ -129,7 +129,7 @@ export class DashboardPage extends React.Component {
             return (
               <Box className={classes.innerTable} my={2}>
                 <MaterialTable
-                  columns={studentService.columnsTransitions}
+                  columns={StudentService.columnsTransitions}
                   data={rowData.transitions}
                   options={{
                     search: false,

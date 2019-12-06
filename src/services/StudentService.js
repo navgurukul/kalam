@@ -11,7 +11,6 @@ import Select from 'react-select';
 const CONSTANTS = require('../constant');
 
 const allStagesOptions = Object.keys(Stages.data).map(x => { return {value: x, label : x in Stages.data ? Stages.data[x].title : x }} );
-// const allMoblizationTeam = 
 const nameColumn = {
   title: 'Set',
   field: 'setName',

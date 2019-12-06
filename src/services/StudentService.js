@@ -4,12 +4,14 @@ import Moment from 'react-moment';
 import Tooltip from '@material-ui/core/Tooltip';
 import Box from '@material-ui/core/Box';
 import StageSelect from '../components/StageSelect';
+import AssingedWork from '../components/AssingedWork'
 import StudentFeedback from '../components/FeedbackPage';
 import UpdateFeedback from '../components/UpdateFeedback';
 import Select from 'react-select';
+const CONSTANTS = require('../constant');
 
 const allStagesOptions = Object.keys(Stages.data).map(x => { return {value: x, label : x in Stages.data ? Stages.data[x].title : x }} );
-
+// const allMoblizationTeam = 
 const nameColumn = {
   title: 'Set',
   field: 'setName',
@@ -145,13 +147,6 @@ const StudentService = {
       }
     },
     {
-      title: 'Status',
-      field: 'status',
-      render: rowData => {
-        return rowData['feedback'] ? rowData['feedback']['state'] : null;
-      }
-    },
-    {
       title: 'When?',
       field: 'createdAt',
       render: rowData => {
@@ -166,7 +161,28 @@ const StudentService = {
       }
     },
     {
-      title: 'When Feedback Created?',
+      title: 'Feedback',
+      field: 'feedback',
+      render: rowData => {
+        return <div>
+          {rowData['feedback'] ? <div><UpdateFeedback student_stage={rowData['toStage']} studentId={rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div> : null}
+          {rowData['toStage'] in Stages.feedbackable && !rowData['feedback']['feedback'] ? <StudentFeedback user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id} /> : null}
+        </div>
+      }
+    },
+    {
+      title: 'Owner',
+      field: 'user',
+      render: rowData => {
+        return rowData['feedback'] ? <div><AssingedWork  
+          selectedValue={CONSTANTS.allMoblizationTeam}
+          allStagesOptions={CONSTANTS.allMoblizationTeam}
+          studentId= {rowData['id']}
+          rowData={rowData} /> </div>: null;
+      }
+    },
+    {
+      title: 'Time',
       field: 'createdAt',
       render: rowData => {
         return rowData['feedback'] ? <Moment format="D MMM YYYY" withTitle>{rowData['feedback'].createdAt}</Moment> : null;
@@ -174,20 +190,10 @@ const StudentService = {
       defaultSort: 'desc'
     },
     {
-      title: 'Feedback description',
-      field: 'feedback',
+      title: 'Status',
+      field: 'status',
       render: rowData => {
-        return <div>
-          {rowData['feedback'] ? <div><UpdateFeedback studentId={rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div> : null}
-          {rowData['toStage'] in Stages.feedbackable ? <StudentFeedback user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id} /> : null}
-        </div>
-      }
-    },
-    {
-      title: 'Feedback user',
-      field: 'user',
-      render: rowData => {
-        return rowData['feedback'] ? rowData['feedback']['user'].user_name : null;
+        return rowData['feedback'] ? rowData['feedback']['state'] : null;
       }
     },
   ],

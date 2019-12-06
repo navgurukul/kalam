@@ -81,4 +81,5 @@ module.exports = {
     'deferredJoining',
     'tuitionGroup'
   ],
+  allMoblizationTeam: [ {value:1, label: 'Adil'}, {value: 2, label: 'Prakash'}, {value: 3, label: 'Sunil'}] // ,'Rahul', 'Abhishek', 'Surbhi','Nitesh', 'Saakshi', 'Sapna'],
 }

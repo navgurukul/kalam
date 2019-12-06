@@ -21,11 +21,11 @@
       "description": "Basic Details Entered"
     },
     "completedTestWithDetails": {
-      "title": "Completed Test Wtih Details",
+      "title": "Completed Test",
       "description": "Completed Test Wtih Details"
     },
     "testPassed": {
-      "title": "Logical Interview Pending",
+      "title": "Test Passed",
       "description": "Student has passed the Multiple Choice Test and is eligible for the further interviews."
     },
     "pendingAlgebraInterview": {
@@ -33,10 +33,10 @@
       "description": "The Logical Level Interview of the student is pending."
     },
     "pendingAlgebraReInterview": {
-      "title": "Logical Interview Pending"
+      "title": "Logical Interview Re-Interview"
     },
     "forReviewAlgebraInterviewDone": {
-      "title": "Logical Interview Pending",
+      "title": "Logical Interview For Review",
       "description": "The logical level interview of the student has been done. It will be reviewed soon and a final decision will be made"
     },
     "pendingEnglishInterview": {
@@ -44,35 +44,35 @@
       "description": "The student has cleared both the multiple choice test and logical level interview. Now there will be a short round to test their english skills."
     },
     "forReviewEnglishInterview": {
-      "title": "English Interview Pending",
+      "title": "English Interview For Review",
       "description": "The English Interview of the student has been done. It will be reviewed soon and a final decision will be made."
     },
     "englishInterviewWaitlisted": {
-      "title": "English Interview Pending"
+      "title": "English Interview Waitlisted"
     },
     "pendingCultureFitInterview": {
       "title": "Culture Fit Interview Pending",
       "description": "Student has cleared the first 3 stages. The last culture fit interview is pending."
     },
     "forReviewCultureFitInterviewDone": {
-      "title": "Culture Fit Interview Pending",
+      "title": "Culture Fit Interview Review",
       "description": "The culture fit interview has been done. It will be reviewed soon and a final decision will be made."
     },
     "cultureFitInterviewWaitlisted": {
-      "title": "Culture Fit Interview Pending",
+      "title": "Culture Fit Interview Waitlisted",
       "description": "Student is not the right fit for the NavGurukul culture."
     },
     "requestCallback": {
       "title": "Requested Callback"
     },
     "pendingCallbackForQuery": {
-      "title": "Pending Callback???"
+      "title": "Pending Callback"
     },
     "forReviewCallbackQueryResolved": {
-      "title": "Waiting for Response"
+      "title": "For Review CallbackQuery Resolved"
     },
     "queryResolvedAfterCallback": {
-      "title": "Waiting for Response"
+      "title": "Query Resolved After CallBack"
     },
     "testFailed": {
       "title": "Test not Cleared",
@@ -102,13 +102,13 @@
       "title": "Probation not Cleared"
     },
     "becameDisIntersested": {
-      "title": "Dropped Out"
+      "title": "Disinterested"
     },
     "possibleDuplicate": {
       "title": "Already Applied"
     },
     "needAction": {
-      "title": "Not Clear???"
+      "title": "Need Action"
     },
     "demo": {
       "title": "Not Clear???"
@@ -117,19 +117,19 @@
       "title": "Can't reach Student"
     },
     "pendingParentConversation": {
-      "title": "Selected & Joining Awaited"
+      "title": "Pending Parent Conversations"
     },
     "pendingTravelPlanning": {
-      "title": "Selected & Joining Awaited"
+      "title": "Pending Travel Plans"
     },
     "finalisedTravelPlans": {
       "title": "Selected & Joining Awaited"
     },
     "probation": {
-      "title": "Already Joined"
+      "title": "Probation"
     },
     "finallyJoined": {
-      "title": "Selected & Joining Awaited"
+      "title": "Joined"
     }
   },
   "feedbackable": {

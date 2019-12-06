@@ -42,7 +42,7 @@ const styles = theme => ({
     marginBottom: '5',
     [theme.breakpoints.up('md')]: {
       margin: 'auto',
-      width: '50%',
+      width: '80%',
       marginTop: 5,
       marginBottom: 5
     },

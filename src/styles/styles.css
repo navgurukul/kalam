@@ -11,6 +11,7 @@ body {
 }
 .filterSelectStage {
   min-width: 200px;
+  z-index: 800;
 }
 .filterSelectGlobal {
   z-index: 905;

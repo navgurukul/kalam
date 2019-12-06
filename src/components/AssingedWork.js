@@ -8,7 +8,7 @@ const baseUrl = process.env.API_URL;
 import { EventEmitter } from './events';
 const animatedComponents = makeAnimated();
 
-export class StageSelect extends React.Component {
+export class AssingedWork extends React.Component {
 
   constructor (props) {
     super(props);
@@ -47,4 +47,4 @@ export class StageSelect extends React.Component {
   }
 }
 
-export default withSnackbar(StageSelect);
+export default withSnackbar(AssingedWork);

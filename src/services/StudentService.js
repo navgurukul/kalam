@@ -4,12 +4,13 @@ import Moment from 'react-moment';
 import Tooltip from '@material-ui/core/Tooltip';
 import Box from '@material-ui/core/Box';
 import StageSelect from '../components/StageSelect';
+import AssignedWork from '../components/AssignedWork'
 import StudentFeedback from '../components/FeedbackPage';
 import UpdateFeedback from '../components/UpdateFeedback';
 import Select from 'react-select';
+const CONSTANTS = require('../constant');
 
 const allStagesOptions = Object.keys(Stages.data).map(x => { return {value: x, label : x in Stages.data ? Stages.data[x].title : x }} );
-
 const nameColumn = {
   title: 'Set',
   field: 'setName',
@@ -70,9 +71,10 @@ const stageColumn = {
   sfMulti: true,
   sfTitle: 'stages',
   render: rowData => {
-
+    const selectedValue = {"value": rowData.stage, "label": rowData.stageTitle};
     return <StageSelect
       allStagesOptions={allStagesOptions}
+      studentId= {rowData['id']}
       rowData={rowData}
     />
     
@@ -143,13 +145,6 @@ const StudentService = {
       }
     },
     {
-      title: 'Status',
-      field: 'status',
-      render: rowData => {
-        return rowData['feedback'] ? rowData['feedback']['state'] : null;
-      }
-    },
-    {
       title: 'When?',
       field: 'createdAt',
       render: rowData => {
@@ -164,7 +159,28 @@ const StudentService = {
       }
     },
     {
-      title: 'When Feedback Created?',
+      title: 'Feedback',
+      field: 'feedback',
+      render: rowData => {
+        console.log(rowData['feedback'])
+        return <div>
+          {rowData['feedback'] && rowData['feedback']['feedback'] && rowData['toStage'] in Stages.feedbackable ? <div><UpdateFeedback student_stage={rowData['toStage']} studentId={rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div> : null}
+          {rowData['toStage'] in Stages.feedbackable && (!rowData['feedback'] || !rowData['feedback']['feedback'] ) ? <StudentFeedback user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id} /> : null}
+        </div>
+      }
+    },
+    {
+      title: 'Owner',
+      field: 'user',
+      render: rowData => {
+        const allUserOptions = (rowData['users']).map(v => { return {"value": v.id, "label": v.user_name}})
+        return rowData['feedback'] || rowData['toStage'] in Stages.feedbackable ? <div><AssignedWork  
+          allUserOptions={allUserOptions}
+          rowData={rowData} /> </div>: null;
+      }
+    },
+    {
+      title: 'Time',
       field: 'createdAt',
       render: rowData => {
         return rowData['feedback'] ? <Moment format="D MMM YYYY" withTitle>{rowData['feedback'].createdAt}</Moment> : null;
@@ -172,20 +188,10 @@ const StudentService = {
       defaultSort: 'desc'
     },
     {
-      title: 'Feedback description',
-      field: 'feedback',
+      title: 'Status',
+      field: 'status',
       render: rowData => {
-        return <div>
-          {rowData['feedback'] ? <div><UpdateFeedback studentId={rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div> : null}
-          {rowData['toStage'] in Stages.feedbackable ? <StudentFeedback user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id} /> : null}
-        </div>
-      }
-    },
-    {
-      title: 'Feedback user',
-      field: 'user',
-      render: rowData => {
-        return rowData['feedback'] ? rowData['feedback']['user'].user_name : null;
+        return rowData['feedback'] ? rowData['feedback']['state'] : null;
       }
     },
   ],

@@ -12,7 +12,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Dialog } from '@material-ui/core';
 import Spinner from 'react-spinner-material';
-import AddBox from '@material-ui/icons/AddBox';
+import { withSnackbar } from 'notistack';
 import {Box} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { th } from 'date-fns/locale';
@@ -42,18 +42,18 @@ export class UpdateFeedback extends React.Component {
     try {
       this.props.fetchingStart()
       const response = await axios.put(this.dataURL, {
+        "student_stage": this.student_stage,
         "feedback": this.state.feedback,    
         "state": CONSTANTS.status[this.state.status],
-        "feedback_type": this.feedback_type 
         }).then(response => {
             this.setState({
-                loading:false,
                 dialogOpen: false,
             })
-            alert("Feedback updated", response);
+            this.props.enqueueSnackbar('Feedback updated successfully!',{ variant: 'success' });
         })
       this.props.fetchingFinish();
     } catch (e) {
+      this.props.enqueueSnackbar('Please select student Status',{ variant: 'error' });
       console.log(e);
       this.props.fetchingFinish();
     }
@@ -71,12 +71,11 @@ export class UpdateFeedback extends React.Component {
   constructor(props) {
     super(props);
     this.dataURL = baseUrl+'students/feedback/'+this.props.studentId;
-    this.feedback_type= this.props.feedback_type;
+    this.student_stage= this.props.student_stage;
     this.state = {
       "status": "",
       "feedback": "",
       "dialogOpen": false,
-      "loading": false,
     }
   }
 
@@ -114,7 +113,6 @@ export class UpdateFeedback extends React.Component {
         <Fragment>
             <Box onClick={this.handleOpen}>
                 <EditIcon/>
-                <Spinner size={35} spinnerColor={"#ed343d"} spinnerWidth={5} visible={loading} />
             </Box>
             <Dialog
                 open={this.state.dialogOpen}
@@ -163,4 +161,4 @@ const mapDispatchToProps = (dispatch)=>({
   fetchingFinish: () => dispatch(changeFetching(false))
 });
 
-export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(UpdateFeedback)))
+export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(withSnackbar(UpdateFeedback))))

@@ -42,7 +42,7 @@ const styles = theme => ({
     marginBottom: '5',
     [theme.breakpoints.up('md')]: {
       margin: 'auto',
-      width: '50%',
+      width: '80%',
       marginTop: 5,
       marginBottom: 5
     },
@@ -148,10 +148,12 @@ export class AdmissionsDash extends React.Component {
 
   }
 
-  dataSetup = (data) => {
+  dataSetup = (response) => {
     columns = StudentService.setupPre(StudentService.columns[this.dataType]);
-
+    const data = response.data;
+    const users = response.users;
     for (let i = 0; i < data.length; i++) {
+      data[i]['users'] = users; 
       data[i] = StudentService.dConvert(data[i])
       columns = StudentService.addOptions(columns, data[i]);
     }
@@ -239,7 +241,7 @@ export class AdmissionsDash extends React.Component {
           data={this.state.sData ? this.state.sData : this.state.data}
           icons={GlobalService.tableIcons}
           detailPanel={rowData => {
-            let newData = rowData.transitions.map(v => ({...v, loggedInUser: this.loggedInUser}))
+            let newData = rowData.transitions.map(v => ({...v, loggedInUser: this.loggedInUser, users: rowData.users}))
             return (
               <Box className={classes.innerTable} my={2}>
                 <MaterialTable
@@ -302,7 +304,7 @@ export class AdmissionsDash extends React.Component {
         }
       }
       );
-      this.dataSetup(response.data.data)
+      this.dataSetup(response.data)
     } catch (e) {
       console.log(e)
       this.props.fetchingFinish()

@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import axios from 'axios';
 import { Button } from '@material-ui/core';
-
+import { withSnackbar } from 'notistack';
 import { FormControl, InputLabel, FormHelperText } from '@material-ui/core';
 
 import { changeFetching } from '../store/actions/auth';
@@ -13,8 +13,6 @@ import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Dialog } from '@material-ui/core';
-import Spinner from 'react-spinner-material';
-import AddBox from '@material-ui/icons/AddBox';
 import {Box} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -49,14 +47,14 @@ export class StudentFeedback extends React.Component {
         "state": CONSTANTS.status[this.state.status],
         }).then(response => {
             this.setState({
-                loading:false,
                 dialogOpen: false,
             })
-            alert("Feedback submited", response);
+            this.props.enqueueSnackbar('Feedback is successfully added!',{ variant: 'success' });
         })
       this.props.fetchingFinish();
     } catch (e) {
       console.log(e);
+      this.props.enqueueSnackbar('Please select student Status',{ variant: 'error' });
       this.props.fetchingFinish();
     }
   }
@@ -78,7 +76,6 @@ export class StudentFeedback extends React.Component {
       "status": "",
       "feedback": "",
       "dialogOpen": false,
-      "loading": false,
     }
   }
 
@@ -114,7 +111,6 @@ export class StudentFeedback extends React.Component {
         <Fragment>
             <Box onClick={this.handleOpen}>
                 <EditIcon/>
-                <Spinner size={35} spinnerColor={"#ed343d"} spinnerWidth={5} visible={loading} />
             </Box>
             <Dialog
                 open={this.state.dialogOpen}
@@ -163,4 +159,4 @@ const mapDispatchToProps = (dispatch)=>({
   fetchingFinish: () => dispatch(changeFetching(false))
 });
 
-export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(StudentFeedback)))
+export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(withSnackbar(StudentFeedback))))

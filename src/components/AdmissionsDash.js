@@ -103,8 +103,21 @@ export class AdmissionsDash extends React.Component {
     this.setState({data:newData });
   }
 
-  transitionsChangeEvent = () => {
+  transitionsChangeEvent = async (data) => {
     // do api call for new transitions data
+    const studentId = data.rowData['studentId'];
+    const response = await axios.get(`${baseURL}students/transitions/${studentId}`)
+
+    const rowIds = this.state.data.map(x=>x.id)
+    const rowIndex = rowIds.indexOf(studentId);
+    let dataElem = this.state.data[rowIndex];
+    console.log(dataElem,"pralhad")
+    dataElem.transitions = response.data.data;
+
+    let newData = this.state.data;
+    newData[rowIndex] = dataElem;
+
+    this.setState({data:newData });
     // set new data 
     // call setData
     // fire this event on updating the owner, status or the feedback of the user

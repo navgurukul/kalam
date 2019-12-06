@@ -16,7 +16,6 @@ export class StageSelect extends React.Component {
   }
   
   handleChange = selectedValue => {
-    // const { selectedOption } = this.state
     try{
       const { rowData } = this.props
       const { label } =  selectedValue;
@@ -28,10 +27,8 @@ export class StageSelect extends React.Component {
       })
       .then(() => {
         this.props.enqueueSnackbar(`successfully Assigned work for ${label}`,{ variant: 'success' });
-        EventEmitter.dispatch("transitionsChange", {selectedValue: selectedValue, rowData: rowData});
+        EventEmitter.dispatch("transitionsChange", {rowData:rowData});
       })
-      // this.state.selectedOption = selectedValue;
-      EventEmitter.dispatch("transitionsChange", {selectedValue: selectedValue, rowData: rowData});
     } catch(e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });
     }

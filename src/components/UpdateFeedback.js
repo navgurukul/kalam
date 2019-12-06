@@ -16,6 +16,7 @@ import { withSnackbar } from 'notistack';
 import {Box} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { th } from 'date-fns/locale';
+import { EventEmitter } from './events';
 const CONSTANTS = require('../constant');
 const baseUrl = process.env.API_URL;
 
@@ -41,6 +42,7 @@ export class UpdateFeedback extends React.Component {
   async updateFeedbck() {
     try {
       this.props.fetchingStart()
+      const { rowData } = this.props;
       const response = await axios.put(this.dataURL, {
         "student_stage": this.student_stage,
         "feedback": this.state.feedback,    
@@ -50,6 +52,7 @@ export class UpdateFeedback extends React.Component {
                 dialogOpen: false,
             })
             this.props.enqueueSnackbar('Feedback updated successfully!',{ variant: 'success' });
+            EventEmitter.dispatch("transitionsChange", {rowData:rowData});
         })
       this.props.fetchingFinish();
     } catch (e) {

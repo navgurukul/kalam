@@ -15,6 +15,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { Dialog } from '@material-ui/core';
 import {Box} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
+import { EventEmitter } from './events';
 
 const CONSTANTS = require('../constant');
 const baseUrl = process.env.API_URL;
@@ -50,6 +51,7 @@ export class StudentFeedback extends React.Component {
                 dialogOpen: false,
             })
             this.props.enqueueSnackbar('Feedback is successfully added!',{ variant: 'success' });
+            EventEmitter.dispatch("transitionsChange", {rowData:rowData});
         })
       this.props.fetchingFinish();
     } catch (e) {

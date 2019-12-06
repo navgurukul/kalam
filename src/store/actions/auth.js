@@ -3,6 +3,11 @@ export const changeFetching = (isFetchingStatus) => ({
     isFetchingStatus
 });
 
+export const setupUsers = (users) => ({
+    type:'SETUP_USERS',
+    users
+});
+
 export const login = () => ({
     type:'LOGIN',
 });

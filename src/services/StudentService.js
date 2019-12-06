@@ -187,11 +187,9 @@ const StudentService = {
       title: 'Owner',
       field: 'user',
       render: rowData => {
-        const allUserOptions = (rowData['users']).map(v => { return {"value": v.id, "label": v.user_name}})
-        console.log(rowData['feedback'], rowData['toStage'], Stages.feedbackable, rowData['feedback'] || rowData['toStage'] in Stages.feedbackable)
-        return rowData['feedback'] || rowData['toStage'] in Stages.feedbackable ? <div><AssignedWork  
-          allUserOptions={allUserOptions}
-          rowData={rowData} /> </div>: null;
+        return rowData['feedback'] || rowData['toStage'] in Stages.feedbackable ? <div>
+            <AssignedWork rowData={rowData} />
+            </div>: null;
       }
     },
     {

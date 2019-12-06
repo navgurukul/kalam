@@ -162,9 +162,8 @@ const StudentService = {
       title: 'Feedback',
       field: 'feedback',
       render: rowData => {
-        console.log(rowData['feedback'])
         return <div>
-          {rowData['feedback'] && rowData['feedback']['feedback'] && rowData['toStage'] in Stages.feedbackable ? <div><UpdateFeedback rowData={rowData} student_stage={rowData['toStage']} studentId={rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div> : null}
+          {rowData['feedback'] && rowData['feedback']['feedback'] ? <div><UpdateFeedback rowData={rowData} student_stage={rowData['toStage']} studentId={rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div> : null}
           {rowData['toStage'] in Stages.feedbackable && (!rowData['feedback'] || !rowData['feedback']['feedback'] ) ? <StudentFeedback rowData={rowData} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id} /> : null}
         </div>
       }
@@ -174,6 +173,7 @@ const StudentService = {
       field: 'user',
       render: rowData => {
         const allUserOptions = (rowData['users']).map(v => { return {"value": v.id, "label": v.user_name}})
+        console.log(rowData['feedback'], rowData['toStage'], Stages.feedbackable, rowData['feedback'] || rowData['toStage'] in Stages.feedbackable)
         return rowData['feedback'] || rowData['toStage'] in Stages.feedbackable ? <div><AssignedWork  
           allUserOptions={allUserOptions}
           rowData={rowData} /> </div>: null;

@@ -11,6 +11,7 @@ import configureStore from './store/config/configureStore';
 import { logout } from './store/actions/auth';
 
 const store = configureStore();
+
 store.subscribe(() => {
   // console.log(store.getState());
 });

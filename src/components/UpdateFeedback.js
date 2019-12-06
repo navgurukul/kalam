@@ -39,7 +39,7 @@ const styles = theme => ({
 
 export class UpdateFeedback extends React.Component {
 
-  async updateFeedbck() {
+  async updateFeedback() {
     try {
       this.props.fetchingStart()
       const { rowData } = this.props;
@@ -66,7 +66,7 @@ export class UpdateFeedback extends React.Component {
     this.setState({
         loading:true,
     })
-    this.updateFeedbck();
+    this.updateFeedback();
   };
 
   validate = () => {};

@@ -3,9 +3,9 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
 import { withSnackbar } from 'notistack';
+import { EventEmitter } from './events';
 
 const baseUrl = process.env.API_URL;
-import { EventEmitter } from './events';
 const animatedComponents = makeAnimated();
 
 export class StageSelect extends React.Component {
@@ -25,7 +25,6 @@ export class StageSelect extends React.Component {
         this.props.enqueueSnackbar('stage is successfully changed!',{ variant: 'success' });
         EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
       });
-      // this.state.selectedOption = selectedValue;
       EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
     }catch (e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });

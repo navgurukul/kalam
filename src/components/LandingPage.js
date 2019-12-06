@@ -31,8 +31,6 @@ const styles = theme => ({
 });
 
 export class LandingPage extends React.Component {
-  
-  
   responseGoogle = (response) => {
     axios.post(`${baseUrl}users/login/google`, { idToken: response.tokenObj.id_token })
       .then((resp) => {

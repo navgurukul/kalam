@@ -13,31 +13,37 @@ export class StageSelect extends React.Component {
   constructor (props) {
     super(props);
     const { rowData } = props;
-    this.state = {
-      selectedOption: undefined,
-    }
   }
   
   handleChange = selectedValue => {
     // const { selectedOption } = this.state
-    const { rowData } = this.props
-    this.state.selectedOption = selectedValue;
-    const { value } = this.state.selectedOption;
-    axios.post(`${baseUrl}students/assinge_feedback_work/${this.props.studentId}`, { 
-        howAssinge: rowData['loggedInUser'].user_name,
-        toAssinge: value,
-     })
-    .then(() => {
-      this.props.enqueueSnackbar(`successfully Assinged work for ${value}`,{ variant: 'success' });
-      EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
-    })
-    // this.state.selectedOption = selectedValue;
-    EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
+    try{
+      const { rowData } = this.props
+      const { label } =  selectedValue;
+      axios.post(`${baseUrl}students/assinge_feedback_work`, { 
+          whoAssinge: rowData['loggedInUser'].user_name,
+          toAssinge: label,
+          student_stage: rowData['toStage'],
+          studentId: rowData['studentId']
+      })
+      .then(() => {
+        this.props.enqueueSnackbar(`successfully Assinged work for ${label}`,{ variant: 'success' });
+        EventEmitter.dispatch("transitionsChange", {selectedValue: selectedValue, rowData: rowData});
+      })
+      // this.state.selectedOption = selectedValue;
+      EventEmitter.dispatch("transitionsChange", {selectedValue: selectedValue, rowData: rowData});
+    } catch(e) {
+      this.props.enqueueSnackbar(e, { variant: 'error' });
+    }
   }
 
   render = () => {
     const { allUserOptions, rowData } = this.props;
-    const selectedValue = { value: rowData['loggedInUser'].user_name, label: rowData['loggedInUser'].user_name }
+    let selectedValue = { value: null, label: null };
+    
+    if (rowData['feedback']) {
+      selectedValue = { value: rowData['feedback']['toAssinge'], label: rowData['feedback']['toAssinge'] };
+    }
 
     return <Select
         className={"filterSelectStage"}

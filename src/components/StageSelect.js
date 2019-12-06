@@ -13,23 +13,23 @@ export class StageSelect extends React.Component {
   constructor (props) {
     super(props);
     const { rowData } = props;
-    this.state = {
-      selectedOption: undefined,
-    }
   }
   
   handleChange = selectedValue => {
     // const { selectedOption } = this.state
-    const { rowData } = this.props
-    this.state.selectedOption = selectedValue;
-    const {value} = this.state.selectedOption;
-    axios.post(`${baseUrl}students/chnageStage/${this.props.studentId}`, { stage: value })
-    .then(() => {
-      this.props.enqueueSnackbar('stage is successfully changed!',{ variant: 'success' });
+    try{
+      const { rowData } = this.props;
+      const { value } = selectedValue;
+      axios.post(`${baseUrl}students/chnageStage/${this.props.studentId}`, { stage: value })
+      .then(() => {
+        this.props.enqueueSnackbar('stage is successfully changed!',{ variant: 'success' });
+        EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
+      });
+      // this.state.selectedOption = selectedValue;
       EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
-    })
-    // this.state.selectedOption = selectedValue;
-    EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
+    }catch (e) {
+      this.props.enqueueSnackbar(e, { variant: 'error' });
+    }
   }
 
   render = () => {

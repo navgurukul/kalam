@@ -10,15 +10,15 @@ export const PublicRoute = ({
   ...rest
 }) => (
     <Route {...rest} component={(props) => (
-      isAuthenticated ? (
-        <Redirect to="/students" />
-      ) : (
-        <React.Fragment>
-          <Header/>
-          <Component {...props} />
-          <Footer/>
-        </React.Fragment>
-      )
+      // isAuthenticated ? (
+      //   <Redirect to="/students" />
+      // ) : (
+      <React.Fragment>
+        <Header/>
+        <Component {...props} />
+        <Footer/>
+      </React.Fragment>
+      // )
     )} />
   );
 

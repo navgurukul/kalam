@@ -111,7 +111,6 @@ export class AdmissionsDash extends React.Component {
     const rowIds = this.state.data.map(x=>x.id)
     const rowIndex = rowIds.indexOf(studentId);
     let dataElem = this.state.data[rowIndex];
-    console.log(dataElem,"pralhad")
     dataElem.transitions = response.data.data;
 
     let newData = this.state.data;

@@ -8,9 +8,9 @@ import AppRouter from './routers/AppRouter';
 import './styles/styles.css';
 import { theme } from './theme/theme';
 import configureStore from './store/config/configureStore';
-import { logout } from './store/actions/auth';
 
 const store = configureStore();
+
 store.subscribe(() => {
   // console.log(store.getState());
 });

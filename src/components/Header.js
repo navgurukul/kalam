@@ -28,7 +28,7 @@ import {withRouter} from 'react-router-dom';
 import Image from 'material-ui-image';
 import ModalStages from './ModalStages'
 
-class Header extends React.Component {
+export class Header extends React.Component {
   
   constructor(props) {
     super(props);

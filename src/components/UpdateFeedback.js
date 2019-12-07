@@ -7,16 +7,17 @@ import { Button } from '@material-ui/core';
 import { FormControl, InputLabel, Input, FormHelperText } from '@material-ui/core';
 import { changeFetching } from '../store/actions/auth';
 import {withRouter} from 'react-router-dom';
+
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Dialog } from '@material-ui/core';
-import Spinner from 'react-spinner-material';
+
 import { withSnackbar } from 'notistack';
 import {Box} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import { th } from 'date-fns/locale';
 import { EventEmitter } from './events';
+
 const CONSTANTS = require('../constant');
 const baseUrl = process.env.API_URL;
 
@@ -39,7 +40,7 @@ const styles = theme => ({
 
 export class UpdateFeedback extends React.Component {
 
-  async updateFeedbck() {
+  async updateFeedback() {
     try {
       this.props.fetchingStart()
       const { rowData } = this.props;
@@ -66,7 +67,7 @@ export class UpdateFeedback extends React.Component {
     this.setState({
         loading:true,
     })
-    this.updateFeedbck();
+    this.updateFeedback();
   };
 
   validate = () => {};
@@ -126,7 +127,6 @@ export class UpdateFeedback extends React.Component {
                     <FormControl>
                         <InputLabel id="demo-simple-select-readonly-label">Status</InputLabel>
                         <Select
-                          labelId="demo-simple-select-readonly-label"
                           id="demo-simple-select-readonly"
                           name = "status"
                           value={this.state.status}

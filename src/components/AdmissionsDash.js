@@ -17,7 +17,7 @@ import Box from '@material-ui/core/Box';
 
 import { theme } from '../theme/theme';
 
-import { changeFetching } from '../store/actions/auth';
+import { changeFetching, setupUsers } from '../store/actions/auth';
 
 import { withRouter } from 'react-router-dom';
 
@@ -66,7 +66,9 @@ export class AdmissionsDash extends React.Component {
     } else {
       this.dataType = 'softwareCourse'
     }
-    this.dataURL = baseURL + 'students';
+    this.studentsURL = baseURL + 'students';
+    this.usersURL = baseURL + 'users/getall';
+
     this.loggedInUser = this.props.loggedInUser;
 
     this.state = {
@@ -126,17 +128,17 @@ export class AdmissionsDash extends React.Component {
 
   changeDataType = option => {
     this.dataType = option.value;
-    this.fetchUsers();
+    this.fetchStudents();
   }
 
   changeFromDate = date => {
     this.fromDate = date;
-    this.fetchUsers();
+    this.fetchStudents();
   }
 
   changeToDate = date => {
     this.toDate = date;
-    this.fetchUsers();
+    this.fetchStudents();
   }
 
   handleChange = (field, filterFn) => {
@@ -241,6 +243,8 @@ export class AdmissionsDash extends React.Component {
         )
     })
 
+    console.log("column transitions", StudentService.columnTransitions[this.dataType])
+
     return <Box>
       <MuiThemeProvider theme={theme}>
         {options}
@@ -251,11 +255,11 @@ export class AdmissionsDash extends React.Component {
           data={this.state.sData ? this.state.sData : this.state.data}
           icons={GlobalService.tableIcons}
           detailPanel={rowData => {
-            let newData = rowData.transitions.map(v => ({...v, loggedInUser: this.loggedInUser }))
+            let newData = rowData.transitions.map(v => ({...v, loggedInUser: this.loggedInUser}))
             return (
               <Box className={classes.innerTable} my={2}>
                 <MaterialTable
-                  columns={StudentService.columnsTransitions}
+                  columns={StudentService.columnTransitions[this.dataType]}
                   data={newData}
                   icons={GlobalService.tableIcons}
                   options={{
@@ -287,6 +291,7 @@ export class AdmissionsDash extends React.Component {
   }
 
   componentDidMount() {
+    this.fetchStudents();
     this.fetchUsers();
   }
 
@@ -298,7 +303,19 @@ export class AdmissionsDash extends React.Component {
   async fetchUsers() {
     try {
       this.props.fetchingStart()
-      // response = ngFetch(this.dataURL, 'GET', {
+      const response = await axios.get(this.usersURL, {});
+      this.props.usersSetup(response.data.data);
+      this.props.fetchingFinish()
+    } catch (e) {
+      console.log(e)
+      this.props.fetchingFinish()
+    }
+  }
+
+  async fetchStudents() {
+    try {
+      this.props.fetchingStart()
+      // response = ngFetch(this.studentsURL, 'GET', {
       //   params: {
       //     dataType: this.dataType,
       //     fromDate: this.fromDate,
@@ -306,15 +323,14 @@ export class AdmissionsDash extends React.Component {
       //   }
       // }, true);
 
-      const response = await axios.get(this.dataURL, {
+      const response = await axios.get(this.studentsURL, {
         params: {
           dataType: this.dataType,
           fromDate: this.fromDate,
           toDate: this.toDate
         }
-      }
-      );
-      this.dataSetup(response.data.data)
+      });
+      this.dataSetup(response.data)
     } catch (e) {
       console.log(e)
       this.props.fetchingFinish()
@@ -329,7 +345,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchingStart: () => dispatch(changeFetching(true)),
-  fetchingFinish: () => dispatch(changeFetching(false))
+  fetchingFinish: () => dispatch(changeFetching(false)),
+  usersSetup: (users) => dispatch(setupUsers(users))
 });
 
 export default withRouter(withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(AdmissionsDash)))

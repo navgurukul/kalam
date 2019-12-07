@@ -64,6 +64,21 @@ const genderColumn = {
   filtering: false
 }
 
+const stagePartnerColumn = {
+  title: 'Stage',
+  field: 'stageTitle',
+  selectFilter: true,
+  sfMulti: true,
+  sfTitle: 'stages',
+  render: rowData => {
+    return <Tooltip title={rowData.stageDesc}>
+      <Box data-id={rowData.stage}>
+        {rowData.stageTitle}
+      </Box>
+    </Tooltip>
+  }
+}
+
 const stageColumn = {
   title: 'Stage',
   field: 'stageTitle',
@@ -104,6 +119,69 @@ const lastUpdatedColumn = {
   filtering: false
 }
 
+const stageColumnTransition = {
+  title: 'Stage',
+  field: 'toStage',
+  render: rowData => {
+    return rowData['toStage'] in Stages.data ? Stages.data[rowData['toStage']].title : rowData['toStage'];
+  }
+}
+
+const whenColumnTransition = {
+  title: 'When?',
+  field: 'createdAt',
+  render: rowData => {
+    return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
+  },
+  defaultSort: 'desc'
+}
+
+const descriptionColumnTransition = {
+  title: 'Description',
+  render: rowData => {
+    return rowData['toStage'] in Stages.data && 'description' in Stages.data[rowData['toStage']] ? Stages.data[rowData['toStage']].description : "No Description Added Yet.";
+  }
+}
+
+const feedbackColumnTransition = {
+  title: 'Feedback',
+  field: 'feedback',
+  render: rowData => {
+    return <div>
+      {rowData['feedback'] && rowData['feedback']['feedback'] ? <div><UpdateFeedback rowData={rowData} student_stage={rowData['toStage']} studentId={rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div> : null}
+      {rowData['toStage'] in Stages.feedbackable && (!rowData['feedback'] || !rowData['feedback']['feedback'] ) ? <StudentFeedback rowData={rowData} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id} /> : null}
+    </div>
+  }
+}
+
+const ownerColumnTransition = {
+  title: 'Owner',
+  field: 'user',
+  render: rowData => {
+    return rowData['feedback'] || rowData['toStage'] in Stages.feedbackable ? <div>
+        <AssignedWork rowData={rowData} />
+        </div>: null;
+  }
+}
+
+const timeColumnTransition = {
+  title: 'Time',
+  field: 'createdAt',
+  render: rowData => {
+    return rowData['feedback'] ? <Moment format="D MMM YYYY" withTitle>{rowData['feedback'].createdAt}</Moment> : null;
+  },
+  defaultSort: 'desc'
+}
+
+const statusColumnTransition = {
+  title: 'Status',
+  field: 'status',
+  render: rowData => {
+    return rowData['feedback'] ? rowData['feedback']['state'] : null;
+  }
+}
+
+
 const StudentService = {
   columns: {
     requestCallback: [
@@ -119,7 +197,7 @@ const StudentService = {
       numberColumn,
       marksColumn,
       genderColumn,
-      stageColumn,
+      stagePartnerColumn,
       addedAtColumn,
       lastUpdatedColumn
     ],
@@ -136,64 +214,33 @@ const StudentService = {
       lastUpdatedColumn,
     ]
   },
-  columnsTransitions: [
-    {
-      title: 'Stage',
-      field: 'toStage',
-      render: rowData => {
-        return rowData['toStage'] in Stages.data ? Stages.data[rowData['toStage']].title : rowData['toStage'];
-      }
-    },
-    {
-      title: 'When?',
-      field: 'createdAt',
-      render: rowData => {
-        return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
-      },
-      defaultSort: 'desc'
-    },
-    {
-      title: 'Description',
-      render: rowData => {
-        return rowData['toStage'] in Stages.data && 'description' in Stages.data[rowData['toStage']] ? Stages.data[rowData['toStage']].description : "No Description Added Yet.";
-      }
-    },
-    {
-      title: 'Feedback',
-      field: 'feedback',
-      render: rowData => {
-        return <div>
-          {rowData['feedback'] && rowData['feedback']['feedback'] ? <div><UpdateFeedback rowData={rowData} student_stage={rowData['toStage']} studentId={rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div> : null}
-          {rowData['toStage'] in Stages.feedbackable && (!rowData['feedback'] || !rowData['feedback']['feedback'] ) ? <StudentFeedback rowData={rowData} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id} /> : null}
-        </div>
-      }
-    },
-    // {
-    //   title: 'Owner',
-    //   field: 'user',
-    //   render: rowData => {
-    //     const allUserOptions = (rowData['users']).map(v => { return {"value": v.id, "label": v.user_name}})
-    //     return rowData['feedback'] || rowData['toStage'] in Stages.feedbackable ? <div><AssignedWork  
-    //       allUserOptions={allUserOptions}
-    //       rowData={rowData} /> </div>: null;
-    //   }
-    // },
-    {
-      title: 'Time',
-      field: 'createdAt',
-      render: rowData => {
-        return rowData['feedback'] ? <Moment format="D MMM YYYY" withTitle>{rowData['feedback'].createdAt}</Moment> : null;
-      },
-      defaultSort: 'desc'
-    },
-    {
-      title: 'Status',
-      field: 'status',
-      render: rowData => {
-        return rowData['feedback'] ? rowData['feedback']['state'] : null;
-      }
-    },
-  ],
+
+  columnTransitions: {
+    requestCallback: [
+      stageColumnTransition,
+      whenColumnTransition,
+      descriptionColumnTransition,
+      feedbackColumnTransition,
+      ownerColumnTransition,
+      timeColumnTransition,
+      statusColumnTransition
+    ],
+    partnerDashboard: [
+      stageColumnTransition,
+      whenColumnTransition,
+      descriptionColumnTransition
+    ],
+    softwareCourse: [
+      stageColumnTransition,
+      whenColumnTransition,
+      descriptionColumnTransition,
+      feedbackColumnTransition,
+      ownerColumnTransition,
+      timeColumnTransition,
+      statusColumnTransition
+    ]
+  },
+  
   setupPre: (columns) => {
     return columns.map((x) => {
       if ('selectFilter' in x)
@@ -201,6 +248,7 @@ const StudentService = {
       return x
     })
   },
+
   setupPost: (columns) => {
     return columns.map((x) => {
       if ('selectFilter' in x)
@@ -210,6 +258,7 @@ const StudentService = {
       return x
     })
   },
+  
   dConvert: (x) => {
     try {
       x['number'] = x['contacts'][0]['mobile'];

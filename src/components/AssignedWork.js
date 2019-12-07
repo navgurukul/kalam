@@ -2,17 +2,18 @@ import React from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
+import { connect } from 'react-redux';
+
 import { withSnackbar } from 'notistack';
+import { EventEmitter } from './events';
 
 const baseUrl = process.env.API_URL;
-import { EventEmitter } from './events';
 const animatedComponents = makeAnimated();
 
-export class StageSelect extends React.Component {
+export class AssignedWork extends React.Component {
 
   constructor (props) {
     super(props);
-    const { rowData } = props;
   }
   
   handleChange = selectedValue => {
@@ -35,7 +36,8 @@ export class StageSelect extends React.Component {
   }
 
   render = () => {
-    const { allUserOptions, rowData } = this.props;
+    const { rowData } = this.props;
+    const allUserOptions = this.props.users.map(x=> {return {label:x.user_name, value: x.id}})
     let selectedValue = { value: null, label: null };
     
     if (rowData['feedback']) {
@@ -56,4 +58,8 @@ export class StageSelect extends React.Component {
   }
 }
 
-export default withSnackbar(StageSelect);
+const mapStateToProps = (state) => ({
+  users: state.auth.users,
+});
+
+export default withSnackbar(connect(mapStateToProps, undefined)(AssignedWork))

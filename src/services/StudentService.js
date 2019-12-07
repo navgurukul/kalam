@@ -4,7 +4,7 @@ import Moment from 'react-moment';
 import Tooltip from '@material-ui/core/Tooltip';
 import Box from '@material-ui/core/Box';
 import StageSelect from '../components/StageSelect';
-import AssignedWork from '../components/AssignedWork'
+import OwnerSelect from '../components/OwnerSelect'
 import StudentFeedback from '../components/FeedbackPage';
 import UpdateFeedback from '../components/UpdateFeedback';
 import Select from 'react-select';
@@ -159,7 +159,7 @@ const ownerColumnTransition = {
   field: 'user',
   render: rowData => {
     return rowData['feedback'] || rowData['toStage'] in Stages.feedbackable ? <div>
-        <AssignedWork rowData={rowData} />
+        <OwnerSelect rowData={rowData} />
         </div>: null;
   }
 }
@@ -240,7 +240,7 @@ const StudentService = {
       statusColumnTransition
     ]
   },
-  
+
   setupPre: (columns) => {
     return columns.map((x) => {
       if ('selectFilter' in x)

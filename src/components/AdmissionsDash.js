@@ -330,7 +330,7 @@ export class AdmissionsDash extends React.Component {
           toDate: this.toDate
         }
       });
-      this.dataSetup(response.data)
+      this.dataSetup(response.data.data)
     } catch (e) {
       console.log(e)
       this.props.fetchingFinish()

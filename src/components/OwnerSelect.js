@@ -10,7 +10,7 @@ import { EventEmitter } from './events';
 const baseUrl = process.env.API_URL;
 const animatedComponents = makeAnimated();
 
-export class AssignedWork extends React.Component {
+export class OwnerSelect extends React.Component {
 
   constructor (props) {
     super(props);
@@ -37,7 +37,7 @@ export class AssignedWork extends React.Component {
 
   render = () => {
     const { rowData } = this.props;
-    const allUserOptions = this.props.users.map(x=> {return {label:x.user_name, value: x.id}})
+    const allUserOptions = this.props.users.map(x=> {return {label:x.user, value: x.id}})
     let selectedValue = { value: null, label: null };
     
     if (rowData['feedback']) {
@@ -62,4 +62,4 @@ const mapStateToProps = (state) => ({
   users: state.auth.users,
 });
 
-export default withSnackbar(connect(mapStateToProps, undefined)(AssignedWork))
+export default withSnackbar(connect(mapStateToProps, undefined)(OwnerSelect))

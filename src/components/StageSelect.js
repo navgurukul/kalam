@@ -23,11 +23,9 @@ export class StageSelect extends React.Component {
       axios.post(`${baseUrl}students/chnageStage/${this.props.studentId}`, { stage: value })
       .then(() => {
         this.props.enqueueSnackbar('stage is successfully changed!',{ variant: 'success' });
-        EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
+        EventEmitter.dispatch("stageChange", { selectedValue: selectedValue, rowData: rowData });
       });
-      // this.state.selectedOption = selectedValue;
-      EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
-    }catch (e) {
+    } catch (e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });
     }
   }

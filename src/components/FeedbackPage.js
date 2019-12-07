@@ -42,6 +42,7 @@ export class StudentFeedback extends React.Component {
   async addFeedbck() {
     try {
       this.props.fetchingStart()
+      const { rowData } = this.props;
       const response = await axios.post(this.dataURL, {
         "student_stage": this.stage,
         "feedback": this.state.feedback,
@@ -72,7 +73,7 @@ export class StudentFeedback extends React.Component {
 
   constructor(props) {
     super(props);
-    this.dataURL = baseUrl+'students/feedback/'+this.props.studentId +'/' + this.props.userId;
+    this.dataURL = `${baseUrl}students/feedback/${this.props.studentId}/${this.props.userId}`;
     this.stage = this.props.stage;
     this.state = {
       "status": "",
@@ -161,4 +162,4 @@ const mapDispatchToProps = (dispatch)=>({
   fetchingFinish: () => dispatch(changeFetching(false))
 });
 
-export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(withSnackbar(StudentFeedback))))
+export default withSnackbar(withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(StudentFeedback))))

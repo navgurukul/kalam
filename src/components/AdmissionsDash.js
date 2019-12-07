@@ -106,8 +106,9 @@ export class AdmissionsDash extends React.Component {
   transitionsChangeEvent = async (data) => {
     // do api call for new transitions data
     const studentId = data.rowData['studentId'];
+    console.log(studentId, "Pralhad")
     const response = await axios.get(`${baseURL}students/transitions/${studentId}`)
-
+    console.log(response)
     const rowIds = this.state.data.map(x=>x.id)
     const rowIndex = rowIds.indexOf(studentId);
     let dataElem = this.state.data[rowIndex];
@@ -116,7 +117,7 @@ export class AdmissionsDash extends React.Component {
     let newData = this.state.data;
     newData[rowIndex] = dataElem;
 
-    this.setState({data:newData });
+    this.setState({ data:newData });
     // set new data 
     // call setData
     // fire this event on updating the owner, status or the feedback of the user
@@ -160,12 +161,9 @@ export class AdmissionsDash extends React.Component {
 
   }
 
-  dataSetup = (response) => {
+  dataSetup = (data) => {
     columns = StudentService.setupPre(StudentService.columns[this.dataType]);
-    const data = response.data;
-    const users = response.users;
     for (let i = 0; i < data.length; i++) {
-      data[i]['users'] = users; 
       data[i] = StudentService.dConvert(data[i])
       columns = StudentService.addOptions(columns, data[i]);
     }
@@ -253,7 +251,7 @@ export class AdmissionsDash extends React.Component {
           data={this.state.sData ? this.state.sData : this.state.data}
           icons={GlobalService.tableIcons}
           detailPanel={rowData => {
-            let newData = rowData.transitions.map(v => ({...v, loggedInUser: this.loggedInUser, users: rowData.users}))
+            let newData = rowData.transitions.map(v => ({...v, loggedInUser: this.loggedInUser }))
             return (
               <Box className={classes.innerTable} my={2}>
                 <MaterialTable
@@ -316,7 +314,7 @@ export class AdmissionsDash extends React.Component {
         }
       }
       );
-      this.dataSetup(response.data)
+      this.dataSetup(response.data.data)
     } catch (e) {
       console.log(e)
       this.props.fetchingFinish()

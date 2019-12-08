@@ -91,7 +91,7 @@ export class LandingPage extends React.Component {
             <Box style={{height: theme.spacing(5)}} />
             <Box>
               <GoogleLogin
-                clientId="994191094832-lfu0fv7euqtmt4i2m8toc7gnuajq53pr.apps.googleusercontent.com"
+                clientId="34917283366-b806koktimo2pod1cjas8kn2lcpn7bse.apps.googleusercontent.com"
                 buttonText="Login"
                 onSuccess={this.responseGoogle}
                 onFailure={this.errr}

@@ -14,7 +14,7 @@ const allStagesOptions = Object.keys(Stages.data).map(x => { return {value: x, l
 const allStatusOptions = Object.keys(Stages.status).map(x => { return {value: x, label : x in Stages.status ? Stages.status[x].title : x }} );
 const nameColumn = {
   title: 'Set',
-  field: 'setName',
+  field: 'SetName',
   filtering: false,
   selectFilter: true,
   sfMulti: true,

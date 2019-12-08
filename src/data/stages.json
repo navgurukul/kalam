@@ -153,5 +153,27 @@
     "pendingEnglishInterview": {
       "title": "English Interview Pending"
     }
+  },
+  "status": {
+    "pass": {
+      "title": "Passed",
+      "description": "Student is passed in this stage."
+    },
+    "failed": {
+      "title": "Failed",
+      "description": "Student is  in this stage."
+    },
+    "pending": {
+      "title": "Pending",
+      "description": "Student stage is on pending state."
+    },
+    "forReview": {
+      "title": "For Review",
+      "description": "student stage for review"
+    },
+    "done": {
+      "title": "Done",
+      "description": "Query resolved"
+    }
   }
 }

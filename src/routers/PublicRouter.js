@@ -9,17 +9,18 @@ export const PublicRoute = ({
   component: Component,
   ...rest
 }) => (
-    <Route {...rest} component={(props) => (
-      // isAuthenticated ? (
-      //   <Redirect to="/students" />
-      // ) : (
+    <Route {...rest} component={(props) => {
+      return (
+      isAuthenticated && props.match.path === '/' ? (
+        <Redirect to="/students" />
+      ) : (
       <React.Fragment>
         <Header/>
         <Component {...props} />
         <Footer/>
       </React.Fragment>
-      // )
-    )} />
+      )
+    )}} />
   );
 
 const mapStateToProps = (state) => ({

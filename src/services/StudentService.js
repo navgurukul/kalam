@@ -4,13 +4,14 @@ import Moment from 'react-moment';
 import Tooltip from '@material-ui/core/Tooltip';
 import Box from '@material-ui/core/Box';
 import StageSelect from '../components/StageSelect';
-import AssignedWork from '../components/AssignedWork'
+import OwnerSelect from '../components/OwnerSelect';
+import StatusSelect from '../components/StatusSelect'
 import StudentFeedback from '../components/FeedbackPage';
 import UpdateFeedback from '../components/UpdateFeedback';
 import Select from 'react-select';
-const CONSTANTS = require('../constant');
 
 const allStagesOptions = Object.keys(Stages.data).map(x => { return {value: x, label : x in Stages.data ? Stages.data[x].title : x }} );
+const allStatusOptions = Object.keys(Stages.status).map(x => { return {value: x, label : x in Stages.status ? Stages.status[x].title : x }} );
 const nameColumn = {
   title: 'Set',
   field: 'setName',
@@ -159,7 +160,7 @@ const ownerColumnTransition = {
   field: 'user',
   render: rowData => {
     return rowData['feedback'] || rowData['toStage'] in Stages.feedbackable ? <div>
-        <AssignedWork rowData={rowData} />
+        <OwnerSelect rowData={rowData} />
         </div>: null;
   }
 }
@@ -177,7 +178,17 @@ const statusColumnTransition = {
   title: 'Status',
   field: 'status',
   render: rowData => {
-    return rowData['feedback'] ? rowData['feedback']['state'] : null;
+    if (rowData['feedback']){
+      const state = rowData['feedback']['state'];
+      rowData['statusTitle'] = state in Stages.status ? Stages.status[state].title : state;
+    }
+    return rowData['feedback'] ? <div>
+      <StatusSelect
+      allStatusOptions={allStatusOptions}
+      studentId={rowData['feedback'].studentId}
+      rowData={rowData}
+    />
+    </div> : null;
   }
 }
 

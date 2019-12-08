@@ -8,38 +8,40 @@ import { EventEmitter } from './events';
 const baseUrl = process.env.API_URL;
 const animatedComponents = makeAnimated();
 
-export class StageSelect extends React.Component {
+export class StatusSelect extends React.Component {
 
   constructor (props) {
     super(props);
-    const { rowData } = props;
+    this.dataURL = baseUrl+'students/feedback/'+this.props.studentId;
   }
   
   handleChange = selectedValue => {
     // const { selectedOption } = this.state
+    const stage = this.props.rowData['toStage']
+    console.log(this.props.studentId)
     try{
       const { rowData } = this.props;
       const { value } = selectedValue;
-      axios.post(`${baseUrl}students/chnageStage/${this.props.studentId}`, { stage: value })
+      axios.put(this.dataURL, { student_stage: stage, state: value })
       .then(() => {
-        this.props.enqueueSnackbar('stage is successfully changed!',{ variant: 'success' });
-        EventEmitter.dispatch("stageChange", { selectedValue: selectedValue, rowData: rowData });
+        this.props.enqueueSnackbar('state is successfully changed!',{ variant: 'success' });
+        EventEmitter.dispatch("transitionsChange", {rowData: rowData});
       });
-      EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
+      EventEmitter.dispatch("transitionsChange", {rowData: rowData});
     }catch (e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });
     }
   }
 
   render = () => {
-    const { allStagesOptions, rowData } = this.props;
-    const selectedValue = { value: rowData.stage, label: rowData.stageTitle }
+    const { allStatusOptions, rowData } = this.props;
+    const selectedValue = { value: rowData['feedback']['state'], label: rowData.statusTitle }
     return <Select
         className={"filterSelectStage"}
         // defaultValue={selectedValue}
         value={selectedValue}
         onChange={this.handleChange}
-        options={allStagesOptions}
+        options={allStatusOptions}
         // placeholder={"Select "+this.props.filter.name+" ..."}
         isClearable={false}
         components={animatedComponents}
@@ -48,4 +50,4 @@ export class StageSelect extends React.Component {
   }
 }
 
-export default withSnackbar(StageSelect);
+export default withSnackbar(StatusSelect);

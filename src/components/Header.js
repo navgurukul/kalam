@@ -38,8 +38,6 @@ export class Header extends React.Component {
       componentsmenuopen: false,
       modalOpen: false
     };
-
-    console.log('inside header component ', this.props.isAuthenticated);
   }
 
   handleChange = (event, index, value) => this.setState({ value });
@@ -71,7 +69,7 @@ export class Header extends React.Component {
     </Button>) 
     : ( 
     <Button color="inherit" align="right">
-      <Link to="/login">
+      <Link to="/">
         Login
       </Link>
     </Button>)

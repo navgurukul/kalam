@@ -17,7 +17,6 @@ import {Box} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { EventEmitter } from './events';
 
-const CONSTANTS = require('../constant');
 const baseUrl = process.env.API_URL;
 
 const styles = theme => ({
@@ -45,8 +44,7 @@ export class StudentFeedback extends React.Component {
       const { rowData } = this.props;
       const response = await axios.post(this.dataURL, {
         "student_stage": this.stage,
-        "feedback": this.state.feedback,
-        "state": CONSTANTS.status[this.state.status],
+        "feedback": this.state.feedback
         }).then(response => {
             this.setState({
                 dialogOpen: false,
@@ -76,7 +74,6 @@ export class StudentFeedback extends React.Component {
     this.dataURL = `${baseUrl}students/feedback/${this.props.studentId}/${this.props.userId}`;
     this.stage = this.props.stage;
     this.state = {
-      "status": "",
       "feedback": "",
       "dialogOpen": false,
     }
@@ -121,21 +118,6 @@ export class StudentFeedback extends React.Component {
             >
                 <form className={classes.container}>
                     <h1 style={{color: '#f05f40',textAlign: 'center'}}>Student Feedback</h1>
-                    <FormControl>
-                        <InputLabel id="demo-simple-select-readonly-label">Status</InputLabel>
-                        <Select
-                          id="demo-simple-select-readonly"
-                          name = "status"
-                          value={this.state.status}
-                          onChange={this.handleChange('status')}
-                        >
-                            <MenuItem value=""><em>None</em></MenuItem>
-                            {CONSTANTS.status.map((status, index)=> {
-                                return <MenuItem key={index} value={index}>{status}</MenuItem>
-                            })}
-                        </Select>
-                        <FormHelperText>Student ke Feedback par uska status bataye.</FormHelperText>
-                    </FormControl>
                     <TextField
                       id="outlined-multiline-static"
                       label="Feedback"

@@ -108,9 +108,7 @@ export class AdmissionsDash extends React.Component {
   transitionsChangeEvent = async (data) => {
     // do api call for new transitions data
     const studentId = data.rowData['studentId'];
-    console.log(studentId, "Pralhad")
     const response = await axios.get(`${baseURL}students/transitions/${studentId}`)
-    console.log(response)
     const rowIds = this.state.data.map(x=>x.id)
     const rowIndex = rowIds.indexOf(studentId);
     let dataElem = this.state.data[rowIndex];

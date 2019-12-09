@@ -15,7 +15,6 @@ const allStatusOptions = Object.keys(Stages.status).map(x => { return {value: x,
 const nameColumn = {
   title: 'Set',
   field: 'SetName',
-  filtering: false,
   selectFilter: true,
   sfMulti: true,
   sfTitle: 'set',
@@ -41,7 +40,6 @@ const numberColumn = {
   render: rowData => {
     return '+91 ' + rowData.number;
   },
-  filtering: false
 }
 
 const marksColumn = {
@@ -70,6 +68,7 @@ const stagePartnerColumn = {
   field: 'stageTitle',
   selectFilter: true,
   sfMulti: true,
+  filtering: false,
   sfTitle: 'stages',
   render: rowData => {
     return <Tooltip title={rowData.stageDesc}>
@@ -85,6 +84,7 @@ const stageColumn = {
   field: 'stageTitle',
   selectFilter: true,
   sfMulti: true,
+  filtering: false,
   sfTitle: 'stages',
   render: rowData => {
     const selectedValue = {"value": rowData.stage, "label": rowData.stageTitle};

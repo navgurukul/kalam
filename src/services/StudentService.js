@@ -11,7 +11,7 @@ import UpdateFeedback from '../components/UpdateFeedback';
 const allStagesOptions = Object.keys(allStages).map(x => { return { value: x, label: x in allStages ? allStages[x] : x } });
 const allStatusOptions = Object.keys(status).map(x => { return { value: x, label: x in status ? status[x] : x } });
 
-const nameColumn = {
+const setColumn = {
   title: 'Set',
   field: 'SetName',
   selectFilter: true,
@@ -19,7 +19,10 @@ const nameColumn = {
   sfTitle: 'set',
 };
 
-const titleColumn = { title: 'Name', field: 'name', filtering: false };
+const nameColumn = {
+  title: 'Name',
+  field: 'name',
+};
 
 const cityColumn = {
   title: 'City',
@@ -210,8 +213,8 @@ const StudentService = {
       lastUpdatedColumn,
     ],
     partnerDashboard: [
+      setColumn,
       nameColumn,
-      titleColumn,
       cityColumn,
       stateColumn,
       numberColumn,
@@ -222,8 +225,8 @@ const StudentService = {
       lastUpdatedColumn
     ],
     softwareCourse: [
+      setColumn,
       nameColumn,
-      titleColumn,
       cityColumn,
       stateColumn,
       numberColumn,
@@ -285,8 +288,6 @@ const StudentService = {
 
     x.gender = x.gender == 1 ? 'Female' : 'Male';
     x.stageTitle = allStages[x.stage];
-
-    console.log(x.stageTitle)
 
     x.marks = x.enrolmentKey[0] ? parseInt(x.enrolmentKey[0].totalMarks, 10) : null;
     x.marks = isNaN(x.marks) ? null : x.marks;

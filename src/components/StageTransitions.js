@@ -4,25 +4,19 @@
 import 'date-fns';
 import React from 'react';
 import { connect } from 'react-redux';
-
 import MaterialTable from "material-table";
 import { withStyles } from '@material-ui/core/styles';
-
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
 
 import { theme } from '../theme/theme';
-
 import { changeFetching } from '../store/actions/auth';
-
 import { withRouter } from 'react-router-dom';
 
 import GlobalService from '../services/GlobalService';
 import StudentService from '../services/StudentService';
 
 import { EventEmitter } from './events';
-
-import makeAnimated from 'react-select/animated';
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;

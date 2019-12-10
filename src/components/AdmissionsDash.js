@@ -207,7 +207,6 @@ export class AdmissionsDash extends React.Component {
           />
         )
     })
-    
     return <Box>
       <MuiThemeProvider theme={theme}>
         {options}
@@ -233,6 +232,7 @@ export class AdmissionsDash extends React.Component {
             pageSize: 100,
             showTitle: false,
             toolbar: false,
+            filtering: true
           }}
         />
       </MuiThemeProvider>

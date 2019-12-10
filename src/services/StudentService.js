@@ -11,16 +11,18 @@ import UpdateFeedback from '../components/UpdateFeedback';
 const allStagesOptions = Object.keys(allStages).map(x => { return { value: x, label: x in allStages ? allStages[x] : x } });
 const allStatusOptions = Object.keys(status).map(x => { return { value: x, label: x in status ? status[x] : x } });
 
-const nameColumn = {
+const setColumn = {
   title: 'Set',
   field: 'SetName',
-  filtering: false,
   selectFilter: true,
   sfMulti: true,
   sfTitle: 'set',
 };
 
-const titleColumn = { title: 'Name', field: 'name', filtering: false };
+const nameColumn = {
+  title: 'Name',
+  field: 'name',
+};
 
 const cityColumn = {
   title: 'City',
@@ -40,7 +42,6 @@ const numberColumn = {
   render: rowData => {
     return '+91 ' + rowData.number;
   },
-  filtering: false
 }
 
 const marksColumn = {
@@ -69,6 +70,7 @@ const stagePartnerColumn = {
   field: 'stageTitle',
   selectFilter: true,
   sfMulti: true,
+  filtering: false,
   sfTitle: 'stages',
   render: rowData => {
     return <Box data-id={rowData.stage}>
@@ -82,6 +84,7 @@ const stageColumn = {
   field: 'stageTitle',
   selectFilter: true,
   sfMulti: true,
+  filtering: false,
   sfTitle: 'stages',
   render: rowData => {
     const selectedValue = { "value": rowData.stage, "label": rowData.stageTitle };
@@ -210,8 +213,8 @@ const StudentService = {
       lastUpdatedColumn,
     ],
     partnerDashboard: [
+      setColumn,
       nameColumn,
-      titleColumn,
       cityColumn,
       stateColumn,
       numberColumn,
@@ -222,8 +225,8 @@ const StudentService = {
       lastUpdatedColumn
     ],
     softwareCourse: [
+      setColumn,
       nameColumn,
-      titleColumn,
       cityColumn,
       stateColumn,
       numberColumn,

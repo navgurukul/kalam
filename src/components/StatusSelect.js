@@ -18,14 +18,13 @@ export class StatusSelect extends React.Component {
   handleChange = selectedValue => {
     // const { selectedOption } = this.state
     const stage = this.props.rowData['toStage']
-    console.log(this.props.studentId)
     try{
       const { rowData } = this.props;
       const { value } = selectedValue;
       axios.put(this.dataURL, { student_stage: stage, state: value })
       .then(() => {
         this.props.enqueueSnackbar('state is successfully changed!',{ variant: 'success' });
-        EventEmitter.dispatch("transitionsChange", {rowData: rowData});
+        EventEmitter.dispatch("transitionsChange"+this.props.studentId, {rowData: rowData});
       });
       EventEmitter.dispatch("transitionsChange", {rowData: rowData});
     }catch (e) {

@@ -286,21 +286,8 @@ const StudentService = {
     x.gender = x.gender == 1 ? 'Female' : 'Male';
     x.stageTitle = allStages[x.stage];
 
-    console.log(x.stageTitle)
-
     x.marks = x.enrolmentKey[0] ? parseInt(x.enrolmentKey[0].totalMarks, 10) : null;
     x.marks = isNaN(x.marks) ? null : x.marks;
-
-    let transitions = x['transitions'];
-    let latestTS = transitions.length ? transitions[0].createdAt : null;
-
-    if (transitions.length > 1) {
-      for (let i = 1; i < transitions.length; i++) {
-        latestTS = transitions[i]['createdAt'] > latestTS ? transitions[i]['createdAt'] : latestTS
-      }
-    }
-
-    x['lastUpdated'] = latestTS;
 
     return x
   },

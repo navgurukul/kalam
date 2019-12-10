@@ -8,8 +8,8 @@ import StatusSelect from '../components/StatusSelect'
 import StudentFeedback from '../components/FeedbackPage';
 import UpdateFeedback from '../components/UpdateFeedback';
 
-const allStagesOptions = Object.keys(allStages).map(x => { return { value: x, label: x in allStages ? allStages[x] : x } });
-const allStatusOptions = Object.keys(status).map(x => { return { value: x, label: x in status ? status[x] : x } });
+const allStagesOptions = Object.keys(allStages).map(x => { return { value: x, label: allStages[x] } });
+const allStatusOptions = Object.keys(status).map(x => { return { value: x, label: status[x] } });
 
 const setColumn = {
   title: 'Set',
@@ -22,6 +22,7 @@ const setColumn = {
 const nameColumn = {
   title: 'Name',
   field: 'name',
+  filtering: true
 };
 
 const cityColumn = {
@@ -87,7 +88,6 @@ const stageColumn = {
   filtering: false,
   sfTitle: 'stages',
   render: rowData => {
-    const selectedValue = { "value": rowData.stage, "label": rowData.stageTitle };
     return <StageSelect
       allStagesOptions={allStagesOptions}
       studentId={rowData['id']}
@@ -118,7 +118,7 @@ const stageColumnTransition = {
   title: 'Stage',
   field: 'toStage',
   render: rowData => {
-    return rowData['toStage'] in allStages ? allStages[rowData['toStage']] : rowData['toStage'];
+    return allStages[rowData['toStage']];
   }
 }
 

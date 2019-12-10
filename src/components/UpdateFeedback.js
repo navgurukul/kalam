@@ -1,16 +1,13 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 import axios from 'axios';
 import { Button } from '@material-ui/core';
-import { FormControl, InputLabel, Input, FormHelperText } from '@material-ui/core';
 import { changeFetching } from '../store/actions/auth';
 import {withRouter} from 'react-router-dom';
 
 import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import { Dialog } from '@material-ui/core';
 
 import { withSnackbar } from 'notistack';
@@ -51,7 +48,7 @@ export class UpdateFeedback extends React.Component {
                 dialogOpen: false,
             })
             this.props.enqueueSnackbar('Feedback updated successfully!',{ variant: 'success' });
-            EventEmitter.dispatch("transitionsChange", {rowData:rowData});
+            EventEmitter.dispatch("transitionsChange"+this.props.studentId, {rowData:rowData});
         })
       this.props.fetchingFinish();
     } catch (e) {

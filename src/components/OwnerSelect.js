@@ -28,7 +28,7 @@ export class OwnerSelect extends React.Component {
       })
       .then(() => {
         this.props.enqueueSnackbar(`successfully Assigned work for ${label}`,{ variant: 'success' });
-        EventEmitter.dispatch("transitionsChange", {rowData:rowData});
+        EventEmitter.dispatch("transitionsChange"+this.props.rowData.studentId, {rowData:rowData});
       })
     } catch(e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });

@@ -23,7 +23,7 @@ import { withRouter } from 'react-router-dom';
 
 import GlobalService from '../services/GlobalService';
 import StudentService from '../services/StudentService';
-
+import StageTransitions from './StageTransitions';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { EventEmitter } from './events';
 
@@ -34,19 +34,6 @@ const animatedComponents = makeAnimated();
 const baseURL = process.env.API_URL;
 
 const styles = theme => ({
-  innerTable: {
-    marginLeft: '3vw',
-    marginRight: '3vw',
-    width: '94vw',
-    marginTop: '5',
-    marginBottom: '5',
-    [theme.breakpoints.up('md')]: {
-      margin: 'auto',
-      width: '80%',
-      marginTop: 5,
-      marginBottom: 5
-    },
-  },
   clear: {
     clear: 'both'
   }
@@ -77,7 +64,6 @@ export class AdmissionsDash extends React.Component {
     }
 
     EventEmitter.subscribe('stageChange', this.stageChangeEvent);
-    EventEmitter.subscribe('transitionsChange', this.transitionsChangeEvent);
   }
 
   stageChangeEvent = (iData) => {
@@ -103,25 +89,6 @@ export class AdmissionsDash extends React.Component {
     newData[rowIndex] = dataElem;
 
     this.setState({data:newData });
-  }
-
-  transitionsChangeEvent = async (data) => {
-    // do api call for new transitions data
-    const studentId = data.rowData['studentId'];
-    const response = await axios.get(`${baseURL}students/transitions/${studentId}`)
-    const rowIds = this.state.data.map(x=>x.id)
-    const rowIndex = rowIds.indexOf(studentId);
-    let dataElem = this.state.data[rowIndex];
-    dataElem.transitions = response.data.data;
-
-    let newData = this.state.data;
-    newData[rowIndex] = dataElem;
-
-    this.setState({ data:newData });
-    // set new data 
-    // call setData
-    // fire this event on updating the owner, status or the feedback of the user
-    // this.setData({data: newData})
   }
 
   changeDataType = option => {
@@ -240,7 +207,6 @@ export class AdmissionsDash extends React.Component {
           />
         )
     })
-
     return <Box>
       <MuiThemeProvider theme={theme}>
         {options}
@@ -251,25 +217,11 @@ export class AdmissionsDash extends React.Component {
           data={this.state.sData ? this.state.sData : this.state.data}
           icons={GlobalService.tableIcons}
           detailPanel={rowData => {
-            let newData = rowData.transitions.map(v => ({...v, loggedInUser: this.loggedInUser}))
             return (
-              <Box className={classes.innerTable} my={2}>
-                <MaterialTable
-                  columns={StudentService.columnTransitions[this.dataType]}
-                  data={newData}
-                  icons={GlobalService.tableIcons}
-                  options={{
-                    search: false,
-                    paging: false,
-                    toolbar: false,
-                    showTitle: false,
-                    headerStyle: {
-                      color: theme.palette.primary.main,
-                      zIndex: 0
-                    },
-                  }}
-                />
-              </Box>
+              <StageTransitions
+                dataType={this.dataType}
+                studentId={rowData.id}
+              />
             )
           }}
           options={{
@@ -294,7 +246,6 @@ export class AdmissionsDash extends React.Component {
 
   componentWillUnmount() {
     EventEmitter.unsubscribe('stageChange');
-    EventEmitter.unsubscribe('transitionsChange');
   }
 
   async fetchUsers() {

@@ -97,6 +97,7 @@ export class AdmissionsDash extends React.Component {
   }
 
   changeFromDate = date => {
+    console.log(date, "pralhad")
     this.fromDate = date;
     this.fetchStudents();
   }
@@ -274,8 +275,8 @@ export class AdmissionsDash extends React.Component {
       const response = await axios.get(this.studentsURL, {
         params: {
           dataType: this.dataType,
-          fromDate: this.fromDate,
-          toDate: this.toDate
+          from: this.fromDate,
+          to: this.toDate
         }
       });
       this.dataSetup(response.data.data)

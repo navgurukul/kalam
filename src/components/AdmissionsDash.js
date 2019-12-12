@@ -97,7 +97,6 @@ export class AdmissionsDash extends React.Component {
   }
 
   changeFromDate = date => {
-    console.log(date, "pralhad")
     this.fromDate = date;
     this.fetchStudents();
   }

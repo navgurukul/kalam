@@ -38,7 +38,18 @@ export class MyTaskReport extends React.Component {
     this.state = {
       data: [],
     }
+  }
 
+  dataConvert = (data) => {
+    const newData = []
+    for (let i=0; i< data.length; i++) {
+      data[i].name = data[i].student.name;
+      delete data[i].student;
+      newData.push(data[i])      
+    }
+    this.setState({
+      data: newData,
+    })
   }
 
   render = () => {
@@ -85,9 +96,7 @@ export class MyTaskReport extends React.Component {
           user: user
         }
       });
-      this.setState({
-          data: response.data.data,
-      })
+      this.dataConvert(response.data.data);
       this.fetchingFinish();
     } catch (e) {
       console.log(e)

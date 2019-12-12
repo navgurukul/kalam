@@ -204,15 +204,6 @@ const statusColumnTransition = {
   }
 }
 
-const nameColumnMyreport = {
-  title: 'Name',
-  field: 'name',
-  render: rowData => {
-    return rowData.student.name
-  },
-  selectFilter: true,
-}
-
 const StageColumnMyreport = {
   title: 'Stage',
   field: 'student_stage'
@@ -222,6 +213,7 @@ const feedbackColumnMyreport = {
   title: 'Feedback',
   field: 'feedback'
 }
+
 const stausColumnMyreport = {
   title: 'Status',
   field: 'state'
@@ -297,7 +289,7 @@ const StudentService = {
   },
 
   columnMyReports: [
-    nameColumnMyreport,
+    nameColumn,
     StageColumnMyreport,
     feedbackColumnMyreport,
     stausColumnMyreport,

@@ -7,7 +7,7 @@ import AddPartner from '../components/AddPartner';
 import AdmissionsDash from '../components/AdmissionsDash';
 import AssessmentAttempts from '../components/AssessmentAttempts';
 import ViewAssessments from '../components/ViewAssessments';
-
+import MyTaskReport from '../components/MyTask';
 import NotFoundPage from '../components/NotFoundPage';
 
 import PublicRoute from './PublicRouter';
@@ -20,7 +20,7 @@ const AppRouter = () => (
     <div>
       <Switch>        
         <PublicRoute path="/" component={LandingPage} exact={true} />
-
+        <PrivateRoute path="/tasks" component={MyTaskReport} />
         <PrivateRoute path="/students" component={AdmissionsDash} />
         <PrivateRoute path="/students/:dataType" component={AdmissionsDash} />
 

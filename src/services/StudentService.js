@@ -204,6 +204,33 @@ const statusColumnTransition = {
   }
 }
 
+const StageColumnMyreport = {
+  title: 'Stage',
+  field: 'student_stage'
+}
+
+const feedbackColumnMyreport = {
+  title: 'Feedback',
+  field: 'feedback'
+}
+
+const stausColumnMyreport = {
+  title: 'Status',
+  field: 'state'
+}
+
+const ownerColumnMyreport = {
+  title: 'Owner',
+  field: 'toAssign'
+}
+
+const assignDateColumnMyreport = {
+  title: 'AssignDate',
+  field: 'createdAt',
+  render: rowData => {
+    return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
+  }
+} 
 
 const StudentService = {
   columns: {
@@ -260,6 +287,15 @@ const StudentService = {
       statusColumnTransition
     ]
   },
+
+  columnMyReports: [
+    nameColumn,
+    StageColumnMyreport,
+    feedbackColumnMyreport,
+    stausColumnMyreport,
+    ownerColumnMyreport,
+    assignDateColumnMyreport
+  ],
 
   setupPre: (columns) => {
     return columns.map((x) => {

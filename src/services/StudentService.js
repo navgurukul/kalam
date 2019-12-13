@@ -230,7 +230,37 @@ const assignDateColumnMyreport = {
   render: rowData => {
     return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
   }
-} 
+}
+
+const StageColumnDanglingReport = {
+  title: 'Stage',
+  field: 'stage'
+}
+
+const TotalFemaleDanglingReport = {
+  title: 'Female',
+  field: 'female'
+}
+
+const TotalmaleDanglingReport = {
+  title: 'Male',
+  field: 'male'
+}
+
+const TotalTransDanglingReport = {
+  title: 'Transgender',
+  field: 'transgender'
+}
+
+const TotalUnspecifiedDanglingReport = {
+  title: 'Unspecified',
+  field: 'unspecified'
+}
+
+const TotalDanglingReport = {
+  title: 'Total Dangling',
+  field: 'total'
+}
 
 const StudentService = {
   columns: {
@@ -296,7 +326,15 @@ const StudentService = {
     ownerColumnMyreport,
     assignDateColumnMyreport
   ],
-
+  columnDanglingReports: [
+    StageColumnDanglingReport,
+    TotalFemaleDanglingReport,
+    TotalmaleDanglingReport,
+    TotalTransDanglingReport,
+    TotalUnspecifiedDanglingReport,
+    TotalDanglingReport
+  ],
+  
   setupPre: (columns) => {
     return columns.map((x) => {
       if ('selectFilter' in x)

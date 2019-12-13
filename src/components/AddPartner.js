@@ -93,7 +93,7 @@ export class AddPartnerPage extends React.Component {
       </form>
     );
   }
-};
+}
 
 const mapDispatchToProps = (dispatch)=>({
   fetchingStart: () => dispatch(changeFetching(true)),

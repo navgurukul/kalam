@@ -155,6 +155,6 @@ export class CsvUpload extends React.Component {
         </Modal>
       </div>
   }
-};
+}
 
 export default withRouter(withStyles(styles)(CsvUpload))

@@ -136,7 +136,7 @@ export class UpdateFeedback extends React.Component {
         </Fragment>
     );
   }
-};
+}
 
 const mapDispatchToProps = (dispatch)=>({
   fetchingStart: () => dispatch(changeFetching(true)),

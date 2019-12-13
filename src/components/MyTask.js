@@ -102,8 +102,8 @@ export class MyTaskReport extends React.Component {
       console.log(e)
       this.props.fetchingFinish()
     }
-  };
-};
+  }
+}
 
 const mapStateToProps = (state) => ({
   loggedInUser: state.auth.loggedInUser

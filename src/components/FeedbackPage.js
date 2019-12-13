@@ -132,7 +132,7 @@ export class StudentFeedback extends React.Component {
         </Fragment>
     );
   }
-};
+}
 
 const mapDispatchToProps = (dispatch)=>({
   fetchingStart: () => dispatch(changeFetching(true)),

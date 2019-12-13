@@ -67,7 +67,7 @@ export class Transition extends React.Component {
       console.log(e)
       this.props.fetchingFinish()
     }
-  };
+  }
 
   componentDidMount() {
     this.fetchtransition();
@@ -98,7 +98,7 @@ export class Transition extends React.Component {
       />
     </Box>
   }
-};
+}
 
 const mapStateToProps = (state) => ({
   loggedInUser: state.auth.loggedInUser

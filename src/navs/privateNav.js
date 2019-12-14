@@ -23,9 +23,20 @@ export const publicNavs = [
         url: '/partners',
         name: 'Partners',
         icon: <ExtensionIcon />
-    }, {
+    }, 
+    {
         url: '/tasks',
         name: 'My Tasks',
+        icon: <ExtensionIcon />
+    },
+    {
+        url: '/report/dangling',
+        name: 'Kya fark padta hai.',
+        icon: <ExtensionIcon />
+    },
+    {
+        url: '/report/all',
+        name: 'Record distribution',
         icon: <ExtensionIcon />
     },
     // {

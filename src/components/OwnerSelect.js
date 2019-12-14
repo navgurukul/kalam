@@ -21,10 +21,10 @@ export class OwnerSelect extends React.Component {
       const { rowData } = this.props
       const { label } =  selectedValue;
       axios.post(`${baseUrl}students/assign_feedback_work`, { 
-          whoAssign: rowData['loggedInUser'].user_name,
+          whoAssign: rowData.loggedInUser.email.split('@')[0],
           toAssign: label,
-          student_stage: rowData['toStage'],
-          studentId: rowData['studentId']
+          student_stage: rowData.toStage,
+          studentId: rowData.studentId
       })
       .then(() => {
         this.props.enqueueSnackbar(`successfully Assigned work for ${label}`,{ variant: 'success' });

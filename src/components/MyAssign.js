@@ -28,12 +28,12 @@ const styles = theme => ({
   }
 })
 
-export class MyTaskReport extends React.Component {
+export class MyAssignReport extends React.Component {
 
   constructor(props) {
 
     super(props);
-    this.onwerDetailsURL = baseURL + 'students/my_tasks';
+    this.ownerAssignDetailsURL = baseURL + 'students/my_assigns';
     
     this.state = {
       data: [],
@@ -45,7 +45,7 @@ export class MyTaskReport extends React.Component {
     for (let i=0; i< data.length; i++) {
       data[i].name = data[i].student.name;
       delete data[i].student;
-      newData.push(data[i])      
+      newData.push(data[i])    
     }
     this.setState({
       data: newData,
@@ -90,19 +90,19 @@ export class MyTaskReport extends React.Component {
       //   }
       // }, true);
       const user = this.props.loggedInUser.email.split('@')[0];
-      const response = await axios.get(this.onwerDetailsURL, {
+      const response = await axios.get(this.ownerAssignDetailsURL, {
         params: {
           user: user
         }
       });
       this.dataConvert(response.data.data);
-      this.props.fetchingFinish();
+      this.fetchingFinish();
     } catch (e) {
       console.log(e)
       this.props.fetchingFinish()
     }
-  }
-}
+  };
+};
 
 const mapStateToProps = (state) => ({
   loggedInUser: state.auth.loggedInUser
@@ -113,4 +113,4 @@ const mapDispatchToProps = (dispatch) => ({
   fetchingFinish: () => dispatch(changeFetching(false))
 });
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(MyTaskReport));
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(MyAssignReport));

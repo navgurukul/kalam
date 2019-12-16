@@ -334,7 +334,7 @@ const StudentService = {
     TotalUnspecifiedDanglingReport,
     TotalDanglingReport
   ],
-  
+
   setupPre: (columns) => {
     return columns.map((x) => {
       if ('selectFilter' in x)
@@ -365,7 +365,7 @@ const StudentService = {
 
     x.marks = x.enrolmentKey[0] ? parseInt(x.enrolmentKey[0].totalMarks, 10) : null;
     x.marks = isNaN(x.marks) ? null : x.marks;
-
+    x.lastUpdated = x.lastTransition.createdAt;
     return x
   },
   addOptions: (columns, dataRow) => {

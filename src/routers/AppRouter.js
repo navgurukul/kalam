@@ -10,6 +10,7 @@ import ViewAssessments from '../components/ViewAssessments';
 import MyTaskReport from '../components/MyTask';
 import StageWiseDanglingReport from '../components/StageWiseDanglingReport';
 import StageWiseGenderDistribution from '../components/StageWiseGenderDistribution';
+import MyAssignReport from '../components/MyAssign';
 import NotFoundPage from '../components/NotFoundPage';
 
 import PublicRoute from './PublicRouter';
@@ -24,7 +25,8 @@ const AppRouter = () => (
         <PublicRoute path="/" component={LandingPage} exact={true} />
         <PrivateRoute path="/tasks" component={MyTaskReport} />
         <PrivateRoute path="/report/dangling" component={StageWiseDanglingReport} />
-        <PrivateRoute path="/report/all" component={StageWiseDanglingReport} />
+        <PrivateRoute path="/report/all" component={StageWiseGenderDistribution} />
+        <PrivateRoute path="/assign/user" component={MyAssignReport} />
         <PrivateRoute path="/students" component={AdmissionsDash} />
         <PrivateRoute path="/students/:dataType" component={AdmissionsDash} />
 

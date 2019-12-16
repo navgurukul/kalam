@@ -39,6 +39,11 @@ export const publicNavs = [
         name: 'Record distribution',
         icon: <ExtensionIcon />
     },
+    {
+        url: '/assign/user',
+        name: 'Assign Users',
+        icon: <ExtensionIcon />
+    },
     // {
     //     url: '/movies',
     //     name: 'Movies',

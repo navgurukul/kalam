@@ -12,6 +12,7 @@ import StageWiseDanglingReport from '../components/StageWiseDanglingReport';
 import StageWiseGenderDistribution from '../components/StageWiseGenderDistribution';
 import MyAssignReport from '../components/MyAssign';
 import NotFoundPage from '../components/NotFoundPage';
+import LoginDesign from '../components/LoginDesign';
 
 import PublicRoute from './PublicRouter';
 import PrivateRoute from './PrivateRouter';
@@ -23,6 +24,7 @@ const AppRouter = () => (
     <div>
       <Switch>        
         <PublicRoute path="/" component={LandingPage} exact={true} />
+        <PublicRoute path="/login" component={LoginDesign} exact={true} />
         <PrivateRoute path="/tasks" component={MyTaskReport} />
         <PrivateRoute path="/report/dangling" component={StageWiseDanglingReport} />
         <PrivateRoute path="/report/all" component={StageWiseGenderDistribution} />

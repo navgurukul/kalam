@@ -1,26 +1,29 @@
 import React from 'react';
-import * as Stages from '../data/stages.json'
+import { allStages, feedbackableStages, status } from '../config';
 import Moment from 'react-moment';
-import Tooltip from '@material-ui/core/Tooltip';
 import Box from '@material-ui/core/Box';
 import StageSelect from '../components/StageSelect';
-import AssignedWork from '../components/AssignedWork'
+import OwnerSelect from '../components/OwnerSelect';
+import StatusSelect from '../components/StatusSelect'
 import StudentFeedback from '../components/FeedbackPage';
 import UpdateFeedback from '../components/UpdateFeedback';
-import Select from 'react-select';
-const CONSTANTS = require('../constant');
 
-const allStagesOptions = Object.keys(Stages.data).map(x => { return {value: x, label : x in Stages.data ? Stages.data[x].title : x }} );
-const nameColumn = {
+const allStagesOptions = Object.keys(allStages).map(x => { return { value: x, label: allStages[x] } });
+const allStatusOptions = Object.keys(status).map(x => { return { value: x, label: status[x] } });
+
+const setColumn = {
   title: 'Set',
-  field: 'setName',
-  filtering: false,
+  field: 'SetName',
   selectFilter: true,
   sfMulti: true,
   sfTitle: 'set',
 };
 
-const titleColumn = { title: 'Name', field: 'name', filtering: false };
+const nameColumn = {
+  title: 'Name',
+  field: 'name',
+  filtering: true
+};
 
 const cityColumn = {
   title: 'City',
@@ -40,7 +43,6 @@ const numberColumn = {
   render: rowData => {
     return '+91 ' + rowData.number;
   },
-  filtering: false
 }
 
 const marksColumn = {
@@ -69,13 +71,12 @@ const stagePartnerColumn = {
   field: 'stageTitle',
   selectFilter: true,
   sfMulti: true,
+  filtering: false,
   sfTitle: 'stages',
   render: rowData => {
-    return <Tooltip title={rowData.stageDesc}>
-      <Box data-id={rowData.stage}>
+    return <Box data-id={rowData.stage}>
         {rowData.stageTitle}
       </Box>
-    </Tooltip>
   }
 }
 
@@ -84,20 +85,14 @@ const stageColumn = {
   field: 'stageTitle',
   selectFilter: true,
   sfMulti: true,
+  filtering: false,
   sfTitle: 'stages',
   render: rowData => {
-    const selectedValue = {"value": rowData.stage, "label": rowData.stageTitle};
     return <StageSelect
       allStagesOptions={allStagesOptions}
-      studentId= {rowData['id']}
+      studentId={rowData['id']}
       rowData={rowData}
     />
-    
-    // return <Tooltip title={rowData.stageDesc}>
-    //   <Box data-id={rowData.stage}>
-    //     {rowData.stageTitle}
-    //   </Box>
-    // </Tooltip>
   }
 }
 
@@ -123,7 +118,7 @@ const stageColumnTransition = {
   title: 'Stage',
   field: 'toStage',
   render: rowData => {
-    return rowData['toStage'] in Stages.data ? Stages.data[rowData['toStage']].title : rowData['toStage'];
+    return allStages[rowData['toStage']];
   }
 }
 
@@ -136,20 +131,38 @@ const whenColumnTransition = {
   defaultSort: 'desc'
 }
 
-const descriptionColumnTransition = {
-  title: 'Description',
-  render: rowData => {
-    return rowData['toStage'] in Stages.data && 'description' in Stages.data[rowData['toStage']] ? Stages.data[rowData['toStage']].description : "No Description Added Yet.";
-  }
-}
-
 const feedbackColumnTransition = {
   title: 'Feedback',
   field: 'feedback',
   render: rowData => {
+    const ifExistingFeedback = rowData.feedback && rowData.feedback.feedback;
     return <div>
-      {rowData['feedback'] && rowData['feedback']['feedback'] ? <div><UpdateFeedback rowData={rowData} student_stage={rowData['toStage']} studentId={rowData['feedback'].studentId} userId={rowData['loggedInUser'].id} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} feedback={rowData['feedback']['feedback']} />{rowData['feedback']['feedback']}</div> : null}
-      {rowData['toStage'] in Stages.feedbackable && (!rowData['feedback'] || !rowData['feedback']['feedback'] ) ? <StudentFeedback rowData={rowData} user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()} stage={rowData['toStage']} studentId={rowData['studentId']} userId={rowData['loggedInUser'].id} /> : null}
+      {
+         ifExistingFeedback ?
+          <div>
+            <UpdateFeedback
+              rowData={rowData}
+              student_stage={rowData['toStage']}
+              studentId={rowData['feedback'].studentId}
+              userId={rowData['loggedInUser'].id}
+              user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()}
+              feedback={rowData['feedback']['feedback']}
+            />
+            {rowData['feedback']['feedback']}
+          </div> 
+          : null
+      }
+      {
+        feedbackableStages.indexOf(rowData.toStage)>-1 && !ifExistingFeedback ?
+          <StudentFeedback
+            rowData={rowData}
+            user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()}
+            stage={rowData['toStage']}
+            studentId={rowData['studentId']}
+            userId={rowData['loggedInUser'].id}
+          />
+          : null
+      }
     </div>
   }
 }
@@ -158,9 +171,9 @@ const ownerColumnTransition = {
   title: 'Owner',
   field: 'user',
   render: rowData => {
-    return rowData['feedback'] || rowData['toStage'] in Stages.feedbackable ? <div>
-        <AssignedWork rowData={rowData} />
-        </div>: null;
+    return rowData['feedback'] || feedbackableStages.indexOf(rowData['toStage'])>-1 ? <div>
+      <OwnerSelect rowData={rowData} />
+    </div> : null;
   }
 }
 
@@ -177,10 +190,77 @@ const statusColumnTransition = {
   title: 'Status',
   field: 'status',
   render: rowData => {
-    return rowData['feedback'] ? rowData['feedback']['state'] : null;
+    if (rowData['feedback']) {
+      const state = rowData['feedback']['state'];
+      rowData['statusTitle'] = status[state];
+    }
+    return rowData['feedback'] ? <div>
+      <StatusSelect
+        allStatusOptions={allStatusOptions}
+        studentId={rowData['feedback'].studentId}
+        rowData={rowData}
+      />
+    </div> : null;
   }
 }
 
+const StageColumnMyreport = {
+  title: 'Stage',
+  field: 'student_stage'
+}
+
+const feedbackColumnMyreport = {
+  title: 'Feedback',
+  field: 'feedback'
+}
+
+const stausColumnMyreport = {
+  title: 'Status',
+  field: 'state'
+}
+
+const ownerColumnMyreport = {
+  title: 'Owner',
+  field: 'toAssign'
+}
+
+const assignDateColumnMyreport = {
+  title: 'AssignDate',
+  field: 'createdAt',
+  render: rowData => {
+    return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
+  }
+}
+
+const StageColumnDanglingReport = {
+  title: 'Stage',
+  field: 'stage'
+}
+
+const TotalFemaleDanglingReport = {
+  title: 'Female',
+  field: 'female'
+}
+
+const TotalmaleDanglingReport = {
+  title: 'Male',
+  field: 'male'
+}
+
+const TotalTransDanglingReport = {
+  title: 'Transgender',
+  field: 'transgender'
+}
+
+const TotalUnspecifiedDanglingReport = {
+  title: 'Unspecified',
+  field: 'unspecified'
+}
+
+const TotalDanglingReport = {
+  title: 'Total Dangling',
+  field: 'total'
+}
 
 const StudentService = {
   columns: {
@@ -190,8 +270,8 @@ const StudentService = {
       lastUpdatedColumn,
     ],
     partnerDashboard: [
+      setColumn,
       nameColumn,
-      titleColumn,
       cityColumn,
       stateColumn,
       numberColumn,
@@ -202,8 +282,8 @@ const StudentService = {
       lastUpdatedColumn
     ],
     softwareCourse: [
+      setColumn,
       nameColumn,
-      titleColumn,
       cityColumn,
       stateColumn,
       numberColumn,
@@ -219,7 +299,6 @@ const StudentService = {
     requestCallback: [
       stageColumnTransition,
       whenColumnTransition,
-      descriptionColumnTransition,
       feedbackColumnTransition,
       ownerColumnTransition,
       timeColumnTransition,
@@ -228,18 +307,33 @@ const StudentService = {
     partnerDashboard: [
       stageColumnTransition,
       whenColumnTransition,
-      descriptionColumnTransition
     ],
     softwareCourse: [
       stageColumnTransition,
       whenColumnTransition,
-      descriptionColumnTransition,
       feedbackColumnTransition,
       ownerColumnTransition,
       timeColumnTransition,
       statusColumnTransition
     ]
   },
+
+  columnMyReports: [
+    nameColumn,
+    StageColumnMyreport,
+    feedbackColumnMyreport,
+    stausColumnMyreport,
+    ownerColumnMyreport,
+    assignDateColumnMyreport
+  ],
+  columnDanglingReports: [
+    StageColumnDanglingReport,
+    TotalFemaleDanglingReport,
+    TotalmaleDanglingReport,
+    TotalTransDanglingReport,
+    TotalUnspecifiedDanglingReport,
+    TotalDanglingReport
+  ],
 
   setupPre: (columns) => {
     return columns.map((x) => {
@@ -258,32 +352,20 @@ const StudentService = {
       return x
     })
   },
-  
+
   dConvert: (x) => {
     try {
-      x['number'] = x['contacts'][0]['mobile'];
+      x.number = x['contacts'][0]['mobile'];
     } catch (e) {
-      x['number'] = null;
+      x.number = null;
     }
 
-    x['gender'] = x['gender'] == 1 ? 'Female' : 'Male';
-    x['stageTitle'] = x['stage'] in Stages.data ? Stages.data[x['stage']].title : x['stage'];
-    x['stageDesc'] = x['stage'] in Stages.data && 'description' in Stages.data[x['stage']] ? Stages.data[x['stage']].description : "No Description Added Yet."
+    x.gender = x.gender == 1 ? 'Female' : 'Male';
+    x.stageTitle = allStages[x.stage];
 
     x.marks = x.enrolmentKey[0] ? parseInt(x.enrolmentKey[0].totalMarks, 10) : null;
     x.marks = isNaN(x.marks) ? null : x.marks;
-
-    let transitions = x['transitions'];
-    let latestTS = transitions.length ? transitions[0].createdAt : null;
-
-    if (transitions.length > 1) {
-      for (let i = 1; i < transitions.length; i++) {
-        latestTS = transitions[i]['createdAt'] > latestTS ? transitions[i]['createdAt'] : latestTS
-      }
-    }
-
-    x['lastUpdated'] = latestTS;
-
+    x.lastUpdated = x.lastTransition.createdAt;
     return x
   },
   addOptions: (columns, dataRow) => {

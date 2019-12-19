@@ -15,24 +15,40 @@ import { NavLink } from 'react-router-dom';
 
 export const publicNavs = [
     {
-        url: '/home',
-        name: 'Home',
+        url: '/students',
+        name: 'Students',
         icon: <HomeIcon />
     },
     {
-        url: '/contacts',
-        name: 'Contacts',
+        url: '/partners',
+        name: 'Partners',
         icon: <ExtensionIcon />
-    }, {
-        url: '/expenses',
-        name: 'Expenses',
+    }, 
+    {
+        url: '/tasks',
+        name: 'My Tasks',
         icon: <ExtensionIcon />
     },
     {
-        url: '/movies',
-        name: 'Movies',
-        icon: <PhoneIcon />
+        url: '/report/dangling',
+        name: 'Kya fark padta hai.',
+        icon: <ExtensionIcon />
     },
+    {
+        url: '/report/all',
+        name: 'Record distribution',
+        icon: <ExtensionIcon />
+    },
+    {
+        url: '/assign/user',
+        name: 'Assign Users',
+        icon: <ExtensionIcon />
+    },
+    // {
+    //     url: '/movies',
+    //     name: 'Movies',
+    //     icon: <PhoneIcon />
+    // },
     // add new Nav links here as a json object, in this file the public navigations
 ];
 
@@ -48,8 +64,3 @@ export default () => (
         </ListItem></List> </NavLink>
     })
 );
-
-
-
-
-

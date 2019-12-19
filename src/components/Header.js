@@ -23,13 +23,13 @@ import ExpandNavList from '../navs/expandNavs'
 import { logout } from '../store/actions/auth';
 import { NavLink } from 'react-router-dom';
 
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import Image from 'material-ui-image';
 import ModalStages from './ModalStages'
 
 export class Header extends React.Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -38,8 +38,6 @@ export class Header extends React.Component {
       componentsmenuopen: false,
       modalOpen: false
     };
-
-    console.log('inside header component ', this.props.isAuthenticated);
   }
 
   handleChange = (event, index, value) => this.setState({ value });
@@ -68,23 +66,23 @@ export class Header extends React.Component {
   conditRenderEssential = () => this.props.isAuthenticated ? (
     <Button color="inherit" align="right" onClick={this.props.startLogout}>
       Logout
-    </Button>) 
-    : ( 
-    <Button color="inherit" align="right">
-      <Link to="/login">
-        Login
-      </Link>
     </Button>)
+    : (
+      <Button color="inherit" align="right">
+        <Link to="/">
+          Login
+      </Link>
+      </Button>)
 
   dashboardModal = () => {
-    if(this.props.location) {
-      if (this.props.location.pathname.indexOf('partner')>-1) 
-      return <ModalStages />
+    if (this.props.location) {
+      if (this.props.location.pathname.indexOf('partner') > -1)
+        return <ModalStages />
     }
     return
   }
 
-  renderProgressBar = () => this.props.isFetching ? (<LinearProgress/>) : (<span></span>)
+  renderProgressBar = () => this.props.isFetching ? (<LinearProgress />) : (<span></span>)
 
   render() {
     const { open } = this.state.componentsmenuopen;
@@ -110,29 +108,31 @@ export class Header extends React.Component {
             position="fixed"
             color="default"
           >
-          {this.renderProgressBar()}
-            <Toolbar style={{display: 'flex', justifyContent: 'space-between'}}>
-              {/* <IconButton className="iconbuttonsyle" color="inherit" aria-label="Menu" onClick={this.onLeftIconButtonClick}>
-                <MenuIcon />
-              </IconButton> */}
-            <Box>
-              <Link to="/">
-                <Image
-                  src={logo}
-                  color="inherit"
-                  style={{height:40, width: 165, paddingTop: 0, flex: 1}}
-                  imageStyle={{height: 40, width: 165}}
-                />
-              </Link>
-            </Box>
-              { this.conditRenderEssential() }
-            { this.dashboardModal() }
+            {this.renderProgressBar()}
+            <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Box style={{ display: 'flex' }}>
+                <IconButton className="iconbuttonsyle" color="inherit" aria-label="Menu" onClick={this.onLeftIconButtonClick}>
+                  <MenuIcon />
+                </IconButton>
+                <Box pt={0.5}>
+                  <Link to="/">
+                    <Image
+                      src={logo}
+                      color="inherit"
+                      style={{ height: 40, width: 165, paddingTop: 0, flex: 1 }}
+                      imageStyle={{ height: 40, width: 165 }}
+                    />
+                  </Link>
+                </Box>
+              </Box>
+              {this.conditRenderEssential()}
+              {this.dashboardModal()}
             </Toolbar>
           </AppBar>
         </div>
       </div>
     );
-  };
+  }
 }
 
 const mapStateToProps = (state) => ({

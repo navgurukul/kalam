@@ -10,7 +10,7 @@ import { EventEmitter } from './events';
 const baseUrl = process.env.API_URL;
 const animatedComponents = makeAnimated();
 
-export class AssignedWork extends React.Component {
+export class OwnerSelect extends React.Component {
 
   constructor (props) {
     super(props);
@@ -21,14 +21,14 @@ export class AssignedWork extends React.Component {
       const { rowData } = this.props
       const { label } =  selectedValue;
       axios.post(`${baseUrl}students/assign_feedback_work`, { 
-          whoAssign: rowData['loggedInUser'].user_name,
+          whoAssign: rowData.loggedInUser.email.split('@')[0],
           toAssign: label,
-          student_stage: rowData['toStage'],
-          studentId: rowData['studentId']
+          student_stage: rowData.toStage,
+          studentId: rowData.studentId
       })
       .then(() => {
         this.props.enqueueSnackbar(`successfully Assigned work for ${label}`,{ variant: 'success' });
-        EventEmitter.dispatch("transitionsChange", {rowData:rowData});
+        EventEmitter.dispatch("transitionsChange"+this.props.rowData.studentId, {rowData:rowData});
       })
     } catch(e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });
@@ -37,7 +37,7 @@ export class AssignedWork extends React.Component {
 
   render = () => {
     const { rowData } = this.props;
-    const allUserOptions = this.props.users.map(x=> {return {label:x.user_name, value: x.id}})
+    const allUserOptions = this.props.users.map(x=> {return {label:x.user, value: x.id}})
     let selectedValue = { value: null, label: null };
     
     if (rowData['feedback']) {
@@ -62,4 +62,4 @@ const mapStateToProps = (state) => ({
   users: state.auth.users,
 });
 
-export default withSnackbar(connect(mapStateToProps, undefined)(AssignedWork))
+export default withSnackbar(connect(mapStateToProps, undefined)(OwnerSelect))

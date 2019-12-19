@@ -173,8 +173,8 @@ export class PartnerList extends React.Component {
       console.log(e);
       this.props.fetchingFinish()
     }
-  };
-};
+  }
+}
 
 const mapDispatchToProps = (dispatch)=>({
   fetchingStart: () => dispatch(changeFetching(true)),

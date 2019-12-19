@@ -11,6 +11,6 @@ module.exports = merge(common, {
     historyApiFallback: true // this prevents the default browser full page refresh on form submission and link change
   },
   plugins:[
-    new webpack.DefinePlugin({ "process.env.API_URL": JSON.stringify("http://join.navgurukul.org/api/") })
+    new webpack.DefinePlugin({ "process.env.API_URL": JSON.stringify("http://localhost:3000/") })
   ]
 });

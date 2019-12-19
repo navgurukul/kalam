@@ -7,6 +7,7 @@ import { login } from '../store/actions/auth';
 
 import Paper from '@material-ui/core/Paper';
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
+import { FormControl, InputLabel, Input, FormHelperText } from '@material-ui/core';
 import { theme } from '../theme/theme';
 import axios from 'axios';
 
@@ -31,8 +32,16 @@ const styles = theme => ({
 });
 
 export class LandingPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mobileNumber: '',
+    }
+  }
+  
   responseGoogle = (response) => {
-    axios.post(`${baseUrl}users/login/google`, { idToken: response.tokenObj.id_token })
+    const mobile = this.state.mobileNumber;
+    axios.post(`${baseUrl}users/login/google`, { idToken: response.tokenObj.id_token, mobile: mobile })
       .then((resp) => {
         const { userToken, user } = resp.data;
         localStorage.setItem('jwt', userToken);
@@ -43,7 +52,16 @@ export class LandingPage extends React.Component {
         history.push("/students");
       });
   }
+  
+  handleChange = name => (event) => {
+    let valChange = {}
+    valChange[name] = event.target.value;
 
+    this.setState(
+      valChange
+    );
+  };
+  
   errr = (error) => {
     alert("There was some issue with Google Login. Contact the admin.");
   }
@@ -87,6 +105,14 @@ export class LandingPage extends React.Component {
               <Typography variant="h5" component="h3">
                 NavGurukul Admissions
               </Typography>
+            </Box>
+            <Box style={{height: theme.spacing(5)}} />
+            <Box>
+              <FormControl>
+                <InputLabel htmlFor="partnerName">Mobile Number</InputLabel>
+                <Input id="partnerName" aria-describedby="my-helper-text" name="mobileNumber" value={this.state.mobileNumber} onChange={this.handleChange('mobileNumber')}/>
+                <FormHelperText id="my-helper-text">Apna Mobile Number Enter karein.</FormHelperText>
+              </FormControl>
             </Box>
             <Box style={{height: theme.spacing(5)}} />
             <Box>

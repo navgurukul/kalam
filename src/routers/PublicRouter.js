@@ -11,7 +11,7 @@ export const PublicRoute = ({
 }) => (
     <Route {...rest} component={(props) => {
       return (
-      isAuthenticated && props.match.path === '/' ? (
+      isAuthenticated ? (
         <Redirect to="/students" />
       ) : (
       <React.Fragment>

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { login } from '../store/actions/auth';
 import { Box } from '@material-ui/core';
+import LoginDesign from './LoginDesign';
 // import Paper from '@material-ui/core/Paper';
 // import Input from '@material-ui/core/Input';
 // import InputLabel from '@material-ui/core/InputLabel';
@@ -29,9 +30,10 @@ export class LoginPage extends React.Component {
   render() {
     return (
       <GoogleLogin
-        clientId="994191094832-lfu0fv7euqtmt4i2m8toc7gnuajq53pr.apps.googleusercontent.com"
+        clientId="34917283366-b806koktimo2pod1cjas8kn2lcpn7bse.apps.googleusercontent.com"
         onSuccess={this.onSuccess}
         render={renderProps => (
+          
           <Box onClick={renderProps.onClick} disabled={renderProps.disabled}>Login Using Google</Box>
         )}
         onFailure={this.onFailure}

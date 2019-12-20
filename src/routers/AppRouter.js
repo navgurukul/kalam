@@ -12,9 +12,14 @@ import StageWiseDanglingReport from '../components/StageWiseDanglingReport';
 import StageWiseGenderDistribution from '../components/StageWiseGenderDistribution';
 import MyAssignReport from '../components/MyAssign';
 import NotFoundPage from '../components/NotFoundPage';
+import LoginDesign from '../components/LoginDesign';
 
+// if authenticated, redirect to /students else be there
 import PublicRoute from './PublicRouter';
+// if authenticated be there, else redirect to /login
 import PrivateRoute from './PrivateRouter';
+// default behavior
+import AnyRoute from './AnyRouter';
 
 import history from '../utils/history';
 
@@ -22,7 +27,8 @@ const AppRouter = () => (
   <Router history={history}>
     <div>
       <Switch>        
-        <PublicRoute path="/" component={LandingPage} exact={true} />
+        <AnyRoute path="/" component={LandingPage} exact={true} />
+        <PublicRoute path="/login" component={LoginDesign} exact={true} />
         <PrivateRoute path="/tasks" component={MyTaskReport} />
         <PrivateRoute path="/report/dangling" component={StageWiseDanglingReport} />
         <PrivateRoute path="/report/all" component={StageWiseGenderDistribution} />
@@ -30,11 +36,11 @@ const AppRouter = () => (
         <PrivateRoute path="/students" component={AdmissionsDash} />
         <PrivateRoute path="/students/:dataType" component={AdmissionsDash} />
 
-        <PublicRoute path="/partner/add" component={AddPartner} />
-        <PublicRoute path="/partner/:partnerId" component={DashboardPage} />
-        <PublicRoute path="/partner/:partnerId/assessments" component={ViewAssessments} />
-        <PublicRoute path="/partners" component={PartnerList} />
-        <PublicRoute path="/partners/:partnerId/assessments/:assessmentId" component={AssessmentAttempts} />
+        <PrivateRoute path="/partner/add" component={AddPartner} />
+        <AnyRoute path="/partner/:partnerId" component={DashboardPage} />
+        <AnyRoute path="/partner/:partnerId/assessments" component={ViewAssessments} />
+        <PrivateRoute path="/partners" component={PartnerList} />
+        <AnyRoute path="/partners/:partnerId/assessments/:assessmentId" component={AssessmentAttempts} />
 
         <Route component={NotFoundPage} />
       </Switch>

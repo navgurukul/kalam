@@ -1,19 +1,20 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import { GoogleLogin } from 'react-google-login';
-
-import { login } from '../store/actions/auth';
-
 import Paper from '@material-ui/core/Paper';
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import { theme } from '../theme/theme';
 import axios from 'axios';
-
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { connect } from 'react-redux';
+import { withSnackbar } from 'notistack';
+import { changeFetching } from '../store/actions/auth';
+
 
 const baseUrl = process.env.API_URL;
-
+const testUrl = 'http://join.navgurukul.org/k/'
 const styles = theme => ({
   loginContainer: {
     padding: theme.spacing(3, 2),
@@ -27,100 +28,113 @@ const styles = theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     margin: theme.spacing(4),
-  }
+  },
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
 });
 
-export class LandingPage extends React.Component {
-  responseGoogle = (response) => {
-    axios.post(`${baseUrl}users/login/google`, { idToken: response.tokenObj.id_token })
-      .then((resp) => {
-        const { userToken, user } = resp.data;
-        localStorage.setItem('jwt', userToken);
-        localStorage.setItem('user', JSON.stringify(user));
+export class LandingPage extends React.Component { 
+  constructor(props) {
+    super(props);
+    this.dataURL = baseUrl + 'helpline/register_exotel_call'
+    
+    this.state = {
+      mobileNumber_TestLink: '',
+    }
+  }
+  
+  onChangeEvent = (e) => {
+    this.setState({
+      mobileNumber_TestLink: e.target.value,
+    })
+  }
 
-        const { history } = this.props;
-        this.props.login();
-        history.push("/students");
+  async generateTestLink() {
+    try {
+      const mobile = '0' + this.state.mobileNumber_TestLink;
+      this.props.fetchingStart()
+      const response = await axios.get(this.dataURL, {
+        params: {
+          ngCallType: 'getEnrolmentKey',
+          From: mobile,
+        }
       });
+      return response;
+    } catch (e) {
+      console.log(e);
+      this.props.fetchingFinish();
+    }
   }
 
-  errr = (error) => {
-    alert("There was some issue with Google Login. Contact the admin.");
+  async copyTestLink() {
+    const response = await this.generateTestLink();
+    this.setState({
+      mobileNumber_TestLink: `${testUrl}${response.data.key}`
+    })
+
+    this.props.enqueueSnackbar('Successfully copied the test link',{ variant: 'success' });
+    navigator.clipboard.writeText(this.state.mobileNumber_TestLink)
+    this.props.fetchingFinish()
+  }
+  
+  async openTest() {
+    const response = await this.generateTestLink();
+    window.open(`${testUrl}${response.data.key}`, '_blank');
+    this.props.fetchingFinish()
   }
 
-  getQuote = () => {
-    const QUOTES = [
-      {
-        quote: 'Anyone who has never made a mistake has never tried anything new',
-        author: 'Albert Einstein'
-      },
-      {
-        quote: 'The only person who is educated is the one who has learned how to learn …and change.',
-        author: 'Carl Rogers'
-      },
-      {
-        quote: 'Be the change that you wish to see in the world.',
-        author: 'Mahatma Gandhi'
-      },
-      {
-        quote: 'Education is the most powerful weapon which you can use to change the world.',
-        author: 'Nelson Mandela'
-      },
-      {
-        quote: 'Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.',
-        author: 'Rumi'
-      }
-    ];
-    const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
-    return quote;
+  onSubmit = () => {
+    this.copyTestLink();
   }
 
+  giveTest = () => {
+    this.openTest()
+  }
+  
   render = () => {
     const { classes } = this.props;
-    const quote = this.getQuote();
-
     return (
       <MuiThemeProvider theme={theme}>
         <Box className={classes.container}>
           <Paper className={classes.loginContainer}>
             <Box>
-              <Typography variant="h5" component="h3">
-                NavGurukul Admissions
+              <Typography variant="h5" component="h3" >
+                Join Navgurukul
               </Typography>
             </Box>
-            <Box style={{height: theme.spacing(5)}} />
+            <Box style={{height: theme.spacing(2)}} />
             <Box>
-              <GoogleLogin
-                clientId="34917283366-b806koktimo2pod1cjas8kn2lcpn7bse.apps.googleusercontent.com"
-                buttonText="Login"
-                onSuccess={this.responseGoogle}
-                onFailure={this.errr}
-                scope="profile email"
-              />
+              <TextField
+                id = "filled-full-width"
+                margin="normal"
+                style={{ margin: 8, width: 300 }}
+                label = "Mobile Number/Test Link"
+                value = {this.state.mobileNumber_TestLink}
+                placeholder = "Mobile Number..."
+                onChange = {this.onChangeEvent}
+                InputLabelProps = {{
+                  shrink: true,
+                }}
+                variant = "outlined" />
             </Box>
-            <Box style={{height: theme.spacing(7)}} />
-            <Box className={classes.quoteContainer}>
-              <Box className={classes.quoteText}>
-                <Typography variant="body1">{quote.quote}</Typography>
-              </Box>
-              <Box className={classes.quoteAuthor}>
-                <Typography variant="body2" style={{ textAlign: 'right', fontWeight: 'bold' }}>{quote.author}</Typography>
-              </Box>
-            </Box>
+            <Box style={{height: theme.spacing(2)}} />
+            <div className={classes.root}>
+              <Button variant="outlined" onClick={this.giveTest} color="primary">Give Test</Button>
+              <Button variant="outlined" onClick={this.onSubmit} color="primary">Get & Copy Test Link</Button>
+            </div>
           </Paper>
         </Box>
-
       </MuiThemeProvider>
     );
   }
 }
 
-const mapDispatchToProps = (dispatch)=>({
-  login: () => dispatch(login()),
+const mapDispatchToProps = (dispatch) => ({
+  fetchingStart: () => dispatch(changeFetching(true)),
+  fetchingFinish: () => dispatch(changeFetching(false)),
 });
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated
-});
-
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(LandingPage));
+export default withSnackbar(withStyles(styles)(connect(undefined, mapDispatchToProps)(LandingPage)));

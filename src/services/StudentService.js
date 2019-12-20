@@ -365,7 +365,7 @@ const StudentService = {
 
     x.marks = x.enrolmentKey[0] ? parseInt(x.enrolmentKey[0].totalMarks, 10) : null;
     x.marks = isNaN(x.marks) ? null : x.marks;
-    x.lastUpdated = x.lastTransition.createdAt;
+    x.lastUpdated = x.lastTransition ? x.lastTransition.createdAt : null;
     return x
   },
   addOptions: (columns, dataRow) => {

@@ -69,7 +69,7 @@ export class Header extends React.Component {
     </Button>)
     : (
       <Button color="inherit" align="right">
-        <Link to="/">
+        <Link to="/login">
           Login
       </Link>
       </Button>)

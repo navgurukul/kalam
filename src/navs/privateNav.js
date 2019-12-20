@@ -31,17 +31,17 @@ export const publicNavs = [
     },
     {
         url: '/report/dangling',
-        name: 'Kya fark padta hai.',
+        name: 'Overview dangling',
         icon: <ExtensionIcon />
     },
     {
         url: '/report/all',
-        name: 'Record distribution',
+        name: 'Overview',
         icon: <ExtensionIcon />
     },
     {
         url: '/assign/user',
-        name: 'Assign Users',
+        name: 'Assigned Users',
         icon: <ExtensionIcon />
     },
     // {

@@ -96,7 +96,7 @@ export class MyAssignReport extends React.Component {
         }
       });
       this.dataConvert(response.data.data);
-      this.fetchingFinish();
+      this.props.fetchingFinish();
     } catch (e) {
       console.log(e)
       this.props.fetchingFinish()

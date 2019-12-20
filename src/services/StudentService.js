@@ -148,7 +148,7 @@ const feedbackColumnTransition = {
               user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()}
               feedback={rowData['feedback']['feedback']}
             />
-            {rowData['feedback']['feedback']}
+            { rowData['feedback']['feedback'].split ('\n\n').map((item, i) => <p key={i}> {item} </p>) } 
           </div> 
           : null
       }
@@ -211,7 +211,10 @@ const StageColumnMyreport = {
 
 const feedbackColumnMyreport = {
   title: 'Feedback',
-  field: 'feedback'
+  field: 'feedback',
+  render: rowData => {
+    return rowData.feedback ? rowData['feedback'].split ('\n\n').map((item, i) => <p key={i}> {item} </p>) : null; 
+  }
 }
 
 const stausColumnMyreport = {

@@ -89,7 +89,7 @@ export class StageWiseDanglingReport extends React.Component {
       this.props.fetchingStart()
       const response = await axios.get(this.stageWiseDanglingReportURL, { });
       this.dataConvert(response.data.data);
-      this.fetchingFinish();
+      this.props.fetchingFinish();
     } catch (e) {
       console.log(e)
       this.props.fetchingFinish()

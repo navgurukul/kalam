@@ -66,19 +66,6 @@ const genderColumn = {
   filtering: false
 }
 
-const stagePartnerColumn = {
-  title: 'Stage',
-  field: 'stageTitle',
-  selectFilter: true,
-  sfMulti: true,
-  filtering: false,
-  sfTitle: 'stages',
-  render: rowData => {
-    return <Box data-id={rowData.stage}>
-        {rowData.stageTitle}
-      </Box>
-  }
-}
 
 const stageColumn = {
   title: 'Stage',
@@ -280,7 +267,7 @@ const StudentService = {
       numberColumn,
       marksColumn,
       genderColumn,
-      stagePartnerColumn,
+      stageColumn,
       addedAtColumn,
       lastUpdatedColumn
     ],

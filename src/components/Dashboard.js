@@ -18,6 +18,7 @@ import {withRouter} from 'react-router-dom';
 import StudentService from '../services/StudentService';
 import StageTransitions from './StageTransitions';
 import GlobalService from '../services/GlobalService';
+import { EventEmitter } from './events';
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseUrl = process.env.API_URL;
@@ -55,6 +56,22 @@ export class DashboardPage extends React.Component {
       data: [],
       sData: undefined, //subsetData
     }
+
+    EventEmitter.subscribe('stageChange', this.stageChangeEvent);
+  }
+
+  stageChangeEvent = (iData) => {
+    const rowIds = this.state.data.map(x=>x.id)
+    const rowIndex = rowIds.indexOf(iData.rowData.id);
+    
+    let dataElem = this.state.data[rowIndex];
+    dataElem.stageTitle = iData.selectedValue.label;
+    dataElem.stage = iData.selectedValue.value;
+    
+    let newData = this.state.data;
+    newData[rowIndex] = dataElem;
+
+    this.setState({data:newData });
   }
 
   handleChange = (field, filterFn) => {

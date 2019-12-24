@@ -14,6 +14,7 @@ import Box from '@material-ui/core/Box';
 import { theme } from '../theme/theme';
 
 import { changeFetching } from '../store/actions/auth';
+import { allStages } from '../config';
 
 import GlobalService from '../services/GlobalService';
 import StudentService from '../services/StudentService';
@@ -49,7 +50,7 @@ export class StageWiseGenderDistribution extends React.Component {
       dic.transgender = value[3];
       dic.unspecified = value[null];
       dic.total = dic.female + dic.male + dic.transgender + dic.unspecified;
-      dic.stage = key;
+      dic.stage = allStages[key];
       newData.push(dic);
     } 
     this.setState({

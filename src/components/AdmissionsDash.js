@@ -24,6 +24,7 @@ import { withRouter } from 'react-router-dom';
 import GlobalService from '../services/GlobalService';
 import StudentService from '../services/StudentService';
 import StageTransitions from './StageTransitions';
+import StudentDetails from './StudentDetails';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { EventEmitter } from './events';
 
@@ -224,6 +225,23 @@ export class AdmissionsDash extends React.Component {
               />
             )
           }}
+          actions= {[
+            {
+              icon: 'Save',
+              tooltip: 'Student Details',
+              onClick: (event, rowData) => { return rowData }
+            }
+          ]}
+          components={
+            {
+              Action: 
+                props => {
+                  return (
+                    <StudentDetails details={props.action.onClick(event, props.data)}/>
+                  )
+                }
+            }
+          }
           options={{
             headerStyle: {
               color: theme.palette.primary.main

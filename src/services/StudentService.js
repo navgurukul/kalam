@@ -252,6 +252,26 @@ const TotalDanglingReport = {
   field: 'total'
 }
 
+const EmailColumn = {
+  title: 'Email',
+  field: 'email'
+}
+
+const QualificationColumn = {
+  title: 'Qualification',
+  field: 'qualification'
+}
+
+const ReligonColumn = {
+  title: 'Religon',
+  field: 'religon'
+}
+
+const CasteColumn = {
+  title: 'Caste',
+  field: 'caste'
+}
+
 const StudentService = {
   columns: {
     requestCallback: [
@@ -323,6 +343,12 @@ const StudentService = {
     TotalTransDanglingReport,
     TotalUnspecifiedDanglingReport,
     TotalDanglingReport
+  ],
+  columnStudentDetails: [
+    EmailColumn,
+    QualificationColumn,
+    ReligonColumn,
+    CasteColumn
   ],
 
   setupPre: (columns) => {

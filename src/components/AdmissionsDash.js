@@ -1,6 +1,3 @@
-// Todo
-// Logic of RQC Columns
-
 import 'date-fns';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -235,11 +232,10 @@ export class AdmissionsDash extends React.Component {
           components={
             {
               Action: 
-                props => {
-                  return (
-                    <StudentDetails details={props.action.onClick(event, props.data)}/>
-                  )
-                }
+                props => (
+                  <StudentDetails
+                    details={props.data}/>
+                )
             }
           }
           options={{

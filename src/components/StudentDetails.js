@@ -18,7 +18,7 @@ function getModalStyle() {
     transform: `translate(-${top}%, -${left}%)`,
     overflowY: 'scroll',
     maxHeight: '80vh',
-    width: "60%"
+    width: "45%"
   };
 }
 
@@ -85,16 +85,22 @@ export class StudentDetails extends React.Component {
               <tbody>
                 <tr>
                   <th>Email</th>
-                  <th>Caste</th>
-                  <th>Religon</th>
-                  <th>Qualification</th>
-                  <th>Current Status</th>
+                  <td> {details.email} </td>
                 </tr>
                 <tr>
-                  <td> {details.email} </td>
-                  <td> { _.invert(caste)[details.caste]} </td>
+                  <th>Caste</th>
+                  <td>{ _.invert(caste)[details.caste]}</td>
+                </tr>
+                <tr>
+                  <th>Religon</th>
                   <td> { _.invert(religon)[details.religon]} </td>
-                  <td> { _.invert(qualification)[details.qualification]} </td>
+                </tr>
+                <tr>
+                  <th>Qualification</th>
+                  <td> { _.invert(qualification)[details.qualification]} </td>                
+                </tr>
+                <tr>
+                  <th>Curent Status</th>
                   <td> { _.invert(currentStatus)[details.currentStatus]} </td>
                 </tr>
               </tbody>

@@ -5,7 +5,8 @@ import Button from '@material-ui/core/Button';
 import Modal from '@material-ui/core/Modal';
 
 import DetailsIcon from '@material-ui/icons/Details';
-import ReactJson from 'react-json-view'
+import { caste, religon, currentStatus, qualification } from '../config';
+const _ = require('underscore');
 
 function getModalStyle() {
   const top = 54 // + rand()
@@ -17,7 +18,7 @@ function getModalStyle() {
     transform: `translate(-${top}%, -${left}%)`,
     overflowY: 'scroll',
     maxHeight: '80vh',
-    width: "75%"
+    width: "60%"
   };
 }
 
@@ -26,7 +27,7 @@ const useStyles = theme => ({
     position: 'absolute',
     marginLeft: '3vw',
     marginRight: '3vw',
-    width: '94vw',
+    width: '60vw',
     [theme.breakpoints.up('md')]: {
       margin: 'auto',
       width: '50%'
@@ -78,10 +79,26 @@ export class StudentDetails extends React.Component {
           <div style={modalStyle} className={classes.paper}>
 
             <Typography variant="h5" id="modal-title">
-              Student Details<br />
-            </Typography>
-
-            <ReactJson src={details} />
+              Student Other Details<br />
+            </Typography><br></br>
+            <table >
+              <tbody>
+                <tr>
+                  <th>Email</th>
+                  <th>Caste</th>
+                  <th>Religon</th>
+                  <th>Qualification</th>
+                  <th>currentStatus</th>
+                </tr>
+                <tr>
+                  <td> {details.email} </td>
+                  <td> { _.invert(caste)[details.caste]} </td>
+                  <td> { _.invert(religon)[details.religon]} </td>
+                  <td> { _.invert(qualification)[details.qualification]} </td>
+                  <td> { _.invert(currentStatus)[details.currentStatus]} </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </Modal>
       </div>

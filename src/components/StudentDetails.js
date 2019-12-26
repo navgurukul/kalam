@@ -88,7 +88,7 @@ export class StudentDetails extends React.Component {
                   <th>Caste</th>
                   <th>Religon</th>
                   <th>Qualification</th>
-                  <th>currentStatus</th>
+                  <th>Current Status</th>
                 </tr>
                 <tr>
                   <td> {details.email} </td>

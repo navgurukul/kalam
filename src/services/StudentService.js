@@ -195,6 +195,35 @@ const statusColumnTransition = {
   }
 }
 
+const deadlineColumnTransition = {
+  title: 'Deadline',
+  field: 'deadlineAt',
+  render: rowData => {
+    const ifExistingDeadlineDate = (rowData.feedback && rowData.feedback.deadlineAt) && (!rowData.feedback.finishedAt || !rowData.feedback.feedback);
+    if (ifExistingDeadlineDate) {
+      const deadline = feedbackableStagesData[rowData['feedback']['student_stage']].deadline;
+      const diff = new Date().getTime() - new Date(rowData.feedback.deadlineAt).getTime()
+      const hours = Math.floor(diff / 1000 / 60 / 60);
+      const remainigTime = deadline - hours;
+      if (remainigTime < 0) {
+        return "Your deadline is fineshed please do this work ASAP."
+      } else if (!rowData.feedback.feedback){
+        return  <p> <b>{remainigTime}</b> Hours are remaing to do this work please do it ASAP </p>
+      }
+      return  <p> <b>{remainigTime}</b> Hours are remaing to do this work please do it ASAP </p>
+    }
+  }
+}
+
+const finishedColumnTransition = {
+  title: 'Finished',
+  field: 'finishedAt',
+  render: rowData => {
+    const ifExistingFinishedDate = rowData.feedback && (rowData.feedback.finishedAt && rowData.feedback.feedback);
+    return ifExistingFinishedDate ? <Moment format="D MMM YYYY" withTitle>{rowData.feedback.finishedAt}</Moment> : null;
+  },
+}
+
 const StageColumnMyreport = {
   title: 'Stage',
   field: 'student_stage'
@@ -316,7 +345,9 @@ const StudentService = {
       feedbackColumnTransition,
       ownerColumnTransition,
       timeColumnTransition,
-      statusColumnTransition
+      statusColumnTransition,
+      deadlineColumnTransition,
+      finishedColumnTransition
     ],
     partnerDashboard: [
       stageColumnTransition,
@@ -328,7 +359,9 @@ const StudentService = {
       feedbackColumnTransition,
       ownerColumnTransition,
       timeColumnTransition,
-      statusColumnTransition
+      statusColumnTransition,
+      deadlineColumnTransition,
+      finishedColumnTransition
     ]
   },
 

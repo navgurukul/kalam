@@ -1,5 +1,5 @@
 import React from 'react';
-import { allStages, feedbackableStages, status } from '../config';
+import { allStages, feedbackableStages, feedbackableStagesData } from '../config';
 import Moment from 'react-moment';
 import Box from '@material-ui/core/Box';
 import StageSelect from '../components/StageSelect';
@@ -9,8 +9,6 @@ import StudentFeedback from '../components/FeedbackPage';
 import UpdateFeedback from '../components/UpdateFeedback';
 
 const allStagesOptions = Object.keys(allStages).map(x => { return { value: x, label: allStages[x] } });
-const allStatusOptions = Object.keys(status).map(x => { return { value: x, label: status[x] } });
-
 const setColumn = {
   title: 'Set',
   field: 'SetName',
@@ -178,16 +176,22 @@ const statusColumnTransition = {
   field: 'status',
   render: rowData => {
     if (rowData['feedback']) {
+      const allstatus = feedbackableStagesData[rowData['feedback']['student_stage']].status;
+      const allStatusOptions = allstatus.map(x => { return {value: x, label: (x.charAt(0).toUpperCase()+x.slice(1)).match(/[A-Z][a-z]+/g).join(" ")} });
       const state = rowData['feedback']['state'];
-      rowData['statusTitle'] = status[state];
-    }
-    return rowData['feedback'] ? <div>
-      <StatusSelect
+      const status = allstatus[allstatus.indexOf(state)];
+      if (status) {
+        rowData['statusTitle'] = (status.charAt(0).toUpperCase()+status.slice(1)).match(/[A-Z][a-z]+|[0-9]+/g).join(" ")
+      }
+      return <div>
+        <StatusSelect
         allStatusOptions={allStatusOptions}
         studentId={rowData['feedback'].studentId}
         rowData={rowData}
-      />
-    </div> : null;
+        />
+        </div>
+    }
+    return null;
   }
 }
 

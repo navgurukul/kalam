@@ -82,6 +82,8 @@ export class ModalStages extends React.Component {
 
   constructor(props) {
     super(props)
+    this.dataURL =  baseUrl+'partners/'+this.props.partnerId+'/assessments'
+
     this.state = {
       modalOpen : false,
       data: [],
@@ -154,6 +156,7 @@ export class ModalStages extends React.Component {
   };
 
   handleOpen = () => {
+    this.fetchAssessments()
     this.setState({
       modalOpen: true
     })
@@ -170,8 +173,6 @@ export class ModalStages extends React.Component {
   }
 
   componentDidMount() {
-    this.dataURL =  baseUrl+'partners/'+this.props.partnerId+'/assessments'
-    this.fetchAssessments();
   }
 
   render = () => {

@@ -31,9 +31,7 @@ const styles = theme => ({
 });
 
 export class LoginDesign extends React.Component {
-
   responseGoogle = (response) => {
-    const mobile = this.state.mobileNumber;
     axios.post(`${baseUrl}users/login/google`, { idToken: response.tokenObj.id_token })
       .then((resp) => {
         const { userToken, user } = resp.data;
@@ -50,16 +48,7 @@ export class LoginDesign extends React.Component {
         }
       });
   }
-  
-  handleChange = name => (event) => {
-    let valChange = {}
-    valChange[name] = event.target.value;
 
-    this.setState(
-      valChange
-    );
-  };
-  
   errr = (error) => {
     alert("There was some issue with Google Login. Contact the admin.");
   }

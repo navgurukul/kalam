@@ -6,12 +6,13 @@ import Footer from '../components/Footer';
 
 export const PublicRoute = ({
   isAuthenticated,
+  loggedInUser,
   component: Component,
   ...rest
 }) => (
     <Route {...rest} component={(props) => {
       return (
-      isAuthenticated ? (
+      isAuthenticated && loggedInUser.mobile ? (
         <Redirect to="/students" />
       ) : (
       <React.Fragment>
@@ -24,7 +25,8 @@ export const PublicRoute = ({
   );
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.auth.isAuthenticated,
+  loggedInUser: state.auth.loggedInUser
 });
 
 export default connect(mapStateToProps, undefined)(PublicRoute);

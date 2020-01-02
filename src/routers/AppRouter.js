@@ -13,6 +13,7 @@ import StageWiseGenderDistribution from '../components/StageWiseGenderDistributi
 import MyAssignReport from '../components/MyAssign';
 import NotFoundPage from '../components/NotFoundPage';
 import LoginDesign from '../components/LoginDesign';
+import UserMoblieNumber from '../components/UserMoblieNumber';
 
 // if authenticated, redirect to /students else be there
 import PublicRoute from './PublicRouter';
@@ -35,13 +36,14 @@ const AppRouter = () => (
         <PrivateRoute path="/assign/user" component={MyAssignReport} />
         <PrivateRoute path="/students" component={AdmissionsDash} />
         <PrivateRoute path="/students/:dataType" component={AdmissionsDash} />
-
+        
+        <PrivateRoute path="/user/mobile/number" component={UserMoblieNumber} />
         <PrivateRoute path="/partner/add" component={AddPartner} />
         <AnyRoute path="/partner/:partnerId" component={DashboardPage} />
         <AnyRoute path="/partner/:partnerId/assessments" component={ViewAssessments} />
         <PrivateRoute path="/partners" component={PartnerList} />
         <AnyRoute path="/partners/:partnerId/assessments/:assessmentId" component={AssessmentAttempts} />
-
+        
         <Route component={NotFoundPage} />
       </Switch>
       

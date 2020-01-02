@@ -7,7 +7,6 @@ import { login } from '../store/actions/auth';
 
 import Paper from '@material-ui/core/Paper';
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
-import { FormControl, InputLabel, Input, FormHelperText } from '@material-ui/core';
 import { theme } from '../theme/theme';
 import axios from 'axios';
 
@@ -32,24 +31,23 @@ const styles = theme => ({
 });
 
 export class LoginDesign extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     mobileNumber: '',
-  //   }
-  // }
-  
+
   responseGoogle = (response) => {
-    // const mobile = this.state.mobileNumber;
+    const mobile = this.state.mobileNumber;
     axios.post(`${baseUrl}users/login/google`, { idToken: response.tokenObj.id_token })
       .then((resp) => {
         const { userToken, user } = resp.data;
         localStorage.setItem('jwt', userToken);
         localStorage.setItem('user', JSON.stringify(user));
-
-        const { history } = this.props;
-        this.props.login();
-        history.push("/students");
+        if (user.mobile) {
+          const { history } = this.props;
+          this.props.login();
+          history.push("/students");
+        } else {
+          const { history } = this.props;
+          this.props.login();
+          history.push("/user/mobile/number");
+        }
       });
   }
   
@@ -106,14 +104,6 @@ export class LoginDesign extends React.Component {
                 NavGurukul Admissions
               </Typography>
             </Box>
-            {/* <Box style={{height: theme.spacing(5)}} />
-            <Box>
-              <FormControl>
-                <InputLabel htmlFor="partnerName">Mobile Number</InputLabel>
-                <Input id="partnerName" aria-describedby="my-helper-text" name="mobileNumber" value={this.state.mobileNumber} onChange={this.handleChange('mobileNumber')}/>
-                <FormHelperText id="my-helper-text">Apna Mobile Number Enter karein.</FormHelperText>
-              </FormControl>
-            </Box> */}
             <Box style={{height: theme.spacing(5)}} />
             <Box>
               <GoogleLogin

@@ -50,6 +50,7 @@ export class LoginDesign extends React.Component {
   }
 
   errr = (error) => {
+    console.log(error);
     alert("There was some issue with Google Login. Contact the admin.");
   }
 

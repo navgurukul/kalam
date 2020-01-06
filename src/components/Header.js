@@ -26,7 +26,8 @@ import { NavLink } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 
 import Image from 'material-ui-image';
-import ModalStages from './ModalStages'
+import ModalStages from './ModalStages';
+import UpdateMobileNumber from './UpdateMobileNumber';
 
 export class Header extends React.Component {
 
@@ -81,7 +82,16 @@ export class Header extends React.Component {
     }
     return
   }
-
+  
+  updateMobile = () => {
+    if (this.props.location) {
+      const path = this.props.location.pathname;
+      if (path.indexOf('partner') == -1 && path.indexOf('login') < 0 && path.indexOf('user/mobile/number') < 0)
+        return <UpdateMobileNumber />
+    }
+    return
+  }
+  
   renderProgressBar = () => this.props.isFetching ? (<LinearProgress />) : (<span></span>)
 
   render() {
@@ -125,6 +135,7 @@ export class Header extends React.Component {
                   </Link>
                 </Box>
               </Box>
+              {this.updateMobile()}
               {this.conditRenderEssential()}
               {this.dashboardModal()}
             </Toolbar>

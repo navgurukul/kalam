@@ -50,8 +50,10 @@ export class UserMobileNumber extends React.Component {
     const mobile = this.state.mobileNumber;
     axios.post(`${baseUrl}students/mobile/${this.props.loggedInUser.id}`, { mobile: mobile })
       .then((resp) => {
-        if (resp) {
+        const user = resp.data.data.user;
+        if (user) {
           const { history } = this.props;
+          localStorage.setItem('user', JSON.stringify(user));
           this.props.login();
           history.push("/students");
         }

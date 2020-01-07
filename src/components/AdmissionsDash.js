@@ -24,12 +24,14 @@ import StageTransitions from './StageTransitions';
 import StudentDetails from './StudentDetails';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { EventEmitter } from './events';
+import { allStages } from '../config';
 
 import makeAnimated from 'react-select/animated';
 const animatedComponents = makeAnimated();
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
+const allStagesOptions = Object.keys(allStages).map(x => { return { value: x, label: allStages[x] } });
 
 const styles = theme => ({
   clear: {
@@ -53,7 +55,8 @@ export class AdmissionsDash extends React.Component {
     }
     this.studentsURL = baseURL + 'students';
     this.usersURL = baseURL + 'users/getall';
-
+    this.stage = null,
+    this.value = null,
     this.loggedInUser = this.props.loggedInUser;
 
     this.state = {
@@ -91,9 +94,18 @@ export class AdmissionsDash extends React.Component {
 
   changeDataType = option => {
     this.dataType = option.value;
+    this.stage = null;
+    this.value = null;
     this.fetchStudents();
   }
-
+  
+  changeStudentStage = option => {
+    this.value = { value: option.value, label: allStages[option.value] }
+    this.stage = option.value;
+    this.fetchStudents();
+    this.dataType = 'softwareCourse';
+  }
+  
   changeFromDate = date => {
     this.fromDate = date;
     this.fetchStudents();
@@ -151,6 +163,16 @@ export class AdmissionsDash extends React.Component {
         options={[{ value: "requestCallback", label: "Request Callback" },
         { value: "softwareCourse", label: "Other Data" }]}
         placeholder={"Select Data Type"}
+        isClearable={false}
+        components={animatedComponents}
+        closeMenuOnSelect={true}
+      />
+      <Select
+        className={"filterSelectGlobal"}
+        value={this.value}
+        onChange={this.changeStudentStage}
+        options={allStagesOptions}
+        placeholder={"Get Student Details By Stage"}
         isClearable={false}
         components={animatedComponents}
         closeMenuOnSelect={true}
@@ -288,6 +310,7 @@ export class AdmissionsDash extends React.Component {
       const response = await axios.get(this.studentsURL, {
         params: {
           dataType: this.dataType,
+          stage: this.stage,
           from: this.fromDate,
           to: this.toDate
         }

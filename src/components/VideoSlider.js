@@ -24,8 +24,8 @@ const aboutNavgurukul = [
   },
   {
     label: {
-      "hi": 'Navgurukul ke baccho se suniye unka experience',
-      "en": "Experience of Navgurukul students"
+      "hi": 'Navgurukul acche se explain kiya hua',
+      "en": "Detailed explanation about Navgurukul"
     },
     videoId: 'sfU1m8MuZ5Y',
   },

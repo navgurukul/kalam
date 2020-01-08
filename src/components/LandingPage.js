@@ -11,7 +11,8 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { connect } from 'react-redux';
 import { withSnackbar } from 'notistack';
 import { changeFetching } from '../store/actions/auth';
-
+import { VideoSlider } from './VideoSlider';
+import Grid from '@material-ui/core/Grid';
 
 const baseUrl = process.env.API_URL;
 const testUrl = 'http://join.navgurukul.org/k/'
@@ -22,10 +23,12 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    margin: 'auto'
   },
   container: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     margin: theme.spacing(4),
   },
@@ -36,16 +39,16 @@ const styles = theme => ({
   },
 });
 
-export class LandingPage extends React.Component { 
+export class LandingPage extends React.Component {
   constructor(props) {
     super(props);
     this.dataURL = baseUrl + 'helpline/register_exotel_call'
-    
+
     this.state = {
       mobileNumber_TestLink: '',
     }
   }
-  
+
   onChangeEvent = (e) => {
     this.setState({
       mobileNumber_TestLink: e.target.value,
@@ -75,11 +78,11 @@ export class LandingPage extends React.Component {
       mobileNumber_TestLink: `${testUrl}${response.data.key}`
     })
 
-    this.props.enqueueSnackbar('Successfully copied the test link',{ variant: 'success' });
+    this.props.enqueueSnackbar('Successfully copied the test link', { variant: 'success' });
     navigator.clipboard.writeText(this.state.mobileNumber_TestLink)
     this.props.fetchingFinish()
   }
-  
+
   async openTest() {
     const response = await this.generateTestLink();
     window.open(`${testUrl}${response.data.key}`, '_blank');
@@ -93,40 +96,48 @@ export class LandingPage extends React.Component {
   giveTest = () => {
     this.openTest()
   }
-  
+
   render = () => {
     const { classes } = this.props;
     return (
       <MuiThemeProvider theme={theme}>
-        <Box className={classes.container}>
-          <Paper className={classes.loginContainer}>
-            <Box>
-              <Typography variant="h5" component="h3" >
-                Join Navgurukul
+        <Grid container spacing={3} style={{marginLeft: 0, marginRight: 0}}>
+          <Grid item xs={12} sm={6}>
+            <VideoSlider />
+          </Grid>
+          <Grid item xs={12} sm={6} style={{margin: 'auto'}}>
+            <Paper className={classes.loginContainer}>
+              <Box>
+                <Typography variant="h5" component="h3" >
+                  Join Navgurukul
               </Typography>
-            </Box>
-            <Box style={{height: theme.spacing(2)}} />
-            <Box>
-              <TextField
-                id = "filled-full-width"
-                margin="normal"
-                style={{ margin: 8, width: 300 }}
-                label = "Mobile Number/Test Link"
-                value = {this.state.mobileNumber_TestLink}
-                placeholder = "Mobile Number..."
-                onChange = {this.onChangeEvent}
-                InputLabelProps = {{
-                  shrink: true,
-                }}
-                variant = "outlined" />
-            </Box>
-            <Box style={{height: theme.spacing(2)}} />
-            <div className={classes.root}>
-              <Button variant="outlined" onClick={this.giveTest} color="primary">Give Test</Button>
-              <Button variant="outlined" onClick={this.onSubmit} color="primary">Get & Copy Test Link</Button>
-            </div>
-          </Paper>
-        </Box>
+              </Box>
+              <Box style={{ height: theme.spacing(2) }} />
+              <Box>
+                <TextField
+                  id="filled-full-width"
+                  margin="normal"
+                  style={{ margin: 8, width: 300 }}
+                  label="Mobile Number/Test Link"
+                  value={this.state.mobileNumber_TestLink}
+                  placeholder="Mobile Number..."
+                  onChange={this.onChangeEvent}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  variant="outlined" />
+              </Box>
+              <Box style={{ height: theme.spacing(2) }} />
+              <div className={classes.root}>
+                <Button variant="outlined" onClick={this.giveTest} color="primary">Give Test</Button>
+                <Button variant="outlined" onClick={this.onSubmit} color="primary">Get & Copy Test Link</Button>
+              </div>
+            </Paper>
+          </Grid>
+
+        </Grid>
+        {/* <Box className={classes.container}> */}
+        {/* </Box> */}
       </MuiThemeProvider>
     );
   }

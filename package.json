@@ -25,6 +25,7 @@
     "material-table": "^1.54.2",
     "material-ui-image": "^3.2.2",
     "moment": "^2.24.0",
+    "mui-datatables": "^2.13.3",
     "notistack": "^0.9.7",
     "react-google-login": "^5.0.7",
     "react-json-view": "^1.19.1",

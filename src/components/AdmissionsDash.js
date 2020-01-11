@@ -17,7 +17,6 @@ import { withRouter } from 'react-router-dom';
 import GlobalService from '../services/GlobalService';
 import StudentService from '../services/StudentService';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { EventEmitter } from './events';
 import { allStages } from '../config';
 
 const animatedComponents = makeAnimated();
@@ -55,8 +54,6 @@ export class AdmissionsDash extends React.Component {
       data: [],
       sData: undefined, //subsetData
     }
-
-    EventEmitter.subscribe('stageChange', this.stageChangeEvent);
   }
 
   stageChangeEvent = (iData) => {
@@ -74,7 +71,6 @@ export class AdmissionsDash extends React.Component {
     //   ]
     // }))
     let dataElem = this.state.data[iData.rowId];
-    console.log(dataElem, "Pralhad")
     // dataElem.stageTitle = iData.selectedValue.label;
     dataElem.stage = iData.selectedValue.value;
 
@@ -82,7 +78,6 @@ export class AdmissionsDash extends React.Component {
     newData[iData.rowId] = dataElem;
 
     this.setState({ data: newData }, function () {
-      console.log(newData.slice(0,3))
     });
   }
 
@@ -215,9 +210,6 @@ export class AdmissionsDash extends React.Component {
     this.fetchUsers();
   }
 
-  componentWillUnmount() {
-    EventEmitter.unsubscribe('stageChange');
-  }
 
   async fetchUsers() {
     try {

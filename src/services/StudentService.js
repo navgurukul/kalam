@@ -1,288 +1,355 @@
 import React from 'react';
 import { allStages, feedbackableStages, feedbackableStagesData } from '../config';
 import Moment from 'react-moment';
-import Box from '@material-ui/core/Box';
 import StageSelect from '../components/StageSelect';
 import OwnerSelect from '../components/OwnerSelect';
 import StatusSelect from '../components/StatusSelect'
 import StudentFeedback from '../components/FeedbackPage';
-import UpdateFeedback from '../components/UpdateFeedback';
+import StageTransitions from '../components/StageTransitions';
 
 const allStagesOptions = Object.keys(allStages).map(x => { return { value: x, label: allStages[x] } });
+
+const ColumnTransitions = {
+    name: "id",
+    label: "Transitions",
+    options: {
+      filter: false,
+      sort: false,
+      customBodyRender: (value) => {
+        return <StageTransitions
+          studentId={value}
+          dataType={'columnTransition'}
+        />
+      }
+    }
+}
+  
 const setColumn = {
-  title: 'Set',
-  field: 'SetName',
-  selectFilter: true,
-  sfMulti: true,
-  sfTitle: 'set',
-};
+    name: "SetName",
+    label: "Set",
+    options: {
+      filter: false,
+      sort: true,
+      display: false
+    }
+  }
 
 const nameColumn = {
-  title: 'Name',
-  field: 'name',
-  filtering: true
-};
-
+    name: "name",
+    label: "Name",
+    options: {
+      filter: false,
+      sort: true,
+    }
+  }
+  
 const cityColumn = {
-  title: 'City',
-  field: 'city',
-  selectFilter: true,
-  sfMulti: true,
-  sfTitle: 'cities'
-};
+    name: "city",
+    label: "City",
+    options: {
+      filter: false,
+      sort: true,
+      display: false
+    }
+  }
 
 const stateColumn = {
-  title: 'State',
-  field: 'state'
-}
-
-const numberColumn = {
-  title: 'Number', field: 'number',
-  render: rowData => {
-    return '+91 ' + rowData.number;
-  },
-}
-
-const marksColumn = {
-  title: 'Marks',
-  field: 'marks',
-  render: rowData => {
-    return rowData.marks;
-  },
-  filtering: false,
-}
-
-const genderColumn = {
-  title: 'Gender',
-  field: 'gender',
-  selectFilter: true,
-  sfMulti: false,
-  sfTitle: 'gender',
-  // render: rowData => {
-  //   return rowData.gender == 1 ? 'Female' : 'Male';
-  // },
-  filtering: false
-}
-
-
-const stageColumn = {
-  title: 'Stage',
-  field: 'stageTitle',
-  selectFilter: true,
-  sfMulti: true,
-  filtering: false,
-  sfTitle: 'stages',
-  render: rowData => {
-    return <StageSelect
-      allStagesOptions={allStagesOptions}
-      studentId={rowData['id']}
-      rowData={rowData}
-    />
+    name: "state",
+    label: "State",
+    options: {
+      filter: false,
+      sort: true,
+      display: false
+    }
   }
-}
-
+  
+const numberColumn = {
+    name: "number",
+    label: "Number",
+    options: {
+      filter: false,
+      sort: true,
+    }
+  }
+  
+const marksColumn = {
+    name: "marks",
+    label: "Marks",
+    options: {
+      filter: false,
+      sort: true,
+    }
+  }
+  
+const genderColumn = {
+    name: "gender",
+    label: "Gender",
+    options: {
+      filter: true,
+      sort: true,
+    }
+  }
+  
+const stageColumn = {
+    name: "stage",
+    label: "Stage",
+    options: {
+      filter: true,
+      sort: true,
+      customBodyRender: (value, rowMeta, updateValue) => {
+        return <StageSelect
+           allStagesOptions={allStagesOptions}
+           rowMetatable={rowMeta}
+           stage={value}
+           allStages={allStages}
+           change={ event => updateValue(event) }
+        />
+      }
+    }
+  }
+  
 const addedAtColumn = {
-  title: 'Added At',
-  field: 'createdAt',
-  render: rowData => {
-    return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
-  },
-  filtering: false
-}
+    name: "createdAt",
+    label: "When?",
+    options: {
+      filter: false,
+      sort: true,
+      customBodyRender: (value) => {
+        return <Moment format="D MMM YYYY" withTitle>{value}</Moment>
+      }
+    }
+  }
 
 const lastUpdatedColumn = {
-  title: 'Last Updated',
-  field: 'lastUpdated',
-  render: rowData => {
-    return <Moment format="D MMM YYYY" withTitle>{rowData.lastUpdated}</Moment>
-  },
-  filtering: false
-}
+    name: "lastUpdated",
+    label: "Last Updated",
+    options: {
+      filter: false,
+      sort: true,
+      customBodyRender: (value) => {
+        return <Moment format="D MMM YYYY" withTitle>{value}</Moment>
+      }
+
+    }
+  }
 
 const stageColumnTransition = {
-  title: 'Stage',
-  field: 'toStage',
-  render: rowData => {
-    return allStages[rowData['toStage']];
+  name: "toStage",
+  label: "Stage",
+  options: {
+    filter: true,
+    sort: true,
+    customBodyRender: (rowData) => {
+      return allStages[rowData];
+    }
   }
-}
-
-const whenColumnTransition = {
-  title: 'When?',
-  field: 'createdAt',
-  render: rowData => {
-    return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
-  },
-  defaultSort: 'desc'
 }
 
 const feedbackColumnTransition = {
-  title: 'Feedback',
-  field: 'feedback',
-  render: rowData => {
-    const ifExistingFeedback = rowData.feedback && rowData.feedback.feedback;
-    return <div>
-      {
-         ifExistingFeedback ?
-          <div>
-            <UpdateFeedback
-              rowData={rowData}
-              student_stage={rowData['toStage']}
-              studentId={rowData['feedback'].studentId}
-              userId={rowData['loggedInUser'].id}
-              user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()}
-              feedback={rowData['feedback']['feedback']}
-            />
-            { rowData['feedback']['feedback'].split ('\n\n').map((item, i) => <p key={i}> {item} </p>) } 
-          </div> 
-          : null
-      }
-      {
-        feedbackableStages.indexOf(rowData.toStage)>-1 && !ifExistingFeedback ?
-          <StudentFeedback
-            rowData={rowData}
-            user={'@' + rowData['loggedInUser'].user_name.toString().split(" ").join('').toLowerCase()}
-            stage={rowData['toStage']}
-            studentId={rowData['studentId']}
-            userId={rowData['loggedInUser'].id}
-          />
-          : null
-      }
-    </div>
+  name: "feedback",
+  label: "Feedback",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+        const ifExistingFeedback = rowData || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+        return <div>
+         {
+          ifExistingFeedback ?
+            <div>
+              <StudentFeedback
+                rowMetaTable={rowMeta}
+                feedback={rowData}
+                change={ event => updateValue(event) }
+              />
+              { rowData ? rowData.split('\n\n').map((item, i) => <p key={i}> {item} </p>): null }
+            </div>
+            : null
+         }
+       </div>
+    }
   }
 }
 
 const ownerColumnTransition = {
-  title: 'Owner',
-  field: 'user',
-  render: rowData => {
-    return rowData['feedback'] || feedbackableStages.indexOf(rowData['toStage'])>-1 ? <div>
-      <OwnerSelect rowData={rowData} />
-    </div> : null;
+  name: "toAssign",
+  label: "Owner",
+  options: {
+    filter: false,
+    sort: true,
+    display: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const ifExistingFeedback = feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      return <div>
+        {
+          ifExistingFeedback ?
+          <OwnerSelect 
+            rowMetaTable={rowMeta}
+            value={rowData}
+            change={ event => updateValue(event) }
+          /> : null
+        }
+      </div>
+    }
+  }
+}
+const statusColumnTransition = {
+  name: "state",
+  label: "Status",
+  options: {
+    filter: false,
+    sort: true,
+    display: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      if (rowData || rowMeta.rowData[3]) {
+        return <div>
+          <StatusSelect
+            feedbackableStagesData={feedbackableStagesData}
+            rowMetaTable={rowMeta}
+            state={rowData}
+            change={ event => updateValue(event) }
+          />
+        </div>
+
+      }
+      return null;
+    }
   }
 }
 
 const timeColumnTransition = {
-  title: 'Time',
-  field: 'createdAt',
-  render: rowData => {
-    return rowData['feedback'] ? <Moment format="D MMM YYYY" withTitle>{rowData['feedback'].createdAt}</Moment> : null;
-  },
-  defaultSort: 'desc'
-}
-
-const statusColumnTransition = {
-  title: 'Status',
-  field: 'status',
-  render: rowData => {
-    if (rowData['feedback']) {
-      const allstatus = feedbackableStagesData[rowData['feedback']['student_stage']].status;
-      const allStatusOptions = allstatus.map(x => { return {value: x, label: (x.charAt(0).toUpperCase()+x.slice(1)).match(/[A-Z][a-z]+/g).join(" ")} });
-      const state = rowData['feedback']['state'];
-      const status = allstatus[allstatus.indexOf(state)];
-      if (status) {
-        rowData['statusTitle'] = (status.charAt(0).toUpperCase()+status.slice(1)).match(/[A-Z][a-z]+|[0-9]+/g).join(" ")
-      }
-      return <div>
-        <StatusSelect
-        allStatusOptions={allStatusOptions}
-        studentId={rowData['feedback'].studentId}
-        rowData={rowData}
-        />
-        </div>
-    }
-    return null;
+  name: 'studentId',
+  lable: 'Time',
+  options: {
+    filter: false,
+    display: false,
   }
 }
 
-const deadlineColumnTransition = {
-  title: 'Deadline',
-  field: 'deadlineAt',
-  render: rowData => {
-    const ifExistingDeadlineDate = (rowData.feedback && rowData.feedback.deadlineAt) && (!rowData.feedback.finishedAt || !rowData.feedback.feedback);
-    if (ifExistingDeadlineDate) {
-      const deadline = feedbackableStagesData[rowData['feedback']['student_stage']].deadline;
-      const diff = new Date().getTime() - new Date(rowData.feedback.deadlineAt).getTime()
-      const hours = Math.floor(diff / 1000 / 60 / 60);
-      const remainigTime = deadline - hours;
-      if (remainigTime < 0) {
-        return "Your deadline is fineshed please do this work ASAP."
-      } else if (!rowData.feedback.feedback){
-        return  <p> <b>{remainigTime}</b> Hours are remaing to do this work please do it ASAP </p>
+const deadlineColumnTrnasition = {
+  name: "deadline",
+  label: "Deadline",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const ifExistingDeadlineDate = rowData && !rowMeta.rowData[7];
+      if (ifExistingDeadlineDate) {
+        const deadline = feedbackableStagesData[rowMeta.rowData[0]].deadline;
+        const diff = new Date().getTime() - new Date(rowData).getTime()
+        const hours = Math.floor(diff / 1000 / 60 / 60);
+        const remainigTime = deadline - hours;
+        if (remainigTime < 0 && !rowMeta.rowData[7]) {
+          return "Your deadline is fineshed please do this work ASAP."
+        } else if (!rowMeta.rowData[2]) {
+          return <p> <b>{remainigTime}</b> Hours are remaing to do this work please do it ASAP </p>
+        }
+        return null;
       }
-      return  <p> <b>{remainigTime}</b> Hours are remaing to do this work please do it ASAP </p>
     }
   }
-}
+} 
 
 const finishedColumnTransition = {
-  title: 'Finished',
-  field: 'finishedAt',
-  render: rowData => {
-    const ifExistingFinishedDate = rowData.feedback && (rowData.feedback.finishedAt && rowData.feedback.feedback);
-    return ifExistingFinishedDate ? <Moment format="D MMM YYYY" withTitle>{rowData.feedback.finishedAt}</Moment> : null;
-  },
+  name: "finishedAt",
+  label: "Finished",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const ifExistingFinishedDate = rowData;
+      return ifExistingFinishedDate ? <Moment format="D MMM YYYY" withTitle>{rowData}</Moment> : null;
+    },
+  }
+}
+const loggedInUser = {
+  name: 'loggedInUser',
+  lable: "LoggedIn User",
+  options: {
+    filter: false,
+    display: false,
+    customBodyRender: (rowData) => {
+      return rowData.user_name
+    }
+  }
 }
 
 const StageColumnMyreport = {
-  title: 'Stage',
-  field: 'student_stage'
+  label: 'Stage',
+  name: 'student_stage',
+  options: {
+    filter: true,
+    sort: true,
+  }
 }
 
 const feedbackColumnMyreport = {
-  title: 'Feedback',
-  field: 'feedback',
-  render: rowData => {
-    return rowData.feedback ? rowData['feedback'].split ('\n\n').map((item, i) => <p key={i}> {item} </p>) : null; 
+  lable: 'Feedback',
+  name: 'feedback',
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData) => {
+      return rowData ? rowData.split ('\n\n').map((item, i) => <p key={i}> {item} </p>) : null;
+    }
   }
 }
 
 const stausColumnMyreport = {
-  title: 'Status',
-  field: 'state'
+  label: 'Status',
+  name: 'state',
+  options: {
+    filter: false,
+  }
 }
 
 const ownerColumnMyreport = {
-  title: 'Owner',
-  field: 'toAssign'
+  lable: 'Owner',
+  name: 'toAssign',
+  options: {
+    filter: false,
+  }
 }
 
 const assignDateColumnMyreport = {
-  title: 'AssignDate',
-  field: 'createdAt',
-  render: rowData => {
-    return <Moment format="D MMM YYYY" withTitle>{rowData.createdAt}</Moment>
+  lable: 'AssignDate',
+  name: 'createdAt',
+  options: {
+    filter: false,
+    customBodyRender: (rowData) => {
+      return <Moment format="D MMM YYYY" withTitle>{rowData}</Moment>
+    }
   }
 }
 
 const StageColumnDanglingReport = {
-  title: 'Stage',
-  field: 'stage'
+  lable: 'Stage',
+  name: 'stage'
 }
 
 const TotalFemaleDanglingReport = {
-  title: 'Female',
-  field: 'female'
+  lable: 'Female',
+  name: 'female'
 }
 
 const TotalmaleDanglingReport = {
-  title: 'Male',
-  field: 'male'
+  lable: 'Male',
+  name: 'male'
 }
 
 const TotalTransDanglingReport = {
-  title: 'Transgender',
-  field: 'transgender'
+  lable: 'Transgender',
+  name: 'transgender'
 }
 
 const TotalUnspecifiedDanglingReport = {
-  title: 'Unspecified',
-  field: 'unspecified'
+  label: 'Unspecified',
+  name: 'unspecified'
 }
 
 const TotalDanglingReport = {
-  title: 'Total Dangling',
-  field: 'total'
+  lable: 'Total Dangling',
+  name: 'total'
 }
 
 const EmailColumn = {
@@ -308,23 +375,13 @@ const CasteColumn = {
 const StudentService = {
   columns: {
     requestCallback: [
+      ColumnTransitions,
       numberColumn,
       addedAtColumn,
       lastUpdatedColumn,
     ],
-    partnerDashboard: [
-      setColumn,
-      nameColumn,
-      cityColumn,
-      stateColumn,
-      numberColumn,
-      marksColumn,
-      genderColumn,
-      stageColumn,
-      addedAtColumn,
-      lastUpdatedColumn
-    ],
     softwareCourse: [
+      ColumnTransitions,
       setColumn,
       nameColumn,
       cityColumn,
@@ -335,36 +392,19 @@ const StudentService = {
       stageColumn,
       addedAtColumn,
       lastUpdatedColumn,
-    ]
-  },
-
-  columnTransitions: {
-    requestCallback: [
+    ],
+    columnTransition: [
       stageColumnTransition,
-      whenColumnTransition,
+      addedAtColumn,
       feedbackColumnTransition,
       ownerColumnTransition,
-      timeColumnTransition,
       statusColumnTransition,
-      deadlineColumnTransition,
-      finishedColumnTransition
-    ],
-    partnerDashboard: [
-      stageColumnTransition,
-      whenColumnTransition,
-    ],
-    softwareCourse: [
-      stageColumnTransition,
-      whenColumnTransition,
-      feedbackColumnTransition,
-      ownerColumnTransition,
       timeColumnTransition,
-      statusColumnTransition,
-      deadlineColumnTransition,
-      finishedColumnTransition
-    ]
-  },
-
+      deadlineColumnTrnasition,
+      finishedColumnTransition,
+      loggedInUser,
+    ],  
+  },  
   columnMyReports: [
     nameColumn,
     StageColumnMyreport,
@@ -373,6 +413,7 @@ const StudentService = {
     ownerColumnMyreport,
     assignDateColumnMyreport
   ],
+  
   columnDanglingReports: [
     StageColumnDanglingReport,
     TotalFemaleDanglingReport,
@@ -381,6 +422,7 @@ const StudentService = {
     TotalUnspecifiedDanglingReport,
     TotalDanglingReport
   ],
+  
   columnStudentDetails: [
     EmailColumn,
     QualificationColumn,
@@ -388,23 +430,6 @@ const StudentService = {
     CasteColumn
   ],
 
-  setupPre: (columns) => {
-    return columns.map((x) => {
-      if ('selectFilter' in x)
-        x.options = []
-      return x
-    })
-  },
-
-  setupPost: (columns) => {
-    return columns.map((x) => {
-      if ('selectFilter' in x)
-        x.options = x.options.map((x) => {
-          return { label: x, value: x }
-        })
-      return x
-    })
-  },
 
   dConvert: (x) => {
     try {
@@ -414,13 +439,13 @@ const StudentService = {
     }
 
     x.gender = x.gender == 1 ? 'Female' : 'Male';
-    x.stageTitle = allStages[x.stage];
 
     x.marks = x.enrolmentKey[0] ? parseInt(x.enrolmentKey[0].totalMarks, 10) : null;
     x.marks = isNaN(x.marks) ? null : x.marks;
     x.lastUpdated = x.lastTransition ? x.lastTransition.createdAt : null;
     return x
   },
+  
   addOptions: (columns, dataRow) => {
     return columns.map((column) => {
       if ('selectFilter' in column) {
@@ -428,7 +453,7 @@ const StudentService = {
           column.options.push(dataRow[column.field])
         }
       }
-      return column
+      return column  
     })
   }
 }

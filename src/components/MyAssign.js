@@ -5,7 +5,7 @@ import 'date-fns';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import MaterialTable from "material-table";
+import MUIDataTable from "mui-datatables";
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
 import axios from 'axios';
@@ -56,7 +56,7 @@ export class MyAssignReport extends React.Component {
 
     return <Box>
       <MuiThemeProvider theme={theme}>
-        <MaterialTable
+        <MUIDataTable
           columns={StudentService.columnMyReports}
           data={this.state.data}
           icons={GlobalService.tableIcons}
@@ -67,8 +67,12 @@ export class MyAssignReport extends React.Component {
             exportButton: true,
             pageSize: 100,
             showTitle: false,
+            selectableRows: 'none',
             toolbar: false,
-            filtering: false,
+            filtering: true,
+            filter: true,
+            filterType: 'doprdown',
+            responsive: 'stacked',
           }}
         />
       </MuiThemeProvider>

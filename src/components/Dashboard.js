@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import MaterialTable from "material-table";
+import MUIDataTable from "mui-datatables";
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
 import FilterSelect from './FilterSelect'
@@ -97,14 +97,14 @@ export class DashboardPage extends React.Component {
   }
 
   dataSetup = (data) => {
-    columns = StudentService.setupPre(StudentService.columns["partnerDashboard"]);
+    // columns = StudentService.setupPre(StudentService.columns["partnerDashboard"]);
  
     for (let i=0; i<data.length; i++) {
       data[i] = StudentService.dConvert(data[i])
-      columns = StudentService.addOptions(columns, data[i]);
+      // columns = StudentService.addOptions(columns, data[i]);
     }
         
-    columns = StudentService.setupPost(columns);
+    // columns = StudentService.setupPost(columns);
     
     this.setState({'data': data}, function(){
       this.props.fetchingFinish()
@@ -118,48 +118,46 @@ export class DashboardPage extends React.Component {
       return <Box></Box>
     }
 
-    let filterSelectRows = []
-    columns.map( (x) => {
-      if ('selectFilter' in x)
-        filterSelectRows.push(
-          <FilterSelect
-            filter={{
-              name : x.sfTitle,
-              field : x.field
-            }}
-            ifMulti={x.sfMulti}
-            key={x.field}
-            options={x.options}
-            handleChange={this.handleChange}
-          />      
-        )
-    })
+    // let filterSelectRows = []
+    // columns.map( (x) => {
+    //   if ('selectFilter' in x)
+    //     filterSelectRows.push(
+    //       <FilterSelect
+    //         filter={{
+    //           name : x.sfTitle,
+    //           field : x.field
+    //         }}
+    //         ifMulti={x.sfMulti}
+    //         key={x.field}
+    //         options={x.options}
+    //         handleChange={this.handleChange}
+    //       />      
+    //     )
+    // })
 
     return <Box>
       <MuiThemeProvider theme={theme}>
-        {filterSelectRows}
         <div className={classes.clear}></div>
-        <MaterialTable
-          columns={columns}
+        <MUIDataTable
+          columns={StudentService.columns['softwareCourse']}
           data={this.state.sData ? this.state.sData : this.state.data}
           icons={GlobalService.tableIcons}
-          detailPanel={rowData => {
-            return (
-              <StageTransitions
-                dataType={'softwareCourse'}
-                studentId={rowData.id}
-              />
-            )
-          }}
-          options={{
-            headerStyle: {
-              color: theme.palette.primary.main
-            },
-            exportButton: true,
-            pageSize: 100,
-            showTitle: false,
-            toolbar: false,
-          }}
+          options={
+            {
+              headerStyle: {
+                color: theme.palette.primary.main
+              },
+              exportButton: true,
+              pageSize: 100,
+              showTitle: false,
+              selectableRows: 'none',
+              toolbar: false,
+              filtering: true,
+              filter: true,
+              filterType: 'doprdown',
+              responsive: 'stacked',
+            }
+          }
         />
       </MuiThemeProvider>
     </Box>

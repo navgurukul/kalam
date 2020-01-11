@@ -11,7 +11,6 @@ import TextField from '@material-ui/core/TextField';
 import { Dialog } from '@material-ui/core';
 import {Box} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import { EventEmitter } from './events';
 
 const baseUrl = process.env.API_URL;
 
@@ -37,7 +36,7 @@ export class StudentFeedback extends React.Component {
   async addFeedbck() {
     try {
       this.props.fetchingStart()
-      const { rowData } = this.props;
+      const { change } = this.props;
       const response = await axios.post(this.dataURL, {
         "student_stage": this.stage,
         "feedback": this.state.feedback
@@ -46,7 +45,7 @@ export class StudentFeedback extends React.Component {
                 dialogOpen: false,
             })
             this.props.enqueueSnackbar('Feedback is successfully added!',{ variant: 'success' });
-            EventEmitter.dispatch("transitionsChange"+this.props.studentId, {rowData:rowData});
+            change(this.state.feedback, this.columnIndex)
         })
       this.props.fetchingFinish();
     } catch (e) {
@@ -58,7 +57,7 @@ export class StudentFeedback extends React.Component {
 
   onSubmit = () => {
     this.setState({
-        loading:true,
+        loading: true,
     })
     this.addFeedbck();
   };
@@ -67,8 +66,14 @@ export class StudentFeedback extends React.Component {
 
   constructor(props) {
     super(props);
-    this.dataURL = `${baseUrl}students/feedback/${this.props.studentId}/${this.props.userId}`;
-    this.stage = this.props.stage;
+    const { rowMetaTable } = this.props;
+    const { rowData, columnIndex } = rowMetaTable;
+    this.columnIndex = columnIndex;
+    this.studentId = rowData[5];
+    this.userId = rowData[8].id;
+    this.stage = rowData[0];
+    this.user = '@' + rowData[8].user_name.toString().split(" ").join('').toLowerCase()
+    this.dataURL = `${baseUrl}students/feedback/${this.studentId}/${this.userId}`;
     this.state = {
       "feedback": "",
       "dialogOpen": false,
@@ -96,13 +101,12 @@ export class StudentFeedback extends React.Component {
       dialogOpen: true
     })
   }
-  addFeedbackDetails = (feedbackDetails) => {
-    return feedbackDetails.user + ": \n\n";
+  addFeedbackDetails = (user, feedback) => {
+    return feedback ? user + ": \n\n" + feedback : user + ": \n\n";
   }
 
   render = () => {
-    const { classes } = this.props;
-    const { loading } = this.state;
+    const { classes, feedback } = this.props;
     return (
         <Fragment>
             <Box onClick={this.handleOpen}>
@@ -113,14 +117,14 @@ export class StudentFeedback extends React.Component {
                 onClose={this.handleClose}
             >
                 <form className={classes.container}>
-                    <h1 style={{color: '#f05f40',textAlign: 'center'}}>Student Feedback</h1>
+                    <h1 style={{color: '#f05f40',textAlign: 'center'}}>Add Feedback</h1>
                     <TextField
                       id="outlined-multiline-static"
                       label="Feedback"
                       multiline
                       rows="6"
                       name='feedback'
-                      defaultValue={this.addFeedbackDetails(this.props)}
+                      defaultValue={this.addFeedbackDetails(this.user, feedback)}
                       onChange={this.handleChange('feedback')}
                       className={classes.textField}
                       margin="normal"

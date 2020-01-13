@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import { withSnackbar } from 'notistack';
 import { EventEmitter } from './events';
+import { ro } from 'date-fns/locale';
 
 const baseUrl = process.env.API_URL;
 const animatedComponents = makeAnimated();
@@ -14,21 +15,27 @@ export class OwnerSelect extends React.Component {
 
   constructor (props) {
     super(props);
+    const { rowMetaTable } = this.props;
+    const { columnIndex, rowData } = rowMetaTable;
+    this.columnIndex = columnIndex;
+    this.whoAssign = rowData[8].email.split('@')[0];
+    this.stage = rowData[0];
+    this.studentId = rowData[5];
   }
   
   handleChange = selectedValue => {
     try{
-      const { rowData } = this.props
-      const { label } =  selectedValue;
+      const { change } = this.props
+      const { value } =  selectedValue;
       axios.post(`${baseUrl}students/assign_feedback_work`, { 
-          whoAssign: rowData.loggedInUser.email.split('@')[0],
-          toAssign: label,
-          student_stage: rowData.toStage,
-          studentId: rowData.studentId
+          whoAssign: this.whoAssign,
+          toAssign: value,
+          student_stage: this.stage,
+          studentId: this.studentId
       })
       .then(() => {
-        this.props.enqueueSnackbar(`successfully Assigned work for ${label}`,{ variant: 'success' });
-        EventEmitter.dispatch("transitionsChange"+this.props.rowData.studentId, {rowData:rowData});
+        this.props.enqueueSnackbar(`successfully Assigned work for ${value}`,{ variant: 'success' });
+        change(value, this.columnIndex)
       })
     } catch(e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });
@@ -36,14 +43,13 @@ export class OwnerSelect extends React.Component {
   }
 
   render = () => {
-    const { rowData } = this.props;
-    const allUserOptions = this.props.users.map(x=> {return {label:x.user, value: x.id}})
-    let selectedValue = { value: null, label: null };
-    
-    if (rowData['feedback']) {
-      selectedValue = { value: rowData['feedback']['toAssign'], label: rowData['feedback']['toAssign'] };
-    }
+    const { value } = this.props;
+    const allUserOptions = this.props.users.map(x=> {return {label:x.user, value: x.user}})
+    let selectedValue = { value: null, label: null }
 
+    if (value) {
+      selectedValue = { value: value, label: value }
+    }
     return <Select
         className={"filterSelectStage"}
         // defaultValue={selectedValue}

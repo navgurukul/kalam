@@ -1,34 +1,25 @@
 import 'date-fns';
 import React from 'react';
+// import { allStages} from '../config';
 import { connect } from 'react-redux';
 import DateFnsUtils from '@date-io/date-fns';
-
-import MaterialTable from "material-table";
+import MUIDataTable from "mui-datatables";
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
-
-import FilterSelect from './FilterSelect'
 import Select from 'react-select';
 
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
+import makeAnimated from 'react-select/animated';
 
 import { theme } from '../theme/theme';
-
 import { changeFetching, setupUsers } from '../store/actions/auth';
-
 import { withRouter } from 'react-router-dom';
-
 import GlobalService from '../services/GlobalService';
 import StudentService from '../services/StudentService';
-import StageTransitions from './StageTransitions';
-import StudentDetails from './StudentDetails';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { EventEmitter } from './events';
 import { allStages } from '../config';
 
-import makeAnimated from 'react-select/animated';
 const animatedComponents = makeAnimated();
-
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
 const allStagesOptions = Object.keys(allStages).map(x => { return { value: x, label: allStages[x] } });
@@ -39,7 +30,7 @@ const styles = theme => ({
   }
 })
 
-let columns;
+
 let filterFns = []
 
 export class AdmissionsDash extends React.Component {
@@ -56,20 +47,18 @@ export class AdmissionsDash extends React.Component {
     this.studentsURL = baseURL + 'students';
     this.usersURL = baseURL + 'users/getall';
     this.stage = null,
-    this.value = null,
-    this.loggedInUser = this.props.loggedInUser;
+      this.value = null,
+      this.loggedInUser = this.props.loggedInUser;
 
     this.state = {
       data: [],
       sData: undefined, //subsetData
     }
-
-    EventEmitter.subscribe('stageChange', this.stageChangeEvent);
   }
 
   stageChangeEvent = (iData) => {
-    const rowIds = this.state.data.map(x=>x.id)
-    const rowIndex = rowIds.indexOf(iData.rowData.id);
+    // const rowIds = this.state.data.map(x => x.id)
+    // const rowIndex = rowIds.indexOf(iData.rowData.rowId);
     // this.setState(({data}) => ({
     //   data: [
     //     ...data.slice(0,rowIndex),
@@ -81,15 +70,15 @@ export class AdmissionsDash extends React.Component {
     //     ...data.slice(rowIndex+1)
     //   ]
     // }))
-
-    let dataElem = this.state.data[rowIndex];
-    dataElem.stageTitle = iData.selectedValue.label;
+    let dataElem = this.state.data[iData.rowId];
+    // dataElem.stageTitle = iData.selectedValue.label;
     dataElem.stage = iData.selectedValue.value;
-    
-    let newData = this.state.data;
-    newData[rowIndex] = dataElem;
 
-    this.setState({data:newData });
+    let newData = this.state.data;
+    newData[iData.rowId] = dataElem;
+
+    this.setState({ data: newData }, function () {
+    });
   }
 
   changeDataType = option => {
@@ -98,14 +87,14 @@ export class AdmissionsDash extends React.Component {
     this.value = null;
     this.fetchStudents();
   }
-  
+
   changeStudentStage = option => {
     this.value = { value: option.value, label: allStages[option.value] }
     this.stage = option.value;
     this.fetchStudents();
     this.dataType = 'softwareCourse';
   }
-  
+
   changeFromDate = date => {
     this.fromDate = date;
     this.fetchStudents();
@@ -116,45 +105,21 @@ export class AdmissionsDash extends React.Component {
     this.fetchStudents();
   }
 
-  handleChange = (field, filterFn) => {
-
-    filterFns[field] = filterFn
-    const fieldKeys = Object.keys(filterFns)
-
-    let sData = this.state.data.filter((x) => {
-      let result = true
-      for (var key in filterFns) {
-        result = result && filterFns[key](x)
-      }
-      return result
-    })
-
-    // sData [] and undefined are different
-    // sData [] = when no results are returned
-    // sData undefined = when all results are returned
-    this.setState({
-      sData: sData
-    })
-
-  }
-
   dataSetup = (data) => {
-    columns = StudentService.setupPre(StudentService.columns[this.dataType]);
     for (let i = 0; i < data.length; i++) {
       data[i] = StudentService.dConvert(data[i])
-      columns = StudentService.addOptions(columns, data[i]);
     }
-
-    columns = StudentService.setupPost(columns);
 
     this.setState({ 'data': data }, function () {
       this.props.fetchingFinish()
-    })
+    });
   }
 
   render = () => {
     const { classes } = this.props;
-    
+
+    console.log("aap yaha ayae kisliye", this.state.data.slice(0,3));
+
     const options = <Box>
       <Select
         className={"filterSelectGlobal"}
@@ -210,66 +175,31 @@ export class AdmissionsDash extends React.Component {
     if (!this.state.data.length) {
       return options;
     }
-
-    let filterSelectRows = []
-    columns.map((x) => {
-      if ('selectFilter' in x)
-        filterSelectRows.push(
-          <FilterSelect
-            filter={{
-              name: x.sfTitle,
-              field: x.field
-            }}
-            ifMulti={x.sfMulti}
-            key={x.field}
-            options={x.options}
-            handleChange={this.handleChange}
-          />
-        )
-    })
+    
     return <Box>
       <MuiThemeProvider theme={theme}>
         {options}
-        {filterSelectRows}
         <div className={classes.clear}></div>
-        <MaterialTable
-          columns={columns}
+        <MUIDataTable
+          columns={StudentService.columns[this.dataType]}
           data={this.state.sData ? this.state.sData : this.state.data}
           icons={GlobalService.tableIcons}
-          detailPanel={rowData => {
-            return (
-              <StageTransitions
-                dataType={this.dataType}
-                studentId={rowData.id}
-              />
-            )
-          }}
-          actions= {[
+          options={
             {
-              icon: 'Save',
-              tooltip: 'Student Details',
-              onClick: (event, rowData) => { return rowData }
-            }
-          ]}
-          components={
-            {
-              Action: 
-                props => (
-                  <StudentDetails
-                    details={props.data}/>
-                )
+              headerStyle: {
+                color: theme.palette.primary.main
+              },
+              exportButton: true,
+              pageSize: 100,
+              showTitle: false,
+              selectableRows: 'none',
+              toolbar: false,
+              filtering: true,
+              filter: true,
+              filterType: 'doprdown',
+              responsive: 'stacked',
             }
           }
-          options={{
-            headerStyle: {
-              color: theme.palette.primary.main
-            },
-            exportButton: true,
-            pageSize: 100,
-            showTitle: false,
-            toolbar: false,
-            filtering: true
-          }}
         />
       </MuiThemeProvider>
     </Box>
@@ -280,9 +210,6 @@ export class AdmissionsDash extends React.Component {
     this.fetchUsers();
   }
 
-  componentWillUnmount() {
-    EventEmitter.unsubscribe('stageChange');
-  }
 
   async fetchUsers() {
     try {

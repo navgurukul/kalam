@@ -12,29 +12,40 @@ export class StatusSelect extends React.Component {
 
   constructor (props) {
     super(props);
-    this.dataURL = baseUrl+'students/feedback/'+this.props.studentId;
+    const { rowMetaTable } = this.props;
+    this.studentId = rowMetaTable.rowData[5];
+    this.columnIndex = rowMetaTable.columnIndex;
+    this.stage = rowMetaTable.rowData[0];
+    this.dataURL = baseUrl+'students/feedback/'+this.studentId;
   }
   
   handleChange = selectedValue => {
-    // const { selectedOption } = this.state
-    const stage = this.props.rowData['toStage']
     try{
-      const { rowData } = this.props;
+      const { change } = this.props;
       const { value } = selectedValue;
-      axios.put(this.dataURL, { student_stage: stage, state: value })
+      axios.put(this.dataURL, { student_stage: this.stage, state: value })
       .then(() => {
         this.props.enqueueSnackbar('state is successfully changed!',{ variant: 'success' });
-        EventEmitter.dispatch("transitionsChange"+this.props.studentId, {rowData: rowData});
+        change(value, this.columnIndex)
       });
-      EventEmitter.dispatch("transitionsChange", {rowData: rowData});
     }catch (e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });
     }
   }
 
   render = () => {
-    const { allStatusOptions, rowData } = this.props;
-    const selectedValue = { value: rowData['feedback']['state'], label: rowData.statusTitle }
+    const { state, feedbackableStagesData } = this.props;
+    
+    const allstatus = feedbackableStagesData[this.stage].status;
+    const allStatusOptions = allstatus.map(x => { return { value: x, label: (x.charAt(0).toUpperCase() + x.slice(1)).match(/[A-Z][a-z]+/g).join(" ") } })
+    
+    let selectedValue = { value: null, label: null }
+    if (state) {
+      const lable = (state.charAt(0).toUpperCase() + state.slice(1)).match(/[A-Z][a-z]+|[0-9]+/g).join("")
+      selectedValue.value = state;
+      selectedValue.label = lable;
+    }
+    
     return <Select
         className={"filterSelectStage"}
         // defaultValue={selectedValue}

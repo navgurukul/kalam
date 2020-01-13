@@ -16,24 +16,24 @@ export class StageSelect extends React.Component {
   }
   
   handleChange = selectedValue => {
-    // const { selectedOption } = this.state
     try{
-      const { rowData } = this.props;
+      const { rowMetatable, change } = this.props;
+      const studentId = rowMetatable.rowData[0];
+      const columnIndex = rowMetatable.columnIndex;
       const { value } = selectedValue;
-      axios.post(`${baseUrl}students/chnageStage/${this.props.studentId}`, { stage: value })
+      axios.post(`${baseUrl}students/chnageStage/${studentId}`, { stage: value })
       .then(() => {
         this.props.enqueueSnackbar('stage is successfully changed!',{ variant: 'success' });
-        EventEmitter.dispatch("stageChange", { selectedValue: selectedValue, rowData: rowData });
+        change(value, columnIndex)
       });
-      EventEmitter.dispatch("stageChange", {selectedValue: selectedValue, rowData: rowData});
     }catch (e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });
     }
   }
 
   render = () => {
-    const { allStagesOptions, rowData } = this.props;
-    const selectedValue = { value: rowData.stage, label: rowData.stageTitle }
+    const { allStagesOptions, allStages, stage } = this.props;
+    const selectedValue = { value: stage, label: allStages[stage]}
     return <Select
         className={"filterSelectStage"}
         // defaultValue={selectedValue}

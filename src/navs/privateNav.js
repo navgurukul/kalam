@@ -44,6 +44,11 @@ export const publicNavs = [
         name: 'Assigned Users',
         icon: <ExtensionIcon />
     },
+    {
+        url: '/update/mobile/number',
+        name: 'Update mobile Number',
+        icon: <ExtensionIcon/>
+    },
     // {
     //     url: '/movies',
     //     name: 'Movies',

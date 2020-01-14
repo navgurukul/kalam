@@ -53,7 +53,6 @@ export class MyTaskReport extends React.Component {
   }
 
   render = () => {
-    console.log(this.state.data, "BABU")
     return <Box>
       <MuiThemeProvider theme={theme}>
         <MUIDataTable

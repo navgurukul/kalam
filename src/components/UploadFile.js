@@ -34,8 +34,6 @@ export class UploadFile extends React.Component {
       const response = await axios.post(this.dataURL, {
         "file": this.uploadInput.files[0]
       })
-
-      console.log(response.data)
       this.props.fetchingFinish()
     } catch (e) {
       console.log(e);

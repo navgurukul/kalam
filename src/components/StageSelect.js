@@ -3,7 +3,7 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import axios from 'axios';
 import { withSnackbar } from 'notistack';
-import { EventEmitter } from './events';
+const _ = require('underscore');
 
 const baseUrl = process.env.API_URL;
 const animatedComponents = makeAnimated();
@@ -12,7 +12,6 @@ export class StageSelect extends React.Component {
 
   constructor (props) {
     super(props);
-    const { rowData } = props;
   }
   
   handleChange = selectedValue => {
@@ -20,11 +19,11 @@ export class StageSelect extends React.Component {
       const { rowMetatable, change } = this.props;
       const studentId = rowMetatable.rowData[0];
       const columnIndex = rowMetatable.columnIndex;
-      const { value } = selectedValue;
+      const { value, label } = selectedValue;
       axios.post(`${baseUrl}students/chnageStage/${studentId}`, { stage: value })
       .then(() => {
         this.props.enqueueSnackbar('stage is successfully changed!',{ variant: 'success' });
-        change(value, columnIndex)
+        change(label, columnIndex)
       });
     }catch (e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });
@@ -32,8 +31,9 @@ export class StageSelect extends React.Component {
   }
 
   render = () => {
-    const { allStagesOptions, allStages, stage } = this.props;
-    const selectedValue = { value: stage, label: allStages[stage]}
+    const { allStages, stage } = this.props;
+    const allStagesOptions = Object.keys(allStages).map(x => { return { value: x, label: allStages[x] } });
+    const selectedValue = { value: (_.invert(allStages))[stage], label: stage }
     return <Select
         className={"filterSelectStage"}
         // defaultValue={selectedValue}

@@ -23,6 +23,7 @@ const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
 const allStagesOptions = Object.keys(allStages).map(x => { return { value: x, label: allStages[x] } });
+allStagesOptions.push({ value: 'default', label: 'Back To All Students Details'})
 
 const styles = theme => ({
   clear: {
@@ -31,7 +32,6 @@ const styles = theme => ({
 })
 
 
-let filterFns = []
 
 export class AdmissionsDash extends React.Component {
 
@@ -47,8 +47,8 @@ export class AdmissionsDash extends React.Component {
     this.studentsURL = baseURL + 'students';
     this.usersURL = baseURL + 'users/getall';
     this.stage = null,
-      this.value = null,
-      this.loggedInUser = this.props.loggedInUser;
+    this.value = null,
+    this.loggedInUser = this.props.loggedInUser;
 
     this.state = {
       data: [],
@@ -90,9 +90,16 @@ export class AdmissionsDash extends React.Component {
 
   changeStudentStage = option => {
     this.value = { value: option.value, label: allStages[option.value] }
-    this.stage = option.value;
-    this.fetchStudents();
-    this.dataType = 'softwareCourse';
+    if(option.value === "default") {
+      this.stage = null;
+      this.dataType = 'softwareCourse';
+      this.fetchStudents();
+      this.value = "Student Detials"
+    } else {
+      this.stage = option.value;
+      this.fetchStudents();
+      this.dataType = 'softwareCourse';
+    }
   }
 
   changeFromDate = date => {
@@ -117,9 +124,7 @@ export class AdmissionsDash extends React.Component {
 
   render = () => {
     const { classes } = this.props;
-
-    console.log("aap yaha ayae kisliye", this.state.data.slice(0,3));
-
+    
     const options = <Box>
       <Select
         className={"filterSelectGlobal"}

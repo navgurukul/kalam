@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
 import MUIDataTable from "mui-datatables";
+import Typography from '@material-ui/core/Typography';
 import { theme } from '../theme/theme';
 import { changeFetching } from '../store/actions/auth';
 import { withRouter } from 'react-router-dom';
@@ -69,8 +70,9 @@ export class Transition extends React.Component {
   getMuiTheme = () => createMuiTheme({
     overrides: {
       MUIDataTableBodyCell: {
-        root: {
-          backgroundColor: "#FF0000",
+        stackedCommon: {
+          height: 'auto !important',
+          // width: 'calc(50% - 80px) !important'
         }
       },    
     }
@@ -110,9 +112,8 @@ export class Transition extends React.Component {
 
 
   render = () => {
-    const { classes } = this.props;
+    const { classes, studentName } = this.props;
     const modalStyle = getModalStyle()
-    console.log(this.state.data)
     return !this.state.modalOpen ? <div>
       <Button color="primary" align="right" onClick={this.handleOpen}>
         <DetailsIcon color="primary" />&nbsp;&nbsp;
@@ -124,6 +125,7 @@ export class Transition extends React.Component {
       >
         <Box style={modalStyle} className={classes.paper}>
           <MuiThemeProvider theme={this.getMuiTheme()}>
+          <Typography variant="h5" id="modal-title">Student Name:- {studentName}</Typography><br/>
           <MUIDataTable
             columns={StudentService.columns[this.props.dataType]}
             data={this.state.data}

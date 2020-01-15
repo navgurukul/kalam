@@ -10,28 +10,28 @@ import YouTube from 'react-youtube';
 const aboutNavgurukul = [
   {
     label: {
-      "hi": 'Navgurukul kya hai, 2 mins mei samjhe!',
+      "hi": 'नवगुरुकुल क्या है २ मिनट मे समजे!',
       "en": "2 mins introduction to NavGurukul"
     },
     videoId: 'HjqfZ-Matyk',
   },
   {
     label: {
-      "hi": 'Navgurukul ke co-founder Abhishek ka interview',
+      "hi": 'नवगुरुकुल के कोफाउंडर अभिषेक का इंटरव्यू',
       "en": "Interview of Abhishek, co-founder of Navgurukul"
     },
     videoId: 'NC2ymm6Sots',
   },
   {
     label: {
-      "hi": 'Navgurukul acche se explain kiya hua',
+      "hi": 'नवगुरुकुल अच्छे से एक्सप्लेन किया हुआ',
       "en": "Detailed explanation about Navgurukul"
     },
     videoId: 'sfU1m8MuZ5Y',
   },
   {
     label: {
-      "hi": 'Navgurukul se graduated students se suniye unka experience',
+      "hi": 'नवगुरुकुल से ग्रदुएटेड स्टूडेंट से सुनिए उनका एक्सपीरियंस',
       "en": "Experience of Navgurukul Alumni & Graduates"
     },
     videoId: 'vuSwndj5cbs',
@@ -58,6 +58,16 @@ export class VideoSlider extends React.Component {
     this.setState({ activeStep: this.state.activeStep - 1 });
   };
 
+  timer = () => {
+    this.setState({
+      activeStep: (this.state.activeStep + 1) % aboutNavgurukul.length
+    })
+  }
+
+  componentDidMount() {
+    window.setInterval(this.timer, 5000)
+  }
+
   render() {
     const width = Math.min(600, window.screen.width);
     const opts = {
@@ -69,14 +79,14 @@ export class VideoSlider extends React.Component {
       },
       origin: window.location.origin,
     };
-    
-    return <Box maxWidth={width} style={{margin:'auto'}}>
+
+    return <Box maxWidth={width} style={{ margin: 'auto' }}>
       <YouTube
         videoId={aboutNavgurukul[this.state.activeStep].videoId}
         opts={opts}
         onReady={this._onReady}
       />
-      <Box py={2} display="flex" style={{flexDirection: 'column', alignItems: 'center', fontSize: 18, justifyContent: 'column'}}>
+      <Box py={2} display="flex" style={{ flexDirection: 'column', alignItems: 'center', fontSize: 18, justifyContent: 'column' }}>
         <span>{aboutNavgurukul[this.state.activeStep].label.hi}</span>
         <span><b>{aboutNavgurukul[this.state.activeStep].label.en}</b></span>
       </Box>

@@ -48,7 +48,7 @@ export class UpdateMobileNumber extends React.Component {
     this.student_stage= this.props.student_stage;
     this.state = {
         mobileNumber: "",
-        "dialogOpen": false,
+        "dialogOpen": true,
     }
   }
 
@@ -67,40 +67,32 @@ export class UpdateMobileNumber extends React.Component {
       axios.post(`${baseUrl}students/mobile/${this.props.loggedInUser.id}`, { mobile: mobile })
       .then(() => {
         this.props.enqueueSnackbar('Mobile number is successfully changed!',{ variant: 'success' });
+        const { history } = this.props;
+        history.push("/students");
       });
     } catch (e) {
       this.props.enqueueSnackbar('Please enter valide mobile number!',{ variant: 'error' });
     }
-    
-    this.handleClose();
   }
   
   handleClose = () => {
     this.setState({
       dialogOpen: false
     })
+    const { history } = this.props;
+    history.push("/students");
   };
 
-
-  handleOpen = () => {
-    this.setState({
-      dialogOpen: true
-    })
-  }
-  
   render = () => {
     const { classes } = this.props;
     return (
         <Fragment>
-            <Box >
-                <Button variant="outlined" onClick={this.handleOpen} color="primary">Update Mobile Number</Button>
-            </Box>
-            <Dialog
-                open={this.state.dialogOpen}
-                onClose={this.handleClose}
-            >    
-        <Box className={classes.container}>
-            <Paper className={classes.userContact}>
+          <Dialog
+            open={this.state.dialogOpen}
+            onClose={this.handleClose}
+          >
+            <Box className={classes.container}>
+              <Paper className={classes.userContact}>
                 <Box>
                     <Typography variant="h5" component="h3">
                         Update Mobile Number
@@ -118,9 +110,9 @@ export class UpdateMobileNumber extends React.Component {
                 <div className={classes.root}>
                     <Button variant="outlined" onClick={this.dashBoard} color="primary">Submit</Button>
                 </div>
-          </Paper>
-        </Box>
-            </Dialog>  
+              </Paper>
+            </Box>
+          </Dialog>  
         </Fragment>
     );
   }

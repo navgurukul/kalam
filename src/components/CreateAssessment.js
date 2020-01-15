@@ -5,6 +5,7 @@ import {Box} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Dialog, DialogTitle, DialogContent,DialogContentText, DialogActions } from '@material-ui/core';
+import { withSnackbar } from 'notistack';
 import Spinner from 'react-spinner-material';
 
 const baseUrl = process.env.API_URL;
@@ -38,10 +39,10 @@ export class CreateAssessment extends React.Component {
         this.setState({
           loading:false
         })
-        alert("Assessment Created", response);
+        this.props.enqueueSnackbar('Assessment successfully created!',{ variant: 'success' });
       })
     } catch (e) {
-      alert(e);
+      this.props.enqueueSnackbar(e, { variant: 'error' });
     }
   }
 
@@ -82,7 +83,6 @@ export class CreateAssessment extends React.Component {
         <DialogContentText>
           Please fill out the paper set name
         </DialogContentText>
-        <form>
           <TextField
             label="Paper set name"
             value={this.state.inputValue}
@@ -90,7 +90,6 @@ export class CreateAssessment extends React.Component {
             onChange = {this.onChangeEvent}
             margin="normal"
           />
-        </form>
       </DialogContent>
       <DialogActions>
         <Button color='primary' variant="contained" onClick={this.createAssessment2}>
@@ -102,4 +101,4 @@ export class CreateAssessment extends React.Component {
   }
 }
 
-export default CreateAssessment;
+export default withSnackbar(CreateAssessment);

@@ -6,6 +6,7 @@ import {withRouter} from 'react-router-dom';
 import ReactJson from 'react-json-view'
 import { Modal, Box } from '@material-ui/core';
 import Spinner from 'react-spinner-material';
+import { withSnackbar } from 'notistack';
 
 const baseUrl = process.env.API_URL;
 const styles = theme => ({
@@ -64,21 +65,23 @@ export class CsvUpload extends React.Component {
         const response = await axios.post(url, {
           "csvUrl": fileUrl
         });
-        if(response.data.errors != undefined){
+        if (response.data.errors != undefined){
           this.setState({
             modalOpen:true,
             errors: response.data,
             loading: false
-          })
-        }else{
+          });
+          this.props.enqueueSnackbar('successfully uploaded csv file!',{ variant: 'success' });
+        } else {
           this.setState({
             modalOpen:true,
             errors: "sucess",
             loading:false
-          })
+          });
         }
       }      
-    }catch(e){
+    }catch (e) {
+      this.props.enqueueSnackbar('Internal Server Error', { variant: 'error' });
       console.log(e)
     }
   }
@@ -90,9 +93,8 @@ export class CsvUpload extends React.Component {
           <ReactJson src={this.state.errors}/>
         </div>
     }else if (this.state.errors == "sucess"){
-      return <div>
-          <h1 style={{textAlign: 'center', color:'green'}}>You have successfully uploaded students details!</h1>
-        </div>
+      return this.props.enqueueSnackbar('successfully uploaded csv file!',{ variant: 'success' });
+
     }
   }
 
@@ -157,4 +159,4 @@ export class CsvUpload extends React.Component {
   }
 }
 
-export default withRouter(withStyles(styles)(CsvUpload))
+export default withSnackbar(withRouter(withStyles(styles)(CsvUpload)));

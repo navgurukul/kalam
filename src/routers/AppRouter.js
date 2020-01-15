@@ -14,6 +14,7 @@ import MyAssignReport from '../components/MyAssign';
 import NotFoundPage from '../components/NotFoundPage';
 import LoginDesign from '../components/LoginDesign';
 import UserMoblieNumber from '../components/UserMoblieNumber';
+import UpdateMobileNumber from '../components/UpdateMobileNumber';
 
 // if authenticated, redirect to /students else be there
 import PublicRoute from './PublicRouter';
@@ -28,7 +29,8 @@ const AppRouter = () => (
   <Router history={history}>
     <div>
       <Switch>        
-        <AnyRoute path="/" component={LandingPage} exact={true} />
+      <AnyRoute path="/" component={LandingPage} exact={true} />
+        <PrivateRoute path="/update/mobile/number" component={UpdateMobileNumber} exact={true} />
         <PublicRoute path="/login" component={LoginDesign} exact={true} />
         <PrivateRoute path="/tasks" component={MyTaskReport} />
         <PrivateRoute path="/report/dangling" component={StageWiseDanglingReport} />

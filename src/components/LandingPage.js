@@ -117,7 +117,7 @@ export class LandingPage extends React.Component {
     return (
       <div>
         <MuiThemeProvider theme={theme}>
-          <div className={classes.root}>
+          <div className={classes.root} style={{marginTop: -48}}>
             <Typography className={classes.paper}>Navgurukul Software Engineering Scholarship</Typography>
           </div>
           <Box style={{ height: theme.spacing(2) }} />

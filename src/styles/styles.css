@@ -61,8 +61,10 @@ tr:nth-child(even) {
     z-index: 10000;
 }
 
-#app {
-    padding-top: 48px;
+@media only screen and (min-width: 600px) {
+  #app {
+      padding-top: 48px;
+  }
 }
 
 /*a{

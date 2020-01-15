@@ -37,15 +37,15 @@ const styles = theme => ({
     '& > *': {
       margin: theme.spacing(1),
     },
-  },
-  root: {
     flexGrow: 1,
   },
   paper: {
     padding: theme.spacing(1),
     textAlign: 'center',
-    color: "balck",
-    fontSize: '40px',
+    fontSize: 32,
+    [theme.breakpoints.down('md')]: {
+      fontSize: 24
+    }
   },
   typography: {
     fontFamily: 'BlinkMacSystemFont',
@@ -118,29 +118,36 @@ export class LandingPage extends React.Component {
       <div>
         <MuiThemeProvider theme={theme}>
           <div className={classes.root}>
-            <Grid container >
-              <Grid item xs={12}>
-                <Typography className={classes.paper}>Navgurukul Software Engineering Scholarship</Typography>
-              </Grid>
-            </Grid>
+            <Typography className={classes.paper}>Navgurukul Software Engineering Scholarship</Typography>
           </div>
           <Box style={{ height: theme.spacing(2) }} />
           <Grid container>
-            <Grid container>
-              <Grid item xs={12} sm={6}>
-                <Typography className={classes.typography} variant="h4" component="h3">Course Information</Typography>
-                <Typography className={classes.HindiTypography} variant="h5" component="h4" >कोर्स के बारे में जाने </Typography>
+            <Grid item xs={12} sm={6}>
+              <Grid item>
+                <Box display="flex" alignItems="center" flexDirection="column">
+                  <Typography className={classes.typography} variant="h5" component="h3">Course Information</Typography>
+                  <Typography className={classes.HindiTypography} variant="h6" component="h4">कोर्स के बारे में जाने </Typography>
+                </Box>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography className={classes.typography1} variant="h4" component="h3" >Apply Test</Typography>
-                <Typography className={classes.HindiTypography1} variant="h5" component="h4" >कोर्स में अप्लाई करे </Typography>
+              <Grid item xs={12}>
+                <Box style={{ height: theme.spacing(2) }} />
               </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item xs={12} sm={6}>
+              <Grid item>
                 <VideoSlider />
               </Grid>
-              <Grid item xs={12} sm={6}>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Grid item>
+                <Box display="flex" alignItems="center" flexDirection="column">
+                  <Typography className={classes.typography1} variant="h5" component="h3" >Apply Test</Typography>
+                  <Typography className={classes.HindiTypography1} variant="h6" component="h4" >कोर्स में अप्लाई करे </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box style={{ height: theme.spacing(2) }} />
+              </Grid>
+
+              <Grid item>
                 <Paper className={classes.loginContainer}>
                   <Box>
                     <Grid item xs={12}>

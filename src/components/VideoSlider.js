@@ -87,8 +87,8 @@ export class VideoSlider extends React.Component {
         onReady={this._onReady}
       />
       <Box py={2} display="flex" style={{ flexDirection: 'column', alignItems: 'center', fontSize: 18, justifyContent: 'column' }}>
-        <span>{aboutNavgurukul[this.state.activeStep].label.hi}</span>
-        <span><b>{aboutNavgurukul[this.state.activeStep].label.en}</b></span>
+        <span align="center">{aboutNavgurukul[this.state.activeStep].label.hi}</span>
+        <span align="center"><b>{aboutNavgurukul[this.state.activeStep].label.en}</b></span>
       </Box>
       <MobileStepper
         variant="dots"

@@ -156,7 +156,7 @@ export class ModalStages extends React.Component {
 
     return !this.state.modalOpen ?
       <Button color="primary" align="right" onClick={this.handleOpen}>
-        <AssessmentIcon color="primary" />&nbsp;{this.props.partnerId}&nbsp;
+        <AssessmentIcon color="primary" />&nbsp;&nbsp;
       </Button> :
       <Modal
         open={this.state.modalOpen}

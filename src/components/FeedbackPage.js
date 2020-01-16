@@ -36,8 +36,9 @@ export class StudentFeedback extends React.Component {
   async addFeedbck() {
     try {
       this.props.fetchingStart()
-      const { change } = this.props;
-      const response = await axios.post(this.dataURL, {
+      const { change } = this.props
+      const dataURL = `${baseUrl}students/feedback/${this.studentId}/${this.userId}`
+      const response = await axios.post(dataURL, {
         "student_stage": this.stage,
         "feedback": this.state.feedback
         }).then(response => {
@@ -73,7 +74,6 @@ export class StudentFeedback extends React.Component {
     this.userId = rowData[8].id;
     this.stage = rowData[0];
     this.user = '@' + rowData[8].user_name.toString().split(" ").join('').toLowerCase()
-    this.dataURL = `${baseUrl}students/feedback/${this.studentId}/${this.userId}`;
     this.state = {
       "feedback": "",
       "dialogOpen": false,

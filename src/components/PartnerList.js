@@ -41,7 +41,6 @@ export class PartnerList extends React.Component {
   constructor(props) {
 
     super(props);
-    this.dataURL = baseUrl + 'partners';
     this.columns = [
       {
         name: 'id',
@@ -142,7 +141,8 @@ export class PartnerList extends React.Component {
   async fetchPartners() {
     try {
       this.props.fetchingStart()
-      const response = await axios.get(this.dataURL);
+      const dataURL = baseUrl + 'partners';
+      const response = await axios.get(dataURL);
       this.dataSetup(response.data.data);
     } catch (e) {
       console.log(e);

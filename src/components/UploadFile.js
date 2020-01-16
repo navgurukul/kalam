@@ -12,8 +12,6 @@ import axios from 'axios';
 export class UploadFile extends React.Component {
   constructor(props) {
     super(props)
-    // this.dataURL = 'http://join.navgurukul.org/api/partners/'+this.props.partnerId+'/assessments/'+this.props.assessmentId+'/attempts'
-    this.dataURL = 'http://join.navgurukul.org/api/general/upload_file/answerCSV'
     this.state = {
     }
   }
@@ -26,12 +24,8 @@ export class UploadFile extends React.Component {
   async handleUpload () {
     try {
       this.props.fetchingStart()
-
-      const data = new FormData();
-      // data.append('file', this.uploadInput.files[0]);
-      // data.append('filename', this.fileName.value);
-      
-      const response = await axios.post(this.dataURL, {
+      const dataURL = 'http://join.navgurukul.org/api/general/upload_file/answerCSV'
+      const response = await axios.post(dataURL, {
         "file": this.uploadInput.files[0]
       })
       this.props.fetchingFinish()

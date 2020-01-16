@@ -16,14 +16,14 @@ export class StatusSelect extends React.Component {
     this.studentId = rowMetaTable.rowData[5];
     this.columnIndex = rowMetaTable.columnIndex;
     this.stage = rowMetaTable.rowData[0];
-    this.dataURL = baseUrl+'students/feedback/'+this.studentId;
   }
   
   handleChange = selectedValue => {
     try{
       const { change } = this.props;
       const { value } = selectedValue;
-      axios.put(this.dataURL, { student_stage: this.stage, state: value })
+      const dataURL = baseUrl+'students/feedback/'+this.studentId;
+      axios.put(dataURL, { student_stage: this.stage, state: value })
       .then(() => {
         this.props.enqueueSnackbar('state is successfully changed!',{ variant: 'success' });
         change(value, this.columnIndex)

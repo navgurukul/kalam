@@ -50,8 +50,6 @@ export class DashboardPage extends React.Component {
   constructor(props) {
 
     super(props);
-    this.dataURL = baseUrl+'partners/'+this.props.match.params.partnerId+'/students';
-    this.usersURL = baseUrl + 'users/getall'
     this.state = {
       data: [],
       sData: undefined, //subsetData
@@ -171,7 +169,8 @@ export class DashboardPage extends React.Component {
   async fetchUsers() {
     try {
       this.props.fetchingStart()
-      const response = await axios.get(this.usersURL, {});
+      const usersURL = baseUrl + 'users/getall'
+      const response = await axios.get(usersURL, {});
       this.props.usersSetup(response.data.data);
       this.props.fetchingFinish()
     } catch (e) {
@@ -183,7 +182,8 @@ export class DashboardPage extends React.Component {
   async fetchStudents() {
     try {
       this.props.fetchingStart()
-      const response = await axios.get(this.dataURL);
+      const dataURL = baseUrl+'partners/'+this.props.match.params.partnerId+'/students'
+      const response = await axios.get(dataURL);
       this.dataSetup(response.data.data);
     } catch (e) {
       console.log(e);

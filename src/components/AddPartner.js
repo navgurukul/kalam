@@ -34,7 +34,8 @@ export class AddPartnerPage extends React.Component {
   async addPartner() {
     try {
       this.props.fetchingStart()
-      const response = await axios.post(this.dataURL, {
+      const dataURL = baseUrl+'partners'
+      const response = await axios.post(dataURL, {
         "name": this.state.name,
         "notes": this.state.notes
         }
@@ -55,8 +56,6 @@ export class AddPartnerPage extends React.Component {
 
   constructor(props) {
     super(props);
-    this.dataURL = baseUrl+'partners';
-
     this.state = {
       "name": "",
       "notes": ""

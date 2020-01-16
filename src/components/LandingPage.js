@@ -65,8 +65,6 @@ const styles = theme => ({
 export class LandingPage extends React.Component {
   constructor(props) {
     super(props);
-    this.dataURL = baseUrl + 'helpline/register_exotel_call'
-
     this.state = {
       mobileNumber: '',
     }
@@ -82,7 +80,8 @@ export class LandingPage extends React.Component {
     try {
       const mobile = '0' + this.state.mobileNumber;
       this.props.fetchingStart()
-      const response = await axios.get(this.dataURL, {
+      const dataURL = baseUrl + 'helpline/register_exotel_call'
+      const response = await axios.get(dataURL, {
         params: {
           ngCallType: 'getEnrolmentKey',
           From: mobile,

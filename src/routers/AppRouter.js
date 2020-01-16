@@ -41,8 +41,8 @@ const AppRouter = () => (
         
         <PublicRoute path="/user/mobile/number" component={UserMoblieNumber} />
         <PrivateRoute path="/partner/add" component={AddPartner} />
-        <AnyRoute path="/partner/:partnerId" component={DashboardPage} />
         <AnyRoute path="/partner/:partnerId/assessments" component={ViewAssessments} />
+        <AnyRoute path="/partner/:partnerId" component={DashboardPage} />
         <PrivateRoute path="/partners" component={PartnerList} />
         <AnyRoute path="/partners/:partnerId/assessments/:assessmentId" component={AssessmentAttempts} />
         

@@ -3,6 +3,8 @@ import React from 'react';
 import { withStyles } from "@material-ui/core/styles";
 import { Modal, Button } from '@material-ui/core';
 
+import CancelIcon from '@material-ui/icons/Cancel';
+
 import { connect } from 'react-redux';
 import axios from 'axios';
 import Box from '@material-ui/core/Box';
@@ -51,7 +53,7 @@ const styles = theme => ({
   overrides: {
     MUIDataTableBodyCell: {
       root: {
-        minHeight: '22px' 
+        minHeight: '22px'
       }
     }
   }
@@ -72,9 +74,13 @@ export class Transition extends React.Component {
       MUIDataTableBodyCell: {
         stackedCommon: {
           height: 'auto !important',
-          // width: 'calc(50% - 80px) !important'
-        }
-      },    
+          whiteSpace: 'normal !important',
+          // width: 'calc(60% - 20px) !important',
+        },
+        cellHide: {
+          // width: 'calc(40% - 20px) !important'
+        },
+      },
     }
   })
 
@@ -125,27 +131,32 @@ export class Transition extends React.Component {
       >
         <Box style={modalStyle} className={classes.paper}>
           <MuiThemeProvider theme={this.getMuiTheme()}>
-          <Typography variant="h5" id="modal-title">Student Name:- {studentName}</Typography><br/>
-          <MUIDataTable
-            columns={StudentService.columns[this.props.dataType]}
-            data={this.state.data}
-            icons={GlobalService.tableIcons}
-            options={{
-              headerStyle: {
-                color: theme.palette.primary.main
-              },
-              exportButton: true,
-              pageSize: 100,
-              showTitle: false,
-              selectableRows: 'none',
-              toolbar: false,
-              filtering: true,
-              filter: true,
-              filterType: 'doprdown',
-              responsive: 'stacked',
-            }}
+            <Box display="flex" justifyContent="space-between" pt={4}>
+              <Typography variant="h6" id="modal-title">Student Name:- {studentName}</Typography><br />
+              <Box onClick={this.handleClose}>
+                <CancelIcon />
+              </Box>
+            </Box>
+            <MUIDataTable
+              columns={StudentService.columns[this.props.dataType]}
+              data={this.state.data}
+              icons={GlobalService.tableIcons}
+              options={{
+                headerStyle: {
+                  color: theme.palette.primary.main
+                },
+                exportButton: true,
+                pageSize: 100,
+                showTitle: false,
+                selectableRows: 'none',
+                toolbar: false,
+                filtering: true,
+                filter: true,
+                filterType: 'doprdown',
+                responsive: 'stacked',
+              }}
 
-          />
+            />
           </MuiThemeProvider>
         </Box>
       </Modal>

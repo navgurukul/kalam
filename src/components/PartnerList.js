@@ -49,8 +49,8 @@ export class PartnerList extends React.Component {
         options: {
           filter: true,
           sort: true,
-          customBodyRender: (rowData) => {
-            return <PartnerLink partnerId={rowData}/>
+          customBodyRender: (value) => {
+            return <PartnerLink partnerId={value}/>
           } 
         }
       },
@@ -68,8 +68,8 @@ export class PartnerList extends React.Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (rowData) => {
-            return <ViewAssessments partnerId={rowData}/>
+          customBodyRender: (value) => {
+            return <ViewAssessments partnerId={value}/>
           }
         }
       },

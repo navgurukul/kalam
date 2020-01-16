@@ -7,7 +7,7 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import MUIDataTable from "mui-datatables";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import CsvUpload from './Uploadcsv';
 import GlobalService from '../services/GlobalService';
 
@@ -48,10 +48,9 @@ export class ModalStages extends React.Component {
 
   constructor(props) {
     super(props)
-    this.dataURL =  baseUrl+'partners/'+this.props.partnerId+'/assessments'
 
     this.state = {
-      modalOpen : false,
+      modalOpen: false,
       data: [],
       partnerId: null,
     }
@@ -77,7 +76,7 @@ export class ModalStages extends React.Component {
         options: {
           filter: false,
           customBodyRender: (rowData) => {
-            return rowData ? <a target="_blank" href={rowData}>Link to Assessment</a>: null;
+            return rowData ? <a target="_blank" href={rowData}>Link to Assessment</a> : null;
           }
         }
       },
@@ -87,7 +86,7 @@ export class ModalStages extends React.Component {
         options: {
           filter: false,
           customBodyRender: (rowData) => {
-            return rowData ? <a target="_blank" href={rowData}>Link to Answer Key</a>: null;
+            return rowData ? <a target="_blank" href={rowData}>Link to Answer Key</a> : null;
           }
         }
       },
@@ -97,7 +96,7 @@ export class ModalStages extends React.Component {
         options: {
           filter: false,
           customBodyRender: (rowData) => {
-            const url = "/partners/"+this.props.partnerId+"/assessments/"+rowData;
+            const url = "/partners/" + this.props.partnerId + "/assessments/" + rowData;
             return <Link to={url}>{rowData}</Link>
           }
         }
@@ -115,13 +114,12 @@ export class ModalStages extends React.Component {
         options: {
           filter: false,
           customBodyRender: (rowData, rowMeta) => {
-            console.log(rowMeta.rowData[0])
-            return <CsvUpload partnerId= {rowData} assessmentId = {rowMeta.rowData[0]}/>
+            return <CsvUpload partnerId={rowData} assessmentId={rowMeta.rowData[0]} />
           }
         }
       }
     ]
-    
+
   }
 
   handleClose = () => {
@@ -140,11 +138,12 @@ export class ModalStages extends React.Component {
 
   async fetchAssessments() {
     try {
-        const response = await axios.get(this.dataURL);
-        this.setState({data: response.data.data})
-      } catch (e) {
-        console.log(e);
-      }  
+      const dataURL = baseUrl + 'partners/' + this.props.partnerId + '/assessments'
+      const response = await axios.get(dataURL);
+      this.setState({ data: response.data.data })
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   componentDidMount() {
@@ -155,10 +154,10 @@ export class ModalStages extends React.Component {
     const modalStyle = getModalStyle()
     const { classes } = this.props
 
-    return <div>
+    return !this.state.modalOpen ?
       <Button color="primary" align="right" onClick={this.handleOpen}>
-        <AssessmentIcon color="primary"/>&nbsp;&nbsp;
-      </Button>
+        <AssessmentIcon color="primary" />&nbsp;{this.props.partnerId}&nbsp;
+      </Button> :
       <Modal
         open={this.state.modalOpen}
         onClose={this.handleClose}
@@ -166,7 +165,7 @@ export class ModalStages extends React.Component {
         <div style={modalStyle} className={classes.paper}>
 
           <Typography variant="h5" id="modal-title">
-            View Assessments<br/>
+            View Assessments<br />
           </Typography>
 
           <MUIDataTable
@@ -184,11 +183,10 @@ export class ModalStages extends React.Component {
               filterType: 'doprdown',
               responsive: 'stacked',
             }}
-            style={{maxWidth: '90%', margin: '0 auto', marginTop: 25}}
+            style={{ maxWidth: '90%', margin: '0 auto', marginTop: 25 }}
           />
         </div>
       </Modal>
-    </div>
   }
 }
 

@@ -14,7 +14,6 @@ export class CreateAssessment extends React.Component {
 
   constructor(props) {
     super(props);
-    this.dataURL = baseUrl + 'partners/'+this.props.partnerId+'/assessments';
     this.partnerName = this.props.partnerName;
     this.state = {
       dialogOpen: false,
@@ -33,7 +32,8 @@ export class CreateAssessment extends React.Component {
 
   async createAssessment() {   
     try {
-      await axios.post(this.dataURL, {
+      const dataURL = baseUrl + 'partners/'+this.props.partnerId+'/assessments';
+      await axios.post(dataURL, {
         "name": this.state.inputValue
       }).then(response => {
         this.setState({

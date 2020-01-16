@@ -175,7 +175,7 @@ export class LandingPage extends React.Component {
               id: 'filled-age-native-simple'
               }
             }>
-              <option value="languge">Select Languge</option>
+              <option value="language">Select Language</option>
               <option value="en">English</option>
               <option value="hi">Hindi</option>
             </Select>

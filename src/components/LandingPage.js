@@ -6,13 +6,14 @@ import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { theme } from '../theme/theme';
+import Select from '@material-ui/core/Select';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { withSnackbar } from 'notistack';
 import { changeFetching } from '../store/actions/auth';
 import { VideoSlider } from './VideoSlider';
 import Grid from '@material-ui/core/Grid';
-
+import StudentStatus from './StudentStatus';
 
 const baseUrl = process.env.API_URL;
 const testUrl = 'http://join.navgurukul.org/k/'
@@ -69,6 +70,43 @@ export class LandingPage extends React.Component {
 
     this.state = {
       mobileNumber: '',
+      mobile: '',
+      selectedLang: 'en',
+    }
+
+    this.lang = {
+      Heading: {
+        en: 'Navgurukul Software Engineering Scholarship',
+        hi: 'नवगुरुकुल सॉफ्टवेयर अभियान्त्रिक शिष्यवृत्ती'
+      },
+      Course: {
+        en: 'Course Information',
+        hi: 'कोर्स के बारे में जाने'
+      },
+      Test: {
+        en: 'Apply Test',
+        hi: 'कोर्स में अप्लाई करे',
+      },
+      Status: {
+        en: 'Check Your Status By Registered Mobile Number',
+        hi: 'रजिस्टर मोबाइल नंबर से अपना स्टेटस देखे'
+      },
+      AdmisssionTitle: {
+        en: 'Start Admisssion Test',
+        hi: 'परीक्षा सुरु करे ',
+      },
+      StudentStatus: {
+        en: 'Student Status',
+        hi: 'स्टूडेंट की स्तिथि'
+      },
+      TestButton: {
+        en: 'GIVE TEST',
+        hi: 'परीक्षा दे।'
+      },
+      StatusButton: {
+        en: 'GET STATUS',
+        hi: 'स्तिथि देखे'
+      }
     }
   }
 
@@ -77,7 +115,12 @@ export class LandingPage extends React.Component {
       mobileNumber: e.target.value,
     })
   }
-
+  
+  onChangeEventStatus = (e) => {
+    this.setState({
+      mobile: e.target.value,
+    })
+  }
   async generateTestLink() {
     try {
       const mobile = '0' + this.state.mobileNumber;
@@ -112,21 +155,38 @@ export class LandingPage extends React.Component {
     this.openTest()
   }
 
+  handleChange = e => {
+    this.setState({
+      selectedLang: e.target.value
+    })
+  }
+  
   render = () => {
     const { classes } = this.props;
+    let mobile = this.state.mobile;
     return (
       <div>
         <MuiThemeProvider theme={theme}>
           <div className={classes.root} style={{marginTop: -48}}>
-            <Typography className={classes.paper}>Navgurukul Software Engineering Scholarship</Typography>
+            <Select native 
+            onChange={this.handleChange} 
+            value={""}
+            inputProps={{
+              id: 'filled-age-native-simple'
+              }
+            }>
+              <option value="languge">Select Languge</option>
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
+            </Select>
+            <Typography className={classes.paper}>{this.lang.Heading[this.state.selectedLang]}</Typography>
           </div>
           <Box style={{ height: theme.spacing(2) }} />
           <Grid container>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Grid item>
                 <Box display="flex" alignItems="center" flexDirection="column">
-                  <Typography className={classes.typography} variant="h5" component="h3">Course Information</Typography>
-                  <Typography className={classes.HindiTypography} variant="h6" component="h4">कोर्स के बारे में जाने </Typography>
+                  <Typography className={classes.typography} variant="h5" component="h3">{this.lang.Course[this.state.selectedLang]}</Typography>
                 </Box>
               </Grid>
               <Grid item xs={12}>
@@ -136,22 +196,20 @@ export class LandingPage extends React.Component {
                 <VideoSlider />
               </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Grid item>
                 <Box display="flex" alignItems="center" flexDirection="column">
-                  <Typography className={classes.typography1} variant="h5" component="h3" >Apply Test</Typography>
-                  <Typography className={classes.HindiTypography1} variant="h6" component="h4" >कोर्स में अप्लाई करे </Typography>
+                  <Typography className={classes.typography1} variant="h5" component="h3" >{this.lang.Test[this.state.selectedLang]}</Typography>
                 </Box>
               </Grid>
               <Grid item xs={12}>
                 <Box style={{ height: theme.spacing(2) }} />
               </Grid>
-
               <Grid item>
                 <Paper className={classes.loginContainer}>
                   <Box>
                     <Grid item xs={12}>
-                      <Typography variant="h5" component="h4" >Start Admisssion Test</Typography>
+                      <Typography variant="h5" component="h4" >{this.lang.AdmisssionTitle[this.state.selectedLang]}</Typography>
                     </Grid>
                   </Box>
                   <Box style={{ height: theme.spacing(2) }} />
@@ -160,7 +218,7 @@ export class LandingPage extends React.Component {
                       id="filled-full-width"
                       margin="normal"
                       style={{ margin: 8, width: 300 }}
-                      label="Mobile Number/Test Link"
+                      label="Mobile Number"
                       value={this.state.mobileNumber}
                       placeholder="Mobile Number..."
                       onChange={this.onChangeEvent}
@@ -171,7 +229,52 @@ export class LandingPage extends React.Component {
                   </Box>
                   <Box style={{ height: theme.spacing(2) }} />
                   <div className={classes.root}>
-                    <Button variant="outlined" onClick={this.giveTest} color="primary">Give Test/परीक्षा दे।</Button>
+                    <Button variant="outlined" onClick={this.giveTest} color="primary">{this.lang.TestButton[this.state.selectedLang]}</Button>
+                  </div>
+                </Paper>
+              </Grid>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Grid item>
+                <Box display="flex" alignItems="center" flexDirection="column">
+                  <Typography className={classes.typography1} variant="h5" component="h3" >{this.lang.Status[this.state.selectedLang]}</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box style={{ height: theme.spacing(2) }} />
+              </Grid>
+              <Grid item>
+                <Paper className={classes.loginContainer}>
+                  <Box>
+                    <Grid item xs={12}>
+                      <Typography variant="h5" component="h4" >{this.lang.StudentStatus[this.state.selectedLang]}</Typography>
+                    </Grid>
+                  </Box>
+                  <Box style={{ height: theme.spacing(2) }} />
+                  <Box>
+                    <TextField
+                      id="filled-full-width"
+                      margin="normal"
+                      style={{ margin: 8, width: 300 }}
+                      label="Mobile Number"
+                      value={this.state.mobile}
+                      placeholder="Mobile Number..."
+                      onChange={this.onChangeEventStatus}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant="outlined" />
+                  </Box>
+                  <Box style={{ height: theme.spacing(2) }} />
+                  <div className={classes.root}>
+                    {
+                      mobile.length == 10 ? 
+                      <StudentStatus 
+                        mobile={mobile}
+                        lang={this.lang.StatusButton[this.state.selectedLang]}
+                      />: 
+                      null
+                    }
                   </div>
                 </Paper>
               </Grid>

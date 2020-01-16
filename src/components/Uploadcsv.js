@@ -67,14 +67,12 @@ export class CsvUpload extends React.Component {
         });
         if (response.data.errors != undefined){
           this.setState({
-            modalOpen:true,
             errors: response.data,
             loading: false
           });
           this.props.enqueueSnackbar('successfully uploaded csv file!',{ variant: 'success' });
         } else {
           this.setState({
-            modalOpen:true,
             errors: "sucess",
             loading:false
           });

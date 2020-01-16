@@ -6,6 +6,7 @@ import OwnerSelect from '../components/OwnerSelect';
 import StatusSelect from '../components/StatusSelect'
 import StudentFeedback from '../components/FeedbackPage';
 import StageTransitions from '../components/StageTransitions';
+import StageTransitionsStudentStatus from '../components/StageTransitionsStudentStatus';
 
 const allStagesOptions = Object.keys(allStages).map(x => { return allStages[x] });
 
@@ -391,6 +392,62 @@ const CasteColumn = {
   }
 }
 
+const lastStageColumn = {
+  label: 'Last Stage',
+  name: 'fromStage',
+  options: {
+    filter: false,
+    customBodyRender: (rowData) => {
+      return allStages[rowData]
+    }
+  }
+}
+
+const linkForEnglishTestColumn = {
+  label: 'English Test Link',
+  name: 'linkForEnglishTest',
+} 
+
+const linkForOnlineTestColumn = {
+  label: 'Online Test Link',
+  name: 'linkForOnlineTest',
+} 
+
+const stageColumnStatus = {
+  label: 'Current Stage',
+  name: 'toStage',
+  options: {
+    filter: false,
+    customBodyRender: (rowData) => {
+      return allStages[rowData]
+    }
+  }
+}
+const cityColumnStatus = {
+  label: "City",
+  name: 'city'
+}
+
+const stateColumnStatus = {
+  label: "State",
+  name: 'state',
+}
+
+const ColumnTransitionsStatus = {
+  name: "transitions",
+  label: "Transitions",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: ( value ) => {
+      return <StageTransitionsStudentStatus
+        rowData={value}
+        allStages={allStages}
+      />
+    }
+  }
+}
+
 const StudentService = {
   columns: {
     requestCallback: [
@@ -415,7 +472,7 @@ const StudentService = {
       QualificationColumn,
       ReligonColumn,
       CasteColumn
-
+      
     ],
     columnTransition: [
       stageColumnTransition,
@@ -428,6 +485,18 @@ const StudentService = {
       finishedColumnTransition,
       loggedInUser,
     ],
+    columnStudentStatus: [
+      ColumnTransitionsStatus,
+      nameColumn,
+      cityColumnStatus,
+      stateColumnStatus,
+      marksColumn,
+      genderColumn,
+      stageColumnStatus,
+      lastStageColumn,
+      linkForEnglishTestColumn,
+      linkForOnlineTestColumn
+    ]
   },
   columnMyReports: [
     nameColumn,

@@ -411,6 +411,11 @@ const linkForEnglishTestColumn = {
 const linkForOnlineTestColumn = {
   label: 'Online Test Link',
   name: 'linkForOnlineTest',
+  options: {
+    customBodyRender: (value) => {
+      return value ? <a target="_blank" href={value}>Link to Test</a>: null;
+    }
+  }
 } 
 
 const stageColumnStatus = {

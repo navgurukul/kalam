@@ -95,6 +95,10 @@ export class LandingPage extends React.Component {
       StatusButton: {
         en: 'GET STATUS',
         hi: 'स्तिथि देखे'
+      },
+      Footer: {
+        en: 'For more queries, write at hi@navgurukul.org',
+        hi: 'अधिक जानकारी के लिए ईमेल करे: hi@navgurukul.org'
       }
     }
   }
@@ -158,13 +162,13 @@ export class LandingPage extends React.Component {
       <div>
         <MuiThemeProvider theme={theme}>
           <div className={classes.root} style={{marginTop: -48}}>
-            <Select native 
-            onChange={this.handleChange} 
-            value={""}
-            inputProps={{
-              id: 'filled-age-native-simple'
-              }
-            }>
+            <Select native
+              onChange={this.handleChange} 
+              value={""}
+              inputProps={{
+                id: 'filled-age-native-simple'
+               }}
+            >
               <option value="language">Select Language</option>
               <option value="en">English</option>
               <option value="hi">Hindi</option>
@@ -173,7 +177,7 @@ export class LandingPage extends React.Component {
           </div>
           <Box style={{ height: theme.spacing(2) }} />
           <Grid container>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={6}>
               <Grid item>
                 <Box display="flex" alignItems="center" flexDirection="column">
                   <Typography className={classes.typography} variant="h5" component="h3">{this.lang.Course[this.state.selectedLang]}</Typography>
@@ -186,7 +190,7 @@ export class LandingPage extends React.Component {
                 <VideoSlider />
               </Grid>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={6}>
               <Grid item>
                 <Box display="flex" alignItems="center" flexDirection="column">
                   <Typography className={classes.typography} variant="h5" component="h3" >{this.lang.Test[this.state.selectedLang]}</Typography>
@@ -223,8 +227,7 @@ export class LandingPage extends React.Component {
                   </div>
                 </Paper>
               </Grid>
-            </Grid>
-            <Grid item xs={12} sm={4}>
+              <Box style={{ height: theme.spacing(2) }} />
               <Grid item>
                 <Box display="flex" alignItems="center" flexDirection="column" px={4}>
                   <Typography className={classes.typography} variant="h5" component="h3" >{this.lang.Status[this.state.selectedLang]}</Typography>
@@ -273,7 +276,7 @@ export class LandingPage extends React.Component {
         </MuiThemeProvider>
         <Box className="footer-container-box" p={1} mt={2}>
           <Typography variant="body1" gutterBottom>
-            For more queries, write at hi@navgurukul.org | अधिक जानकारी के लिए ईमेल करे: hi@navgurukul.org
+          {this.lang.Footer[this.state.selectedLang]}
         </Typography>
         </Box>
       </div>

@@ -69,6 +69,7 @@ export class VideoSlider extends React.Component {
   }
 
   render() {
+    const { language } = this.props;
     const width = Math.min(600, window.screen.width);
     const opts = {
       height: Math.floor(width * 9 / 16),
@@ -87,8 +88,7 @@ export class VideoSlider extends React.Component {
         onReady={this._onReady}
       />
       <Box py={2} display="flex" style={{ flexDirection: 'column', alignItems: 'center', fontSize: 18, justifyContent: 'column' }}>
-        <span align="center">{aboutNavgurukul[this.state.activeStep].label.hi}</span>
-        <span align="center"><b>{aboutNavgurukul[this.state.activeStep].label.en}</b></span>
+        <span align="center">{aboutNavgurukul[this.state.activeStep].label[language]}</span>
       </Box>
       <MobileStepper
         variant="dots"

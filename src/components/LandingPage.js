@@ -51,15 +51,6 @@ const styles = theme => ({
   typography: {
     fontFamily: 'BlinkMacSystemFont',
   },
-  HindiTypography: {
-    fontFamily: 'BlinkMacSystemFont',
-  },
-  HindiTypography1: {
-    fontFamily: 'BlinkMacSystemFont',
-  },
-  typography1: {
-    fontFamily: 'BlinkMacSystemFont',
-  },
 });
 
 
@@ -88,7 +79,7 @@ export class LandingPage extends React.Component {
         hi: 'कोर्स में अप्लाई करे',
       },
       Status: {
-        en: 'Check Your Status By Registered Mobile Number',
+        en: 'Check Status By Registered Number',
         hi: 'रजिस्टर मोबाइल नंबर से अपना स्टेटस देखे'
       },
       AdmisssionTitle: {
@@ -199,7 +190,7 @@ export class LandingPage extends React.Component {
             <Grid item xs={12} sm={4}>
               <Grid item>
                 <Box display="flex" alignItems="center" flexDirection="column">
-                  <Typography className={classes.typography1} variant="h5" component="h3" >{this.lang.Test[this.state.selectedLang]}</Typography>
+                  <Typography className={classes.typography} variant="h5" component="h3" >{this.lang.Test[this.state.selectedLang]}</Typography>
                 </Box>
               </Grid>
               <Grid item xs={12}>
@@ -237,7 +228,7 @@ export class LandingPage extends React.Component {
             <Grid item xs={12} sm={4}>
               <Grid item>
                 <Box display="flex" alignItems="center" flexDirection="column">
-                  <Typography className={classes.typography1} variant="h5" component="h3" >{this.lang.Status[this.state.selectedLang]}</Typography>
+                  <Typography className={classes.typography} variant="h5" component="h3" >{this.lang.Status[this.state.selectedLang]}</Typography>
                 </Box>
               </Grid>
               <Grid item xs={12}>

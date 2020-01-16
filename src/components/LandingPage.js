@@ -170,8 +170,8 @@ export class LandingPage extends React.Component {
                }}
             >
               <option value="language">Select Language</option>
-              <option value="en">English</option>
-              <option value="hi">Hindi</option>
+              <option value="en"> English </option>
+              <option value="hi"> हिंदी </option>
             </Select>
             <Typography className={classes.paper}>{this.lang.Heading[this.state.selectedLang]}</Typography>
           </div>
@@ -187,7 +187,7 @@ export class LandingPage extends React.Component {
                 <Box style={{ height: theme.spacing(2) }} />
               </Grid>
               <Grid item>
-                <VideoSlider />
+                <VideoSlider language={this.state.selectedLang}/>
               </Grid>
             </Grid>
             <Grid item xs={12} sm={6}>

@@ -226,7 +226,7 @@ export class LandingPage extends React.Component {
             </Grid>
             <Grid item xs={12} sm={4}>
               <Grid item>
-                <Box display="flex" alignItems="center" flexDirection="column">
+                <Box display="flex" alignItems="center" flexDirection="column" px={4}>
                   <Typography className={classes.typography} variant="h5" component="h3" >{this.lang.Status[this.state.selectedLang]}</Typography>
                 </Box>
               </Grid>

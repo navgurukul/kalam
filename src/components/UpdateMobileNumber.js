@@ -5,7 +5,7 @@ import { Button } from '@material-ui/core';
 import { changeFetching } from '../store/actions/auth';
 import { withRouter } from 'react-router-dom';
 
-import { Dialog } from '@material-ui/core';
+// import { Dialog } from '@material-ui/core';
 import { withSnackbar } from 'notistack';
 import {Box} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
@@ -47,8 +47,8 @@ export class UpdateMobileNumber extends React.Component {
     super(props);
     this.student_stage= this.props.student_stage;
     this.state = {
-        mobileNumber: "",
-        "dialogOpen": true,
+      mobileNumber: "",
+      // "dialogOpen": true,
     }
   }
 
@@ -75,22 +75,22 @@ export class UpdateMobileNumber extends React.Component {
     }
   }
   
-  handleClose = () => {
-    this.setState({
-      dialogOpen: false
-    })
-    const { history } = this.props;
-    history.push("/students");
-  };
+  // handleClose = () => {
+  //   this.setState({
+  //     dialogOpen: false
+  //   })
+  //   const { history } = this.props;
+  //   history.push("/students");
+  // };
 
   render = () => {
     const { classes } = this.props;
     return (
         <Fragment>
-          <Dialog
+          {/* <Dialog
             open={this.state.dialogOpen}
             onClose={this.handleClose}
-          >
+          > */}
             <Box className={classes.container}>
               <Paper className={classes.userContact}>
                 <Box>
@@ -112,7 +112,7 @@ export class UpdateMobileNumber extends React.Component {
                 </div>
               </Paper>
             </Box>
-          </Dialog>  
+          {/* </Dialog>   */}
         </Fragment>
     );
   }

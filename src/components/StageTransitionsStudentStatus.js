@@ -45,7 +45,7 @@ const styles = theme => ({
   overrides: {
     MUIDataTableBodyCell: {
       root: {
-        minHeight: '22px' 
+        minHeight: '22px'
       }
     }
   }
@@ -61,24 +61,24 @@ export class StageTransitionsStudentStatus extends React.Component {
     }
     const { allStages } = this.props;
     this.column = [
-        {
-          label: "Stage",
-          name: "toStage",
-          options:{
-            customBodyRender: (value) => {
-              return allStages[value]
-            }
-          }
-        },
-        {
-          label: 'When?',
-          name: 'createdAt',
-          options: {
-            customBodyRender: (value) => {
-              return <Moment format="D MMM YYYY" withTitle>{value}</Moment>
-            }
+      {
+        label: "Stage",
+        name: "toStage",
+        options: {
+          customBodyRender: (value) => {
+            return allStages[value]
           }
         }
+      },
+      {
+        label: 'When?',
+        name: 'createdAt',
+        options: {
+          customBodyRender: (value) => {
+            return <Moment format="D MMM YYYY" withTitle>{value}</Moment>
+          }
+        }
+      }
     ]
   }
 
@@ -89,10 +89,10 @@ export class StageTransitionsStudentStatus extends React.Component {
           height: 'auto !important',
           // width: 'calc(50% - 80px) !important'
         }
-      },    
+      },
     }
   })
-  
+
   handleClose = () => {
     this.setState({
       modalOpen: false
@@ -112,7 +112,7 @@ export class StageTransitionsStudentStatus extends React.Component {
     return !this.state.modalOpen ? <div>
       <Button color="primary" align="right" onClick={this.handleOpen}>
         <DetailsIcon color="primary" />&nbsp;&nbsp;
-    </Button>
+      </Button>
     </div> :
       <Modal
         open={this.state.modalOpen}
@@ -120,27 +120,27 @@ export class StageTransitionsStudentStatus extends React.Component {
       >
         <Box style={modalStyle} className={classes.paper}>
           <MuiThemeProvider theme={this.getMuiTheme()}>
-          <Typography variant="h5" id="modal-title">Transitions</Typography><br/>
-          <MUIDataTable
-            columns={this.column}
-            data={rowData}
-            icons={GlobalService.tableIcons}
-            options={{
-              headerStyle: {
-                color: theme.palette.primary.main
-              },
-              exportButton: true,
-              pageSize: 100,
-              showTitle: false,
-              selectableRows: 'none',
-              toolbar: false,
-              filtering: true,
-              filter: true,
-              filterType: 'doprdown',
-              responsive: 'stacked',
-            }}
+            <Typography variant="h5" id="modal-title">Transitions</Typography><br />
+            <MUIDataTable
+              columns={this.column}
+              data={rowData}
+              icons={GlobalService.tableIcons}
+              options={{
+                headerStyle: {
+                  color: theme.palette.primary.main
+                },
+                exportButton: true,
+                pageSize: 100,
+                showTitle: false,
+                selectableRows: 'none',
+                toolbar: false,
+                filtering: true,
+                filter: true,
+                filterType: 'doprdown',
+                responsive: 'stacked',
+              }}
 
-          />
+            />
           </MuiThemeProvider>
         </Box>
       </Modal>

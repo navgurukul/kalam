@@ -151,7 +151,7 @@ export class AdmissionsDash extends React.Component {
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           margin="dense"
-          style={{ marginLeft: 16 }}
+          style={{ marginLeft: 16, maxWidth: '40%' }}
           value={this.fromDate}
           id="date-picker-dialog"
           label="From Date"
@@ -164,7 +164,7 @@ export class AdmissionsDash extends React.Component {
 
         <KeyboardDatePicker
           margin="dense"
-          style={{ marginLeft: 16 }}
+          style={{ marginLeft: 16, maxWidth: '40%' }}
           value={this.toDate}
           id="date-picker-dialog"
           label="To Date"

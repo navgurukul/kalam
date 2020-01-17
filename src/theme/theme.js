@@ -1,5 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
+const defaultTheme = createMuiTheme()
 export const theme = createMuiTheme({
   palette: {
     type: 'light',
@@ -23,8 +24,29 @@ export const theme = createMuiTheme({
     tonalOffset: 0.2,
   },
   overrides: {
-    // MuiAppBar: {
-    //   position: 'sticky'
-    // }
+    MuiTableCell: {
+      root: {
+        [defaultTheme.breakpoints.down("sm")]: {
+          padding: 5,
+        }
+      },
+    },
+    MUIDataTableBodyCell: {
+      root: {
+        minHeight: 22,
+      },
+      stackedCommon: {
+        height: 'auto !important',
+        whiteSpace: 'normal !important',
+        [defaultTheme.breakpoints.down("sm")]: {
+          width: 'calc(60% - 10px)',
+        }
+      },
+      cellHide: {
+        [defaultTheme.breakpoints.down("sm")]: {
+          width: 'calc(40% - 30px) !important'
+        }
+      },
+    },
   }
 });

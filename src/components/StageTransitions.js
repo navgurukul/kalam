@@ -69,21 +69,6 @@ export class Transition extends React.Component {
     }
   }
 
-  getMuiTheme = () => createMuiTheme({
-    overrides: {
-      MUIDataTableBodyCell: {
-        stackedCommon: {
-          height: 'auto !important',
-          whiteSpace: 'normal !important',
-          // width: 'calc(60% - 20px) !important',
-        },
-        cellHide: {
-          // width: 'calc(40% - 20px) !important'
-        },
-      },
-    }
-  })
-
   transitionsChangeEvent = () => {
     this.fetchtransition();
   }
@@ -130,7 +115,7 @@ export class Transition extends React.Component {
         onClose={this.handleClose}
       >
         <Box style={modalStyle} className={classes.paper}>
-          <MuiThemeProvider theme={this.getMuiTheme()}>
+          <MuiThemeProvider theme={theme}>
             <Box display="flex" justifyContent="space-between" pt={4}>
               <Typography variant="h6" id="modal-title">Student Name:- {studentName}</Typography><br />
               <Box onClick={this.handleClose}>

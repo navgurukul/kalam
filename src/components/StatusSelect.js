@@ -41,7 +41,7 @@ export class StatusSelect extends React.Component {
     
     let selectedValue = { value: null, label: null }
     if (state) {
-      const lable = (state.charAt(0).toUpperCase() + state.slice(1)).match(/[A-Z][a-z]+|[0-9]+/g).join("")
+      const lable = (state.charAt(0).toUpperCase() + state.slice(1)).match(/[A-Z][a-z]+|[0-9]+/g).join(" ")
       selectedValue.value = state;
       selectedValue.label = lable;
     }

@@ -15,7 +15,6 @@ import { theme } from '../theme/theme';
 
 import { changeFetching } from '../store/actions/auth';
 import { allStages, feedbackableStagesData } from '../config';
-
 import GlobalService from '../services/GlobalService';
 import StudentService from '../services/StudentService';
 
@@ -29,12 +28,12 @@ const styles = theme => ({
   }
 })
 
-export class StageWiseGenderDistribution extends React.Component {
+export class FeedbackbleStageWiseDangling extends React.Component {
 
   constructor(props) {
 
     super(props);
-    this.StageWiseGenderDistributionURL = baseURL + 'students/report/all';
+    this.stageWiseDanglingReportURL = baseURL + 'students/report/dangling';
     
     this.state = {
       data: [],
@@ -44,8 +43,8 @@ export class StageWiseGenderDistribution extends React.Component {
   dataConvert = (data) => {
     const newData = [];
     for (const [key, value] of Object.entries(data)) {
-      if (!feedbackableStagesData[key]) {
-        const dic = {};
+      const dic = {};
+      if (feedbackableStagesData[key]) {
         dic.female = value[1];
         dic.male = value[2];
         dic.transgender = value[3];
@@ -61,6 +60,7 @@ export class StageWiseGenderDistribution extends React.Component {
   }
 
   render = () => {
+
     return <Box>
       <MuiThemeProvider theme={theme}>
         <MUIDataTable
@@ -93,7 +93,7 @@ export class StageWiseGenderDistribution extends React.Component {
   async fetchonwerReport() {
     try {
       this.props.fetchingStart()
-      const response = await axios.get(this.StageWiseGenderDistributionURL, { });
+      const response = await axios.get(this.stageWiseDanglingReportURL, { });
       this.dataConvert(response.data.data);
       this.props.fetchingFinish();
     } catch (e) {
@@ -105,6 +105,7 @@ export class StageWiseGenderDistribution extends React.Component {
 
 const mapStateToProps = (state) => ({
   loggedInUser: state.auth.loggedInUser
+  // "kya fark padta hai": ''
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -112,4 +113,4 @@ const mapDispatchToProps = (dispatch) => ({
   fetchingFinish: () => dispatch(changeFetching(false))
 });
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(StageWiseGenderDistribution));
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(FeedbackbleStageWiseDangling));

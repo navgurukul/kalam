@@ -29,16 +29,21 @@ export const publicNavs = [
         name: 'My Tasks',
         icon: <ExtensionIcon />
     },
-    {
-        url: '/report/dangling',
-        name: 'Overview dangling',
-        icon: <ExtensionIcon />
-    },
+    // {
+    //     url: '/report/dangling',
+    //     name: 'Overview dangling',
+    //     icon: <ExtensionIcon />
+    // },
     {
         url: '/report/all',
-        name: 'Overview',
+        name: 'Reports',
         icon: <ExtensionIcon />
     },
+    // {
+    //     url: '/feedbackble/report',
+    //     name: "Feedbackble Overview",
+    //     icon: <ExtensionIcon />
+    // },
     {
         url: '/assign/user',
         name: 'Assigned Users',

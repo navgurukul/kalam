@@ -116,8 +116,8 @@ export class AdmissionsDash extends React.Component {
     for (let i = 0; i < data.length; i++) {
       data[i] = StudentService.dConvert(data[i])
     }
-
-    this.setState({ 'data': data }, function () {
+    const newData = data.map(v => ({ ...v, loggedInUser: this.props.loggedInUser.email.split('@')[0] }))
+    this.setState({ 'data': newData }, function () {
       this.props.fetchingFinish()
     });
   }

@@ -1,12 +1,17 @@
 import React from 'react';
-import { allStages, feedbackableStages, feedbackableStagesData } from '../config';
+import { allStages, feedbackableStages, feedbackableStagesData, permissions } from '../config';
 import Moment from 'react-moment';
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
 import StageSelect from '../components/StageSelect';
 import OwnerSelect from '../components/OwnerSelect';
 import StatusSelect from '../components/StatusSelect'
 import StudentFeedback from '../components/FeedbackPage';
 import StageTransitions from '../components/StageTransitions';
 import StageTransitionsStudentStatus from '../components/StageTransitionsStudentStatus';
+
+const _ = require('underscore');
+const animatedComponents = makeAnimated();
 
 const allStagesOptions = Object.keys(allStages).map(x => { return allStages[x] });
 
@@ -101,13 +106,23 @@ const stageColumn = {
     sort: true,
     filterOptions: allStagesOptions,
     customBodyRender: (value, rowMeta, updateValue) => {
-      return <StageSelect
-        allStagesOptions={allStagesOptions}
-        rowMetatable={rowMeta}
-        stage={value}
-        allStages={allStages}
-        change={event => updateValue(event)}
-      />
+      if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+        return <StageSelect
+          allStagesOptions={allStagesOptions}
+          rowMetatable={rowMeta}
+          stage={value}
+          allStages={allStages}
+          change={event => updateValue(event)}
+        />
+      } else {
+        return <Select
+        className={"filterSelectStage"}
+        value={{ value: (_.invert(allStages))[value], label: value }}
+        isClearable={false}
+        components={animatedComponents}
+        closeMenuOnSelect={true}
+        />
+      }
     }
   }
 }
@@ -137,6 +152,55 @@ const lastUpdatedColumn = {
   }
 }
 
+const loggedInUserColumn = {
+  name: 'loggedInUser',
+  label: "Logged In User",
+  options: {
+    filter: false,
+    sort: true,
+    display: false,
+  }
+}
+
+const deadlineColumn = {
+  name: 'deadline',
+  label: "Deadline",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (rowData, rowMeta) => {
+      if (rowData) {
+        const studentStage = (_.invert(allStages))[rowMeta.rowData[8]];
+        const deadline = feedbackableStagesData[studentStage].deadline;
+        const diff = new Date().getTime() - new Date(rowData).getTime()
+        const hours = Math.floor(diff / 1000 / 60 / 60);
+        const remainigTime = deadline - hours;
+        if (rowMeta.rowData[17]) {
+          return null;
+        }
+        if (remainigTime < 0 ) {
+          return "Your deadline is fineshed please do this work ASAP."
+        } else {
+          return <p> <b>{remainigTime}</b> Hours remaing.</p>
+        }
+      }
+    }
+  }
+}
+
+const stausColumn = {
+  name: 'status',
+  label: "Status",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (state) => {
+      if (state) {
+        return (state.charAt(0).toUpperCase() + state.slice(1)).match(/[A-Z][a-z]+|[0-9]+/g).join(" ")
+      }
+    }
+  }
+}
 const stageColumnTransition = {
   name: "toStage",
   label: "Stage",
@@ -333,27 +397,42 @@ const StageColumnDanglingReport = {
 
 const TotalFemaleDanglingReport = {
   label: 'Female',
-  name: 'female'
+  name: 'female',
+  options: {
+    filter: false
+  }
 }
 
 const TotalmaleDanglingReport = {
   label: 'Male',
-  name: 'male'
+  name: 'male',
+  options: {
+    filter: false
+  }
 }
 
 const TotalTransDanglingReport = {
   label: 'Transgender',
-  name: 'transgender'
+  name: 'transgender',
+  options: {
+    filter: false
+  }
 }
 
 const TotalUnspecifiedDanglingReport = {
   label: 'Unspecified',
-  name: 'unspecified'
+  name: 'unspecified',
+  options: {
+    filter: false
+  }
 }
 
 const TotalDanglingReport = {
   label: 'Total Dangling',
-  name: 'total'
+  name: 'total',
+  options: {
+    filter: false
+  }
 }
 
 const EmailColumn = {
@@ -476,8 +555,11 @@ const StudentService = {
       EmailColumn,
       QualificationColumn,
       ReligonColumn,
-      CasteColumn
-      
+      CasteColumn,
+      loggedInUserColumn,
+      ownerColumnMyreport,
+      stausColumn,
+      deadlineColumn
     ],
     columnTransition: [
       stageColumnTransition,

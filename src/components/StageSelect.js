@@ -15,7 +15,7 @@ export class StageSelect extends React.Component {
   }
   
   handleChange = selectedValue => {
-    try{
+    try {
       const { rowMetatable, change } = this.props;
       const studentId = rowMetatable.rowData[0];
       const columnIndex = rowMetatable.columnIndex;
@@ -25,7 +25,7 @@ export class StageSelect extends React.Component {
         this.props.enqueueSnackbar('stage is successfully changed!',{ variant: 'success' });
         change(label, columnIndex)
       });
-    }catch (e) {
+    } catch (e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });
     }
   }

@@ -115,13 +115,7 @@ const stageColumn = {
           change={event => updateValue(event)}
         />
       } else {
-        return <Select
-        className={"filterSelectStage"}
-        value={{ value: (_.invert(allStages))[value], label: value }}
-        isClearable={false}
-        components={animatedComponents}
-        closeMenuOnSelect={true}
-        />
+        return value;
       }
     }
   }

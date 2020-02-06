@@ -369,7 +369,7 @@ const ownerColumnMyreport = {
   label: 'Owner',
   name: 'toAssign',
   options: {
-    filter: false,
+    filter: true,
   }
 }
 

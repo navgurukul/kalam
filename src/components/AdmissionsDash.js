@@ -45,7 +45,6 @@ export class AdmissionsDash extends React.Component {
       this.dataType = 'softwareCourse'
     }
     this.studentsURL = baseURL + 'students';
-    console.log( this.studentsURL);
     this.usersURL = baseURL + 'users/getall';
     this.stage = null,
     this.value = null,

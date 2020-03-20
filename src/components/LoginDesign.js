@@ -32,7 +32,6 @@ export class LoginDesign extends React.Component {
     axios.post(`${baseUrl}users/login/google`, { idToken: response.tokenObj.id_token })
       .then((resp) => {
         const { userToken, user } = resp.data;
-        console.log(userToken,user);
         localStorage.setItem('jwt', userToken);
         localStorage.setItem('user', JSON.stringify(user));
         if (user.mobile) {

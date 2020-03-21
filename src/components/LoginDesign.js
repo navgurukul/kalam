@@ -2,14 +2,11 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { GoogleLogin } from 'react-google-login';
-
 import { login } from '../store/actions/auth';
-
 import Paper from '@material-ui/core/Paper';
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import { theme } from '../theme/theme';
 import axios from 'axios';
-
 import { connect } from 'react-redux';
 
 const baseUrl = process.env.API_URL;
@@ -83,6 +80,7 @@ export class LoginDesign extends React.Component {
 
   render = () => {
     const { classes } = this.props;
+    // console.log(classes);
     const quote = this.getQuote();
 
     return (

@@ -28,7 +28,7 @@ const AppRouter = () => (
   <Router history={history}>
     <div>
       <Switch>        
-      <AnyRoute path="/" component={LandingPage} exact={true} />
+      <PublicRoute path="/" component={LandingPage} exact={true} />
         <PrivateRoute path="/update/mobile/number" component={UpdateMobileNumber} exact={true} />
         <PublicRoute path="/login" component={LoginDesign} exact={true} />
         <PrivateRoute path="/tasks" component={MyTaskReport} />

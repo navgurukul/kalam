@@ -12,16 +12,17 @@ export const PublicRoute = ({
 }) => (
     <Route {...rest} component={(props) => {
       return (
-      isAuthenticated && loggedInUser.mobile ? (
-        <Redirect to="/students" />
-      ) : (
-      <React.Fragment>
-        <Header/>
-        <Component {...props} />
-        <Footer/>
-      </React.Fragment>
+        isAuthenticated && loggedInUser.mobile ? (
+          <Redirect to="/students" />
+        ) : (props.location.pathname === '/' ? <Component {...props} /> :
+          <React.Fragment>
+            <Header />
+            <Component {...props} />
+            <Footer />
+          </React.Fragment>
+          )
       )
-    )}} />
+    }} />
   );
 
 const mapStateToProps = (state) => ({

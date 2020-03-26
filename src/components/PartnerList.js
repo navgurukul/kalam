@@ -6,7 +6,7 @@ import MUIDataTable from "mui-datatables";
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
 import axios from 'axios';
-import {Box} from '@material-ui/core';
+import { Box } from '@material-ui/core';
 
 import { theme } from '../theme/theme';
 
@@ -16,7 +16,7 @@ import CreateAssessment from './CreateAssessment';
 import GlobalService from '../services/GlobalService';
 
 import { changeFetching } from '../store/actions/auth';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 const baseUrl = process.env.API_URL;
 
@@ -42,23 +42,17 @@ export class PartnerList extends React.Component {
 
     super(props);
     this.columns = [
+
       {
         name: 'id',
-        label: 'ID',
-        options: {
-          filter: true,
-          sort: true,
-          customBodyRender: (value) => {
-            return <PartnerLink partnerId={value}/>
-          } 
-        }
-      },
-      {
-        name: 'name',
         label: 'Name',
         options: {
           filter: true,
           sort: true,
+          customBodyRender: (value, rowMeta) => {
+            let name = rowMeta.rowData[2];
+            return <PartnerLink partnerId={value} name={name} />
+          }
         }
       },
       {
@@ -68,7 +62,7 @@ export class PartnerList extends React.Component {
           filter: false,
           sort: false,
           customBodyRender: (value) => {
-            return <ViewAssessments partnerId={value}/>
+            return <ViewAssessments partnerId={value} />
           }
         }
       },
@@ -79,23 +73,23 @@ export class PartnerList extends React.Component {
           filter: false,
           sort: false,
           customBodyRender: (rowData, rowMeta, updateValue) => {
-            return <CreateAssessment partnerId={rowMeta.rowData[0]} partnerName={rowData}/>
+            return <CreateAssessment partnerId={rowMeta.rowData[0]} partnerName={rowData} />
           }
         }
       }
     ]
-          
+
     this.state = {
       data: [],
     }
   }
 
   onRowClick = (event, rowData) => {
-    this.props.history.push('/partner/'+rowData.id+'/students');
+    this.props.history.push('/partner/' + rowData.id + '/students');
   }
 
   dataSetup = (data) => {
-    this.setState({'data': data}, function(){
+    this.setState({ 'data': data }, function () {
       this.props.fetchingFinish()
     })
   }
@@ -151,7 +145,7 @@ export class PartnerList extends React.Component {
   }
 }
 
-const mapDispatchToProps = (dispatch)=>({
+const mapDispatchToProps = (dispatch) => ({
   fetchingStart: () => dispatch(changeFetching(true)),
   fetchingFinish: () => dispatch(changeFetching(false))
 });

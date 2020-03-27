@@ -3,8 +3,8 @@ export class PartnerLink extends React.Component {
 
   render = () => {
 
-    const url = "partner/"+this.props.partnerId
-    return <a href={url}>{this.props.partnerId}</a>
+    const url = "partner/" + this.props.partnerId
+    return <a href={url} style={{ color: "#f05f40" }}>{this.props.name}</a>
 
   }
 }

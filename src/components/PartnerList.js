@@ -1,8 +1,7 @@
 import React from 'react';
 import { forwardRef } from 'react';
-import { connect } from 'react-redux';
 
-import MUIDataTable from "mui-datatables";
+import { connect } from 'react-redux';
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
 import axios from 'axios';
@@ -13,10 +12,11 @@ import { theme } from '../theme/theme';
 import ViewAssessments from './ViewAssessments';
 import PartnerLink from './PartnerLink';
 import CreateAssessment from './CreateAssessment';
-import GlobalService from '../services/GlobalService';
 
 import { changeFetching } from '../store/actions/auth';
 import { withRouter } from 'react-router-dom';
+import MainLayout from './MainLayout';
+
 
 const baseUrl = process.env.API_URL;
 
@@ -100,32 +100,14 @@ export class PartnerList extends React.Component {
     if (!this.state.data.length) {
       return <Box></Box>
     }
-
-    return <Box>
+    return (<Box>
       <MuiThemeProvider theme={theme}>
         <div className={classes.innerTable}>
-          <MUIDataTable
-            columns={this.columns}
-            data={this.state.data}
-            icons={GlobalService.tableIcons}
-            options={{
-              headerStyle: {
-                color: theme.palette.primary.main
-              },
-              exportButton: true,
-              pageSize: 100,
-              showTitle: false,
-              selectableRows: 'none',
-              toolbar: false,
-              filtering: true,
-              filter: true,
-              filterType: 'doprdown',
-              responsive: 'stacked',
-            }}
-          />
+          <MainLayout columns={this.columns}
+            data={this.state.data} />
         </div>
       </MuiThemeProvider>
-    </Box>
+    </Box>)
   }
 
   componentDidMount() {

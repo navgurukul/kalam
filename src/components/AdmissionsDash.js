@@ -3,7 +3,6 @@ import React from 'react';
 // import { allStages} from '../config';
 import { connect } from 'react-redux';
 import DateFnsUtils from '@date-io/date-fns';
-import MUIDataTable from "mui-datatables";
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import Select from 'react-select';
 
@@ -14,16 +13,16 @@ import makeAnimated from 'react-select/animated';
 import { theme } from '../theme/theme';
 import { changeFetching, setupUsers } from '../store/actions/auth';
 import { withRouter } from 'react-router-dom';
-import GlobalService from '../services/GlobalService';
 import StudentService from '../services/StudentService';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { allStages } from '../config';
+import MainLayout from './MainLayout';
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
 const allStagesOptions = Object.keys(allStages).map(x => { return { value: x, label: allStages[x] } });
-allStagesOptions.push({ value: 'default', label: 'Back To All Students Details'})
+allStagesOptions.push({ value: 'default', label: 'Back To All Students Details' })
 
 const styles = theme => ({
   clear: {
@@ -47,8 +46,8 @@ export class AdmissionsDash extends React.Component {
     this.studentsURL = baseURL + 'students';
     this.usersURL = baseURL + 'users/getall';
     this.stage = null,
-    this.value = null,
-    this.loggedInUser = this.props.loggedInUser;
+      this.value = null,
+      this.loggedInUser = this.props.loggedInUser;
 
     this.state = {
       data: [],
@@ -90,7 +89,7 @@ export class AdmissionsDash extends React.Component {
 
   changeStudentStage = option => {
     this.value = { value: option.value, label: allStages[option.value] }
-    if(option.value === "default") {
+    if (option.value === "default") {
       this.stage = null;
       this.dataType = 'softwareCourse';
       this.fetchStudents();
@@ -124,7 +123,7 @@ export class AdmissionsDash extends React.Component {
 
   render = () => {
     const { classes } = this.props;
-    
+
     const options = <Box>
       <Select
         className={"filterSelectGlobal"}
@@ -180,34 +179,16 @@ export class AdmissionsDash extends React.Component {
     if (!this.state.data.length) {
       return options;
     }
-    
-    return <Box>
+
+    return (<Box>
       <MuiThemeProvider theme={theme}>
         {options}
         <div className={classes.clear}></div>
-        <MUIDataTable
+        <MainLayout
           columns={StudentService.columns[this.dataType]}
-          data={this.state.sData ? this.state.sData : this.state.data}
-          icons={GlobalService.tableIcons}
-          options={
-            {
-              headerStyle: {
-                color: theme.palette.primary.main
-              },
-              exportButton: true,
-              pageSize: 100,
-              showTitle: false,
-              selectableRows: 'none',
-              toolbar: false,
-              filtering: true,
-              filter: true,
-              filterType: 'doprdown',
-              responsive: 'stacked',
-            }
-          }
-        />
+          data={this.state.sData ? this.state.sData : this.state.data} />
       </MuiThemeProvider>
-    </Box>
+    </Box>)
   }
 
   componentDidMount() {

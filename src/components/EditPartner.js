@@ -91,8 +91,8 @@ export class EditPartner extends React.Component {
         const { classes } = this.props;
         return (
             <Fragment>
-                <Box onClick={this.handleOpen}>
-                    <EditIcon />
+                <Box onClick={this.handleOpen} style={{cursor: "pointer"}}>
+                    <EditIcon /> Add Slug
                 </Box>
                 <Dialog
                     open={this.state.dialogOpen}

@@ -172,10 +172,12 @@ const deadlineColumn = {
         if (rowMeta.rowData[17]) {
           return null;
         }
-        if (remainigTime < 0 ) {
-          return "Your deadline is fineshed please do this work ASAP."
+        if (remainigTime < 0) {
+          return <p style={{ color: "#FF0000	", letterSpacing: "1px" }}> Your deadline is <b>fineshed</b> please do this work ASAP.</p>
+        } else if (remainigTime < 20) {
+          return <p style={{ color: "#f9a800", letterSpacing: "1px" }}> <b>{remainigTime}</b> Hours remaing.</p>
         } else {
-          return <p> <b>{remainigTime}</b> Hours remaing.</p>
+          return <p style={{ color: "green", letterSpacing: "1px" }}> <b>{remainigTime}</b>  Hours remaing. </p>
         }
       }
     }
@@ -479,17 +481,17 @@ const lastStageColumn = {
 const linkForEnglishTestColumn = {
   label: 'English Test Link',
   name: 'linkForEnglishTest',
-} 
+}
 
 const linkForOnlineTestColumn = {
   label: 'Online Test Link',
   name: 'linkForOnlineTest',
   options: {
     customBodyRender: (value) => {
-      return value ? <a target="_blank" href={value}>Link to Test</a>: null;
+      return value ? <a target="_blank" href={value}>Link to Test</a> : null;
     }
   }
-} 
+}
 
 const stageColumnStatus = {
   label: 'Current Stage',
@@ -517,7 +519,7 @@ const ColumnTransitionsStatus = {
   options: {
     filter: false,
     sort: false,
-    customBodyRender: ( value ) => {
+    customBodyRender: (value) => {
       return <StageTransitionsStudentStatus
         rowData={value}
         allStages={allStages}

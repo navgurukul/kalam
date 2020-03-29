@@ -1,46 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import MUIDataTable from "mui-datatables";
-import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 
-import FilterSelect from './FilterSelect'
 
 import axios from 'axios';
-import Box from '@material-ui/core/Box';
 
-import { theme } from '../theme/theme';
 
 import { changeFetching, setupUsers } from '../store/actions/auth';
 
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import StudentService from '../services/StudentService';
-import StageTransitions from './StageTransitions';
-import GlobalService from '../services/GlobalService';
 import { EventEmitter } from './events';
+import MainLayout from './MainLayout';
+
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseUrl = process.env.API_URL;
 
-const styles = theme => ({
-  innerTable: {
-    marginLeft: '3vw',
-    marginRight: '3vw',
-    width: '94vw',
-    marginTop: '5',
-    marginBottom: '5',
-    [theme.breakpoints.up('md')]: {
-      margin: 'auto',
-      width: '50%',
-      marginTop: 5,
-      marginBottom: 5
-    },
-  },
-  clear: {
-    clear: 'both'
-  }
-})
+
 
 let columns
 let filterFns = []
@@ -59,17 +38,17 @@ export class DashboardPage extends React.Component {
   }
 
   stageChangeEvent = (iData) => {
-    const rowIds = this.state.data.map(x=>x.id)
+    const rowIds = this.state.data.map(x => x.id)
     const rowIndex = rowIds.indexOf(iData.rowData.id);
-    
+
     let dataElem = this.state.data[rowIndex];
     dataElem.stageTitle = iData.selectedValue.label;
     dataElem.stage = iData.selectedValue.value;
-    
+
     let newData = this.state.data;
     newData[rowIndex] = dataElem;
 
-    this.setState({data:newData });
+    this.setState({ data: newData });
   }
 
   handleChange = (field, filterFn) => {
@@ -96,25 +75,24 @@ export class DashboardPage extends React.Component {
 
   dataSetup = (data) => {
     // columns = StudentService.setupPre(StudentService.columns["partnerDashboard"]);
- 
-    for (let i=0; i<data.length; i++) {
+
+    for (let i = 0; i < data.length; i++) {
       data[i] = StudentService.dConvert(data[i])
       // columns = StudentService.addOptions(columns, data[i]);
     }
-        
+
     // columns = StudentService.setupPost(columns);
-    
-    this.setState({'data': data}, function(){
+
+    this.setState({ 'data': data }, function () {
       this.props.fetchingFinish()
     })
   }
 
   render = () => {
-    const { classes } = this.props;
 
-    if (!this.state.data.length) {
-      return <Box></Box>
-    }
+    // if (!this.state.data.length) {
+    //   return <Box></Box>
+    // }
 
     // let filterSelectRows = []
     // columns.map( (x) => {
@@ -132,33 +110,9 @@ export class DashboardPage extends React.Component {
     //       />      
     //     )
     // })
-
-    return <Box>
-      <MuiThemeProvider theme={theme}>
-        <div className={classes.clear}></div>
-        <MUIDataTable
-          columns={StudentService.columns['softwareCourse']}
-          data={this.state.sData ? this.state.sData : this.state.data}
-          icons={GlobalService.tableIcons}
-          options={
-            {
-              headerStyle: {
-                color: theme.palette.primary.main
-              },
-              exportButton: true,
-              pageSize: 100,
-              showTitle: false,
-              selectableRows: 'none',
-              toolbar: false,
-              filtering: true,
-              filter: true,
-              filterType: 'doprdown',
-              responsive: 'stacked',
-            }
-          }
-        />
-      </MuiThemeProvider>
-    </Box>
+    return (<MainLayout columns={StudentService.columns['softwareCourse']}
+      data={this.state.sData ? this.state.sData : this.state.data}
+    />)
   }
 
   componentDidMount() {
@@ -182,7 +136,7 @@ export class DashboardPage extends React.Component {
   async fetchStudents() {
     try {
       this.props.fetchingStart()
-      const dataURL = baseUrl+'partners/'+this.props.match.params.partnerId+'/students'
+      const dataURL = baseUrl + 'partners/' + this.props.match.params.partnerId + '/students'
       const response = await axios.get(dataURL);
       this.dataSetup(response.data.data);
     } catch (e) {
@@ -192,10 +146,10 @@ export class DashboardPage extends React.Component {
   }
 }
 
-const mapDispatchToProps = (dispatch)=>({
+const mapDispatchToProps = (dispatch) => ({
   fetchingStart: () => dispatch(changeFetching(true)),
   fetchingFinish: () => dispatch(changeFetching(false)),
   usersSetup: (users) => dispatch(setupUsers(users))
 });
 
-export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(DashboardPage)))
+export default withRouter(connect(undefined, mapDispatchToProps)(DashboardPage));

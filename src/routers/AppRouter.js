@@ -28,7 +28,7 @@ const AppRouter = () => (
   <Router history={history}>
     <div>
       <Switch>        
-      <PublicRoute path="/" component={LandingPage} exact={true} />
+        <PublicRoute path="/" component={LandingPage} exact={true} />
         <PrivateRoute path="/update/mobile/number" component={UpdateMobileNumber} exact={true} />
         <PublicRoute path="/login" component={LoginDesign} exact={true} />
         <PrivateRoute path="/tasks" component={MyTaskReport} />
@@ -42,6 +42,7 @@ const AppRouter = () => (
         <PrivateRoute path="/partner/add" component={AddPartner} />
         <AnyRoute path="/partner/:partnerId/assessments" component={ViewAssessments} />
         <AnyRoute path="/partner/:partnerId" component={DashboardPage} />
+        <AnyRoute path="/partnerLanding/:slug" component = {LandingPage} />
         <PrivateRoute path="/partners" component={PartnerList} />
         <AnyRoute path="/partners/:partnerId/assessments/:assessmentId" component={AssessmentAttempts} />
         

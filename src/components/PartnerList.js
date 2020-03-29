@@ -12,6 +12,7 @@ import { theme } from '../theme/theme';
 
 import ViewAssessments from './ViewAssessments';
 import PartnerLink from './PartnerLink';
+import EditPartner from './EditPartner'
 import CreateAssessment from './CreateAssessment';
 import GlobalService from '../services/GlobalService';
 
@@ -74,6 +75,17 @@ export class PartnerList extends React.Component {
           sort: false,
           customBodyRender: (rowData, rowMeta, updateValue) => {
             return <CreateAssessment partnerId={rowMeta.rowData[0]} partnerName={rowData} />
+          }
+        }
+      },
+      {
+        name: 'notes',
+        label: 'Edit Partner',
+        options: {
+          filter: false,
+          sort: false,
+          customBodyRender: (value, rowMeta ) => {
+            return <EditPartner partnerId={rowMeta.rowData[0]} name={rowMeta.rowData[2]} notes={value} />
           }
         }
       }

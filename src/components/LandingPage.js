@@ -169,7 +169,6 @@ export class LandingPage extends React.Component {
     const { history } = this.props;
     try {
       const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
-      console.log(response.data.data);
       this.setState({
         partnerId: response.data.data['id']
       })

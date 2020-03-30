@@ -165,6 +165,7 @@ const deadlineColumn = {
     customBodyRender: (rowData, rowMeta) => {
       if (rowData) {
         const studentStage = (_.invert(allStages))[rowMeta.rowData[8]];
+        console.log(studentStage);
         const deadline = feedbackableStagesData[studentStage].deadline;
         const diff = new Date().getTime() - new Date(rowData).getTime()
         const hours = Math.floor(diff / 1000 / 60 / 60);
@@ -173,10 +174,22 @@ const deadlineColumn = {
           return null;
         }
         if (remainingTime < 0) {
+
           return <p style={{ color: "#FF0000	", letterSpacing: "1px" }}> Your deadline is <b>fineshed</b> please do this work ASAP.</p>
-        } else if (remainingTime < 20) {
+        }
+        else if (deadline === 60 && remainingTime < 20) {
+
           return <p style={{ color: "#f9a800", letterSpacing: "1px" }}> <b>{remainingTime}</b> Hours remaining.</p>
-        } else {
+        }
+        else if (deadline === 48 && remainingTime < 15) {
+
+          return <p style={{ color: "#f9a800", letterSpacing: "1px" }}> <b>{remainingTime}</b> Hours remaining.</p>
+        }
+        else if (deadline === 24 && remainingTime < 6) {
+
+          return <p style={{ color: "#f9a800", letterSpacing: "1px" }}> <b>{remainingTime}</b> Hours remaining.</p>
+        }
+        else {
           return <p style={{ color: "green", letterSpacing: "1px" }}> <b>{remainingTime}</b>  Hours remaining. </p>
         }
       }

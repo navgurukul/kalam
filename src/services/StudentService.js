@@ -168,14 +168,24 @@ const deadlineColumn = {
         const deadline = feedbackableStagesData[studentStage].deadline;
         const diff = new Date().getTime() - new Date(rowData).getTime()
         const hours = Math.floor(diff / 1000 / 60 / 60);
-        const remainigTime = deadline - hours;
+        const remainingTime = deadline - hours;
         if (rowMeta.rowData[17]) {
           return null;
         }
-        if (remainigTime < 0 ) {
-          return "Your deadline is fineshed please do this work ASAP."
-        } else {
-          return <p> <b>{remainigTime}</b> Hours remaing.</p>
+        if (remainingTime < 0) {
+          return <p style={{ color: "#FF0000	", letterSpacing: "1px" }}> Your deadline is <b>fineshed</b> please do this work ASAP.</p>
+        }
+        else if (deadline === 60 && remainingTime < 20) {
+          return <p style={{ color: "#f9a800", letterSpacing: "1px" }}> <b>{remainingTime}</b> Hours remaining.</p>
+        }
+        else if (deadline === 48 && remainingTime < 15) {
+          return <p style={{ color: "#f9a800", letterSpacing: "1px" }}> <b>{remainingTime}</b> Hours remaining.</p>
+        }
+        else if (deadline === 24 && remainingTime < 6) {
+          return <p style={{ color: "#f9a800", letterSpacing: "1px" }}> <b>{remainingTime}</b> Hours remaining.</p>
+        }
+        else {
+          return <p style={{ color: "green", letterSpacing: "1px" }}> <b>{remainingTime}</b>  Hours remaining. </p>
         }
       }
     }
@@ -300,11 +310,11 @@ const deadlineColumnTrnasition = {
         const deadline = feedbackableStagesData[rowMeta.rowData[0]].deadline;
         const diff = new Date().getTime() - new Date(rowData).getTime()
         const hours = Math.floor(diff / 1000 / 60 / 60);
-        const remainigTime = deadline - hours;
-        if (remainigTime < 0 && !rowMeta.rowData[7]) {
+        const remainingTime = deadline - hours;
+        if (remainingTime < 0 && !rowMeta.rowData[7]) {
           return "Your deadline is fineshed please do this work ASAP."
         } else if (!rowMeta.rowData[2]) {
-          return <p> <b>{remainigTime}</b> Hours are remaing.</p>
+          return <p> <b>{remainingTime}</b> Hours are remaining.</p>
         }
         return null;
       }
@@ -479,17 +489,17 @@ const lastStageColumn = {
 const linkForEnglishTestColumn = {
   label: 'English Test Link',
   name: 'linkForEnglishTest',
-} 
+}
 
 const linkForOnlineTestColumn = {
   label: 'Online Test Link',
   name: 'linkForOnlineTest',
   options: {
     customBodyRender: (value) => {
-      return value ? <a target="_blank" href={value}>Link to Test</a>: null;
+      return value ? <a target="_blank" href={value}>Link to Test</a> : null;
     }
   }
-} 
+}
 
 const stageColumnStatus = {
   label: 'Current Stage',
@@ -517,7 +527,7 @@ const ColumnTransitionsStatus = {
   options: {
     filter: false,
     sort: false,
-    customBodyRender: ( value ) => {
+    customBodyRender: (value) => {
       return <StageTransitionsStudentStatus
         rowData={value}
         allStages={allStages}

@@ -5,12 +5,13 @@ import { connect } from 'react-redux';
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
 import axios from 'axios';
-import { Box } from '@material-ui/core';
+import { Box, Link } from '@material-ui/core';
 
 import { theme } from '../theme/theme';
 
 import ViewAssessments from './ViewAssessments';
 import PartnerLink from './PartnerLink';
+import EditPartner from './EditPartner'
 import CreateAssessment from './CreateAssessment';
 
 import { changeFetching } from '../store/actions/auth';
@@ -56,13 +57,13 @@ export class PartnerList extends React.Component {
         }
       },
       {
-        name: 'id',
+        name: 'notes',
         label: 'View Assessments',
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (value) => {
-            return <ViewAssessments partnerId={value} />
+          customBodyRender: (value, rowMeta) => {
+            return <ViewAssessments partnerId={rowMeta.rowData[0]} />
           }
         }
       },
@@ -74,6 +75,26 @@ export class PartnerList extends React.Component {
           sort: false,
           customBodyRender: (rowData, rowMeta, updateValue) => {
             return <CreateAssessment partnerId={rowMeta.rowData[0]} partnerName={rowData} />
+          }
+        }
+      },
+      {
+        name: 'slug',
+        label: 'Online Test For Partner',
+        options: {
+          filter: false,
+          sort: false,
+          customBodyRender: (value, rowMeta ) => {
+            if (value) {
+              const url= `/partnerLanding/${value}`
+              return (
+                <div>
+                  <a href={url} target='_blank' style={{ color: "#f05f40" }}>Go for test</a>
+              </div>
+              )
+            } else {
+              return <EditPartner partnerId={rowMeta.rowData[0]} name={rowMeta.rowData[2]} notes={rowMeta.rowData[1]} />
+            }
           }
         }
       }

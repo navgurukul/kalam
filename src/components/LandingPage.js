@@ -62,6 +62,7 @@ export class LandingPage extends React.Component {
       mobileNumber: '',
       mobile: '',
       selectedLang: 'en',
+      partnerId: ''
     }
 
     this.lang = {
@@ -117,6 +118,7 @@ export class LandingPage extends React.Component {
   }
   async generateTestLink() {
     try {
+      const partnerId = this.state.partnerId ? this.state.partnerId : null;
       const mobile = '0' + this.state.mobileNumber;
       this.props.fetchingStart()
       const dataURL = baseUrl + 'helpline/register_exotel_call'
@@ -124,6 +126,7 @@ export class LandingPage extends React.Component {
         params: {
           ngCallType: 'getEnrolmentKey',
           From: mobile,
+          partnerId: partnerId
         }
       });
       return response;
@@ -156,6 +159,26 @@ export class LandingPage extends React.Component {
     })
   }
 
+  componentDidMount() {
+    const slug  = window.location.href.split('partnerLanding/')[1];
+    if(slug) {
+      this.partnerFetch(slug)
+    }
+  }
+  
+  async partnerFetch(slug) {
+    const { history } = this.props;
+    try {
+      const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
+      this.setState({
+        partnerId: response.data.data['id']
+      })
+    } catch (e) {
+      console.log(e)
+      history.push('/notFound')
+    }
+  }
+  
   render = () => {
     const { classes } = this.props;
     let mobile = this.state.mobile;

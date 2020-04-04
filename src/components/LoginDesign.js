@@ -31,7 +31,7 @@ const styles = theme => ({
 
 export class LoginDesign extends React.Component {
   responseGoogle = (response) => {
-    if (response.Qt.zu.includes("navgurukul.org")) {
+    if (response.profileObj.email.includes("@navgurukul.org")) {
       axios.post(`${baseUrl}users/login/google`, { idToken: response.tokenObj.id_token })
         .then((resp) => {
           const { userToken, user } = resp.data;

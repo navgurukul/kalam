@@ -1,13 +1,12 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
-
+import Select from '@material-ui/core/Select';
 import { connect } from 'react-redux';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
 import Box from '@material-ui/core/Box';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DialogContent from '@material-ui/core/DialogContent';
-
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -33,10 +32,11 @@ export class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      check: "",
       value: 1,
       open: false,
       componentsmenuopen: false,
-      modalOpen: false
+      modalOpen: false,
     };
   }
 
@@ -86,7 +86,7 @@ export class Header extends React.Component {
 
   render() {
     const { open } = this.state.componentsmenuopen;
-
+    const { location } = this.props;
     return (
       <div>
         <Drawer open={this.state.open} onClose={this.toggleDrawer(false)} >
@@ -111,9 +111,9 @@ export class Header extends React.Component {
             {this.renderProgressBar()}
             <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Box style={{ display: 'flex' }}>
-                <IconButton className="iconbuttonsyle" color="inherit" aria-label="Menu" onClick={this.onLeftIconButtonClick}>
+                {!this.props.isAuthenticated ? null : <IconButton className="iconbuttonsyle" color="inherit" aria-label="Menu" onClick={this.onLeftIconButtonClick}>
                   <MenuIcon />
-                </IconButton>
+                </IconButton>}
                 <Box pt={0.5}>
                   <Link to="/">
                     <Image
@@ -124,9 +124,24 @@ export class Header extends React.Component {
                     />
                   </Link>
                 </Box>
+                {location.pathname === "/" && <Box pt={0.5} pl={2}>
+                  <Select native
+                    onChange={this.props.onChange}
+                    value={""}
+                    inputProps={{
+                      id: 'filled-age-native-simple'
+                    }}
+                  >
+                    <option value="language">Select Language</option>
+                    <option value="en"> English </option>
+                    <option value="hi"> हिंदी </option>
+                  </Select>
+                </Box>}
               </Box>
-              {this.conditRenderEssential()}
-              {this.dashboardModal()}
+              <Box style={{ display: "flex" }}>
+                {this.dashboardModal()}
+                {this.conditRenderEssential()}
+              </Box>
             </Toolbar>
           </AppBar>
         </div>

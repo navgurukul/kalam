@@ -8,6 +8,8 @@ import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import { theme } from '../theme/theme';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { withSnackbar } from 'notistack';
+import Grid from '@material-ui/core/Grid';
 
 const baseUrl = process.env.API_URL;
 
@@ -29,21 +31,34 @@ const styles = theme => ({
 
 export class LoginDesign extends React.Component {
   responseGoogle = (response) => {
-    axios.post(`${baseUrl}users/login/google`, { idToken: response.tokenObj.id_token })
-      .then((resp) => {
-        const { userToken, user } = resp.data;
-        localStorage.setItem('jwt', userToken);
-        localStorage.setItem('user', JSON.stringify(user));
-        if (user.mobile) {
-          const { history } = this.props;
-          this.props.login();
-          history.push("/students");
-        } else {
-          const { history } = this.props;
-          this.props.login();
-          history.push("/user/mobile/number");
+    if (response.Qt.zu.includes("navgurukul.org")) {
+      axios.post(`${baseUrl}users/login/google`, { idToken: response.tokenObj.id_token })
+        .then((resp) => {
+          const { userToken, user } = resp.data;
+          localStorage.setItem('jwt', userToken);
+          localStorage.setItem('user', JSON.stringify(user));
+          if (user.mobile) {
+            const { history } = this.props;
+            console.log(this.props,"hi")
+            this.props.login();
+            history.push("/students");
+          } else {
+            const { history } = this.props;
+            this.props.login();
+            history.push("/user/mobile/number");
+          }
+        });
+      }
+    else{
+      this.props.enqueueSnackbar('Only Accessible by Navgurukul user ID', {
+        variant: 'message', anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'left',
         }
       });
+    }
+
+
   }
 
   errr = (error) => {
@@ -84,7 +99,14 @@ export class LoginDesign extends React.Component {
     const quote = this.getQuote();
 
     return (
-      <MuiThemeProvider theme={theme}>
+      <Grid
+      container
+      spacing={0}
+      alignItems="center"
+      justify="center"
+      width="0%"
+      style={{ minHeight: '83vh' }}
+    >
         <Box className={classes.container}>
           <Paper className={classes.loginContainer}>
             <Box>
@@ -92,7 +114,7 @@ export class LoginDesign extends React.Component {
                 NavGurukul Admissions
               </Typography>
             </Box>
-            <Box style={{height: theme.spacing(5)}} />
+            <Box style={{ height: theme.spacing(5) }} />
             <Box>
               <GoogleLogin
                 clientId="34917283366-b806koktimo2pod1cjas8kn2lcpn7bse.apps.googleusercontent.com"
@@ -102,7 +124,7 @@ export class LoginDesign extends React.Component {
                 scope="profile email"
               />
             </Box>
-            <Box style={{height: theme.spacing(7)}} />
+            <Box style={{ height: theme.spacing(7) }} />
             <Box className={classes.quoteContainer}>
               <Box className={classes.quoteText}>
                 <Typography variant="body1">{quote.quote}</Typography>
@@ -114,12 +136,12 @@ export class LoginDesign extends React.Component {
           </Paper>
         </Box>
 
-      </MuiThemeProvider>
+      </Grid>
     );
   }
 }
 
-const mapDispatchToProps = (dispatch)=>({
+const mapDispatchToProps = (dispatch) => ({
   login: () => dispatch(login()),
 });
 
@@ -127,4 +149,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated
 });
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(LoginDesign));
+export default withSnackbar(withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(LoginDesign)));

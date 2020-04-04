@@ -14,6 +14,7 @@ import { changeFetching } from '../store/actions/auth';
 import { VideoSlider } from './VideoSlider';
 import Grid from '@material-ui/core/Grid';
 import StudentStatus from './StudentStatus';
+import Header from "./Header";
 
 const baseUrl = process.env.API_URL;
 const testUrl = 'http://join.navgurukul.org/k/'
@@ -109,7 +110,7 @@ export class LandingPage extends React.Component {
       mobileNumber: e.target.value,
     })
   }
-  
+
   onChangeEventStatus = (e) => {
     this.setState({
       mobile: e.target.value,
@@ -157,7 +158,7 @@ export class LandingPage extends React.Component {
       selectedLang: e.target.value
     })
   }
-  
+
   componentDidMount() {
     const slug  = window.location.href.split('partnerLanding/')[1];
     if(slug) {
@@ -183,22 +184,10 @@ export class LandingPage extends React.Component {
     let mobile = this.state.mobile;
     return (
       <div>
+        <Header onChange={this.handleChange} />
         <MuiThemeProvider theme={theme}>
-          <div className={classes.root} style={{marginTop: -48}}>
-            <Select native
-              onChange={this.handleChange} 
-              value={""}
-              inputProps={{
-                id: 'filled-age-native-simple'
-               }}
-            >
-              <option value="language">Select Language</option>
-              <option value="en"> English </option>
-              <option value="hi"> हिंदी </option>
-            </Select>
-            <Typography className={classes.paper}>{this.lang.Heading[this.state.selectedLang]}</Typography>
-          </div>
           <Box style={{ height: theme.spacing(2) }} />
+          <Typography className={classes.paper}>{this.lang.Heading[this.state.selectedLang]}</Typography>
           <Grid container>
             <Grid item xs={12} sm={6}>
               <Grid item>
@@ -210,7 +199,7 @@ export class LandingPage extends React.Component {
                 <Box style={{ height: theme.spacing(2) }} />
               </Grid>
               <Grid item>
-                <VideoSlider language={this.state.selectedLang}/>
+                <VideoSlider language={this.state.selectedLang} />
               </Grid>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -284,12 +273,12 @@ export class LandingPage extends React.Component {
                   <Box style={{ height: theme.spacing(2) }} />
                   <div className={classes.root}>
                     {
-                      mobile.length == 10 ? 
-                      <StudentStatus 
-                        mobile={mobile}
-                        lang={this.lang.StatusButton[this.state.selectedLang]}
-                      />: 
-                      null
+                      mobile.length == 10 ?
+                        <StudentStatus
+                          mobile={mobile}
+                          lang={this.lang.StatusButton[this.state.selectedLang]}
+                        /> :
+                        null
                     }
                   </div>
                 </Paper>
@@ -299,8 +288,8 @@ export class LandingPage extends React.Component {
         </MuiThemeProvider>
         <Box className="footer-container-box" p={1} mt={2}>
           <Typography variant="body1" gutterBottom>
-          {this.lang.Footer[this.state.selectedLang]}
-        </Typography>
+            {this.lang.Footer[this.state.selectedLang]}
+          </Typography>
         </Box>
       </div>
     );

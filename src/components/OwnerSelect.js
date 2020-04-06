@@ -12,30 +12,24 @@ const baseUrl = process.env.API_URL;
 const animatedComponents = makeAnimated();
 
 export class OwnerSelect extends React.Component {
-
-  constructor (props) {
-    super(props);
-    const { rowMetaTable } = this.props;
-    const { columnIndex, rowData } = rowMetaTable;
-    this.columnIndex = columnIndex;
-    this.whoAssign = rowData[8].email.split('@')[0];
-    this.stage = rowData[0];
-    this.studentId = rowData[5];
-  }
   
   handleChange = selectedValue => {
     try{
-      const { change } = this.props
+      const { change, rowMetaTable } = this.props
       const { value } =  selectedValue;
+      const { columnIndex, rowData } = rowMetaTable;
+      const whoAssign = rowData[8].email.split('@')[0];
+      const stage = rowData[0];
+      const studentId = rowData[5];
       axios.post(`${baseUrl}students/assign_feedback_work`, { 
-          whoAssign: this.whoAssign,
+          whoAssign: whoAssign,
           toAssign: value,
-          student_stage: this.stage,
-          studentId: this.studentId
+          student_stage: stage,
+          studentId: studentId
       })
       .then(() => {
         this.props.enqueueSnackbar(`successfully Assigned work for ${value}`,{ variant: 'success' });
-        change(value, this.columnIndex)
+        change(value, columnIndex)
       })
     } catch(e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });

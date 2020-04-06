@@ -43,7 +43,6 @@ export class PartnerList extends React.Component {
 
     super(props);
     this.columns = [
-
       {
         name: 'id',
         label: 'Name',

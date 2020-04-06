@@ -79,6 +79,7 @@ export class Transition extends React.Component {
       this.props.fetchingStart()
       const response = await axios.get(this.transitionURL, {});
       const newData = response.data.data.map(v => ({ ...v, loggedInUser: this.props.loggedInUser }))
+      console.log(newData)
       this.setState({
         data: newData
       }, this.props.fetchingFinish)
@@ -103,11 +104,11 @@ export class Transition extends React.Component {
 
 
   render = () => {
-    const { classes, studentName } = this.props;
+    const { classes, studentName, studentId } = this.props;
     const modalStyle = getModalStyle()
     return !this.state.modalOpen ? <div>
       <Button color="primary" align="right" onClick={this.handleOpen}>
-        <DetailsIcon color="primary" />&nbsp;&nbsp;
+        <DetailsIcon color="primary" /> {studentId} &nbsp;&nbsp;
     </Button>
     </div> :
       <Modal
@@ -117,7 +118,7 @@ export class Transition extends React.Component {
         <Box style={modalStyle} className={classes.paper}>
           <MuiThemeProvider theme={theme}>
             <Box display="flex" justifyContent="space-between" pt={4}>
-              <Typography variant="h6" id="modal-title">Student Name:- {studentName}</Typography><br />
+              <Typography variant="h6" id="modal-title">Student Name:- {studentName} (studentId {studentId})</Typography><br />
               <Box onClick={this.handleClose}>
                 <CancelIcon />
               </Box>

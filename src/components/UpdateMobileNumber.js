@@ -45,7 +45,6 @@ export class UpdateMobileNumber extends React.Component {
 
   constructor(props) {
     super(props);
-    this.student_stage= this.props.student_stage;
     this.state = {
       mobileNumber: "",
       // "dialogOpen": true,

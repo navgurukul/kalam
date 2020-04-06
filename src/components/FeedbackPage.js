@@ -36,17 +36,21 @@ export class StudentFeedback extends React.Component {
   async addFeedbck() {
     try {
       this.props.fetchingStart()
-      const { change } = this.props
-      const dataURL = `${baseUrl}students/feedback/${this.studentId}/${this.userId}`
-      const response = await axios.post(dataURL, {
-        "student_stage": this.stage,
+      const { change, rowMetaTable } = this.props
+      const { rowData, columnIndex } = rowMetaTable;
+      const studentId = rowData[5];
+      const userId = rowData[8].id;
+      const dataURL = `${baseUrl}students/feedback/${studentId}/${userId}`
+      await axios.post(dataURL, {
+        "student_stage": rowData[0],
         "feedback": this.state.feedback
         }).then(response => {
+            console.log(response.data)
             this.setState({
                 dialogOpen: false,
             })
             this.props.enqueueSnackbar('Feedback is successfully added!',{ variant: 'success' });
-            change(this.state.feedback, this.columnIndex)
+            change(this.state.feedback, columnIndex)
         })
       this.props.fetchingFinish();
     } catch (e) {
@@ -67,13 +71,6 @@ export class StudentFeedback extends React.Component {
 
   constructor(props) {
     super(props);
-    const { rowMetaTable } = this.props;
-    const { rowData, columnIndex } = rowMetaTable;
-    this.columnIndex = columnIndex;
-    this.studentId = rowData[5];
-    this.userId = rowData[8].id;
-    this.stage = rowData[0];
-    this.user = '@' + rowData[8].user_name.toString().split(" ").join('').toLowerCase()
     this.state = {
       "feedback": "",
       "dialogOpen": false,
@@ -95,7 +92,6 @@ export class StudentFeedback extends React.Component {
     })
   };
 
-
   handleOpen = () => {
     this.setState({
       dialogOpen: true
@@ -106,11 +102,13 @@ export class StudentFeedback extends React.Component {
   }
 
   render = () => {
-    const { classes, feedback } = this.props;
+    const { classes, feedback, rowMetaTable } = this.props;
+    const { rowData } = rowMetaTable;
+    const user = '@' + rowData[8].user_name.toString().split(" ").join('').toLowerCase()
     return (
         <Fragment>
             <Box onClick={this.handleOpen}>
-                <EditIcon/>
+                <EditIcon/> {rowData[5]}
             </Box>
             <Dialog
                 open={this.state.dialogOpen}
@@ -124,7 +122,7 @@ export class StudentFeedback extends React.Component {
                       multiline
                       rows="6"
                       name='feedback'
-                      defaultValue={this.addFeedbackDetails(this.user, feedback)}
+                      defaultValue={this.addFeedbackDetails(user, feedback)}
                       onChange={this.handleChange('feedback')}
                       className={classes.textField}
                       margin="normal"

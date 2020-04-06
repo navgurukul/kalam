@@ -9,24 +9,19 @@ const baseUrl = process.env.API_URL;
 const animatedComponents = makeAnimated();
 
 export class StatusSelect extends React.Component {
-
-  constructor (props) {
-    super(props);
-    const { rowMetaTable } = this.props;
-    this.studentId = rowMetaTable.rowData[5];
-    this.columnIndex = rowMetaTable.columnIndex;
-    this.stage = rowMetaTable.rowData[0];
-  }
   
   handleChange = selectedValue => {
     try{
-      const { change } = this.props;
+      const { change, rowMetaTable } = this.props;
+      const studentId = rowMetaTable.rowData[5];
+      const columnIndex = rowMetaTable.columnIndex;
+      const stage = rowMetaTable.rowData[0];
       const { value } = selectedValue;
-      const dataURL = baseUrl+'students/feedback/'+this.studentId;
-      axios.put(dataURL, { student_stage: this.stage, state: value })
+      const dataURL = baseUrl+'students/feedback/'+studentId;
+      axios.put(dataURL, { student_stage: stage, state: value })
       .then(() => {
         this.props.enqueueSnackbar('state is successfully changed!',{ variant: 'success' });
-        change(value, this.columnIndex)
+        change(value, columnIndex)
       });
     }catch (e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });
@@ -34,9 +29,10 @@ export class StatusSelect extends React.Component {
   }
 
   render = () => {
-    const { state, feedbackableStagesData } = this.props;
-    
-    const allstatus = feedbackableStagesData[this.stage].status;
+    const { state, feedbackableStagesData, rowMetaTable} = this.props;
+    const stage = rowMetaTable.rowData[0];
+
+    const allstatus = feedbackableStagesData[stage].status;
     const allStatusOptions = allstatus.map(x => { return { value: x, label: (x.charAt(0).toUpperCase() + x.slice(1)).match(/[A-Z][a-z]+/g).join(" ") } })
     
     let selectedValue = { value: null, label: null }

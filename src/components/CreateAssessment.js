@@ -14,7 +14,6 @@ export class CreateAssessment extends React.Component {
 
   constructor(props) {
     super(props);
-    this.partnerName = this.props.partnerName;
     this.state = {
       dialogOpen: false,
       inputValue: '',

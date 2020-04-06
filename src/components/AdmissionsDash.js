@@ -46,8 +46,8 @@ export class AdmissionsDash extends React.Component {
     this.studentsURL = baseURL + 'students';
     this.usersURL = baseURL + 'users/getall';
     this.stage = null,
-      this.value = null,
-      this.loggedInUser = this.props.loggedInUser;
+    this.value = null,
+    this.loggedInUser = this.props.loggedInUser;
 
     this.state = {
       data: [],

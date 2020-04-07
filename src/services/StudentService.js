@@ -9,6 +9,8 @@ import StatusSelect from '../components/StatusSelect'
 import StudentFeedback from '../components/FeedbackPage';
 import StageTransitions from '../components/StageTransitions';
 import StageTransitionsStudentStatus from '../components/StageTransitionsStudentStatus';
+import AudioRecorder from '../components/audioRecording';
+import AudiofileUpload from '../components/ulpoadAudioFile';
 
 const _ = require('underscore');
 const animatedComponents = makeAnimated();
@@ -334,6 +336,7 @@ const finishedColumnTransition = {
     },
   }
 }
+
 const loggedInUser = {
   name: 'loggedInUser',
   label: "LoggedIn User",
@@ -342,6 +345,34 @@ const loggedInUser = {
     display: false,
     customBodyRender: (rowData) => {
       return rowData.user_name
+    }
+  }
+}
+
+const AudioPlayer = {
+  name: "audioRecording",
+  label: "Audio Recording",
+  options: {
+    filter: false,
+    display: true,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      const ifExistingFeedback = rowMeta.rowData[2] || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      return (
+        <div>
+          {ifExistingFeedback && value ? 
+            <AudioRecorder
+              audioUrl={value} /> : null
+          }
+          {ifExistingFeedback && !value ?
+            <AudiofileUpload
+              studentId={rowMeta.rowData[5]}
+              userId={rowMeta.rowData[8].id}
+              student_stage={rowMeta.rowData[0]}
+              change={event => updateValue(event)}
+              columnIndex={rowMeta.columnIndex} /> : null
+          }
+        </div>
+      )
     }
   }
 }
@@ -575,6 +606,7 @@ const StudentService = {
       deadlineColumnTrnasition,
       finishedColumnTransition,
       loggedInUser,
+      AudioPlayer
     ],
     columnStudentStatus: [
       ColumnTransitionsStatus,

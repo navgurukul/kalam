@@ -107,31 +107,33 @@ export class StudentFeedback extends React.Component {
     const user = '@' + rowData[8].user_name.toString().split(" ").join('').toLowerCase()
     return (
         <Fragment>
-            <Box onClick={this.handleOpen}>
-                <EditIcon/> {rowData[5]}
-            </Box>
-            <Dialog
-                open={this.state.dialogOpen}
-                onClose={this.handleClose}
-            >
-                <form className={classes.container}>
-                    <h1 style={{color: '#f05f40',textAlign: 'center'}}>Add Feedback</h1>
-                    <TextField
-                      id="outlined-multiline-static"
-                      label="Feedback"
-                      multiline
-                      rows="6"
-                      name='feedback'
-                      defaultValue={this.addFeedbackDetails(user, feedback)}
-                      onChange={this.handleChange('feedback')}
-                      className={classes.textField}
-                      margin="normal"
-                      variant="outlined"
-                    />
-                    <Button variant="contained" color="primary" onClick={this.onSubmit} className={classes.btn}>Submit Feedback</Button>
-                </form>
-            </Dialog>  
-        </Fragment>
+          <Box onClick={this.handleOpen}>
+            <EditIcon
+              style={{cursor: 'pointer'}}
+            /> {rowData[5]}
+          </Box>
+          <Dialog
+              open={this.state.dialogOpen}
+              onClose={this.handleClose}
+          >
+            <form className={classes.container}>
+                <h1 style={{color: '#f05f40',textAlign: 'center'}}>Add Feedback</h1>
+                  <TextField
+                    id="outlined-multiline-static"
+                    label="Feedback"
+                    multiline
+                    rows="6"
+                    name='feedback'
+                    defaultValue={this.addFeedbackDetails(user, feedback)}
+                    onChange={this.handleChange('feedback')}
+                    className={classes.textField}
+                    margin="normal"
+                    variant="outlined"
+                  />
+                  <Button variant="contained" color="primary" onClick={this.onSubmit} className={classes.btn}>Submit Feedback</Button>
+            </form>
+          </Dialog>  
+      </Fragment>
     );
   }
 }

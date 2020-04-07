@@ -23,6 +23,7 @@
     "date-fns": "^2.8.1",
     "file-loader": "^5.0.2",
     "localStorage": "^1.0.4",
+    "material-ui-audio-player": "^1.0.7",
     "material-ui-image": "^3.2.2",
     "moment": "^2.24.0",
     "mui-datatables": "^2.13.3",

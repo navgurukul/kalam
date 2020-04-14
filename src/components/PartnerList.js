@@ -37,67 +37,68 @@ const styles = theme => ({
   }
 })
 
+const columns = [
+  {
+    name: 'id',
+    label: 'Name',
+    options: {
+      filter: true,
+      sort: true,
+      customBodyRender: (value, rowMeta) => {
+        let name = rowMeta.rowData[2];
+        return <PartnerLink partnerId={value} name={name} />
+      }
+    }
+  },
+  {
+    name: 'notes',
+    label: 'View Assessments',
+    options: {
+      filter: false,
+      sort: false,
+      customBodyRender: (value, rowMeta) => {
+        return <ViewAssessments partnerId={rowMeta.rowData[0]} />
+      }
+    }
+  },
+  {
+    name: 'name',
+    label: 'Create Assessment',
+    options: {
+      filter: false,
+      sort: false,
+      customBodyRender: (rowData, rowMeta, updateValue) => {
+        return <CreateAssessment partnerId={rowMeta.rowData[0]} partnerName={rowData} />
+      }
+    }
+  },
+  {
+    name: 'slug',
+    label: 'Online Test For Partner',
+    options: {
+      filter: false,
+      sort: false,
+      customBodyRender: (value, rowMeta, updateValue) => {
+        if (value) {
+          const url= `/partnerLanding/${value}`
+          return (
+            <div>
+              <a href={url} target='_blank' style={{ color: "#f05f40" }}>Go for test</a>
+          </div>
+          )
+        } else {
+          return <EditPartner columnIndex={rowMeta.columnIndex} partnerId={rowMeta.rowData[0]} name={rowMeta.rowData[2]} notes={rowMeta.rowData[1]} change={event => updateValue(event)}/>
+        }
+      }
+    }
+  }
+]
+
 export class PartnerList extends React.Component {
 
   constructor(props) {
 
     super(props);
-    this.columns = [
-      {
-        name: 'id',
-        label: 'Name',
-        options: {
-          filter: true,
-          sort: true,
-          customBodyRender: (value, rowMeta) => {
-            let name = rowMeta.rowData[2];
-            return <PartnerLink partnerId={value} name={name} />
-          }
-        }
-      },
-      {
-        name: 'notes',
-        label: 'View Assessments',
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (value, rowMeta) => {
-            return <ViewAssessments partnerId={rowMeta.rowData[0]} />
-          }
-        }
-      },
-      {
-        name: 'name',
-        label: 'Create Assessment',
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (rowData, rowMeta, updateValue) => {
-            return <CreateAssessment partnerId={rowMeta.rowData[0]} partnerName={rowData} />
-          }
-        }
-      },
-      {
-        name: 'slug',
-        label: 'Online Test For Partner',
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (value, rowMeta ) => {
-            if (value) {
-              const url= `/partnerLanding/${value}`
-              return (
-                <div>
-                  <a href={url} target='_blank' style={{ color: "#f05f40" }}>Go for test</a>
-              </div>
-              )
-            } else {
-              return <EditPartner partnerId={rowMeta.rowData[0]} name={rowMeta.rowData[2]} notes={rowMeta.rowData[1]} />
-            }
-          }
-        }
-      }
-    ]
 
     this.state = {
       data: [],
@@ -123,7 +124,7 @@ export class PartnerList extends React.Component {
     return (<Box>
       <MuiThemeProvider theme={theme}>
         <div className={classes.innerTable}>
-          <MainLayout columns={this.columns}
+          <MainLayout columns={columns}
             data={this.state.data} />
         </div>
       </MuiThemeProvider>

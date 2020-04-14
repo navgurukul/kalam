@@ -38,6 +38,7 @@ export class EditPartner extends React.Component {
                 "notes": notes,
                 "slug": slug
             }).then(response => {
+                console.log(response.data)
                 this.setState({
                     dialogOpen: false,
                 });
@@ -58,15 +59,22 @@ export class EditPartner extends React.Component {
 
     constructor(props) {
         super(props);
-        const { name, notes, } = this.props;
         this.state = {
-            "name": name,
-            "notes": notes,
+            "name": '',
+            "notes": '',
             "slug": '',
             "dialogOpen": false,
         }
     }
 
+    componentDidMount() {
+        const { name, notes, } = this.props;
+        this.setState({
+            name: name,
+            notes: notes
+        })
+    }
+    
     handleChange = name => (event) => {
         let valChange = {}
         valChange[name] = event.target.value;
@@ -101,13 +109,13 @@ export class EditPartner extends React.Component {
                     <form className={classes.container}>
                         <FormControl>
                             <InputLabel htmlFor="partnerName">Partner Name</InputLabel>
-                            <Input id="partnerName" aria-describedby="my-helper-text" name="name" value={this.state.name} onChange={this.handleChange('name')} />
+                            <Input id="partnerName" aria-describedby="my-helper-text" name="name" defaultValue={this.props.name} onChange={this.handleChange('name')} />
                             <FormHelperText className={classes.text} id="my-helper-text">Partner ka Name Enter karein.</FormHelperText>
                         </FormControl>
 
                         <FormControl>
                             <InputLabel htmlFor="partnerNotes">Partner Notes</InputLabel>
-                            <Input id="partnerNotes" aria-describedby="my-helper-text" name="notes" value={this.state.notes} onChange={this.handleChange('notes')} />
+                            <Input id="partnerNotes" aria-describedby="my-helper-text" name="notes" defaultValue={this.props.notes} onChange={this.handleChange('notes')} />
                             <FormHelperText className={classes.text} id="my-helper-text">Partner ki thodi details add karein.</FormHelperText>
                         </FormControl>
 

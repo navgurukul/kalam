@@ -78,7 +78,7 @@ const columns = [
     options: {
       filter: false,
       sort: false,
-      customBodyRender: (value, rowMeta ) => {
+      customBodyRender: (value, rowMeta, updateValue) => {
         if (value) {
           const url= `/partnerLanding/${value}`
           return (
@@ -87,7 +87,7 @@ const columns = [
           </div>
           )
         } else {
-          return <EditPartner partnerId={rowMeta.rowData[0]} name={rowMeta.rowData[2]} notes={rowMeta.rowData[1]} />
+          return <EditPartner columnIndex={rowMeta.columnIndex} partnerId={rowMeta.rowData[0]} name={rowMeta.rowData[2]} notes={rowMeta.rowData[1]} change={event => updateValue(event)}/>
         }
       }
     }

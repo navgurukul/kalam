@@ -30,7 +30,7 @@ export class EditPartner extends React.Component {
 
     async editPartner() {
         try {
-            const { partnerId } = this.props
+            const { partnerId, change, columnIndex } = this.props
             const { name, notes, slug } = this.state;
             const dataURL = `${baseUrl}partners/${partnerId}`
             await axios.put(dataURL, {
@@ -43,6 +43,7 @@ export class EditPartner extends React.Component {
                     dialogOpen: false,
                 });
                 this.props.enqueueSnackbar('Partner successfully edited with slug!', { variant: 'success' });
+                change(slug, columnIndex)
             })
         } catch (e) {
             console.log(e);

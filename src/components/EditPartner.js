@@ -47,7 +47,7 @@ export class EditPartner extends React.Component {
             })
         } catch (e) {
             console.log(e);
-            this.props.enqueueSnackbar('Please add valid slug atleast add minmum character and number', { variant: 'error' });
+            this.props.enqueueSnackbar('All fields are mandatory', { variant: 'error' });
         }
     }
 

@@ -16,6 +16,12 @@ body {
   }
 }
 
+@media only screen and (max-width: 600px) {
+  .slick-arrow {
+    display: none !important;
+  }
+}
+
 .slick-prev:before {
   color:  #f05f40;
   opacity: 0.9;

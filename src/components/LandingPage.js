@@ -26,7 +26,8 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    margin: 'auto'
+    margin: 'auto',
+    boxShadow: 'none'
   },
   container: {
     display: 'flex',
@@ -52,6 +53,14 @@ const styles = theme => ({
   typography: {
     fontFamily: 'BlinkMacSystemFont',
   },
+  fixedFooter: {
+    [theme.breakpoints.up('sm')]: {
+      position: "fixed",
+      left: 0,
+      right: 0,
+      bottom: 0
+    }
+  }
 });
 
 
@@ -74,10 +83,6 @@ export class LandingPage extends React.Component {
         en: 'Course Information',
         hi: 'कोर्स के बारे में जाने'
       },
-      Test: {
-        en: 'Apply Test',
-        hi: 'कोर्स में अप्लाई करे',
-      },
       Status: {
         en: 'Check Status By Registered Number',
         hi: 'रजिस्टर मोबाइल नंबर से अपना स्टेटस देखे'
@@ -85,10 +90,6 @@ export class LandingPage extends React.Component {
       AdmisssionTitle: {
         en: 'Start Admisssion Test',
         hi: 'परीक्षा सुरु करे ',
-      },
-      StudentStatus: {
-        en: 'Student Status',
-        hi: 'स्टूडेंट की स्तिथि'
       },
       TestButton: {
         en: 'GIVE TEST',
@@ -184,31 +185,17 @@ export class LandingPage extends React.Component {
     const { classes } = this.props;
     let mobile = this.state.mobile;
     return (
-      <div>
+      <div style={{flexDirection: "column", justifyContent: "space-between", alignItems: "center", minHeight: "calc(100vh - 48px)", display: "flex"}}>
         <Header onChange={this.handleChange} value={this.state.selectedLang}/>
         <MuiThemeProvider theme={theme}>
-          <Box style={{ height: theme.spacing(2) }} />
           <Typography className={classes.paper}>{this.lang.Heading[this.state.selectedLang]}</Typography>
           <Grid container>
-            <Grid item xs={12} sm={6}>
-              {/* <Grid item>
-                <Box display="flex" alignItems="center" flexDirection="column">
-                  <Typography className={classes.typography} variant="h5" component="h3">{this.lang.Course[this.state.selectedLang]}</Typography>
-                </Box>
-              </Grid> */}
-              <Grid item xs={12}>
-                <Box style={{ height: theme.spacing(2) }} />
-              </Grid>
+            <Grid item xs={12} sm={6} style={{flexDirection: "column", justifyContent: "center", alignItems: "center", display: "flex"}}>
               <Grid item>
                 <VideoSlider language={this.state.selectedLang} />
               </Grid>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Grid item>
-                <Box display="flex" alignItems="center" flexDirection="column">
-                  <Typography className={classes.typography} variant="h5" component="h3" >{this.lang.Test[this.state.selectedLang]}</Typography>
-                </Box>
-              </Grid>
               <Grid item xs={12}>
                 <Box style={{ height: theme.spacing(2) }} />
               </Grid>
@@ -234,29 +221,19 @@ export class LandingPage extends React.Component {
                       }}
                       variant="outlined" />
                   </Box>
-                  <Box style={{ height: theme.spacing(2) }} />
                   <div className={classes.root}>
                     <Button variant="outlined" onClick={this.giveTest} color="primary">{this.lang.TestButton[this.state.selectedLang]}</Button>
                   </div>
                 </Paper>
               </Grid>
-              <Box style={{ height: theme.spacing(2) }} />
+              <Box style={{ height: theme.spacing(6) }} />
               <Grid item>
-                <Box display="flex" alignItems="center" flexDirection="column" px={4}>
+                <Box display="flex" alignItems="center" flexDirection="column" px={4} style={{textAlign: "center"}}>
                   <Typography className={classes.typography} variant="h5" component="h3" >{this.lang.Status[this.state.selectedLang]}</Typography>
                 </Box>
               </Grid>
-              <Grid item xs={12}>
-                <Box style={{ height: theme.spacing(2) }} />
-              </Grid>
               <Grid item>
                 <Paper className={classes.loginContainer}>
-                  <Box>
-                    <Grid item xs={12}>
-                      <Typography variant="h5" component="h4" >{this.lang.StudentStatus[this.state.selectedLang]}</Typography>
-                    </Grid>
-                  </Box>
-                  <Box style={{ height: theme.spacing(2) }} />
                   <Box>
                     <TextField
                       id="filled-full-width"
@@ -271,26 +248,24 @@ export class LandingPage extends React.Component {
                       }}
                       variant="outlined" />
                   </Box>
-                  <Box style={{ height: theme.spacing(2) }} />
                   <div className={classes.root}>
-                    {
-                      mobile.length == 10 ?
-                        <StudentStatus
-                          mobile={mobile}
-                          lang={this.lang.StatusButton[this.state.selectedLang]}
-                        /> :
-                        null
-                    }
+                    <StudentStatus
+                      mobile={mobile}
+                      lang={this.lang.StatusButton[this.state.selectedLang]}
+                    />
                   </div>
                 </Paper>
               </Grid>
             </Grid>
           </Grid>
         </MuiThemeProvider>
-        <Box className="footer-container-box" p={1} mt={2} style={{position:"sticky", }}>
-          <Typography variant="body1" gutterBottom>
-            {this.lang.Footer[this.state.selectedLang]}
-          </Typography>
+        <Box style={{height: theme.spacing(6)}}></Box>
+        <Box>
+          <Box className="footer-container-box" style={{width: "100vw", paddingLeft: 0, paddingRight: 0}} p={1} mt={2}>
+            <Typography variant="body1">
+              {this.lang.Footer[this.state.selectedLang]}
+            </Typography>
+          </Box>
         </Box>
       </div>
     );

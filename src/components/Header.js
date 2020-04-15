@@ -1,6 +1,10 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+
 import { connect } from 'react-redux';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -124,28 +128,41 @@ export class Header extends React.Component {
                     />
                   </Link>
                 </Box>
+              </Box>
+              <Box>
                 {location.pathname === "/" && <Box pt={0.5} pl={2}>
-                  <Select native
-                    onChange={this.props.onChange}
-                    value={""}
-                    inputProps={{
-                      id: 'filled-age-native-simple'
-                    }}
-                  >
-                    <option value="language">Select Language</option>
-                    <option value="en"> English </option>
-                    <option value="hi"> हिंदी </option>
-                  </Select>
-                </Box>}
+                    <FormControl style={{margin: 0, minWidth: 121}}>
+                      <InputLabel id="demo-controlled-open-select-label">Select Language</InputLabel>
+                      <Select
+                        onChange={this.props.onChange}
+                        defaultValue={"Select Language"}
+                        value={this.props.value}
+                        inputProps={{
+                          id: 'filled-age-native-simple'
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>Selected Language</em>
+                        </MenuItem>
+                        <MenuItem value="en">
+                          English
+                        </MenuItem>
+                        <MenuItem value="hi">
+                          Hindi
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                }
               </Box>
-              <Box style={{ display: "flex" }}>
-                {this.dashboardModal()}
-                {this.conditRenderEssential()}
-              </Box>
+            <Box style={{ display: "flex" }}>
+              {this.dashboardModal()}
+              {this.conditRenderEssential()}
+            </Box>
             </Toolbar>
           </AppBar>
-        </div>
       </div>
+      </div >
     );
   }
 }

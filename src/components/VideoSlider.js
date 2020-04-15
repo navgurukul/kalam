@@ -1,11 +1,47 @@
 import React from 'react';
 import Box from '@material-ui/core/Box';
-
-import MobileStepper from '@material-ui/core/MobileStepper';
 import Button from '@material-ui/core/Button';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+
+import Slider from "react-slick";
+import { withStyles } from '@material-ui/core/styles';
+
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+import Dialog from '@material-ui/core/Dialog';
 import YouTube from 'react-youtube';
+import playIcon from '../assets/img/playIcon.png';
+import Slide from '@material-ui/core/Slide';
+
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import CloseIcon from '@material-ui/icons/Close';
+
+const settings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1
+};
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const useStyles = theme => ({
+  appBar: {
+    position: 'relative',
+  },
+  title: {
+    marginLeft: theme.spacing(2),
+  },
+  paper: {
+    backgroundColor: "#000 !important"
+  }
+})
 
 const aboutNavgurukul = [
   {
@@ -41,75 +77,103 @@ export class VideoSlider extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 0
+      activeStep: 0,
+      open: false
     }
+  }
+
+  handleClickOpen = (event) => {
+    this.setState({
+      open: true,
+      selectedVideoID: event.currentTarget.dataset.video_id,
+      selectedHeadline: event.currentTarget.dataset.video_headline
+    });
+  }
+
+  handleClickClose = () => {
+    this.setState({
+      open: false
+    });
   }
 
   _onReady(event) {
     // access to player in all event handlers via event.target
-    event.target.pauseVideo();
-  }
-
-  handleNext = () => {
-    this.setState({ activeStep: this.state.activeStep + 1 });
-  };
-
-  handleBack = () => {
-    this.setState({ activeStep: this.state.activeStep - 1 });
-  };
-
-  timer = () => {
-    this.setState({
-      activeStep: (this.state.activeStep + 1) % aboutNavgurukul.length
-    })
+    event.target.playVideo();
   }
 
   componentDidMount() {
-    window.setInterval(this.timer, 5000)
   }
 
-  render() {
-    const { language } = this.props;
+  render = () => {
+    const { language, classes } = this.props;
+    console.log(classes, this.props);
+
     const width = Math.min(600, window.screen.width);
+    // const width = window.screen.width;
+
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    if (w < 16 / 9 * h) {
+      h = Math.floor(9 / 16 * w);
+    } else {
+      w = Math.floor(16 / 9 * h);
+    }
+
     const opts = {
-      height: Math.floor(width * 9 / 16),
-      width: width,
+      width: w,
+      height: h,
       playerVars: {
         // https://developers.google.com/youtube/player_parameters
-        autoplay: 0
+        autoplay: 1
       },
       origin: window.location.origin,
     };
 
-    return <Box maxWidth={width} style={{ margin: 'auto' }}>
-      <YouTube
-        videoId={aboutNavgurukul[this.state.activeStep].videoId}
-        opts={opts}
-        onReady={this._onReady}
-      />
-      <Box py={2} display="flex" style={{ flexDirection: 'column', alignItems: 'center', fontSize: 18, justifyContent: 'column' }}>
-        <span align="center">{aboutNavgurukul[this.state.activeStep].label[language]}</span>
-      </Box>
-      <MobileStepper
-        variant="dots"
-        steps={aboutNavgurukul.length}
-        position="static"
-        activeStep={this.state.activeStep}
-        nextButton={
-          <Button size="small" onClick={this.handleNext} disabled={this.state.activeStep === aboutNavgurukul.length - 1}>
-            Next
-          <KeyboardArrowRight />
-          </Button>
-        }
-        backButton={
-          <Button size="small" onClick={this.handleBack} disabled={this.state.activeStep === 0}>
-            <KeyboardArrowLeft />
-            Back
-          </Button>
-        }
-      />
-    </Box>
+    return <>
+      <Slider {...settings}>
+        {aboutNavgurukul.map(ele => <div key={ele.videoId} >
+          <Box maxWidth={width} style={{ margin: "0 auto", position: "relative" }} onClick={this.handleClickOpen} value={ele.videoId} data-video_id={ele.videoId} data-video_headline={ele.label[language]}>
+            <img src={"https://img.youtube.com/vi/" + ele.videoId + "/maxresdefault.jpg"} style={{ maxWidth: "100%" }} />
+            <img src={playIcon} style={{ position: "absolute", top: "calc(50% - 60px)", width: 120, cursor: "pointer", left: "calc(50% - 60px)" }} />
+            <Box py={2} style={{ fontSize: 18, textAlign: "center" }}>
+              <span align="center">{ele.label[language]}</span>
+            </Box>
+          </Box>
+        </div>
+        )}
+      </Slider>
+      <Dialog fullScreen open={this.state.open} onClose={this.handleClickClose} TransitionComponent={Transition} classes={{paper: classes.paper}}>
+        <>
+          <AppBar className={classes.appBar}>
+            <Toolbar onClick={this.handleClickClose}>
+              <Box display="flex" style={{ justifyContent: "space-between", cursor: "pointer", alignItems: "center", width: "100%" }}>
+                <Box display="flex" style={{ justifyContent: "flex-start", alignItems: "center"}}>
+                  <IconButton edge="start" color="inherit" aria-label="close">
+                    <CloseIcon />
+                  </IconButton>
+                  <Typography variant="h6" className={classes.title}>
+                    Close
+                  </Typography>
+                </Box>
+                <Typography variant="h6" className={classes.title}>
+                  {this.state.selectedHeadline}
+                </Typography>
+                <Typography variant="h6">
+                </Typography>
+              </Box>
+            </Toolbar>
+          </AppBar>
+          <Box style={{ margin: '0 auto' }}>
+            <YouTube
+              videoId={this.state.selectedVideoID}
+              opts={opts}
+              onReady={this._onReady}
+            />
+          </Box>
+        </>
+      </Dialog>
+    </>
   }
 }
 
-export default VideoSlider;
+export default withStyles(useStyles)(VideoSlider);

@@ -59,7 +59,7 @@ tr:nth-child(even) {
 }
 
 .MuiAppBar-root.MuiAppBar-positionFixed {
-    z-index: 10000;
+    z-index: 1200;
 }
 
 #app {

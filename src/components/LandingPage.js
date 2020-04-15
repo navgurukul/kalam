@@ -6,15 +6,15 @@ import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { theme } from '../theme/theme';
-import Select from '@material-ui/core/Select';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { withSnackbar } from 'notistack';
 import { changeFetching } from '../store/actions/auth';
-import { VideoSlider } from './VideoSlider';
+import VideoSlider from './VideoSlider';
 import Grid from '@material-ui/core/Grid';
 import StudentStatus from './StudentStatus';
 import Header from "./Header";
+
 
 const baseUrl = process.env.API_URL;
 const testUrl = 'http://join.navgurukul.org/k/'
@@ -67,8 +67,8 @@ export class LandingPage extends React.Component {
 
     this.lang = {
       Heading: {
-        en: 'Navgurukul Software Engineering Scholarship',
-        hi: 'नवगुरुकुल सॉफ्टवेयर अभियान्त्रिक शिष्यवृत्ती'
+        en: 'Software Engineering Scholarship',
+        hi: 'सॉफ्टवेयर Engineering शिष्यवृत्ती'
       },
       Course: {
         en: 'Course Information',
@@ -154,6 +154,7 @@ export class LandingPage extends React.Component {
   }
 
   handleChange = e => {
+    console.log('changing value to', e.target.value)
     this.setState({
       selectedLang: e.target.value
     })
@@ -184,17 +185,17 @@ export class LandingPage extends React.Component {
     let mobile = this.state.mobile;
     return (
       <div>
-        <Header onChange={this.handleChange} />
+        <Header onChange={this.handleChange} value={this.state.selectedLang}/>
         <MuiThemeProvider theme={theme}>
           <Box style={{ height: theme.spacing(2) }} />
           <Typography className={classes.paper}>{this.lang.Heading[this.state.selectedLang]}</Typography>
           <Grid container>
             <Grid item xs={12} sm={6}>
-              <Grid item>
+              {/* <Grid item>
                 <Box display="flex" alignItems="center" flexDirection="column">
                   <Typography className={classes.typography} variant="h5" component="h3">{this.lang.Course[this.state.selectedLang]}</Typography>
                 </Box>
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <Box style={{ height: theme.spacing(2) }} />
               </Grid>
@@ -286,7 +287,7 @@ export class LandingPage extends React.Component {
             </Grid>
           </Grid>
         </MuiThemeProvider>
-        <Box className="footer-container-box" p={1} mt={2}>
+        <Box className="footer-container-box" p={1} mt={2} style={{position:"sticky", }}>
           <Typography variant="body1" gutterBottom>
             {this.lang.Footer[this.state.selectedLang]}
           </Typography>

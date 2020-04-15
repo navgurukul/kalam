@@ -2,6 +2,32 @@ body {
   margin: 0px;
 }
 
+.slick-dots {
+  position: initial;
+}
+
+.slick-prev {
+  left: 25px;
+}
+
+@media only screen and (min-width: 600px) {
+  .slick-next {
+    right: 25px;
+  }
+}
+
+.slick-prev:before {
+  color:  #f05f40;
+  opacity: 0.9;
+  font-size: 24px;
+}
+
+.slick-next:before {
+  color:  #f05f40;
+  opacity: 0.9;
+  font-size: 24px;
+}
+
 .filterSelect {
     z-index: 900;
     width: 23%;

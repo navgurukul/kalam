@@ -54,7 +54,7 @@ const useStyles = theme => ({
       left: "calc(50% - 60px)"
     },
     [theme.breakpoints.down('md')]: {
-      top: "calc(50% - 30px)",
+      top: "calc(50% - 60px)",
       width: 60,
       left: "calc(50% - 30px)"
     },
@@ -91,11 +91,11 @@ const aboutNavgurukul = [
     videoId: 'vuSwndj5cbs',
   }];
 
-var PrevArrow = React.createClass({
-  render(){
-    return (<IconButton className="slickArrowPrev" onClick={this.props.onClick} iconClassName="fa fa-chevron-circle-left" />)
-  }
-})
+// var PrevArrow = React.createClass({
+//   render(){
+//     return (<IconButton className="slickArrowPrev" onClick={this.props.onClick} iconClassName="fa fa-chevron-circle-left" />)
+//   }
+// })
 
 window.mobileAndTabletCheck = function() {
   let check = false;
@@ -164,7 +164,7 @@ export class VideoSlider extends React.Component {
     };
 
     return <>
-      <Slider {...settings} prevArrow={PrevArrow}>
+      <Slider {...settings} style={{maxWidth: 780, margin: "0 auto"}}>
         {aboutNavgurukul.map(ele => <div key={ele.videoId} >
           <Box maxWidth={width} style={{ margin: "0 auto", position: "relative" }} onClick={this.handleClickOpen} value={ele.videoId} data-video_id={ele.videoId} data-video_headline={ele.label[language]}>
             <img src={"https://img.youtube.com/vi/" + ele.videoId + "/maxresdefault.jpg"} style={{ maxWidth: "100%" }} />

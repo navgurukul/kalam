@@ -10,7 +10,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 import Dialog from '@material-ui/core/Dialog';
 import YouTube from 'react-youtube';
-import playIcon from '../assets/img/playIcon.png';
+import playIcon from '../assets/img/playicon.png';
 import Slide from '@material-ui/core/Slide';
 
 import AppBar from '@material-ui/core/AppBar';

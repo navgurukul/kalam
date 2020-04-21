@@ -104,11 +104,12 @@ export class Transition extends React.Component {
 
 
   render = () => {
-    const { classes, studentName, studentId } = this.props;
+    const { classes, studentName, studentId, history } = this.props;
     const modalStyle = getModalStyle()
     return !this.state.modalOpen ? <div>
       <Button color="primary" align="right" onClick={this.handleOpen}>
-        <DetailsIcon color="primary" /> {studentId} &nbsp;&nbsp;
+        <DetailsIcon color="primary" /> 
+        {history.location.pathname.includes('/partner') ? null: studentId} &nbsp;&nbsp;
     </Button>
     </div> :
       <Modal

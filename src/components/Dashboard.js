@@ -2,8 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
-
-
+import Box from '@material-ui/core/Box';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import Typography from '@material-ui/core/Typography'
 import axios from 'axios';
 
 
@@ -73,6 +75,16 @@ export class DashboardPage extends React.Component {
 
   }
 
+  changeFromDate = date => {
+    this.fromDate = date;
+    this.fetchStudents();
+  }
+
+  changeToDate = date => {
+    this.toDate = date;
+    this.fetchStudents();
+  }
+
   dataSetup = (data) => {
     // columns = StudentService.setupPre(StudentService.columns["partnerDashboard"]);
 
@@ -89,6 +101,39 @@ export class DashboardPage extends React.Component {
   }
 
   render = () => {
+
+    const options = <Box>
+      <Typography variant='h5' color='primary' gutterBottom display='block' style={{marginLeft: 15}}>
+        Get students Details By Date
+      </Typography>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <KeyboardDatePicker
+          margin="dense"
+          style={{ marginLeft: 16, maxWidth: '40%' }}
+          value={this.fromDate}
+          id="date-picker-dialog"
+          label="From Date"
+          format="MM/dd/yyyy"
+          onChange={this.changeFromDate}
+          KeyboardButtonProps={{
+            'aria-label': 'change date',
+          }}
+        />
+
+        <KeyboardDatePicker
+          margin="dense"
+          style={{ marginLeft: 16, maxWidth: '40%' }}
+          value={this.toDate}
+          id="date-picker-dialog"
+          label="To Date"
+          format="MM/dd/yyyy"
+          onChange={this.changeToDate}
+          KeyboardButtonProps={{
+            'aria-label': 'change date',
+          }}
+        />
+      </MuiPickersUtilsProvider>
+    </Box>;
 
     // if (!this.state.data.length) {
     //   return <Box></Box>
@@ -110,9 +155,14 @@ export class DashboardPage extends React.Component {
     //       />      
     //     )
     // })
-    return (<MainLayout columns={StudentService.columns['softwareCourse']}
-      data={this.state.sData ? this.state.sData : this.state.data}
-    />)
+    return (
+      <div>
+        {options}
+        <MainLayout columns={StudentService.columns['softwareCourse']}
+        data={this.state.sData ? this.state.sData : this.state.data}
+    />
+      </div>
+    )
   }
 
   componentDidMount() {
@@ -137,7 +187,13 @@ export class DashboardPage extends React.Component {
     try {
       this.props.fetchingStart()
       const dataURL = baseUrl + 'partners/' + this.props.match.params.partnerId + '/students'
-      const response = await axios.get(dataURL);
+      const response = await axios.get(dataURL, 
+        {
+          params: {
+            from: this.fromDate,
+            to: this.toDate
+          }
+         });
       this.dataSetup(response.data.data);
     } catch (e) {
       console.log(e);

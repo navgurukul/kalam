@@ -94,7 +94,7 @@ export class AudiofileUpload extends React.Component {
     return <div>
         <form style={{padding:"10px", width: 300, marginTop: -35}}>
           <h3>Upload audio file</h3>
-          <input type="file"  accept=".mp3,audio/*" onChange={this.onChange} style={{color: 'green'}} />
+          <input type="file"  accept=".mp3,.aac,audio/*" onChange={this.onChange} style={{color: 'green'}} />
           <Spinner size={35} spinnerColor={"#ed343d"} spinnerWidth={5} visible={loading} style={{padding: '10px'}} />
         </form>
       </div>

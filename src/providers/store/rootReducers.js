@@ -1,8 +1,7 @@
 import { combineReducers } from 'redux';
-// import example from './modules/example';
 
-import { ExampleSlice } from '../../views/example/store';
+import { AuthSlice } from '../../auth';
 
 export default combineReducers({
-  [ExampleSlice.name]: ExampleSlice.reducer,
+  [AuthSlice.name]: AuthSlice.reducer,
 });

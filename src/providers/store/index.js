@@ -1,5 +1,5 @@
-import React from 'react'
-import { Provider } from 'react-redux'
+import React from 'react';
+import { Provider } from 'react-redux';
 
 import configureStore from './configureStore';
 import history from '../routing/app-history';

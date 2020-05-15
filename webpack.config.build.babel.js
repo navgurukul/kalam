@@ -1,15 +1,15 @@
-import config from 'config'
-import path from 'path'
-import webpack from 'webpack'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import SaveAssetsJson from 'assets-webpack-plugin'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import precss from 'precss'
-import postcssPresetEnv from 'postcss-preset-env'
-import AWS from 'aws-sdk'
+import config from 'config';
+import path from 'path';
+import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import SaveAssetsJson from 'assets-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import precss from 'precss';
+import postcssPresetEnv from 'postcss-preset-env';
+import AWS from 'aws-sdk';
 
 
-import webpackConfig, { JS_SOURCE } from './webpack.config.common'
+import webpackConfig, { JS_SOURCE } from './webpack.config.common';
 
 // ----------------------------------------------------------
 //  CONSTANT DECLARATION
@@ -20,15 +20,15 @@ const APP_ENTRY_POINT = `${JS_SOURCE}/main`;
 
 // webpack 4 mode
 // https://webpack.js.org/concepts/mode/
-webpackConfig.mode = 'production'
+webpackConfig.mode = 'production';
 
 const webpackProdOutput = {
   publicPath: PUBLIC_PATH,
   filename: `${config.get('assetPath')}/[name]-[hash].js`,
   chunkFilename: `${config.get('assetPath')}/[id].[hash].js`,
-}
+};
 
-const html = config.get('html')
+const html = config.get('html');
 
 // Please configure this section if you plan
 // to deploy the generated html to production.
@@ -46,14 +46,14 @@ const htmlPlugins = html.map(
       conservativeCollapse: true,
     },
   })
-)
+);
 
 // ----------------------------------------------------------
 //  Extending Webpack Configuration
 // ----------------------------------------------------------
 
 // Merges webpackProdOutput and webpackConfig.output
-webpackConfig.output = Object.assign(webpackConfig.output, webpackProdOutput)
+webpackConfig.output = Object.assign(webpackConfig.output, webpackProdOutput);
 
 webpackConfig.module.rules = webpackConfig.module.rules.concat({
   test: /\.css$/,
@@ -85,16 +85,16 @@ webpackConfig.module.rules = webpackConfig.module.rules.concat({
       },
     },
   ],
-})
+});
 
-webpackConfig.devtool = 'source-map'
+webpackConfig.devtool = 'source-map';
 
 webpackConfig.entry = {
   app: ['babel-polyfill', path.resolve(__dirname, APP_ENTRY_POINT)],
-}
+};
 
 if (IS_S3_DEPLOY) {
-  const S3Plugin = require('webpack-s3-plugin')
+  const S3Plugin = require('webpack-s3-plugin');
 
   // Please read README if you have no idea where
   // `process.env.AWS_ACCESS_KEY` is coming from
@@ -120,13 +120,13 @@ if (IS_S3_DEPLOY) {
       test: /images/,
       cdnUrl: process.env.AWS_CDN_URL,
     },
-  })
+  });
 
-  webpackConfig.plugins = webpackConfig.plugins.concat(s3Config)
+  webpackConfig.plugins = webpackConfig.plugins.concat(s3Config);
 }
 
 if (config.get('optimization.analyzeMode') === true) {
-  const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+  const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
   webpackConfig.plugins = webpackConfig.plugins.concat(
     new BundleAnalyzerPlugin({
@@ -135,7 +135,7 @@ if (config.get('optimization.analyzeMode') === true) {
       analyzerPort: config.get('optimization.analyze.port'),
       openAnalyzer: true,
     })
-  )
+  );
 }
 
 webpackConfig.plugins.push(
@@ -164,8 +164,8 @@ webpackConfig.plugins.push(
     filename: `${config.get('assetPath')}/[name]-[hash].css`,
     chunkFilename: `${config.get('assetPath')}/[id]-[hash].css`,
   })
-)
+);
 
-webpackConfig.plugins = webpackConfig.plugins.concat(htmlPlugins)
+webpackConfig.plugins = webpackConfig.plugins.concat(htmlPlugins);
 
-export default webpackConfig
+export default webpackConfig;

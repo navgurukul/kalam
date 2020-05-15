@@ -13,8 +13,11 @@ const option = process.argv[2];
 // You can add your process here and have package.json to proxy your command
 // Please look at package.json -> "scripts" section
 switch (option) {
-  case 'lint':
+  case 'lint:fix':
     shell.exec('cross-env eslint --fix src/ --format node_modules/eslint-friendly-formatter . --ext .js --ext .jsx  --cache; exit 0');
+    break;
+  case 'lint':
+    shell.exec('cross-env eslint src/ --format node_modules/eslint-friendly-formatter . --ext .js --ext .jsx  --cache; exit 0');
     break;
   case 'dev':
     shell.exec(`cross-env webpack-dev-server --config webpack.config.dev-server.babel.js --hot --progress --no-info --inline --colors`);

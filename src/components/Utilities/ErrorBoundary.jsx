@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent } from 'react';
 
 const style = {
   padding: '.75rem 1.25rem',
@@ -8,28 +8,26 @@ const style = {
   color: '#721c24',
   backgroundColor: '#f8d7da',
   borderColor: '#f5c6cb',
-}
+};
 
 class ErrorBoundary extends PureComponent {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       hasError: false,
-    }
+    };
   }
 
   componentDidCatch(error, info) {
     // you probably want to log it somewhere
-    console.log("Is it going to be here???");
-    console.log(error, info)
     this.setState({
       hasError: true,
-    })
+    });
   }
 
   render() {
-    const { hasError } = this.state
-    const { children } = this.props
+    const { hasError } = this.state;
+    const { children } = this.props;
 
     if (hasError) {
       return (
@@ -37,11 +35,11 @@ class ErrorBoundary extends PureComponent {
           Something is going wrong!! This error is caught by ErrorBoundary
           feature in React 16 \o/
         </div>
-      )
+      );
     }
 
-    return children
+    return children;
   }
 }
 
-export default ErrorBoundary
+export default ErrorBoundary;

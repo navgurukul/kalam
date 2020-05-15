@@ -1,13 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { IntlProvider, addLocaleData } from 'react-intl'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { IntlProvider, addLocaleData } from 'react-intl';
 
 // This is react-intl locale data
-import en from 'react-intl/locale-data/en'
+import en from 'react-intl/locale-data/en';
 
 // This is your translation files
 // In case you are curious about locale - https://gist.github.com/jacobbubu/1836273
-import enUS from 'common/translations/en-US.json'
+import enUS from 'common/translations/en-US.json';
 
 // We are adding english here
 addLocaleData([...en]);
@@ -16,7 +16,7 @@ addLocaleData([...en]);
 // It will be used in IntlProvider below
 const messages = {
   'en-US': enUS,
-}
+};
 
 export default class I18NProvider extends React.PureComponent {
   static propTypes = {
@@ -29,12 +29,12 @@ export default class I18NProvider extends React.PureComponent {
     const language = navigator.language.split(/[-_]/)[0];
     const locale = navigator.language;
 
-    const { children } = this.props
+    const { children } = this.props;
 
     return (
       <IntlProvider locale={language} messages={messages[locale]}>
         { children }
       </IntlProvider>
-    )
+    );
   }
 }

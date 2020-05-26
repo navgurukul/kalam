@@ -98,13 +98,15 @@ export class StudentFeedback extends React.Component {
     })
   }
   addFeedbackDetails = (user, feedback) => {
-    return feedback ? user + ": \n\n" + feedback : user + ": \n\n";
+    const time = new Date();
+    const feedbackTime = `Feedback date ${time.getDate()}/${time.getMonth()}/${time.getFullYear()}`;
+    return feedback ? user + ": "+ feedbackTime + "\n\n" + feedback : user + ": " + feedbackTime + "\n\n";
   }
 
   render = () => {
     const { classes, feedback, rowMetaTable } = this.props;
     const { rowData } = rowMetaTable;
-    const user = '@' + rowData[8].user_name.toString().split(" ").join('').toLowerCase()
+    const user = '@' + rowData[8].user_name.toString().split(" ").join('').toLowerCase() 
     return (
         <Fragment>
           <Box onClick={this.handleOpen}>

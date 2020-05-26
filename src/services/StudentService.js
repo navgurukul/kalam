@@ -567,6 +567,10 @@ const ColumnTransitionsStatus = {
   }
 }
 
+const partnerNameColumn = {
+  label: "Partner Name",
+  name: "partnerName",
+}
 const StudentService = {
   columns: {
     requestCallback: [
@@ -594,7 +598,8 @@ const StudentService = {
       loggedInUserColumn,
       ownerColumnMyreport,
       stausColumn,
-      deadlineColumn
+      deadlineColumn,
+      partnerNameColumn
     ],
     columnTransition: [
       stageColumnTransition,

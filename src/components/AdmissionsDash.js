@@ -122,8 +122,7 @@ export class AdmissionsDash extends React.Component {
   }
 
   render = () => {
-    const { classes } = this.props;
-
+    const { classes, history } = this.props;  
     const options = <Box>
       <Select
         className={"filterSelectGlobal"}
@@ -182,7 +181,7 @@ export class AdmissionsDash extends React.Component {
 
     return (<Box>
       <MuiThemeProvider theme={theme}>
-        {options}
+        { history.location.pathname == "/pendingInterview" ? null : options}
         <div className={classes.clear}></div>
         <MainLayout
           columns={StudentService.columns[this.dataType]}
@@ -210,6 +209,7 @@ export class AdmissionsDash extends React.Component {
   }
 
   async fetchStudents() {
+    const { fetchPendingInterviewDetails, loggedInUser} = this.props; 
     try {
       this.props.fetchingStart()
       // response = ngFetch(this.studentsURL, 'GET', {
@@ -219,15 +219,23 @@ export class AdmissionsDash extends React.Component {
       //     toDate: this.toDate
       //   }
       // }, true);
-
-      const response = await axios.get(this.studentsURL, {
-        params: {
-          dataType: this.dataType,
-          stage: this.stage,
-          from: this.fromDate,
-          to: this.toDate
-        }
-      });
+      let response;
+      if (fetchPendingInterviewDetails) {
+         response = await axios.get(`${baseURL}students/pending_interview`, {
+           params: {
+             user: loggedInUser.mailId
+           }
+         });
+      } else {
+        response = await axios.get(this.studentsURL, {
+          params: {
+            dataType: this.dataType,
+            stage: this.stage,
+            from: this.fromDate,
+            to: this.toDate
+          }
+        });
+      }
       this.dataSetup(response.data.data)
     } catch (e) {
       console.log(e)

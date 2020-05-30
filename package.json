@@ -7,7 +7,7 @@
     "clean": "rm -rf node_modules && rm -rf dist",
     "build": "mkdir dist; cp public/index.html dist/index.html && cp public/favicon.ico dist/favicon.ico && cp public/index.html dist/404.html && NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p --config webpack.prod.js",
     "dev": "webpack-dev-server --open --config webpack.dev.js",
-    "predeploy": "npm run build && cd src/config && git pull && cd ../..",
+    "predeploy": "npm run build && cd src/config && git pull origin master && cd ../..",
     "deploy": "gh-pages -d dist",
     "lint": "eslint src --fix",
     "test": "true"

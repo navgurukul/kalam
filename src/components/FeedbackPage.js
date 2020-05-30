@@ -99,7 +99,8 @@ export class StudentFeedback extends React.Component {
   }
   addFeedbackDetails = (user, feedback) => {
     const time = new Date();
-    const feedbackTime = `Feedback date ${time.getDate()}/${time.getMonth()}/${time.getFullYear()}`;
+    const month = time.getMonth() + 1;
+    const feedbackTime = `Feedback date ${time.getDate()}/${month}/${time.getFullYear()}`;
     return feedback ? user + ": "+ feedbackTime + "\n\n" + feedback : user + ": " + feedbackTime + "\n\n";
   }
 

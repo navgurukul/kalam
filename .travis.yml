@@ -8,7 +8,7 @@ before_script:
 env:
   global:
     secure: fUNBdIJ2fKl4Bjqh7YLw9ur5iF+5b3GYxW5dZk+oKJ8YRbpmdhjiaYV4Efk0+2KVGPoEw3Y8fB/Au+VCZGfP26RUz++LEAb8nrO2MBkXisyTCMT7zFlb+yu0td0576qgfGuz50grXbEbZzSiU5w1HgbMunH5ZZq4KwPxNCzolkmRU7/+s6JprfWjOegnIDaWFpbpw19SRkMs6haDyNSv4x7XQxE7q2o5yv1qJhiGaXp6la+k9xNuPjY8n4QWptEcgyF+PSSiiWotOscnMNj/mRelWbjFzOEdFli6nbRK8O7ybBY7+OVdqzTvxxB56OfUbZOaeLejQQhlV8Mm495hOlQFqGZzaqpqU27Az07WoHqdSseQZppJ4506lGfO9i+NtGZgNiXx1zeeIwmGae7x25uq1exogJk3cUAhN8cApCclGCBWGQj5pkLBo98Uc75v/q7i/XCaNfY8JvuJT2aNIiIuIZN5hiE/USLB9IVY1++JW9hz7UjmK0cnAaUOJlKjrlzfl3TCB0th1u6hMAvDDvYpPTEXtar0Uo+5T+xg9BgMvGuOBHk8tQLNqh7skMAqyEu3igJEb5fzBWtaxuQdQjN8M9WLBaEMq2sLnyG+KzjOGlVfz2PnwHxiEHLy/9rLTCf8QutR75bUyC/wm8UG1UGkJ+SgGek+VV4LJeYtdqw=
-script: npm run build && npm run deploy
+script: npm run deploy
 deploy:
   provider: pages
   cleanup: false

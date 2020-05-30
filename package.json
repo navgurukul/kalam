@@ -9,7 +9,8 @@
     "dev": "webpack-dev-server --open --config webpack.dev.js",
     "predeploy": "npm run build && cd src/config && git pull && cd ../..",
     "deploy": "gh-pages -d dist",
-    "lint": "eslint src --fix"
+    "lint": "eslint src --fix",
+    "test": "true"
   },
   "homepage": "https://navgurukul.github.io/kalam",
   "author": "NavGurukul",

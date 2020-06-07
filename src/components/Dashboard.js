@@ -1,11 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { withStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import Typography from '@material-ui/core/Typography'
 import axios from 'axios';
 
 
@@ -33,7 +31,8 @@ export class DashboardPage extends React.Component {
     super(props);
     this.state = {
       data: [],
-      sData: undefined, //subsetData
+      sData: undefined, //subsetData,
+      fromDate: null
     }
 
     EventEmitter.subscribe('stageChange', this.stageChangeEvent);
@@ -75,8 +74,10 @@ export class DashboardPage extends React.Component {
 
   }
 
-  changeFromDate = date => {
-    this.fromDate = date;
+  changeFromDate = async (date) => {
+    await this.setState({
+      fromDate: date
+    })
     this.fetchStudents();
   }
 
@@ -95,22 +96,19 @@ export class DashboardPage extends React.Component {
 
     // columns = StudentService.setupPost(columns);
 
-    this.setState({ 'data': data }, function () {
+    this.setState({ 'data': data, fromDate: data[0].createdAt }, function () {
       this.props.fetchingFinish()
-    })
+    });
   }
 
   render = () => {
-
+    
     const options = <Box>
-      <Typography variant='h5' color='primary' gutterBottom display='block' style={{marginLeft: 15}}>
-        Get students Details By Date
-      </Typography>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           margin="dense"
           style={{ marginLeft: 16, maxWidth: '40%' }}
-          value={this.fromDate}
+          value={this.state.fromDate}
           id="date-picker-dialog"
           label="From Date"
           format="MM/dd/yyyy"
@@ -190,7 +188,7 @@ export class DashboardPage extends React.Component {
       const response = await axios.get(dataURL, 
         {
           params: {
-            from: this.fromDate,
+            from: this.state.fromDate,
             to: this.toDate
           }
          });

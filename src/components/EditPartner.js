@@ -47,7 +47,7 @@ export class EditPartner extends React.Component {
             })
         } catch (e) {
             console.log(e);
-            this.props.enqueueSnackbar('All fields are mandatory', { variant: 'error' });
+            this.props.enqueueSnackbar('All fields are mandatory Or Slug should be unique', { variant: 'error' });
         }
     }
 

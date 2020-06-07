@@ -15,7 +15,7 @@ import LoginDesign from '../components/LoginDesign';
 import UserMoblieNumber from '../components/UserMoblieNumber';
 import UpdateMobileNumber from '../components/UpdateMobileNumber';
 import ReportContainer from '../components/ReportContainer';
-import PendingInterview from '../components/pendingInterview';
+import ProgressMadeForPartner from '../components/progressMade';
 // if authenticated, redirect to /students else be there
 import PublicRoute from './PublicRouter';
 // if authenticated be there, else redirect to /login
@@ -38,12 +38,11 @@ const AppRouter = () => (
         <PrivateRoute path="/assign/user" component={MyAssignReport} />
         <PrivateRoute path="/students" component={AdmissionsDash} />
         <PrivateRoute path="/students/:dataType" component={AdmissionsDash} />
-        <PrivateRoute path="/pendingInterview" component={PendingInterview} />
         
         <PublicRoute path="/user/mobile/number" component={UserMoblieNumber} />
         <PrivateRoute path="/partner/add" component={AddPartner} />
         <AnyRoute path="/partner/:partnerId/assessments" component={ViewAssessments} />
-        <AnyRoute path="/partner/:partnerId" component={DashboardPage} />
+        <AnyRoute path="/partner/:partnerId" component={ProgressMadeForPartner} />
         <AnyRoute path="/partnerLanding/:slug" component = {LandingPage} />
         <PrivateRoute path="/partners" component={PartnerList} />
         <AnyRoute path="/partners/:partnerId/assessments/:assessmentId" component={AssessmentAttempts} />

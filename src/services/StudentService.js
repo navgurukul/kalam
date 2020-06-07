@@ -1,5 +1,5 @@
 import React from 'react';
-import { allStages, feedbackableStages, feedbackableStagesData, permissions } from '../config';
+import { allStages, feedbackableStages, feedbackableStagesData, permissions, allTagsForOnlineClass } from '../config';
 import Moment from 'react-moment';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
@@ -11,11 +11,14 @@ import StageTransitions from '../components/StageTransitions';
 import StageTransitionsStudentStatus from '../components/StageTransitionsStudentStatus';
 import AudioRecorder from '../components/audioRecording';
 import AudiofileUpload from '../components/ulpoadAudioFile';
+import TagsForOnlineClass from '../components/tagsForOnlineClass'
+import history from "../utils/history";
 
 const _ = require('underscore');
 const animatedComponents = makeAnimated();
 
 const allStagesOptions = Object.keys(allStages).map(x => { return allStages[x] });
+const allTagsOptions = Object.keys(allTagsForOnlineClass).map(x => {return allTagsForOnlineClass[x]} );
 
 const ColumnTransitions = {
   name: "id",
@@ -119,6 +122,26 @@ const stageColumn = {
       } else {
         return value;
       }
+    }
+  }
+}
+
+const onlineClassColumn = {
+  name: "tag",
+  label: "Online Class Tag",
+  options: {
+    filter: true,
+    sort: true,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      const tag = value ? value.split(", ") : [];
+      const allTagsOptions = Object.keys(tag).map((x) => { return { key:x, label: tag[x]}});
+      return <TagsForOnlineClass
+        studentId={rowMeta.rowData[0]}
+        tag={tag}
+        allTags={allTagsOptions}
+        rowMetatable={rowMeta}
+        change={event => updateValue(event)}
+      />
     }
   }
 }
@@ -354,7 +377,7 @@ const AudioPlayer = {
   label: "Audio Recording",
   options: {
     filter: false,
-    display: true,
+    display: false,
     customBodyRender: (value, rowMeta, updateValue) => {
       const ifExistingFeedback = rowMeta.rowData[2] || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       return (
@@ -599,7 +622,8 @@ const StudentService = {
       ownerColumnMyreport,
       stausColumn,
       deadlineColumn,
-      partnerNameColumn
+      partnerNameColumn,
+      onlineClassColumn
     ],
     columnTransition: [
       stageColumnTransition,

@@ -12,7 +12,6 @@ import StageTransitionsStudentStatus from '../components/StageTransitionsStudent
 import AudioRecorder from '../components/audioRecording';
 import AudiofileUpload from '../components/ulpoadAudioFile';
 import TagsForOnlineClass from '../components/tagsForOnlineClass'
-import history from "../utils/history";
 
 const _ = require('underscore');
 const animatedComponents = makeAnimated();

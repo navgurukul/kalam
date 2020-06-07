@@ -46,7 +46,7 @@ const columns = [
       sort: true,
       customBodyRender: (value, rowMeta) => {
         let name = rowMeta.rowData[2];
-        return <PartnerLink partnerId={value} name={name} />
+        return <PartnerLink partnerId={value} name={name} partnerName={rowMeta.rowData[2]}/>
       }
     }
   },

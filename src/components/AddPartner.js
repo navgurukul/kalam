@@ -8,6 +8,7 @@ import { Button } from '@material-ui/core';
 import { FormControl, InputLabel, Input, FormHelperText } from '@material-ui/core';
 
 import { changeFetching } from '../store/actions/auth';
+import { withSnackbar } from 'notistack';
 
 import {withRouter} from 'react-router-dom';
 
@@ -44,6 +45,7 @@ export class AddPartnerPage extends React.Component {
         this.props.history.push("/partners");
       } catch (e) {
         console.log(e);
+        this.props.enqueueSnackbar('All fields are mandatory Or Slug should be unique', { variant: 'error' });
         this.props.fetchingFinish();
       }
   }
@@ -106,4 +108,4 @@ const mapDispatchToProps = (dispatch)=>({
   fetchingFinish: () => dispatch(changeFetching(false))
 });
 
-export default withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(AddPartnerPage)))
+export default withSnackbar(withRouter(withStyles(styles)(connect(undefined, mapDispatchToProps)(AddPartnerPage))))

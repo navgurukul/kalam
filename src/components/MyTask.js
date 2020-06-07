@@ -8,6 +8,9 @@ import axios from 'axios';
 import { changeFetching } from '../store/actions/auth';
 import StudentService from '../services/StudentService';
 import MainLayout from './MainLayout';
+import PendingInterview from './pendingInterview';
+import Typography from '@material-ui/core/Typography'
+
 
 
 
@@ -40,8 +43,19 @@ export class MyTaskReport extends React.Component {
   }
 
   render = () => {
-    return (<MainLayout columns={StudentService.columnMyReports}
-      data={this.state.data} />)
+    return (<div>
+      <Typography variant='h5' color='primary' gutterBottom display='block' style={{marginTop: 20}}>
+        All tasks
+      </Typography>
+      <br></br>
+       <MainLayout columns={StudentService.columnMyReports}
+          data={this.state.data} />
+      <Typography variant='h5' color='primary' gutterBottom display='block' style={{marginTop: 20}}>
+          Pending interview
+      </Typography>
+      <br></br>
+      <PendingInterview/>
+    </div>)
   }
 
   componentDidMount() {

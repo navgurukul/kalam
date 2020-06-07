@@ -51,7 +51,8 @@ export class AdmissionsDash extends React.Component {
 
     this.state = {
       data: [],
-      sData: undefined, //subsetData
+      sData: undefined, //subsetData,
+      fromDate: null
     }
   }
 
@@ -101,8 +102,10 @@ export class AdmissionsDash extends React.Component {
     }
   }
 
-  changeFromDate = date => {
-    this.fromDate = date;
+  changeFromDate = async (date) => {
+    await this.setState({
+      fromDate: date
+    })
     this.fetchStudents();
   }
 
@@ -112,17 +115,19 @@ export class AdmissionsDash extends React.Component {
   }
 
   dataSetup = (data) => {
-    for (let i = 0; i < data.length; i++) {
-      data[i] = StudentService.dConvert(data[i])
+    if (data.length > 0 ){
+      for (let i = 0; i < data.length; i++) {
+        data[i] = StudentService.dConvert(data[i])
+      }
+      const newData = data.map(v => ({ ...v, loggedInUser: this.props.loggedInUser.email.split('@')[0] }))
+      this.setState({ 'data': newData, fromDate: newData.slice(-1)[0].createdAt }, function () {
+        this.props.fetchingFinish()
+      });
     }
-    const newData = data.map(v => ({ ...v, loggedInUser: this.props.loggedInUser.email.split('@')[0] }))
-    this.setState({ 'data': newData }, function () {
-      this.props.fetchingFinish()
-    });
   }
 
   render = () => {
-    const { classes, history } = this.props;  
+    const { classes, fetchPendingInterviewDetails } = this.props;  
     const options = <Box>
       <Select
         className={"filterSelectGlobal"}
@@ -150,7 +155,7 @@ export class AdmissionsDash extends React.Component {
         <KeyboardDatePicker
           margin="dense"
           style={{ marginLeft: 16, maxWidth: '40%' }}
-          value={this.fromDate}
+          value={this.state.fromDate}
           id="date-picker-dialog"
           label="From Date"
           format="MM/dd/yyyy"
@@ -174,14 +179,20 @@ export class AdmissionsDash extends React.Component {
         />
       </MuiPickersUtilsProvider>
     </Box>;
-
+    
+    if (fetchPendingInterviewDetails) {
+      return  <MainLayout
+      columns={StudentService.columns[this.dataType]}
+      data={this.state.sData ? this.state.sData : this.state.data} />
+    }
+    
     if (!this.state.data.length) {
       return options;
     }
-
+    
     return (<Box>
       <MuiThemeProvider theme={theme}>
-        { history.location.pathname == "/pendingInterview" ? null : options}
+        { this.props.fetchPendingInterviewDetails ? null : options}
         <div className={classes.clear}></div>
         <MainLayout
           columns={StudentService.columns[this.dataType]}
@@ -231,7 +242,7 @@ export class AdmissionsDash extends React.Component {
           params: {
             dataType: this.dataType,
             stage: this.stage,
-            from: this.fromDate,
+            from: this.state.fromDate,
             to: this.toDate
           }
         });

@@ -29,11 +29,6 @@ export const publicNavs = [
         name: 'My Tasks',
         icon: <ExtensionIcon />
     },
-    {
-        url: '/pendingInterview',
-        name: 'My Pending Interviews',
-        icon: <ExtensionIcon />
-    },
     // {
     //     url: '/report/dangling',
     //     name: 'Overview dangling',

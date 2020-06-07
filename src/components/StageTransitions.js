@@ -108,8 +108,7 @@ export class Transition extends React.Component {
     const modalStyle = getModalStyle()
     return !this.state.modalOpen ? <div>
       <Button color="primary" align="right" onClick={this.handleOpen}>
-        <DetailsIcon color="primary" /> 
-        {history.location.pathname.includes('/partner') ? null: studentId} &nbsp;&nbsp;
+        <DetailsIcon color="primary" />
     </Button>
     </div> :
       <Modal

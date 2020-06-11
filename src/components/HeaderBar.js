@@ -8,6 +8,9 @@ import {
 
 import NGLogo from '../assets/img/logoWhite.png';
 
+import { connect } from 'react-redux';
+import { selectors } from '../auth';
+
 const styles = (theme) => ({
   appBarContainer: {
     flexDirection: 'row',
@@ -26,22 +29,33 @@ const styles = (theme) => ({
     marginLeft: theme.spacing(1),
   },
 });
-
-const HeaderBar = ({ classes, theme }) => (
-  <AppBar position="sticky" className={classes.appBarContainer}>
-    <IconButton edge="start" className={classes.menuButton} color="inherit">
-      <MenuIcon />
-    </IconButton>
+const HeaderBar = ({ classes, theme, isAuthorized }) => (
+<AppBar position="sticky" className={classes.appBarContainer}>
+    {isAuthorized &&
+      <IconButton edge="start" className={classes.menuButton} color="inherit">
+        <MenuIcon />
+      </IconButton>
+    }
     <Box className={classes.logoContainer}>
       <img src={NGLogo} className={classes.logoImg} />
       <Box className={classes.ngServiceNameContainer}>
-        <Typography variant="h6" style={{ fontWeight: 100 }}>Admissions</Typography>
+        <Typography variant="h6" style={{ fontWeight: 100 }}>
+          Admissions
+        </Typography>
       </Box>
     </Box>
-    <IconButton color="inherit">
-      <ExitToAppIcon />
-    </IconButton>
-  </AppBar>
-);
+    {isAuthorized && (
+      <IconButton color="inherit">
+        <ExitToAppIcon />
+      </IconButton>
+    )}
+  </AppBar>);
 
-export default withStyles(styles, { withTheme: true })(HeaderBar);
+
+const mapStateToProps = state => ({
+  isAuthorized: selectors.selectIsAuthorized(state),
+});
+
+export default withStyles(styles, { withTheme: true })(
+  connect(mapStateToProps, undefined)(HeaderBar)
+);

@@ -11,6 +11,7 @@ import Card from '@material-ui/core/Card';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import AnnouncementIcon from '@material-ui/icons/Announcement';
+import CancelIcon from '@material-ui/icons/Cancel';
 import HelpIcon from '@material-ui/icons/Help';
 import Avatar from '@material-ui/core/Avatar';
 import ShareIcon from '@material-ui/icons/Share';
@@ -19,6 +20,7 @@ import { isMobile } from 'react-device-detect';
 import { withSnackbar } from 'notistack';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import WhatsAppIcon from '../assets/img/whatsapp.png'
 import DashboardPage from './Dashboard'
 import CollapseStudentData from './collapseData';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -77,6 +79,7 @@ class ProgressMadeForPartner extends Component {
       "Selected for Navgurukul One-year Fellowship": '',
       "Need Action": '',
       "Need Your Help": '',
+      "Failed Students": ''
     }
     const { classes } = this.props;
     this.icons = [
@@ -88,6 +91,9 @@ class ProgressMadeForPartner extends Component {
       },
       {
         icon: <HelpIcon className={classes.image} />
+      },
+      {
+        icon: <CancelIcon className={classes.image} />
       }
     ];
   }
@@ -191,12 +197,10 @@ class ProgressMadeForPartner extends Component {
                         >
                           {this.copyClipBoard(this.state[key])}
                           <br></br>
-                          <Tooltip title="Share Details on WhatsApp" className={classes.large}>
-                          <Avatar alt="Remy Sharp">
+                          <Tooltip title="Share Details on WhatsApp" >
                             <a href={`https://api.whatsapp.com/send?text=${this.state[key]}`} data-action="share/whatsapp/share">
-                              <ShareIcon />
+                              <Avatar className={classes.large} alt="Remy Sharp" src={WhatsAppIcon}> </Avatar>
                             </a>
-                          </Avatar>
                           </Tooltip>
                         </Grid> :
                         <Grid container

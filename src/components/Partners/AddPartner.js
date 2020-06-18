@@ -10,7 +10,7 @@ class AddPartner extends PureComponent {
     //   const { pathname } = this.props.location;
     // console.log('CHECKIMG', values);
     const response = await axios.post('http://join.navgurukul.org/api/partners', values);
-    // console.log(response, '[[[[[[[[[[[[[');
+    console.log(response, '[[[[[[[[[[[[[');
   }
 
   render() {

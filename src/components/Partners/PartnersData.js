@@ -3,7 +3,7 @@ import * as yup from 'yup';
 const data = [{
   name: 'name',
   type: 'text',
-  validation: yup.string().required('Required').max(15, 'Must be 15 characters or less'),
+  validation: yup.string().required('Required').max(20, 'Must be 20 characters or less'),
   customProps: {
     variant: 'outlined', id: '', defaultValue: '', placeholder: 'kumar', label: 'name', type: '',
   },

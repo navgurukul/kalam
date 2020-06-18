@@ -29,12 +29,9 @@ export default function FormBuilder({
   list, onClick, id, notes, slug, name,
 }) {
   const schema = yup.object().shape({});
-  // console.log(list[0].validation,"llll")
   function dictUpdate(value) {
-    // console.log(value.validation,"name")
     schema.fields[value.name] = value.validation;
     schema._nodes.push(value.name);
-    // console.log(dictii,"inside  nodes")
     return null;
   }
   const {
@@ -53,13 +50,9 @@ export default function FormBuilder({
     // console.log(dictii, "Pralhad")
     // eslint-disable-next-line no-alert
     alert(JSON.stringify(values, null, 2));
-    onClick(values);
+    onClick({ values, id });
   };
 
-  // console.log(formState.touched,"lllllllllll")
-  // const values = getValues();
-  // console.log(values, "lllllllllll")
-  // console.log(formState.touched,"lllllllllll")
   return (
     <div style={{ marginTop: '20px' }}>
       <form onSubmit={handleSubmit(onSubmit)}>

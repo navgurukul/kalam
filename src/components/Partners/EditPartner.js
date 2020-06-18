@@ -5,11 +5,9 @@ import FormBuilder from './PartnersFormBuilder';
 import FormData from './PartnersData';
 
 class EditPartner extends Component {
-    onClick = async (values) => {
-      //   const { pathname } = this.props.location;
-    //   console.log('CHECKIMG', values);
-      const response = await axios.put(`http://join.navgurukul.org/api/partners/${this.props.location.state.id}`, values);
-    //   console.log(response, '[[[[[[[[[[[[[');
+    onClick = async ({ values, id }) => {
+      const response = await axios.put(`http://join.navgurukul.org/api/partners/${id}`, values);
+      console.log(response, '[[[[[[[[[[[[[');
     }
 
     render() {

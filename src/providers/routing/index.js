@@ -32,4 +32,3 @@ const AppRouter = () => (
 );
 
 export default AppRouter;
-// <Route exact path="/partners/:id" render={() => <EditPartnerDetails pathName={history.location.pathname} />} />

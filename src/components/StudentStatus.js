@@ -46,7 +46,6 @@ export class StudentStatus extends React.Component {
 
   constructor(props) {
     super(props)
-    this.dataURL =  baseUrl+ `students/status/${this.props.mobile}`
     this.state = {
       modalOpen : false,
       data: [],
@@ -64,8 +63,9 @@ export class StudentStatus extends React.Component {
   };
 
   async fetchStudentStatus() {
+    const { mobile } = this.props;
     try {
-      const response = await axios.get(this.dataURL);
+      const response = await axios.get(`${baseUrl}students/status/${mobile}`);
       this.setState({data: response.data.data, modalOpen: true })
     } catch (e) {
       this.handleClose();

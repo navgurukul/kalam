@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import axios from 'axios';
 import { Button } from '@material-ui/core';
-import PartnersPagination from './PartnersPagination';
+import PartnersPaginationPriority from './PartnerPagination';
 import { history } from '../../providers/routing/app-history';
 
 class Partners extends React.Component {
@@ -28,6 +28,7 @@ class Partners extends React.Component {
     history.push('/EditPartner');
   }
 
+
   render() {
     const { ListOfPartners } = this.state;
     return (
@@ -41,7 +42,7 @@ class Partners extends React.Component {
         >
           Add Partner
         </Button>
-        <PartnersPagination data={ListOfPartners} />
+        <PartnersPaginationPriority data={ListOfPartners} />
       </Fragment>
     );
   }

@@ -11,7 +11,58 @@ import Button from '@material-ui/core/Button';
 import { history } from '../../providers/routing/app-history';
 
 const Styling = [
-  ['name', 1, 200], ['id', 3, 200], ['notes', 2, 200], ['slug', 4, 200], ['button', 5, 200],
+  {
+    name: 'name',
+    priority: 1,
+    minWidth: 200,
+    render: function Show(e) {
+      return (<TableCell align="center">{e.name}</TableCell>);
+    },
+  }, {
+    name: 'id',
+    priority: 3,
+    minWidth: 200,
+    render: function Show(e) {
+      return (<TableCell align="center">{e.id}</TableCell>);
+    },
+  },
+  {
+    name: 'notes',
+    priority: 2,
+    minWidth: 200,
+    render: function Show(e) {
+      return (<TableCell align="center">{e.notes}</TableCell>);
+    },
+  },
+  {
+    name: 'slug',
+    priority: 4,
+    minWidth: 200,
+    render: function Show(e) {
+      return (<TableCell align="center">{e.slug}</TableCell>);
+    },
+  },
+  {
+    name: 'button',
+    priority: 5,
+    minWidth: 200,
+    render: function Show(e) {
+      return (
+        <TableCell style={{ minWidth: e[2] }} align="center">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              history.push('/EditPartnerDetails', e);
+            }}
+          >
+            Update
+          </Button>
+        </TableCell>
+      );
+    },
+  },
 ];
 
 function EnhancedTable({ data }) {
@@ -21,7 +72,7 @@ function EnhancedTable({ data }) {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = (event,) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -60,7 +111,8 @@ function EnhancedTable({ data }) {
     for (let i = 1; i <= Styling.length; i += 1) {
       // eslint-disable-next-line no-restricted-syntax
       for (const j of Styling) {
-        if (i === j[1]) {
+        // console.log(j.priority,"jjjjjjjjjjjjjjjjj");
+        if (i === j.priority) {
           l.push(j);
           break;
         }
@@ -78,15 +130,15 @@ function EnhancedTable({ data }) {
     let calculation = 0;
     // eslint-disable-next-line no-restricted-syntax
     for (const i of GetData()) {
-      if (calculation + i[2] < screenSize) {
+      if (calculation + i.minWidth < screenSize) {
         finallist.push(i);
       }
-      calculation += i[2];
+      calculation += i.minWidth;
     }
     if (finallist.length === 0) {
       finallist.push(GetData()[0]);
     }
-    // console.log(finallist, 'finallist names, that which I need show');
+    console.log(finallist, 'finallist names, that which I need show');
     return finallist;
   }
   return (
@@ -99,8 +151,8 @@ function EnhancedTable({ data }) {
           >
             <TableHead>
               <TableRow>
-                {name().map((e) => (e[0] === 'button' ? <TableCell align="center" style={{ minWidth: e[2] }}>Edit</TableCell>
-                  : <TableCell align="center" style={{ minWidth: e[2] }}>{e[0].replace(e[0].charAt(0), e[0].charAt(0).toUpperCase())}</TableCell>))}
+                {name().map((e) => (e.name === 'button' ? <TableCell align="center" style={{ minWidth: e.minWidth }}>Edit</TableCell>
+                  : <TableCell align="center" style={{ minWidth: e.minWidth }}>{e.name.replace(e.name.charAt(0), e.name.charAt(0).toUpperCase())}</TableCell>))}
 
               </TableRow>
             </TableHead>
@@ -115,22 +167,9 @@ function EnhancedTable({ data }) {
                         hover
                         key={partner.name}
                       >
-                        {name().map((e) => (e[0] === 'button' ? (
-                          <TableCell style={{ minWidth: e[2] }} align="center">
-                            <Button
-                              type="submit"
-                              variant="contained"
-                              color="primary"
-                              onClick={() => {
-                                history.push('/EditPartnerDetails', partner);
-                              }}
-                            >
-                              Update
-                            </Button>
-                          </TableCell>
-                        )
-                          : <TableCell align="center" style={{ minWidth: e[2] }}>{partner[e[0]]}</TableCell>))}
-
+                        {name().map((e) => (
+                          e.render(partner)
+                        ))}
 
                       </TableRow>
                     );

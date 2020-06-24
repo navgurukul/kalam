@@ -8,6 +8,12 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import { history } from '../../providers/routing/app-history';
 
 const Styling = [
@@ -66,8 +72,17 @@ const Styling = [
 ];
 
 function EnhancedTable({ data }) {
+  console.log(data, '---------');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [value, setValue] = React.useState('');
+  const [updatedPartners, setUpdatedPartners] = React.useState([]);
+  const [ascending, setAscending] = React.useState(1);
+
+  console.log(updatedPartners, '9990000000');
+  const updatedData = async () => {
+    await setUpdatedPartners(Object.assign([], data));
+  };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -77,6 +92,10 @@ function EnhancedTable({ data }) {
     setPage(0);
   };
 
+  const onChange = (e) => {
+    console.log(e.target.value);
+    setValue(e.target.value);
+  };
   function getWindowDimensions() {
     const screenSize = window.screen.width;
     console.log(screenSize, '--------------');
@@ -94,13 +113,20 @@ function EnhancedTable({ data }) {
     );
 
     useEffect(() => {
+      if (updatedPartners.length < 1) {
+        updatedData();
+      } else if (value) {
+        const filterBySearchedValue = data.filter((element) => element.name.toLowerCase().includes(value));
+        setUpdatedPartners(filterBySearchedValue);
+      } else {
+        setUpdatedPartners(data);
+      }
       function handleResize() {
         setWindowDimensions(getWindowDimensions());
       }
-
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    }, [value, data]);
 
     return windowDimensions;
   }
@@ -138,13 +164,60 @@ function EnhancedTable({ data }) {
     if (finallist.length === 0) {
       finallist.push(GetData()[0]);
     }
-    console.log(finallist, 'finallist names, that which I need show');
+    // console.log(finallist, 'finallist names, that which I need show');
     return finallist;
   }
+
+  const currentPage = () => {
+    if (updatedPartners.length < page * rowsPerPage) {
+      return [0, updatedPartners.length];
+    }
+    return [page * rowsPerPage, (page * rowsPerPage) + rowsPerPage];
+  };
+
+  const sortbyNames = () => {
+    console.log(currentPage(), 'Function');
+    console.log(ascending, 'AScending;;;;;;;;;;;;;;');
+    if (ascending === 1) {
+      const sortedData = updatedPartners.sort((a, b) => {
+        const fa = a.name.toLowerCase();
+        const fb = b.name.toLowerCase();
+        if (fa < fb) {
+          return -1;
+        }
+        if (fa > fb) {
+          return 1;
+        }
+        return 0;
+      });
+      setAscending(0);
+      setUpdatedPartners(sortedData);
+    } else if (ascending === 2) {
+      setAscending(1);
+      setUpdatedPartners(data);
+    } else {
+      const reverseData = updatedPartners.reverse();
+      setAscending(2);
+      setUpdatedPartners(reverseData);
+    }
+  };
   return (
     <div>
       <Paper>
         <TableContainer>
+          <Toolbar>
+            <Grid item xs={6}>
+              <Typography variant="h5" id="tableTitle" component="div">
+                Partners List
+              </Typography>
+            </Grid>
+            <Grid item xs={6} align="right">
+              <TextField onChange={onChange} value={value} label="Search" />
+              <IconButton color="primary" aria-label="upload picture" component="span" onClick={sortbyNames}>
+                <FilterListIcon />
+              </IconButton>
+            </Grid>
+          </Toolbar>
           <Table
             aria-labelledby="tableTitle"
             aria-label="enhanced table"
@@ -158,9 +231,9 @@ function EnhancedTable({ data }) {
             </TableHead>
 
             <TableBody>
-              { data
-                ? data
-                  .slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
+              {updatedPartners
+                ? updatedPartners
+                  .slice(currentPage()[0], currentPage()[1])
                   .map((partner) => {
                     return (
                       <TableRow
@@ -175,7 +248,7 @@ function EnhancedTable({ data }) {
                     );
                   })
                 : ''
-  }
+              }
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />

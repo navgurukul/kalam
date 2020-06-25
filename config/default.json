@@ -1,0 +1,29 @@
+{
+  "env": "default",
+  "host": "0.0.0.0",
+  "port": "3000",
+  "publicPath": "/",
+  "assetPath": "assets",
+  "jsSourcePath": "src",
+  "optimization": {
+    "analyzeMode": false,
+    "analyze": {
+      "port": 8888
+    }
+  },
+  "browserSync": {
+    "active": true,
+    "port": 3002
+  },
+  "html": [
+    {
+			"name": "homepage",
+      "title": "Everything is Awesome",
+      "template": "_default.html",
+      "filename": "index.html"
+    }
+  ],
+  "app": {
+    "description": "config inside 'app' will be injected to your frontend code automatically"
+  }
+}

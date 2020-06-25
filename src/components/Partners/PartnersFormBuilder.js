@@ -55,7 +55,7 @@ export default function FormBuilder({
 
   return (
     <div style={{ marginTop: '20px' }}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ marginTop: '20px' }}>
         {list.map((e) => (e.type === 'text'
           ? (
             <section key={e.name} style={{ marginTop: '20px' }}>
@@ -66,6 +66,7 @@ export default function FormBuilder({
                 name={e.name}
                 inputRef={register}
                 helperText={errors[e.name] && errors[e.name].message}
+                style={{ marginTop: '20px' }}
               />
             </section>
           )

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,72 +15,70 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { history } from '../../providers/routing/app-history';
 
-const Styling = [
-  {
-    name: 'name',
-    priority: 1,
-    minWidth: 200,
-    render: function Show(e) {
-      return (<TableCell align="center">{e.name}</TableCell>);
-    },
-  }, {
-    name: 'id',
-    priority: 3,
-    minWidth: 200,
-    render: function Show(e) {
-      return (<TableCell align="center">{e.id}</TableCell>);
-    },
-  },
-  {
-    name: 'notes',
-    priority: 2,
-    minWidth: 200,
-    render: function Show(e) {
-      return (<TableCell align="center">{e.notes}</TableCell>);
-    },
-  },
-  {
-    name: 'slug',
-    priority: 4,
-    minWidth: 200,
-    render: function Show(e) {
-      return (<TableCell align="center">{e.slug}</TableCell>);
-    },
-  },
-  {
-    name: 'button',
-    priority: 5,
-    minWidth: 200,
-    render: function Show(e) {
-      return (
-        <TableCell style={{ minWidth: e[2] }} align="center">
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              history.push('/EditPartnerDetails', e);
-            }}
-          >
-            Update
-          </Button>
-        </TableCell>
-      );
-    },
-  },
-];
-
-function EnhancedTable({ data }) {
-  console.log(data, '---------');
-  const [page, setPage] = React.useState(0);
+function EnhancedTable({
+  data, onClick, PageShowing, StylingForRow, EditedData,
+}) {
+  // console.log(data, '---------');
+  const [page, setPage] = React.useState(PageShowing);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [value, setValue] = React.useState('');
   const [updatedPartners, setUpdatedPartners] = React.useState([]);
   const [ascending, setAscending] = React.useState(1);
 
-  console.log(updatedPartners, '9990000000');
+  const Styling = [
+    {
+      name: 'name',
+      priority: 1,
+      minWidth: 200,
+      render: function Show(e) {
+        return (<TableCell align="center">{e.name}</TableCell>);
+      },
+    }, {
+      name: 'id',
+      priority: 3,
+      minWidth: 200,
+      render: function Show(e) {
+        return (<TableCell align="center">{e.id}</TableCell>);
+      },
+    },
+    {
+      name: 'notes',
+      priority: 2,
+      minWidth: 200,
+      render: function Show(e) {
+        return (<TableCell align="center">{e.notes}</TableCell>);
+      },
+    },
+    {
+      name: 'slug',
+      priority: 4,
+      minWidth: 200,
+      render: function Show(e) {
+        return (<TableCell align="center">{e.slug}</TableCell>);
+      },
+    },
+    {
+      name: 'button',
+      priority: 5,
+      minWidth: 200,
+      render: function Show(e) {
+        return (
+          <TableCell align="center">
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              onClick={() => onClick({ e, page })}
+            >
+              Update
+            </Button>
+          </TableCell>
+        );
+      },
+    },
+  ];
+  // console.log(updatedPartners, '9990000000');
   const updatedData = async () => {
     await setUpdatedPartners(Object.assign([], data));
   };
@@ -87,18 +86,17 @@ function EnhancedTable({ data }) {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event,) => {
+  const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
   };
 
   const onChange = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     setValue(e.target.value);
   };
   function getWindowDimensions() {
     const screenSize = window.screen.width;
-    console.log(screenSize, '--------------');
+    // console.log(screenSize, '--------------');
     const { innerWidth: width, innerHeight: height } = window;
     return {
       width,
@@ -176,8 +174,8 @@ function EnhancedTable({ data }) {
   };
 
   const sortbyNames = () => {
-    console.log(currentPage(), 'Function');
-    console.log(ascending, 'AScending;;;;;;;;;;;;;;');
+    // console.log(currentPage(), 'Function');
+    // console.log(ascending, 'AScending;;;;;;;;;;;;;;');
     if (ascending === 1) {
       const sortedData = updatedPartners.sort((a, b) => {
         const fa = a.name.toLowerCase();
@@ -194,7 +192,7 @@ function EnhancedTable({ data }) {
       setUpdatedPartners(sortedData);
     } else if (ascending === 2) {
       setAscending(1);
-      setUpdatedPartners(data);
+      setUpdatedPartners(Object.assign([], data));
     } else {
       const reverseData = updatedPartners.reverse();
       setAscending(2);
@@ -239,6 +237,7 @@ function EnhancedTable({ data }) {
                       <TableRow
                         hover
                         key={partner.name}
+                        style={(StylingForRow && EditedData.id === partner.id) ? { backgroundColor: 'red' } : { backgroundColor: '' }}
                       >
                         {name().map((e) => (
                           e.render(partner)

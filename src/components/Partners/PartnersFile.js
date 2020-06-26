@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { Fragment } from 'react';
 import axios from 'axios';
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid, Container } from '@material-ui/core';
 import PartnersPaginationPriority from './PartnerPagination';
 import AddPartner from './AddPartner';
 import EditPartner from './EditPartner';
@@ -64,14 +64,14 @@ class Partners extends React.Component {
         <Grid container spacing={2}>
           {isAddPartner ? (
             <Fragment>
+              <Grid item xs={9}><Container><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} isAddPartner={isAddPartner} /></Container></Grid>
               <Grid item xs={3}><AddPartner onClick={this.AddPartnerHandler} /></Grid>
-              <Grid item xs={9}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} /></Grid>
             </Fragment>
           ) : isEditPartner
             ? (
               <Fragment>
+                <Grid item xs={9}><Container><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} EditedData={EditPartnerValues} isEditPartner={isEditPartner} /></Container></Grid>
                 <Grid item xs={3}><EditPartner data={EditPartnerValues} onClick={this.EditPartnerHandlerFrom} /></Grid>
-                <Grid item xs={9}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} EditedData={EditPartnerValues} /></Grid>
               </Fragment>
             )
             : <Grid item xs={12}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={0} /></Grid>

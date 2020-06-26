@@ -17,7 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
 function EnhancedTable({
-  data, onClick, PageShowing, StylingForRow, EditedData,
+  data, onClick, PageShowing, StylingForRow, EditedData, isAddPartner, isEditPartner,
 }) {
   // console.log(data, '---------');
   const [page, setPage] = React.useState(PageShowing);
@@ -152,9 +152,12 @@ function EnhancedTable({
   function name() {
     const finallist = [];
     let calculation = 0;
+    const SizeOfTable = isAddPartner || isEditPartner ? (0.75 * screenSize - 16) : screenSize;
+    console.log(screenSize, 'size of window');
+    console.log(SizeOfTable, 'size f table');
     // eslint-disable-next-line no-restricted-syntax
     for (const i of GetData()) {
-      if (calculation + i.minWidth < screenSize) {
+      if (calculation + i.minWidth < SizeOfTable) {
         finallist.push(i);
       }
       calculation += i.minWidth;
@@ -202,7 +205,7 @@ function EnhancedTable({
   return (
     <div>
       <Paper>
-        <TableContainer>
+        <TableContainer style={{ height: '510px', overflow: 'auto' }}>
           <Toolbar>
             <Grid item xs={6}>
               <Typography variant="h5" id="tableTitle" component="div">
@@ -219,6 +222,7 @@ function EnhancedTable({
           <Table
             aria-labelledby="tableTitle"
             aria-label="enhanced table"
+            
           >
             <TableHead>
               <TableRow>

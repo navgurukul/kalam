@@ -152,7 +152,7 @@ function EnhancedTable({
   function name() {
     const finallist = [];
     let calculation = 0;
-    const SizeOfTable = isAddPartner || isEditPartner ? (0.75 * screenSize - 16) : screenSize;
+    const SizeOfTable = isAddPartner || isEditPartner ? (0.75 * screenSize - 16 - 20) : screenSize;
     console.log(screenSize, 'size of window');
     console.log(SizeOfTable, 'size f table');
     // eslint-disable-next-line no-restricted-syntax

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
-import Paper from '@material-ui/core/Paper';
-import Container from '@material-ui/core/Container';
+import { Container, Paper, Grid } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import FormData from './PartnersData';
 import FormBuilder from './PartnersFormBuilder';
 
@@ -17,7 +17,10 @@ class AddPartner extends PureComponent {
   render() {
     return (
       <Container maxWidth="sm" component={Paper} style={{ textAlign: 'center', marginTop: '20px' }}>
-        <h1>Add Partner</h1>
+        <Grid container>
+          <Grid item xs={11} style={{ align: 'left' }}><h1>Add Partner</h1></Grid>
+          <Grid style={{ align: 'right', marginTop: 27 }} item xs={1}><CloseIcon onClick={this.props.onClick} style={{ cursor: 'pointer' }} /></Grid>
+        </Grid>
         <FormBuilder list={FormData} onClick={this.onClick} />
       </Container>
     );

@@ -45,6 +45,13 @@ class Partners extends React.Component {
     this.setState({ isEditPartner: !this.state.isEditPartner });
   };
 
+  EditCloseByButton = () => {
+    this.setState({ 
+      isEditPartner: !this.state.isEditPartner,
+      StylingForRow: !this.state.StylingForRow, 
+    });
+  }
+
 
   render() {
     const {
@@ -71,7 +78,7 @@ class Partners extends React.Component {
             ? (
               <Fragment>
                 <Grid item xs={9}><Container><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} EditedData={EditPartnerValues} isEditPartner={isEditPartner} /></Container></Grid>
-                <Grid item xs={3}><EditPartner data={EditPartnerValues} onClick={this.EditPartnerHandlerFrom} /></Grid>
+                <Grid item xs={3}><EditPartner data={EditPartnerValues} onClick={this.EditPartnerHandlerFrom} onClickCLose={this.EditCloseByButton} /></Grid>
               </Fragment>
             )
             : <Grid item xs={12}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={0} /></Grid>

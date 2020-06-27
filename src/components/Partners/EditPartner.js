@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
-import { Container, Paper } from '@material-ui/core';
+import { Container, Paper, Grid } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import FormBuilder from './PartnersFormBuilder';
 import FormData from './PartnersData';
 
@@ -18,7 +19,11 @@ class EditPartner extends Component {
       } = this.props.data;
       return (
         <Container maxWidth="sm" component={Paper} style={{ textAlign: 'center' }}>
-          <h1>Edit Partner</h1>
+          <Grid container>
+            <Grid item xs={11} style={{ align: 'left' }}><h1>Edit Partner</h1></Grid>
+            <Grid style={{ align: 'right', marginTop: 27 }} item xs={1}><CloseIcon onClick={this.props.onClickCLose} style={{ cursor: 'pointer' }} /></Grid>
+          </Grid>
+
           <FormBuilder
             list={FormData}
             onClick={this.onClick}

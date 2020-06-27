@@ -50,23 +50,29 @@ export default function EnhancedTable({ data }) {
     if (partners.length < 1) {
       fetchData();
     }
-    return () => {
-      if (partners.length > 0) {
-        const filterBySearchedValue = partners.filter(data => data.name.toLowerCase().includes(value));
-        setUpdatedPartners(filterBySearchedValue);
-      }
+    else if (value) {
+      const filterBySearchedValue = partners.filter(data => data.name.toLowerCase().includes(value));
+      setUpdatedPartners(filterBySearchedValue);
+    }
+    else {
+      setUpdatedPartners(partners)
     }
   }, [value])
 
   const fetchData = async () => {
     const response = await axios.get('http://join.navgurukul.org/api/partners');
-    setPartners(response.data.data);
+    const data = response.data.data
+    setPartners(data);
     setUpdatedPartners(response.data.data);
+    console.log(partners, "thing");
 
   }
 
   const sortbyNames = () => {
+    console.log(partners, "nothing");
+
     if (ascending) {
+      console.log(partners, "True");
       const sortedData = updatedPartners.sort((a, b) => {
         let fa = a.name.toLowerCase(),
           fb = b.name.toLowerCase();
@@ -82,6 +88,7 @@ export default function EnhancedTable({ data }) {
       setUpdatedPartners(sortedData);
     }
     else {
+      console.log(partners, "false");
       const reverseData = updatedPartners.reverse();
       setAscending(true);
       setUpdatedPartners(reverseData)
@@ -90,6 +97,7 @@ export default function EnhancedTable({ data }) {
   }
 
   const onChange = (e) => {
+    console.log(e.target.value)
     setValue(e.target.value)
   }
   const handleChangeRowsPerPage = (event, ) => {
@@ -97,7 +105,7 @@ export default function EnhancedTable({ data }) {
     setPage(0);
   };
   const classes = useStyles();
-
+  console.log(updatedPartners, "UPDATEDPARtner")
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, partners.length - page * rowsPerPage);
   return (
     <div>
@@ -132,10 +140,14 @@ export default function EnhancedTable({ data }) {
             </TableHead>
 
             <TableBody>
-              {updatedPartners
+              {updatedPartners.length > page * rowsPerPage
                 ? updatedPartners
                   .slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
                   .map((partner) => {
+                    console.log(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
+                    console.log(value, "VALUE ==========")
+                    console.log(updatedPartners, "PARtner")
+                    console.log(partner.name, "NAME---------------------------");
                     return (
                       <TableRow
                         hover
@@ -161,7 +173,33 @@ export default function EnhancedTable({ data }) {
                       </TableRow>
                     );
                   })
-                : null
+
+                : updatedPartners
+                  .map((partner) => {
+                    return (
+                      <TableRow
+                        hover
+                        key={partner.id}
+                      >
+                        <TableCell component="th" scope="row" padding="none" align="center">
+                          {partner.name}
+                        </TableCell>
+                        <TableCell align="center">{partner.id}</TableCell>
+                        <TableCell align="center">
+                          <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                              history.push('/EditPartnerDetails', partner);
+                            }}
+                          >
+                            Update
+                        </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
               }
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>

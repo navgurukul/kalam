@@ -8,7 +8,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -16,71 +15,22 @@ import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
+
 function EnhancedTable({
-  data, onClick, PageShowing, StylingForRow, EditedData, isAddPartner, isEditPartner,
+  data, onClick, PageShowing, StylingForRow, EditedData, isAddRow, isEditRow, TableData, NameLIst,
 }) {
-  // console.log(data, '---------');
+  const result = data ? data : null;
+  console.log(result, '----data----');
   const [page, setPage] = React.useState(PageShowing);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [value, setValue] = React.useState('');
-  const [updatedPartners, setUpdatedPartners] = React.useState([]);
+  const [updatedTable, setUpdatedTable] = React.useState([]);
   const [ascending, setAscending] = React.useState(1);
 
-  const Styling = [
-    {
-      name: 'name',
-      priority: 1,
-      minWidth: 200,
-      render: function Show(e) {
-        return (<TableCell align="center">{e.name}</TableCell>);
-      },
-    }, {
-      name: 'id',
-      priority: 3,
-      minWidth: 200,
-      render: function Show(e) {
-        return (<TableCell align="center">{e.id}</TableCell>);
-      },
-    },
-    {
-      name: 'notes',
-      priority: 2,
-      minWidth: 200,
-      render: function Show(e) {
-        return (<TableCell align="center">{e.notes}</TableCell>);
-      },
-    },
-    {
-      name: 'slug',
-      priority: 4,
-      minWidth: 200,
-      render: function Show(e) {
-        return (<TableCell align="center">{e.slug}</TableCell>);
-      },
-    },
-    {
-      name: 'button',
-      priority: 5,
-      minWidth: 200,
-      render: function Show(e) {
-        return (
-          <TableCell align="center">
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              onClick={() => onClick({ e, page })}
-            >
-              Update
-            </Button>
-          </TableCell>
-        );
-      },
-    },
-  ];
-  // console.log(updatedPartners, '9990000000');
+
+  // console.log(updatedTable, '9990000000');
   const updatedData = async () => {
-    await setUpdatedPartners(Object.assign([], data));
+    await setUpdatedTable(Object.assign([], data));
   };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -111,13 +61,13 @@ function EnhancedTable({
     );
 
     useEffect(() => {
-      if (updatedPartners.length < 1) {
+      if (updatedTable.length < 1) {
         updatedData();
       } else if (value) {
-        const filterBySearchedValue = data.filter((element) => element.name.toLowerCase().includes(value));
-        setUpdatedPartners(filterBySearchedValue);
+        const filterBySearchedValue = result.filter((element) => element.name ? element.name.toLowerCase().includes(value) : 'no data');
+        setUpdatedTable(filterBySearchedValue);
       } else {
-        setUpdatedPartners(data);
+        setUpdatedTable(data);
       }
       function handleResize() {
         setWindowDimensions(getWindowDimensions());
@@ -132,9 +82,9 @@ function EnhancedTable({
   function GetData() {
     const l = [];
     // eslint-disable-next-line no-restricted-syntax
-    for (let i = 1; i <= Styling.length; i += 1) {
+    for (let i = 1; i <= TableData.length; i += 1) {
       // eslint-disable-next-line no-restricted-syntax
-      for (const j of Styling) {
+      for (const j of TableData) {
         // console.log(j.priority,"jjjjjjjjjjjjjjjjj");
         if (i === j.priority) {
           l.push(j);
@@ -152,7 +102,7 @@ function EnhancedTable({
   function name() {
     const finallist = [];
     let calculation = 0;
-    const SizeOfTable = isAddPartner || isEditPartner ? (0.75 * screenSize - 16 - 20) : screenSize;
+    const SizeOfTable = isAddRow || isEditRow ? (0.75 * screenSize - 16 - 20) : screenSize;
     console.log(screenSize, 'size of window');
     console.log(SizeOfTable, 'size f table');
     // eslint-disable-next-line no-restricted-syntax
@@ -170,8 +120,8 @@ function EnhancedTable({
   }
 
   const currentPage = () => {
-    if (updatedPartners.length < page * rowsPerPage) {
-      return [0, updatedPartners.length];
+    if (updatedTable.length < page * rowsPerPage) {
+      return [0, updatedTable.length];
     }
     return [page * rowsPerPage, (page * rowsPerPage) + rowsPerPage];
   };
@@ -180,7 +130,7 @@ function EnhancedTable({
     // console.log(currentPage(), 'Function');
     // console.log(ascending, 'AScending;;;;;;;;;;;;;;');
     if (ascending === 1) {
-      const sortedData = updatedPartners.sort((a, b) => {
+      const sortedData = updatedTable.sort((a, b) => {
         const fa = a.name.toLowerCase();
         const fb = b.name.toLowerCase();
         if (fa < fb) {
@@ -192,14 +142,14 @@ function EnhancedTable({
         return 0;
       });
       setAscending(0);
-      setUpdatedPartners(sortedData);
+      setUpdatedTable(sortedData);
     } else if (ascending === 2) {
       setAscending(1);
-      setUpdatedPartners(Object.assign([], data));
+      setUpdatedTable(Object.assign([], data));
     } else {
-      const reverseData = updatedPartners.reverse();
+      const reverseData = updatedTable.reverse();
       setAscending(2);
-      setUpdatedPartners(reverseData);
+      setUpdatedTable(reverseData);
     }
   };
   return (
@@ -208,8 +158,8 @@ function EnhancedTable({
         <TableContainer style={{ height: '510px', overflow: 'auto' }}>
           <Toolbar>
             <Grid item xs={6}>
-              <Typography variant="h5" id="tableTitle" component="div">
-                Partners List
+              <Typography variant="h5" component="div">
+                {`${NameLIst} List`}
               </Typography>
             </Grid>
             <Grid item xs={6} align="right">
@@ -222,7 +172,6 @@ function EnhancedTable({
           <Table
             aria-labelledby="tableTitle"
             aria-label="enhanced table"
-            
           >
             <TableHead>
               <TableRow>
@@ -233,19 +182,17 @@ function EnhancedTable({
             </TableHead>
 
             <TableBody>
-              {updatedPartners
-                ? updatedPartners
+              {updatedTable
+                ? updatedTable
                   .slice(currentPage()[0], currentPage()[1])
-                  .map((partner) => {
+                  .map((EachRowData) => {
                     return (
                       <TableRow
                         hover
-                        key={partner.name}
-                        style={(StylingForRow && EditedData.id === partner.id) ? { backgroundColor: 'red' } : { backgroundColor: '' }}
+                        key={EachRowData.id}
+                        style={(StylingForRow && EditedData.id === EachRowData.id) ? { backgroundColor: 'red' } : { backgroundColor: '' }}
                       >
-                        {name().map((e) => (
-                          e.render(partner)
-                        ))}
+                        {name().map((e) => (e.name === 'button' ? e.render({ EachRowData, onClick, page }) : (e.render(EachRowData))))}
 
                       </TableRow>
                     );

@@ -7,6 +7,7 @@ import PrivateRoute from './PrivateRoute';
 import HeaderBar from '../../components/HeaderBar';
 import LoginPage from '../../views/Login';
 import Partners from '../../components/Partners/PartnersFile';
+import Students from '../../components/Students/StudentsFile';
 // This is show case how you can lazy loading component
 const ExampleRouteHandler = LazyLoading(() => import('../../views/example'));
 
@@ -19,6 +20,7 @@ const AppRouter = () => (
         <PrivateRoute exact path="/home" component={ExampleRouteHandler} />
         <PrivateRoute exact path="/home234" component={ExampleRouteHandler} />
         <Route exact path="/Partners" component={Partners} />
+        <Route exact path="/Students" component={Students} />
       </Switch>
     </Container>
   </Router>

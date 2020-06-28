@@ -8,99 +8,94 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import { history } from '../../providers/routing/app-history';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import IconButton from '@material-ui/core/IconButton';
 
-
-const Styling = [
-  {
-    name: 'name',
-    priority: 1,
-    minWidth: 200,
-    render: function Show(e) {
-      return (<TableCell align="center">{e.name}</TableCell>);
-    },
-  }, {
-    name: 'id',
-    priority: 3,
-    minWidth: 200,
-    render: function Show(e) {
-      return (<TableCell align="center">{e.id}</TableCell>);
-    },
-  },
-  {
-    name: 'notes',
-    priority: 2,
-    minWidth: 200,
-    render: function Show(e) {
-      return (<TableCell align="center">{e.notes}</TableCell>);
-    },
-  },
-  {
-    name: 'slug',
-    priority: 4,
-    minWidth: 200,
-    render: function Show(e) {
-      return (<TableCell align="center">{e.slug}</TableCell>);
-    },
-  },
-  {
-    name: 'button',
-    priority: 5,
-    minWidth: 200,
-    render: function Show(e) {
-      return (
-        <TableCell style={{ minWidth: e[2] }} align="center">
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              history.push('/EditPartnerDetails', e);
-            }}
-          >
-            Update
-          </Button>
-        </TableCell>
-      );
-    },
-  },
-];
-
-const invertDirection = {
-  asc: "desc",
-  desc: "asc"
-}
-function EnhancedTable({ data }) {
-  const [page, setPage] = React.useState(0);
+function EnhancedTable({
+  data, onClick, PageShowing, StylingForRow, EditedData, isAddPartner, isEditPartner,
+}) {
+  const [page, setPage] = React.useState(PageShowing);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState('');
   const [updatedPartners, setUpdatedPartners] = React.useState([]);
-  const [columnToSort, setColumnToSort] = React.useState("");
   const [ascending, setAscending] = React.useState(1);
+  const [columnToSort, setColumnToSort] = React.useState("");
+
+
+  const Styling = [
+    {
+      name: 'name',
+      priority: 1,
+      minWidth: 200,
+      render: function Show(e) {
+        return (<TableCell align="center">{e.name}</TableCell>);
+      },
+    }, {
+      name: 'id',
+      priority: 3,
+      minWidth: 200,
+      render: function Show(e) {
+        return (<TableCell align="center">{e.id}</TableCell>);
+      },
+    },
+    {
+      name: 'notes',
+      priority: 2,
+      minWidth: 200,
+      render: function Show(e) {
+        return (<TableCell align="center">{e.notes}</TableCell>);
+      },
+    },
+    {
+      name: 'slug',
+      priority: 4,
+      minWidth: 200,
+      render: function Show(e) {
+        return (<TableCell align="center">{e.slug}</TableCell>);
+      },
+    },
+    {
+      name: 'button',
+      priority: 5,
+      minWidth: 200,
+      render: function Show(e) {
+        return (
+          <TableCell align="center">
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                onClick({ e, page })
+              }}
+            >
+              Update
+            </Button>
+          </TableCell>
+        );
+      },
+    },
+  ];
 
   const updatedData = async () => {
     await setUpdatedPartners(Object.assign([], data));
-
-  }
+  };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event, ) => {
+  const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
   };
 
   const onChange = (e) => {
-    setValue(e.target.value)
-  }
+
+    setValue(e.target.value);
+  };
   function getWindowDimensions() {
     const screenSize = window.screen.width;
     const { innerWidth: width, innerHeight: height } = window;
@@ -112,7 +107,6 @@ function EnhancedTable({ data }) {
   }
 
   function useWindowDimensions() {
-
     const [windowDimensions, setWindowDimensions] = useState(
       getWindowDimensions()
     );
@@ -120,13 +114,10 @@ function EnhancedTable({ data }) {
     useEffect(() => {
       if (updatedPartners.length < 1) {
         updatedData();
-      }
-
-      else if (value) {
-        const filterBySearchedValue = data.filter(element => element.name.toLowerCase().includes(value.toLowerCase()));
+      } else if (value) {
+        const filterBySearchedValue = data.filter((element) => element.name.toLowerCase().includes(value));
         setUpdatedPartners(filterBySearchedValue);
-      }
-      else {
+      } else {
         setUpdatedPartners(data);
       }
       function handleResize() {
@@ -134,7 +125,6 @@ function EnhancedTable({ data }) {
       }
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
-
     }, [value, data]);
 
     return windowDimensions;
@@ -161,9 +151,10 @@ function EnhancedTable({ data }) {
   function name() {
     const finallist = [];
     let calculation = 0;
+    const SizeOfTable = isAddPartner || isEditPartner ? (0.75 * screenSize - 16 - 20) : screenSize;
     // eslint-disable-next-line no-restricted-syntax
     for (const i of GetData()) {
-      if (calculation + i.minWidth < screenSize) {
+      if (calculation + i.minWidth < SizeOfTable) {
         finallist.push(i);
       }
       calculation += i.minWidth;
@@ -176,10 +167,10 @@ function EnhancedTable({ data }) {
 
   const currentPage = () => {
     if (updatedPartners.length < page * rowsPerPage) {
-      return [0, updatedPartners.length]
+      return [0, updatedPartners.length];
     }
-    return [page * rowsPerPage, (page * rowsPerPage) + rowsPerPage]
-  }
+    return [page * rowsPerPage, (page * rowsPerPage) + rowsPerPage];
+  };
 
   const handleSort = (columnName) => {
     setColumnToSort(columnName);
@@ -199,7 +190,6 @@ function EnhancedTable({ data }) {
             fa = a[columnName];
             fb = b[columnName];
           }
-
         }
         if (fa < fb) {
           return -1;
@@ -226,35 +216,36 @@ function EnhancedTable({ data }) {
   return (
     <div>
       <Paper>
-        <TableContainer>
-          <Toolbar>
-            <Grid item xs={6}>
-              <Typography variant="h4" id="tableTitle" component="div" >
-                Partners List
+      <TableContainer>
+        <Toolbar>
+          <Grid item xs={6}>
+            <Typography variant="h4" id="tableTitle" component="div" >
+              Partners List
         </Typography>
-            </Grid>
-            <Grid item xs={6} >
-              <TextField onChange={onChange} value={value} label="Search" />
-            </Grid>
-          </Toolbar>
-          <Table
-            aria-labelledby="tableTitle"
-            aria-label="enhanced table"
-          >
-            <TableHead>
-              <TableRow>
-                {name().map((e) => (e.name === 'button' ? <TableCell align="center" style={{ minWidth: e.minWidth }}>Edit</TableCell>
-                  : <TableCell align="center" onClick={() => { handleSort(e.name) }} style={{ minWidth: e.minWidth, cursor: 'pointer' }}>
-                    {e.name.replace(e.name.charAt(0), e.name.charAt(0).toUpperCase())}
-                    {columnToSort === e.name ?
-                      (ascending === 2 ?
-                        <ArrowUpwardIcon color="primary" align="center" style={{ marginTop: "2px", paddingTop: "5px", marginLeft: "10px" }} />
-                        : ascending === 1 ?
-                          null : <ArrowDownwardIcon color="primary" style={{ marginTop: "2px", paddingTop: "5px", marginLeft: "10px" }} />)
-                      : null}
-                  </TableCell>))}
-              </TableRow>
-            </TableHead>
+          </Grid>
+          <Grid item xs={6} >
+            <TextField onChange={onChange} value={value} label="Search" />
+          </Grid>
+        </Toolbar>
+        <Table
+          aria-labelledby="tableTitle"
+          aria-label="enhanced table"
+        >
+          <TableHead>
+            <TableRow>
+              {name().map((e) => (e.name === 'button' ? <TableCell align="center" style={{ minWidth: e.minWidth }}>Edit</TableCell>
+                : <TableCell align="center" onClick={() => { handleSort(e.name) }} style={{ minWidth: e.minWidth, cursor: 'pointer' }}>
+                  {e.name.replace(e.name.charAt(0), e.name.charAt(0).toUpperCase())}
+                  {columnToSort === e.name ?
+                    (ascending === 2 ?
+                      <ArrowUpwardIcon color="primary"  style = {{    marginBottom: "-7px", marginLeft:"5px"}} />
+                      : ascending === 1 ?
+                        null : <ArrowDownwardIcon color="primary" style = {{    marginBottom: "-7px",marginLeft:"5px"}} />)
+                    : null}
+                </TableCell>))}
+            </TableRow>
+          </TableHead>
+
             <TableBody>
               {updatedPartners
                 ? updatedPartners
@@ -264,11 +255,11 @@ function EnhancedTable({ data }) {
                       <TableRow
                         hover
                         key={partner.name}
+                        style={(isEditPartner && StylingForRow && EditedData.id === partner.id) ? { backgroundColor: 'red' } : { backgroundColor: '' }}
                       >
                         {name().map((e) => (
                           e.render(partner)
                         ))}
-
 
                       </TableRow>
                     );

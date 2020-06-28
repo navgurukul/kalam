@@ -6,7 +6,8 @@ import FormData from './PartnersData';
 import FormBuilder from './PartnersFormBuilder';
 
 class AddPartner extends PureComponent {
-  onClick = async (values) => {
+
+  onClick = async ({ values }) => {
     //   const { pathname } = this.props.location;
     // console.log('CHECKIMG', values);
     const response = await axios.post('http://join.navgurukul.org/api/partners', values);
@@ -16,6 +17,7 @@ class AddPartner extends PureComponent {
   render() {
     return (
       <Container maxWidth="sm" component={Paper} style={{ textAlign: 'center', marginTop: '20px' }}>
+        <h1>Add Partner</h1>
         <FormBuilder list={FormData} onClick={this.onClick} />
       </Container>
     );

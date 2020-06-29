@@ -66,7 +66,6 @@ export default function FormBuilder({
                 name={e.name}
                 inputRef={register}
                 helperText={errors[e.name] && errors[e.name].message}
-                style={{ marginTop: '20px' }}
               />
             </section>
           )

@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -12,23 +11,23 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
-import FilterListIcon from '@material-ui/icons/FilterList';
-
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
 function EnhancedTable({
   data, onClick, PageShowing, StylingForRow, EditedData, isAddRow, isEditRow, TableData, NameLIst,
 }) {
-  const result = data ? data : null;
-  console.log(result, '----data----');
+  console.log(TableData, 'nnnnn');
   const [page, setPage] = React.useState(PageShowing);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [value, setValue] = React.useState('');
   const [updatedTable, setUpdatedTable] = React.useState([]);
   const [ascending, setAscending] = React.useState(1);
+  const [columnToSort, setColumnToSort] = React.useState('');
 
 
   // console.log(updatedTable, '9990000000');
+
   const updatedData = async () => {
     await setUpdatedTable(Object.assign([], data));
   };
@@ -41,12 +40,10 @@ function EnhancedTable({
   };
 
   const onChange = (e) => {
-    // console.log(e.target.value);
     setValue(e.target.value);
   };
   function getWindowDimensions() {
     const screenSize = window.screen.width;
-    // console.log(screenSize, '--------------');
     const { innerWidth: width, innerHeight: height } = window;
     return {
       width,
@@ -64,7 +61,7 @@ function EnhancedTable({
       if (updatedTable.length < 1) {
         updatedData();
       } else if (value) {
-        const filterBySearchedValue = result.filter((element) => element.name ? element.name.toLowerCase().includes(value) : 'no data');
+        const filterBySearchedValue = data.filter((element) => (element.name ? element.name.toLowerCase().includes(value) : 'no data'));
         setUpdatedTable(filterBySearchedValue);
       } else {
         setUpdatedTable(data);
@@ -86,13 +83,13 @@ function EnhancedTable({
       // eslint-disable-next-line no-restricted-syntax
       for (const j of TableData) {
         // console.log(j.priority,"jjjjjjjjjjjjjjjjj");
+
         if (i === j.priority) {
           l.push(j);
           break;
         }
       }
     }
-    // console.log(l, 'Prints list according to priority wise');
     return l;
   }
 
@@ -105,6 +102,7 @@ function EnhancedTable({
     const SizeOfTable = isAddRow || isEditRow ? (0.75 * screenSize - 16 - 20) : screenSize;
     console.log(screenSize, 'size of window');
     console.log(SizeOfTable, 'size f table');
+
     // eslint-disable-next-line no-restricted-syntax
     for (const i of GetData()) {
       if (calculation + i.minWidth < SizeOfTable) {
@@ -115,7 +113,6 @@ function EnhancedTable({
     if (finallist.length === 0) {
       finallist.push(GetData()[0]);
     }
-    // console.log(finallist, 'finallist names, that which I need show');
     return finallist;
   }
 
@@ -126,13 +123,22 @@ function EnhancedTable({
     return [page * rowsPerPage, (page * rowsPerPage) + rowsPerPage];
   };
 
-  const sortbyNames = () => {
-    // console.log(currentPage(), 'Function');
-    // console.log(ascending, 'AScending;;;;;;;;;;;;;;');
+  const handleSort = (columnName) => {
+    setColumnToSort(columnName);
     if (ascending === 1) {
       const sortedData = updatedTable.sort((a, b) => {
-        const fa = a.name.toLowerCase();
-        const fb = b.name.toLowerCase();
+        let fa; let
+          fb;
+        if (typeof a[columnName] === 'number') {
+          fa = a[columnName];
+          fb = b[columnName];
+        } else if (a[columnName] && b[columnName]) {
+          fa = a[columnName].toLowerCase();
+          fb = b[columnName].toLowerCase();
+        } else {
+          fa = a[columnName];
+          fb = b[columnName];
+        }
         if (fa < fb) {
           return -1;
         }
@@ -164,9 +170,6 @@ function EnhancedTable({
             </Grid>
             <Grid item xs={6} align="right">
               <TextField onChange={onChange} value={value} label="Search" />
-              <IconButton color="primary" aria-label="upload picture" component="span" onClick={sortbyNames}>
-                <FilterListIcon />
-              </IconButton>
             </Grid>
           </Toolbar>
           <Table
@@ -176,8 +179,17 @@ function EnhancedTable({
             <TableHead>
               <TableRow>
                 {name().map((e) => (e.name === 'button' ? <TableCell align="center" style={{ minWidth: e.minWidth }}>Edit</TableCell>
-                  : <TableCell align="center" style={{ minWidth: e.minWidth }}>{e.name.replace(e.name.charAt(0), e.name.charAt(0).toUpperCase())}</TableCell>))}
-
+                  : (
+                    <TableCell align="center" onClick={() => { handleSort(e.name); }} style={{ minWidth: e.minWidth, cursor: 'pointer' }}>
+                      {e.name.replace(e.name.charAt(0), e.name.charAt(0).toUpperCase())}
+                      {columnToSort === e.name
+                        ? (ascending === 2
+                          ? <ArrowUpwardIcon color="primary" style={{ marginBottom: '-7px', marginLeft: '5px' }} />
+                          : ascending === 1
+                            ? null : <ArrowDownwardIcon color="primary" style={{ marginBottom: '-7px', marginLeft: '5px' }} />)
+                        : null}
+                    </TableCell>
+                  )))}
               </TableRow>
             </TableHead>
 

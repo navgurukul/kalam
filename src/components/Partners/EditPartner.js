@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import { Container, Paper, Grid } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -8,12 +8,10 @@ import FormData from './PartnersData';
 class EditPartner extends Component {
     onClick = async ({ values, id }) => {
       const response = await axios.put(`http://join.navgurukul.org/api/partners/${id}`, values);
-      console.log(response, '[[[[[[[[[[[[[');
       this.props.onClick();
     }
 
     render() {
-      // console.log(this.props.data, 'dataaaa');
       const {
         id, notes, slug, name,
       } = this.props.data;

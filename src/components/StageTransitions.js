@@ -1,7 +1,7 @@
 import 'date-fns';
 import React from 'react';
 import { withStyles } from "@material-ui/core/styles";
-import { Modal, Button } from '@material-ui/core';
+import { Modal, Button, Grid } from '@material-ui/core';
 
 import CancelIcon from '@material-ui/icons/Cancel';
 
@@ -13,11 +13,12 @@ import Typography from '@material-ui/core/Typography';
 import { theme } from '../theme/theme';
 import { changeFetching } from '../store/actions/auth';
 import { withRouter } from 'react-router-dom';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import GlobalService from '../services/GlobalService';
 import StudentService from '../services/StudentService';
 import DetailsIcon from '@material-ui/icons/Details';
+import StudentContact from './StudentContact';
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
 
@@ -65,6 +66,7 @@ export class Transition extends React.Component {
     super(props);
     this.state = {
       data: [],
+      contacts: [],
       modalOpen: false,
     }
   }
@@ -81,7 +83,8 @@ export class Transition extends React.Component {
       const newData = response.data.data.map(v => ({ ...v, loggedInUser: this.props.loggedInUser }))
       console.log(newData)
       this.setState({
-        data: newData
+        data: newData,
+        contacts: response.data.contacts,
       }, this.props.fetchingFinish)
     } catch (e) {
       console.log(e)
@@ -118,7 +121,14 @@ export class Transition extends React.Component {
         <Box style={modalStyle} className={classes.paper}>
           <MuiThemeProvider theme={theme}>
             <Box display="flex" justifyContent="space-between" pt={4}>
-              <Typography variant="h6" id="modal-title">Student Name:- {studentName} (studentId {studentId})</Typography><br />
+              <Grid direction="column" justifyContent="center" alignItems="flex-start" >
+                <Typography variant="h6" id="modal-title">Student Name:- {studentName} (studentId {studentId})</Typography><br />
+                <StudentContact 
+                  studentId={studentId}
+                  contacts={this.state.contacts}
+                  closeTransition={this.handleClose}
+              />
+              </Grid>
               <Box onClick={this.handleClose}>
                 <CancelIcon />
               </Box>

@@ -27,7 +27,9 @@ const useStyles = ((theme) => ({
     margin: theme.spacing(0.5),
   },
   fab: {
-    margin: theme.spacing(2),
+    margin: theme.spacing(1),
+    width: 40,
+    height: 40
   },
   container: {
     display: "flex",

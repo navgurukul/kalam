@@ -129,7 +129,7 @@ class ProgressMadeForPartner extends Component {
           })
         }
       });
-      text = `${text}\nFor more information visit\n${baseURL}partner/${this.props.match.params.partnerId}`
+      text = `${text}\nFor more information visit\nhttp://admissions.navgurukul.org/partner/${this.props.match.params.partnerId}`
       this.setState({
         [key]: text
       })

@@ -136,7 +136,7 @@ class StudentContact extends Component {
                   <React.Fragment>
                     <DialogContent>
                       <Grid container direction="row" justify="space-between" alignItems="center">
-                        <TextField name="mobile" variant="outlined" onChange={this.handelChange} defaultValue={contacts.length > index ? contacts[index].mobile: null } label={type.toUpperCase()} />
+                        <TextField name="mobile" variant="outlined" onChange={this.handelChange} defaultValue={contacts.length > index ? contacts.filter(contact => contact.contact_type == type)[0].mobile : null } label={type.toUpperCase()} />
                         <AddOrUpdateContact
                           contact_type={type}
                           mobile={this.state.mobile}

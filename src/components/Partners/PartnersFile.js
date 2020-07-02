@@ -6,7 +6,7 @@ import PartnersPaginationPriority from './PartnerPagination';
 import AddPartner from './AddPartner';
 import EditPartner from './EditPartner';
 import TableData from './TableData';
-
+import HeaderBar from '../HeaderBar';
 
 class Partners extends React.Component {
   constructor(props) {
@@ -71,35 +71,49 @@ class Partners extends React.Component {
 
 
   render() {
-    console.log(this.props, 'props');
     const {
       ListOfPartners, isAddRow, isEditRow, EditableTableRowValues, ShowingPage, StylingForRow, screenSize,
     } = this.state;
     return (
       <Fragment>
-        <Grid container spacing={2}>
+        <Grid container spacing={1}>
           {isAddRow
-            ? (screenSize < 850 ? <Grid item xs={12} style={{ marginTop: '20px' }}><AddPartner onClick={this.AddPartnerHandler} /></Grid>
+            ? (screenSize < 850 ? (
+              <Fragment>
+                <HeaderBar />
+                <Grid item xs={12} style={{ marginTop: '20px' }}><AddPartner onClick={this.AddPartnerHandler} /></Grid>
+              </Fragment>
+            )
               : (
                 <Fragment>
-                  <Grid item xs={9} style={{ marginTop: '20px' }}><Container><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} isAddRow={isAddRow} TableData={TableData} NameLIst="Partners" /></Container></Grid>
-                  <Grid item xs={3} style={{ marginTop: '20px' }}><AddPartner onClick={this.AddPartnerHandler} /></Grid>
+                  <Grid container xs={9}>
+                    <Grid item xs={12}><HeaderBar /></Grid>
+                    <Grid item xs={12} style={{ margin: 10 }}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} isAddRow={isAddRow} TableData={TableData} NameLIst="Partners" /></Grid>
+                  </Grid>
+                  <Grid item xs={3}><AddPartner onClick={this.AddPartnerHandler} /></Grid>
                 </Fragment>
               )
             ) : isEditRow
               ? (screenSize < 850 ? (
-                <Grid item xs={12} style={{ marginTop: '20px' }}><EditPartner data={EditableTableRowValues} onClick={this.EditPartnerHandlerFrom} onClickCLose={this.EditCloseByButton} /></Grid>
+                <Fragment>
+                  <HeaderBar />
+                  <Grid item xs={12} style={{ marginTop: '20px' }}><EditPartner data={EditableTableRowValues} onClick={this.EditPartnerHandlerFrom} onClickCLose={this.EditCloseByButton} /></Grid>
+                </Fragment>
               )
                 : (
                   <Fragment>
-                    <Grid item xs={9} style={{ marginTop: '20px' }}><Container><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} EditedData={EditableTableRowValues} isEditRow={isEditRow} TableData={TableData} NameLIst="Partners" /></Container></Grid>
-                    <Grid item xs={3} style={{ marginTop: '20px' }}><EditPartner data={EditableTableRowValues} onClick={this.EditPartnerHandlerFrom} onClickCLose={this.EditCloseByButton} /></Grid>
+                    <Grid container xs={9}>
+                      <Grid item xs={12}><HeaderBar /></Grid>
+                      <Grid item xs={12} style={{ margin: 10 }}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} EditedData={EditableTableRowValues} isEditRow={isEditRow} TableData={TableData} NameLIst="Partners" /></Grid>
+                    </Grid>
+                    <Grid item xs={3}><EditPartner data={EditableTableRowValues} onClick={this.EditPartnerHandlerFrom} onClickCLose={this.EditCloseByButton} /></Grid>
                   </Fragment>
                 )
               ) : (
                 <Fragment>
+                  <HeaderBar />
                   <Button
-                    style={{ marginTop: '20px', marginBottom: '10px' }}
+                    style={{ margin: 10 }}
                     type="submit"
                     variant="contained"
                     color="primary"
@@ -107,7 +121,7 @@ class Partners extends React.Component {
                   >
                     Add Partner
                   </Button>
-                  <Grid item xs={12}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={0} TableData={TableData} NameLIst="Partners" /></Grid>
+                  <Grid item xs={12} style={{ margin: 10 }}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={0} TableData={TableData} NameLIst="Partners" /></Grid>
                 </Fragment>
               )
       }

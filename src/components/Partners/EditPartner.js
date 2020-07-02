@@ -16,10 +16,10 @@ class EditPartner extends Component {
         id, notes, slug, name,
       } = this.props.data;
       return (
-        <Container maxWidth="sm" component={Paper} style={{ textAlign: 'center' }}>
-          <Grid container>
-            <Grid item xs={11} style={{ align: 'left' }}><h1>Edit Partner</h1></Grid>
-            <Grid style={{ align: 'right', marginTop: 27 }} item xs={1}><CloseIcon onClick={this.props.onClickCLose} style={{ cursor: 'pointer' }} /></Grid>
+        <Container maxWidth="sm" component={Paper} style={{ textAlign: 'center' }} disableGutters>
+          <Grid container justify="center" alignItems="center">
+            <Grid item xs={11} style={{ align: 'left' }}><h1 style={{ textAlign: 'center', marginTop: 100 }}>Edit Partner</h1></Grid>
+            <Grid style={{ align: 'left', marginTop: 90 }} item xs={1}><CloseIcon onClick={this.props.onClickCLose} style={{ cursor: 'pointer' }} /></Grid>
           </Grid>
 
           <FormBuilder

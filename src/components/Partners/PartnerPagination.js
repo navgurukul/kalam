@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Container from '@material-ui/core/Container';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -160,8 +161,9 @@ function EnhancedTable({
   };
   return (
     <div>
-      <Paper>
-        <TableContainer style={{ height: '510px', overflow: 'auto' }}>
+      <Container style={(rowsPerPage > 5) ? { height: '510px', overflow: 'auto' } : null} component={Paper}>
+        {/* <Container style={{ height: '510px', overflow: 'auto' }} component={Paper}> */}
+        <TableContainer>
           <Toolbar>
             <Grid item xs={6}>
               <Typography variant="h5" component="div">
@@ -204,7 +206,7 @@ function EnhancedTable({
                         key={EachRowData.id}
                         style={(StylingForRow && EditedData.id === EachRowData.id) ? { backgroundColor: 'red' } : { backgroundColor: '' }}
                       >
-                        {name().map((e) => (e.name === 'button' ? e.render({ EachRowData, onClick, page }) : (e.render(EachRowData))))}
+                        {name().map((e) => (e.name === 'button' ? e.render({ EachRowData, onClick, page, screenSize }) : (e.render(EachRowData))))}
 
                       </TableRow>
                     );
@@ -212,9 +214,9 @@ function EnhancedTable({
                 : ''
               }
               {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
               )}
             </TableBody>
           </Table>
@@ -229,7 +231,7 @@ function EnhancedTable({
           />
         </TableContainer>
 
-      </Paper>
+      </Container>
     </div>
   );
 }

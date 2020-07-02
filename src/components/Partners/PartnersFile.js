@@ -18,6 +18,7 @@ class Partners extends React.Component {
       EditableTableRowValues: {},
       ShowingPage: 0,
       StylingForRow: false,
+      screenSize: null,
     };
   }
 
@@ -37,35 +38,27 @@ class Partners extends React.Component {
   }
 
   AddPartnerHandler = () => {
-    this.props.history.push('/partners?add=name');
     this.setState({ isAddRow: !this.state.isAddRow }, () => {
-      if (this.state.isAddRow) {
-        this.setState({
-          isEditRow: false,
-        });
-        this.props.history.push('/partners?add=name');
-      } else {
-        this.props.history.push('/partners');
-      }
+      this.setState({
+        isEditRow: false,
+        screenSize: window.screen.width,
+      });
     });
   }
 
-  EditPartnerHandler = ({ EachRowData, page }) => {
+  EditPartnerHandler = ({ EachRowData, page, screenSize }) => {
     console.log(EachRowData, 'event');
     console.log(page, 'page');
-    this.props.history.push(`/partners?id=${EachRowData.id}`);
     this.setState({
       isEditRow: !this.state.isEditRow,
       StylingForRow: !this.state.StylingForRow,
       EditableTableRowValues: EachRowData,
       ShowingPage: page,
+      screenSize,
     });
-    localStorage.setItem('data', JSON.stringify(EachRowData));
-    localStorage.setItem('page', page);
   }
 
   EditPartnerHandlerFrom = (e) => {
-    history.push('/partners? name=19');
     this.setState({ isEditRow: !this.state.isEditRow });
   };
 
@@ -78,36 +71,45 @@ class Partners extends React.Component {
 
 
   render() {
-    const { history } = this.props;
+    console.log(this.props, 'props');
     const {
-      ListOfPartners, isAddRow, isEditRow, EditableTableRowValues, ShowingPage, StylingForRow,
+      ListOfPartners, isAddRow, isEditRow, EditableTableRowValues, ShowingPage, StylingForRow, screenSize,
     } = this.state;
     return (
       <Fragment>
-        <Button
-          style={{ marginTop: '10px', marginBottom: '10px' }}
-          type="submit"
-          variant="contained"
-          color="primary"
-          onClick={this.AddPartnerHandler}
-        >
-          Add Partner
-        </Button>
         <Grid container spacing={2}>
-          {isAddRow ? (
-            <Fragment>
-              <Grid item xs={9}><Container><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} isAddRow={isAddRow} TableData={TableData} NameLIst="Partners" /></Container></Grid>
-              <Grid item xs={3}><AddPartner onClick={this.AddPartnerHandler} /></Grid>
-            </Fragment>
-          ) : isEditRow
-            ? (
-              <Fragment>
-                <Grid item xs={9}><Container><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} EditedData={EditableTableRowValues} isEditRow={isEditRow} TableData={TableData} NameLIst="Partners" /></Container></Grid>
-                <Grid item xs={3}><EditPartner data={EditableTableRowValues} onClick={this.EditPartnerHandlerFrom} onClickCLose={this.EditCloseByButton} /></Grid>
-              </Fragment>
-            )
-            : <Grid item xs={12}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={0} TableData={TableData} NameLIst="Partners" /></Grid>
-
+          {isAddRow
+            ? (screenSize < 850 ? <Grid item xs={12} style={{ marginTop: '20px' }}><AddPartner onClick={this.AddPartnerHandler} /></Grid>
+              : (
+                <Fragment>
+                  <Grid item xs={9} style={{ marginTop: '20px' }}><Container><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} isAddRow={isAddRow} TableData={TableData} NameLIst="Partners" /></Container></Grid>
+                  <Grid item xs={3} style={{ marginTop: '20px' }}><AddPartner onClick={this.AddPartnerHandler} /></Grid>
+                </Fragment>
+              )
+            ) : isEditRow
+              ? (screenSize < 850 ? (
+                <Grid item xs={12} style={{ marginTop: '20px' }}><EditPartner data={EditableTableRowValues} onClick={this.EditPartnerHandlerFrom} onClickCLose={this.EditCloseByButton} /></Grid>
+              )
+                : (
+                  <Fragment>
+                    <Grid item xs={9} style={{ marginTop: '20px' }}><Container><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} EditedData={EditableTableRowValues} isEditRow={isEditRow} TableData={TableData} NameLIst="Partners" /></Container></Grid>
+                    <Grid item xs={3} style={{ marginTop: '20px' }}><EditPartner data={EditableTableRowValues} onClick={this.EditPartnerHandlerFrom} onClickCLose={this.EditCloseByButton} /></Grid>
+                  </Fragment>
+                )
+              ) : (
+                <Fragment>
+                  <Button
+                    style={{ marginTop: '20px', marginBottom: '10px' }}
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    onClick={this.AddPartnerHandler}
+                  >
+                    Add Partner
+                  </Button>
+                  <Grid item xs={12}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={0} TableData={TableData} NameLIst="Partners" /></Grid>
+                </Fragment>
+              )
       }
         </Grid>
       </Fragment>

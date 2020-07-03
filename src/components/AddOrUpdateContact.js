@@ -3,6 +3,8 @@ import { Button } from "@material-ui/core";
 import DialogActions from '@material-ui/core/DialogActions';
 import axios from "axios";
 import { withSnackbar } from 'notistack';
+import { connect } from 'react-redux';
+import { permissions } from '../config/index';
 
 const baseUrl = process.env.API_URL;
 
@@ -15,7 +17,7 @@ class AddOrUpdateContact extends Component {
   }
 
   addOrUpdateMobile = async (event) => {
-    const { contact_type, mobile, studentId, handleClose } = this.props;
+    const { contact_type, mobile, studentId, handleClose, loggedInUser } = this.props;
     const type = event.target.innerText;
 
     await this.setState({
@@ -23,25 +25,30 @@ class AddOrUpdateContact extends Component {
     });
 
     const { updateOrAddType } = this.state;
-    try {
-      if (mobile) {
-        axios.post(`${baseUrl}students/contactUpdateAdd/${studentId}`, {
-          mobile: mobile,
-          contact_type: contact_type,
-          updateOrAddType: updateOrAddType
-        })
-          .then(() => {
-            handleClose()
-            this.props.enqueueSnackbar('Contact is successfully Added/Updated!', { variant: 'success' });
-          }).catch(() => {
-            this.props.enqueueSnackbar("Mobile number should be 10 digit!", { variant: 'error' });
+    if (permissions.addOrUpdateContact.indexOf(loggedInUser.mailId) >= 0) {
+      try {
+        if (mobile) {
+          axios.post(`${baseUrl}students/contactUpdateAdd/${studentId}`, {
+            mobile: mobile,
+            contact_type: contact_type,
+            updateOrAddType: updateOrAddType
           })
-      } else {
-        this.props.enqueueSnackbar("New mobile number is required!", { variant: 'error' });
+            .then(() => {
+              handleClose()
+              this.props.enqueueSnackbar('Contact is successfully Added/Updated!', { variant: 'success' });
+            }).catch(() => {
+              this.props.enqueueSnackbar("Mobile number should be 10 digit!", { variant: 'error' });
+            })
+        } else {
+          this.props.enqueueSnackbar("New mobile number is required!", { variant: 'error' });
+        }
+      } catch (e) {
+        console.log(e)
+        this.props.enqueueSnackbar("Something went wrong in server", { variant: 'error' });
       }
-    } catch (e) {
-      console.log(e)
-      this.props.enqueueSnackbar("Something went wrong in server", { variant: 'error' });
+    } else {
+      handleClose()
+      this.props.enqueueSnackbar("You are not Authenticated user to Add/Update contact!", { variant: 'error' });
     }
   }
 
@@ -55,4 +62,8 @@ class AddOrUpdateContact extends Component {
   }
 }
 
-export default withSnackbar(AddOrUpdateContact);
+const mapStateToProps = (state) => ({
+  loggedInUser: state.auth.loggedInUser,
+});
+
+export default withSnackbar(connect(mapStateToProps, undefined)(AddOrUpdateContact));

@@ -8,9 +8,8 @@ import FormData from './PartnersData';
 class EditPartner extends Component {
     onClick = async ({ values, id }) => {
       const response = await axios.put(`http://join.navgurukul.org/api/partners/${id}`, values);
-      this.props.onClick();
+      console.log(this.props.onClick(),"komal");
     }
-
     render() {
       const {
         id, notes, slug, name,

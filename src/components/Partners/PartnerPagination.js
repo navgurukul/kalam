@@ -17,7 +17,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 function EnhancedTable({
   data, onClick, PageShowing, StylingForRow, EditedData, isAddRow, isEditRow, TableData, NameLIst,
 }) {
-  console.log(TableData, 'nnnnn');
+ console.log(PageShowing,"Partner")
   const [page, setPage] = React.useState(PageShowing);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [value, setValue] = React.useState('');
@@ -26,7 +26,7 @@ function EnhancedTable({
   const [columnToSort, setColumnToSort] = React.useState('');
 
 
-  // console.log(updatedTable, '9990000000');
+
 
   const updatedData = async () => {
     await setUpdatedTable(Object.assign([], data));
@@ -82,8 +82,6 @@ function EnhancedTable({
     for (let i = 1; i <= TableData.length; i += 1) {
       // eslint-disable-next-line no-restricted-syntax
       for (const j of TableData) {
-        // console.log(j.priority,"jjjjjjjjjjjjjjjjj");
-
         if (i === j.priority) {
           l.push(j);
           break;
@@ -100,8 +98,6 @@ function EnhancedTable({
     const finallist = [];
     let calculation = 0;
     const SizeOfTable = isAddRow || isEditRow ? (0.75 * screenSize - 16 - 20) : screenSize;
-    console.log(screenSize, 'size of window');
-    console.log(SizeOfTable, 'size f table');
 
     // eslint-disable-next-line no-restricted-syntax
     for (const i of GetData()) {

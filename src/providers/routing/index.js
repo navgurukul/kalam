@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, Switch } from 'react-router-dom';
+import { Router, Route, Switch,withRouter } from 'react-router-dom';
 import { Container } from '@material-ui/core';
 import { history } from './app-history';
 import LazyLoading from '../../components/LazyLoading';
@@ -19,6 +19,8 @@ const AppRouter = () => (
         <Route exact path="/login" component={LoginPage} />
         <PrivateRoute exact path="/home" component={ExampleRouteHandler} />
         <PrivateRoute exact path="/home234" component={ExampleRouteHandler} />
+        <Route exact  path="/Partners/add" component={Partners} />
+        <Route exact  path="/Partners/:id" component={Partners} />
         <Route exact path="/Partners" component={Partners} />
         <Route exact path="/Students" component={Students} />
       </Switch>
@@ -26,4 +28,4 @@ const AppRouter = () => (
   </Router>
 );
 
-export default AppRouter;
+export default withRouter(AppRouter);

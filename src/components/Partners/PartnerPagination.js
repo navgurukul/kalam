@@ -100,7 +100,7 @@ function EnhancedTable({
   function name() {
     const finallist = [];
     let calculation = 0;
-    const SizeOfTable = isAddRow || isEditRow ? (0.75 * screenSize - 16 - 20) : screenSize;
+    const SizeOfTable = NameLIst === 'Students' ? screenSize : (isAddRow || isEditRow ? (0.75 * screenSize - 16 - 20) : screenSize);
     console.log(screenSize, 'size of window');
     console.log(SizeOfTable, 'size f table');
 
@@ -114,6 +114,7 @@ function EnhancedTable({
     if (finallist.length === 0) {
       finallist.push(GetData()[0]);
     }
+    console.log(finallist, 'finallist');
     return finallist;
   }
 
@@ -160,79 +161,80 @@ function EnhancedTable({
     }
   };
   return (
-    <div>
-      <Container style={(rowsPerPage > 5) ? { height: '510px', overflow: 'auto' } : null} component={Paper}>
-        {/* <Container style={{ height: '510px', overflow: 'auto' }} component={Paper}> */}
-        <TableContainer>
-          <Toolbar>
-            <Grid item xs={6}>
-              <Typography variant="h5" component="div">
-                {`${NameLIst} List`}
-              </Typography>
-            </Grid>
-            <Grid item xs={6} align="right">
-              <TextField onChange={onChange} value={value} label="Search" />
-            </Grid>
-          </Toolbar>
-          <Table
-            aria-labelledby="tableTitle"
-            aria-label="enhanced table"
-          >
-            <TableHead>
-              <TableRow>
-                {name().map((e) => (e.name === 'button' ? <TableCell align="center" style={{ minWidth: e.minWidth }}>Edit</TableCell>
-                  : (
-                    <TableCell align="center" onClick={() => { handleSort(e.name); }} style={{ minWidth: e.minWidth, cursor: 'pointer' }}>
-                      {e.name.replace(e.name.charAt(0), e.name.charAt(0).toUpperCase())}
-                      {columnToSort === e.name
-                        ? (ascending === 2
-                          ? <ArrowUpwardIcon color="primary" style={{ marginBottom: '-7px', marginLeft: '5px' }} />
-                          : ascending === 1
-                            ? null : <ArrowDownwardIcon color="primary" style={{ marginBottom: '-7px', marginLeft: '5px' }} />)
-                        : null}
-                    </TableCell>
-                  )))}
-              </TableRow>
-            </TableHead>
+    <Container style={(rowsPerPage > 5) ? { height: '510px', overflow: 'auto' } : null} component={Paper}>
+      {/* <Container style={{ height: '510px', overflow: 'auto' }} component={Paper}> */}
+      <TableContainer>
+        <Toolbar>
+          <Grid item xs={6}>
+            <Typography variant="h5" component="div">
+              {`${NameLIst} List`}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} align="right">
+            <TextField onChange={onChange} value={value} label="Search" />
+          </Grid>
+        </Toolbar>
+        <Table
+          aria-labelledby="tableTitle"
+          aria-label="enhanced table"
+          style={{ padding: 0, margin: 0 }}
+        >
+          <TableHead>
+            <TableRow>
+              {name().map((e) => (e.name === 'button' ? <TableCell align="center" style={{ minWidth: e.minWidth }}>Edit</TableCell>
+                : (
+                  <TableCell align="center" onClick={() => { handleSort(e.name); }} style={{ minWidth: e.minWidth, cursor: 'pointer' }}>
+                    {e.name.replace(e.name.charAt(0), e.name.charAt(0).toUpperCase())}
+                    {columnToSort === e.name
+                      ? (ascending === 2
+                        ? <ArrowUpwardIcon color="primary" style={{ marginBottom: '-7px', marginLeft: '5px' }} />
+                        : ascending === 1
+                          ? null : <ArrowDownwardIcon color="primary" style={{ marginBottom: '-7px', marginLeft: '5px' }} />)
+                      : null}
+                  </TableCell>
+                )))}
+            </TableRow>
+          </TableHead>
 
-            <TableBody>
-              {updatedTable
-                ? updatedTable
-                  .slice(currentPage()[0], currentPage()[1])
-                  .map((EachRowData) => {
-                    return (
-                      <TableRow
-                        hover
-                        key={EachRowData.id}
-                        style={(StylingForRow && EditedData.id === EachRowData.id) ? { backgroundColor: 'red' } : { backgroundColor: '' }}
-                      >
-                        {name().map((e) => (e.name === 'button' ? e.render({ EachRowData, onClick, page, screenSize }) : (e.render(EachRowData))))}
+          <TableBody>
+            {updatedTable
+              ? updatedTable
+                .slice(currentPage()[0], currentPage()[1])
+                .map((EachRowData) => {
+                  return (
+                    <TableRow
+                      hover
+                      key={EachRowData.id}
+                      style={(StylingForRow && EditedData.id === EachRowData.id) ? { backgroundColor: 'red' } : { backgroundColor: '' }}
+                    >
+                      {name().map((e) => (e.name === 'button' ? e.render({
+                        EachRowData, onClick, page, screenSize,
+                      }) : (e.render(EachRowData))))}
 
-                      </TableRow>
-                    );
-                  })
-                : ''
+                    </TableRow>
+                  );
+                })
+              : ''
               }
-              {emptyRows > 0 && (
+            {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
                 <TableCell colSpan={6} />
               </TableRow>
-              )}
-            </TableBody>
-          </Table>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-        </TableContainer>
+            )}
+          </TableBody>
+        </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={data.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </TableContainer>
 
-      </Container>
-    </div>
+    </Container>
   );
 }
 

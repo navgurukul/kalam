@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Container, Paper, Grid } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import CancelPresentationIcon from '@material-ui/icons/CancelPresentation';
 import FormBuilder from './PartnersFormBuilder';
 import FormData from './PartnersData';
 
@@ -17,9 +18,9 @@ class EditPartner extends Component {
       } = this.props.data;
       return (
         <Container maxWidth="sm" component={Paper} style={{ textAlign: 'center' }} disableGutters>
-          <Grid container justify="center" alignItems="center">
-            <Grid item xs={11} style={{ align: 'left' }}><h1 style={{ textAlign: 'center', marginTop: 100 }}>Edit Partner</h1></Grid>
-            <Grid style={{ align: 'left', marginTop: 90 }} item xs={1}><CloseIcon onClick={this.props.onClickCLose} style={{ cursor: 'pointer' }} /></Grid>
+          <Grid container xs={12}>
+            <Grid item xs={8} style={{ align: 'left' }}><h1 style={{ textAlign: 'right', marginTop: 100 }}>Edit Partner</h1></Grid>
+            <Grid style={{ marginTop: 112, textAlign: 'center' }} item xs={4}><CancelPresentationIcon onClick={this.props.onClickCLose} style={{ cursor: 'pointer' }} >Back</CancelPresentationIcon></Grid>
           </Grid>
 
           <FormBuilder

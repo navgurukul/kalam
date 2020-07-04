@@ -1,6 +1,10 @@
 @import "configs/color";
 @import "configs/font-faces";
 
+body{
+  margin: 0;
+}
+
 .container {
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 16px;

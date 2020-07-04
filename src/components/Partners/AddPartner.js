@@ -3,8 +3,6 @@ import axios from 'axios';
 import {
   Container, Paper, Grid, Button,
 } from '@material-ui/core';
-// import CloseIcon from '@material-ui/icons/Close';
-// import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CancelPresentationIcon from '@material-ui/icons/CancelPresentation';
 import FormData from './PartnersData';
 import FormBuilder from './PartnersFormBuilder';

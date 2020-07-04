@@ -76,7 +76,7 @@ class Partners extends React.Component {
     } = this.state;
     return (
       <Fragment>
-        <Grid container spacing={1}>
+        <Grid container spacing={0}>
           {isAddRow
             ? (screenSize < 850 ? (
               <Fragment>

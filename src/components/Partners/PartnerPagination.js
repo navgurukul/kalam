@@ -17,7 +17,6 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 function EnhancedTable({
   data, onClick, PageShowing, StylingForRow, EditedData, isAddRow, isEditRow, TableData, NameLIst,
 }) {
- console.log(PageShowing,"Partner")
   const [page, setPage] = React.useState(PageShowing);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [value, setValue] = React.useState('');
@@ -123,8 +122,8 @@ function EnhancedTable({
     setColumnToSort(columnName);
     if (ascending === 1) {
       const sortedData = updatedTable.sort((a, b) => {
-        let fa; let
-          fb;
+        let fa;
+        let fb;
         if (typeof a[columnName] === 'number') {
           fa = a[columnName];
           fb = b[columnName];

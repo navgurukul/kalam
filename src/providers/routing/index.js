@@ -28,4 +28,4 @@ const AppRouter = () => (
   </Router>
 );
 
-export default withRouter(AppRouter);
+export default AppRouter;

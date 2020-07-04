@@ -82,7 +82,6 @@ class Partners extends React.Component {
     const {
       ListOfPartners, isAddRow, isEditRow, EditableTableRowValues, ShowingPage, StylingForRow,
     } = this.state;
-    console.log(this.props,"PAGE")
     return (
       <Fragment>
         <Button

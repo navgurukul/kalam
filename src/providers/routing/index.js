@@ -20,6 +20,8 @@ const AppRouter = () => (
         <PrivateRoute exact path="/home" component={ExampleRouteHandler} />
         <PrivateRoute exact path="/home234" component={ExampleRouteHandler} />
         <Route exact path="/Partners" component={Partners} />
+        <Route exact path="/Partners/add" component={Partners} />
+        <Route exact path="/Partners/:id" component={Partners} />
         <Route exact path="/Students" component={Students} />
       </Switch>
     </Container>

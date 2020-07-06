@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -209,7 +210,7 @@ function EnhancedTable({
                     >
                       {name().map((e) => (e.name === 'button' ? e.render({
                         EachRowData, onClick, page, screenSize,
-                      }) : (e.render(EachRowData))))}
+                      }) : (e.name === 'Online class Tag' ? e.render({ EachRowData, onClick }) : e.render(EachRowData))))}
 
                     </TableRow>
                   );

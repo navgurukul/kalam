@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { Fragment } from 'react';
 import axios from 'axios';
-import { Button, Grid, Container } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import PartnersPaginationPriority from './PartnerPagination';
 import AddPartner from './AddPartner';
 import EditPartner from './EditPartner';
@@ -24,11 +24,12 @@ class Partners extends React.Component {
 
 
   async componentDidMount() {
-    if (window.location.search) {
-      this.setState({ isEditRow: true });
-      const { localStorage } = window;
-      const EachRowData = JSON.parse(localStorage.data);
-      const { page } = localStorage;
+    const { params } = this.props.match;
+    if (params.id) {
+      const resp = await axios.get(`http://join.navgurukul.org/api/partners/${params.id}`);
+      const EachRowData = resp.data.data;
+      const query = this.useQuery();
+      const page = query.get('page');
       this.EditPartnerHandler({ EachRowData, page });
     }
     const response = await axios.get('http://join.navgurukul.org/api/partners');
@@ -37,18 +38,27 @@ class Partners extends React.Component {
     });
   }
 
+  useQuery = () => {
+    return new URLSearchParams(this.props.location.search);
+  }
+
   AddPartnerHandler = () => {
+    this.props.history.push('/partners/add');
     this.setState({ isAddRow: !this.state.isAddRow }, () => {
-      this.setState({
-        isEditRow: false,
-        screenSize: window.screen.width,
-      });
+      if (this.state.isAddRow) {
+        this.setState({
+          isEditRow: false,
+          screenSize: window.screen.width,
+        });
+        this.props.history.push('/partners/add');
+      } else {
+        this.props.history.push('/partners');
+      }
     });
   }
 
   EditPartnerHandler = ({ EachRowData, page, screenSize }) => {
-    console.log(EachRowData, 'event');
-    console.log(page, 'page');
+    this.props.history.push(`/partners/${EachRowData.id}?page=${page}`);
     this.setState({
       isEditRow: !this.state.isEditRow,
       StylingForRow: !this.state.StylingForRow,
@@ -56,13 +66,16 @@ class Partners extends React.Component {
       ShowingPage: page,
       screenSize,
     });
+    localStorage.setItem('page', page);
   }
 
   EditPartnerHandlerFrom = (e) => {
+    this.props.history.push(`/partners/${e.id}`);
     this.setState({ isEditRow: !this.state.isEditRow });
   };
 
   EditCloseByButton = () => {
+    this.props.history.push('/partners/');
     this.setState({
       isEditRow: !this.state.isEditRow,
       StylingForRow: !this.state.StylingForRow,

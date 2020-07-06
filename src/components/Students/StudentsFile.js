@@ -1,7 +1,10 @@
 /* eslint-disable no-nested-ternary */
 import React, { Fragment } from 'react';
 import axios from 'axios';
-import { Grid } from '@material-ui/core';
+import {
+  Grid, Button, Box, Typography,
+} from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
 import PartnersPaginationPriority from '../Partners/PartnerPagination';
 import TableData from './TableData';
 import HeaderBar from '../HeaderBar';
@@ -11,6 +14,8 @@ class Partners extends React.Component {
     super(props);
     this.state = {
       ListOfPartners: [],
+      isDialogOpen: false,
+      RowData: null,
     };
   }
 
@@ -23,17 +28,44 @@ class Partners extends React.Component {
   }
 
   StudentData = ({ EachRowData }) => {
-    console.log(EachRowData, 'each row data');
+    this.setState({
+      isDialogOpen: true,
+      RowData: EachRowData,
+    });
+  }
+
+  handleClose = () => {
+    this.setState({
+      isDialogOpen: false,
+    });
   }
 
   render() {
+    console.log(this.state.RowData, 'hi');
     const {
-      ListOfPartners,
+      ListOfPartners, RowData,
     } = this.state;
     return (
       <Grid xs={12}>
         <Grid item xs={12}><HeaderBar /></Grid>
-        <Grid item xs={12} style={{ marginTop: 20 }}><PartnersPaginationPriority data={ListOfPartners} PageShowing={0} TableData={TableData} onClick={this.StudentData} NameLIst='Students' /></Grid>
+        <Grid item xs={12} style={{ marginTop: 20 }}><PartnersPaginationPriority data={ListOfPartners} PageShowing={0} TableData={TableData} onClick={this.StudentData} NameLIst="Students" /></Grid>
+        {this.state.isDialogOpen ? (
+          <Dialog open={this.state.isDialogOpen}>
+            <Box my={2}>
+              <Typography style={{ padding: 20, background: 'aliceblue' }}>
+                Student Name :
+                {' '}
+                { RowData.name }
+                {' '}
+                (studentID
+                {' '}
+                {RowData.id}
+                )
+              </Typography>
+            </Box>
+            <Button style={{ background: 'silver' }} onClick={this.handleClose}>close</Button>
+          </Dialog>
+        ) : null}
       </Grid>
     );
   }

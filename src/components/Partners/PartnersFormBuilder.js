@@ -55,7 +55,7 @@ export default function FormBuilder({
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)} style={{ height: '385px' }}>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ height: '410px' }}>
         {list.map((e) => (e.type === 'text'
           ? (
             <section key={e.name} style={{ marginTop: '20px' }}>

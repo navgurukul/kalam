@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { Fragment } from 'react';
+import React from 'react';
 import axios from 'axios';
 import {
   Grid, Button, Box, Typography,
@@ -20,6 +20,7 @@ class Partners extends React.Component {
   }
 
   async componentDidMount() {
+    // const { params } = this.props.match;
     const response = await axios.get('http://join.navgurukul.org/api/students?dataType=softwareCourse');
     // console.log(response.data.data.length, 'response');
     this.setState({
@@ -28,6 +29,7 @@ class Partners extends React.Component {
   }
 
   StudentData = ({ EachRowData }) => {
+    this.props.history.push('/Students/details');
     this.setState({
       isDialogOpen: true,
       RowData: EachRowData,
@@ -35,6 +37,7 @@ class Partners extends React.Component {
   }
 
   handleClose = () => {
+    this.props.history.push('/Students/');
     this.setState({
       isDialogOpen: false,
     });

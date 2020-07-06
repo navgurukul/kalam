@@ -21,7 +21,7 @@ const Uidata = [
 export class UIData extends PureComponent {
   render() {
     return (
-      <Partners Uidata={Uidata} TableData={TableData} />
+      <Partners Uidata={Uidata} TableData={TableData} properties={this.props} />
     );
   }
 }

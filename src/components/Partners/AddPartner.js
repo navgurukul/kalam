@@ -19,7 +19,7 @@ class AddPartner extends PureComponent {
     return (
       <Container maxWidth="sm" component={Paper} style={{ textAlign: 'center' }} disableGutters>
         <Grid container xs={12}>
-          <Grid item xs={8} style={{ align: 'left' }}><h1 style={{ textAlign: 'right', marginTop: 100 }}> Add + ' ' + {this.props.name} </h1></Grid>
+          <Grid item xs={8} style={{ align: 'left' }}><h1 style={{ textAlign: 'right', marginTop: 100 }}> Add Partner </h1></Grid>
           <Grid style={{ marginTop: 112, textAlign: 'center' }} item xs={4}><CancelPresentationIcon onClick={this.props.onClick} style={{ cursor: 'pointer' }}>Back</CancelPresentationIcon></Grid>
         </Grid>
         <FormBuilder list={FormData} onClick={this.onClick} />

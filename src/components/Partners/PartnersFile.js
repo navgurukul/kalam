@@ -15,14 +15,14 @@ class Partners extends React.Component {
   }
 
   async componentDidMount() {
-    // const { params } = this.props.match;
-    // if (params.id) {
-    //   const resp = await axios.get(`http://join.navgurukul.org/api/${this.props.Uidata[0].name}/${params.id}`);
-    //   const EachRowData = resp.data.data;
-    //   const query = this.useQuery();
-    //   const page = query.get('page');
-    //   this.EditPartnerHandler({ EachRowData, page });
-    // }
+    const { params } = this.props.properties.match;
+    if (params.id) {
+      const resp = await axios.get(`http://join.navgurukul.org/api/${this.props.Uidata[0].name}/${params.id}`);
+      const EachRowData = resp.data.data;
+      const query = this.useQuery();
+      const page = query.get('page');
+      this.EditPartnerHandler({ EachRowData, page });
+    }
     const response = await axios.get( this.props.Uidata[0].name === 'students' ? 'http://join.navgurukul.org/api/students?dataType=softwareCourse' : 'http://join.navgurukul.org/api/partners' );
     console.log(response.data.data.length, 'response');
     this.setState({
@@ -30,27 +30,27 @@ class Partners extends React.Component {
     });
   }
 
-  // useQuery = () => {
-  //   return new URLSearchParams(this.props.location.search);
-  // }
+  useQuery = () => {
+    return new URLSearchParams(this.props.properties.location.search);
+  }
 
   AddPartnerHandler = () => {
-    this.props.history.push(`/${this.props.Uidata[0].name}/add`);
+    this.props.properties.history.push(`/${this.props.Uidata[0].name}/add`);
     this.setState({ isAddRow: !this.state.isAddRow }, () => {
       if (this.state.isAddRow) {
         this.setState({
           isEditRow: false,
           screenSize: window.screen.width,
         });
-        this.props.history.push(`/${this.props.Uidata[0].name}/add`);
+        this.props.properties.history.push(`/${this.props.Uidata[0].name}/add`);
       } else {
-        this.props.history.push(`/${this.props.Uidata[0].name}`);
+        this.props.properties.history.push(`/${this.props.Uidata[0].name}`);
       }
     });
   }
 
   EditPartnerHandler = ({ EachRowData, page, screenSize }) => {
-    this.props.history.push(`/${this.props.Uidata[0].name}/${EachRowData.id}?page=${page}`);
+    this.props.properties.history.push(`/${this.props.Uidata[0].name}/${EachRowData.id}?page=${page}`);
     this.setState({
       isEditRow: !this.state.isEditRow,
       StylingForRow: !this.state.StylingForRow,
@@ -62,12 +62,12 @@ class Partners extends React.Component {
   }
 
   EditPartnerHandlerFrom = (e) => {
-    this.props.history.push(`/${this.props.Uidata[0].name}/${e.id}`);
+    this.props.properties.history.push(`/${this.props.Uidata[0].name}/${e.id}`);
     this.setState({ isEditRow: !this.state.isEditRow });
   };
 
   EditCloseByButton = () => {
-    this.props.history.push(`/${this.props.Uidata[0].name}/`);
+    this.props.properties.history.push(`/${this.props.Uidata[0].name}/`);
     this.setState({
       isEditRow: !this.state.isEditRow,
       StylingForRow: !this.state.StylingForRow,
@@ -76,7 +76,7 @@ class Partners extends React.Component {
 
 
   render() {
-    console.log(this.props, 'props');
+    console.log(this.props.properties, 'props');
     const {
       ListOfData, isAddRow, isEditRow, EditableTableRowValues, ShowingPage, StylingForRow, screenSize,
     } = this.state;
@@ -87,7 +87,7 @@ class Partners extends React.Component {
             ? (screenSize < 850 ? (
               <Fragment>
                 <HeaderBar />
-                <Grid item xs={12} style={{ marginTop: '20px' }}><AddPartner onClick={this.AddPartnerHandler} name={this.props.Uidata[0].name} /></Grid>
+                <Grid item xs={12} style={{ marginTop: '20px' }}><AddPartner onClick={this.AddPartnerHandler} NameLIst={this.props.Uidata[0].name} /></Grid>
               </Fragment>
             )
               : (

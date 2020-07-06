@@ -6,7 +6,7 @@ import PartnersPaginationPriority from './PartnerPagination';
 import AddPartner from './AddPartner';
 import EditPartner from './EditPartner';
 import TableData from './TableData';
-
+import HeaderBar from '../HeaderBar';
 
 class Partners extends React.Component {
   constructor(props) {
@@ -18,12 +18,14 @@ class Partners extends React.Component {
       EditableTableRowValues: {},
       ShowingPage: 0,
       StylingForRow: false,
+      screenSize: null,
     };
   }
 
 
   async componentDidMount() {
     const { params } = this.props.match;
+    console.log(params,"PARM")
     if (params.id) {
       const resp = await axios.get(`http://join.navgurukul.org/api/partners/${params.id}`);
       const EachRowData = resp.data.data;
@@ -36,8 +38,8 @@ class Partners extends React.Component {
       ListOfPartners: response.data.data,
     });
   }
-  useQuery = () =>{
-    return new URLSearchParams(this.props.location.search);  
+  useQuery = () => {
+    return new URLSearchParams(this.props.location.search);
   }
   AddPartnerHandler = () => {
     this.props.history.push('/partners/add');
@@ -53,19 +55,25 @@ class Partners extends React.Component {
     });
   }
 
-  EditPartnerHandler = ({ EachRowData, page }) => {
+
+
+  EditPartnerHandler = ({ EachRowData, page, screenSize }) => {
     this.props.history.push(`/partners/${EachRowData.id}?page=${page}`);
     this.setState({
       isEditRow: !this.state.isEditRow,
       StylingForRow: !this.state.StylingForRow,
       EditableTableRowValues: EachRowData,
       ShowingPage: page,
+      screenSize,
     });
-    localStorage.setItem('page', page);
   }
 
   EditPartnerHandlerFrom = (e) => {
     history.push(`/partners/${e.id}`);
+
+  }
+
+  EditPartnerHandlerFrom = (e) => {
     this.setState({ isEditRow: !this.state.isEditRow });
   };
 
@@ -80,34 +88,58 @@ class Partners extends React.Component {
 
   render() {
     const {
-      ListOfPartners, isAddRow, isEditRow, EditableTableRowValues, ShowingPage, StylingForRow,
+      ListOfPartners, isAddRow, isEditRow, EditableTableRowValues, ShowingPage, StylingForRow, screenSize,
     } = this.state;
     return (
       <Fragment>
-        <Button
-          style={{ marginTop: '10px', marginBottom: '10px' }}
-          type="submit"
-          variant="contained"
-          color="primary"
-          onClick={this.AddPartnerHandler}
-        >
-          Add Partner
-        </Button>
-        <Grid container spacing={2}>
-          {isAddRow ? (
-            <Fragment>
-              <Grid item xs={9}><Container><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} isAddRow={isAddRow} TableData={TableData} NameLIst="Partners" /></Container></Grid>
-              <Grid item xs={3}><AddPartner onClick={this.AddPartnerHandler} /></Grid>
-            </Fragment>
-          ) : isEditRow
-              ? (
+        <Grid container spacing={0}>
+          {isAddRow
+            ? (screenSize < 850 ? (
+              <Fragment>
+                <HeaderBar />
+                <Grid item xs={12} style={{ marginTop: '20px' }}><AddPartner onClick={this.AddPartnerHandler} /></Grid>
+              </Fragment>
+            )
+              : (
                 <Fragment>
-                  <Grid item xs={9}><Container><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} EditedData={EditableTableRowValues} isEditRow={isEditRow} TableData={TableData} NameLIst="Partners" /></Container></Grid>
-                  <Grid item xs={3}><EditPartner data={EditableTableRowValues} onClick={this.EditPartnerHandlerFrom} onClickCLose={this.EditCloseByButton} /></Grid>
+                  <Grid container xs={9}>
+                    <Grid item xs={12}><HeaderBar /></Grid>
+                    <Grid item xs={12} style={{ margin: 10 }}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} isAddRow={isAddRow} TableData={TableData} NameLIst="Partners" /></Grid>
+                  </Grid>
+                  <Grid item xs={3}><AddPartner onClick={this.AddPartnerHandler} /></Grid>
                 </Fragment>
               )
-              : <Grid item xs={12}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={0} TableData={TableData} NameLIst="Partners" /></Grid>
-
+            ) : isEditRow
+              ? (screenSize < 850 ? (
+                <Fragment>
+                  <HeaderBar />
+                  <Grid item xs={12} style={{ marginTop: '20px' }}><EditPartner data={EditableTableRowValues} onClick={this.EditPartnerHandlerFrom} onClickCLose={this.EditCloseByButton} /></Grid>
+                </Fragment>
+              )
+                : (
+                  <Fragment>
+                    <Grid container xs={9}>
+                      <Grid item xs={12}><HeaderBar /></Grid>
+                      <Grid item xs={12} style={{ margin: 10 }}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={ShowingPage} StylingForRow={StylingForRow} EditedData={EditableTableRowValues} isEditRow={isEditRow} TableData={TableData} NameLIst="Partners" /></Grid>
+                    </Grid>
+                    <Grid item xs={3}><EditPartner data={EditableTableRowValues} onClick={this.EditPartnerHandlerFrom} onClickCLose={this.EditCloseByButton} /></Grid>
+                  </Fragment>
+                )
+              ) : (
+                <Fragment>
+                  <HeaderBar />
+                  <Button
+                    style={{ margin: 10 }}
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    onClick={this.AddPartnerHandler}
+                  >
+                    Add Partner
+                  </Button>
+                  <Grid item xs={12} style={{ margin: 10 }}><PartnersPaginationPriority data={ListOfPartners} onClick={this.EditPartnerHandler} PageShowing={0} TableData={TableData} NameLIst="Partners" /></Grid>
+                </Fragment>
+              )
           }
         </Grid>
       </Fragment>

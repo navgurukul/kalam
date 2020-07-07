@@ -6,8 +6,6 @@ import LazyLoading from '../../components/LazyLoading';
 import PrivateRoute from './PrivateRoute';
 // import HeaderBar from '../../components/HeaderBar';
 import LoginPage from '../../views/Login';
-import Partners from '../../components/Partners/PartnersFile';
-import Students from '../../components/Students/StudentsFile';
 import UidataForPartner from '../../components/Partners/UIData';
 import UidataForStudent from '../../components/Students/UIData';
 import '../../style/index.css';
@@ -26,6 +24,7 @@ const AppRouter = () => (
         <Route exact path="/Partners/:id" component={UidataForPartner} />
         <Route exact path="/Students" component={UidataForStudent} />
         <Route exact path="/Students/details" component={UidataForStudent} />
+        <Route exact path="/Students/:id" component={UidataForStudent} />
       </Switch>
     </Container>
   </Router>

@@ -4,7 +4,7 @@ import TableData from './TableData';
 
 const Uidata = [
   {
-    name: 'Partners',
+    name: 'partners',
     initialValues: {
       ListOfData: [],
       isAddRow: false,

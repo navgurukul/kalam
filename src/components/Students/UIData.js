@@ -9,6 +9,12 @@ const Uidata = [
       ListOfData: [],
       isDialogOpen: false,
       RowData: null,
+      isAddRow: false,
+      isEditRow: false,
+      EditableTableRowValues: {},
+      ShowingPage: 0,
+      StylingForRow: false,
+      screenSize: null,
     },
   },
 ];

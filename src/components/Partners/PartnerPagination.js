@@ -101,7 +101,7 @@ function EnhancedTable({
   function name() {
     const finallist = [];
     let calculation = 0;
-    const SizeOfTable = NameLIst === 'Students' ? screenSize : (isAddRow || isEditRow ? (0.75 * screenSize - 16 - 20) : screenSize);
+    const SizeOfTable = isAddRow || isEditRow ? (0.75 * screenSize - 16 - 20) : screenSize;
     console.log(screenSize, 'size of window');
     console.log(SizeOfTable, 'size f table');
 

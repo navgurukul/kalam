@@ -19,7 +19,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 function EnhancedTable({
   data, onClick, PageShowing, StylingForRow, EditedData, isAddRow, isEditRow, TableData, NameLIst,
 }) {
-  console.log(TableData, 'nnnnn');
+  console.log(onClick, 'nnnnn');
   const [page, setPage] = React.useState(PageShowing);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [value, setValue] = React.useState('');

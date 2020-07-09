@@ -39,6 +39,7 @@ const TableData = [
     priority: 2,
     minWidth: 200,
     render: function Show({ EachRowData, onClick, page, screenSize }) {
+      // console.log(EachRowData, 'bbbbbbbbbbbbbb');
       return (
         <TableCell align="center">
           <Button

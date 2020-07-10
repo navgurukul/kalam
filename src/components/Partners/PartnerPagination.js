@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -26,7 +27,6 @@ function EnhancedTable({
   const [columnToSort, setColumnToSort] = React.useState('');
 
 
-console.log(updatedTable,"DATA")
 
   const updatedData = async () => {
     await setUpdatedTable(Object.assign([], data));
@@ -158,6 +158,7 @@ console.log(updatedTable,"DATA")
       setUpdatedTable(reverseData);
     }
   };
+  console.log(onClick,"List")
   return (
     <Container style={(rowsPerPage > 5) ? { height: '510px', overflow: 'auto' } : null} component={Paper}>
       {/* <Container style={{ height: '510px', overflow: 'auto' }} component={Paper}> */}
@@ -207,7 +208,7 @@ console.log(updatedTable,"DATA")
                     >
                       {name().map((e) => (e.name === 'button' ? e.render({
                         EachRowData, onClick, page, screenSize,
-                      }) : (e.render(EachRowData))))}
+                      }) : (e.name === 'Online class Tag' ? e.render({ EachRowData, onClick }) : e.render(EachRowData))))}
 
                     </TableRow>
                   );

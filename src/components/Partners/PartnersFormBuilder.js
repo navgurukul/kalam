@@ -27,13 +27,15 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 
 export default function FormBuilder({
   list, onClick, id, notes, slug, name,
-}) {
+}) 
+{
   const schema = yup.object().shape({});
   function dictUpdate(value) {
     schema.fields[value.name] = value.validation;
     schema._nodes.push(value.name);
     return null;
   }
+  console.log(id, notes, slug, name,"KOMLA")
   const {
     register, handleSubmit, errors, control, getValues, setValue,
   } = useForm({
@@ -47,15 +49,13 @@ export default function FormBuilder({
     },
   });
   const onSubmit = (values) => {
-    // console.log(dictii, "Pralhad")
-    // eslint-disable-next-line no-alert
     alert(JSON.stringify(values, null, 2));
     onClick({ values, id });
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)} style={{ height: '385px' }}>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ height: '410px' }}>
         {list.map((e) => (e.type === 'text'
           ? (
             <section key={e.name} style={{ marginTop: '20px' }}>

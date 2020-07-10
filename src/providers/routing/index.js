@@ -8,6 +8,8 @@ import PrivateRoute from './PrivateRoute';
 import LoginPage from '../../views/Login';
 import Partners from '../../components/Partners/PartnersFile';
 import Students from '../../components/Students/StudentsFile';
+import UidataForPartner from '../../components/Partners/UIData';
+import UidataForStudent from '../../components/Students/UIData';
 import '../../style/index.css';
 // This is show case how you can lazy loading component
 const ExampleRouteHandler = LazyLoading(() => import('../../views/example'));
@@ -19,10 +21,13 @@ const AppRouter = () => (
         <Route exact path="/login" component={LoginPage} />
         <PrivateRoute exact path="/home" component={ExampleRouteHandler} />
         <PrivateRoute exact path="/home234" component={ExampleRouteHandler} />
-        <Route exact  path="/Partners/add" component={Partners} />
-        <Route exact  path="/Partners/:id" component={Partners} />
-        <Route exact path="/Partners" component={Partners} />
-        <Route exact path="/Students" component={Students} />
+        <Route exact path="/Partners" component={UidataForPartner} />
+        <Route exact path="/Partners/add" component={UidataForPartner} />
+        <Route exact path="/Partners/:id" component={UidataForPartner} />
+        <Route exact path="/Students" component={UidataForStudent} />
+        <Route exact path="/Students/add" component={UidataForStudent} />
+        <Route exact path="/Students/:id" component={UidataForStudent} />
+        <Route exact path="/Students/details" component={UidataForStudent} />
       </Switch>
     </Container>
   </Router>

@@ -1,17 +1,15 @@
 /* eslint-disable no-nested-ternary */
 import React, { Fragment, PureComponent } from 'react';
-import axios from 'axios';
 import { Button, Grid } from '@material-ui/core';
 import PartnersPaginationPriority from './PartnerPagination';
 import HeaderBar from '../HeaderBar';
-import ShowStudentData from '../Students/EditStudent';
-import AddStudent from '../Students/AddStudent';
+
 
 class Partners extends PureComponent {
   render() {
     console.log(this.props, 'abhi');
     const {
-      isAddRow, screenSize, isEditRow, ListOfData, AddRowHandler, LeftPlane, RightPlane, EditRowHandler,
+      isAddRow, screenSize, isEditRow, ListOfData, AddRowHandler, LeftPlane, RightPlane, EditRowHandler, NameLIst,
     } = this.props;
     return (
       <Fragment>
@@ -61,8 +59,10 @@ class Partners extends PureComponent {
                     onClick={AddRowHandler}
                   >
                     Add
+                    {' '}
+                    {NameLIst}
                   </Button>
-                  <Grid item xs={12} style={{ margin: 10 }}><PartnersPaginationPriority data={ListOfData} onClick={EditRowHandler} PageShowing={0} TableData={this.props.TableData} /></Grid>
+                  <Grid item xs={12} style={{ margin: 10 }}><PartnersPaginationPriority data={ListOfData} onClick={EditRowHandler} PageShowing={0} TableData={this.props.TableData} NameLIst={NameLIst} /></Grid>
                 </Fragment>
               )
       }

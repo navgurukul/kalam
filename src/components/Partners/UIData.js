@@ -63,7 +63,7 @@ export class UIData extends PureComponent {
     }
 
   EditRowHandler = ({ EachRowData, page, screenSize }) => {
-    console.log(EachRowData, 'naya');
+    console.log(page, 'paaaa');
     this.props.history.push(`/partners/${EachRowData.id}?page=${page}`);
     this.setState({
       isEditRow: true,
@@ -132,7 +132,7 @@ export class UIData extends PureComponent {
   render() {
     console.log(this.props, 'history');
     return (
-      <MainUiFile AddRowHandler={this.AddRowHandler} EditRowHandler={this.EditRowHandler} addHandleClose={this.addHandleClose} ListOfData={this.state.ListOfData} TableData={TableData} LeftPlane={this.LeftPlane} RightPlane={this.RightPlane} isAddRow={this.state.isAddRow} isEditRow={this.state.isEditRow} screenSize={this.state.screenSize} StylingForRow={this.state.StylingForRow} EditableTableRowValues={this.state.EditableTableRowValues} ShowingPage={this.state.ShowingPage} />
+      <MainUiFile AddRowHandler={this.AddRowHandler} EditRowHandler={this.EditRowHandler} addHandleClose={this.addHandleClose} ListOfData={this.state.ListOfData} TableData={TableData} LeftPlane={this.LeftPlane} RightPlane={this.RightPlane} isAddRow={this.state.isAddRow} isEditRow={this.state.isEditRow} screenSize={this.state.screenSize} StylingForRow={this.state.StylingForRow} EditableTableRowValues={this.state.EditableTableRowValues} ShowingPage={this.state.ShowingPage} NameLIst={this.state.name} />
     );
   }
 }

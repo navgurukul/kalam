@@ -6,9 +6,9 @@ import {
 } from '@material-ui/core';
 
 
+import { connect } from 'react-redux';
 import NGLogo from '../assets/img/logoWhite.png';
 
-import { connect } from 'react-redux';
 import { selectors } from '../auth';
 
 const styles = (theme) => ({
@@ -30,11 +30,13 @@ const styles = (theme) => ({
   },
 });
 const HeaderBar = ({ classes, theme, isAuthorized }) => (
-<AppBar position="sticky" className={classes.appBarContainer}>
-    {isAuthorized &&
+  <AppBar position="sticky" className={classes.appBarContainer}>
+    {isAuthorized
+      && (
       <IconButton edge="start" className={classes.menuButton} color="inherit">
         <MenuIcon />
       </IconButton>
+      )
     }
     <Box className={classes.logoContainer}>
       <img src={NGLogo} className={classes.logoImg} />
@@ -45,14 +47,15 @@ const HeaderBar = ({ classes, theme, isAuthorized }) => (
       </Box>
     </Box>
     {isAuthorized && (
-      <IconButton color="inherit">
-        <ExitToAppIcon />
-      </IconButton>
+    <IconButton color="inherit">
+      <ExitToAppIcon />
+    </IconButton>
     )}
-  </AppBar>);
+  </AppBar>
+);
 
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isAuthorized: selectors.selectIsAuthorized(state),
 });
 

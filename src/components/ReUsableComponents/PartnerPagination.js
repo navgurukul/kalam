@@ -17,11 +17,13 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
 function EnhancedTable({
-  data, onClick, PageShowing, StylingForRow, EditedData, isAddRow, isEditRow, TableData, NameLIst,
+  data, onClick, PageShowing, StylingForRow, EditedData, isAddRow, isEditRow, TableData, NameLIst, search
 }) {
+
   const [page, setPage] = React.useState(PageShowing);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [value, setValue] = React.useState('');
+  const [value, setValue] = React.useState("");
+  const [isValue, setIsValue] = React.useState(true);
   const [updatedTable, setUpdatedTable] = React.useState([]);
   const [ascending, setAscending] = React.useState(1);
   const [columnToSort, setColumnToSort] = React.useState('');
@@ -29,9 +31,13 @@ function EnhancedTable({
 
 
   const updatedData = async () => {
+    console.log("updatedData")
     await setUpdatedTable(Object.assign([], data));
+    console.log(updatedTable, "updatedData", "===============")
   };
   const handleChangePage = (event, newPage) => {
+    console.log(data.length, "-----")
+    console.log(newPage, rowsPerPage, "New")
     setPage(newPage);
   };
 
@@ -40,6 +46,7 @@ function EnhancedTable({
   };
 
   const onChange = (e) => {
+    console.log(value, "vale")
     setValue(e.target.value);
   };
   function getWindowDimensions() {
@@ -57,12 +64,25 @@ function EnhancedTable({
       getWindowDimensions()
     );
 
+    console.log(location.pathname,"pathname")
     useEffect(() => {
+      console.log(value, updatedTable.length,"lomal")
+      if (value.length <= 0 && search && isValue) {
+        setValue(search);
+        setIsValue(false);
+      }
+    
       if (updatedTable.length < 1) {
         updatedData();
-      } else if (value) {
-        const filterBySearchedValue = data.filter((element) => (element.name ? element.name.toLowerCase().includes(value) : 'no data'));
-        setUpdatedTable(filterBySearchedValue);
+      } 
+       else if (value) {
+        const filterBySearchedValue = data.filter((element) => {
+          if (element.name) {
+            return (element.name.toLowerCase().search(value.toLowerCase()) !== -1) ? "No Data" : filterBySearchedValue
+          }
+          return filterBySearchedValue;
+        });
+        setUpdatedTable([filterBySearchedValue]);
       } else {
         setUpdatedTable(data);
       }
@@ -91,14 +111,14 @@ function EnhancedTable({
     return l;
   }
 
+
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
   const { screenSize } = useWindowDimensions();
 
   function name() {
     const finallist = [];
     let calculation = 0;
-    let SizeOfTable = isAddRow || isEditRow ? (0.75 * screenSize - 16 - 20) : screenSize;
-     SizeOfTable = NameLIst === 'Students' ? screenSize : (isAddRow || isEditRow ? (0.75 * screenSize - 16 - 20) : screenSize);
+    const SizeOfTable = isAddRow || isEditRow ? (0.75 * screenSize - 16 - 20) : screenSize;
     console.log(screenSize, 'size of window');
     console.log(SizeOfTable, 'size f table');
 
@@ -158,7 +178,17 @@ function EnhancedTable({
       setUpdatedTable(reverseData);
     }
   };
-  console.log(onClick,"List")
+
+  const sortRows = (updatedTable, sortColumn, sortDirection) => rows => {
+    const comparer = (a, b) => {
+      if (sortDirection === "ASC") {
+        return a[sortColumn] > b[sortColumn] ? 1 : -1;
+      } else if (sortDirection === "DESC") {
+        return a[sortColumn] < b[sortColumn] ? 1 : -1;
+      }
+    };
+    return sortDirection === "NONE" ? initialRows : [...rows].sort(comparer);
+  };
   return (
     <Container style={(rowsPerPage > 5) ? { height: '510px', overflow: 'auto' } : null} component={Paper}>
       {/* <Container style={{ height: '510px', overflow: 'auto' }} component={Paper}> */}
@@ -207,14 +237,14 @@ function EnhancedTable({
                       style={(StylingForRow && EditedData.id === EachRowData.id) ? { backgroundColor: 'red' } : { backgroundColor: '' }}
                     >
                       {name().map((e) => (e.name === 'button' ? e.render({
-                        EachRowData, onClick, page, screenSize,
+                        EachRowData, onClick, page, screenSize, updatedTable, value
                       }) : (e.name === 'Online class Tag' ? e.render({ EachRowData, onClick }) : e.render(EachRowData))))}
 
                     </TableRow>
                   );
                 })
               : ''
-              }
+            }
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
                 <TableCell colSpan={6} />

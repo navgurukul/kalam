@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Container, Paper, Grid } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import CancelPresentationIcon from '@material-ui/icons/CancelPresentation';
-import FormBuilder from './PartnersFormBuilder';
+import FormBuilder from '../ReUsableComponents/PartnersFormBuilder';
 import FormData from './PartnersData';
 
 class EditPartner extends Component {

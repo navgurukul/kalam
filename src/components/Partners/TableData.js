@@ -38,14 +38,13 @@ const TableData = [
     name: 'button',
     priority: 2,
     minWidth: 200,
-    render: function Show({ EachRowData, onClick, page, screenSize }) {
-      return (
+    render: function Show({ EachRowData, onClick, page, screenSize, updatedTable,value}) {      return (
         <TableCell align="center">
           <Button
             type="submit"
             variant="contained"
             color="primary"
-            onClick={() => onClick({ EachRowData, page, screenSize })}
+            onClick={() => onClick({ EachRowData, page, screenSize, updatedTable,value})}
           >
             Update
           </Button>

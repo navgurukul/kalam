@@ -26,9 +26,8 @@ import 'date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 
 export default function FormBuilder({
-  list, onClick, id, notes, slug, name,
-}) 
-{
+  list, onClick, id, notes, slug, name, mobile, stage, partnerName,
+}) {
   const schema = yup.object().shape({});
   function dictUpdate(value) {
     schema.fields[value.name] = value.validation;
@@ -46,6 +45,10 @@ export default function FormBuilder({
       notes,
       slug,
       name,
+      mobile,
+      stage,
+      partnerName,
+      id,
     },
   });
   const onSubmit = (values) => {

@@ -82,7 +82,7 @@ function EnhancedTable({
           }
           return filterBySearchedValue;
         });
-        setUpdatedTable([filterBySearchedValue]);
+        setUpdatedTable(filterBySearchedValue);
       } else {
         setUpdatedTable(data);
       }

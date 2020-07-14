@@ -85,6 +85,7 @@ export class UIData extends PureComponent {
       ShowingPage: page,
       screenSize,
       ListOfData: updatedTable,  
+      value:value
     });
   }
 

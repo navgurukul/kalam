@@ -11,7 +11,6 @@ class Partners extends PureComponent {
     const {
       isAddRow, screenSize, isEditRow, ListOfData, AddRowHandler, LeftPlane, RightPlane, EditRowHandler, NameLIst,value
     } = this.props;
-    console.log(value,"value");
     return (
       <Fragment>
         <Grid container spacing={0}>

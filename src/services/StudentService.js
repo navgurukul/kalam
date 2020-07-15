@@ -146,7 +146,7 @@ const onlineClassColumn = {
 }
 
 const addedAtColumn = {
-  name: "createdAt",
+  name: "created_at",
   label: "When?",
   options: {
     filter: false,
@@ -230,7 +230,7 @@ const stausColumn = {
   }
 }
 const stageColumnTransition = {
-  name: "toStage",
+  name: "to_stage",
   label: "Stage",
   options: {
     filter: true,
@@ -268,7 +268,7 @@ const feedbackColumnTransition = {
 }
 
 const ownerColumnTransition = {
-  name: "toAssign",
+  name: "to_assign",
   label: "Owner",
   options: {
     filter: false,
@@ -314,7 +314,7 @@ const statusColumnTransition = {
 }
 
 const timeColumnTransition = {
-  name: 'studentId',
+  name: 'student_id',
   label: 'Time',
   options: {
     filter: false,
@@ -347,7 +347,7 @@ const deadlineColumnTrnasition = {
 }
 
 const finishedColumnTransition = {
-  name: "finishedAt",
+  name: "finished_at",
   label: "Finished",
   options: {
     filter: false,
@@ -372,7 +372,7 @@ const loggedInUser = {
 }
 
 const AudioPlayer = {
-  name: "audioRecording",
+  name: "audio_recording",
   label: "Audio Recording",
   options: {
     filter: false,
@@ -430,7 +430,7 @@ const stausColumnMyreport = {
 
 const ownerColumnMyreport = {
   label: 'Owner',
-  name: 'toAssign',
+  name: 'to_assign',
   options: {
     filter: true,
   }
@@ -438,7 +438,7 @@ const ownerColumnMyreport = {
 
 const assignDateColumnMyreport = {
   label: 'AssignDate',
-  name: 'createdAt',
+  name: 'created_at',
   options: {
     filter: false,
     customBodyRender: (rowData) => {
@@ -678,9 +678,9 @@ const StudentService = {
 
     x.gender = x.gender == 1 ? 'Female' : 'Male';
     x.stage = allStages[x.stage];
-    x.marks = x.enrolmentKey[0] ? parseInt(x.enrolmentKey[0].totalMarks, 10) : null;
+    x.marks = x.enrolmentKey[0] ? parseInt(x.enrolmentKey[0].total_marks, 10) : null;
     x.marks = isNaN(x.marks) ? null : x.marks;
-    x.lastUpdated = x.lastTransition ? x.lastTransition.createdAt : null;
+    x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;
     return x
   },
 

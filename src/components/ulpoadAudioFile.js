@@ -28,7 +28,7 @@ export class AudiofileUpload extends React.Component {
       if (fileUrl){
         const url = baseUrl+"students/"+"audioRecording/"+studentId+"/"+userId
         const response = await axios.post(url, {
-          "audioUrl": fileUrl,
+          "audio_url": fileUrl,
           "student_stage": student_stage
         });
         if (response.data.sucess){

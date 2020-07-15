@@ -5,8 +5,6 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 
 import { withSnackbar } from 'notistack';
-import { EventEmitter } from './events';
-import { ro } from 'date-fns/locale';
 
 const baseUrl = process.env.API_URL;
 const animatedComponents = makeAnimated();
@@ -22,10 +20,10 @@ export class OwnerSelect extends React.Component {
       const stage = rowData[0];
       const studentId = rowData[5];
       axios.post(`${baseUrl}students/assign_feedback_work`, { 
-          whoAssign: whoAssign,
-          toAssign: value,
+          who_assign: whoAssign,
+          to_assign: value,
           student_stage: stage,
-          studentId: studentId
+          student_id: studentId
       })
       .then(() => {
         this.props.enqueueSnackbar(`successfully Assigned work for ${value}`,{ variant: 'success' });

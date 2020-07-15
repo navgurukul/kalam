@@ -127,7 +127,7 @@ export class LandingPage extends React.Component {
         params: {
           ngCallType: 'getEnrolmentKey',
           From: mobile,
-          partnerId: partnerId
+          partner_id: partnerId
         }
       });
       return response;

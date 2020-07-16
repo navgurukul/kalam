@@ -63,7 +63,7 @@ export class StageTransitionsStudentStatus extends React.Component {
     this.column = [
       {
         label: "Stage",
-        name: "toStage",
+        name: "to_stage",
         options: {
           customBodyRender: (value) => {
             return allStages[value]
@@ -72,7 +72,7 @@ export class StageTransitionsStudentStatus extends React.Component {
       },
       {
         label: 'When?',
-        name: 'createdAt',
+        name: 'created_at',
         options: {
           customBodyRender: (value) => {
             return <Moment format="D MMM YYYY" withTitle>{value}</Moment>

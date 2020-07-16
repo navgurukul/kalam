@@ -530,7 +530,7 @@ const CasteColumn = {
 
 const lastStageColumn = {
   label: 'Last Stage',
-  name: 'fromStage',
+  name: 'from_stage',
   options: {
     filter: false,
     customBodyRender: (rowData) => {
@@ -556,7 +556,7 @@ const linkForOnlineTestColumn = {
 
 const stageColumnStatus = {
   label: 'Current Stage',
-  name: 'toStage',
+  name: 'to_stage',
   options: {
     filter: false,
     customBodyRender: (rowData) => {

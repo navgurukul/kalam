@@ -96,7 +96,7 @@ export class DashboardPage extends React.Component {
 
     // columns = StudentService.setupPost(columns);
 
-    this.setState({ 'data': data, fromDate: data[0].createdAt }, function () {
+    this.setState({ 'data': data, fromDate: data[0].created_at }, function () {
       this.props.fetchingFinish()
     });
   }

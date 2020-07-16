@@ -120,7 +120,7 @@ export class AdmissionsDash extends React.Component {
         data[i] = StudentService.dConvert(data[i])
       }
       const newData = data.map(v => ({ ...v, loggedInUser: this.props.loggedInUser.email.split('@')[0] }))
-      this.setState({ 'data': newData, fromDate: newData.slice(-1)[0].createdAt }, function () {
+      this.setState({ 'data': newData, fromDate: newData.slice(-1)[0].created_at }, function () {
         this.props.fetchingFinish()
       });
     }

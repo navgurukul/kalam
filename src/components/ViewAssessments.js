@@ -72,7 +72,7 @@ export class ModalStages extends React.Component {
       },
       {
         label: 'Assessment URL',
-        name: 'assessmentUrl',
+        name: 'assessment_url',
         options: {
           filter: false,
           customBodyRender: (rowData) => {
@@ -82,7 +82,7 @@ export class ModalStages extends React.Component {
       },
       {
         label: 'Answer Key URL',
-        name: 'answerKeyUrl',
+        name: 'answer_key_url',
         options: {
           filter: false,
           customBodyRender: (rowData) => {
@@ -92,7 +92,7 @@ export class ModalStages extends React.Component {
       },
       {
         label: 'Question Set ID',
-        name: 'questionSetId',
+        name: 'question_set_id',
         options: {
           filter: false,
           customBodyRender: (rowData) => {
@@ -103,14 +103,14 @@ export class ModalStages extends React.Component {
       },
       {
         label: 'Created At',
-        name: 'createdAt',
+        name: 'created_at',
         options: {
           filter: false,
         }
       },
       {
         label: 'Upload Data',
-        name: 'partnerId',
+        name: 'partner_id',
         options: {
           filter: false,
           customBodyRender: (rowData, rowMeta) => {

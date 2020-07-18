@@ -297,7 +297,8 @@ const statusColumnTransition = {
     sort: true,
     display: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
-      if (rowData || rowMeta.rowData[3]) {
+      const feedbackableStage = feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      if ((rowData || rowMeta.rowData[3]) && feedbackableStage) {
         return <div>
           <StatusSelect
             feedbackableStagesData={feedbackableStagesData}
@@ -329,7 +330,8 @@ const deadlineColumnTrnasition = {
     filter: false,
     sort: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
-      const ifExistingDeadlineDate = rowData && !rowMeta.rowData[7];
+      const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
+      const ifExistingDeadlineDate = rowData && !rowMeta.rowData[7] && feedbackableStage;
       if (ifExistingDeadlineDate) {
         const deadline = feedbackableStagesData[rowMeta.rowData[0]].deadline;
         const diff = new Date().getTime() - new Date(rowData).getTime()

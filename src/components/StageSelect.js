@@ -24,6 +24,8 @@ export class StageSelect extends React.Component {
       .then(() => {
         this.props.enqueueSnackbar('stage is successfully changed!',{ variant: 'success' });
         change(label, columnIndex)
+      }).catch(() => {
+        this.props.enqueueSnackbar('Something is wrong with previous stage!',{ variant: 'error' });
       });
     } catch (e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });

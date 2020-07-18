@@ -22,7 +22,9 @@ export class StatusSelect extends React.Component {
       .then(() => {
         this.props.enqueueSnackbar('state is successfully changed!',{ variant: 'success' });
         change(value, columnIndex)
-      });
+      }).catch(() => {
+        this.props.enqueueSnackbar('Please fill feedback first and try again!',{ variant: 'error' });
+      })
     }catch (e) {
       this.props.enqueueSnackbar(e, { variant: 'error' });
     }

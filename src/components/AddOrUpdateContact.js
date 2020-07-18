@@ -23,9 +23,9 @@ class AddOrUpdateContact extends Component {
     await this.setState({
       updateOrAddType: type == "ADD" ? "addContact" : "updateContact"
     });
-
+    
     const { updateOrAddType } = this.state;
-    if (permissions.addOrUpdateContact.indexOf(loggedInUser.mailId) >= 0) {
+    if (permissions.addOrUpdateContact.indexOf(loggedInUser.mail_id) >= 0) {
       try {
         if (mobile) {
           axios.post(`${baseUrl}students/contactUpdateAdd/${studentId}`, {

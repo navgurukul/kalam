@@ -1,23 +1,33 @@
-import React from 'react';
-import { allStages, feedbackableStages, feedbackableStagesData, permissions, allTagsForOnlineClass } from '../config';
-import Moment from 'react-moment';
-import Select from 'react-select';
-import makeAnimated from 'react-select/animated';
-import StageSelect from '../components/StageSelect';
-import OwnerSelect from '../components/OwnerSelect';
-import StatusSelect from '../components/StatusSelect'
-import StudentFeedback from '../components/FeedbackPage';
-import StageTransitions from '../components/StageTransitions';
-import StageTransitionsStudentStatus from '../components/StageTransitionsStudentStatus';
-import AudioRecorder from '../components/audioRecording';
-import AudiofileUpload from '../components/ulpoadAudioFile';
-import TagsForOnlineClass from '../components/tagsForOnlineClass'
+import React from "react";
+import {
+  allStages,
+  feedbackableStages,
+  feedbackableStagesData,
+  permissions,
+  allTagsForOnlineClass,
+} from "../config";
+import Moment from "react-moment";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
+import StageSelect from "../components/StageSelect";
+import OwnerSelect from "../components/OwnerSelect";
+import StatusSelect from "../components/StatusSelect";
+import StudentFeedback from "../components/FeedbackPage";
+import StageTransitions from "../components/StageTransitions";
+import StageTransitionsStudentStatus from "../components/StageTransitionsStudentStatus";
+import AudioRecorder from "../components/audioRecording";
+import AudiofileUpload from "../components/ulpoadAudioFile";
+import TagsForOnlineClass from "../components/tagsForOnlineClass";
 
-const _ = require('underscore');
+const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
-const allStagesOptions = Object.keys(allStages).map(x => { return allStages[x] });
-const allTagsOptions = Object.keys(allTagsForOnlineClass).map(x => {return allTagsForOnlineClass[x]} );
+const allStagesOptions = Object.keys(allStages).map((x) => {
+  return allStages[x];
+});
+const allTagsOptions = Object.keys(allTagsForOnlineClass).map((x) => {
+  return allTagsForOnlineClass[x];
+});
 
 const ColumnTransitions = {
   name: "id",
@@ -26,14 +36,16 @@ const ColumnTransitions = {
     filter: false,
     sort: false,
     customBodyRender: (value, rowMeta) => {
-      return <StageTransitions
-        studentId={value}
-        studentName={rowMeta.rowData[2]}
-        dataType={'columnTransition'}
-      />
-    }
-  }
-}
+      return (
+        <StageTransitions
+          studentId={value}
+          studentName={rowMeta.rowData[2]}
+          dataType={"columnTransition"}
+        />
+      );
+    },
+  },
+};
 
 const setColumn = {
   name: "SetName",
@@ -41,9 +53,9 @@ const setColumn = {
   options: {
     filter: false,
     sort: true,
-    display: false
-  }
-}
+    display: false,
+  },
+};
 
 const nameColumn = {
   name: "name",
@@ -51,9 +63,9 @@ const nameColumn = {
   options: {
     filter: true,
     sort: true,
-    filterType: 'textField'
-  }
-}
+    filterType: "textField",
+  },
+};
 
 const cityColumn = {
   name: "city",
@@ -61,9 +73,9 @@ const cityColumn = {
   options: {
     filter: false,
     sort: true,
-    display: false
-  }
-}
+    display: false,
+  },
+};
 
 const stateColumn = {
   name: "state",
@@ -71,9 +83,9 @@ const stateColumn = {
   options: {
     filter: false,
     sort: true,
-    display: false
-  }
-}
+    display: false,
+  },
+};
 
 const numberColumn = {
   name: "number",
@@ -81,8 +93,8 @@ const numberColumn = {
   options: {
     filter: false,
     sort: true,
-  }
-}
+  },
+};
 
 const marksColumn = {
   name: "marks",
@@ -90,8 +102,8 @@ const marksColumn = {
   options: {
     filter: false,
     sort: true,
-  }
-}
+  },
+};
 
 const genderColumn = {
   name: "gender",
@@ -99,8 +111,8 @@ const genderColumn = {
   options: {
     filter: true,
     sort: true,
-  }
-}
+  },
+};
 
 const stageColumn = {
   name: "stage",
@@ -111,19 +123,21 @@ const stageColumn = {
     filterOptions: allStagesOptions,
     customBodyRender: (value, rowMeta, updateValue) => {
       if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
-        return <StageSelect
-          allStagesOptions={allStagesOptions}
-          rowMetatable={rowMeta}
-          stage={value}
-          allStages={allStages}
-          change={event => updateValue(event)}
-        />
+        return (
+          <StageSelect
+            allStagesOptions={allStagesOptions}
+            rowMetatable={rowMeta}
+            stage={value}
+            allStages={allStages}
+            change={(event) => updateValue(event)}
+          />
+        );
       } else {
         return value;
       }
-    }
-  }
-}
+    },
+  },
+};
 
 const onlineClassColumn = {
   name: "tag",
@@ -133,17 +147,21 @@ const onlineClassColumn = {
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
       const tag = value ? value.split(", ") : [];
-      const allTagsOptions = Object.keys(tag).map((x) => { return { key:x, label: tag[x]}});
-      return <TagsForOnlineClass
-        studentId={rowMeta.rowData[0]}
-        tag={tag}
-        allTags={allTagsOptions}
-        rowMetatable={rowMeta}
-        change={event => updateValue(event)}
-      />
-    }
-  }
-}
+      const allTagsOptions = Object.keys(tag).map((x) => {
+        return { key: x, label: tag[x] };
+      });
+      return (
+        <TagsForOnlineClass
+          studentId={rowMeta.rowData[0]}
+          tag={tag}
+          allTags={allTagsOptions}
+          rowMetatable={rowMeta}
+          change={(event) => updateValue(event)}
+        />
+      );
+    },
+  },
+};
 
 const addedAtColumn = {
   name: "created_at",
@@ -152,10 +170,14 @@ const addedAtColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
-      return <Moment format="D MMM YYYY" withTitle>{value}</Moment>
-    }
-  }
-}
+      return (
+        <Moment format="D MMM YYYY" withTitle>
+          {value}
+        </Moment>
+      );
+    },
+  },
+};
 
 const lastUpdatedColumn = {
   name: "lastUpdated",
@@ -164,71 +186,97 @@ const lastUpdatedColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
-      return <Moment format="D MMM YYYY" withTitle>{value}</Moment>
-    }
-
-  }
-}
+      return (
+        <Moment format="D MMM YYYY" withTitle>
+          {value}
+        </Moment>
+      );
+    },
+  },
+};
 
 const loggedInUserColumn = {
-  name: 'loggedInUser',
+  name: "loggedInUser",
   label: "Logged In User",
   options: {
     filter: false,
     sort: true,
     display: false,
-  }
-}
+  },
+};
 
 const deadlineColumn = {
-  name: 'deadline',
+  name: "deadline",
   label: "Deadline",
   options: {
     filter: false,
     sort: false,
     customBodyRender: (rowData, rowMeta) => {
       if (rowData) {
-        const studentStage = (_.invert(allStages))[rowMeta.rowData[8]];
+        const studentStage = _.invert(allStages)[rowMeta.rowData[8]];
         const deadline = feedbackableStagesData[studentStage].deadline;
-        const diff = new Date().getTime() - new Date(rowData).getTime()
+        const diff = new Date().getTime() - new Date(rowData).getTime();
         const hours = Math.floor(diff / 1000 / 60 / 60);
         const remainingTime = deadline - hours;
         if (rowMeta.rowData[17]) {
           return null;
         }
         if (remainingTime < 0) {
-          return <p style={{ color: "#FF0000	", letterSpacing: "1px" }}> Your deadline is <b>fineshed</b> please do this work ASAP.</p>
-        }
-        else if (deadline === 60 && remainingTime < 20) {
-          return <p style={{ color: "#f9a800", letterSpacing: "1px" }}> <b>{remainingTime}</b> Hours remaining.</p>
-        }
-        else if (deadline === 48 && remainingTime < 15) {
-          return <p style={{ color: "#f9a800", letterSpacing: "1px" }}> <b>{remainingTime}</b> Hours remaining.</p>
-        }
-        else if (deadline === 24 && remainingTime < 6) {
-          return <p style={{ color: "#f9a800", letterSpacing: "1px" }}> <b>{remainingTime}</b> Hours remaining.</p>
-        }
-        else {
-          return <p style={{ color: "green", letterSpacing: "1px" }}> <b>{remainingTime}</b>  Hours remaining. </p>
+          return (
+            <p style={{ color: "#FF0000	", letterSpacing: "1px" }}>
+              {" "}
+              Your deadline is <b>fineshed</b> please do this work ASAP.
+            </p>
+          );
+        } else if (deadline === 60 && remainingTime < 20) {
+          return (
+            <p style={{ color: "#f9a800", letterSpacing: "1px" }}>
+              {" "}
+              <b>{remainingTime}</b> Hours remaining.
+            </p>
+          );
+        } else if (deadline === 48 && remainingTime < 15) {
+          return (
+            <p style={{ color: "#f9a800", letterSpacing: "1px" }}>
+              {" "}
+              <b>{remainingTime}</b> Hours remaining.
+            </p>
+          );
+        } else if (deadline === 24 && remainingTime < 6) {
+          return (
+            <p style={{ color: "#f9a800", letterSpacing: "1px" }}>
+              {" "}
+              <b>{remainingTime}</b> Hours remaining.
+            </p>
+          );
+        } else {
+          return (
+            <p style={{ color: "green", letterSpacing: "1px" }}>
+              {" "}
+              <b>{remainingTime}</b> Hours remaining.{" "}
+            </p>
+          );
         }
       }
-    }
-  }
-}
+    },
+  },
+};
 
 const stausColumn = {
-  name: 'status',
+  name: "status",
   label: "Status",
   options: {
     filter: false,
     sort: false,
     customBodyRender: (state) => {
       if (state) {
-        return (state.charAt(0).toUpperCase() + state.slice(1)).match(/[A-Z][a-z]+|[0-9]+/g).join(" ")
+        return (state.charAt(0).toUpperCase() + state.slice(1))
+          .match(/[A-Z][a-z]+|[0-9]+/g)
+          .join(" ");
       }
-    }
-  }
-}
+    },
+  },
+};
 const stageColumnTransition = {
   name: "to_stage",
   label: "Stage",
@@ -237,9 +285,9 @@ const stageColumnTransition = {
     sort: true,
     customBodyRender: (rowData) => {
       return allStages[rowData];
-    }
-  }
-}
+    },
+  },
+};
 
 const feedbackColumnTransition = {
   name: "feedback",
@@ -248,24 +296,29 @@ const feedbackColumnTransition = {
     filter: false,
     sort: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
-      const ifExistingFeedback = rowData || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
-      return <div>
-        {
-          ifExistingFeedback ?
+      const ifExistingFeedback =
+        rowData || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      return (
+        <div>
+          {ifExistingFeedback ? (
             <div>
               <StudentFeedback
                 rowMetaTable={rowMeta}
                 feedback={rowData}
-                change={event => updateValue(event)}
+                change={(event) => updateValue(event)}
               />
-              {rowData ? rowData.split('\n\n').map((item, i) => <p key={i}> {item} </p>) : null}
+              {rowData
+                ? rowData
+                    .split("\n\n")
+                    .map((item, i) => <p key={i}> {item} </p>)
+                : null}
             </div>
-            : null
-        }
-      </div>
-    }
-  }
-}
+          ) : null}
+        </div>
+      );
+    },
+  },
+};
 
 const ownerColumnTransition = {
   name: "to_assign",
@@ -275,20 +328,22 @@ const ownerColumnTransition = {
     sort: true,
     display: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
-      const ifExistingFeedback = feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
-      return <div>
-        {
-          ifExistingFeedback ?
+      const ifExistingFeedback =
+        feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      return (
+        <div>
+          {ifExistingFeedback ? (
             <OwnerSelect
               rowMetaTable={rowMeta}
               value={rowData}
-              change={event => updateValue(event)}
-            /> : null
-        }
-      </div>
-    }
-  }
-}
+              change={(event) => updateValue(event)}
+            />
+          ) : null}
+        </div>
+      );
+    },
+  },
+};
 const statusColumnTransition = {
   name: "state",
   label: "Status",
@@ -297,31 +352,33 @@ const statusColumnTransition = {
     sort: true,
     display: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
-      const feedbackableStage = feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      const feedbackableStage =
+        feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       if ((rowData || rowMeta.rowData[3]) && feedbackableStage) {
-        return <div>
-          <StatusSelect
-            feedbackableStagesData={feedbackableStagesData}
-            rowMetaTable={rowMeta}
-            state={rowData}
-            change={event => updateValue(event)}
-          />
-        </div>
-
+        return (
+          <div>
+            <StatusSelect
+              feedbackableStagesData={feedbackableStagesData}
+              rowMetaTable={rowMeta}
+              state={rowData}
+              change={(event) => updateValue(event)}
+            />
+          </div>
+        );
       }
       return null;
-    }
-  }
-}
+    },
+  },
+};
 
 const timeColumnTransition = {
-  name: 'student_id',
-  label: 'Time',
+  name: "student_id",
+  label: "Time",
   options: {
     filter: false,
     display: false,
-  }
-}
+  },
+};
 
 const deadlineColumnTrnasition = {
   name: "deadline",
@@ -331,22 +388,28 @@ const deadlineColumnTrnasition = {
     sort: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
       const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
-      const ifExistingDeadlineDate = rowData && !rowMeta.rowData[7] && feedbackableStage;
+      const ifExistingDeadlineDate =
+        rowData && !rowMeta.rowData[7] && feedbackableStage;
       if (ifExistingDeadlineDate) {
         const deadline = feedbackableStagesData[rowMeta.rowData[0]].deadline;
-        const diff = new Date().getTime() - new Date(rowData).getTime()
+        const diff = new Date().getTime() - new Date(rowData).getTime();
         const hours = Math.floor(diff / 1000 / 60 / 60);
         const remainingTime = deadline - hours;
         if (remainingTime < 0 && !rowMeta.rowData[7]) {
-          return "Your deadline is fineshed please do this work ASAP."
+          return "Your deadline is fineshed please do this work ASAP.";
         } else if (!rowMeta.rowData[2]) {
-          return <p> <b>{remainingTime}</b> Hours are remaining.</p>
+          return (
+            <p>
+              {" "}
+              <b>{remainingTime}</b> Hours are remaining.
+            </p>
+          );
         }
         return null;
       }
-    }
-  }
-}
+    },
+  },
+};
 
 const finishedColumnTransition = {
   name: "finished_at",
@@ -356,22 +419,29 @@ const finishedColumnTransition = {
     sort: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
       const ifExistingFinishedDate = rowData;
-      return ifExistingFinishedDate ? <Moment format="D MMM YYYY" withTitle>{rowData}</Moment> : null;
+      return ifExistingFinishedDate ? (
+        <Moment format="D MMM YYYY" withTitle>
+          {rowData}
+        </Moment>
+      ) : null;
     },
-  }
-}
+  },
+};
 
 const loggedInUser = {
-  name: 'loggedInUser',
+  name: "loggedInUser",
   label: "LoggedIn User",
   options: {
     filter: false,
     display: false,
     customBodyRender: (rowData) => {
-      return rowData.user_name
-    }
-  }
-}
+      if (rowData !== undefined) {
+        return rowData.user_name;
+      }
+      return "guest_username";
+    },
+  },
+};
 
 const AudioPlayer = {
   name: "audio_recording",
@@ -380,201 +450,214 @@ const AudioPlayer = {
     filter: false,
     display: false,
     customBodyRender: (value, rowMeta, updateValue) => {
-      const ifExistingFeedback = rowMeta.rowData[2] || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      const ifExistingFeedback =
+        rowMeta.rowData[2] ||
+        feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       return (
         <div>
-          {ifExistingFeedback && value ? 
-            <AudioRecorder
-              audioUrl={value} /> : null
-          }
-          {ifExistingFeedback && !value ?
+          {console.log(rowMeta)}
+          {ifExistingFeedback && value ? (
+            <AudioRecorder audioUrl={value} />
+          ) : null}
+          {ifExistingFeedback && !value ? (
             <AudiofileUpload
               studentId={rowMeta.rowData[5]}
-              userId={rowMeta.rowData[8].id}
+              userId={rowMeta.rowData[8] ? rowMeta.rowData[8].id : "guest_id"}
               student_stage={rowMeta.rowData[0]}
-              change={event => updateValue(event)}
-              columnIndex={rowMeta.columnIndex} /> : null
-          }
+              change={(event) => updateValue(event)}
+              columnIndex={rowMeta.columnIndex}
+            />
+          ) : null}
         </div>
-      )
-    }
-  }
-}
+      );
+    },
+  },
+};
 
 const StageColumnMyreport = {
-  label: 'Stage',
-  name: 'student_stage',
+  label: "Stage",
+  name: "student_stage",
   options: {
     filter: true,
     sort: true,
-  }
-}
+  },
+};
 
 const feedbackColumnMyreport = {
-  label: 'Feedback',
-  name: 'feedback',
+  label: "Feedback",
+  name: "feedback",
   options: {
     filter: false,
     sort: true,
     customBodyRender: (rowData) => {
-      return rowData ? rowData.split('\n\n').map((item, i) => <p key={i}> {item} </p>) : null;
-    }
-  }
-}
+      return rowData
+        ? rowData.split("\n\n").map((item, i) => <p key={i}> {item} </p>)
+        : null;
+    },
+  },
+};
 
 const stausColumnMyreport = {
-  label: 'Status',
-  name: 'state',
+  label: "Status",
+  name: "state",
   options: {
     filter: false,
-  }
-}
+  },
+};
 
 const ownerColumnMyreport = {
-  label: 'Owner',
-  name: 'to_assign',
+  label: "Owner",
+  name: "to_assign",
   options: {
     filter: true,
-  }
-}
+  },
+};
 
 const assignDateColumnMyreport = {
-  label: 'AssignDate',
-  name: 'created_at',
+  label: "AssignDate",
+  name: "created_at",
   options: {
     filter: false,
     customBodyRender: (rowData) => {
-      return <Moment format="D MMM YYYY" withTitle>{rowData}</Moment>
-    }
-  }
-}
+      return (
+        <Moment format="D MMM YYYY" withTitle>
+          {rowData}
+        </Moment>
+      );
+    },
+  },
+};
 
 const StageColumnDanglingReport = {
-  label: 'Stage',
-  name: 'stage'
-}
+  label: "Stage",
+  name: "stage",
+};
 
 const TotalFemaleDanglingReport = {
-  label: 'Female',
-  name: 'female',
+  label: "Female",
+  name: "female",
   options: {
-    filter: false
-  }
-}
+    filter: false,
+  },
+};
 
 const TotalmaleDanglingReport = {
-  label: 'Male',
-  name: 'male',
+  label: "Male",
+  name: "male",
   options: {
-    filter: false
-  }
-}
+    filter: false,
+  },
+};
 
 const TotalTransDanglingReport = {
-  label: 'Transgender',
-  name: 'transgender',
+  label: "Transgender",
+  name: "transgender",
   options: {
-    filter: false
-  }
-}
+    filter: false,
+  },
+};
 
 const TotalUnspecifiedDanglingReport = {
-  label: 'Unspecified',
-  name: 'unspecified',
+  label: "Unspecified",
+  name: "unspecified",
   options: {
-    filter: false
-  }
-}
+    filter: false,
+  },
+};
 
 const TotalDanglingReport = {
-  label: 'Total Dangling',
-  name: 'total',
+  label: "Total Dangling",
+  name: "total",
   options: {
-    filter: false
-  }
-}
+    filter: false,
+  },
+};
 
 const EmailColumn = {
-  label: 'Email',
-  name: 'email',
+  label: "Email",
+  name: "email",
   options: {
     filter: false,
     display: false,
-  }
-}
+  },
+};
 
 const QualificationColumn = {
-  label: 'Qualification',
-  name: 'qualification',
+  label: "Qualification",
+  name: "qualification",
   options: {
     filter: false,
     display: false,
-  }
-}
+  },
+};
 
 const ReligonColumn = {
-  label: 'Religon',
-  name: 'religon',
+  label: "Religon",
+  name: "religon",
   options: {
     filter: false,
     display: false,
-  }
-}
+  },
+};
 
 const CasteColumn = {
-  label: 'Caste',
-  name: 'caste',
+  label: "Caste",
+  name: "caste",
   options: {
     filter: false,
     display: false,
-  }
-}
+  },
+};
 
 const lastStageColumn = {
-  label: 'Last Stage',
-  name: 'from_stage',
+  label: "Last Stage",
+  name: "from_stage",
   options: {
     filter: false,
     customBodyRender: (rowData) => {
-      return allStages[rowData]
-    }
-  }
-}
+      return allStages[rowData];
+    },
+  },
+};
 
 const linkForEnglishTestColumn = {
-  label: 'English Test Link',
-  name: 'linkForEnglishTest',
-}
+  label: "English Test Link",
+  name: "linkForEnglishTest",
+};
 
 const linkForOnlineTestColumn = {
-  label: 'Online Test Link',
-  name: 'linkForOnlineTest',
+  label: "Online Test Link",
+  name: "linkForOnlineTest",
   options: {
     customBodyRender: (value) => {
-      return value ? <a target="_blank" href={value}>Link to Test</a> : null;
-    }
-  }
-}
+      return value ? (
+        <a target="_blank" href={value}>
+          Link to Test
+        </a>
+      ) : null;
+    },
+  },
+};
 
 const stageColumnStatus = {
-  label: 'Current Stage',
-  name: 'to_stage',
+  label: "Current Stage",
+  name: "to_stage",
   options: {
     filter: false,
     customBodyRender: (rowData) => {
-      return allStages[rowData]
-    }
-  }
-}
+      return allStages[rowData];
+    },
+  },
+};
 const cityColumnStatus = {
   label: "City",
-  name: 'city'
-}
+  name: "city",
+};
 
 const stateColumnStatus = {
   label: "State",
-  name: 'state',
-}
+  name: "state",
+};
 
 const ColumnTransitionsStatus = {
   name: "transitions",
@@ -583,18 +666,17 @@ const ColumnTransitionsStatus = {
     filter: false,
     sort: false,
     customBodyRender: (value) => {
-      return <StageTransitionsStudentStatus
-        rowData={value}
-        allStages={allStages}
-      />
-    }
-  }
-}
+      return (
+        <StageTransitionsStudentStatus rowData={value} allStages={allStages} />
+      );
+    },
+  },
+};
 
 const partnerNameColumn = {
   label: "Partner Name",
   name: "partnerName",
-}
+};
 const StudentService = {
   columns: {
     requestCallback: [
@@ -624,7 +706,7 @@ const StudentService = {
       stausColumn,
       deadlineColumn,
       partnerNameColumn,
-      onlineClassColumn
+      onlineClassColumn,
     ],
     columnTransition: [
       stageColumnTransition,
@@ -636,7 +718,7 @@ const StudentService = {
       deadlineColumnTrnasition,
       finishedColumnTransition,
       loggedInUser,
-      AudioPlayer
+      AudioPlayer,
     ],
     columnStudentStatus: [
       ColumnTransitionsStatus,
@@ -648,8 +730,8 @@ const StudentService = {
       stageColumnStatus,
       lastStageColumn,
       linkForEnglishTestColumn,
-      linkForOnlineTestColumn
-    ]
+      linkForOnlineTestColumn,
+    ],
   },
   columnMyReports: [
     nameColumn,
@@ -657,7 +739,7 @@ const StudentService = {
     feedbackColumnMyreport,
     stausColumnMyreport,
     ownerColumnMyreport,
-    assignDateColumnMyreport
+    assignDateColumnMyreport,
   ],
 
   columnDanglingReports: [
@@ -666,36 +748,36 @@ const StudentService = {
     TotalmaleDanglingReport,
     TotalTransDanglingReport,
     TotalUnspecifiedDanglingReport,
-    TotalDanglingReport
+    TotalDanglingReport,
   ],
-
-
 
   dConvert: (x) => {
     try {
-      x.number = x['contacts'][0]['mobile'];
+      x.number = x["contacts"][0]["mobile"];
     } catch (e) {
       x.number = null;
     }
 
-    x.gender = x.gender == 1 ? 'Female' : 'Male';
+    x.gender = x.gender == 1 ? "Female" : "Male";
     x.stage = allStages[x.stage];
-    x.marks = x.enrolmentKey[0] ? parseInt(x.enrolmentKey[0].total_marks, 10) : null;
+    x.marks = x.enrolmentKey[0]
+      ? parseInt(x.enrolmentKey[0].total_marks, 10)
+      : null;
     x.marks = isNaN(x.marks) ? null : x.marks;
     x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;
-    return x
+    return x;
   },
 
   addOptions: (columns, dataRow) => {
     return columns.map((column) => {
-      if ('selectFilter' in column) {
+      if ("selectFilter" in column) {
         if (column.options.indexOf(dataRow[column.field]) == -1) {
-          column.options.push(dataRow[column.field])
+          column.options.push(dataRow[column.field]);
         }
       }
-      return column
-    })
-  }
-}
+      return column;
+    });
+  },
+};
 
 export default StudentService;

@@ -1,31 +1,26 @@
 // Todo
 // Logic of RQC Columns
 
-import 'date-fns';
-import React from 'react';
-import { connect } from 'react-redux';
-import axios from 'axios';
-import { changeFetching } from '../store/actions/auth';
-import { allStages, feedbackableStagesData } from '../config';
-import StudentService from '../services/StudentService';
-import MainLayout from './MainLayout';
-
-
+import "date-fns";
+import React from "react";
+import { connect } from "react-redux";
+import axios from "axios";
+import { changeFetching } from "../store/actions/auth";
+import { allStages, feedbackableStagesData } from "../config";
+import StudentService from "../services/StudentService";
+import MainLayout from "./MainLayout";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
 
-
 export class FeedbackbleStageWiseDangling extends React.Component {
-
   constructor(props) {
-
     super(props);
-    this.stageWiseDanglingReportURL = baseURL + 'students/report/dangling';
+    this.stageWiseDanglingReportURL = baseURL + "students/report/dangling";
 
     this.state = {
       data: [],
-    }
+    };
   }
 
   dataConvert = (data) => {
@@ -45,13 +40,16 @@ export class FeedbackbleStageWiseDangling extends React.Component {
     this.setState({
       data: newData,
     });
-  }
+  };
 
   render = () => {
-    return (<MainLayout data={this.state.data}
-      columns={StudentService.columnDanglingReports}
-    />)
-  }
+    return (
+      <MainLayout
+        data={this.state.data}
+        columns={StudentService.columnDanglingReports}
+      />
+    );
+  };
 
   componentDidMount() {
     this.fetchonwerReport();
@@ -59,25 +57,28 @@ export class FeedbackbleStageWiseDangling extends React.Component {
 
   async fetchonwerReport() {
     try {
-      this.props.fetchingStart()
+      this.props.fetchingStart();
       const response = await axios.get(this.stageWiseDanglingReportURL, {});
       this.dataConvert(response.data.data);
       this.props.fetchingFinish();
     } catch (e) {
-      console.log(e)
-      this.props.fetchingFinish()
+      console.log(e);
+      this.props.fetchingFinish();
     }
-  };
-};
+  }
+}
 
 const mapStateToProps = (state) => ({
-  loggedInUser: state.auth.loggedInUser
+  loggedInUser: state.auth.loggedInUser,
   // "kya fark padta hai": ''
 });
 
 const mapDispatchToProps = (dispatch) => ({
   fetchingStart: () => dispatch(changeFetching(true)),
-  fetchingFinish: () => dispatch(changeFetching(false))
+  fetchingFinish: () => dispatch(changeFetching(false)),
 });
 
-export default (connect(mapStateToProps, mapDispatchToProps)(FeedbackbleStageWiseDangling));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FeedbackbleStageWiseDangling);

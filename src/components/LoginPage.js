@@ -1,8 +1,8 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { login } from '../store/actions/auth';
-import { Box } from '@material-ui/core';
-import LoginDesign from './LoginDesign';
+import React from "react";
+import { connect } from "react-redux";
+import { login } from "../store/actions/auth";
+import { Box } from "@material-ui/core";
+import LoginDesign from "./LoginDesign";
 // import Paper from '@material-ui/core/Paper';
 // import Input from '@material-ui/core/Input';
 // import InputLabel from '@material-ui/core/InputLabel';
@@ -13,28 +13,28 @@ import LoginDesign from './LoginDesign';
 // import AccountCircle from '@material-ui/icons/AccountCircle';
 // import Key from '@material-ui/icons/VpnKey';
 // import Button from '@material-ui/core/Button';
-import GoogleLogin from 'react-google-login';
+import GoogleLogin from "react-google-login";
 
 export class LoginPage extends React.Component {
-
   // this.props.history.push('/home');
 
   onSuccess = (response) => {
     console.log(response);
-  }
+  };
 
   onFailure = (error) => {
     console.log(error);
-  }
+  };
 
   render() {
     return (
       <GoogleLogin
         clientId="34917283366-b806koktimo2pod1cjas8kn2lcpn7bse.apps.googleusercontent.com"
         onSuccess={this.onSuccess}
-        render={renderProps => (
-          
-          <Box onClick={renderProps.onClick} disabled={renderProps.disabled}>Login Using Google</Box>
+        render={(renderProps) => (
+          <Box onClick={renderProps.onClick} disabled={renderProps.disabled}>
+            Login Using Google
+          </Box>
         )}
         onFailure={this.onFailure}
         scope="profile email"
@@ -51,7 +51,7 @@ export class LoginPage extends React.Component {
       //       </Typography>
       //       <form>
       //         <div className="loginformgroup">
-      //           <AccountCircle />          
+      //           <AccountCircle />
       //           <TextField id="input-username" label="Username" />
       //         </div>
       //         <div className="loginformgroup">
@@ -71,8 +71,7 @@ export class LoginPage extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  startLogin: (userid) => dispatch(login(userid))
+  startLogin: (userid) => dispatch(login(userid)),
 });
-
 
 export default connect(undefined, mapDispatchToProps)(LoginPage);

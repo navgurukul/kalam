@@ -1,17 +1,17 @@
 export const changeFetching = (isFetchingStatus) => ({
-    type:'FETCHING_STATUS',
-    isFetchingStatus
+  type: "FETCHING_STATUS",
+  isFetchingStatus,
 });
 
 export const setupUsers = (users) => ({
-    type:'SETUP_USERS',
-    users
+  type: "SETUP_USERS",
+  users,
 });
 
 export const login = () => ({
-    type:'LOGIN',
+  type: "LOGIN",
 });
 
 export const logout = () => ({
-    type:'LOGOUT',
+  type: "LOGOUT",
 });

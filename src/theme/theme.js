@@ -1,18 +1,18 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createMuiTheme } from "@material-ui/core/styles";
 
-const defaultTheme = createMuiTheme()
+const defaultTheme = createMuiTheme();
 export const theme = createMuiTheme({
   palette: {
-    type: 'light',
+    type: "light",
     primary: {
-      main: '#f05f40' // customise your main color here
+      main: "#f05f40", // customise your main color here
     },
-    secondary: { main: '#673ab7' },
-    error: { main: '#ca0909' },
-    sand: { main: '#F4DECB' },
-    shell: { main: '#F8EEE7' },
+    secondary: { main: "#673ab7" },
+    error: { main: "#ca0909" },
+    sand: { main: "#F4DECB" },
+    shell: { main: "#F8EEE7" },
     status: {
-      danger: '#b71c1c'
+      danger: "#b71c1c",
     },
 
     // Used by `getContrastText()` to maximize the contrast between the background and
@@ -28,7 +28,7 @@ export const theme = createMuiTheme({
       root: {
         [defaultTheme.breakpoints.down("sm")]: {
           padding: 5,
-        }
+        },
       },
     },
     MUIDataTableBodyCell: {
@@ -36,17 +36,17 @@ export const theme = createMuiTheme({
         minHeight: 22,
       },
       stackedCommon: {
-        height: 'auto !important',
-        whiteSpace: 'normal !important',
+        height: "auto !important",
+        whiteSpace: "normal !important",
         [defaultTheme.breakpoints.down("sm")]: {
-          width: 'calc(60% - 10px)',
-        }
+          width: "calc(60% - 10px)",
+        },
       },
       cellHide: {
         [defaultTheme.breakpoints.down("sm")]: {
-          width: 'calc(40% - 30px) !important'
-        }
+          width: "calc(40% - 30px) !important",
+        },
       },
     },
-  }
+  },
 });

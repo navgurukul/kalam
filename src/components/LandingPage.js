@@ -1,142 +1,141 @@
-import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
-import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import { theme } from '../theme/theme';
-import axios from 'axios';
-import { connect } from 'react-redux';
-import { withSnackbar } from 'notistack';
-import { changeFetching } from '../store/actions/auth';
-import VideoSlider from './VideoSlider';
-import Grid from '@material-ui/core/Grid';
-import StudentStatus from './StudentStatus';
+import React from "react";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+import Paper from "@material-ui/core/Paper";
+import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import { theme } from "../theme/theme";
+import axios from "axios";
+import { connect } from "react-redux";
+import { withSnackbar } from "notistack";
+import { changeFetching } from "../store/actions/auth";
+import VideoSlider from "./VideoSlider";
+import Grid from "@material-ui/core/Grid";
+import StudentStatus from "./StudentStatus";
 import Header from "./Header";
 
-
 const baseUrl = process.env.API_URL;
-const testUrl = 'http://join.navgurukul.org/k/'
+const testUrl = "http://join.navgurukul.org/k/";
 
-const styles = theme => ({
+const styles = (theme) => ({
   loginContainer: {
     padding: theme.spacing(3, 2),
     maxWidth: 400,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    margin: 'auto',
-    boxShadow: 'none'
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    margin: "auto",
+    boxShadow: "none",
   },
   container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
     margin: theme.spacing(4),
   },
   root: {
-    '& > *': {
+    "& > *": {
       margin: theme.spacing(1),
     },
     flexGrow: 1,
   },
   paper: {
     padding: theme.spacing(1),
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 32,
-    [theme.breakpoints.down('md')]: {
-      fontSize: 24
-    }
+    [theme.breakpoints.down("md")]: {
+      fontSize: 24,
+    },
   },
   typography: {
-    fontFamily: 'BlinkMacSystemFont',
+    fontFamily: "BlinkMacSystemFont",
   },
   fixedFooter: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up("sm")]: {
       position: "fixed",
       left: 0,
       right: 0,
-      bottom: 0
-    }
-  }
+      bottom: 0,
+    },
+  },
 });
-
 
 export class LandingPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mobileNumber: '',
-      mobile: '',
-      selectedLang: 'en',
-      partnerId: ''
-    }
+      mobileNumber: "",
+      mobile: "",
+      selectedLang: "en",
+      partnerId: "",
+    };
 
     this.lang = {
       Heading: {
-        en: 'Software Engineering Scholarship',
-        hi: 'सॉफ्टवेयर Engineering शिष्यवृत्ती'
+        en: "Software Engineering Scholarship",
+        hi: "सॉफ्टवेयर Engineering शिष्यवृत्ती",
       },
       Course: {
-        en: 'Course Information',
-        hi: 'कोर्स के बारे में जाने'
+        en: "Course Information",
+        hi: "कोर्स के बारे में जाने",
       },
       Status: {
-        en: 'Check Status By Registered Number',
-        hi: 'रजिस्टर मोबाइल नंबर से अपना स्टेटस देखे'
+        en: "Check Status By Registered Number",
+        hi: "रजिस्टर मोबाइल नंबर से अपना स्टेटस देखे",
       },
       AdmisssionTitle: {
-        en: 'Start Admisssion Test',
-        hi: 'परीक्षा सुरु करे ',
+        en: "Start Admisssion Test",
+        hi: "परीक्षा सुरु करे ",
       },
       TestButton: {
-        en: 'GIVE TEST',
-        hi: 'परीक्षा दे।'
+        en: "GIVE TEST",
+        hi: "परीक्षा दे।",
       },
       StatusButton: {
-        en: 'GET STATUS',
-        hi: 'स्तिथि देखे'
+        en: "GET STATUS",
+        hi: "स्तिथि देखे",
       },
       Footer: {
-        en: 'For more queries, write at hi@navgurukul.org',
-        hi: 'अधिक जानकारी के लिए ईमेल करे: hi@navgurukul.org'
-      }
-    }
+        en: "For more queries, write at hi@navgurukul.org",
+        hi: "अधिक जानकारी के लिए ईमेल करे: hi@navgurukul.org",
+      },
+    };
   }
 
   onChangeEvent = (e) => {
     this.setState({
       mobileNumber: e.target.value,
-    })
-  }
+    });
+  };
 
   onChangeEventStatus = (e) => {
     this.setState({
       mobile: e.target.value,
-    })
-  }
+    });
+  };
   async generateTestLink() {
     try {
       const partnerId = this.state.partnerId ? this.state.partnerId : null;
-      const mobile = '0' + this.state.mobileNumber;
-      this.props.fetchingStart()
-      const dataURL = baseUrl + 'helpline/register_exotel_call'
+      const mobile = "0" + this.state.mobileNumber;
+      this.props.fetchingStart();
+      const dataURL = baseUrl + "helpline/register_exotel_call";
       const response = await axios.get(dataURL, {
         params: {
-          ngCallType: 'getEnrolmentKey',
+          ngCallType: "getEnrolmentKey",
           From: mobile,
-          partner_id: partnerId
-        }
+          partner_id: partnerId,
+        },
       });
       return response;
     } catch (e) {
-      this.props.enqueueSnackbar('Please enter valid mobile number!', {
-        variant: 'error', anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        }
+      this.props.enqueueSnackbar("Please enter valid mobile number!", {
+        variant: "error",
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "center",
+        },
       });
       console.log(e);
       this.props.fetchingFinish();
@@ -145,52 +144,72 @@ export class LandingPage extends React.Component {
 
   async openTest() {
     const response = await this.generateTestLink();
-    window.open(`${testUrl}${response.data.key}`, '_blank');
-    this.setState({ mobileNumber: '' })
-    this.props.fetchingFinish()
+    window.open(`${testUrl}${response.data.key}`, "_blank");
+    this.setState({ mobileNumber: "" });
+    this.props.fetchingFinish();
   }
 
   giveTest = () => {
-    this.openTest()
-  }
+    this.openTest();
+  };
 
-  handleChange = e => {
-    console.log('changing value to', e.target.value)
+  handleChange = (e) => {
+    console.log("changing value to", e.target.value);
     this.setState({
-      selectedLang: e.target.value
-    })
-  }
+      selectedLang: e.target.value,
+    });
+  };
 
   componentDidMount() {
-    const slug  = window.location.href.split('partnerLanding/')[1];
-    if(slug) {
-      this.partnerFetch(slug)
+    const slug = window.location.href.split("partnerLanding/")[1];
+    if (slug) {
+      this.partnerFetch(slug);
     }
   }
-  
+
   async partnerFetch(slug) {
     const { history } = this.props;
     try {
       const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
       this.setState({
-        partnerId: response.data.data['id']
-      })
+        partnerId: response.data.data["id"],
+      });
     } catch (e) {
-      console.log(e)
-      history.push('/notFound')
+      console.log(e);
+      history.push("/notFound");
     }
   }
-  
+
   render = () => {
     const { classes } = this.props;
     let mobile = this.state.mobile;
     return (
-      <div style={{flexDirection: "column", justifyContent: "space-between", alignItems: "center", minHeight: "calc(100vh - 48px)", display: "flex"}}>
-        <Header onChange={this.handleChange} value={this.state.selectedLang}/>
+      <div
+        style={{
+          flexDirection: "column",
+          justifyContent: "space-between",
+          alignItems: "center",
+          minHeight: "calc(100vh - 48px)",
+          display: "flex",
+        }}
+      >
+        <Header onChange={this.handleChange} value={this.state.selectedLang} />
         <MuiThemeProvider theme={theme}>
-          <Typography className={classes.paper}>{this.lang.Heading[this.state.selectedLang]}</Typography>
+          <Typography className={classes.paper}>
+            {this.lang.Heading[this.state.selectedLang]}
+          </Typography>
           <Grid container>
-            <Grid item xs={12} sm={6} style={{flexDirection: "column", justifyContent: "center", alignItems: "center", display: "flex"}}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              style={{
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+              }}
+            >
               <Grid item>
                 <VideoSlider language={this.state.selectedLang} />
               </Grid>
@@ -203,7 +222,9 @@ export class LandingPage extends React.Component {
                 <Paper className={classes.loginContainer}>
                   <Box>
                     <Grid item xs={12}>
-                      <Typography variant="h5" component="h4" >{this.lang.AdmisssionTitle[this.state.selectedLang]}</Typography>
+                      <Typography variant="h5" component="h4">
+                        {this.lang.AdmisssionTitle[this.state.selectedLang]}
+                      </Typography>
                     </Grid>
                   </Box>
                   <Box style={{ height: theme.spacing(2) }} />
@@ -219,17 +240,36 @@ export class LandingPage extends React.Component {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      variant="outlined" />
+                      variant="outlined"
+                    />
                   </Box>
                   <div className={classes.root}>
-                    <Button variant="outlined" onClick={this.giveTest} color="primary">{this.lang.TestButton[this.state.selectedLang]}</Button>
+                    <Button
+                      variant="outlined"
+                      onClick={this.giveTest}
+                      color="primary"
+                    >
+                      {this.lang.TestButton[this.state.selectedLang]}
+                    </Button>
                   </div>
                 </Paper>
               </Grid>
               <Box style={{ height: theme.spacing(6) }} />
               <Grid item>
-                <Box display="flex" alignItems="center" flexDirection="column" px={4} style={{textAlign: "center"}}>
-                  <Typography className={classes.typography} variant="h5" component="h3" >{this.lang.Status[this.state.selectedLang]}</Typography>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  flexDirection="column"
+                  px={4}
+                  style={{ textAlign: "center" }}
+                >
+                  <Typography
+                    className={classes.typography}
+                    variant="h5"
+                    component="h3"
+                  >
+                    {this.lang.Status[this.state.selectedLang]}
+                  </Typography>
                 </Box>
               </Grid>
               <Grid item>
@@ -246,7 +286,8 @@ export class LandingPage extends React.Component {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      variant="outlined" />
+                      variant="outlined"
+                    />
                   </Box>
                   <div className={classes.root}>
                     <StudentStatus
@@ -259,9 +300,14 @@ export class LandingPage extends React.Component {
             </Grid>
           </Grid>
         </MuiThemeProvider>
-        <Box style={{height: theme.spacing(6)}}></Box>
+        <Box style={{ height: theme.spacing(6) }}></Box>
         <Box>
-          <Box className="footer-container-box" style={{width: "100vw", paddingLeft: 0, paddingRight: 0}} p={1} mt={2}>
+          <Box
+            className="footer-container-box"
+            style={{ width: "100vw", paddingLeft: 0, paddingRight: 0 }}
+            p={1}
+            mt={2}
+          >
             <Typography variant="body1">
               {this.lang.Footer[this.state.selectedLang]}
             </Typography>
@@ -269,7 +315,7 @@ export class LandingPage extends React.Component {
         </Box>
       </div>
     );
-  }
+  };
 }
 
 const mapDispatchToProps = (dispatch) => ({
@@ -277,4 +323,6 @@ const mapDispatchToProps = (dispatch) => ({
   fetchingFinish: () => dispatch(changeFetching(false)),
 });
 
-export default withSnackbar(withStyles(styles)(connect(undefined, mapDispatchToProps)(LandingPage)));
+export default withSnackbar(
+  withStyles(styles)(connect(undefined, mapDispatchToProps)(LandingPage))
+);

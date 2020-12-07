@@ -1,23 +1,28 @@
-import axios from 'axios';
+import axios from "axios";
 // import { useHistory } from "react-router-dom";
-import history from './history';
+import history from "./history";
 
 const BASE_URL = process.env.API_URL;
 
-export default async function ngFetch(url, method='GET', options={}, useAuth=true) {
+export default async function ngFetch(
+  url,
+  method = "GET",
+  options = {},
+  useAuth = true
+) {
   let opts = {
     url: `${BASE_URL}${url}`,
     method,
-    ...options
+    ...options,
   };
   if (useAuth) {
-    const jwt = localStorage.getItem('jwt');
+    const jwt = localStorage.getItem("jwt");
     if (opts.headers) {
       opts.headers["Authorization"] = jwt;
     } else {
       opts.headers = {
-        'Authorization': jwt
-      }
+        Authorization: jwt,
+      };
     }
   }
   try {
@@ -26,8 +31,8 @@ export default async function ngFetch(url, method='GET', options={}, useAuth=tru
   } catch (err) {
     console.log(err);
     if (err.response.status === 401) {
-      localStorage.removeItem('jwt');
-      history.push('/')
+      localStorage.removeItem("jwt");
+      history.push("/");
     }
   }
 }

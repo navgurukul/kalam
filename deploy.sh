@@ -6,7 +6,7 @@ git reset --hard origin/main
 
 npm run build
 
-cp -r build/* .
+cp -r dist/* .
 
 echo 'admissions.navgurukul.org' > CNAME
 

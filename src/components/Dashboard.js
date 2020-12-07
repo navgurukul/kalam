@@ -16,6 +16,7 @@ import { withRouter } from "react-router-dom";
 import StudentService from "../services/StudentService";
 import { EventEmitter } from "./events";
 import MainLayout from "./MainLayout";
+import { qualificationKeys } from "../config";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseUrl = process.env.API_URL;
@@ -181,6 +182,11 @@ export class DashboardPage extends React.Component {
   async fetchStudents() {
     try {
       this.props.fetchingStart();
+      // const qualificationKeys = Object.assign(
+      //   {},
+      //   ...Object.entries(qualification).map(([k, v]) => ({ [v]: k }))
+      // );
+
       const dataURL =
         baseUrl + "partners/" + this.props.match.params.partnerId + "/students";
       const response = await axios.get(dataURL, {
@@ -189,7 +195,13 @@ export class DashboardPage extends React.Component {
           to: this.toDate,
         },
       });
-      this.dataSetup(response.data.data);
+      const studentData = response.data.data.map((student) => {
+        return {
+          ...student,
+          qualification: qualificationKeys[student.qualification],
+        };
+      });
+      this.dataSetup(studentData);
     } catch (e) {
       console.log(e);
       this.props.fetchingFinish();

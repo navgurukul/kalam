@@ -201,6 +201,7 @@ export class DashboardPage extends React.Component {
           qualification: qualificationKeys[student.qualification],
         };
       });
+      console.log(studentData);
       this.dataSetup(studentData);
     } catch (e) {
       console.log(e);

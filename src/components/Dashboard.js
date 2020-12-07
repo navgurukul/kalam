@@ -202,6 +202,7 @@ export class DashboardPage extends React.Component {
         };
       });
       console.log(studentData);
+      console.log("AbraKaDabra");
       this.dataSetup(studentData);
     } catch (e) {
       console.log(e);

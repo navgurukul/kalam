@@ -207,6 +207,7 @@ export class DashboardPage extends React.Component {
           to: this.toDate,
         },
       });
+      console.log(qualificationKeys);
       const studentData = response.data.data.map((student) => {
         return {
           ...student,

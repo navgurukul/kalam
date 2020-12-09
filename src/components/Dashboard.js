@@ -207,15 +207,12 @@ export class DashboardPage extends React.Component {
           to: this.toDate,
         },
       });
-      console.log(response.data.data);
       const studentData = response.data.data.map((student) => {
         return {
           ...student,
           qualification: qualificationKeys[student.qualification],
         };
       });
-      console.log(studentData);
-      console.log("AbraKaDabra");
       this.dataSetup(studentData);
     } catch (e) {
       console.log(e);

@@ -16,25 +16,13 @@ import { withRouter } from "react-router-dom";
 import StudentService from "../services/StudentService";
 import { EventEmitter } from "./events";
 import MainLayout from "./MainLayout";
-// import { qualificationKeys } from "../config";
+import { qualificationKeys } from "../config";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseUrl = process.env.API_URL;
 
 let columns;
 let filterFns = [];
-const qualificationKeys = {
-  1: "Less than 10th",
-  2: "Class 10th",
-  3: "Class 12th",
-  4: "Graduate",
-  5: "B.A.",
-  6: "B.Com.",
-  7: "M.Sc.",
-  8: "BCA",
-  9: "B.Sc.",
-  10: "BBA",
-};
 
 export class DashboardPage extends React.Component {
   constructor(props) {

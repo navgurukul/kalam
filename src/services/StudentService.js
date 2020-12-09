@@ -105,6 +105,16 @@ const marksColumn = {
   },
 };
 
+const ageColumn = {
+  name: "age",
+  label: "Age",
+  options: {
+    filter: false,
+    sort: false,
+    display: false,
+  },
+};
+
 const genderColumn = {
   name: "gender",
   label: "Gender",
@@ -225,7 +235,7 @@ const deadlineColumn = {
           return (
             <p style={{ color: "#FF0000	", letterSpacing: "1px" }}>
               {" "}
-              Your deadline is <b>fineshed</b> please do this work ASAP.
+              Your deadline is <b>finished</b> please do this work ASAP.
             </p>
           );
         } else if (deadline === 60 && remainingTime < 20) {
@@ -262,7 +272,7 @@ const deadlineColumn = {
   },
 };
 
-const stausColumn = {
+const statusColumn = {
   name: "status",
   label: "Status",
   options: {
@@ -497,7 +507,7 @@ const feedbackColumnMyreport = {
   },
 };
 
-const stausColumnMyreport = {
+const statusColumnMyreport = {
   label: "Status",
   name: "state",
   options: {
@@ -591,8 +601,8 @@ const QualificationColumn = {
   },
 };
 
-const ReligonColumn = {
-  label: "Religon",
+const ReligionColumn = {
+  label: "Religion",
   name: "religon",
   options: {
     filter: false,
@@ -699,14 +709,15 @@ const StudentService = {
       lastUpdatedColumn,
       EmailColumn,
       QualificationColumn,
-      ReligonColumn,
+      ReligionColumn,
       CasteColumn,
       loggedInUserColumn,
       ownerColumnMyreport,
-      stausColumn,
+      statusColumn,
       deadlineColumn,
       partnerNameColumn,
       onlineClassColumn,
+      ageColumn,
     ],
     columnTransition: [
       stageColumnTransition,
@@ -737,7 +748,7 @@ const StudentService = {
     nameColumn,
     StageColumnMyreport,
     feedbackColumnMyreport,
-    stausColumnMyreport,
+    statusColumnMyreport,
     ownerColumnMyreport,
     assignDateColumnMyreport,
   ],
@@ -765,6 +776,7 @@ const StudentService = {
       : null;
     x.marks = isNaN(x.marks) ? null : x.marks;
     x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;
+    x.age = x.dob ? new Date().getFullYear() - +x.dob.slice(0, 4) : "NA";
     return x;
   },
 

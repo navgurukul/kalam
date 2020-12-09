@@ -189,7 +189,7 @@ class ProgressMadeForPartner extends Component {
               aria-label="large outlined primary button group"
             >
               <Button onClick={this.progressMade}>Progress Made</Button>
-              <Button onClick={this.tabularData}>Tab Data</Button>
+              <Button onClick={this.tabularData}>Tabular Data</Button>
             </ButtonGroup>
           </Grid>
           {progress && (

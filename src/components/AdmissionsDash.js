@@ -20,6 +20,7 @@ import {
 } from "@material-ui/pickers";
 import { allStages } from "../config";
 import MainLayout from "./MainLayout";
+import { qualificationKeys } from "../config";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -265,7 +266,14 @@ export class AdmissionsDash extends React.Component {
           },
         });
       }
-      this.dataSetup(response.data.data);
+
+      const studentData = response.data.data.map((student) => {
+        return {
+          ...student,
+          qualification: qualificationKeys[student.qualification],
+        };
+      });
+      this.dataSetup(studentData);
     } catch (e) {
       console.log(e);
       this.props.fetchingFinish();

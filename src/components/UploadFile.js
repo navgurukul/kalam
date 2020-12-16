@@ -24,7 +24,7 @@ export class UploadFile extends React.Component {
   async handleUpload () {
     try {
       this.props.fetchingStart()
-      const dataURL = 'http://join.navgurukul.org/api/general/upload_file/answerCSV'
+      const dataURL = 'http://admissions.navgurukul.org/api/general/upload_file/answerCSV'
       const response = await axios.post(dataURL, {
         "file": this.uploadInput.files[0]
       })

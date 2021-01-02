@@ -123,10 +123,12 @@ export class AdmissionsDash extends React.Component {
       for (let i = 0; i < data.length; i++) {
         data[i] = StudentService.dConvert(data[i]);
       }
-      const newData = data.map((v) => ({
-        ...v,
-        loggedInUser: this.props.loggedInUser.email.split("@")[0],
-      }));
+      const newData = data.map((v) => {
+        return {
+          ...v,
+          loggedInUser: this.props.loggedInUser.email.split("@")[0],
+        };
+      });
       this.setState(
         { data: newData, fromDate: newData.slice(-1)[0].created_at },
         function () {
@@ -271,6 +273,7 @@ export class AdmissionsDash extends React.Component {
         return {
           ...student,
           qualification: qualificationKeys[student.qualification],
+          studentOwner: "",
         };
       });
       this.dataSetup(studentData);

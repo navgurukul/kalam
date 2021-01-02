@@ -39,11 +39,16 @@ export class AddPartnerPage extends React.Component {
     try {
       this.props.fetchingStart();
       const dataURL = baseUrl + "partners";
-      const response = await axios.post(dataURL, {
-        name: name,
-        notes: notes,
-        slug: slug,
-      });
+      console.log(localStorage.getItem("jwt"));
+      const response = await axios.post(
+        dataURL,
+        {
+          name: name,
+          notes: notes,
+          slug: slug,
+        },
+        { headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` } }
+      );
       this.props.fetchingFinish();
       this.props.history.push("/partners");
     } catch (e) {

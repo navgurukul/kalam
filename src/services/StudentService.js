@@ -331,7 +331,7 @@ const feedbackColumnTransition = {
 };
 
 const ownerColumnTransition = {
-  name: "to_assign",
+  name: "studentOwner",
   label: "Owner",
   options: {
     filter: false,
@@ -465,7 +465,6 @@ const AudioPlayer = {
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       return (
         <div>
-          {console.log(rowMeta)}
           {ifExistingFeedback && value ? (
             <AudioRecorder audioUrl={value} />
           ) : null}
@@ -517,7 +516,7 @@ const statusColumnMyreport = {
 
 const ownerColumnMyreport = {
   label: "Owner",
-  name: "to_assign",
+  name: "studentOwner",
   options: {
     filter: true,
   },
@@ -777,6 +776,7 @@ const StudentService = {
     x.marks = isNaN(x.marks) ? null : x.marks;
     x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;
     x.age = x.dob ? new Date().getFullYear() - +x.dob.slice(0, 4) : "NA";
+    x.studentOwner = x.feedbacks ? x.feedbacks.to_assign : x.to_assign;
     return x;
   },
 

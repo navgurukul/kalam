@@ -224,7 +224,10 @@ const deadlineColumn = {
     customBodyRender: (rowData, rowMeta) => {
       if (rowData) {
         const studentStage = _.invert(allStages)[rowMeta.rowData[8]];
-        const deadline = feedbackableStagesData[studentStage].deadline;
+        let deadline;
+        if (feedbackableStages.studentStage) {
+          deadline = feedbackableStagesData[studentStage].deadline;
+        }
         const diff = new Date().getTime() - new Date(rowData).getTime();
         const hours = Math.floor(diff / 1000 / 60 / 60);
         const remainingTime = deadline - hours;
@@ -528,6 +531,7 @@ const assignDateColumnMyreport = {
   options: {
     filter: false,
     customBodyRender: (rowData) => {
+      console.log(rowData);
       return (
         <Moment format="D MMM YYYY" withTitle>
           {rowData}

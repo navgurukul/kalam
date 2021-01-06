@@ -16,7 +16,7 @@ import StudentStatus from "./StudentStatus";
 import Header from "./Header";
 
 const baseUrl = process.env.API_URL;
-const testUrl = "http://admissions.navgurukul.org/k/";
+const testUrl = "http://join.navgurukul.org/k/";
 
 const styles = (theme) => ({
   loginContainer: {

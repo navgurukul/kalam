@@ -38,7 +38,7 @@ export class OwnerSelect extends React.Component {
   };
 
   render = () => {
-    const { value } = this.props;
+    const { value, currentValue } = this.props;
     const allUserOptions = this.props.users.map((x) => {
       return { label: x.user, value: x.user };
     });
@@ -47,10 +47,10 @@ export class OwnerSelect extends React.Component {
     if (value) {
       selectedValue = { value: value, label: value };
     }
+
     return (
       <Select
         className={"filterSelectStage"}
-        // defaultValue={selectedValue}
         value={selectedValue}
         onChange={this.handleChange}
         options={allUserOptions}

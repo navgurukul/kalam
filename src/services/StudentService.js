@@ -309,6 +309,7 @@ const feedbackColumnTransition = {
     filter: false,
     sort: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
+      console.log(rowMeta);
       const ifExistingFeedback =
         rowData || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       return (
@@ -347,6 +348,7 @@ const ownerColumnTransition = {
         <div>
           {ifExistingFeedback ? (
             <OwnerSelect
+              currentValue={"Saquib"}
               rowMetaTable={rowMeta}
               value={rowData}
               change={(event) => updateValue(event)}
@@ -531,7 +533,6 @@ const assignDateColumnMyreport = {
   options: {
     filter: false,
     customBodyRender: (rowData) => {
-      console.log(rowData);
       return (
         <Moment format="D MMM YYYY" withTitle>
           {rowData}

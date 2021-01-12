@@ -168,7 +168,7 @@ export class ModalStages extends React.Component {
             View Assessments<br />
           </Typography>
 
-          <MUIDataTable
+          <MUIDataTable 
             columns={this.columns}
             data={this.state.data}
             icons={GlobalService.tableIcons}

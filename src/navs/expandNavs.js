@@ -38,7 +38,7 @@ class ExpandNav extends React.Component {
 
   render() {
     return (
-      <List component="nav">
+      <List component="nav" >
         <ListItem button onClick={this.handleClick}>
           <ListItemIcon className="innernavitem">
             <LabelIcon />

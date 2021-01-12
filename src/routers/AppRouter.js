@@ -3,6 +3,7 @@ import { Router, Route, Switch } from "react-router-dom";
 import LandingPage from "../components/LandingPage";
 import DashboardPage from "../components/Dashboard";
 import PartnerList from "../components/PartnerList";
+import OutreachDetails from "../components/OutreachDetails"
 import AddPartner from "../components/AddPartner";
 import AdmissionsDash from "../components/AdmissionsDash";
 import AssessmentAttempts from "../components/AssessmentAttempts";
@@ -58,6 +59,7 @@ const AppRouter = () => (
         />
         <AnyRoute path="/partnerLanding/:slug" component={LandingPage} />
         <PrivateRoute path="/partners" component={PartnerList} />
+        <PrivateRoute path="/outreachDetails" component={OutreachDetails} />
         <AnyRoute
           path="/partners/:partnerId/assessments/:assessmentId"
           component={AssessmentAttempts}

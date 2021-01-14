@@ -22,6 +22,12 @@ export const publicNavs = [
     name: "Partners",
     icon: <ExtensionIcon />,
   },
+
+  {
+    url: "/outreachDetails",
+    name: "Outreach    Details",
+    icon: <ExtensionIcon />,
+  },
   {
     url: "/tasks",
     name: "My Tasks",
@@ -74,7 +80,7 @@ export default () =>
           {" "}
           <ListItem button>
             <ListItemIcon className="innernavitem">{navItem.icon}</ListItemIcon>
-            <ListItemText
+            <ListItemText 
               primary={navItem.name}
               className="innernavitem"
               color="black"

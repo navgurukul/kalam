@@ -18,4 +18,4 @@ git push origin gh-pages --force
 
 git checkout main
 
-# rm -rf dist/
+rm -rf dist/

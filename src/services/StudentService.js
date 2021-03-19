@@ -6,10 +6,12 @@ import {
   permissions,
   allTagsForOnlineClass,
 } from "../config";
+import EditableLabel from "react-inline-editing";
 import Moment from "react-moment";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import StageSelect from "../components/StageSelect";
+import EmailUpdate from "../components/EmailUpdate";
 import OwnerSelect from "../components/OwnerSelect";
 import StatusSelect from "../components/StatusSelect";
 import StudentFeedback from "../components/FeedbackPage";
@@ -21,6 +23,14 @@ import TagsForOnlineClass from "../components/tagsForOnlineClass";
 
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
+
+// _handleFocus = (text) => {
+//   console.log("Focused with text: " + text);
+// };
+
+// _handleFocusOut = (text) => {
+//   console.log("Left editor with text: " + text);
+// };
 
 const allStagesOptions = Object.keys(allStages).map((x) => {
   return allStages[x];
@@ -221,6 +231,7 @@ const deadlineColumn = {
   options: {
     filter: false,
     sort: false,
+    display: false,
     customBodyRender: (rowData, rowMeta) => {
       if (rowData) {
         const studentStage = _.invert(allStages)[rowMeta.rowData[8]];
@@ -281,6 +292,7 @@ const statusColumn = {
   options: {
     filter: false,
     sort: false,
+    display: false,
     customBodyRender: (state) => {
       if (state) {
         return (state.charAt(0).toUpperCase() + state.slice(1))
@@ -592,7 +604,11 @@ const EmailColumn = {
   name: "email",
   options: {
     filter: false,
-    display: false,
+    display: true,
+    customBodyRender: (rowData, rowMeta) => {
+      const emailAddress = rowData ? rowData : "Update Email";
+      return <EmailUpdate email={emailAddress} rowMetatable={rowMeta} />;
+    },
   },
 };
 

@@ -41,6 +41,7 @@
     "notistack": "^0.9.7",
     "react-copy-to-clipboard": "^5.0.2",
     "react-device-detect": "^1.12.1",
+    "react-easy-edit": "^1.13.1",
     "react-google-login": "^5.0.7",
     "react-inline-editing": "^1.0.10",
     "react-json-view": "^1.19.1",

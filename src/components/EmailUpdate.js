@@ -1,5 +1,5 @@
 import React from "react";
-import EditableLabel from "react-inline-editing";
+import EasyEdit from 'react-easy-edit';
 import axios from "axios";
 import { withSnackbar } from "notistack";
 // const _ = require("underscore");
@@ -35,15 +35,14 @@ export class EmailUpdate extends React.Component {
   };
 
   render = () => {
-    const { email } = this.props;
     return (
-      <EditableLabel
-        text={email}
-        labelFontWeight="bold"
-        inputFontWeight="bold"
-        inputHeight="25px"
-        onFocusOut={(email) => this.handleUpdate(email)}
-      />
+      <EasyEdit
+      type="text"
+      value={this.props.email}
+      onSave={(email) => this.handleUpdate(email)}
+      saveButtonLabel="✔"
+      cancelButtonLabel="✖"
+    />
     );
   };
 }

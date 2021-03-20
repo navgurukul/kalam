@@ -1,5 +1,5 @@
 import React from "react";
-import EasyEdit from 'react-easy-edit';
+import EasyEdit from "react-easy-edit";
 import axios from "axios";
 import { withSnackbar } from "notistack";
 // const _ = require("underscore");
@@ -14,8 +14,7 @@ export class EmailUpdate extends React.Component {
   handleUpdate = (email) => {
     const { rowMetatable, change } = this.props;
     const studentId = rowMetatable.rowData[0];
-    const columnIndex = rowMetatable.columnIndex;
-    console.log(email);
+    // const columnIndex = rowMetatable.columnIndex;
     axios
       .put(`${baseUrl}students/updateEmail/${studentId}`, { email })
       .then(() => {
@@ -23,8 +22,7 @@ export class EmailUpdate extends React.Component {
         this.props.enqueueSnackbar("Email updated successfully!", {
           variant: "success",
         });
-        console.log(label, columnIndex);
-        change(label, columnIndex);
+        // #TODO this.props.change goes unused
       })
       .catch(() => {
         console.log("Failed");
@@ -37,12 +35,12 @@ export class EmailUpdate extends React.Component {
   render = () => {
     return (
       <EasyEdit
-      type="text"
-      value={this.props.email}
-      onSave={(email) => this.handleUpdate(email)}
-      saveButtonLabel="✔"
-      cancelButtonLabel="✖"
-    />
+        type="text"
+        value={this.props.email}
+        onSave={(email) => this.handleUpdate(email)}
+        saveButtonLabel="✔"
+        cancelButtonLabel="✖"
+      />
     );
   };
 }

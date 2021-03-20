@@ -12,8 +12,9 @@ export class EmailUpdate extends React.Component {
   }
 
   handleUpdate = (email) => {
-    const { rowMetatable } = this.props;
+    const { rowMetatable, change } = this.props;
     const studentId = rowMetatable.rowData[0];
+    const columnIndex = rowMetatable.columnIndex;
     console.log(email);
     axios
       .put(`${baseUrl}students/updateEmail/${studentId}`, { email })
@@ -22,6 +23,8 @@ export class EmailUpdate extends React.Component {
         this.props.enqueueSnackbar("Email updated successfully!", {
           variant: "success",
         });
+        console.log(label, columnIndex);
+        change(label, columnIndex);
       })
       .catch(() => {
         console.log("Failed");

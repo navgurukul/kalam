@@ -605,9 +605,15 @@ const EmailColumn = {
   options: {
     filter: false,
     display: true,
-    customBodyRender: (rowData, rowMeta) => {
+    customBodyRender: (rowData, rowMeta, updateValue) => {
       const emailAddress = rowData ? rowData : "Update Email";
-      return <EmailUpdate email={emailAddress} rowMetatable={rowMeta} />;
+      return (
+        <EmailUpdate
+          email={emailAddress}
+          rowMetatable={rowMeta}
+          change={(event) => updateValue(event)}
+        />
+      );
     },
   },
 };

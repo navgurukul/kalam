@@ -23,6 +23,7 @@ export class EmailUpdate extends React.Component {
           variant: "success",
         });
         // #TODO this.props.change goes unused
+        change(email);
       })
       .catch(() => {
         console.log("Failed");

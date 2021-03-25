@@ -164,7 +164,7 @@ export class ModalStages extends React.Component {
       >
         <div style={modalStyle} className={classes.paper}>
 
-          <Typography variant="h5" id="modal-title">
+          <Typography variant="h5" id="modal-title" style={{backgroundColor:'red'}}>
             View Assessments<br />
           </Typography>
 

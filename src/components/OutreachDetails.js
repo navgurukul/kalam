@@ -76,8 +76,7 @@ export class OutreachDetails extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {this.state.listOfOutreachTeam.length > 0 &&
-                  this.state.listOfOutreachTeam.map((item, index) => {
+                {this.state.listOfOutreachTeam.map((item, index) => {
                     let countOfStudent = 0;
                     return (
                       <TableRow key={index}>

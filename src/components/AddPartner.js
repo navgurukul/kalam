@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import Card from "@material-ui/core/Card";
 import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
 
 import axios from "axios";
@@ -25,6 +26,11 @@ const styles = (theme) => ({
     flexDirection: "column",
     maxWidth: 400,
   },
+  root: {
+    maxWidth: 400,
+    margin: "auto",
+    marginTop: "100px",
+  },
   text: {
     marginBottom: theme.spacing(1),
   },
@@ -35,7 +41,7 @@ const styles = (theme) => ({
 
 export class AddPartnerPage extends React.Component {
   async addPartner() {
-    const { name, notes, slug } = this.state;
+    const { name, email, notes, slug } = this.state;
     try {
       this.props.fetchingStart();
       const dataURL = baseUrl + "partners";
@@ -44,11 +50,13 @@ export class AddPartnerPage extends React.Component {
         dataURL,
         {
           name: name,
+          email: email,
           notes: notes,
           slug: slug,
         },
         { headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` } }
       );
+
       this.props.fetchingFinish();
       this.props.history.push("/partners");
     } catch (e) {
@@ -71,6 +79,7 @@ export class AddPartnerPage extends React.Component {
     super(props);
     this.state = {
       name: "",
+      email: "",
       notes: "",
       slug: "",
     };
@@ -79,7 +88,6 @@ export class AddPartnerPage extends React.Component {
   handleChange = (name) => (event) => {
     let valChange = {};
     valChange[name] = event.target.value;
-
     this.setState(valChange);
   };
 
@@ -87,58 +95,74 @@ export class AddPartnerPage extends React.Component {
     const { classes } = this.props;
 
     return (
-      <form className={classes.container}>
-        <FormControl>
-          <InputLabel htmlFor="partnerName">Partner Name</InputLabel>
-          <Input
-            id="partnerName"
-            aria-describedby="my-helper-text"
-            name="name"
-            value={this.state.name}
-            onChange={this.handleChange("name")}
-          />
-          <FormHelperText className={classes.text} id="my-helper-text">
-            Partner ka Name Enter karein.
-          </FormHelperText>
-        </FormControl>
+      <Card className={classes.root}>
+        <form className={classes.container}>
+          <FormControl>
+            <InputLabel htmlFor="partnerName">Partner Name</InputLabel>
+            <Input
+              id="partnerName"
+              aria-describedby="my-helper-text"
+              name="name"
+              value={this.state.name}
+              onChange={this.handleChange("name")}
+            />
+            <FormHelperText className={classes.text} id="my-helper-text">
+              Partner ka Name Enter karein.
+            </FormHelperText>
+          </FormControl>
 
-        <FormControl>
-          <InputLabel htmlFor="partnerNotes">Partner Notes</InputLabel>
-          <Input
-            id="partnerNotes"
-            aria-describedby="my-helper-text"
-            name="notes"
-            value={this.state.notes}
-            onChange={this.handleChange("notes")}
-          />
-          <FormHelperText className={classes.text} id="my-helper-text">
-            Partner ki thodi details add karein.
-          </FormHelperText>
-        </FormControl>
+          <FormControl>
+            <InputLabel htmlFor="partnerEmail">Partner Email</InputLabel>
+            <Input
+              id="partnerEmail"
+              aria-describedby="my-helper-text"
+              name="email"
+              value={this.state.email}
+              onChange={this.handleChange("email")}
+            />
+            <FormHelperText className={classes.text} id="my-helper-text">
+              Partner ka Name Enter karein.
+            </FormHelperText>
+          </FormControl>
 
-        <FormControl>
-          <InputLabel htmlFor="partnerNotes">Partner Slug</InputLabel>
-          <Input
-            id="partnerNotes"
-            aria-describedby="my-helper-text"
-            name="notes"
-            value={this.state.slug}
-            onChange={this.handleChange("slug")}
-          />
-          <FormHelperText className={classes.text} id="my-helper-text">
-            Partner ke student ko online test dene ke liye Slug add karo.
-          </FormHelperText>
-        </FormControl>
+          <FormControl>
+            <InputLabel htmlFor="partnerNotes">Partner Notes</InputLabel>
+            <Input
+              id="partnerNotes"
+              aria-describedby="my-helper-text"
+              name="notes"
+              value={this.state.notes}
+              onChange={this.handleChange("notes")}
+            />
+            <FormHelperText className={classes.text} id="my-helper-text">
+              Partner ki thodi details add karein.
+            </FormHelperText>
+          </FormControl>
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={this.onSubmit}
-          className={classes.btn}
-        >
-          Add Partner
-        </Button>
-      </form>
+          <FormControl>
+            <InputLabel htmlFor="partnerNotes">Partner Slug</InputLabel>
+            <Input
+              id="partnerNotes"
+              aria-describedby="my-helper-text"
+              name="notes"
+              value={this.state.slug}
+              onChange={this.handleChange("slug")}
+            />
+            <FormHelperText className={classes.text} id="my-helper-text">
+              Partner ke student ko online test dene ke liye Slug add karo.
+            </FormHelperText>
+          </FormControl>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={this.onSubmit}
+            className={classes.btn}
+          >
+            Add Partner
+          </Button>
+        </form>
+      </Card>
     );
   };
 }

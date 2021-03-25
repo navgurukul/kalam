@@ -50,6 +50,7 @@ const columns = [
       }
     }
   },
+  
   {
     name: 'notes',
     label: 'View Assessments',

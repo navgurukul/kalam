@@ -93,13 +93,12 @@ export class AdmissionsDash extends React.Component {
   };
 
   changeStudentStage = (option) => {
-    console.log("Poonam BAHAR",option.value)
     this.value = { value: option.value, label: allStages[option.value] };
     if (option.value === "default") {
       this.stage = null;
       this.dataType = "softwareCourse";
       this.fetchStudents();
-      this.value = "Student Detials"
+      this.value = "Student Details"
     } else {
       this.stage = option.value;
       this.fetchStudents();

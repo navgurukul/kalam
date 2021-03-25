@@ -21,8 +21,6 @@ import {
 import { allStages } from "../config";
 import MainLayout from "./MainLayout";
 import { qualificationKeys } from "../config";
-import { withSnackbar } from "notistack";
-// import ConnectMerakiApi from "./ConnectMerakiApi";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -87,30 +85,6 @@ export class AdmissionsDash extends React.Component {
     this.setState({ data: newData }, function () {});
   };
 
-  // ConnectMerakiApi = () => {
-  //   axios.post(`https://connect.merakilearn.org/api/offerLetter/admissions`,{
-  //     "senderName": "Poonam",
-  //     "receiverEmail": "poonam19@navgurukul.org",
-  //     "name": "Saquib Nasim",
-  //     "campus": "Bangalore",
-  //     "senderEmail": "poonam@navgurukul.org",
-  //     "senderPassword": "crazypooh1379",
-  //     "cc": ""
-  // } )
-  //   .then(res => {
-  //     console.log("response", res)
-  //     this.props.enqueueSnackbar("Email sent successfully!", {
-  //       variant: "success",
-  //     });
-  //   })
-  //   .catch(err => {
-  //     console.log('Error', err)
-  //     this.props.enqueueSnackbar("Mobile number should be 10 digit!", {
-  //       variant: "error",
-  //     });
-  //   })
-  // }
-
   changeDataType = (option) => {
     this.dataType = option.value;
     this.stage = null;
@@ -126,12 +100,6 @@ export class AdmissionsDash extends React.Component {
       this.dataType = "softwareCourse";
       this.fetchStudents();
       this.value = "Student Detials"
-    // } if (option.value == "selectedPune" || 
-    //       option.value == "selectedBangalore" || 
-    //       option.value == "selectedSarjapura" ||
-    //       option.value == "selectedDharamshala") {
-    //       this.ConnectMerakiApi()
-    //   console.log("Poonam")
     } else {
       this.stage = option.value;
       this.fetchStudents();

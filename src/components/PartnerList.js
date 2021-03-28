@@ -50,7 +50,7 @@ const columns = [
       }
     }
   },
-  
+
   {
     name: 'notes',
     label: 'View Assessments',
@@ -94,6 +94,7 @@ const columns = [
     }
   }
 ]
+
 
 export class PartnerList extends React.Component {
 

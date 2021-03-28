@@ -41,7 +41,7 @@ const styles = (theme) => ({
 
 export class AddPartnerPage extends React.Component {
   async addPartner() {
-    const { name, email, notes, slug } = this.state;
+    const { name, email, notes, slug, states } = this.state;
     try {
       this.props.fetchingStart();
       const dataURL = baseUrl + "partners";
@@ -53,6 +53,7 @@ export class AddPartnerPage extends React.Component {
           email: email,
           notes: notes,
           slug: slug,
+          states: states,
         },
         { headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` } }
       );
@@ -82,12 +83,18 @@ export class AddPartnerPage extends React.Component {
       email: "",
       notes: "",
       slug: "",
+      states: [],
     };
+  }
+
+  addState = () => {
+    this.setState({states:[...this.state.states, ""]})
   }
 
   handleChange = (name) => (event) => {
     let valChange = {};
     valChange[name] = event.target.value;
+    console.log("valChange[name]", valChange[name])
     this.setState(valChange);
   };
 
@@ -121,7 +128,7 @@ export class AddPartnerPage extends React.Component {
               onChange={this.handleChange("email")}
             />
             <FormHelperText className={classes.text} id="my-helper-text">
-              Partner ka Name Enter karein.
+              Partner ka Email Enter karein.
             </FormHelperText>
           </FormControl>
 
@@ -151,6 +158,44 @@ export class AddPartnerPage extends React.Component {
             <FormHelperText className={classes.text} id="my-helper-text">
               Partner ke student ko online test dene ke liye Slug add karo.
             </FormHelperText>
+          </FormControl>
+
+          <FormControl>
+          <InputLabel htmlFor="partnerState">Partner State</InputLabel>
+                  <Input
+                    id="partnerState"
+                    aria-describedby="my-helper-text"
+                    name="states"
+                    value={this.state.state}
+                    onChange={this.handleChange("state")}
+                  />
+            {
+              this.state.states.map((state,index) => {
+                return(
+                  <>
+                  <InputLabel htmlFor="partnerState">Partner State</InputLabel>
+                  <Input
+                    id="partnerState"
+                    aria-describedby="my-helper-text"
+                    name="states"
+                    value={this.state.state}
+                    onChange={this.handleChange("state")}
+                  />
+                  </>
+                )
+              })
+            }
+            <FormHelperText className={classes.text} id="my-helper-text">
+              Partner ka State Enter karein.
+            </FormHelperText>
+            <Button
+            variant="contained"
+            color="primary"
+            onClick={this.addState}
+            // className={classes.btn}
+          >
+            Add State
+          </Button>
           </FormControl>
 
           <Button

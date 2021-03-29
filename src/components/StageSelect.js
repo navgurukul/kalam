@@ -4,6 +4,9 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { withSnackbar } from "notistack";
 import EmailSentFailed from "./EmailSentFailed";
+import { EmailUpdate } from "./EmailUpdate";
+
+
 const _ = require("underscore");
 
 const baseUrl = process.env.API_URL;

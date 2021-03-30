@@ -54,7 +54,6 @@ export class AddPartnerPage extends React.Component {
     try {
       this.props.fetchingStart();
       const dataURL = baseUrl + "partners";
-      console.log(localStorage.getItem("jwt"));
       const response = await axios.post(
         dataURL,
         {
@@ -103,7 +102,6 @@ export class AddPartnerPage extends React.Component {
   handleChange = (name) => (event) => {
     let valChange = {};
     valChange[name] = event.target.value;
-    console.log("valChange[name]", valChange[name]);
     this.setState(valChange);
   };
 
@@ -194,7 +192,6 @@ export class AddPartnerPage extends React.Component {
             <FormHelperText className={classes.text} id="my-helper-text">
               Partner ka districts or city Enter karein.
             </FormHelperText>
-            {console.log(this.state.districts)}
             <Fab
               className={classes.addIcon}
               color="primary"

@@ -4,7 +4,6 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { withSnackbar } from "notistack";
 import EmailSentFailed from "./EmailSentFailed";
-import { EmailUpdate } from "./EmailUpdate";
 
 
 const _ = require("underscore");
@@ -15,26 +14,38 @@ const animatedComponents = makeAnimated();
 export class StageSelect extends React.Component {
   constructor(props) {
     super(props);
-    this.state ={
-      flag : false
+    this.state = {
+      flag : false,
+      payload : {
+        receiverEmail : "",
+        name : "",
+        campus : "",
+        cc : "anand@navgurukul.org saquib@navgurukul.org"
+      }
     }
   }
 
+  
+
   ConnectMerakiApi = () => {
-    axios.post(`https://connect.merakilearn.org/api/offerLetter/admissions`,{
-      "receiverEmail": "poonam@navgurukul.org",
-      "name": "Poonam",
-      "campus": "",
-      "cc": "anand@navgurukul.org saquib@navgurukul.org"
-  } )
+    axios.post(`https://connect.merakilearn.org/api/offerLetter/admissions`, this.state.payload
+    // {
+    //   "receiverEmail": "poonam@navgurukul.org",
+    //   "name": "Poonam",
+    //   "campus": "Pune",
+    //   "cc": "anand@navgurukul.org saquib@navgurukul.org"
+  // } 
+  )
     .then(res => {
       console.log("response", res)
+      console.log("Campus In", this.state.payload)
       this.props.enqueueSnackbar("Email sent successfully!", {
         variant: "success",
       });
     })
     .catch(err => {
       console.log('Error', err)
+      console.log("Campus In error", this.state.payload)
       this.setState({
         flag : true
       })
@@ -42,12 +53,66 @@ export class StageSelect extends React.Component {
   }
 
   handleChange = (selectedValue) => {
-    if (selectedValue.value == "selectedPune" ||
-        selectedValue.value == "selectedBangalore" || 
-        selectedValue.value == "selectedSarjapura" ||
-        selectedValue.value == "selectedDharamshala") {
-          this.ConnectMerakiApi()
+    // const { value, label } = selectedValue;
+    if (selectedValue.value == "selectedPune") {
+      this.setState({
+        flag : false,
+        payload : {
+          receiverEmail : "",
+          name : "",
+          campus : "Pune",
+          cc : "komala@navgurukul.org saquib@navgurukul.org"
+        }
+      })
+      console.log("campus",this.state.payload)
+      this.ConnectMerakiApi()
     }
+    else if (selectedValue.value == "selectedBangalore") {
+      this.setState({
+        flag : false,
+        payload : {
+          receiverEmail : "",
+          name : "",
+          campus : "Bangalore",
+          cc : "komala@navgurukul.org saquib@navgurukul.org"
+        }
+      })
+      console.log("campus",this.state.payload)
+      this.ConnectMerakiApi()
+    }
+    else if (selectedValue.value == "selectedSarjapura") {
+      this.setState({
+        flag : false,
+        payload : {
+          receiverEmail : "",
+          name : "",
+          campus : "Sarjapura",
+          cc : "anand@navgurukul.org saquib@navgurukul.org"
+        }
+      })
+      console.log("campus",this.state.payload)
+      this.ConnectMerakiApi()
+    }
+    else if (selectedValue.value == "selectedDharamshala") {
+      this.setState({
+        flag : false,
+        payload : {
+          receiverEmail : "",
+          name : "",
+          campus : "Dharamshala",
+          cc : "anand@navgurukul.org saquib@navgurukul.org"
+        }
+      })
+      console.log("campus",this.state.payload)
+      this.ConnectMerakiApi()
+    }
+        // selectedValue.value == "selectedBangalore" || 
+        // selectedValue.value == "selectedSarjapura" ||
+        // selectedValue.value == "selectedDharamshala") {
+          // console.log("value", value)
+          // console.log("campus",this.state.payload)
+          // this.ConnectMerakiApi()
+    
     try {
       const { rowMetatable, change } = this.props;
       const studentId = rowMetatable.rowData[0];
@@ -73,8 +138,11 @@ export class StageSelect extends React.Component {
   };
 
   render = () => {
+    console.log(this.props)
+    console.log("punnu",this.state)
     const flag = this.state.flag
     const { allStages, stage } = this.props;
+    // console.log("allStages", allStages, "stage",stage)
     const allStagesOptions = Object.keys(allStages).map((x) => {
       return { value: x, label: allStages[x] };
     });

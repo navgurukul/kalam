@@ -101,14 +101,13 @@ export class AddPartnerPage extends React.Component {
   };
 
   handleChange = (name) => (event) => {
-    console.log(name, "name");
     let valChange = {};
     valChange[name] = event.target.value;
     console.log("valChange[name]", valChange[name]);
     this.setState(valChange);
   };
 
-  check = (index) => {
+  changeHandler = (index) => {
     const districts = this.state.districts;
     districts[index] = event.target.value;
     this.setState({ districts: districts });
@@ -116,7 +115,7 @@ export class AddPartnerPage extends React.Component {
 
   render = () => {
     const { classes } = this.props;
-    console.log(this.state, "stateeeee");
+
     return (
       <Card className={classes.root}>
         <form className={classes.container}>
@@ -186,7 +185,7 @@ export class AddPartnerPage extends React.Component {
                     aria-describedby="my-helper-text"
                     name="state"
                     value={this.state.state}
-                    onChange={() => this.check(index)}
+                    onChange={() => this.changeHandler(index)}
                   />
                 </div>
               );

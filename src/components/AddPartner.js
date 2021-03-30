@@ -192,14 +192,17 @@ export class AddPartnerPage extends React.Component {
             })}
 
             <FormHelperText className={classes.text} id="my-helper-text">
-              Partner ka districts aur city Enter karein.
+              Partner ka districts or city Enter karein.
             </FormHelperText>
-
+            {console.log(this.state.districts)}
             <Fab
               className={classes.addIcon}
               color="primary"
               aria-label="add"
               onClick={this.addState}
+              disabled={
+                this.state.districts[this.state.districts.length - 1] === ""
+              }
             >
               <AddIcon />
             </Fab>

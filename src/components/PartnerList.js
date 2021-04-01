@@ -115,6 +115,7 @@ const columns = [
   },
 ];
 
+
 export class PartnerList extends React.Component {
   constructor(props) {
     super(props);

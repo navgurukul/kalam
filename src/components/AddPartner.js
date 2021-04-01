@@ -172,7 +172,6 @@ export class AddPartnerPage extends React.Component {
               Partner ke student ko online test dene ke liye Slug add karo.
             </FormHelperText>
           </FormControl>
-
           <FormControl>
             {this.state.districts.map((state, index) => {
               return (
@@ -204,7 +203,6 @@ export class AddPartnerPage extends React.Component {
               <AddIcon />
             </Fab>
           </FormControl>
-
           <Button
             variant="contained"
             color="primary"

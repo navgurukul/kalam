@@ -2,7 +2,9 @@ import React from "react";
 import EasyEdit from "react-easy-edit";
 import axios from "axios";
 import { withSnackbar } from "notistack";
+import { StageSelect } from "./StageSelect";
 // const _ = require("underscore");
+
 
 const baseUrl = process.env.API_URL;
 
@@ -35,6 +37,7 @@ export class EmailUpdate extends React.Component {
 
   render = () => {
     return (
+      <div>
       <EasyEdit
         type="text"
         value={this.props.email}
@@ -42,6 +45,7 @@ export class EmailUpdate extends React.Component {
         saveButtonLabel="✔"
         cancelButtonLabel="✖"
       />
+      </div>
     );
   };
 }

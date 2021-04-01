@@ -98,7 +98,7 @@ export class AdmissionsDash extends React.Component {
       this.stage = null;
       this.dataType = "softwareCourse";
       this.fetchStudents();
-      this.value = "Student Detials";
+      this.value = "Student Details"
     } else {
       this.stage = option.value;
       this.fetchStudents();

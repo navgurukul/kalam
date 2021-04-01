@@ -31,7 +31,7 @@ function EmailSentFailed() {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">{"Offer letter was not sent :("}</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{"Offer letter was not sent.."}</DialogTitle>
                 <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                     Click here to resend the offer letter from our service.

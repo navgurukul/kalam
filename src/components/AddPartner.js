@@ -1,6 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import Card from "@material-ui/core/Card";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
+import TextField from "@material-ui/core/TextField";
 import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
 
 import axios from "axios";
@@ -27,9 +30,15 @@ const styles = (theme) => ({
     maxWidth: 400,
   },
   root: {
-    maxWidth: 400,
+    maxWidth: 450,
     margin: "auto",
     marginTop: "100px",
+  },
+
+  addIcon: {
+    position: "absolute",
+    marginLeft: "60%",
+    top: "9px",
   },
   text: {
     marginBottom: theme.spacing(1),
@@ -41,11 +50,10 @@ const styles = (theme) => ({
 
 export class AddPartnerPage extends React.Component {
   async addPartner() {
-    const { name, email, notes, slug } = this.state;
+    const { name, email, notes, slug, districts } = this.state;
     try {
       this.props.fetchingStart();
       const dataURL = baseUrl + "partners";
-      console.log(localStorage.getItem("jwt"));
       const response = await axios.post(
         dataURL,
         {
@@ -53,6 +61,7 @@ export class AddPartnerPage extends React.Component {
           email: email,
           notes: notes,
           slug: slug,
+          districts: districts,
         },
         { headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` } }
       );
@@ -82,13 +91,24 @@ export class AddPartnerPage extends React.Component {
       email: "",
       notes: "",
       slug: "",
+      districts: [""],
     };
   }
+
+  addState = () => {
+    this.setState({ districts: [...this.state.districts, ""] });
+  };
 
   handleChange = (name) => (event) => {
     let valChange = {};
     valChange[name] = event.target.value;
     this.setState(valChange);
+  };
+
+  changeHandler = (index) => {
+    const districts = this.state.districts;
+    districts[index] = event.target.value;
+    this.setState({ districts: districts });
   };
 
   render = () => {
@@ -152,7 +172,37 @@ export class AddPartnerPage extends React.Component {
               Partner ke student ko online test dene ke liye Slug add karo.
             </FormHelperText>
           </FormControl>
-          
+          <FormControl>
+            {this.state.districts.map((state, index) => {
+              return (
+                <div key={index}>
+                  <TextField
+                    id="PartnerDistrictsCities"
+                    label=" Partner Districts/Cities"
+                    aria-describedby="my-helper-text"
+                    name="state"
+                    value={this.state.state}
+                    onChange={() => this.changeHandler(index)}
+                  />
+                </div>
+              );
+            })}
+
+            <FormHelperText className={classes.text} id="my-helper-text">
+              Partner ka districts or city Enter karein.
+            </FormHelperText>
+            <Fab
+              className={classes.addIcon}
+              color="primary"
+              aria-label="add"
+              onClick={this.addState}
+              disabled={
+                this.state.districts[this.state.districts.length - 1] === ""
+              }
+            >
+              <AddIcon />
+            </Fab>
+          </FormControl>
           <Button
             variant="contained"
             color="primary"

@@ -51,6 +51,8 @@ const styles = (theme) => ({
 export class AddPartnerPage extends React.Component {
   async addPartner() {
     const { name, email, notes, slug, districts } = this.state;
+    let removeExtraDistricts = districts.filter(district => district.length > 0)
+    
     try {
       this.props.fetchingStart();
       const dataURL = baseUrl + "partners";
@@ -61,7 +63,7 @@ export class AddPartnerPage extends React.Component {
           email: email,
           notes: notes,
           slug: slug,
-          districts: districts,
+          districts: removeExtraDistricts,
         },
         { headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` } }
       );
@@ -82,13 +84,15 @@ export class AddPartnerPage extends React.Component {
     this.addPartner();
   };
 
+
+
   validate = () => {};
 
   constructor(props) {
     super(props);
     this.state = {
       name: "",
-      email: "",
+      email: "" ,
       notes: "",
       slug: "",
       districts: [""],
@@ -196,9 +200,7 @@ export class AddPartnerPage extends React.Component {
               color="primary"
               aria-label="add"
               onClick={this.addState}
-              disabled={
-                this.state.districts[this.state.districts.length - 1] === ""
-              }
+              disabled={this.state.districts[this.state.districts.length - 1] === ""}
             >
               <AddIcon />
             </Fab>

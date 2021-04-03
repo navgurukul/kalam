@@ -63,7 +63,9 @@ export class AddPartnerPage extends React.Component {
           slug: slug,
           districts: districts,
         },
-        { headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` } }
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        }
       );
 
       this.props.fetchingFinish();

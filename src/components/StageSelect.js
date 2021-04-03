@@ -58,8 +58,8 @@ export class StageSelect extends React.Component {
       this.setState({
         flag : false,
         payload : {
-          receiverEmail : "",
-          name : "",
+          receiverEmail : "poonam@navgurukul.org",
+          name : "Poonam",
           campus : "Pune",
           cc : "komala@navgurukul.org saquib@navgurukul.org"
         }

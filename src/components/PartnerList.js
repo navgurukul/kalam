@@ -115,7 +115,6 @@ const columns = [
   },
 ];
 
-
 export class PartnerList extends React.Component {
   constructor(props) {
     super(props);
@@ -136,7 +135,6 @@ export class PartnerList extends React.Component {
   };
 
   render = () => {
-   
     const { classes } = this.props;
 
     if (!this.state.data.length) {

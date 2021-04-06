@@ -110,6 +110,7 @@ class ProgressMadeForPartner extends Component {
         `${baseURL}partners/progress_made/${this.props.match.params.partnerId}`
       )
       .then((res) => {
+        
         this.setState({
           data: res.data.data,
           progress: true,
@@ -124,6 +125,7 @@ class ProgressMadeForPartner extends Component {
       let text = "";
       text = `${text}*${key}*\n\n`;
       Object.entries(detailsData).map(([key1, studentDetails]) => {
+        console.log(detailsData,"details")
         if (studentDetails.length > 0) {
           text = `${text}\n_${allStages[key1]} (${studentDetails.length})_\n`;
           studentDetails.map((item) => {
@@ -170,10 +172,13 @@ class ProgressMadeForPartner extends Component {
   };
 
   render() {
+  // console.log(this.state,'komallllll')
     const { classes } = this.props;
     const { partnerName, progress, data, tabular } = this.state;
+console.log(data,"data")
+   
     return (
-      <div>
+      <div >
         <CssBaseline />
         <Container className={classes.container}>
           <Grid item xs={12} style={{ marginBottom: 40 }}>
@@ -251,8 +256,8 @@ class ProgressMadeForPartner extends Component {
                         {Object.entries(detailsData).map(
                           ([stage, studentDetails]) => (
                             <div>
-                              <div key={stage}>
-                                <CollapseStudentData
+                              <div  key={stage}>
+                                <CollapseStudentData 
                                   classes={classes}
                                   details={studentDetails}
                                   stage={stage}

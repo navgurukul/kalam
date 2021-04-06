@@ -34,8 +34,9 @@ class CollapseStudentData extends Component {
 
   render() {
     const { classes, details, stage } = this.props;
+    console.log(this.props,"props")
+ 
     const { expanded } = this.state;
-
     if (!details.length) {
       return (
         <CardContent>
@@ -54,7 +55,7 @@ class CollapseStudentData extends Component {
     }
 
     return (
-      <>
+      <div>
         <CardContent>
           <center>
             <Typography variant="h6">
@@ -76,25 +77,25 @@ class CollapseStudentData extends Component {
             aria-label="show more"
           >
             {expanded ? (
-              <>
+              <div>
                 <Typography>See Less</Typography>
                 <ExpandLessIcon
                   className={classes.expandOpen}
                   color="primary"
                 />
-              </>
+              </div>
             ) : (
-              <>
+              <div>
                 <Typography>See More</Typography>
                 <ExpandMoreIcon
                   className={classes.expandOpen}
                   color="primary"
                 />
-              </>
+              </div>
             )}
           </IconButton>
         </CardActions>
-      </>
+      </div>
     );
   }
 }

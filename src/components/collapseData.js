@@ -11,9 +11,16 @@ import { allStages } from "../config";
 const showContact = (student) => {
   return (
     <center>
-      <p key={student.name} style={{ fontSize: 15 }}>
-        {student.name}: {student.mobile}
-      </p>
+      <div key={student.name} style={{ fontSize: 15, marginTop: 8 }}>
+        {student.name}:{student.mobile}
+      </div>
+      {student.status != null ? (
+        <span style={{ fontSize: 15,fontWeight: 500 }}>
+          ({student.status})
+        </span>
+      ) : (
+        <span>{student.status}</span>
+      )}
     </center>
   );
 };
@@ -54,7 +61,7 @@ class CollapseStudentData extends Component {
     }
 
     return (
-      <>
+      <div>
         <CardContent>
           <center>
             <Typography variant="h6">
@@ -76,25 +83,25 @@ class CollapseStudentData extends Component {
             aria-label="show more"
           >
             {expanded ? (
-              <>
+              <div>
                 <Typography>See Less</Typography>
                 <ExpandLessIcon
                   className={classes.expandOpen}
                   color="primary"
                 />
-              </>
+              </div>
             ) : (
-              <>
+              <div>
                 <Typography>See More</Typography>
                 <ExpandMoreIcon
                   className={classes.expandOpen}
                   color="primary"
                 />
-              </>
+              </div>
             )}
           </IconButton>
         </CardActions>
-      </>
+      </div>
     );
   }
 }

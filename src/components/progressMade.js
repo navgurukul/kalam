@@ -151,6 +151,7 @@ class ProgressMadeForPartner extends Component {
 
   copyClipBoard = (key) => {
     const { classes } = this.props;
+
     return (
       <Tooltip title="Copy Details" className={classes.large}>
         <CopyToClipboard

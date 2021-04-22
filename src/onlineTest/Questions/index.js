@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import DOMPurify from "dompurify";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
@@ -91,12 +92,12 @@ function Questions(props) {
     setIndex(index + 1);
   };
 
+  const purifiedHTML = DOMPurify.sanitize(questionsList[index].en_text);
+
   return (
     <Container maxWidth="lg" align="center" justifyContent="center">
       <div className={classes.root}>
-        <div
-          dangerouslySetInnerHTML={{ __html: questionsList[index].en_text }}
-        />
+        <div dangerouslySetInnerHTML={{ __html: purifiedHTML }} />
 
         {/* <Paper square elevation={0} className={classes.content}>
                     <Typography variant="h7">{tutorialSteps.content1}{index}{" "}{tutorialSteps.content2}</Typography>

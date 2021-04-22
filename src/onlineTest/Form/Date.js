@@ -5,14 +5,17 @@ import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
+  DatePicker,
 } from '@material-ui/pickers';
 
-export default function MaterialUIPickers() {
-  const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
+export default function MaterialUIPickers(props) {
+  const [selectedDate, setSelectedDate] = React.useState(null);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    props.forDate(date)
   };
+  // console.log("dob", selectedDate)
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -23,6 +26,8 @@ export default function MaterialUIPickers() {
           format="dd/MM/yyyy"
           inputVariant="outlined"
           fullWidth
+          // label="Your dob"
+          placeholder="Your dob"
           value={selectedDate}
           onChange={handleDateChange}
           KeyboardButtonProps={{

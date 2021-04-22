@@ -14,6 +14,10 @@ import VideoSlider from "./VideoSlider";
 import Grid from "@material-ui/core/Grid";
 import StudentStatus from "./StudentStatus";
 import Header from "./Header";
+import { Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
+import history from "../utils/history";
+
 
 const baseUrl = process.env.API_URL;
 const testUrl = "http://join.navgurukul.org/k/";
@@ -70,6 +74,7 @@ export class LandingPage extends React.Component {
       mobile: "",
       selectedLang: "en",
       partnerId: "",
+      enrolmentKey: ""
     };
 
     this.lang = {
@@ -128,6 +133,10 @@ export class LandingPage extends React.Component {
           partner_id: partnerId,
         },
       });
+      console.log("response.data.key",response.data.key)
+      this.setState({enrolmentKey: response.data.key})
+
+      
       return response;
     } catch (e) {
       this.props.enqueueSnackbar("Please enter valid mobile number!", {
@@ -143,14 +152,19 @@ export class LandingPage extends React.Component {
   }
 
   async openTest() {
+    // const { history } = this.props;
     const response = await this.generateTestLink();
-    window.open(`${testUrl}${response.data.key}`, "_blank");
+    // console.log("dhfidjf", response.data.key)
+    history.push({ pathname: "/test", enrolmentKey: response.data.key })
+    // window.open(`${testUrl}${response.data.key}`, "_blank");
     this.setState({ mobileNumber: "" });
     this.props.fetchingFinish();
   }
 
   giveTest = () => {
     this.openTest();
+    // console.log("state", this.state.enrolmentKey)
+    // history.push({ pathname: "/test", enrolmentKey: this.state.enrolmentKey })
   };
 
   handleChange = (e) => {
@@ -181,6 +195,7 @@ export class LandingPage extends React.Component {
   }
 
   render = () => {
+    console.log("state consoling", this.state.enrolmentKey)
     const { classes } = this.props;
     let mobile = this.state.mobile;
     return (
@@ -244,6 +259,8 @@ export class LandingPage extends React.Component {
                     />
                   </Box>
                   <div className={classes.root}>
+                    {/* <Redirect to={{pathname: "/test", state: { enrolmentKey: this.state.enrolmentKey }}} > */}
+                    {/* <Link to={{pathname: "/test", state: { enrolmentKey: this.state.enrolmentKey }}} > */}
                     <Button
                       variant="outlined"
                       onClick={this.giveTest}
@@ -251,6 +268,8 @@ export class LandingPage extends React.Component {
                     >
                       {this.lang.TestButton[this.state.selectedLang]}
                     </Button>
+                    {/* </Link> */}
+                    {/* </Redirect> */}
                   </div>
                 </Paper>
               </Grid>

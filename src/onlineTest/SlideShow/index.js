@@ -12,9 +12,9 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Container from '@material-ui/core/Container';
 import { Link } from "react-router-dom";
-// import history from '../../utils/history';
+import history from '../../utils/history';
 
-
+  
 const tutorialSteps = [
   {
     heading: 'NavGurukul Scholarship Test',
@@ -79,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function SlideShow() {
+function SlideShow(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
@@ -92,15 +92,18 @@ function SlideShow() {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
+  };                                              
 
   const clickHandler = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   }
 
-  // const goToForm = () => {
-  //   history.push({ pathname: "/studentDetails" })
-  // }
+  const goToForm = () => {
+    // console.log("Poonam")
+    history.push({ pathname: "/studentDetails", enrolment_key: props.location.enrolmentKey })
+  }
+
+  // console.log("This is props",props)
 
   const changeHandler = (e) => {
     setValue(e.target.value)
@@ -177,19 +180,19 @@ function SlideShow() {
            : null
           }
           {tutorialSteps[activeStep].button3 ?
-            <Link exact to="studentDetails">
+            // <Link exact to="studentDetails">
             <Paper square elevation={0} className={classes.content}>
             <Button
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
-              // onClick={goToForm}
+              onClick={goToForm}
             >
               {tutorialSteps[activeStep].button3}
             </Button>
-          </Paper>
-          </Link>
+            </Paper>
+            // </Link>
             : null
           }
             <MobileStepper

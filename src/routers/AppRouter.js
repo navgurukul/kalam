@@ -19,6 +19,10 @@ import ReportContainer from "../components/ReportContainer";
 import ProgressMadeForPartner from "../components/progressMade";
 import SlideShow from "../onlineTest/SlideShow";
 import Form from "../onlineTest/Form";
+import EkAurBaat from "../onlineTest/EkAurBaat";
+import Questions from "../onlineTest/Questions";
+
+
 // if authenticated, redirect to /students else be there
 import PublicRoute from "./PublicRouter";
 // if authenticated be there, else redirect to /login
@@ -66,8 +70,10 @@ const AppRouter = () => (
           path="/partners/:partnerId/assessments/:assessmentId"
           component={AssessmentAttempts}
         />
-        <PrivateRoute path="/test" component={SlideShow} />
-        <PrivateRoute path="/studentDetails" component={Form} />
+        <PublicRoute path="/test" component={SlideShow} />
+        <PublicRoute path="/studentDetails" component={Form} />
+        <PublicRoute path="/ekAurBaat" component={EkAurBaat} />
+        <PublicRoute path="/questions" component={Questions} />
 
         <Route component={NotFoundPage} />
       </Switch>

@@ -14,9 +14,7 @@ const showContact = (student) => {
     const status_student =
       student.status.charAt(0).toUpperCase() + student.status.slice(1);
     const status = status_student.split(/(?=[A-Z])/);
-    for (var i of status) {
-      studentStatus = studentStatus + i + " ";
-    }
+    studentStatus = status.join(" ");
   }
 
   return (

@@ -17,7 +17,7 @@ module.exports = merge(common, {
   plugins: [
     new CompressionPlugin(),
     new webpack.DefinePlugin({
-      "process.env.API_URL": JSON.stringify("http://join.navgurukul.org/api/"),
+      "process.env.API_URL": JSON.stringify("https://join.navgurukul.org/api/"),
     }),
     // new CompressionPlugin({
     //     asset: '[path].gz[query]',

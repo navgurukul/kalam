@@ -43,9 +43,24 @@ function Questions(props) {
   const classes = useStyles();
   const [index, setIndex] = useState(0);
 
-  const time = new Date();
-  // store this time in localStorage every second and get it from localStorage and pass it as props
-  time.setSeconds(time.getSeconds() + 5400);
+  // const time = new Date();
+  // // store this time in localStorage every second and get it from localStorage and pass it as props
+  // time.setSeconds(time.getSeconds() + 5400);
+  // localStorage.setItem("Time", new Date().getTime());
+  // const MyTime = localStorage.getItem("Time");
+
+  let [time, setTime] = useState(props.location.time);
+  let [timeLeft, setTimeLeft] = useState(new Date() + 90 * 60 * 1000);
+  useEffect(() => {
+    console.log(timeLeft);
+    localStorage.setItem("TIME", timeLeft);
+  });
+
+  console.log("time", time);
+
+  setTimeout(() => {
+    setTimeLeft(time + 90 * 60 * 1000 - new Date().getTime());
+  }, 1000);
 
   const [value, setValue] = useState({
     one: "",
@@ -91,7 +106,8 @@ function Questions(props) {
             {index + 1} {tutorialSteps.content2}
           </Typography>
           <Typography variant="subtitle1">
-            <Timer expiryTimestamp={time} />
+            {/* <Timer expiryTimestamp={parseInt(MyTime) + 90 * 60 * 1000} /> */}
+            <Timer time={localStorage.getItem("TIME")} />
           </Typography>
           <Typography variant="subtitle1">
             <div dangerouslySetInnerHTML={{ __html: en_text }} />

@@ -52,12 +52,18 @@ function EkAurBaat(props) {
   console.log("Props in ek aur baat", props.location.enrolment_key);
   const classes = useStyles();
 
+  const time = new Date().getTime();
+
   const fetchQuestionsAndOptions = () => {
     axios
       .post(`${baseUrl}on_assessment/questions/${props.location.enrolment_key}`)
       .then((res) => {
         console.log("response", res.data.data);
-        history.push({ pathname: "/questions", questions: res.data.data });
+        history.push({
+          pathname: "/questions",
+          questions: res.data.data,
+          time: time,
+        });
       })
       .catch((err) => {
         console.log("error", err);

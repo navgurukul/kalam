@@ -37,7 +37,7 @@ export class OutreachDetails extends React.Component {
 
   componentDidMount() {
     axios
-      .get("http://join.navgurukul.org/api/outreach/records")
+      .get("https://join.navgurukul.org/api/outreach/records")
       .then((Response) => {
         this.setState({
           outreachDetails: Response.data,
@@ -77,27 +77,27 @@ export class OutreachDetails extends React.Component {
               </TableHead>
               <TableBody>
                 {this.state.listOfOutreachTeam.map((item, index) => {
-                    let countOfStudent = 0;
-                    return (
-                      <TableRow key={index}>
-                        <TableCell className={classes.tableCell}>
-                          {item}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {this.state.outreachDetails[item]["partners"].length}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {this.state.outreachDetails[item]["partners"].forEach(
-                            (item) => {
-                              let values = Object.values(item)[0];
-                              countOfStudent = countOfStudent + values;
-                            }
-                          )}
-                          {countOfStudent}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                  let countOfStudent = 0;
+                  return (
+                    <TableRow key={index}>
+                      <TableCell className={classes.tableCell}>
+                        {item}
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        {this.state.outreachDetails[item]["partners"].length}
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        {this.state.outreachDetails[item]["partners"].forEach(
+                          (item) => {
+                            let values = Object.values(item)[0];
+                            countOfStudent = countOfStudent + values;
+                          }
+                        )}
+                        {countOfStudent}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </Paper>

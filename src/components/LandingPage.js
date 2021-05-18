@@ -20,7 +20,7 @@ import history from "../utils/history";
 
 
 const baseUrl = process.env.API_URL;
-const testUrl = "http://join.navgurukul.org/k/";
+const testUrl = "https://join.navgurukul.org/k/";
 
 const styles = (theme) => ({
   loginContainer: {

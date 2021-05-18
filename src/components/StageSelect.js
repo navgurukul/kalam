@@ -43,7 +43,7 @@ export class StageSelect extends React.Component {
 
   getParnetId = async (id) => {
     const response = await axios.get(
-      `http://join.navgurukul.org/api/partners/studentId/${id}`
+      `https://join.navgurukul.org/api/partners/studentId/${id}`
     );
     return response.data.data;
   };

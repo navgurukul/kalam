@@ -7,6 +7,8 @@ import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import history from "../../utils/history";
+import Timer from "./Timer";
 
 const tutorialSteps = {
   content1: "Yeh Question no. ",
@@ -29,102 +31,94 @@ const useStyles = makeStyles((theme) => ({
   spacing: {
     paddingBottom: theme.spacing(2),
   },
+  optionButton: {
+    marginBottom: theme.spacing(2),
+  },
+  options: {
+    backgroundColor: theme.palette.background.default,
+  },
 }));
 
 function Questions(props) {
   const classes = useStyles();
-  const [index, setIndex] = useState(1);
+  const [index, setIndex] = useState(0);
 
-  const questionsList = props.location.questions;
-  console.log("data came from ek aur baat", questionsList);
+  const time = new Date();
+  // store this time in localStorage every second and get it from localStorage and pass it as props
+  time.setSeconds(time.getSeconds() + 5400);
 
-  questionsList.map((question) => {
-    console.log("Okay!", question);
+  const [value, setValue] = useState({
+    one: "",
+    two: "",
   });
 
-  console.log("Ho rha h kya", questionsList[4].en_text);
+  const changeHandler = (e) => {
+    setValue(e.target.value);
+  };
 
-  const enText = questionsList[index].en_text.split("<p>");
-  let en_text = "";
-  enText.map((question) => {
-    console.log("Kya aata h dekhna hai", question.split("</p>"));
-    const enQuestion = question.split("</p>")[0];
-    en_text = en_text + enQuestion + " ";
-    // en_text = en_text + enQuestion.split("<strong>")[0] + " "
-  });
-  console.log("final", en_text);
-
-  const hiText = questionsList[index].hi_text.split("<p>");
-  let hi_text = "";
-  hiText.map((question) => {
-    console.log("Kya aata h dekhna hai", question.split("</p>"));
-    const hiQuestion = question.split("</p>")[0];
-    hi_text = hi_text + hiQuestion + " ";
-    // hi_text = hi_text + hiQuestion.split("<strong>")[0] + " "
-  });
-  console.log("string done", hi_text);
-
-  let common_text = "";
-  if (questionsList[index].common_text == null) {
-    common_text = null;
-  } else {
-    const commonText = questionsList[index].common_text.split("<p>");
-    commonText.map((question) => {
-      console.log("Kya aata h dekhna hai", question.split("</p>"));
-      common_text = common_text + question.split("</p>")[0] + " ";
-    });
-    console.log("string done", common_text);
-  }
-
-  questionsList[index].options.length > 0
-    ? questionsList[index].options.map((option, i) => {
-        console.log("Our options are ready", option.text, i + 1);
-      })
-    : null;
+  console.log("value", value);
 
   const previousClickHandler = () => {
-    console.log("Previous click", 3);
     setIndex(index - 1);
   };
 
   const nextClickHandler = () => {
-    console.log("Next click", 3);
     setIndex(index + 1);
   };
 
-  const purifiedHTML = DOMPurify.sanitize(questionsList[index].en_text);
+  const submitHandler = () => {
+    console.log("I love you Poonam!");
+    // history.push({ pathname: "/totalMarks" });
+    history.push({
+      pathname: "/kuchAurDetails",
+      enrolment_key: props.location.enrolment_key,
+    });
+  };
+
+  console.log("props.location.questions", props.location.questions);
+
+  const questionsList = props.location.questions;
+  const en_text = DOMPurify.sanitize(questionsList[index].en_text);
+  const hi_text = DOMPurify.sanitize(questionsList[index].hi_text);
+  const common_text = DOMPurify.sanitize(questionsList[index].common_text);
 
   return (
     <Container maxWidth="lg" align="center" justifyContent="center">
       <div className={classes.root}>
-        <div dangerouslySetInnerHTML={{ __html: purifiedHTML }} />
-
-        {/* <Paper square elevation={0} className={classes.content}>
-                    <Typography variant="h7">{tutorialSteps.content1}{index}{" "}{tutorialSteps.content2}</Typography>
-                </Paper>
-                <Paper square elevation={0} className={classes.content}>
-                    <Typography variant="h7">{questionsList[index].en_text}</Typography>
-                    <Typography variant="h7">{en_text}</Typography>
-                </Paper>
-                <Paper square elevation={0} className={classes.content}>
-                    <Typography variant="h7">{questionsList[index].hi_text}</Typography>
-                    <Typography variant="h7">{hi_text}</Typography>
-                </Paper>
-                <Paper square elevation={0} className={classes.content}>
-                    <Typography variant="h7">{questionsList[index].common_text}</Typography>
-                    <Typography variant="h7">{common_text}</Typography>
-                </Paper>  */}
-        {questionsList[index].options.length > 1
-          ? questionsList[index].options.map((option, i) => (
-              <Paper square elevation={0} className={classes.content}>
-                <Typography variant="h7" key="i">
-                  {i + 1}
-                  {"."} {option.text}
-                </Typography>
-              </Paper>
-            ))
-          : null}
         <Paper square elevation={0} className={classes.content}>
+          <Typography variant="subtitle1">
+            {tutorialSteps.content1}
+            {index + 1} {tutorialSteps.content2}
+          </Typography>
+          <Typography variant="subtitle1">
+            <Timer expiryTimestamp={time} />
+          </Typography>
+          <Typography variant="subtitle1">
+            <div dangerouslySetInnerHTML={{ __html: en_text }} />
+          </Typography>
+          {/* <Typography variant="subtitle1">
+            <div dangerouslySetInnerHTML={{ __html: hi_text }} />
+          </Typography> */}
+          <Typography variant="subtitle1">
+            <div dangerouslySetInnerHTML={{ __html: common_text }} />
+          </Typography>
+          {questionsList[index].options.length > 1
+            ? questionsList[index].options.map((option, i) => {
+                const options = DOMPurify.sanitize(option.text);
+                console.log("Options", options);
+                return (
+                  <Paper square elevation={0} className={classes.options}>
+                    <Typography variant="subtitle1" key="i">
+                      {i + 1} {"."}{" "}
+                      <button
+                        className={classes.optionButton}
+                        dangerouslySetInnerHTML={{ __html: options }}
+                      />
+                    </Typography>
+                  </Paper>
+                );
+              })
+            : null}
           <TextField
             variant="outlined"
             required
@@ -133,35 +127,63 @@ function Questions(props) {
             className={classes.spacing}
             // label="Your name"
             placeholder="Write your answere here..."
-            // value={values.name}
+            value={value.one}
             name="name"
             autoComplete="off"
-            // onChange={changeHandler}
+            onChange={changeHandler}
           />
-          <Grid container spacing={3}>
-            <Grid item xs={6}>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={previousClickHandler}
-              >
-                Previous
-              </Button>
+
+          {index == 17 ? (
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={previousClickHandler}
+                >
+                  Previous
+                </Button>
+              </Grid>
+              <Grid item xs={6}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={submitHandler}
+                >
+                  Submit
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={nextClickHandler}
-              >
-                Next
-              </Button>
+          ) : (
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={previousClickHandler}
+                >
+                  Previous
+                </Button>
+              </Grid>
+              <Grid item xs={6}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={nextClickHandler}
+                >
+                  Next
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
         </Paper>
       </div>
     </Container>

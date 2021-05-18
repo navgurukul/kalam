@@ -3,7 +3,7 @@ import { Router, Route, Switch } from "react-router-dom";
 import LandingPage from "../components/LandingPage";
 import DashboardPage from "../components/Dashboard";
 import PartnerList from "../components/PartnerList";
-import OutreachDetails from "../components/OutreachDetails"
+import OutreachDetails from "../components/OutreachDetails";
 import AddPartner from "../components/AddPartner";
 import AdmissionsDash from "../components/AdmissionsDash";
 import AssessmentAttempts from "../components/AssessmentAttempts";
@@ -21,7 +21,9 @@ import SlideShow from "../onlineTest/SlideShow";
 import Form from "../onlineTest/Form";
 import EkAurBaat from "../onlineTest/EkAurBaat";
 import Questions from "../onlineTest/Questions";
-
+import KuchAurDetails from "../onlineTest/KuchAurDetails";
+import ThankYouPage from "../onlineTest/ThankYouPage";
+import SorryPage from "../onlineTest/SorryPage";
 
 // if authenticated, redirect to /students else be there
 import PublicRoute from "./PublicRouter";
@@ -74,6 +76,9 @@ const AppRouter = () => (
         <PublicRoute path="/studentDetails" component={Form} />
         <PublicRoute path="/ekAurBaat" component={EkAurBaat} />
         <PublicRoute path="/questions" component={Questions} />
+        <PublicRoute path="/kuchAurDetails" component={KuchAurDetails} />
+        <PublicRoute path="/thankYouPage" component={ThankYouPage} />
+        <PublicRoute path="/sorryPage" component={SorryPage} />
 
         <Route component={NotFoundPage} />
       </Switch>

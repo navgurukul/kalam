@@ -274,6 +274,9 @@ export class AdmissionsDash extends React.Component {
           ...student,
           qualification: qualificationKeys[student.qualification],
           studentOwner: "",
+          campus: student.campus !== null ? student.campus : null,
+          donor: student.donor !== null ? student.donor :null,
+          
         };
       });
       this.dataSetup(studentData);

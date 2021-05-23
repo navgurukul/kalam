@@ -5,6 +5,8 @@ import {
   feedbackableStagesData,
   permissions,
   allTagsForOnlineClass,
+  donor,
+  campus,
 } from "../config";
 import EditableLabel from "react-inline-editing";
 import Moment from "react-moment";
@@ -20,6 +22,7 @@ import StageTransitionsStudentStatus from "../components/StageTransitionsStudent
 import AudioRecorder from "../components/audioRecording";
 import AudiofileUpload from "../components/ulpoadAudioFile";
 import TagsForOnlineClass from "../components/tagsForOnlineClass";
+import UpdatedDonorOrCampus from "../components/UpdatedDonorOrCampus";
 
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
@@ -133,6 +136,53 @@ const genderColumn = {
     sort: true,
   },
 };
+
+
+const campusColumn = {
+  name: "campus",
+  label: "Campus",
+  options: {
+    filter: true,
+    sort: true,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+        return (
+          <UpdatedDonorOrCampus
+            allOptions={campus}
+            value={value}
+            rowMetatable={rowMeta}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
+  },
+}
+
+const donorColumn = {
+  name: "donor",
+  label: "Donor",
+  options: {
+    filter: true,
+    sort: true,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+        return (
+          <UpdatedDonorOrCampus
+            allOptions={donor}
+            value={value}
+            rowMetatable={rowMeta}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
+  },
+}
 
 const stageColumn = {
   name: "stage",
@@ -321,7 +371,6 @@ const feedbackColumnTransition = {
     filter: false,
     sort: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
-      console.log(rowMeta);
       const ifExistingFeedback =
         rowData || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       return (
@@ -744,6 +793,8 @@ const StudentService = {
       partnerNameColumn,
       onlineClassColumn,
       ageColumn,
+      campusColumn,
+      donorColumn,
     ],
     columnTransition: [
       stageColumnTransition,
@@ -768,6 +819,8 @@ const StudentService = {
       lastStageColumn,
       linkForEnglishTestColumn,
       linkForOnlineTestColumn,
+      campusColumn,
+      donorColumn,
     ],
   },
   columnMyReports: [

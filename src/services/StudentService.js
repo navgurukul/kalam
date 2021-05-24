@@ -13,7 +13,7 @@ import Moment from "react-moment";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import StageSelect from "../components/StageSelect";
-import EmailUpdate from "../components/EmailUpdate";
+import UpdateEmail from "../components/UpdateEmail";
 import OwnerSelect from "../components/OwnerSelect";
 import StatusSelect from "../components/StatusSelect";
 import StudentFeedback from "../components/FeedbackPage";
@@ -22,7 +22,7 @@ import StageTransitionsStudentStatus from "../components/StageTransitionsStudent
 import AudioRecorder from "../components/audioRecording";
 import AudiofileUpload from "../components/ulpoadAudioFile";
 import TagsForOnlineClass from "../components/tagsForOnlineClass";
-import UpdatedDonorOrCampus from "../components/UpdatedDonorOrCampus";
+import UpdateDonorOrCampus from "../components/UpdateDonorOrCampus";
 
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
@@ -137,17 +137,17 @@ const genderColumn = {
   },
 };
 
-
 const campusColumn = {
   name: "campus",
   label: "Campus",
   options: {
     filter: true,
     sort: true,
+    display: false,
     customBodyRender: (value, rowMeta, updateValue) => {
       if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
         return (
-          <UpdatedDonorOrCampus
+          <UpdateDonorOrCampus
             allOptions={campus}
             value={value}
             rowMetatable={rowMeta}
@@ -159,7 +159,7 @@ const campusColumn = {
       }
     },
   },
-}
+};
 
 const donorColumn = {
   name: "donor",
@@ -167,10 +167,11 @@ const donorColumn = {
   options: {
     filter: true,
     sort: true,
+    display: false,
     customBodyRender: (value, rowMeta, updateValue) => {
       if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
         return (
-          <UpdatedDonorOrCampus
+          <UpdateDonorOrCampus
             allOptions={donor}
             value={value}
             rowMetatable={rowMeta}
@@ -182,7 +183,7 @@ const donorColumn = {
       }
     },
   },
-}
+};
 
 const stageColumn = {
   name: "stage",
@@ -215,6 +216,7 @@ const onlineClassColumn = {
   options: {
     filter: true,
     sort: true,
+    display: false,
     customBodyRender: (value, rowMeta, updateValue) => {
       const tag = value ? value.split(", ") : [];
       const allTagsOptions = Object.keys(tag).map((x) => {
@@ -657,7 +659,7 @@ const EmailColumn = {
     customBodyRender: (rowData, rowMeta, updateValue) => {
       const emailAddress = rowData ? rowData : "Update Email";
       return (
-        <EmailUpdate
+        <UpdateEmail
           email={emailAddress}
           rowMetatable={rowMeta}
           change={(event) => updateValue(event)}

@@ -98,7 +98,7 @@ export class AdmissionsDash extends React.Component {
       this.stage = null;
       this.dataType = "softwareCourse";
       this.fetchStudents();
-      this.value = "Student Details"
+      this.value = "Student Details";
     } else {
       this.stage = option.value;
       this.fetchStudents();
@@ -274,9 +274,8 @@ export class AdmissionsDash extends React.Component {
           ...student,
           qualification: qualificationKeys[student.qualification],
           studentOwner: "",
-          campus: student.campus !== null ? student.campus : null,
-          donor: student.donor !== null ? student.donor :null,
-          
+          campus: student.campus ? student.campus : null,
+          donor: student.donor ? student.donor : null,
         };
       });
       this.dataSetup(studentData);

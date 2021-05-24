@@ -5,13 +5,15 @@ import {
   feedbackableStagesData,
   permissions,
   allTagsForOnlineClass,
+  donor,
+  campus,
 } from "../config";
 import EditableLabel from "react-inline-editing";
 import Moment from "react-moment";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import StageSelect from "../components/StageSelect";
-import EmailUpdate from "../components/EmailUpdate";
+import UpdateEmail from "../components/UpdateEmail";
 import OwnerSelect from "../components/OwnerSelect";
 import StatusSelect from "../components/StatusSelect";
 import StudentFeedback from "../components/FeedbackPage";
@@ -20,6 +22,7 @@ import StageTransitionsStudentStatus from "../components/StageTransitionsStudent
 import AudioRecorder from "../components/audioRecording";
 import AudiofileUpload from "../components/ulpoadAudioFile";
 import TagsForOnlineClass from "../components/tagsForOnlineClass";
+import UpdateDonorOrCampus from "../components/UpdateDonorOrCampus";
 
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
@@ -134,6 +137,54 @@ const genderColumn = {
   },
 };
 
+const campusColumn = {
+  name: "campus",
+  label: "Campus",
+  options: {
+    filter: true,
+    sort: true,
+    display: false,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+        return (
+          <UpdateDonorOrCampus
+            allOptions={campus}
+            value={value}
+            rowMetatable={rowMeta}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
+  },
+};
+
+const donorColumn = {
+  name: "donor",
+  label: "Donor",
+  options: {
+    filter: true,
+    sort: true,
+    display: false,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+        return (
+          <UpdateDonorOrCampus
+            allOptions={donor}
+            value={value}
+            rowMetatable={rowMeta}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
+  },
+};
+
 const stageColumn = {
   name: "stage",
   label: "Stage",
@@ -165,6 +216,7 @@ const onlineClassColumn = {
   options: {
     filter: true,
     sort: true,
+    display: false,
     customBodyRender: (value, rowMeta, updateValue) => {
       const tag = value ? value.split(", ") : [];
       const allTagsOptions = Object.keys(tag).map((x) => {
@@ -321,7 +373,6 @@ const feedbackColumnTransition = {
     filter: false,
     sort: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
-      console.log(rowMeta);
       const ifExistingFeedback =
         rowData || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       return (
@@ -608,7 +659,7 @@ const EmailColumn = {
     customBodyRender: (rowData, rowMeta, updateValue) => {
       const emailAddress = rowData ? rowData : "Update Email";
       return (
-        <EmailUpdate
+        <UpdateEmail
           email={emailAddress}
           rowMetatable={rowMeta}
           change={(event) => updateValue(event)}
@@ -744,6 +795,8 @@ const StudentService = {
       partnerNameColumn,
       onlineClassColumn,
       ageColumn,
+      campusColumn,
+      donorColumn,
     ],
     columnTransition: [
       stageColumnTransition,
@@ -768,6 +821,8 @@ const StudentService = {
       lastStageColumn,
       linkForEnglishTestColumn,
       linkForOnlineTestColumn,
+      campusColumn,
+      donorColumn,
     ],
   },
   columnMyReports: [

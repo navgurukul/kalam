@@ -5,10 +5,9 @@ import { withSnackbar } from "notistack";
 import { StageSelect } from "./StageSelect";
 // const _ = require("underscore");
 
-
 const baseUrl = process.env.API_URL;
 
-export class EmailUpdate extends React.Component {
+export class UpdateEmail extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -38,16 +37,16 @@ export class EmailUpdate extends React.Component {
   render = () => {
     return (
       <div>
-      <EasyEdit
-        type="text"
-        value={this.props.email}
-        onSave={(email) => this.handleUpdate(email)}
-        saveButtonLabel="✔"
-        cancelButtonLabel="✖"
-      />
+        <EasyEdit
+          type="text"
+          value={this.props.email}
+          onSave={(email) => this.handleUpdate(email)}
+          saveButtonLabel="✔"
+          cancelButtonLabel="✖"
+        />
       </div>
     );
   };
 }
 
-export default withSnackbar(EmailUpdate);
+export default withSnackbar(UpdateEmail);

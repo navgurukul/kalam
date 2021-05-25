@@ -17,13 +17,8 @@ class AddOrUpdateContact extends Component {
   }
 
   addOrUpdateMobile = async (event) => {
-    const {
-      contact_type,
-      mobile,
-      studentId,
-      handleClose,
-      loggedInUser,
-    } = this.props;
+    const { contact_type, mobile, studentId, handleClose, loggedInUser } =
+      this.props;
     const type = event.target.innerText;
 
     await this.setState({

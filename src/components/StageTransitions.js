@@ -90,7 +90,6 @@ export class Transition extends React.Component {
           ...v,
         }));
       }
-      console.log(newData);
       this.setState(
         {
           data: newData,

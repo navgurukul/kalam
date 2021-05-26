@@ -30,18 +30,20 @@ export class StageSelect extends React.Component {
         this.state.payload
       )
       .then((res) => {
-        this.props.enqueueSnackbar("Email sent successfully!", {
+        this.setState({ flag: false });
+        this.props.enqueueSnackbar("Joining letter sent successfully!", {
           variant: "success",
         });
       })
       .catch((err) => {
-        this.props.enqueueSnackbar("Email has not sent successfully!", {
+        this.setState({ flag: true });
+        this.props.enqueueSnackbar("Unable to send joining letter!", {
           variant: "unsuccess!",
         });
       });
   };
 
-  getParnetId = async (id) => {
+  getPartnerId = async (id) => {
     const response = await axios.get(
       `https://join.navgurukul.org/api/partners/studentId/${id}`
     );
@@ -50,10 +52,18 @@ export class StageSelect extends React.Component {
 
   handleChange = async (selectedValue) => {
     let id = this.props.rowMetatable.rowData[0];
-    let isEmail = await this.getParnetId(id);
+    let isEmail = await this.getPartnerId(id);
 
-    if (this.props.rowMetatable.rowData[7] != null) {
-      await this.setState({
+    if (
+      this.props.rowMetatable.rowData[7] != null &&
+      [
+        "selectedPune",
+        "selectedDharamshala",
+        "selectedBangalore",
+        "selectedSarjapura",
+      ].indexOf(selectedValue.value) > -1
+    ) {
+      this.setState({
         payload: {
           receiverEmail: this.props.rowMetatable.rowData[7],
           name: this.props.rowMetatable.rowData[2],
@@ -63,10 +73,6 @@ export class StageSelect extends React.Component {
         },
       });
       this.ConnectMerakiApi();
-    } else {
-      this.setState({
-        flag: true,
-      });
     }
 
     try {

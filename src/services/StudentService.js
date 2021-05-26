@@ -333,6 +333,8 @@ const deadlineColumn = {
             </p>
           );
         }
+      } else {
+        return null;
       }
     },
   },

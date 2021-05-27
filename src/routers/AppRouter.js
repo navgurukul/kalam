@@ -3,7 +3,7 @@ import { Router, Route, Switch } from "react-router-dom";
 import LandingPage from "../components/LandingPage";
 import DashboardPage from "../components/Dashboard";
 import PartnerList from "../components/PartnerList";
-import OutreachDetails from "../components/OutreachDetails"
+import OutreachDetails from "../components/OutreachDetails";
 import AddPartner from "../components/AddPartner";
 import AdmissionsDash from "../components/AdmissionsDash";
 import AssessmentAttempts from "../components/AssessmentAttempts";
@@ -17,6 +17,8 @@ import UserMoblieNumber from "../components/UserMoblieNumber";
 import UpdateMobileNumber from "../components/UpdateMobileNumber";
 import ReportContainer from "../components/ReportContainer";
 import ProgressMadeForPartner from "../components/progressMade";
+import DonorList from "../components/DornorList";
+import CampusList from "../components/CampusList";
 // if authenticated, redirect to /students else be there
 import PublicRoute from "./PublicRouter";
 // if authenticated be there, else redirect to /login
@@ -38,6 +40,9 @@ const AppRouter = () => (
         />
         <PublicRoute path="/login" component={LoginDesign} exact={true} />
         <PrivateRoute path="/tasks" component={MyTaskReport} />
+        <PrivateRoute path="/donors" component={DonorList} />
+        <PrivateRoute path="/campuses" component={CampusList} />
+
         <PrivateRoute
           path="/report/dangling"
           component={StageWiseDanglingReport}

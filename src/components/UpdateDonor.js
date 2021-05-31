@@ -13,6 +13,7 @@ class UpdateDonor extends Component {
     super(props);
     this.state = {
       data: null,
+      defaultData: this.props.value,
     };
   }
 
@@ -58,6 +59,8 @@ class UpdateDonor extends Component {
 
   render() {
     const { allOptions, value } = this.props;
+    const isTrue =
+      JSON.stringify(this.state.defaultData) !== JSON.stringify(value);
     return (
       <div>
         <Select
@@ -79,7 +82,7 @@ class UpdateDonor extends Component {
         ></Select>
         <Button
           color="primary"
-          disabled={this.state.data ? false : true}
+          disabled={isTrue ? false : true}
           onClick={this.updateDonor}
         >
           Update

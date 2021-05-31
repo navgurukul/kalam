@@ -34,7 +34,7 @@ class UpdateDonor extends Component {
         });
       })
       .catch((err) => {
-        this.props.enqueueSnackbar(`Error in updating donor}`, {
+        this.props.enqueueSnackbar(`Error in updating donor`, {
           variant: "unsuccess!",
         });
       });
@@ -73,7 +73,7 @@ class UpdateDonor extends Component {
           }
           onChange={this.handleChange}
           options={allOptions.map((x) => {
-            return { value: x.id, label: x.donor };
+            return { value: x.id, label: x.name };
           })}
           isClearable={false}
         ></Select>

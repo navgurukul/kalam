@@ -22,7 +22,8 @@ import StageTransitionsStudentStatus from "../components/StageTransitionsStudent
 import AudioRecorder from "../components/audioRecording";
 import AudiofileUpload from "../components/ulpoadAudioFile";
 import TagsForOnlineClass from "../components/tagsForOnlineClass";
-import UpdateDonorOrCampus from "../components/UpdateDonorOrCampus";
+import UpdateCampus from "../components/UpdateCampus";
+import UpdateDonor from "../components/UpdateDonor";
 
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
@@ -147,7 +148,7 @@ const campusColumn = {
     customBodyRender: (value, rowMeta, updateValue) => {
       if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
         return (
-          <UpdateDonorOrCampus
+          <UpdateCampus
             allOptions={campus}
             value={value}
             rowMetatable={rowMeta}
@@ -171,7 +172,7 @@ const donorColumn = {
     customBodyRender: (value, rowMeta, updateValue) => {
       if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
         return (
-          <UpdateDonorOrCampus
+          <UpdateDonor
             allOptions={donor}
             value={value}
             rowMetatable={rowMeta}
@@ -179,7 +180,14 @@ const donorColumn = {
           />
         );
       } else {
-        return value;
+        let newValue = "";
+        value
+          ? value.map((item) => {
+              newValue = `${newValue}   ${item.donor}`;
+            })
+          : (newValue = null);
+
+        return newValue;
       }
     },
   },

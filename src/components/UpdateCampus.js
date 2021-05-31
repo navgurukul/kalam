@@ -20,7 +20,7 @@ const UpdateDonorOrCampus = ({
     const { value } = event;
     const data = {};
     data[field] = value;
-    const resp = axios
+    axios
       .put(`${baseURL}students/${student_id}`, data)
       .then((res) => {
         enqueueSnackbar(

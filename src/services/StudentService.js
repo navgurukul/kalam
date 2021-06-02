@@ -852,6 +852,15 @@ const StudentService = {
     TotalUnspecifiedDanglingReport,
     TotalDanglingReport,
   ],
+  DonorData: [
+    nameColumn,
+    numberColumn,
+    EmailColumn,
+    genderColumn,
+    stageColumn,
+    QualificationColumn,
+    campusColumn,
+  ],
 
   dConvert: (x) => {
     try {

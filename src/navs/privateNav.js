@@ -27,6 +27,11 @@ export const publicNavs = [
     name: "Donors",
     icon: <ExtensionIcon />,
   },
+  {
+    url: "/campus",
+    name: "Campuses",
+    icon: <ExtensionIcon />,
+  },
 
   {
     url: "/outreachDetails",

@@ -7,6 +7,7 @@ import {
   allTagsForOnlineClass,
   donor,
   campus,
+  campusStageOfLearning,
 } from "../config";
 import EditableLabel from "react-inline-editing";
 import Moment from "react-moment";
@@ -201,13 +202,17 @@ const stageColumn = {
     sort: true,
     filterOptions: allStagesOptions,
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+      const user = JSON.parse(window.localStorage.user);
+      const isCampusPathname = window.location.pathname.indexOf("campus");
+      if (permissions.updateStage.indexOf(user.mail_id) > -1) {
         return (
           <StageSelect
             allStagesOptions={allStagesOptions}
             rowMetatable={rowMeta}
             stage={value}
-            allStages={allStages}
+            allStages={
+              isCampusPathname > -1 ? campusStageOfLearning : allStages
+            }
             change={(event) => updateValue(event)}
           />
         );
@@ -860,6 +865,16 @@ const StudentService = {
     stageColumn,
     QualificationColumn,
     campusColumn,
+  ],
+  CampusData: [
+    ColumnTransitions,
+    nameColumn,
+    numberColumn,
+    EmailColumn,
+    genderColumn,
+    stageColumn,
+    QualificationColumn,
+    partnerNameColumn,
   ],
 
   dConvert: (x) => {

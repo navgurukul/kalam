@@ -33,6 +33,7 @@ export class MainLayout extends React.Component {
         <MuiThemeProvider theme={theme}>
           <div className={classes.clear}></div>
           <MUIDataTable
+            title={this.props.title}
             columns={this.props.columns}
             data={this.props.data}
             icons={GlobalService.tableIcons}

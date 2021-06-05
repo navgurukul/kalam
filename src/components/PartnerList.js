@@ -31,7 +31,7 @@ const styles = (theme) => ({
     marginBottom: "5",
     [theme.breakpoints.up("md")]: {
       margin: "auto",
-      width: "60%",
+      width: "80%",
       marginTop: 5,
       marginBottom: 5,
     },
@@ -116,18 +116,19 @@ const columns = [
     },
   },
   {
-    name: "merakiLink",
+    name: "meraki_link",
     label: "Meraki Link",
     options: {
       filter: false,
       sort: false,
       customBodyRender: (value, rowMeta, updateValue) => {
-        if (rowMeta.rowData[0] === 19) {
-          value = "komal";
-        }
-
-        console.log(value, "value");
-        return <AddMerakiLink isValue={value} />;
+        return (
+          <AddMerakiLink
+            isValue={value}
+            studentId={rowMeta.rowData[0]}
+            updateValue={updateValue}
+          />
+        );
       },
     },
   },

@@ -179,9 +179,7 @@ export class PartnerList extends React.Component {
       const dataURL = baseUrl + "partners";
       const response = await axios.get(dataURL);
       this.dataSetup(response.data.data);
-      console.log(response.data.data, "data");
     } catch (e) {
-      console.log(e);
       this.props.fetchingFinish();
     }
   }

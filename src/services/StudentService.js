@@ -868,8 +868,8 @@ const StudentService = {
   ],
   CampusData: [
     ColumnTransitions,
-    nameColumn,
     numberColumn,
+    nameColumn,
     EmailColumn,
     genderColumn,
     stageColumn,

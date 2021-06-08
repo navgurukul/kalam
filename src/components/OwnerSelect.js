@@ -39,7 +39,6 @@ export class OwnerSelect extends React.Component {
 
   render = () => {
     const { value, currentValue } = this.props;
-    console.log(this.props.users, "this.props.users");
     const allUserOptions = this.props.users.map((x) => {
       return { label: x.user, value: x.user };
     });

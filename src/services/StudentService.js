@@ -420,6 +420,7 @@ const ownerColumnTransition = {
     sort: true,
     display: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
+      console.log(rowData, "rowData");
       const ifExistingFeedback =
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       return (

@@ -1,4 +1,7 @@
 import React from "react";
+import { connect } from "react-redux";
+import { changeFetching, setupUsers } from "../store/actions/auth";
+
 import axios from "axios";
 
 import StudentService from "../services/StudentService";
@@ -15,7 +18,19 @@ class DonorStudentsData extends React.Component {
       data: [],
     };
   }
+  async fetchUsers() {
+    const usersURL = baseUrl + "users/getall";
+    try {
+      const response = await axios.get(usersURL, {});
+      this.props.usersSetup(response.data.data);
+      this.props.fetchingFinish();
+    } catch (e) {
+      console.log(e);
+      this.props.fetchingFinish();
+    }
+  }
   componentDidMount() {
+    this.fetchUsers();
     this.fetching();
   }
   dataSetup = (data) => {
@@ -51,4 +66,9 @@ class DonorStudentsData extends React.Component {
   }
 }
 
-export default DonorStudentsData;
+const mapDispatchToProps = (dispatch) => ({
+  fetchingFinish: () => dispatch(changeFetching(false)),
+  usersSetup: (users) => dispatch(setupUsers(users)),
+});
+
+export default connect(undefined, mapDispatchToProps)(DonorStudentsData);

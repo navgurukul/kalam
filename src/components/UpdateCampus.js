@@ -50,7 +50,7 @@ const UpdateDonorOrCampus = ({
         value={selectedValue}
         onChange={handleChange}
         options={allOptions.map((x) => {
-          return { value: x, label: x };
+          return { value: x.name, label: x.name };
         })}
         isClearable={false}
         components={animatedComponents}

@@ -4,7 +4,7 @@ import axios from "axios";
 import StudentService from "../services/StudentService";
 
 import MainLayout from "./MainLayout";
-import { qualificationKeys } from "../config";
+import { qualificationKeys, donor } from "../config";
 
 const baseUrl = process.env.API_URL;
 
@@ -13,6 +13,9 @@ class DonorStudentsData extends React.Component {
     super(props);
     this.state = {
       data: [],
+      donorName: donor.find(
+        (x) => x.id === parseInt(this.props.match.params.donorId)
+      ).name,
     };
   }
   componentDidMount() {
@@ -43,6 +46,7 @@ class DonorStudentsData extends React.Component {
   render() {
     return (
       <MainLayout
+        title={this.state.donorName}
         columns={StudentService["DonorData"]}
         data={this.state.data}
       />

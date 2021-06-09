@@ -62,11 +62,10 @@ class DonorList extends Component {
   }
 
   render() {
-    console.log(this.state.data, "this.state.dat");
     return (
       <Container maxWidth="sm">
         <MainLayout
-          title={"Donors Name"}
+          title={"Campuses Name"}
           columns={columns}
           data={this.state.data}
         />

@@ -25,7 +25,7 @@ import AudiofileUpload from "../components/ulpoadAudioFile";
 import TagsForOnlineClass from "../components/tagsForOnlineClass";
 import UpdateCampus from "../components/UpdateCampus";
 import UpdateDonor from "../components/UpdateDonor";
-
+import JoinedDate from "../components/JoinedDate";
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
@@ -136,6 +136,7 @@ const genderColumn = {
   options: {
     filter: true,
     sort: true,
+    display: false,
   },
 };
 
@@ -254,7 +255,20 @@ const addedAtColumn = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (value) => {
+    customBodyRender: (value, rowMeta) => {
+      const user = JSON.parse(window.localStorage.user);
+      if (typeof rowMeta.rowData[0] === "number") {
+        return (
+          <Moment format="D MMM YYYY" withTitle>
+            {value}
+          </Moment>
+        );
+      } else if (
+        permissions.updateStage.indexOf(user.mail_id) > -1 &&
+        rowMeta.rowData[0].indexOf("Joined") > -1
+      ) {
+        return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
+      }
       return (
         <Moment format="D MMM YYYY" withTitle>
           {value}
@@ -287,6 +301,15 @@ const loggedInUserColumn = {
     filter: false,
     sort: true,
     display: false,
+  },
+};
+
+const JobKabLagegiColumn = {
+  name: "jobKabLagega.expectedDate",
+  label: "Job Kab Lagegi",
+  options: {
+    filter: false,
+    sort: true,
   },
 };
 
@@ -420,7 +443,6 @@ const ownerColumnTransition = {
     sort: true,
     display: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
-      console.log(rowData, "rowData");
       const ifExistingFeedback =
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       return (
@@ -469,6 +491,15 @@ const timeColumnTransition = {
   name: "student_id",
   label: "Time",
   options: {
+    filter: false,
+    display: false,
+  },
+};
+const transitionIdColumn = {
+  name: "id",
+  label: "Transition Id",
+  options: {
+    viewColumns: false,
     filter: false,
     display: false,
   },
@@ -825,6 +856,7 @@ const StudentService = {
       finishedColumnTransition,
       loggedInUser,
       AudioPlayer,
+      transitionIdColumn,
     ],
     columnStudentStatus: [
       ColumnTransitionsStatus,
@@ -874,6 +906,7 @@ const StudentService = {
     EmailColumn,
     genderColumn,
     stageColumn,
+    JobKabLagegiColumn,
     QualificationColumn,
     partnerNameColumn,
   ],

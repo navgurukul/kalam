@@ -6,6 +6,7 @@ import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
 
 import axios from "axios";
 import { Box, Link } from "@material-ui/core";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import { theme } from "../theme/theme";
 
@@ -13,6 +14,7 @@ import ViewAssessments from "./ViewAssessments";
 import PartnerLink from "./PartnerLink";
 import EditPartner from "./EditPartner";
 import CreateAssessment from "./CreateAssessment";
+import AddMerakiLink from "./AddMerakiLink";
 
 import { changeFetching } from "../store/actions/auth";
 import { withRouter } from "react-router-dom";
@@ -29,7 +31,7 @@ const styles = (theme) => ({
     marginBottom: "5",
     [theme.breakpoints.up("md")]: {
       margin: "auto",
-      width: "50%",
+      width: "80%",
       marginTop: 5,
       marginBottom: 5,
     },
@@ -113,8 +115,24 @@ const columns = [
       },
     },
   },
+  {
+    name: "meraki_link",
+    label: "Meraki Link",
+    options: {
+      filter: false,
+      sort: false,
+      customBodyRender: (value, rowMeta, updateValue) => {
+        return (
+          <AddMerakiLink
+            isValue={value}
+            studentId={rowMeta.rowData[0]}
+            updateValue={updateValue}
+          />
+        );
+      },
+    },
+  },
 ];
-
 
 export class PartnerList extends React.Component {
   constructor(props) {
@@ -162,7 +180,6 @@ export class PartnerList extends React.Component {
       const response = await axios.get(dataURL);
       this.dataSetup(response.data.data);
     } catch (e) {
-      console.log(e);
       this.props.fetchingFinish();
     }
   }

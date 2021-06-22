@@ -51,8 +51,6 @@ export class StageSelect extends React.Component {
   };
 
   handleChange = async (selectedValue) => {
-    console.log(selectedValue, "selectValue");
-    console.log(this.props.rowMetatable, "rowMetatale");
     let id = this.props.rowMetatable.rowData[0];
     let isEmail = await this.getPartnerId(id);
 

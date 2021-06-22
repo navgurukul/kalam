@@ -38,7 +38,7 @@ const columns = [
   },
 ];
 
-class DonorList extends Component {
+class CampusList extends Component {
   constructor() {
     super();
     this.state = {
@@ -46,10 +46,10 @@ class DonorList extends Component {
     };
   }
   componentDidMount() {
-    this.fetchDonors();
+    this.fetchCampus();
   }
 
-  async fetchDonors() {
+  async fetchCampus() {
     try {
       const dataURL = baseUrl + "campus";
       const response = await axios.get(dataURL);
@@ -74,4 +74,4 @@ class DonorList extends Component {
   }
 }
 
-export default DonorList;
+export default CampusList;

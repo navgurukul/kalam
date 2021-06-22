@@ -20,7 +20,7 @@ class JoinedDate extends Component {
     const { transitionId } = this.props;
     const formateddate = moment(date).format("YYYY-MM-DD");
     axios
-      .put(`${baseURL}students/transaction/${transitionId}`, {
+      .put(`${baseURL}students/transition/${transitionId}`, {
         when: formateddate,
       })
       .then((res) => {

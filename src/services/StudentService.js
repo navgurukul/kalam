@@ -310,6 +310,65 @@ const JobKabLagegiColumn = {
   options: {
     filter: false,
     sort: true,
+    customBodyRender: (value) => {
+      if (value) {
+        return (
+          <Moment format="D MMM YYYY" withTitle>
+            {value}
+          </Moment>
+        );
+      }
+      return value;
+    },
+  },
+};
+
+const daysPassedColumn = {
+  name: "jobKabLagega.daysPassed",
+  label: "Days Passed",
+  options: {
+    filter: false,
+    display: false,
+    customBodyRender: (value) => {
+      if (value) {
+        let parseValue = parseInt(value);
+        return <p>{parseValue} days</p>;
+      }
+      return value;
+    },
+  },
+};
+
+const kitneAurDin = {
+  name: "jobKabLagega.kitneAurDin",
+  label: "kitne Aur Din",
+  options: {
+    filter: false,
+    display: false,
+    customBodyRender: (value) => {
+      console.log(value, "value");
+      if (value) {
+        let parseValue = parseInt(value);
+        return <p>{parseValue} days</p>;
+      }
+      return value;
+    },
+  },
+};
+
+const kitneDinLagenge = {
+  name: "jobKabLagega.kitneDinLagenge",
+  label: "kitne Din Lagenge",
+  options: {
+    filter: false,
+    display: false,
+    customBodyRender: (value) => {
+      if (value) {
+        let parseValue = parseInt(value);
+        return <p>{parseValue} days</p>;
+      }
+      return value;
+    },
   },
 };
 
@@ -907,6 +966,9 @@ const StudentService = {
     genderColumn,
     stageColumn,
     JobKabLagegiColumn,
+    daysPassedColumn,
+    kitneAurDin,
+    kitneDinLagenge,
     QualificationColumn,
     partnerNameColumn,
   ],

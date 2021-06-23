@@ -265,7 +265,8 @@ const addedAtColumn = {
         );
       } else if (
         permissions.updateStage.indexOf(user.mail_id) > -1 &&
-        rowMeta.rowData[0].indexOf("Joined") > -1
+        (rowMeta.rowData[0].indexOf("Joined") > -1 ||
+          rowMeta.rowData[0].indexOf("onLeave") > -1)
       ) {
         return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
       }

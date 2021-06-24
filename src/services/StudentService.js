@@ -325,7 +325,7 @@ const JobKabLagegiColumn = {
 };
 
 const daysPassedColumn = {
-  name: "jobKabLagega.daysPassed",
+  name: "jobKabLagega.daysPassedInCampus",
   label: "Days Passed",
   options: {
     filter: false,
@@ -803,6 +803,24 @@ const CasteColumn = {
   },
 };
 
+const joinedDate = {
+  label: "Joined Date",
+  name: "joinedDate",
+  options: {
+    filter: false,
+    customBodyRender: (value, rowMeta) => {
+      if (value) {
+        return (
+          <Moment format="D MMM YYYY" withTitle>
+            {value}
+          </Moment>
+        );
+      }
+      return value;
+    },
+  },
+};
+
 const lastStageColumn = {
   label: "Last Stage",
   name: "from_stage",
@@ -965,6 +983,7 @@ const StudentService = {
     nameColumn,
     EmailColumn,
     genderColumn,
+    joinedDate,
     stageColumn,
     JobKabLagegiColumn,
     daysPassedColumn,

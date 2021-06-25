@@ -31,7 +31,6 @@ const styles = (theme) => ({
     marginBottom: "5",
     [theme.breakpoints.up("md")]: {
       margin: "auto",
-      width: "80%",
       marginTop: 5,
       marginBottom: 5,
     },
@@ -47,13 +46,7 @@ const columns = [
       sort: true,
       customBodyRender: (value, rowMeta) => {
         let name = rowMeta.rowData[2];
-        return (
-          <PartnerLink
-            partnerId={value}
-            name={name}
-            partnerName={rowMeta.rowData[2]}
-          />
-        );
+        return <PartnerLink url={`partner/${value}`} text={name} name={name} />;
       },
     },
   },
@@ -80,6 +73,24 @@ const columns = [
           <CreateAssessment
             partnerId={rowMeta.rowData[0]}
             partnerName={rowData}
+          />
+        );
+      },
+    },
+  },
+  {
+    name: "id",
+    label: "Joined Students Progress",
+    options: {
+      filter: false,
+      sort: false,
+      customBodyRender: (value, rowMeta) => {
+        let name = rowMeta.rowData[2];
+        return (
+          <PartnerLink
+            url={`partner/${value}/progress`}
+            text={"Get Information"}
+            name={name}
           />
         );
       },
@@ -115,6 +126,7 @@ const columns = [
       },
     },
   },
+
   {
     name: "meraki_link",
     label: "Meraki Link",

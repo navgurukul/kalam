@@ -67,6 +67,7 @@ export class AddMerakiLink extends React.Component {
       <Button
         variant="contained"
         color="primary"
+        // style={{ fontSize: "10px" }}
         onClick={() => this.creatMerakiLink(studentId)}
       >
         Create Link

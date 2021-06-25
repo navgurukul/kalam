@@ -496,7 +496,7 @@ const feedbackColumnTransition = {
 };
 
 const ownerColumnTransition = {
-  name: "studentOwner",
+  name: "to_assign",
   label: "Owner",
   options: {
     filter: false,

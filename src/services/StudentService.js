@@ -37,6 +37,7 @@ const animatedComponents = makeAnimated();
 //   console.log("Left editor with text: " + text);
 // };
 
+const keysCampusStageOfLearning = Object.keys(campusStageOfLearning);
 const allStagesOptions = Object.keys(allStages).map((x) => {
   return allStages[x];
 });
@@ -266,7 +267,7 @@ const addedAtColumn = {
       } else if (
         permissions.updateStage.indexOf(user.mail_id) > -1 &&
         (rowMeta.rowData[0].indexOf("Joined") > -1 ||
-          rowMeta.rowData[0].indexOf("onLeave") > -1)
+          keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
       ) {
         return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
       }
@@ -325,7 +326,7 @@ const JobKabLagegiColumn = {
 };
 
 const daysPassedColumn = {
-  name: "jobKabLagega.daysPassed",
+  name: "jobKabLagega.daysPassedInCampus",
   label: "Days Passed",
   options: {
     filter: false,
@@ -496,7 +497,7 @@ const feedbackColumnTransition = {
 };
 
 const ownerColumnTransition = {
-  name: "studentOwner",
+  name: "to_assign",
   label: "Owner",
   options: {
     filter: false,
@@ -803,6 +804,24 @@ const CasteColumn = {
   },
 };
 
+const joinedDate = {
+  label: "Joined Date",
+  name: "joinedDate",
+  options: {
+    filter: false,
+    customBodyRender: (value, rowMeta) => {
+      if (value) {
+        return (
+          <Moment format="D MMM YYYY" withTitle>
+            {value}
+          </Moment>
+        );
+      }
+      return value;
+    },
+  },
+};
+
 const lastStageColumn = {
   label: "Last Stage",
   name: "from_stage",
@@ -965,6 +984,7 @@ const StudentService = {
     nameColumn,
     EmailColumn,
     genderColumn,
+    joinedDate,
     stageColumn,
     JobKabLagegiColumn,
     daysPassedColumn,

@@ -4,7 +4,9 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import EditIcon from "@material-ui/icons/Edit";
 import moment from "moment";
+import Moment from "react-moment";
 import { withSnackbar } from "notistack";
 const baseURL = process.env.API_URL;
 import axios from "axios";
@@ -14,6 +16,7 @@ class JoinedDate extends Component {
     super(props);
     this.state = {
       currentDate: this.props.value,
+      isShowDatePicker: false,
     };
   }
   changeDate = (date) => {
@@ -35,24 +38,40 @@ class JoinedDate extends Component {
       });
     this.setState({
       currentDate: date,
+      isShowDatePicker: !this.state.isShowDatePicker,
     });
   };
+
+  showDatePicker = () => {
+    this.setState({ isShowDatePicker: !this.state.isShowDatePicker });
+  };
   render() {
+    const { currentDate, isShowDatePicker } = this.state;
+    if (isShowDatePicker) {
+      return (
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            margin="dense"
+            style={{ marginLeft: 16 }}
+            value={currentDate}
+            id="date-picker-dialog"
+            label="Joining Date"
+            format="MM/dd/yyyy"
+            onChange={this.changeDate}
+            KeyboardButtonProps={{
+              "aria-label": "change date",
+            }}
+          />
+        </MuiPickersUtilsProvider>
+      );
+    }
     return (
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-          margin="dense"
-          style={{ marginLeft: 16 }}
-          value={this.state.currentDate}
-          id="date-picker-dialog"
-          label="Joining Date"
-          format="MM/dd/yyyy"
-          onChange={this.changeDate}
-          KeyboardButtonProps={{
-            "aria-label": "change date",
-          }}
-        />
-      </MuiPickersUtilsProvider>
+      <div>
+        <Moment format="D MMM YYYY" withTitle style={{ marginRight: 10 }}>
+          {currentDate}
+        </Moment>
+        <EditIcon onClick={this.showDatePicker} style={{ cursor: "pointer" }} />
+      </div>
     );
   }
 }

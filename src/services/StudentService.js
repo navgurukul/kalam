@@ -991,6 +991,8 @@ const StudentService = {
     kitneDinLagenge,
     QualificationColumn,
     partnerNameColumn,
+    campusColumn,
+    donorColumn,
   ],
 
   dConvert: (x) => {

@@ -98,6 +98,7 @@ export class DashboardPage extends React.Component {
   };
 
   render = () => {
+    const { displayData } = this.props;
     const options = (
       <Box>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -154,7 +155,7 @@ export class DashboardPage extends React.Component {
       <div>
         {options}
         <MainLayout
-          columns={StudentService.columns["softwareCourse"]}
+          columns={displayData}
           data={this.state.sData ? this.state.sData : this.state.data}
         />
       </div>
@@ -186,9 +187,8 @@ export class DashboardPage extends React.Component {
       //   {},
       //   ...Object.entries(qualification).map(([k, v]) => ({ [v]: k }))
       // );
-
-      const dataURL =
-        baseUrl + "partners/" + this.props.match.params.partnerId + "/students";
+      const { url } = this.props;
+      const dataURL = baseUrl + url;
       const response = await axios.get(dataURL, {
         params: {
           from: this.state.fromDate,

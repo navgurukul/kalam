@@ -26,6 +26,7 @@ import TagsForOnlineClass from "../components/tagsForOnlineClass";
 import UpdateCampus from "../components/UpdateCampus";
 import UpdateDonor from "../components/UpdateDonor";
 import JoinedDate from "../components/JoinedDate";
+import DeleteRow from "../components/DeleteRow";
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
@@ -459,8 +460,17 @@ const stageColumnTransition = {
   options: {
     filter: true,
     sort: true,
-    customBodyRender: (rowData) => {
-      return allStages[rowData];
+    customBodyRender: (rowData, rowMeta) => {
+      const user = JSON.parse(window.localStorage.user);
+      return permissions.updateStage.indexOf(user.mail_id) > -1 &&
+        keysCampusStageOfLearning.indexOf(rowData) > -1 ? (
+        <div>
+          <DeleteRow transitionId={rowMeta.rowData[10]} />
+          {allStages[rowData]}
+        </div>
+      ) : (
+        allStages[rowData]
+      );
     },
   },
 };

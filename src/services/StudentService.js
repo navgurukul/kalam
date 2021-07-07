@@ -126,7 +126,7 @@ const ageColumn = {
   options: {
     filter: false,
     sort: false,
-    display: false,
+    display: true,
   },
 };
 

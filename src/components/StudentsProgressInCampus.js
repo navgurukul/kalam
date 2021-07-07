@@ -3,7 +3,6 @@ import {
   Button,
   ButtonGroup,
   Typography,
-  CardContent,
   Grid,
   Container,
   withStyles,
@@ -11,6 +10,7 @@ import {
 import axios from "axios";
 import StudentService from "../services/StudentService";
 import DashboardPage from "./Dashboard";
+import StudentsProgressCards from "./StudentsProgressCards";
 
 const baseUrl = process.env.API_URL;
 
@@ -34,10 +34,10 @@ class StudentsProgressInCampus extends Component {
   componentDidMount() {
     const partnerId = this.props.match.params.partnerId;
     axios
-      .get(`${baseUrl}/partners/joined_progress_made/${partnerId}`)
-      .then((response) => {
+      .get(`${baseUrl}partners/${this.props.match.params.partnerId}`)
+      .then((res) => {
         this.setState({
-          partnerName: response.data.data[0].partner.name,
+          partnerName: res.data.data["name"],
         });
       });
   }
@@ -51,7 +51,6 @@ class StudentsProgressInCampus extends Component {
   render() {
     const { classes } = this.props;
     const { partnerName, isShow } = this.state;
-    console.log(this.props, "this.props");
     return (
       <div>
         <Container className={classes.container}>
@@ -78,7 +77,9 @@ class StudentsProgressInCampus extends Component {
             url={`partners/joined_progress_made/${this.props.match.params.partnerId}`}
           />
         ) : (
-          <h1>Komal</h1>
+          <StudentsProgressCards
+            url={this.props.match.params.partnerId}
+          />
         )}
       </div>
     );

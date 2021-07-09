@@ -5,6 +5,7 @@ import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import GlobalService from "../services/GlobalService";
 import { connect } from "react-redux";
 import { theme } from "../theme/theme";
+import Loader from "./Loader";
 
 const styles = (theme) => ({
   innerTable: {
@@ -50,6 +51,13 @@ export class MainLayout extends React.Component {
               filter: true,
               filterType: "doprdown",
               responsive: "stacked",
+              textLabels: {
+                body: {
+                  noMatch: this.props.showLoader ?
+                    <Loader /> :
+                    'Sorry, there is no matching data to display',
+                },
+              },
             }}
           />
         </MuiThemeProvider>

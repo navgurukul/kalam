@@ -31,6 +31,7 @@ export class DashboardPage extends React.Component {
       data: [],
       sData: undefined, //subsetData,
       fromDate: null,
+      showLoader: true,
     };
 
     EventEmitter.subscribe("stageChange", this.stageChangeEvent);
@@ -92,7 +93,11 @@ export class DashboardPage extends React.Component {
 
     // columns = StudentService.setupPost(columns);
 
-    this.setState({ data: data, fromDate: data[0].created_at }, function () {
+    this.setState({
+      data: data,
+      fromDate: data[0].created_at,
+      showLoader: false
+    }, function () {
       this.props.fetchingFinish();
     });
   };
@@ -157,6 +162,7 @@ export class DashboardPage extends React.Component {
         <MainLayout
           columns={displayData}
           data={this.state.sData ? this.state.sData : this.state.data}
+          showLoader={this.state.showLoader}
         />
       </div>
     );

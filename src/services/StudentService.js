@@ -26,6 +26,7 @@ import TagsForOnlineClass from "../components/tagsForOnlineClass";
 import UpdateCampus from "../components/UpdateCampus";
 import UpdateDonor from "../components/UpdateDonor";
 import JoinedDate from "../components/JoinedDate";
+import DeleteRow from "../components/DeleteRow";
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
@@ -37,6 +38,7 @@ const animatedComponents = makeAnimated();
 //   console.log("Left editor with text: " + text);
 // };
 
+const keysCampusStageOfLearning = Object.keys(campusStageOfLearning);
 const allStagesOptions = Object.keys(allStages).map((x) => {
   return allStages[x];
 });
@@ -266,7 +268,7 @@ const addedAtColumn = {
       } else if (
         permissions.updateStage.indexOf(user.mail_id) > -1 &&
         (rowMeta.rowData[0].indexOf("Joined") > -1 ||
-          rowMeta.rowData[0].indexOf("onLeave") > -1)
+          keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
       ) {
         return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
       }
@@ -458,8 +460,17 @@ const stageColumnTransition = {
   options: {
     filter: true,
     sort: true,
-    customBodyRender: (rowData) => {
-      return allStages[rowData];
+    customBodyRender: (rowData, rowMeta) => {
+      const user = JSON.parse(window.localStorage.user);
+      return permissions.updateStage.indexOf(user.mail_id) > -1 &&
+        keysCampusStageOfLearning.indexOf(rowData) > -1 ? (
+        <div>
+          <DeleteRow transitionId={rowMeta.rowData[10]} />
+          {allStages[rowData]}
+        </div>
+      ) : (
+        allStages[rowData]
+      );
     },
   },
 };
@@ -496,7 +507,7 @@ const feedbackColumnTransition = {
 };
 
 const ownerColumnTransition = {
-  name: "studentOwner",
+  name: "to_assign",
   label: "Owner",
   options: {
     filter: false,

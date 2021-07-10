@@ -1,6 +1,6 @@
-git branch -f gh-page
+git branch -f gh-pages
 
-git checkout gh-page
+git checkout gh-pages
 
 git reset --hard origin/main
 
@@ -12,9 +12,9 @@ echo 'admissions.navgurukul.org' > CNAME
 
 git add -A .
 
-git commit -a -m 'gh-page update'
+git commit -a -m 'gh-pages update'
 
-git push origin gh-page --force
+git push origin gh-pages --force
 
 git checkout main
 

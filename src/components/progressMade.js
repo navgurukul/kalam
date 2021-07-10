@@ -24,6 +24,7 @@ import WhatsAppIcon from "../assets/img/whatsapp.png";
 import DashboardPage from "./Dashboard";
 import CollapseStudentData from "./collapseData";
 import Tooltip from "@material-ui/core/Tooltip";
+import StudentService from "../services/StudentService";
 
 const baseURL = process.env.API_URL;
 
@@ -271,7 +272,12 @@ class ProgressMadeForPartner extends Component {
           )}
           <br></br>
         </Container>
-        {tabular && <DashboardPage />}
+        {tabular && (
+          <DashboardPage
+            displayData={StudentService.columns["softwareCourse"]}
+            url={`partners/${this.props.match.params.partnerId}/students`}
+          />
+        )}
       </div>
     );
   }

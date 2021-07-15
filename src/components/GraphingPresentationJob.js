@@ -46,6 +46,7 @@ class PieRechartReport extends React.Component {
       return (
         <Container maxWidth="md">
           <PieChart
+            resolveLabelOverlapping="shift"
             id="pie"
             type="doughnut"
             palette="Bright"

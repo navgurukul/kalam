@@ -5,6 +5,7 @@ import StudentService from "../services/StudentService";
 
 import MainLayout from "./MainLayout";
 import { qualificationKeys, donor } from "../config";
+import GrapLink from "./GraphLink";
 
 const baseUrl = process.env.API_URL;
 
@@ -48,10 +49,13 @@ class DonorStudentsData extends React.Component {
     this.dataSetup(studentData);
   };
   render() {
-    const { data, showLoader } = this.state;
+
+    const { data, donorName, showLoader } = this.state;
+    const { donorId } = this.props.match.params;
+
     return (
       <MainLayout
-        title={this.state.donorName}
+        title={<GrapLink titleName={donorName} id={`/donor/${donorId}`} />}
         columns={StudentService["DonorData"]}
         data={data}
         showLoader={showLoader}

@@ -16,6 +16,7 @@ class DonorStudentsData extends React.Component {
     super(props);
     this.state = {
       data: [],
+      showLoader: true,
       campusName: campus.find(
         (x) => x.id === parseInt(this.props.match.params.campusId)
       ).name,
@@ -45,6 +46,9 @@ class DonorStudentsData extends React.Component {
         data: data,
       });
     }
+    this.setState({
+      showLoader: false
+    })
   };
   fetching = async () => {
     const dataURL =
@@ -60,11 +64,14 @@ class DonorStudentsData extends React.Component {
     this.dataSetup(studentData);
   };
   render() {
+    const { data, showLoader } = this.state;
     return (
       <MainLayout
         title={this.state.campusName}
         columns={StudentService["CampusData"]}
-        data={this.state.data}
+        data={data}
+        showLoader={showLoader}
+
       />
     );
   }

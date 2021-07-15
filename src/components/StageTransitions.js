@@ -19,6 +19,8 @@ import GlobalService from "../services/GlobalService";
 import StudentService from "../services/StudentService";
 import DetailsIcon from "@material-ui/icons/Details";
 import StudentContact from "./StudentContact";
+import Loader from "./Loader";
+
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
 
@@ -67,6 +69,7 @@ export class Transition extends React.Component {
       data: [],
       contacts: [],
       modalOpen: false,
+      showLoader: true,
     };
   }
 
@@ -94,6 +97,7 @@ export class Transition extends React.Component {
         {
           data: newData,
           contacts: response.data.contacts,
+          showLoader: false
         },
         this.props.fetchingFinish
       );
@@ -156,6 +160,13 @@ export class Transition extends React.Component {
               options={{
                 headerStyle: {
                   color: theme.palette.primary.main,
+                },
+                textLabels: {
+                  body: {
+                    noMatch: this.state.showLoader ?
+                      <Loader /> :
+                      'Sorry, there is no matching data to display',
+                  },
                 },
                 exportButton: true,
                 pageSize: 100,

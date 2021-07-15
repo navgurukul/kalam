@@ -187,8 +187,8 @@ const donorColumn = {
         let newValue = "";
         value
           ? value.map((item) => {
-              newValue = `${newValue}   ${item.donor}`;
-            })
+            newValue = `${newValue}   ${item.donor}`;
+          })
           : (newValue = null);
 
         return newValue;
@@ -349,7 +349,6 @@ const kitneAurDin = {
     filter: false,
     display: false,
     customBodyRender: (value) => {
-      console.log(value, "value");
       if (value) {
         let parseValue = parseInt(value);
         return <p>{parseValue} days</p>;
@@ -495,8 +494,8 @@ const feedbackColumnTransition = {
               />
               {rowData
                 ? rowData
-                    .split("\n\n")
-                    .map((item, i) => <p key={i}> {item} </p>)
+                  .split("\n\n")
+                  .map((item, i) => <p key={i}> {item} </p>)
                 : null}
             </div>
           ) : null}
@@ -541,7 +540,10 @@ const statusColumnTransition = {
     customBodyRender: (rowData, rowMeta, updateValue) => {
       const feedbackableStage =
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
-      if ((rowData || rowMeta.rowData[3]) && feedbackableStage) {
+      if (rowMeta.rowData[0] === "selectedButNotJoined") {
+        return null
+      }
+      else if ((rowData || rowMeta.rowData[3]) && feedbackableStage) {
         return (
           <div>
             <StatusSelect

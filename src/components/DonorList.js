@@ -43,6 +43,7 @@ class DonorList extends Component {
     super();
     this.state = {
       data: [],
+      showLoader: true
     };
   }
   componentDidMount() {
@@ -55,6 +56,7 @@ class DonorList extends Component {
       const response = await axios.get(dataURL);
       this.setState({
         data: response.data,
+        showLoader: false
       });
     } catch (e) {
       console.log(e);
@@ -62,12 +64,14 @@ class DonorList extends Component {
   }
 
   render() {
+    const { data, showLoader } = this.state;
     return (
       <Container maxWidth="sm">
         <MainLayout
           title={"Donors Name"}
           columns={columns}
-          data={this.state.data}
+          data={data}
+          showLoader={showLoader}
         />
       </Container>
     );

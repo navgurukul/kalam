@@ -6,12 +6,12 @@ import PieChart, {
   Label,
   Font,
   Connector,
-  Size
 } from "devextreme-react/pie-chart";
 
 import axios from "axios";
-import Container from '@material-ui/core/Container';
-import { Typography } from '@material-ui/core';
+import Container from "@material-ui/core/Container";
+import { Typography, Box } from "@material-ui/core";
+import Loader from "./Loader";
 
 const baseUrl = process.env.API_URL;
 
@@ -37,10 +37,16 @@ class PieRechartReport extends React.Component {
 
   render() {
     if (this.state.data) {
-      const { graphData, note, noOfStudentsWithMilestone, noOfStudentsWithOutMilestone } = this.state.data;
+      const {
+        graphData,
+        note,
+        noOfStudentsWithMilestone,
+        noOfStudentsWithOutMilestone,
+      } = this.state.data;
       return (
         <Container maxWidth="md">
-          <PieChart id="pie"
+          <PieChart
+            id="pie"
             type="doughnut"
             palette="Bright"
             dataSource={graphData}
@@ -60,23 +66,29 @@ class PieRechartReport extends React.Component {
               <Label
                 visible={true}
                 position="columns"
-                customizeText={this.customizeText}>
-                <Font size={16} />
+                customizeText={this.customizeText}
+              >
+                <Font size={15} />
                 <Connector visible={true} width={0.5} />
               </Label>
             </Series>
           </PieChart>
-          <Typography align="center" >
+          <Typography align="center">
             Number of students with milestone :- {noOfStudentsWithMilestone}
           </Typography>
-          <Typography align="center" >
-            Number of students without milestone:- {noOfStudentsWithOutMilestone}
+          <Typography align="center">
+            Number of students without milestone:-
+            {noOfStudentsWithOutMilestone}
           </Typography>
         </Container>
       );
     }
-    return <h1>Loading</h1>
+    return (
+      <Box m={2} pt={3}>
+        <Loader />
+      </Box>
+    );
   }
 }
 
-export default (PieRechartReport);
+export default PieRechartReport;

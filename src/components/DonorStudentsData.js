@@ -5,7 +5,7 @@ import StudentService from "../services/StudentService";
 
 import MainLayout from "./MainLayout";
 import { qualificationKeys, donor } from "../config";
-import GrapLink from "./GrapLink";
+import GrapLink from "./GraphLink";
 
 const baseUrl = process.env.API_URL;
 
@@ -14,6 +14,7 @@ class DonorStudentsData extends React.Component {
     super(props);
     this.state = {
       data: [],
+      showLoader: true,
       donorName: donor.find(
         (x) => x.id === parseInt(this.props.match.params.donorId)
       ).name,
@@ -31,6 +32,9 @@ class DonorStudentsData extends React.Component {
         data: data,
       });
     }
+    this.setState({
+      showLoader: false
+    })
   };
   fetching = async () => {
     const dataURL =
@@ -45,13 +49,16 @@ class DonorStudentsData extends React.Component {
     this.dataSetup(studentData);
   };
   render() {
-    const { data, donorName } = this.state;
+
+    const { data, donorName, showLoader } = this.state;
     const { donorId } = this.props.match.params;
+
     return (
       <MainLayout
         title={<GrapLink titleName={donorName} id={`/donor/${donorId}`} />}
         columns={StudentService["DonorData"]}
         data={data}
+        showLoader={showLoader}
       />
     );
   }

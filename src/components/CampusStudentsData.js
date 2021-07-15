@@ -8,6 +8,7 @@ import StudentService from "../services/StudentService";
 
 import MainLayout from "./MainLayout";
 import { qualificationKeys, campus } from "../config";
+import GrapLink from "./GrapLink";
 
 const baseUrl = process.env.API_URL;
 
@@ -60,11 +61,13 @@ class DonorStudentsData extends React.Component {
     this.dataSetup(studentData);
   };
   render() {
+    const { data, campusName } = this.state;
+    const { campusId } = this.props.match.params;
     return (
       <MainLayout
-        title={this.state.campusName}
+        title={<GrapLink titleName={campusName} id={`/campus/${campusId}`} />}
         columns={StudentService["CampusData"]}
-        data={this.state.data}
+        data={data}
       />
     );
   }
@@ -75,4 +78,4 @@ const mapDispatchToProps = (dispatch) => ({
   usersSetup: (users) => dispatch(setupUsers(users)),
 });
 
-export default connect(undefined, mapDispatchToProps)(DonorStudentsData);
+export default (connect(undefined, mapDispatchToProps)(DonorStudentsData));

@@ -174,7 +174,11 @@ export class PartnerList extends React.Component {
       <Box>
         <MuiThemeProvider theme={theme}>
           <div className={classes.innerTable}>
-            <MainLayout columns={columns} data={this.state.data} />
+            <MainLayout
+              title={"Partners"}
+              columns={columns}
+              data={this.state.data}
+            />
           </div>
         </MuiThemeProvider>
       </Box>

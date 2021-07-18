@@ -18,6 +18,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import { withSnackbar } from "notistack";
 import { allStages } from "../config";
+import Loader from "./Loader";
 
 import axios from "axios";
 const baseURL = process.env.API_URL;
@@ -44,17 +45,16 @@ class StudentsProgressCards extends Component {
     super(props);
     this.state = {
       data: null,
-      "Python": "",
-      "JS": "",
+      Python: "",
+      JS: "",
       "Node JS": "",
       "React JS": "",
       "Interview preperation": "",
       "Pay forwad": "",
       "Got job": "",
-      "onLeave": "",
-      "Drop out": ""
-
-    }
+      onLeave: "",
+      "Drop out": "",
+    };
     const { classes } = this.props;
     this.icons = [
       {
@@ -87,12 +87,14 @@ class StudentsProgressCards extends Component {
     ];
   }
   componentDidMount() {
-    axios.get(`${baseURL}partners/joined_progress_made_card/${this.props.url}`).then((response) => {
-      this.setState({
-        data: response.data.data
-      })
-      this.whatsAppMessage();
-    })
+    axios
+      .get(`${baseURL}${this.props.url}/students/progress_made_card`)
+      .then((response) => {
+        this.setState({
+          data: response.data.data,
+        });
+        this.whatsAppMessage();
+      });
   }
 
   whatsAppMessage = () => {
@@ -103,7 +105,6 @@ class StudentsProgressCards extends Component {
         if (studentDetails.length > 0) {
           text = `${text}\n_${allStages[key1]} (${studentDetails.length})_\n`;
           studentDetails.map((item) => {
-
             text = `${text}${item.name}: ${item.contacts[0].mobile}\n`;
           });
         }
@@ -119,7 +120,7 @@ class StudentsProgressCards extends Component {
     const { classes } = this.props;
 
     return (
-      <Tooltip title="Copy Details" >
+      <Tooltip title="Copy Details">
         <CopyToClipboard
           text={key}
           onCopy={() => {
@@ -128,7 +129,9 @@ class StudentsProgressCards extends Component {
             });
           }}
         >
-          <FileCopyIcon style={{ cursor: "pointer", color: "#f05f40", fontSize: "30px" }} />
+          <FileCopyIcon
+            style={{ cursor: "pointer", color: "#f05f40", fontSize: "30px" }}
+          />
         </CopyToClipboard>
       </Tooltip>
     );
@@ -146,51 +149,52 @@ class StudentsProgressCards extends Component {
         alignItems="flex-start"
         style={{ marginTop: 10, justifyContent: "center", width: "100% " }}
       >
-        {data && Object.entries(data).map(([key, detailsData], index) => {
-          return <Grid item xs={12} sm={6} md={3}>
-            <Card className={classes.root} key={key}>
-              <CardContent>
-                <div style={{ marginBottom: 50 }}>
-
-                  <Grid
-                    container
-                    direction="row"
-                    justify="flex-end"
-                    alignItems="center"
-                  >
-                    {this.copyClipBoard(this.state[key])}
-                  </Grid>
-                  <br></br>
-                  <center>{this.icons[index].icon}</center>
-                  <br></br>
-                  <center>
-                    <Typography variant="h5">{key}</Typography>
-                  </center>
-                </div>
-                {Object.entries(detailsData).map(
-                  ([stage, studentDetails]) => (
-                    <div>
-                      <div key={stage}>
-                        <CollapseStudentData
-                          classes={classes}
-                          details={studentDetails}
-                          stage={stage}
-                        />
-                      </div>
+        {data ? (
+          Object.entries(data).map(([key, detailsData], index) => {
+            return (
+              <Grid item xs={12} sm={6} md={3}>
+                <Card className={classes.root} key={key}>
+                  <CardContent>
+                    <div style={{ marginBottom: 50 }}>
+                      <Grid
+                        container
+                        direction="row"
+                        justify="flex-end"
+                        alignItems="center"
+                      >
+                        {this.copyClipBoard(this.state[key])}
+                      </Grid>
+                      <br></br>
+                      <center>{this.icons[index].icon}</center>
+                      <br></br>
+                      <center>
+                        <Typography variant="h5">{key}</Typography>
+                      </center>
                     </div>
-                  )
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
-        })}
+                    {Object.entries(detailsData).map(
+                      ([stage, studentDetails]) => (
+                        <div>
+                          <div key={stage}>
+                            <CollapseStudentData
+                              classes={classes}
+                              details={studentDetails}
+                              stage={stage}
+                            />
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          })
+        ) : (
+          <Loader />
+        )}
       </Grid>
-    )
+    );
   }
 }
 
-
 export default withSnackbar(withStyles(styles)(StudentsProgressCards));
-
-
-

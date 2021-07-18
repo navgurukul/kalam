@@ -1,40 +1,25 @@
 import React, { Component } from "react";
-import {
-  Button,
-  ButtonGroup,
-  Typography,
-  Grid,
-  Container,
-  withStyles,
-} from "@material-ui/core";
 import axios from "axios";
 import StudentService from "../services/StudentService";
 import DashboardPage from "./Dashboard";
 import StudentsProgressCards from "./StudentsProgressCards";
+import SelectUiByButtons from "./SelectUiByButtons";
+import GraphingPresentationJob from "./GraphingPresentationJob.js";
 
 const baseUrl = process.env.API_URL;
-
-const styles = (theme) => ({
-  container: {
-    display: "flex",
-    alignItems: "center",
-    flexDirection: "column",
-    marginTop: 10,
-  },
-});
 
 class StudentsProgressInCampus extends Component {
   constructor() {
     super();
     this.state = {
-      partnerName: null,
+      partnerName: "",
       isShow: false,
     };
   }
   componentDidMount() {
     const partnerId = this.props.match.params.partnerId;
     axios
-      .get(`${baseUrl}partners/${this.props.match.params.partnerId}`)
+      .get(`${baseUrl}partners/${partnerId}`)
       .then((res) => {
         this.setState({
           partnerName: res.data.data["name"],
@@ -42,43 +27,37 @@ class StudentsProgressInCampus extends Component {
       });
   }
 
-  progressMade = () => {
-    this.setState({ isShow: false });
+  progressMade = (value) => {
+    this.setState({ isShow: value });
   };
-  tabularData = () => {
-    this.setState({ isShow: true });
+  tabularData = (value) => {
+    this.setState({ isShow: value });
+  };
+  showGraphData = (value) => {
+    this.setState({ isShow: value });
   };
   render() {
-    const { classes } = this.props;
     const { partnerName, isShow } = this.state;
     return (
       <div>
-        <Container className={classes.container}>
-          <Grid item xs={12} style={{ marginBottom: 40 }}>
-            <Typography variant="h4">
-              {" "}
-              Hello, {partnerName} Foundation
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <ButtonGroup
-              size="large"
-              color="primary"
-              aria-label="large outlined primary button group"
-            >
-              <Button onClick={this.progressMade}>Progress Made</Button>
-              <Button onClick={this.tabularData}>Tabular Data</Button>
-            </ButtonGroup>
-          </Grid>
-        </Container>
+        <SelectUiByButtons
+          name={`Hello, ${partnerName} Foundation`}
+          progressMade={this.progressMade}
+          tabularData={this.tabularData}
+          showGraphData={this.showGraphData}
+        />
         {isShow ? (
           <DashboardPage
             displayData={StudentService["CampusData"]}
             url={`partners/joined_progress_made/${this.props.match.params.partnerId}`}
           />
+        ) : isShow === null ? (
+          <GraphingPresentationJob
+            url={`/partners/${this.props.match.params.partnerId}/students/distribution`}
+          />
         ) : (
           <StudentsProgressCards
-            url={this.props.match.params.partnerId}
+            url={`partners/${this.props.match.params.partnerId}`}
           />
         )}
       </div>
@@ -86,4 +65,4 @@ class StudentsProgressInCampus extends Component {
   }
 }
 
-export default withStyles(styles)(StudentsProgressInCampus);
+export default StudentsProgressInCampus;

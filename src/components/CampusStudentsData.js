@@ -5,19 +5,19 @@ import { changeFetching, setupUsers } from "../store/actions/auth";
 import axios from "axios";
 
 import StudentService from "../services/StudentService";
-
-import MainLayout from "./MainLayout";
-import { qualificationKeys, campus } from "../config";
-import GrapLink from "./GraphLink";
+import { campus } from "../config";
+import DashboardPage from "./Dashboard";
+import SelectUiByButtons from "./SelectUiByButtons";
+import StudentsProgressCards from "./StudentsProgressCards";
+import GraphingPresentationJob from "./GraphingPresentationJob.js";
 
 const baseUrl = process.env.API_URL;
 
-class DonorStudentsData extends React.Component {
+class CampusStudentsData extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
-      showLoader: true,
+      isShow: true,
       campusName: campus.find(
         (x) => x.id === parseInt(this.props.match.params.campusId)
       ).name,
@@ -36,46 +36,41 @@ class DonorStudentsData extends React.Component {
   }
   componentDidMount() {
     this.fetchUsers();
-    this.fetching();
   }
-  dataSetup = (data) => {
-    if (data.length > 0) {
-      for (let i = 0; i < data.length; i++) {
-        data[i] = StudentService.dConvert(data[i]);
-      }
-      this.setState({
-        data: data,
-      });
-    }
-    this.setState({
-      showLoader: false
-    })
+  progressMade = (value) => {
+    this.setState({ isShow: value });
   };
-  fetching = async () => {
-    const dataURL =
-      baseUrl + `campus/${this.props.match.params.campusId}/students`;
-    const response = await axios.get(dataURL);
-    const studentData = response.data.data.map((student) => {
-      return {
-        ...student,
-        qualification: qualificationKeys[student.qualification],
-        partnerName: student.partner ? student.partner.name : student.partner,
-      };
-    });
-    this.dataSetup(studentData);
+  tabularData = (value) => {
+    this.setState({ isShow: value });
+  };
+  showGraphData = (value) => {
+    this.setState({ isShow: value });
   };
   render() {
-
-    const { data, campusName, showLoader } = this.state;
+    const { campusName, isShow } = this.state;
     const { campusId } = this.props.match.params;
-
+    console.log(isShow, "isShow");
     return (
-      <MainLayout
-        title={<GrapLink titleName={campusName} id={`/campus/${campusId}`} />}
-        columns={StudentService["CampusData"]}
-        data={data}
-        showLoader={showLoader}
-      />
+      <div>
+        <SelectUiByButtons
+          name={`${campusName} Campus`}
+          progressMade={this.progressMade}
+          tabularData={this.tabularData}
+          showGraphData={this.showGraphData}
+        />
+        {isShow ? (
+          <DashboardPage
+            displayData={StudentService["CampusData"]}
+            url={`campus/${campusId}/students`}
+          />
+        ) : isShow === null ? (
+          <GraphingPresentationJob
+            url={`/campus/${campusId}/students/distribution`}
+          />
+        ) : (
+          <StudentsProgressCards url={`campus/${campusId}`} />
+        )}
+      </div>
     );
   }
 }
@@ -85,4 +80,4 @@ const mapDispatchToProps = (dispatch) => ({
   usersSetup: (users) => dispatch(setupUsers(users)),
 });
 
-export default (connect(undefined, mapDispatchToProps)(DonorStudentsData));
+export default connect(undefined, mapDispatchToProps)(CampusStudentsData);

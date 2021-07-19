@@ -24,7 +24,7 @@ class PieRechartReport extends React.Component {
   }
 
   componentDidMount() {
-    axios.get(`${baseUrl}${this.props.location.pathname}`).then((response) => {
+    axios.get(`${baseUrl}${this.props.url}`).then((response) => {
       this.setState({
         data: response.data.data,
       });

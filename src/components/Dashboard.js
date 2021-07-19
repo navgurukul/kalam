@@ -95,7 +95,7 @@ export class DashboardPage extends React.Component {
 
     this.setState({
       data: data,
-      fromDate: data[0].created_at,
+      fromDate: this.state.data.length > 0 ? data[0].created_at:null,
       showLoader: false
     }, function () {
       this.props.fetchingFinish();
@@ -103,7 +103,7 @@ export class DashboardPage extends React.Component {
   };
 
   render = () => {
-    const { displayData } = this.props;
+    const { displayData, title } = this.props;
     const options = (
       <Box>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -160,6 +160,7 @@ export class DashboardPage extends React.Component {
       <div>
         {options}
         <MainLayout
+          title={title}
           columns={displayData}
           data={this.state.sData ? this.state.sData : this.state.data}
           showLoader={this.state.showLoader}
@@ -194,13 +195,16 @@ export class DashboardPage extends React.Component {
       //   ...Object.entries(qualification).map(([k, v]) => ({ [v]: k }))
       // );
       const { url } = this.props;
+      console.log(url,"URL")
       const dataURL = baseUrl + url;
+      console.log(dataURL,"dataURL")
       const response = await axios.get(dataURL, {
         params: {
           from: this.state.fromDate,
           to: this.toDate,
         },
       });
+
       const studentData = response.data.data.map((student) => {
         return {
           ...student,

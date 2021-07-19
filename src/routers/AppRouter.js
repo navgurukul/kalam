@@ -22,7 +22,6 @@ import DonorStudentsData from "../components/DonorStudentsData";
 import CampusList from "../components/CampusList";
 import CampusStudentsData from "../components/CampusStudentsData";
 import StudentsProgressInCampus from "../components/StudentsProgressInCampus";
-import GraphingPresentationJob from "../components/GraphingPresentationJob";
 // if authenticated, redirect to /students else be there
 import PublicRoute from "./PublicRouter";
 // if authenticated be there, else redirect to /login
@@ -45,14 +44,6 @@ const AppRouter = () => (
         <PublicRoute path="/login" component={LoginDesign} exact={true} />
         <PrivateRoute path="/tasks" component={MyTaskReport} />
         <PrivateRoute path="/donors" component={DonorList} />
-        <PrivateRoute
-          path="/campus/:campusId/students/distribution"
-          component={GraphingPresentationJob}
-        />
-         <PrivateRoute
-          path="/donor/:donorId/students/distribution"
-          component={GraphingPresentationJob}
-        />
         <PrivateRoute
           path="/campus/:campusId/students"
           component={CampusStudentsData}

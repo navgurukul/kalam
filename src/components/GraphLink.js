@@ -1,23 +1,21 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Typography } from '@material-ui/core';
+import { Typography } from "@material-ui/core";
 import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
-
 
 const styles = (theme) => ({
   root: {
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   link: {
     fontSize: "45px",
     color: "#f05f40",
-    cursor: "pointer"
+    cursor: "pointer",
   },
 });
 
 class GraphLink extends Component {
-
   render() {
     const { classes } = this.props;
     return (
@@ -32,8 +30,9 @@ class GraphLink extends Component {
             <Typography variant="h6">Graph of job kab lagega</Typography>
           </Link>
         </div>
+        <Typography variant="h5">{this.props.titleName} </Typography>
       </div>
-    )
+    );
   }
 }
 

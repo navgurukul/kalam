@@ -21,7 +21,7 @@ import DonorList from "../components/DonorList";
 import DonorStudentsData from "../components/DonorStudentsData";
 import CampusList from "../components/CampusList";
 import CampusStudentsData from "../components/CampusStudentsData";
-import StudentsProgressInCampus from "../components/StudentsProgressInCampus";
+import PartnerStudentsProgressInCampus from "../components/PartnerStudentsProgressInCampus";
 // if authenticated, redirect to /students else be there
 import PublicRoute from "./PublicRouter";
 // if authenticated be there, else redirect to /login
@@ -71,7 +71,7 @@ const AppRouter = () => (
         />
         <AnyRoute
           path="/partner/:partnerId/progress"
-          component={StudentsProgressInCampus}
+          component={PartnerStudentsProgressInCampus}
         />
         <AnyRoute
           path="/partner/:partnerId"

@@ -8,7 +8,7 @@ import GraphingPresentationJob from "./GraphingPresentationJob.js";
 
 const baseUrl = process.env.API_URL;
 
-class StudentsProgressInCampus extends Component {
+class PartnerStudentsProgressInCampus extends Component {
   constructor() {
     super();
     this.state = {
@@ -18,13 +18,11 @@ class StudentsProgressInCampus extends Component {
   }
   componentDidMount() {
     const partnerId = this.props.match.params.partnerId;
-    axios
-      .get(`${baseUrl}partners/${partnerId}`)
-      .then((res) => {
-        this.setState({
-          partnerName: res.data.data["name"],
-        });
+    axios.get(`${baseUrl}partners/${partnerId}`).then((res) => {
+      this.setState({
+        partnerName: res.data.data["name"],
       });
+    });
   }
 
   progressMade = (value) => {
@@ -65,4 +63,4 @@ class StudentsProgressInCampus extends Component {
   }
 }
 
-export default StudentsProgressInCampus;
+export default PartnerStudentsProgressInCampus;

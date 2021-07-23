@@ -17,7 +17,15 @@ import StudentService from "../services/StudentService";
 import { EventEmitter } from "./events";
 import MainLayout from "./MainLayout";
 import { qualificationKeys } from "../config";
+import Select from "react-select";
+import { withSnackbar } from "notistack";
+import { campusStageOfLearning } from "../config";
 
+const allStagesOptions = Object.keys(campusStageOfLearning).map((x) => {
+  return { value: x, label: campusStageOfLearning[x] };
+});
+
+const allStagesValue = Object.values(campusStageOfLearning);
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseUrl = process.env.API_URL;
 
@@ -29,9 +37,12 @@ export class DashboardPage extends React.Component {
     super(props);
     this.state = {
       data: [],
+      mainData: [],
       sData: undefined, //subsetData,
       fromDate: null,
       showLoader: true,
+      fromStage: null,
+      toStage: null,
     };
 
     EventEmitter.subscribe("stageChange", this.stageChangeEvent);
@@ -93,19 +104,84 @@ export class DashboardPage extends React.Component {
 
     // columns = StudentService.setupPost(columns);
 
-    this.setState({
-      data: data,
-      fromDate: this.state.data.length > 0 ? data[0].created_at:null,
-      showLoader: false
-    }, function () {
-      this.props.fetchingFinish();
-    });
+    this.setState(
+      {
+        data: data,
+        mainData: data,
+        fromDate: this.state.data.length > 0 ? data[0].created_at : null,
+        showLoader: false,
+      },
+      function () {
+        this.props.fetchingFinish();
+      }
+    );
   };
 
+  filterData = () => {
+    this.setState({ data: this.state.mainData });
+    const { data, fromStage, toStage } = this.state;
+    if (allStagesValue.indexOf(fromStage) <= allStagesValue.indexOf(toStage)) {
+      const newAllStagesValue = allStagesValue.slice(
+        allStagesValue.indexOf(fromStage),
+        allStagesValue.indexOf(toStage) + 1
+      );
+      const newData = data.filter((element) => {
+        return newAllStagesValue.indexOf(element.stage) > -1;
+      });
+      this.setState({
+        data: newData,
+      });
+    } else {
+      this.setState({
+        data: [],
+      });
+      this.props.enqueueSnackbar(
+        `Stage inputs not correct. Please check once.`,
+        {
+          variant: "error",
+        }
+      );
+    }
+  };
+
+  onChangeFromStage = async (event) => {
+    await this.setState({ fromStage: event.label });
+    const { fromStage, toStage } = this.state;
+    if (fromStage && toStage) {
+      this.filterData();
+    }
+  };
+
+  onChangeToStage = async (event) => {
+    await this.setState({ toStage: event.label });
+    const { fromStage, toStage } = this.state;
+    if (fromStage && toStage) {
+      this.filterData();
+    }
+  };
   render = () => {
     const { displayData, title } = this.props;
-    const options = (
+    const { fromStage, toStage, data, mainData, sData, showLoader } =
+      this.state;
+    const options = mainData.length > 0 && (
       <Box>
+        <Select
+          className={"filterSelectGlobal"}
+          onChange={this.onChangeFromStage}
+          options={allStagesOptions}
+          placeholder={"from Stage"}
+          isClearable={false}
+          closeMenuOnSelect={true}
+        />
+        <Select
+          className={"filterSelectGlobal"}
+          onChange={this.onChangeToStage}
+          options={allStagesOptions}
+          placeholder={"to Stage"}
+          isClearable={false}
+          closeMenuOnSelect={true}
+        />
+
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
             margin="dense"
@@ -162,8 +238,8 @@ export class DashboardPage extends React.Component {
         <MainLayout
           title={title}
           columns={displayData}
-          data={this.state.sData ? this.state.sData : this.state.data}
-          showLoader={this.state.showLoader}
+          data={sData ? sData : data}
+          showLoader={showLoader}
         />
       </div>
     );
@@ -195,9 +271,7 @@ export class DashboardPage extends React.Component {
       //   ...Object.entries(qualification).map(([k, v]) => ({ [v]: k }))
       // );
       const { url } = this.props;
-      console.log(url,"URL")
       const dataURL = baseUrl + url;
-      console.log(dataURL,"dataURL")
       const response = await axios.get(dataURL, {
         params: {
           from: this.state.fromDate,
@@ -226,5 +300,5 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default withRouter(
-  connect(undefined, mapDispatchToProps)(DashboardPage)
+  withSnackbar(connect(undefined, mapDispatchToProps)(DashboardPage))
 );

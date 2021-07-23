@@ -19,8 +19,16 @@ const showContact = (student) => {
 
   return (
     <center>
-      <div key={student.name} style={{ fontSize: 15, marginTop: 8 }}>
-        {student.name}:{student.mobile}
+      <div
+        key={student.name}
+        style={{
+          fontSize: 15,
+          marginTop: 10,
+          fontFamily: ("Roboto", "Helvetica", "Arial"),
+        }}
+      >
+        {student.name} :
+        {student.mobile ? student.mobile : student.contacts[0]["mobile"]}
       </div>
       {student.status != null ? (
         <span style={{ fontSize: 15, fontWeight: 500 }}>({studentStatus})</span>
@@ -80,32 +88,34 @@ class CollapseStudentData extends Component {
           {details.length > 0 && expanded && details.map(showContact)}
         </CardContent>
         <CardActions disableSpacing>
-          <IconButton
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded,
-            })}
-            onClick={this.handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            {expanded ? (
-              <div>
-                <Typography>See Less</Typography>
-                <ExpandLessIcon
-                  className={classes.expandOpen}
-                  color="primary"
-                />
-              </div>
-            ) : (
-              <div>
-                <Typography>See More</Typography>
-                <ExpandMoreIcon
-                  className={classes.expandOpen}
-                  color="primary"
-                />
-              </div>
-            )}
-          </IconButton>
+          {details.length > 10 && (
+            <IconButton
+              className={clsx(classes.expand, {
+                [classes.expandOpen]: expanded,
+              })}
+              onClick={this.handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              {expanded ? (
+                <div>
+                  <Typography>See Less</Typography>
+                  <ExpandLessIcon
+                    className={classes.expandOpen}
+                    color="primary"
+                  />
+                </div>
+              ) : (
+                <div>
+                  <Typography>See More</Typography>
+                  <ExpandMoreIcon
+                    className={classes.expandOpen}
+                    color="primary"
+                  />
+                </div>
+              )}
+            </IconButton>
+          )}
         </CardActions>
       </div>
     );

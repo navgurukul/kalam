@@ -6,6 +6,7 @@ import PieChart, {
   Label,
   Font,
   Connector,
+  Tooltip,
 } from "devextreme-react/pie-chart";
 
 import axios from "axios";
@@ -35,6 +36,19 @@ class PieRechartReport extends React.Component {
     return `${arg.valueText} Students (${arg.percentText})`;
   }
 
+  customizeTooltip = (pointInfo) => {
+    const { graphData } = this.state.data;
+    const studentNames = graphData.find(
+      (element) => element.name === pointInfo.argument
+    ).studentNames;
+
+    return {
+      text: studentNames.map((studentName) => {
+        console.log(studentName);
+        return `${studentName}<br/>`;
+      }),
+    };
+  };
   render() {
     if (this.state.data) {
       const {
@@ -73,6 +87,10 @@ class PieRechartReport extends React.Component {
                 <Connector visible={true} width={0.5} />
               </Label>
             </Series>
+            <Tooltip
+              enabled={true}
+              customizeTooltip={this.customizeTooltip}
+            ></Tooltip>
           </PieChart>
           <Typography align="center">
             Number of students with milestone :- {noOfStudentsWithMilestone}

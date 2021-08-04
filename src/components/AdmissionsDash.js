@@ -33,6 +33,12 @@ allStagesOptions.push({
   label: "Back To All Students Details",
 });
 
+const limitNumber = [
+  1000, 1500, 2000, 2500, 3000, 4000, 4500, 5000, 5500, 6000, 65000, 7000,
+].map((number) => {
+  return { value: number, label: number };
+});
+
 const styles = (theme) => ({
   clear: {
     clear: "both",
@@ -58,6 +64,7 @@ export class AdmissionsDash extends React.Component {
       data: [],
       sData: undefined, //subsetData,
       fromDate: null,
+      showLoader: true,
     };
   }
 
@@ -106,6 +113,31 @@ export class AdmissionsDash extends React.Component {
     }
   };
 
+  changeLimit = async (option) => {
+    this.val = { value: option.value, label: option.value };
+    this.setState({ data: [] });
+    const response = await axios.get(
+      `${this.studentsURL}?limit=${option.value}`,
+      {
+        params: {
+          dataType: this.dataType,
+          stage: this.stage,
+          from: this.state.fromDate,
+          to: this.toDate,
+        },
+      }
+    );
+    const studentData = response.data.data.map((student) => {
+      return {
+        ...student,
+        qualification: qualificationKeys[student.qualification],
+        studentOwner: "",
+        campus: student.campus ? student.campus : null,
+        donor: student.studentDonor ? student.studentDonor : null,
+      };
+    });
+    this.dataSetup(studentData);
+  };
   changeFromDate = async (date) => {
     await this.setState({
       fromDate: date,
@@ -165,7 +197,16 @@ export class AdmissionsDash extends React.Component {
           components={animatedComponents}
           closeMenuOnSelect={true}
         />
-
+        <Select
+          className={"filterSelectGlobal"}
+          value={this.val}
+          onChange={this.changeLimit}
+          options={limitNumber}
+          placeholder={"Students Data limit"}
+          isClearable={false}
+          components={animatedComponents}
+          closeMenuOnSelect={true}
+        />
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
             margin="dense"
@@ -201,22 +242,20 @@ export class AdmissionsDash extends React.Component {
         <MainLayout
           columns={StudentService.columns[this.dataType]}
           data={this.state.sData ? this.state.sData : this.state.data}
+          showLoader={this.state.showLoader}
         />
       );
     }
-
-    if (!this.state.data.length) {
-      return options;
-    }
-
     return (
       <Box>
+        {this.options}
         <MuiThemeProvider theme={theme}>
           {this.props.fetchPendingInterviewDetails ? null : options}
           <div className={classes.clear}></div>
           <MainLayout
             columns={StudentService.columns[this.dataType]}
             data={this.state.sData ? this.state.sData : this.state.data}
+            showLoader={this.state.showLoader}
           />
         </MuiThemeProvider>
       </Box>

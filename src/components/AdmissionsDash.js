@@ -122,6 +122,7 @@ export class AdmissionsDash extends React.Component {
   };
 
   dataSetup = (data) => {
+    console.log(data)
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
         data[i] = StudentService.dConvert(data[i]);

@@ -144,6 +144,23 @@ const columns = [
       },
     },
   },
+  {
+    name: "meraki_link",
+    label: "Web Link",
+    options: {
+      filter: false,
+      sort: false,
+      customBodyRender: (value, rowMeta, updateValue) => {
+        return (
+          <AddMerakiLink
+            isValue={value}
+            studentId={rowMeta.rowData[0]}
+            updateValue={updateValue}
+          />
+        );
+      },
+    },
+  },
 ];
 
 export class PartnerList extends React.Component {

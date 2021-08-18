@@ -36,6 +36,7 @@
     "devextreme": "21.1.4",
     "devextreme-react": "21.1.4",
     "localStorage": "^1.0.4",
+    "lodash": "^4.17.21",
     "material-ui-audio-player": "^1.0.7",
     "material-ui-image": "^3.2.2",
     "moment": "^2.24.0",

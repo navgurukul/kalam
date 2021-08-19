@@ -265,6 +265,7 @@ export class AdmissionsDash extends React.Component {
             stage: this.stage,
             from: this.state.fromDate,
             to: this.toDate,
+            limit: 7000,
           },
         });
       }

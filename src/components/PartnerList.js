@@ -129,7 +129,7 @@ const columns = [
 
   {
     name: "meraki_link",
-    label: "Android Meraki Link",
+    label: "Meraki Link",
     options: {
       filter: false,
       sort: false,
@@ -137,27 +137,8 @@ const columns = [
         return (
           <AddMerakiLink
             isValue={value}
-            partnerId={rowMeta.rowData[0]}
-            platform={"android"}
+            studentId={rowMeta.rowData[0]}
             updateValue={updateValue}
-          />
-        );
-      },
-    },
-  },
-  {
-    name: "web_link",
-    label: "Web Meraki Link",
-    options: {
-      filter: false,
-      sort: false,
-      customBodyRender: (value, rowMeta, updateValue) => {
-        return (
-          <AddMerakiLink
-            isValue={value}
-            partnerId={rowMeta.rowData[0]}
-            updateValue={updateValue}
-            platform={"web"}
           />
         );
       },

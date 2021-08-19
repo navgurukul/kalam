@@ -25,29 +25,15 @@ const styles = (theme) => ({
 });
 
 export class AddMerakiLink extends React.Component {
-  creatMerakiLink = async (partnerId, platform) => {
+  creatMerakiLink = async (studentId) => {
     const { updateValue } = this.props;
     const response = await axios
-      .put(
-        `${baseUrl}/partners/${partnerId}/merakiLink`,
-        {},
-        {
-          headers: {
-            platform: platform,
-          },
-        }
-      )
+      .get(`${baseUrl}/partners/${studentId}/meraki-link`)
       .then((response) => {
         this.props.enqueueSnackbar("Meraki link successfully created", {
           variant: "success",
         });
-        let data;
-        if (platform === "web") {
-          data = response.data.data.web_link;
-        } else {
-          data = response.data.data.meraki_link;
-        }
-
+        const data = response.data.data[0].meraki_link;
         updateValue(data);
       })
       .catch((e) => {
@@ -57,7 +43,7 @@ export class AddMerakiLink extends React.Component {
       });
   };
   render = () => {
-    const { isValue, partnerId, platform } = this.props;
+    const { isValue, studentId } = this.props;
     const { classes } = this.props;
 
     if (isValue) {
@@ -82,9 +68,9 @@ export class AddMerakiLink extends React.Component {
         variant="contained"
         color="primary"
         // style={{ fontSize: "10px" }}
-        onClick={() => this.creatMerakiLink(partnerId, platform)}
+        onClick={() => this.creatMerakiLink(studentId)}
       >
-        Create
+        Create Link
       </Button>
     );
   };

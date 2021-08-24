@@ -32,7 +32,7 @@ const styles = (theme) => ({
   root: {
     maxWidth: 450,
     margin: "auto",
-    marginTop: "100px",
+    marginTop: "20px",
   },
 
   addIcon: {
@@ -100,6 +100,22 @@ export class AddPartnerPage extends React.Component {
       districts: [""],
     };
   }
+  componentDidMount() {
+    if (this.props.value) {
+      const dataURL = `${baseUrl}partners/${this.props.value}`;
+      axios.get(dataURL).then((response) => {
+        const data = response.data.data;
+        console.log(data, "dasta");
+        this.setState({
+          name: data.name ? data.name : "",
+          email: data.email ? data.email : "",
+          slug: data.slug ? data.slug : "",
+          notes: data.notes ? data.notes : "",
+          district: data.district ? data.district : [""],
+        });
+      });
+    }
+  }
 
   addState = () => {
     this.setState({ districts: [...this.state.districts, ""] });
@@ -118,7 +134,7 @@ export class AddPartnerPage extends React.Component {
   };
 
   render = () => {
-    const { classes } = this.props;
+    const { classes, value } = this.props;
 
     return (
       <Card className={classes.root}>
@@ -171,6 +187,7 @@ export class AddPartnerPage extends React.Component {
               id="partnerNotes"
               aria-describedby="my-helper-text"
               name="notes"
+              disabled={value ? true : false}
               value={this.state.slug}
               onChange={this.handleChange("slug")}
             />
@@ -215,7 +232,7 @@ export class AddPartnerPage extends React.Component {
             onClick={this.onSubmit}
             className={classes.btn}
           >
-            Add Partner
+            {value ? "Edit Partner" : "Add Partner"}
           </Button>
         </form>
       </Card>

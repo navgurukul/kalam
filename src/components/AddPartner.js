@@ -84,8 +84,37 @@ export class AddPartnerPage extends React.Component {
     }
   }
 
+  editPartner = (value) => {
+    const { name, email, notes, slug, districts } = this.state;
+    let removeExtraDistricts = districts.filter(
+      (district) => district.length > 0
+    );
+    axios
+      .put(`${baseUrl}partners/${value}`, {
+        name: name,
+        email: email,
+        notes: notes,
+        districts: removeExtraDistricts,
+      })
+      .then((response) => {
+        this.props.enqueueSnackbar("Partner details Successfull edit", {
+          variant: "success",
+        });
+      })
+      .catch((e) => {
+        this.props.enqueueSnackbar("Something went wrong", {
+          variant: "error",
+        });
+      });
+  };
+
   onSubmit = () => {
-    this.addPartner();
+    const { value } = this.props;
+    if (value) {
+      this.editPartner(value);
+    } else {
+      this.addPartner();
+    }
   };
 
   validate = () => {};

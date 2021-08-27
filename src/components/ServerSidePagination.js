@@ -21,8 +21,8 @@ class ServerSidePagination extends React.Component {
       isData: true,
     });
     const url =
-      typeof page === "string"
-        ? `${baseURL}students?searchName=${page}`
+      page.includes(baseURL)
+        ? page
         : `${baseURL}students?limit=${rowsPerPage}&page=${page}`;
     const response = await axios.get(url, {
       params,
@@ -48,6 +48,12 @@ class ServerSidePagination extends React.Component {
       page: page,
     });
   };
+
+  getApi = (query, value) => {
+    if (query === "gender") {
+      this.getStudents(`${baseURL}students?gender=${value === "Female" ? 1 : 2}&limit=250&page=0`);
+    }
+  };
   render() {
     const { page, isData } = this.state;
     const { data, columns, totalData } = this.props;
@@ -58,6 +64,16 @@ class ServerSidePagination extends React.Component {
       search: false,
       serverSide: true,
       filterType: "dropdown",
+      onFilterChange: (columnChanged, filterList) => {
+        const indexObj = {
+          gender: 8,
+          stage: 9,
+          partnerName: 19,
+        };
+        const filterValue = filterList[indexObj[columnChanged]];
+  
+        return this.getApi(columnChanged, filterValue[filterValue.length - 1]);
+      },
       responsive: "stacked",
       rowsPerPageOptions: [50, 100, 250],
       count: totalData,

@@ -43,9 +43,11 @@ class PieRechartReport extends React.Component {
     ).studentNames;
 
     return {
-      text: studentNames.map((studentName) => {
-        console.log(studentName);
-        return `${studentName}<br/>`;
+      text: studentNames.sort().map((studentName, index) => {
+        if (index % 6 === 0) {
+          return ` ${studentName}<br/>`;
+        }
+        return ` ${studentName}`;
       }),
     };
   };

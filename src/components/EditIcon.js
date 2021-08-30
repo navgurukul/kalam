@@ -26,7 +26,7 @@ class EditPartnerDetails extends Component {
     const { value } = this.props;
     return (
       <Fragment>
-        <EditIcon onClick={this.handleOpen} />
+        <EditIcon onClick={this.handleOpen} style={{ cursor: "pointer" }} />
         <Dialog
           scroll="paper"
           open={this.state.dialogOpen}

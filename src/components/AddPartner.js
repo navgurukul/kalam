@@ -92,9 +92,10 @@ export class AddPartnerPage extends React.Component {
     axios
       .put(`${baseUrl}partners/${value}`, {
         name: name,
-        email: email,
+        email: email ? email : null,
         notes: notes,
-        districts: removeExtraDistricts,
+        districts:
+          removeExtraDistricts.length > 0 ? removeExtraDistricts : null,
       })
       .then((response) => {
         this.props.enqueueSnackbar("Partner details Successfull edit", {
@@ -134,13 +135,12 @@ export class AddPartnerPage extends React.Component {
       const dataURL = `${baseUrl}partners/${this.props.value}`;
       axios.get(dataURL).then((response) => {
         const data = response.data.data;
-        console.log(data, "dasta");
         this.setState({
           name: data.name ? data.name : "",
           email: data.email ? data.email : "",
           slug: data.slug ? data.slug : "",
           notes: data.notes ? data.notes : "",
-          district: data.district ? data.district : [""],
+          districts: data.districts ? data.districts : [""],
         });
       });
     }
@@ -233,7 +233,7 @@ export class AddPartnerPage extends React.Component {
                     label=" Partner Districts/Cities"
                     aria-describedby="my-helper-text"
                     name="state"
-                    value={this.state.state}
+                    value={state}
                     onChange={() => this.changeHandler(index)}
                   />
                 </div>

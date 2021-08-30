@@ -1,6 +1,6 @@
 import React from "react";
 import MUIDataTable from "mui-datatables";
-import { qualificationKeys } from "../config";
+import { qualificationKeys, allStages } from "../config";
 
 import { withRouter } from "react-router-dom";
 import axios from "axios";
@@ -14,19 +14,19 @@ class ServerSidePagination extends React.Component {
     page: 0,
     isData: false,
   };
-
+  getKeyByValue = (object, value) => {
+    return Object.keys(object).find((key) => object[key] === value);
+  };
   getStudents = async (page, rowsPerPage) => {
     const { params, dataSetup } = this.props;
     this.setState({
       isData: true,
     });
     const url =
-      page.includes(baseURL)
+      typeof page === "string" && page.includes(baseURL)
         ? page
         : `${baseURL}students?limit=${rowsPerPage}&page=${page}`;
-    const response = await axios.get(url, {
-      params,
-    });
+    const response = await axios.get(url, { params });
     const studentData = response.data.data.results.map((student) => {
       return {
         ...student,
@@ -51,7 +51,26 @@ class ServerSidePagination extends React.Component {
 
   getApi = (query, value) => {
     if (query === "gender") {
-      this.getStudents(`${baseURL}students?gender=${value === "Female" ? 1 : 2}&limit=250&page=0`);
+      this.getStudents(
+        `${baseURL}students?gender=${
+          value === "Female" ? 1 : 2
+        }&limit=250&page=0`
+      );
+    } else if (query === "stage") {
+      this.getStudents(
+        `${baseURL}students?stage=${this.getKeyByValue(
+          allStages,
+          value
+        )}&limit=250&page=0`
+      );
+    } else if (query === "searchName") {
+      this.getStudents(`${baseURL}students?searchName=${value}`);
+    } else if (query === "searchNumber") {
+      this.getStudents(`${baseURL}students?searchNumber=${value}`);
+    } else if (query === "campus") {
+      this.getStudents(`${baseURL}students?searchCampusName=${value}&limit=250&page=0`);
+    } else if (query === "donor") {
+      this.getStudents(`${baseURL}students?searchDonorName=${value}&limit=250&page=0`);
     }
   };
   render() {
@@ -68,11 +87,16 @@ class ServerSidePagination extends React.Component {
         const indexObj = {
           gender: 8,
           stage: 9,
-          partnerName: 19,
+          campus: 22,
+          donor: 23,
         };
-        const filterValue = filterList[indexObj[columnChanged]];
-  
-        return this.getApi(columnChanged, filterValue[filterValue.length - 1]);
+        if (columnChanged) {
+          const filterValue = filterList[indexObj[columnChanged]];
+          return this.getApi(
+            columnChanged,
+            filterValue[filterValue.length - 1]
+          );
+        }
       },
       responsive: "stacked",
       rowsPerPageOptions: [50, 100, 250],
@@ -102,7 +126,7 @@ class ServerSidePagination extends React.Component {
     };
     return (
       <MUIDataTable
-        title={<SearchBar searchByName={this.getStudents} />}
+        title={<SearchBar searchByName={this.getApi} />}
         data={isData ? [] : data}
         columns={columns}
         options={options}

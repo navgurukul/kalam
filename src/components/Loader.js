@@ -1,5 +1,5 @@
 import React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { HalfCircleSpinner } from 'react-epic-spinners'
 import { withStyles } from "@material-ui/core/styles";
 
 
@@ -17,7 +17,7 @@ class Loader extends React.Component {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <CircularProgress color="primary" />
+        <HalfCircleSpinner color="#f05f40" />
       </div>
     )
   }

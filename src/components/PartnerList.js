@@ -15,6 +15,7 @@ import PartnerLink from "./PartnerLink";
 import EditPartner from "./EditPartner";
 import CreateAssessment from "./CreateAssessment";
 import AddMerakiLink from "./AddMerakiLink";
+import EditPartnerDetails from "./EditIcon";
 
 import { changeFetching } from "../store/actions/auth";
 import { withRouter } from "react-router-dom";
@@ -40,12 +41,23 @@ const styles = (theme) => ({
 const columns = [
   {
     name: "id",
+    label: "Edit Partner Details",
+    options: {
+      filter: true,
+      sort: true,
+      customBodyRender: (value, rowMeta) => {
+        return <EditPartnerDetails value = {value}/>
+      },
+    },
+  },
+  {
+    name: "id",
     label: "Name",
     options: {
       filter: true,
       sort: true,
       customBodyRender: (value, rowMeta) => {
-        let name = rowMeta.rowData[2];
+        let name = rowMeta.rowData[3];
         return <PartnerLink url={`partner/${value}`} text={name} name={name} />;
       },
     },
@@ -85,7 +97,7 @@ const columns = [
       filter: false,
       sort: false,
       customBodyRender: (value, rowMeta) => {
-        let name = rowMeta.rowData[2];
+        let name = rowMeta.rowData[3];
         return (
           <PartnerLink
             url={`partner/${value}/progress`}
@@ -117,8 +129,8 @@ const columns = [
             <EditPartner
               columnIndex={rowMeta.columnIndex}
               partnerId={rowMeta.rowData[0]}
-              name={rowMeta.rowData[2]}
-              notes={rowMeta.rowData[1]}
+              name={rowMeta.rowData[3]}
+              notes={rowMeta.rowData[2]}
               change={(event) => updateValue(event)}
             />
           );

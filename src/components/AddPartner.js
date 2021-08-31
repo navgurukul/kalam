@@ -118,13 +118,12 @@ export class AddPartnerPage extends React.Component {
     }
   };
 
-  validate = () => {};
 
   constructor(props) {
     super(props);
     this.state = {
       name: "",
-      email: null,
+      email: "",
       slug: "",
       notes: "",
       districts: [""],
@@ -158,8 +157,12 @@ export class AddPartnerPage extends React.Component {
 
   changeHandler = (index) => {
     const districts = this.state.districts;
-    districts[index] = event.target.value;
-    this.setState({ districts: districts });
+    if (event.target.value) {
+      districts[index] = event.target.value;
+    } else {
+      districts.splice(index, 1);
+    }
+    this.setState({ districts: districts.length < 1 ? [""] : districts });
   };
 
   render = () => {
@@ -229,6 +232,7 @@ export class AddPartnerPage extends React.Component {
               return (
                 <div key={index}>
                   <TextField
+                    type={this.state.districts.length - 1 === index ? "search" : null}
                     id="PartnerDistrictsCities"
                     label=" Partner Districts/Cities"
                     aria-describedby="my-helper-text"

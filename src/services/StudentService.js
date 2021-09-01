@@ -78,7 +78,7 @@ const nameColumn = {
   name: "name",
   label: "Name",
   options: {
-    filter: true,
+    filter: false,
     sort: true,
     filterType: "textField",
   },
@@ -139,6 +139,7 @@ const genderColumn = {
     filter: true,
     sort: true,
     display: false,
+    filterOptions: ["Male", "Female"],
   },
 };
 
@@ -149,6 +150,7 @@ const campusColumn = {
     filter: true,
     sort: true,
     display: false,
+    filterOptions: campus.map((campus) => campus.name),
     customBodyRender: (value, rowMeta, updateValue) => {
       if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
         return (
@@ -173,6 +175,7 @@ const donorColumn = {
     filter: true,
     sort: true,
     display: false,
+    filterOptions: donor.map((donor) => donor.name),
     customBodyRender: (value, rowMeta, updateValue) => {
       if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
         return (
@@ -187,8 +190,8 @@ const donorColumn = {
         let newValue = "";
         value
           ? value.map((item) => {
-            newValue = `${newValue}   ${item.donor}`;
-          })
+              newValue = `${newValue}   ${item.donor}`;
+            })
           : (newValue = null);
 
         return newValue;
@@ -230,7 +233,7 @@ const onlineClassColumn = {
   name: "tag",
   label: "Online Class Tag",
   options: {
-    filter: true,
+    filter: false,
     sort: true,
     display: false,
     customBodyRender: (value, rowMeta, updateValue) => {
@@ -494,8 +497,8 @@ const feedbackColumnTransition = {
               />
               {rowData
                 ? rowData
-                  .split("\n\n")
-                  .map((item, i) => <p key={i}> {item} </p>)
+                    .split("\n\n")
+                    .map((item, i) => <p key={i}> {item} </p>)
                 : null}
             </div>
           ) : null}
@@ -541,9 +544,8 @@ const statusColumnTransition = {
       const feedbackableStage =
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       if (rowMeta.rowData[0] === "selectedButNotJoined") {
-        return null
-      }
-      else if ((rowData || rowMeta.rowData[3]) && feedbackableStage) {
+        return null;
+      } else if ((rowData || rowMeta.rowData[3]) && feedbackableStage) {
         return (
           <div>
             <StatusSelect
@@ -706,7 +708,7 @@ const ownerColumnMyreport = {
   label: "Owner",
   name: "studentOwner",
   options: {
-    filter: true,
+    filter: false,
   },
 };
 
@@ -901,7 +903,12 @@ const ColumnTransitionsStatus = {
 const partnerNameColumn = {
   label: "Partner Name",
   name: "partnerName",
+  options: {
+    filter: false,
+    sort: true,
+  },
 };
+
 const StudentService = {
   columns: {
     requestCallback: [

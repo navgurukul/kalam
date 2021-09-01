@@ -39,7 +39,7 @@ export default class Text extends Component {
       <TextField
         error={false}
         id="standard-basic"
-        label="Search Name"
+        label="Search name or number"
         value={name}
         onChange={this.onChange}
       />

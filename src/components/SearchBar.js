@@ -18,7 +18,7 @@ export default class Text extends Component {
     this.handleSearchText(this.state.name);
   };
   validInput = (value) => {
-    if (value.match(/^[A-Za-z]+$/)) {
+    if (value.match(/^[A-Za-z\s]+$/)) {
       return "letter";
     } else if (value.match(/^[0-9]+$/)) {
       return "number";
@@ -30,6 +30,8 @@ export default class Text extends Component {
       return this.props.searchByName("searchName", input);
     } else if (input.length >= 5 && isValidInput === "number") {
       return this.props.searchByName("searchNumber", input);
+    } else if (input.length === 0) {
+      return this.props.searchByName();
     }
   };
 

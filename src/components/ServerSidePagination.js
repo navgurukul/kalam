@@ -13,6 +13,7 @@ class ServerSidePagination extends React.Component {
   state = {
     page: 0,
     isData: false,
+    filterColumns: [],
   };
   getKeyByValue = (object, value) => {
     return Object.keys(object).find((key) => object[key] === value);
@@ -49,28 +50,47 @@ class ServerSidePagination extends React.Component {
     });
   };
 
-  getApi = (query, value) => {
-    if (query === "gender") {
-      this.getStudents(
-        `${baseURL}students?gender=${
-          value === "Female" ? 1 : 2
-        }&limit=250&page=0`
+  getfilterApi = async (query, value) => {
+    if (query === "stage") {
+      value = this.getKeyByValue(allStages, value);
+    } else if (query === "gender") {
+      value = value === "Female" ? 1 : 2;
+    }
+
+    const keys = {
+      gender: "gender",
+      stage: "stage",
+      donor: "searchDonorName",
+      campus: "searchCampusName",
+    };
+
+    await this.setState((prevState) => {
+      const newData = prevState.filterColumns.filter(
+        (filterColumn) => filterColumn.key !== query
       );
-    } else if (query === "stage") {
-      this.getStudents(
-        `${baseURL}students?stage=${this.getKeyByValue(
-          allStages,
-          value
-        )}&limit=250&page=0`
-      );
-    } else if (query === "searchName") {
-      this.getStudents(`${baseURL}students?searchName=${value}`);
-    } else if (query === "searchNumber") {
-      this.getStudents(`${baseURL}students?searchNumber=${value}`);
-    } else if (query === "campus") {
-      this.getStudents(`${baseURL}students?searchCampusName=${value}&limit=250&page=0`);
-    } else if (query === "donor") {
-      this.getStudents(`${baseURL}students?searchDonorName=${value}&limit=250&page=0`);
+      return {
+        filterColumns: [...newData, { key: keys[query], value: value }],
+      };
+    });
+    const { filterColumns } = this.state;
+
+    let url = `${baseURL}students`;
+
+    filterColumns.map((filterColumn, index) => {
+      if (index > 0) {
+        url = url + `&${filterColumn.key}=${filterColumn.value}`;
+      } else {
+        url = url + `?${filterColumn.key}=${filterColumn.value}`;
+      }
+    });
+    this.getStudents(`${url}&limit=250&page=0`);
+  };
+
+  getSearchApi = (query, value) => {
+    if (query) {
+      this.getStudents(`${baseURL}students?${query}=${value}`);
+    } else {
+      this.getStudents(0, 250);
     }
   };
   render() {
@@ -92,10 +112,12 @@ class ServerSidePagination extends React.Component {
         };
         if (columnChanged) {
           const filterValue = filterList[indexObj[columnChanged]];
-          return this.getApi(
+          return this.getfilterApi(
             columnChanged,
             filterValue[filterValue.length - 1]
           );
+        } else {
+          return this.getStudents(0, 250);
         }
       },
       responsive: "stacked",
@@ -126,7 +148,7 @@ class ServerSidePagination extends React.Component {
     };
     return (
       <MUIDataTable
-        title={<SearchBar searchByName={this.getApi} />}
+        title={<SearchBar searchByName={this.getSearchApi} />}
         data={isData ? [] : data}
         columns={columns}
         options={options}

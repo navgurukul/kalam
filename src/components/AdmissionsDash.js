@@ -21,7 +21,6 @@ import {
 import { allStages } from "../config";
 import MainLayout from "./MainLayout";
 import { qualificationKeys } from "../config";
-import ServerSidePagination from "./ServerSidePagination";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -56,11 +55,9 @@ export class AdmissionsDash extends React.Component {
       (this.loggedInUser = this.props.loggedInUser);
 
     this.state = {
-      totalData: 0,
       data: [],
       sData: undefined, //subsetData,
       fromDate: null,
-      showLoader: true,
     };
   }
 
@@ -133,26 +130,16 @@ export class AdmissionsDash extends React.Component {
         };
       });
       this.setState(
-        {
-          data: newData,
-          fromDate: newData.slice(-1)[0].created_at,
-          showLoader: true,
-        },
+        { data: newData, fromDate: newData.slice(-1)[0].created_at },
         function () {
           this.props.fetchingFinish();
         }
       );
-    } else {
-      this.setState({
-        data: data,
-        showLoader: false,
-      });
     }
   };
 
   render = () => {
     const { classes, fetchPendingInterviewDetails } = this.props;
-    const { sData, data, showLoader, totalData } = this.state;
     const options = (
       <Box>
         <Select
@@ -178,6 +165,7 @@ export class AdmissionsDash extends React.Component {
           components={animatedComponents}
           closeMenuOnSelect={true}
         />
+
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
             margin="dense"
@@ -210,44 +198,25 @@ export class AdmissionsDash extends React.Component {
 
     if (fetchPendingInterviewDetails) {
       return (
-        <ServerSidePagination
+        <MainLayout
           columns={StudentService.columns[this.dataType]}
-          data={sData ? sData : data}
-          showLoader={showLoader}
-          params={{
-            params: {
-              dataType: this.dataType,
-              stage: this.stage,
-              from: this.state.fromDate,
-              to: this.toDate,
-            },
-          }}
-          dataSetup={this.dataSetup}
-          totalData={totalData}
+          data={this.state.sData ? this.state.sData : this.state.data}
         />
       );
     }
+
+    if (!this.state.data.length) {
+      return options;
+    }
+
     return (
       <Box>
-        {this.options}
         <MuiThemeProvider theme={theme}>
           {this.props.fetchPendingInterviewDetails ? null : options}
           <div className={classes.clear}></div>
-          <ServerSidePagination
+          <MainLayout
             columns={StudentService.columns[this.dataType]}
-            data={sData ? sData : data}
-            showLoader={showLoader}
-            fun={this.fetchStudents}
-            params={{
-              params: {
-                dataType: this.dataType,
-                stage: this.stage,
-                from: this.state.fromDate,
-                to: this.toDate,
-              },
-            }}
-            dataSetup={this.dataSetup}
-            totalData={totalData}
+            data={this.state.sData ? this.state.sData : this.state.data}
           />
         </MuiThemeProvider>
       </Box>
@@ -271,7 +240,7 @@ export class AdmissionsDash extends React.Component {
     }
   }
 
-  async fetchStudents(value) {
+  async fetchStudents() {
     const { fetchPendingInterviewDetails, loggedInUser } = this.props;
     try {
       this.props.fetchingStart();
@@ -290,17 +259,18 @@ export class AdmissionsDash extends React.Component {
           },
         });
       } else {
-        response = await axios.get(`${this.studentsURL}?limit=250&page=0`, {
+        response = await axios.get(this.studentsURL, {
           params: {
             dataType: this.dataType,
             stage: this.stage,
             from: this.state.fromDate,
             to: this.toDate,
+            limit: 7000,
           },
         });
       }
 
-      const studentData = response.data.data.results.map((student) => {
+      const studentData = response.data.data.map((student) => {
         return {
           ...student,
           qualification: qualificationKeys[student.qualification],
@@ -308,9 +278,6 @@ export class AdmissionsDash extends React.Component {
           campus: student.campus ? student.campus : null,
           donor: student.studentDonor ? student.studentDonor : null,
         };
-      });
-      this.setState({
-        totalData: response.data.data.total,
       });
       this.dataSetup(studentData);
     } catch (e) {

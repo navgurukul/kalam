@@ -121,7 +121,7 @@ export class AdmissionsDash extends React.Component {
     this.fetchStudents();
   };
 
-  dataSetup = (data) => {
+  dataSetup = (data, totalData) => {
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
         data[i] = StudentService.dConvert(data[i]);
@@ -137,6 +137,7 @@ export class AdmissionsDash extends React.Component {
           data: newData,
           fromDate: newData.slice(-1)[0].created_at,
           showLoader: true,
+          totalData: totalData ? totalData : this.state.totalData,
         },
         function () {
           this.props.fetchingFinish();
@@ -264,6 +265,8 @@ export class AdmissionsDash extends React.Component {
       this.props.fetchingStart();
       const response = await axios.get(this.usersURL, {});
       this.props.usersSetup(response.data.data);
+      let newData = response.data.data.map((data) => data.user);
+      localStorage.setItem("users", JSON.stringify(newData));
       this.props.fetchingFinish();
     } catch (e) {
       console.log(e);
@@ -290,7 +293,7 @@ export class AdmissionsDash extends React.Component {
           },
         });
       } else {
-        response = await axios.get(`${this.studentsURL}?limit=250&page=0`, {
+        response = await axios.get(`${this.studentsURL}?limit=10&page=0`, {
           params: {
             dataType: this.dataType,
             stage: this.stage,

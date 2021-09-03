@@ -723,7 +723,8 @@ const ownerColumnMyreport = {
   label: "Owner",
   name: "studentOwner",
   options: {
-    filter: false,
+    filter: true,
+    filterOptions: JSON.parse(localStorage.getItem("users")),
   },
 };
 

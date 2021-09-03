@@ -27,6 +27,7 @@ import UpdateCampus from "../components/UpdateCampus";
 import UpdateDonor from "../components/UpdateDonor";
 import JoinedDate from "../components/JoinedDate";
 import DeleteRow from "../components/DeleteRow";
+import UpdateStudentName from "../components/UpdateStudentName";
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
@@ -81,6 +82,20 @@ const nameColumn = {
     filter: false,
     sort: true,
     filterType: "textField",
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const name = rowData ? rowData : "Update Name";
+      const user = JSON.parse(window.localStorage.user);
+      if (permissions.updateStudentName.indexOf(user.mail_id) > -1) {
+        return (
+          <UpdateStudentName
+            name={name}
+            rowMetatable={rowMeta}
+            change={(event) => updateValue(event)}
+          />
+        );
+      }
+      return rowData;
+    },
   },
 };
 
@@ -285,11 +300,11 @@ const addedAtColumn = {
 };
 
 const lastUpdatedColumn = {
-  name: "lastUpdated",
+  name: "last_updated",
   label: "Last Updated",
   options: {
     filter: false,
-    sort: true,
+    sort: false,
     customBodyRender: (value) => {
       return (
         <Moment format="D MMM YYYY" withTitle>

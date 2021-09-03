@@ -32,7 +32,7 @@ const styles = (theme) => ({
   root: {
     maxWidth: 450,
     margin: "auto",
-    marginTop: "100px",
+    marginTop: "20px",
   },
 
   addIcon: {
@@ -84,21 +84,65 @@ export class AddPartnerPage extends React.Component {
     }
   }
 
-  onSubmit = () => {
-    this.addPartner();
+  editPartner = (value) => {
+    const { name, email, notes, slug, districts } = this.state;
+    let removeExtraDistricts = districts.filter(
+      (district) => district.length > 0
+    );
+    axios
+      .put(`${baseUrl}partners/${value}`, {
+        name: name,
+        email: email ? email : null,
+        notes: notes,
+        districts:
+          removeExtraDistricts.length > 0 ? removeExtraDistricts : null,
+      })
+      .then((response) => {
+        this.props.enqueueSnackbar("Partner details Successfull edit", {
+          variant: "success",
+        });
+      })
+      .catch((e) => {
+        this.props.enqueueSnackbar("Something went wrong", {
+          variant: "error",
+        });
+      });
   };
 
-  validate = () => {};
+  onSubmit = () => {
+    const { value } = this.props;
+    if (value) {
+      this.editPartner(value);
+    } else {
+      this.addPartner();
+    }
+  };
+
 
   constructor(props) {
     super(props);
     this.state = {
       name: "",
-      email: null,
+      email: "",
       slug: "",
       notes: "",
       districts: [""],
     };
+  }
+  componentDidMount() {
+    if (this.props.value) {
+      const dataURL = `${baseUrl}partners/${this.props.value}`;
+      axios.get(dataURL).then((response) => {
+        const data = response.data.data;
+        this.setState({
+          name: data.name ? data.name : "",
+          email: data.email ? data.email : "",
+          slug: data.slug ? data.slug : "",
+          notes: data.notes ? data.notes : "",
+          districts: data.districts ? data.districts : [""],
+        });
+      });
+    }
   }
 
   addState = () => {
@@ -113,12 +157,16 @@ export class AddPartnerPage extends React.Component {
 
   changeHandler = (index) => {
     const districts = this.state.districts;
-    districts[index] = event.target.value;
-    this.setState({ districts: districts });
+    if (event.target.value) {
+      districts[index] = event.target.value;
+    } else {
+      districts.splice(index, 1);
+    }
+    this.setState({ districts: districts.length < 1 ? [""] : districts });
   };
 
   render = () => {
-    const { classes } = this.props;
+    const { classes, value } = this.props;
 
     return (
       <Card className={classes.root}>
@@ -171,6 +219,7 @@ export class AddPartnerPage extends React.Component {
               id="partnerNotes"
               aria-describedby="my-helper-text"
               name="notes"
+              disabled={value ? true : false}
               value={this.state.slug}
               onChange={this.handleChange("slug")}
             />
@@ -183,11 +232,12 @@ export class AddPartnerPage extends React.Component {
               return (
                 <div key={index}>
                   <TextField
+                    type={this.state.districts.length - 1 === index ? "search" : null}
                     id="PartnerDistrictsCities"
                     label=" Partner Districts/Cities"
                     aria-describedby="my-helper-text"
                     name="state"
-                    value={this.state.state}
+                    value={state}
                     onChange={() => this.changeHandler(index)}
                   />
                 </div>
@@ -215,7 +265,7 @@ export class AddPartnerPage extends React.Component {
             onClick={this.onSubmit}
             className={classes.btn}
           >
-            Add Partner
+            {value ? "Edit Partner" : "Add Partner"}
           </Button>
         </form>
       </Card>

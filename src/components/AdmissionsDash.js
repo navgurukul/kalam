@@ -21,6 +21,7 @@ import {
 import { allStages } from "../config";
 import MainLayout from "./MainLayout";
 import { qualificationKeys } from "../config";
+import ServerSidePagination from "./ServerSidePagination";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -55,9 +56,11 @@ export class AdmissionsDash extends React.Component {
       (this.loggedInUser = this.props.loggedInUser);
 
     this.state = {
+      totalData: 0,
       data: [],
       sData: undefined, //subsetData,
       fromDate: null,
+      showLoader: true,
     };
   }
 
@@ -118,7 +121,7 @@ export class AdmissionsDash extends React.Component {
     this.fetchStudents();
   };
 
-  dataSetup = (data) => {
+  dataSetup = (data, totalData) => {
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
         data[i] = StudentService.dConvert(data[i]);
@@ -130,16 +133,27 @@ export class AdmissionsDash extends React.Component {
         };
       });
       this.setState(
-        { data: newData, fromDate: newData.slice(-1)[0].created_at },
+        {
+          data: newData,
+          fromDate: newData.slice(-1)[0].created_at,
+          showLoader: true,
+          totalData: totalData ? totalData : this.state.totalData,
+        },
         function () {
           this.props.fetchingFinish();
         }
       );
+    } else {
+      this.setState({
+        data: data,
+        showLoader: false,
+      });
     }
   };
 
   render = () => {
     const { classes, fetchPendingInterviewDetails } = this.props;
+    const { sData, data, showLoader, totalData } = this.state;
     const options = (
       <Box>
         <Select
@@ -165,7 +179,6 @@ export class AdmissionsDash extends React.Component {
           components={animatedComponents}
           closeMenuOnSelect={true}
         />
-
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
             margin="dense"
@@ -198,25 +211,44 @@ export class AdmissionsDash extends React.Component {
 
     if (fetchPendingInterviewDetails) {
       return (
-        <MainLayout
+        <ServerSidePagination
           columns={StudentService.columns[this.dataType]}
-          data={this.state.sData ? this.state.sData : this.state.data}
+          data={sData ? sData : data}
+          showLoader={showLoader}
+          params={{
+            params: {
+              dataType: this.dataType,
+              stage: this.stage,
+              from: this.state.fromDate,
+              to: this.toDate,
+            },
+          }}
+          dataSetup={this.dataSetup}
+          totalData={totalData}
         />
       );
     }
-
-    if (!this.state.data.length) {
-      return options;
-    }
-
     return (
       <Box>
+        {this.options}
         <MuiThemeProvider theme={theme}>
           {this.props.fetchPendingInterviewDetails ? null : options}
           <div className={classes.clear}></div>
-          <MainLayout
+          <ServerSidePagination
             columns={StudentService.columns[this.dataType]}
-            data={this.state.sData ? this.state.sData : this.state.data}
+            data={sData ? sData : data}
+            showLoader={showLoader}
+            fun={this.fetchStudents}
+            params={{
+              params: {
+                dataType: this.dataType,
+                stage: this.stage,
+                from: this.state.fromDate,
+                to: this.toDate,
+              },
+            }}
+            dataSetup={this.dataSetup}
+            totalData={totalData}
           />
         </MuiThemeProvider>
       </Box>
@@ -233,6 +265,8 @@ export class AdmissionsDash extends React.Component {
       this.props.fetchingStart();
       const response = await axios.get(this.usersURL, {});
       this.props.usersSetup(response.data.data);
+      let newData = response.data.data.map((data) => data.user);
+      localStorage.setItem("users", JSON.stringify(newData));
       this.props.fetchingFinish();
     } catch (e) {
       console.log(e);
@@ -240,7 +274,7 @@ export class AdmissionsDash extends React.Component {
     }
   }
 
-  async fetchStudents() {
+  async fetchStudents(value) {
     const { fetchPendingInterviewDetails, loggedInUser } = this.props;
     try {
       this.props.fetchingStart();
@@ -259,18 +293,17 @@ export class AdmissionsDash extends React.Component {
           },
         });
       } else {
-        response = await axios.get(this.studentsURL, {
+        response = await axios.get(`${this.studentsURL}?limit=10&page=0`, {
           params: {
             dataType: this.dataType,
             stage: this.stage,
             from: this.state.fromDate,
             to: this.toDate,
-            limit: 7000,
           },
         });
       }
 
-      const studentData = response.data.data.map((student) => {
+      const studentData = response.data.data.results.map((student) => {
         return {
           ...student,
           qualification: qualificationKeys[student.qualification],
@@ -278,6 +311,9 @@ export class AdmissionsDash extends React.Component {
           campus: student.campus ? student.campus : null,
           donor: student.studentDonor ? student.studentDonor : null,
         };
+      });
+      this.setState({
+        totalData: response.data.data.total,
       });
       this.dataSetup(studentData);
     } catch (e) {

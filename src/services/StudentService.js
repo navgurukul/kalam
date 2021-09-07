@@ -85,7 +85,7 @@ const nameColumn = {
     customBodyRender: (rowData, rowMeta, updateValue) => {
       const name = rowData ? rowData : "Update Name";
       const user = JSON.parse(window.localStorage.user);
-      if( permissions.updateStudentName.indexOf(user.mail_id) > -1){
+      if (permissions.updateStudentName.indexOf(user.mail_id) > -1) {
         return (
           <UpdateStudentName
             name={name}
@@ -300,11 +300,11 @@ const addedAtColumn = {
 };
 
 const lastUpdatedColumn = {
-  name: "lastUpdated",
+  name: "last_updated",
   label: "Last Updated",
   options: {
     filter: false,
-    sort: true,
+    sort: false,
     customBodyRender: (value) => {
       return (
         <Moment format="D MMM YYYY" withTitle>
@@ -723,7 +723,8 @@ const ownerColumnMyreport = {
   label: "Owner",
   name: "studentOwner",
   options: {
-    filter: false,
+    filter: true,
+    filterOptions: JSON.parse(localStorage.getItem("users")),
   },
 };
 

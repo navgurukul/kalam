@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import TextField from "@material-ui/core/TextField";
 import { debounce } from "lodash";
 
-
 export default class Text extends Component {
   constructor() {
     super();

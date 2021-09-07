@@ -40,7 +40,7 @@ class ServerSidePagination extends React.Component {
     this.setState({
       isData: false,
     });
-    dataSetup(studentData);
+    dataSetup(studentData,response.data.data.total);
   };
 
   changePage = (page, rowsPerPage) => {
@@ -62,11 +62,12 @@ class ServerSidePagination extends React.Component {
       stage: "stage",
       donor: "searchDonorName",
       campus: "searchCampusName",
+      studentOwner:"searchOwnerName",
     };
 
     await this.setState((prevState) => {
       const newData = prevState.filterColumns.filter(
-        (filterColumn) => filterColumn.key !== query
+        (filterColumn) => this.getKeyByValue(keys, filterColumn.key) !== query
       );
       return {
         filterColumns: [...newData, { key: keys[query], value: value }],
@@ -83,14 +84,14 @@ class ServerSidePagination extends React.Component {
         url = url + `?${filterColumn.key}=${filterColumn.value}`;
       }
     });
-    this.getStudents(`${url}&limit=250&page=0`);
+    this.getStudents(`${url}&limit=50&page=0`);
   };
 
   getSearchApi = (query, value) => {
     if (query) {
       this.getStudents(`${baseURL}students?${query}=${value}`);
     } else {
-      this.getStudents(0, 250);
+      this.getStudents(0, 10);
     }
   };
   render() {
@@ -109,6 +110,7 @@ class ServerSidePagination extends React.Component {
           stage: 9,
           campus: 22,
           donor: 23,
+          studentOwner:16,
         };
         if (columnChanged) {
           const filterValue = filterList[indexObj[columnChanged]];
@@ -117,13 +119,16 @@ class ServerSidePagination extends React.Component {
             filterValue[filterValue.length - 1]
           );
         } else {
-          return this.getStudents(0, 250);
+          this.setState({
+            filterColumns:[]
+          })
+          return this.getStudents(0, 10);
         }
       },
       responsive: "stacked",
-      rowsPerPageOptions: [50, 100, 250],
+      rowsPerPageOptions: [10, 50, 100],
       count: totalData,
-      rowsPerPage: 250,
+      rowsPerPage: 10,
       page: page,
       onChangeRowsPerPage: (numberOfRows) => {
         this.getStudents(this.state.page, numberOfRows);

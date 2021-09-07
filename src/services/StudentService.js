@@ -460,7 +460,7 @@ const statusColumn = {
   options: {
     filter: false,
     sort: false,
-    display: false,
+    display: true,
     customBodyRender: (state) => {
       if (state) {
         return (state.charAt(0).toUpperCase() + state.slice(1))

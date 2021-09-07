@@ -15,6 +15,8 @@ class ServerSidePagination extends React.Component {
     isData: false,
     filterColumns: [],
     mainUrl: `${baseURL}students?`,
+    query: "",
+    value: "",
   };
   getKeyByValue = (object, value) => {
     return Object.keys(object).find((key) => object[key] === value);
@@ -28,7 +30,7 @@ class ServerSidePagination extends React.Component {
       typeof page === "string" && page.includes(baseURL)
         ? page
         : `${this.state.mainUrl}limit=${rowsPerPage}&page=${page}`;
-    const response = await axios.get(url, params);
+    const response = await axios.get(url, { params });
     const studentData = response.data.data.results.map((student) => {
       return {
         ...student,
@@ -82,10 +84,19 @@ class ServerSidePagination extends React.Component {
       if (index > 0) {
         url = url + `&${filterColumn.key}=${filterColumn.value}`;
       } else {
-        url = url + `${filterColumn.key}=${filterColumn.value}`;
+        if (this.state.query) {
+          url =
+            url +
+            `${this.state.query}=${this.state.value}&${filterColumn.key}=${filterColumn.value}`;
+        } else {
+          url = url + `${filterColumn.key}=${filterColumn.value}`;
+        }
       }
     });
     if (filterColumns.length > 0) {
+      await this.setState({
+        mainUrl: `${url}&`,
+      });
       this.getStudents(`${url}&limit=10&page=0`);
     } else {
       await this.setState({
@@ -97,12 +108,36 @@ class ServerSidePagination extends React.Component {
 
   getSearchApi = (query, value) => {
     if (query) {
-      this.getStudents(`${baseURL}students?${query}=${value}`);
+      this.setState({
+        query: query,
+        value: value,
+      });
+      let url = `${baseURL}students`;
+      if (this.state.filterColumns.length > 0) {
+        this.state.filterColumns.map((filterColumn, index) => {
+          if (index > 0) {
+            url = url + `&${filterColumn.key}=${filterColumn.value}`;
+          } else {
+            url =
+              url +
+              `?${query}=${value}&${filterColumn.key}=${filterColumn.value}`;
+          }
+        });
+        this.getStudents(url);
+      } else if (this.props.stages !== null) {
+        url =
+          url +
+          `?${query}=${value}&limit=10&page=${this.state.page}&dataType=softwareCourse&stage=${this.props.stages.value}`;
+        this.getStudents(url);
+      } else {
+        this.getStudents(`${baseURL}students?${query}=${value}`);
+      }
     } else {
       this.getStudents(0, 10);
     }
   };
   render() {
+    this.props.changeStage(this.state.query, this.state.value);
     const { page, isData, filterColumns } = this.state;
     const { data, columns, totalData } = this.props;
     const options = {

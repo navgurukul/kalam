@@ -86,6 +86,9 @@ class ServerSidePagination extends React.Component {
       }
     });
     if (filterColumns.length > 0) {
+      await this.setState({
+        mainUrl: `${url}&`,
+      });
       this.getStudents(`${url}&limit=10&page=0`);
     } else {
       await this.setState({

@@ -30,7 +30,7 @@ class ServerSidePagination extends React.Component {
       typeof page === "string" && page.includes(baseURL)
         ? page
         : `${this.state.mainUrl}limit=${rowsPerPage}&page=${page}`;
-    const response = await axios.get(url, { params });
+    const response = await axios.get(url, params);
     const studentData = response.data.data.results.map((student) => {
       return {
         ...student,

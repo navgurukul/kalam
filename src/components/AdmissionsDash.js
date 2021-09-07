@@ -61,9 +61,13 @@ export class AdmissionsDash extends React.Component {
       sData: undefined, //subsetData,
       fromDate: null,
       showLoader: true,
+      filterValues: [],
     };
   }
 
+  getFilterValues = (value) => {
+    this.setState({ filterValues: value });
+  };
   stageChangeEvent = (iData) => {
     // const rowIds = this.state.data.map(x => x.id)
     // const rowIndex = rowIds.indexOf(iData.rowData.rowId);
@@ -97,14 +101,15 @@ export class AdmissionsDash extends React.Component {
 
   changeStudentStage = (option) => {
     this.value = { value: option.value, label: allStages[option.value] };
+    const { filterValues } = this.state;
     if (option.value === "default") {
       this.stage = null;
       this.dataType = "softwareCourse";
-      this.fetchStudents();
+      this.fetchStudents(filterValues);
       this.value = "Student Details";
     } else {
       this.stage = option.value;
-      this.fetchStudents();
+      this.fetchStudents(filterValues);
       this.dataType = "softwareCourse";
     }
   };
@@ -135,7 +140,6 @@ export class AdmissionsDash extends React.Component {
       this.setState(
         {
           data: newData,
-          fromDate: newData.slice(-1)[0].created_at,
           showLoader: true,
           totalData: totalData ? totalData : this.state.totalData,
         },
@@ -225,6 +229,7 @@ export class AdmissionsDash extends React.Component {
           }}
           dataSetup={this.dataSetup}
           totalData={totalData}
+          filterValues={this.getFilterValues}
         />
       );
     }
@@ -249,6 +254,7 @@ export class AdmissionsDash extends React.Component {
             }}
             dataSetup={this.dataSetup}
             totalData={totalData}
+            filterValues={this.getFilterValues}
           />
         </MuiThemeProvider>
       </Box>
@@ -278,13 +284,6 @@ export class AdmissionsDash extends React.Component {
     const { fetchPendingInterviewDetails, loggedInUser } = this.props;
     try {
       this.props.fetchingStart();
-      // response = ngFetch(this.studentsURL, 'GET', {
-      //   params: {
-      //     dataType: this.dataType,
-      //     fromDate: this.fromDate,
-      //     toDate: this.toDate
-      //   }
-      // }, true);
       let response;
       if (fetchPendingInterviewDetails) {
         response = await axios.get(`${baseURL}students/pending_interview`, {
@@ -293,14 +292,33 @@ export class AdmissionsDash extends React.Component {
           },
         });
       } else {
-        response = await axios.get(`${this.studentsURL}?limit=10&page=0`, {
-          params: {
-            dataType: this.dataType,
-            stage: this.stage,
-            from: this.state.fromDate,
-            to: this.toDate,
-          },
-        });
+        let url = this.studentsURL;
+        value &&
+          value.map((filterColumn, index) => {
+            if (index > 0) {
+              url = url + `&${filterColumn.key}=${filterColumn.value}`;
+            } else {
+              url = url + `?${filterColumn.key}=${filterColumn.value}`;
+            }
+          });
+        response =
+          value && value.length > 0
+            ? await axios.get(`${url}&limit=10&page=0`, {
+                params: {
+                  dataType: this.dataType,
+                  stage: this.stage,
+                  from: this.state.fromDate,
+                  to: this.toDate,
+                },
+              })
+            : await axios.get(`${this.studentsURL}?limit=10&page=0`, {
+                params: {
+                  dataType: this.dataType,
+                  stage: this.stage,
+                  from: this.state.fromDate,
+                  to: this.toDate,
+                },
+              });
       }
 
       const studentData = response.data.data.results.map((student) => {

@@ -157,18 +157,12 @@ export class AdmissionsDash extends React.Component {
     }
   };
 
-  searchValue = "manisha";
-  query = "searchName";
+  searchValue = "";
+  query = "";
 
   getSeachQuery = (query, value) => {
-    // this.setState({
-    //   query: query,
-    //   searchValue: value,
-    // });
-    // searchValue = value;
-    // query = query;
-    console.log("query in admission", query);
-    console.log("value in admission", value);
+    this.searchValue = value;
+    this.query = query;
   };
 
   render = () => {
@@ -310,7 +304,6 @@ export class AdmissionsDash extends React.Component {
           },
         });
       } else if (this.query && stage) {
-        // response = await axios.get(`${this.studentsURL}?limit=10&page=0`, {
         response = await axios.get(
           `${this.studentsURL}?${this.query}=${this.searchValue}&limit=10&page=0&dataType=softwareCourse&stage=${stage.value}`
         );

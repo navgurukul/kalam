@@ -26,13 +26,15 @@ import ServerSidePagination from "./ServerSidePagination";
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
-const allStagesOptions = Object.keys(allStages).map((x) => {
+
+let allStagesOptions = Object.keys(allStages).map((x) => {
   return { value: x, label: allStages[x] };
 });
-allStagesOptions.push({
-  value: "default",
-  label: "Back To All Students Details",
-});
+allStagesOptions = [{
+    value: "default",
+    label: "All",
+  }, ...allStagesOptions]
+
 
 const styles = (theme) => ({
   clear: {

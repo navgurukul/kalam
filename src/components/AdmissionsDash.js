@@ -62,6 +62,8 @@ export class AdmissionsDash extends React.Component {
       fromDate: null,
       showLoader: true,
       filterValues: [],
+      // query: "",
+      // searchValue: "",
     };
   }
 
@@ -105,11 +107,11 @@ export class AdmissionsDash extends React.Component {
     if (option.value === "default") {
       this.stage = null;
       this.dataType = "softwareCourse";
-      this.fetchStudents(filterValues);
+      this.fetchStudents(filterValues, this.value);
       this.value = "Student Details";
     } else {
       this.stage = option.value;
-      this.fetchStudents(filterValues);
+      this.fetchStudents(filterValues, this.value);
       this.dataType = "softwareCourse";
     }
   };
@@ -153,6 +155,14 @@ export class AdmissionsDash extends React.Component {
         showLoader: false,
       });
     }
+  };
+
+  searchValue = "";
+  query = "";
+
+  getSeachQuery = (query, value) => {
+    this.searchValue = value;
+    this.query = query;
   };
 
   render = () => {
@@ -252,6 +262,8 @@ export class AdmissionsDash extends React.Component {
                 to: this.toDate,
               },
             }}
+            changeStage={this.getSeachQuery}
+            stages={this.value}
             dataSetup={this.dataSetup}
             totalData={totalData}
             filterValues={this.getFilterValues}
@@ -280,7 +292,7 @@ export class AdmissionsDash extends React.Component {
     }
   }
 
-  async fetchStudents(value) {
+  async fetchStudents(value, stage) {
     const { fetchPendingInterviewDetails, loggedInUser } = this.props;
     try {
       this.props.fetchingStart();
@@ -291,6 +303,10 @@ export class AdmissionsDash extends React.Component {
             user: loggedInUser.mailId,
           },
         });
+      } else if (this.query && stage) {
+        response = await axios.get(
+          `${this.studentsURL}?${this.query}=${this.searchValue}&limit=10&page=0&dataType=softwareCourse&stage=${stage.value}`
+        );
       } else {
         let url = this.studentsURL;
         value &&
@@ -335,7 +351,6 @@ export class AdmissionsDash extends React.Component {
       });
       this.dataSetup(studentData);
     } catch (e) {
-      console.log(e);
       this.props.fetchingFinish();
     }
   }

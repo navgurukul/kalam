@@ -14,6 +14,7 @@ class ServerSidePagination extends React.Component {
     page: 0,
     isData: false,
     filterColumns: [],
+    mainUrl: `${baseURL}students?`,
   };
   getKeyByValue = (object, value) => {
     return Object.keys(object).find((key) => object[key] === value);
@@ -26,8 +27,8 @@ class ServerSidePagination extends React.Component {
     const url =
       typeof page === "string" && page.includes(baseURL)
         ? page
-        : `${baseURL}students?limit=${rowsPerPage}&page=${page}`;
-    const response = await axios.get(url, { params });
+        : `${this.state.mainUrl}limit=${rowsPerPage}&page=${page}`;
+    const response = await axios.get(url, params);
     const studentData = response.data.data.results.map((student) => {
       return {
         ...student,
@@ -40,7 +41,7 @@ class ServerSidePagination extends React.Component {
     this.setState({
       isData: false,
     });
-    dataSetup(studentData,response.data.data.total);
+    dataSetup(studentData, response.data.data.total);
   };
 
   changePage = (page, rowsPerPage) => {
@@ -51,18 +52,15 @@ class ServerSidePagination extends React.Component {
   };
 
   getfilterApi = async (query, value) => {
-    if (query === "stage") {
-      value = this.getKeyByValue(allStages, value);
-    } else if (query === "gender") {
+    if (query === "gender" && value) {
       value = value === "Female" ? 1 : 2;
     }
 
     const keys = {
       gender: "gender",
-      stage: "stage",
       donor: "searchDonorName",
       campus: "searchCampusName",
-      studentOwner:"searchOwnerName",
+      studentOwner: "searchOwnerName",
     };
 
     await this.setState((prevState) => {
@@ -70,21 +68,31 @@ class ServerSidePagination extends React.Component {
         (filterColumn) => this.getKeyByValue(keys, filterColumn.key) !== query
       );
       return {
-        filterColumns: [...newData, { key: keys[query], value: value }],
+        filterColumns:
+          value === undefined
+            ? [...newData]
+            : [...newData, { key: keys[query], value: value }],
       };
     });
     const { filterColumns } = this.state;
-
-    let url = `${baseURL}students`;
+    this.props.filterValues(filterColumns);
+    let url = `${baseURL}students?`;
 
     filterColumns.map((filterColumn, index) => {
       if (index > 0) {
         url = url + `&${filterColumn.key}=${filterColumn.value}`;
       } else {
-        url = url + `?${filterColumn.key}=${filterColumn.value}`;
+        url = url + `${filterColumn.key}=${filterColumn.value}`;
       }
     });
-    this.getStudents(`${url}&limit=50&page=0`);
+    if (filterColumns.length > 0) {
+      this.getStudents(`${url}&limit=10&page=0`);
+    } else {
+      await this.setState({
+        mainUrl: `${url}`,
+      });
+      this.getStudents(0, 10);
+    }
   };
 
   getSearchApi = (query, value) => {
@@ -95,22 +103,20 @@ class ServerSidePagination extends React.Component {
     }
   };
   render() {
-    const { page, isData } = this.state;
+    const { page, isData, filterColumns } = this.state;
     const { data, columns, totalData } = this.props;
-
     const options = {
       selectableRows: false,
       filter: true,
       search: false,
       serverSide: true,
       filterType: "dropdown",
-      onFilterChange: (columnChanged, filterList) => {
+      onFilterChange: async (columnChanged, filterList) => {
         const indexObj = {
           gender: 8,
-          stage: 9,
           campus: 22,
           donor: 23,
-          studentOwner:16,
+          studentOwner: 16,
         };
         if (columnChanged) {
           const filterValue = filterList[indexObj[columnChanged]];
@@ -119,9 +125,10 @@ class ServerSidePagination extends React.Component {
             filterValue[filterValue.length - 1]
           );
         } else {
-          this.setState({
-            filterColumns:[]
-          })
+          await this.setState({
+            filterColumns: [],
+          });
+          this.props.filterValues(filterColumns);
           return this.getStudents(0, 10);
         }
       },

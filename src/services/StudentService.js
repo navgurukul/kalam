@@ -219,9 +219,8 @@ const stageColumn = {
   name: "stage",
   label: "Stage",
   options: {
-    filter: true,
+    filter: false,
     sort: true,
-    filterOptions: allStagesOptions,
     customBodyRender: (value, rowMeta, updateValue) => {
       const user = JSON.parse(window.localStorage.user);
       const isCampusPathname = window.location.pathname.indexOf("campus");

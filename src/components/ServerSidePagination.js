@@ -46,6 +46,27 @@ class ServerSidePagination extends React.Component {
     dataSetup(studentData, response.data.data.total);
   };
 
+  getStudentsDetailBySearch = async (url) => {
+    const { dataSetup } = this.props;
+    this.setState({
+      isData: true,
+    });
+    const response = await axios.get(url);
+    const studentData = response.data.data.results.map((student) => {
+      return {
+        ...student,
+        qualification: qualificationKeys[student.qualification],
+        studentOwner: "",
+        campus: student.campus ? student.campus : null,
+        donor: student.studentDonor ? student.studentDonor : null,
+      };
+    });
+    this.setState({
+      isData: false,
+    });
+    console.log(studentData.length,"komal")
+    dataSetup(studentData, response.data.data.total);
+  };
   changePage = (page, rowsPerPage) => {
     this.getStudents(page, rowsPerPage);
     this.setState({
@@ -108,36 +129,12 @@ class ServerSidePagination extends React.Component {
 
   getSearchApi = (query, value) => {
     if (query) {
-      this.setState({
-        query: query,
-        value: value,
-      });
-      let url = `${baseURL}students`;
-      if (this.state.filterColumns.length > 0) {
-        this.state.filterColumns.map((filterColumn, index) => {
-          if (index > 0) {
-            url = url + `&${filterColumn.key}=${filterColumn.value}`;
-          } else {
-            url =
-              url +
-              `?${query}=${value}&${filterColumn.key}=${filterColumn.value}`;
-          }
-        });
-        this.getStudents(url);
-      } else if (this.props.stages !== null) {
-        url =
-          url +
-          `?${query}=${value}&limit=10&page=${this.state.page}&dataType=softwareCourse&stage=${this.props.stages.value}`;
-        this.getStudents(url);
-      } else {
-        this.getStudents(`${baseURL}students?${query}=${value}`);
-      }
+      this.getStudentsDetailBySearch(`${baseURL}students?${query}=${value}`);
     } else {
-      this.getStudents(0, 10);
+      this.getStudents(this.state.page, 10);
     }
   };
   render() {
-    this.props.changeStage(this.state.query, this.state.value);
     const { page, isData, filterColumns } = this.state;
     const { data, columns, totalData } = this.props;
     const options = {

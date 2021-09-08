@@ -157,6 +157,7 @@ export class AdmissionsDash extends React.Component {
     }
   };
 
+
   render = () => {
     const { classes, fetchPendingInterviewDetails } = this.props;
     const { sData, data, showLoader, totalData } = this.state;
@@ -254,6 +255,7 @@ export class AdmissionsDash extends React.Component {
                 to: this.toDate,
               },
             }}
+            stages={this.value}
             dataSetup={this.dataSetup}
             totalData={totalData}
             filterValues={this.getFilterValues}
@@ -337,7 +339,6 @@ export class AdmissionsDash extends React.Component {
       });
       this.dataSetup(studentData);
     } catch (e) {
-      console.log(e);
       this.props.fetchingFinish();
     }
   }

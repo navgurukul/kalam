@@ -15,6 +15,8 @@ class ServerSidePagination extends React.Component {
     isData: false,
     filterColumns: [],
     mainUrl: `${baseURL}students?`,
+    query: "",
+    value: "",
   };
   getKeyByValue = (object, value) => {
     return Object.keys(object).find((key) => object[key] === value);
@@ -103,7 +105,13 @@ class ServerSidePagination extends React.Component {
       if (index > 0) {
         url = url + `&${filterColumn.key}=${filterColumn.value}`;
       } else {
-        url = url + `${filterColumn.key}=${filterColumn.value}`;
+        if (this.state.query) {
+          url =
+            url +
+            `${this.state.query}=${this.state.value}&${filterColumn.key}=${filterColumn.value}`;
+        } else {
+          url = url + `${filterColumn.key}=${filterColumn.value}`;
+        }
       }
     });
     if (filterColumns.length > 0) {

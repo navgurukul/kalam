@@ -19,13 +19,17 @@ import MainLayout from "./MainLayout";
 import { qualificationKeys } from "../config";
 import Select from "react-select";
 import { withSnackbar } from "notistack";
-import { campusStageOfLearning } from "../config";
+import { campusStageOfLearning, allStages } from "../config";
 
-const allStagesOptions = Object.keys(campusStageOfLearning).map((x) => {
+let allStagesOptions = Object.keys(campusStageOfLearning).map((x) => {
   return { value: x, label: campusStageOfLearning[x] };
 });
 
-const allStagesValue = Object.values(campusStageOfLearning);
+let partnerStages = Object.keys(allStages).map((x) => {
+  return { value: x, label: allStages[x] };
+});
+
+const allStagesValue = Object.values(allStages);
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseUrl = process.env.API_URL;
 
@@ -160,7 +164,10 @@ export class DashboardPage extends React.Component {
     }
   };
   render = () => {
-    const { displayData, title } = this.props;
+    const { displayData, title, location } = this.props;
+    const showAllStage = parseInt(
+      location.pathname[location.pathname.length - 1]
+    );
     const { fromStage, toStage, data, mainData, sData, showLoader } =
       this.state;
     const options = mainData.length > 0 && (
@@ -168,7 +175,7 @@ export class DashboardPage extends React.Component {
         <Select
           className={"filterSelectGlobal"}
           onChange={this.onChangeFromStage}
-          options={allStagesOptions}
+          options={showAllStage ? partnerStages : allStagesOptions}
           placeholder={"from Stage"}
           isClearable={false}
           closeMenuOnSelect={true}
@@ -176,7 +183,7 @@ export class DashboardPage extends React.Component {
         <Select
           className={"filterSelectGlobal"}
           onChange={this.onChangeToStage}
-          options={allStagesOptions}
+          options={showAllStage ? partnerStages : allStagesOptions}
           placeholder={"to Stage"}
           isClearable={false}
           closeMenuOnSelect={true}

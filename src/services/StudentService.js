@@ -8,6 +8,7 @@ import {
   donor,
   campus,
   campusStageOfLearning,
+  caste,
 } from "../config";
 import EditableLabel from "react-inline-editing";
 import Moment from "react-moment";
@@ -1031,6 +1032,9 @@ const StudentService = {
   ],
 
   dConvert: (x) => {
+    const getKeyByValue = (object, value) => {
+      return Object.keys(object).find((key) => object[key] === value);
+    };
     try {
       x.number = x["contacts"][0]["mobile"];
     } catch (e) {
@@ -1046,6 +1050,7 @@ const StudentService = {
     x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;
     x.age = x.dob ? new Date().getFullYear() - +x.dob.slice(0, 4) : "NA";
     x.studentOwner = x.feedbacks ? x.feedbacks.to_assign : x.to_assign;
+    x.caste = caste ? getKeyByValue(caste, x.caste) : caste;
     return x;
   },
 

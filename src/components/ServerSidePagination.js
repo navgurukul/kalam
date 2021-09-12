@@ -10,14 +10,19 @@ import SearchBar from "./SearchBar";
 const baseURL = process.env.API_URL;
 
 class ServerSidePagination extends React.Component {
-  state = {
-    page: 0,
-    isData: false,
-    filterColumns: [],
-    mainUrl: `${baseURL}students?`,
-    query: "",
-    value: "",
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      page: 0,
+      isData: false,
+      filterColumns: [],
+      mainUrl: `${baseURL}students?`,
+      query: "",
+      value: "",
+      newColumns: this.props.columns
+    };
+  }
+
   getKeyByValue = (object, value) => {
     return Object.keys(object).find((key) => object[key] === value);
   };
@@ -64,7 +69,6 @@ class ServerSidePagination extends React.Component {
     this.setState({
       isData: false,
     });
-    console.log(studentData.length,"komal")
     dataSetup(studentData, response.data.data.total);
   };
   changePage = (page, rowsPerPage) => {
@@ -135,8 +139,8 @@ class ServerSidePagination extends React.Component {
     }
   };
   render() {
-    const { page, isData, filterColumns } = this.state;
-    const { data, columns, totalData } = this.props;
+    const { page, isData, filterColumns, newColumns } = this.state;
+    const { data, totalData } = this.props;
     const options = {
       selectableRows: false,
       filter: true,
@@ -173,10 +177,21 @@ class ServerSidePagination extends React.Component {
         this.getStudents(this.state.page, numberOfRows);
       },
       onTableChange: (action, tableState) => {
-        const { rowsPerPage, page } = tableState;
+        const { rowsPerPage, page, columns } = tableState;
         switch (action) {
           case "changePage":
             this.changePage(page, rowsPerPage);
+            break;
+          case "columnViewChange":
+            const updatedColumns = newColumns.map((newColumn, index) => {
+              if (columns[index].name === newColumn.name) {
+                newColumn.options.display = columns[index].display;
+              }
+              return newColumn;
+            })
+            this.setState({
+              newColumns: updatedColumns
+            })
             break;
         }
       },
@@ -194,7 +209,7 @@ class ServerSidePagination extends React.Component {
       <MUIDataTable
         title={<SearchBar searchByName={this.getSearchApi} />}
         data={isData ? [] : data}
-        columns={columns}
+        columns={newColumns}
         options={options}
       />
     );

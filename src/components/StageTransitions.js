@@ -20,6 +20,7 @@ import StudentService from "../services/StudentService";
 import DetailsIcon from "@material-ui/icons/Details";
 import StudentContact from "./StudentContact";
 import Loader from "./Loader";
+import DeleteStudentDetails from "./DeleteStudentDetails";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
@@ -97,7 +98,7 @@ export class Transition extends React.Component {
         {
           data: newData,
           contacts: response.data.contacts,
-          showLoader: false
+          showLoader: false,
         },
         this.props.fetchingFinish
       );
@@ -121,7 +122,7 @@ export class Transition extends React.Component {
   };
 
   render = () => {
-    const { classes, studentName, studentId, history } = this.props;
+    const { classes, studentName, studentId, location } = this.props;
     const modalStyle = getModalStyle();
     return !this.state.modalOpen ? (
       <div>
@@ -148,6 +149,12 @@ export class Transition extends React.Component {
                   contacts={this.state.contacts}
                   closeTransition={this.handleClose}
                 />
+                <DeleteStudentDetails
+                  studentId={studentId}
+                  handleClose={this.handleClose}
+                  pathname={location.pathname}
+                  studentName = {studentName}
+                />
               </Grid>
               <Box onClick={this.handleClose}>
                 <CancelIcon />
@@ -163,9 +170,11 @@ export class Transition extends React.Component {
                 },
                 textLabels: {
                   body: {
-                    noMatch: this.state.showLoader ?
-                      <Loader /> :
-                      'Sorry, there is no matching data to display',
+                    noMatch: this.state.showLoader ? (
+                      <Loader />
+                    ) : (
+                      "Sorry, there is no matching data to display"
+                    ),
                   },
                 },
                 exportButton: true,

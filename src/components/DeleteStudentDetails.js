@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { permissions } from "../config";
 import DeleteIcon from "@material-ui/icons/Delete";
 import axios from "axios";
@@ -11,6 +12,7 @@ import {
   Typography,
   Grid,
 } from "@material-ui/core";
+import { getData } from "../store/actions/data";
 
 const baseUrl = process.env.API_URL;
 
@@ -22,10 +24,12 @@ class DeleteStudentDetails extends Component {
     };
   }
   deleteStudentDetails = async () => {
-    const { studentId, handleClose } = this.props;
+    const { studentId, handleClose, getStudentsData, data } = this.props;
     await axios
       .delete(`${baseUrl}/campus/student/${studentId}`)
       .then((response) => {
+        const newData = data.filter(element => element.id !== studentId);
+        getStudentsData(newData)
         this.props.enqueueSnackbar("Details successfully deleted!", {
           variant: "success",
         });
@@ -98,4 +102,12 @@ class DeleteStudentDetails extends Component {
   }
 }
 
-export default withSnackbar(DeleteStudentDetails);
+const mapStateToProps = (state) => ({
+  data: state.data.getData,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getStudentsData: (data) => dispatch(getData(data)),
+});
+
+export default withSnackbar(connect(mapStateToProps, mapDispatchToProps)(DeleteStudentDetails));

@@ -29,6 +29,7 @@ import UpdateDonor from "../components/UpdateDonor";
 import JoinedDate from "../components/JoinedDate";
 import DeleteRow from "../components/DeleteRow";
 import UpdateStudentName from "../components/UpdateStudentName";
+import UpdatePartner from "../components/UpdatePartner";
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
@@ -206,8 +207,8 @@ const donorColumn = {
         let newValue = "";
         value
           ? value.map((item) => {
-            newValue = `${newValue}   ${item.donor}`;
-          })
+              newValue = `${newValue}   ${item.donor}`;
+            })
           : (newValue = null);
 
         return newValue;
@@ -512,8 +513,8 @@ const feedbackColumnTransition = {
               />
               {rowData
                 ? rowData
-                  .split("\n\n")
-                  .map((item, i) => <p key={i}> {item} </p>)
+                    .split("\n\n")
+                    .map((item, i) => <p key={i}> {item} </p>)
                 : null}
             </div>
           ) : null}
@@ -922,6 +923,20 @@ const partnerNameColumn = {
   options: {
     filter: false,
     sort: true,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      console.log(value, "kmal");
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+        return (
+          <UpdatePartner
+            studentId={rowMeta.rowData[0]}
+            value={value}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
   },
 };
 

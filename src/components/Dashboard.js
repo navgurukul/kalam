@@ -19,13 +19,18 @@ import MainLayout from "./MainLayout";
 import { qualificationKeys } from "../config";
 import Select from "react-select";
 import { withSnackbar } from "notistack";
-import { campusStageOfLearning } from "../config";
+import { campusStageOfLearning, allStages } from "../config";
+import { getData } from "../store/actions/data";
 
-const allStagesOptions = Object.keys(campusStageOfLearning).map((x) => {
+let allStagesOptions = Object.keys(campusStageOfLearning).map((x) => {
   return { value: x, label: campusStageOfLearning[x] };
 });
 
-const allStagesValue = Object.values(campusStageOfLearning);
+let partnerStages = Object.keys(allStages).map((x) => {
+  return { value: x, label: allStages[x] };
+});
+
+const allStagesValue = Object.values(allStages);
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseUrl = process.env.API_URL;
 
@@ -36,9 +41,7 @@ export class DashboardPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
       mainData: [],
-      sData: undefined, //subsetData,
       fromDate: null,
       showLoader: true,
       fromStage: null,
@@ -49,37 +52,17 @@ export class DashboardPage extends React.Component {
   }
 
   stageChangeEvent = (iData) => {
-    const rowIds = this.state.data.map((x) => x.id);
+    const { data, getStudentsData } = this.props;
+    const rowIds = data.map((x) => x.id);
     const rowIndex = rowIds.indexOf(iData.rowData.id);
 
-    let dataElem = this.state.data[rowIndex];
+    let dataElem = data[rowIndex];
     dataElem.stageTitle = iData.selectedValue.label;
     dataElem.stage = iData.selectedValue.value;
 
-    let newData = this.state.data;
+    let newData = data;
     newData[rowIndex] = dataElem;
-
-    this.setState({ data: newData });
-  };
-
-  handleChange = (field, filterFn) => {
-    filterFns[field] = filterFn;
-    const fieldKeys = Object.keys(filterFns);
-
-    let sData = this.state.data.filter((x) => {
-      let result = true;
-      for (var key in filterFns) {
-        result = result && filterFns[key](x);
-      }
-      return result;
-    });
-
-    // sData [] and undefined are different
-    // sData [] = when no results are returned
-    // sData undefined = when all results are returned
-    this.setState({
-      sData: sData,
-    });
+    getStudentsData(newData);
   };
 
   changeFromDate = async (date) => {
@@ -94,21 +77,17 @@ export class DashboardPage extends React.Component {
     this.fetchStudents();
   };
 
-  dataSetup = (data) => {
-    // columns = StudentService.setupPre(StudentService.columns["partnerDashboard"]);
-
-    for (let i = 0; i < data.length; i++) {
-      data[i] = StudentService.dConvert(data[i]);
-      // columns = StudentService.addOptions(columns, data[i]);
+  dataSetup = (studentData) => {
+    const { getStudentsData } = this.props;
+    for (let i = 0; i < studentData.length; i++) {
+      studentData[i] = StudentService.dConvert(studentData[i]);
     }
-
-    // columns = StudentService.setupPost(columns);
-
+    getStudentsData(studentData);
+    const { data } = this.props;
     this.setState(
       {
-        data: data,
         mainData: data,
-        fromDate: this.state.data.length > 0 ? data[0].created_at : null,
+        fromDate: data.length > 0 ? data[0].created_at : null,
         showLoader: false,
       },
       function () {
@@ -118,8 +97,10 @@ export class DashboardPage extends React.Component {
   };
 
   filterData = () => {
-    this.setState({ data: this.state.mainData });
-    const { data, fromStage, toStage } = this.state;
+    const { getStudentsData } = this.props;
+    const { fromStage, toStage, mainData } = this.state;
+    getStudentsData(mainData);
+    const { data } = this.props;
     if (allStagesValue.indexOf(fromStage) <= allStagesValue.indexOf(toStage)) {
       const newAllStagesValue = allStagesValue.slice(
         allStagesValue.indexOf(fromStage),
@@ -128,13 +109,9 @@ export class DashboardPage extends React.Component {
       const newData = data.filter((element) => {
         return newAllStagesValue.indexOf(element.stage) > -1;
       });
-      this.setState({
-        data: newData,
-      });
+      getStudentsData(newData);
     } else {
-      this.setState({
-        data: [],
-      });
+      getStudentsData([]);
       this.props.enqueueSnackbar(
         `Stage inputs not correct. Please check once.`,
         {
@@ -160,15 +137,17 @@ export class DashboardPage extends React.Component {
     }
   };
   render = () => {
-    const { displayData, title } = this.props;
-    const { fromStage, toStage, data, mainData, sData, showLoader } =
-      this.state;
+    const { displayData, title, location, data } = this.props;
+    const showAllStage = parseInt(
+      location.pathname[location.pathname.length - 1]
+    );
+    const { fromStage, toStage, mainData, showLoader } = this.state;
     const options = mainData.length > 0 && (
       <Box>
         <Select
           className={"filterSelectGlobal"}
           onChange={this.onChangeFromStage}
-          options={allStagesOptions}
+          options={showAllStage ? partnerStages : allStagesOptions}
           placeholder={"from Stage"}
           isClearable={false}
           closeMenuOnSelect={true}
@@ -176,7 +155,7 @@ export class DashboardPage extends React.Component {
         <Select
           className={"filterSelectGlobal"}
           onChange={this.onChangeToStage}
-          options={allStagesOptions}
+          options={showAllStage ? partnerStages : allStagesOptions}
           placeholder={"to Stage"}
           isClearable={false}
           closeMenuOnSelect={true}
@@ -211,34 +190,13 @@ export class DashboardPage extends React.Component {
         </MuiPickersUtilsProvider>
       </Box>
     );
-
-    // if (!this.state.data.length) {
-    //   return <Box></Box>
-    // }
-
-    // let filterSelectRows = []
-    // columns.map( (x) => {
-    //   if ('selectFilter' in x)
-    //     filterSelectRows.push(
-    //       <FilterSelect
-    //         filter={{
-    //           name : x.sfTitle,
-    //           field : x.field
-    //         }}
-    //         ifMulti={x.sfMulti}
-    //         key={x.field}
-    //         options={x.options}
-    //         handleChange={this.handleChange}
-    //       />
-    //     )
-    // })
     return (
       <div>
         {options}
         <MainLayout
           title={title}
           columns={displayData}
-          data={sData ? sData : data}
+          data={data}
           showLoader={showLoader}
         />
       </div>
@@ -293,12 +251,17 @@ export class DashboardPage extends React.Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  data: state.data.getData,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   fetchingStart: () => dispatch(changeFetching(true)),
   fetchingFinish: () => dispatch(changeFetching(false)),
   usersSetup: (users) => dispatch(setupUsers(users)),
+  getStudentsData: (data) => dispatch(getData(data)),
 });
 
 export default withRouter(
-  withSnackbar(connect(undefined, mapDispatchToProps)(DashboardPage))
+  withSnackbar(connect(mapStateToProps, mapDispatchToProps)(DashboardPage))
 );

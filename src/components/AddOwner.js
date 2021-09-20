@@ -63,7 +63,7 @@ export class AddOwner extends React.Component {
       dialogOpen: false,
       data: [],
       ownerName: null,
-      onwerId: null,
+      ownerId: null,
       availablity: null,
       stage: null,
       limit: undefined,
@@ -83,17 +83,17 @@ export class AddOwner extends React.Component {
   };
 
   createOwner = () => {
-    const { ownerName, onwerId, availablity, stage, limit } = this.state;
+    const { ownerName, ownerId, availablity, stage, limit } = this.state;
     const { ownerData } = this.props;
     const duplicateData = ownerData.filter((x) => x.user.mail_id === ownerName);
     if (duplicateData.length > 0) {
       this.props.enqueueSnackbar(`${ownerName} exists in owner dashboard.`, {
         variant: "error",
       });
-    } else if (ownerName && onwerId && availablity && stage) {
+    } else if (ownerName && ownerId && availablity && stage) {
       axios
         .post(`${baseUrl}owner`, {
-          user_id: onwerId,
+          user_id: ownerId,
           available: availablity === "Yes" ? true : false,
           max_limit: limit ? limit : undefined,
           type: stage,
@@ -122,15 +122,15 @@ export class AddOwner extends React.Component {
       availablity: data.available ? "Yes" : "No",
       stage: data.type,
       limit: data.max_limit,
-      onwerId: data.id,
+      ownerId: data.id,
     });
   };
 
   editOwner = () => {
-    const { ownerName, onwerId, availablity, stage, limit } = this.state;
-    if (ownerName && onwerId && availablity && stage) {
+    const { ownerName, ownerId, availablity, stage, limit } = this.state;
+    if (ownerName && ownerId && availablity && stage) {
       axios
-        .put(`${baseUrl}owner/${onwerId}`, {
+        .put(`${baseUrl}owner/${ownerId}`, {
           available: availablity === "Yes" ? true : false,
           max_limit: limit ? limit : undefined,
           type: stage,
@@ -172,7 +172,7 @@ export class AddOwner extends React.Component {
   handleChange = (name) => (event) => {
     const { value, label } = event;
     if (name === "ownerName") {
-      this.setState({ ownerName: label, onwerId: value });
+      this.setState({ ownerName: label, ownerId: value });
     } else {
       this.setState({
         [name]: value ? value : event.target.value,
@@ -189,7 +189,7 @@ export class AddOwner extends React.Component {
 
   render = () => {
     const { classes, isEdit } = this.props;
-    const { data, ownerName, onwerId, availablity, stage, limit } = this.state;
+    const { data, ownerName, ownerId, availablity, stage, limit } = this.state;
     return (
       <div>
         {isEdit ? (
@@ -215,7 +215,7 @@ export class AddOwner extends React.Component {
               <FormControl>
                 <Select
                   name="ownerName"
-                  value={ownerName && { value: onwerId, label: ownerName }}
+                  value={ownerName && { value: ownerId, label: ownerName }}
                   onChange={this.handleChange("ownerName")}
                   options={data.map((x) => {
                     return { value: x.id, label: x.user };

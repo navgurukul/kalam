@@ -24,80 +24,102 @@ const styles = (theme) => ({
   },
 });
 
-const columns = [
-  {
-    name: "id",
-    label: "Edit",
-    options: {
-      filter: true,
-      sort: false,
-      customBodyRender: (value) => {
-        return <AddOwner ownerId={value} isEdit={true} />;
-      },
-    },
-  },
-  {
-    name: "user.user_name",
-    label: "Name",
-    options: {
-      filter: true,
-      sort: true,
-    },
-  },
-  {
-    name: "available",
-    label: "Available",
-    options: {
-      filter: true,
-      sort: false,
-      customBodyRender: (value) => {
-        return value ? "Yes" : "No";
-      },
-    },
-  },
-  {
-    name: "pending_interview_count",
-    label: "Pending Interviews",
-    options: {
-      filter: false,
-      sort: true,
-    },
-  },
-  {
-    name: "type",
-    label: "Interviews Assigned",
-    options: {
-      filter: false,
-      sort: false,
-      customBodyRender: (value) => {
-        return value.map((v) => `${v} `);
-      },
-    },
-  },
-  {
-    name: "max_limit",
-    label: "Assigned Interviews Limit",
-    options: {
-      filter: false,
-      sort: true,
-    },
-  },
-];
-
 export class PartnerList extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       data: [],
+      showLoader: true,
     };
+    this.columns = [
+      {
+        name: "id",
+        label: "Edit",
+        options: {
+          filter: true,
+          sort: false,
+          customBodyRender: (value) => {
+            return (
+              <AddOwner
+                ownerId={value}
+                isEdit={true}
+                getUpdatedData={this.getUpdatedData}
+              />
+            );
+          },
+        },
+      },
+      {
+        name: "user.user_name",
+        label: "Name",
+        options: {
+          filter: true,
+          sort: true,
+        },
+      },
+      {
+        name: "available",
+        label: "Available",
+        options: {
+          filter: true,
+          sort: false,
+          customBodyRender: (value) => {
+            return value ? "Yes" : "No";
+          },
+        },
+      },
+      {
+        name: "pending_interview_count",
+        label: "Pending Interviews",
+        options: {
+          filter: false,
+          sort: true,
+        },
+      },
+      {
+        name: "type",
+        label: "Interviews Assigned",
+        options: {
+          filter: false,
+          sort: false,
+          customBodyRender: (value) => {
+            return value.map((v) => `${v} `);
+          },
+        },
+      },
+      {
+        name: "max_limit",
+        label: "Assigned Interviews Limit",
+        options: {
+          filter: false,
+          sort: true,
+        },
+      },
+    ];
   }
 
-  getUpdatedData = (data) => {
-    this.setState({
-      data: [...this.state.data.data],
-    });
+  getUpdatedData = (data, isEdit) => {
+    let newData = [...this.state.data];
+    if (isEdit) {
+      newData = newData.map((x) => {
+        if (x.user.mail_id === data.user.mail_id) {
+          x.available = data.available;
+          x.type = data.type;
+          x.max_limit = data.max_limit;
+        }
+        return x;
+      });
+      this.setState({
+        data: newData,
+      });
+    } else {
+      this.setState({
+        data: [data, ...this.state.data],
+      });
+    }
   };
+
   render = () => {
     const { classes } = this.props;
     return (
@@ -110,9 +132,9 @@ export class PartnerList extends React.Component {
             />
             <MainLayout
               title={"Owner"}
-              columns={columns}
+              columns={this.columns}
               data={this.state.data}
-              showLoader={true}
+              showLoader={this.state.showLoader}
             />
           </div>
         </MuiThemeProvider>
@@ -127,7 +149,7 @@ export class PartnerList extends React.Component {
   async fetchOwners() {
     const dataURL = baseUrl + "owner";
     const response = await axios.get(dataURL);
-    this.setState({ data: response.data.data });
+    this.setState({ data: response.data.data, showLoader: false });
   }
 }
 

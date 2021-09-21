@@ -84,7 +84,7 @@ export class AddOwner extends React.Component {
 
   createOwner = () => {
     const { ownerName, ownerId, availablity, stage, limit } = this.state;
-    const { ownerData } = this.props;
+    const { ownerData, getUpdatedData } = this.props;
     const duplicateData = ownerData.filter((x) => x.user.mail_id === ownerName);
     if (duplicateData.length > 0) {
       this.props.enqueueSnackbar(`${ownerName} exists in owner dashboard.`, {
@@ -105,6 +105,7 @@ export class AddOwner extends React.Component {
           this.setState({
             dialogOpen: false,
           });
+          getUpdatedData(response.data.data[0], false);
         });
     } else {
       this.props.enqueueSnackbar(`Please fill all fields`, {
@@ -128,6 +129,7 @@ export class AddOwner extends React.Component {
 
   editOwner = () => {
     const { ownerName, ownerId, availablity, stage, limit } = this.state;
+    const { getUpdatedData } = this.props;
     if (ownerName && ownerId && availablity && stage) {
       axios
         .put(`${baseUrl}owner/${ownerId}`, {
@@ -142,6 +144,7 @@ export class AddOwner extends React.Component {
           this.setState({
             dialogOpen: false,
           });
+          getUpdatedData(response.data.data[0], true);
         });
     } else {
       this.props.enqueueSnackbar(`Please fill all fields`, {

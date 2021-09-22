@@ -38,7 +38,7 @@ class DonorStudentsData extends React.Component {
     return (
       <div>
         <SelectUiByButtons
-          name={`${donorName} Campus`}
+          name={`${donorName} Donor`}
           progressMade={this.progressMade}
           tabularData={this.tabularData}
           showGraphData={this.showGraphData}

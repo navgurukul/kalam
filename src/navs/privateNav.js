@@ -34,7 +34,7 @@ export const publicNavs = [
   },
   {
     url: '/owner',
-    name: 'Owner',
+    name: 'Owners',
     icon: <ExtensionIcon />
   },
   {

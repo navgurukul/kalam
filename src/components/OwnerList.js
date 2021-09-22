@@ -24,6 +24,13 @@ const styles = (theme) => ({
   },
 });
 
+const stagesColor = {
+  defaultValue: "#F0E5D8",
+  EnglishInterview: "#FFC478",
+  AlgebraInterview: "#EFB7B7",
+  CultureFitInterview: "#75CFB8",
+};
+
 export class PartnerList extends React.Component {
   constructor(props) {
     super(props);
@@ -79,12 +86,39 @@ export class PartnerList extends React.Component {
       },
       {
         name: "type",
-        label: "Interviews Assigned",
+        label: "Interview Types",
         options: {
           filter: false,
           sort: false,
           customBodyRender: (value) => {
-            return value.map((v) => `${v} `);
+            return value.map((v) => {
+              if (stagesColor[v]) {
+                return (
+                  <p
+                    style={{
+                      backgroundColor: stagesColor[v],
+                      textAlign: "center",
+                      borderRadius: "75px",
+                    }}
+                  >
+                    {" "}
+                    {v}{" "}
+                  </p>
+                );
+              }
+              return (
+                <p
+                  style={{
+                    backgroundColor: stagesColor["defaultValue"],
+                    textAlign: "center",
+                    borderRadius: "75px",
+                  }}
+                >
+                  {" "}
+                  {v}{" "}
+                </p>
+              );
+            });
           },
         },
       },
@@ -131,7 +165,7 @@ export class PartnerList extends React.Component {
               ownerData={this.state.data}
             />
             <MainLayout
-              title={"Owner"}
+              title={"Owners"}
               columns={this.columns}
               data={this.state.data}
               showLoader={this.state.showLoader}

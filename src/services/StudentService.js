@@ -58,7 +58,7 @@ const ColumnTransitions = {
       return (
         <StageTransitions
           studentId={value}
-          studentName={rowMeta.rowData[2]}
+          studentName={rowMeta.rowData[1]}
           dataType={'columnTransition'}
         />
       )
@@ -131,6 +131,20 @@ const numberColumn = {
   }
 }
 
+const AltNumberColumn = {
+  name: 'contacts',
+  label: 'Alternative Number',
+  options: {
+    filter: false,
+    sort: true,
+    display: false,
+    customBodyRender: (value) => {
+      let contacts = value[value.length - 1];
+      return contacts ? contacts.alt_mobile : contacts;
+    }
+  }
+}
+
 const marksColumn = {
   name: 'marks',
   label: 'Marks',
@@ -170,7 +184,7 @@ const campusColumn = {
     display: false,
     filterOptions: campus.map(campus => campus.name),
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
         return (
           <UpdateCampus
             allOptions={campus}
@@ -195,7 +209,7 @@ const donorColumn = {
     display: false,
     filterOptions: donor.map(donor => donor.name),
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
         return (
           <UpdateDonor
             allOptions={donor}
@@ -945,11 +959,12 @@ const StudentService = {
     ],
     softwareCourse: [
       ColumnTransitions,
-      setColumn,
       nameColumn,
+      setColumn,
       cityColumn,
       stateColumn,
       numberColumn,
+      AltNumberColumn,
       marksColumn,
       EmailColumn,
       genderColumn,
@@ -1025,8 +1040,9 @@ const StudentService = {
   ],
   CampusData: [
     ColumnTransitions,
-    numberColumn,
     nameColumn,
+    numberColumn,
+    AltNumberColumn,
     EmailColumn,
     genderColumn,
     joinedDate,

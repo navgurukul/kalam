@@ -22,6 +22,7 @@ import { allStages } from "../config";
 import MainLayout from "./MainLayout";
 import { qualificationKeys } from "../config";
 import ServerSidePagination from "./ServerSidePagination";
+import _ from "lodash";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -30,11 +31,13 @@ const baseURL = process.env.API_URL;
 let allStagesOptions = Object.keys(allStages).map((x) => {
   return { value: x, label: allStages[x] };
 });
-allStagesOptions = [{
+allStagesOptions = [
+  {
     value: "default",
     label: "All",
-  }, ...allStagesOptions]
-
+  },
+  ...allStagesOptions,
+];
 
 const styles = (theme) => ({
   clear: {
@@ -157,6 +160,13 @@ export class AdmissionsDash extends React.Component {
     }
   };
 
+  sortChange = (column, order) => {
+    const { data } = this.state;
+    let sorted = _.orderBy(data, [column], [order]);
+    this.setState({
+      data: sorted,
+    });
+  };
 
   render = () => {
     const { classes, fetchPendingInterviewDetails } = this.props;
@@ -233,6 +243,7 @@ export class AdmissionsDash extends React.Component {
           dataSetup={this.dataSetup}
           totalData={totalData}
           filterValues={this.getFilterValues}
+          sortChange={this.sortChange}
         />
       );
     }
@@ -259,6 +270,7 @@ export class AdmissionsDash extends React.Component {
             dataSetup={this.dataSetup}
             totalData={totalData}
             filterValues={this.getFilterValues}
+            sortChange={this.sortChange}
           />
         </MuiThemeProvider>
       </Box>

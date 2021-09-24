@@ -19,7 +19,7 @@ class ServerSidePagination extends React.Component {
       mainUrl: `${baseURL}students?`,
       query: "",
       value: "",
-      newColumns: this.props.columns
+      newColumns: this.props.columns,
     };
   }
 
@@ -138,15 +138,23 @@ class ServerSidePagination extends React.Component {
       this.getStudents(this.state.page, 10);
     }
   };
+
   render() {
     const { page, isData, filterColumns, newColumns } = this.state;
-    const { data, totalData } = this.props;
+    const { data, totalData, sortChange } = this.props;
     const options = {
       selectableRows: false,
       filter: true,
       search: false,
       serverSide: true,
       filterType: "dropdown",
+      onColumnSortChange: (changedColumn, direction) => {
+        let order = "desc";
+        if (direction === "ascending") {
+          order = "asc";
+        }
+        sortChange(changedColumn, order);
+      },
       onFilterChange: async (columnChanged, filterList) => {
         const indexObj = {
           gender: 8,
@@ -188,10 +196,10 @@ class ServerSidePagination extends React.Component {
                 newColumn.options.display = columns[index].display;
               }
               return newColumn;
-            })
+            });
             this.setState({
-              newColumns: updatedColumns
-            })
+              newColumns: updatedColumns,
+            });
             break;
         }
       },

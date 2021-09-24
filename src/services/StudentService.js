@@ -145,7 +145,7 @@ const ageColumn = {
   label: 'Age',
   options: {
     filter: false,
-    sort: false,
+    sort: true,
     display: true
   }
 }
@@ -312,7 +312,7 @@ const lastUpdatedColumn = {
   label: 'Last Updated',
   options: {
     filter: false,
-    sort: false,
+    sort: true,
     customBodyRender: value => {
       return (
         <Moment format='D MMM YYYY' withTitle>

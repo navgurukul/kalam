@@ -949,7 +949,7 @@ const partnerNameColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
         return (
           <UpdatePartner
             studentId={rowMeta.rowData[0]}

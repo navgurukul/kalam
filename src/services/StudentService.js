@@ -29,6 +29,7 @@ import UpdateDonor from "../components/UpdateDonor";
 import JoinedDate from "../components/JoinedDate";
 import DeleteRow from "../components/DeleteRow";
 import UpdateStudentName from "../components/UpdateStudentName";
+import UpdatePartner from "../components/UpdatePartner";
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
@@ -946,8 +947,22 @@ const partnerNameColumn = {
   options: {
     filter: false,
     sort: true,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+        return (
+          <UpdatePartner
+            studentId={rowMeta.rowData[0]}
+            value={value}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
   },
 };
+
 
 const StudentService = {
   columns: {

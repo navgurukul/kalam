@@ -8,29 +8,30 @@ import {
   donor,
   campus,
   campusStageOfLearning,
-  caste
-} from '../config'
-import EditableLabel from 'react-inline-editing'
-import Moment from 'react-moment'
-import Select from 'react-select'
-import makeAnimated from 'react-select/animated'
-import StageSelect from '../components/StageSelect'
-import UpdateEmail from '../components/UpdateEmail'
-import OwnerSelect from '../components/OwnerSelect'
-import StatusSelect from '../components/StatusSelect'
-import StudentFeedback from '../components/FeedbackPage'
-import StageTransitions from '../components/StageTransitions'
-import StageTransitionsStudentStatus from '../components/StageTransitionsStudentStatus'
-import AudioRecorder from '../components/audioRecording'
-import AudiofileUpload from '../components/ulpoadAudioFile'
-import TagsForOnlineClass from '../components/tagsForOnlineClass'
-import UpdateCampus from '../components/UpdateCampus'
-import UpdateDonor from '../components/UpdateDonor'
-import JoinedDate from '../components/JoinedDate'
-import DeleteRow from '../components/DeleteRow'
-import UpdateStudentName from '../components/UpdateStudentName'
-const _ = require('underscore')
-const animatedComponents = makeAnimated()
+  caste,
+} from "../config";
+import EditableLabel from "react-inline-editing";
+import Moment from "react-moment";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
+import StageSelect from "../components/StageSelect";
+import UpdateEmail from "../components/UpdateEmail";
+import OwnerSelect from "../components/OwnerSelect";
+import StatusSelect from "../components/StatusSelect";
+import StudentFeedback from "../components/FeedbackPage";
+import StageTransitions from "../components/StageTransitions";
+import StageTransitionsStudentStatus from "../components/StageTransitionsStudentStatus";
+import AudioRecorder from "../components/audioRecording";
+import AudiofileUpload from "../components/ulpoadAudioFile";
+import TagsForOnlineClass from "../components/tagsForOnlineClass";
+import UpdateCampus from "../components/UpdateCampus";
+import UpdateDonor from "../components/UpdateDonor";
+import JoinedDate from "../components/JoinedDate";
+import DeleteRow from "../components/DeleteRow";
+import UpdateStudentName from "../components/UpdateStudentName";
+import UpdatePartner from "../components/UpdatePartner";
+const _ = require("underscore");
+const animatedComponents = makeAnimated();
 
 // _handleFocus = (text) => {
 //   console.log("Focused with text: " + text);
@@ -522,7 +523,7 @@ const feedbackColumnTransition = {
               />
               {rowData
                 ? rowData
-                    .split('\n\n')
+                    .split("\n\n")
                     .map((item, i) => <p key={i}> {item} </p>)
                 : null}
             </div>
@@ -931,9 +932,23 @@ const partnerNameColumn = {
   name: 'partnerName',
   options: {
     filter: false,
-    sort: true
-  }
-}
+    sort: true,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+        return (
+          <UpdatePartner
+            studentId={rowMeta.rowData[0]}
+            value={value}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
+  },
+};
+
 
 const StudentService = {
   columns: {

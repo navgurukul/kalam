@@ -30,13 +30,11 @@ const baseURL = process.env.API_URL;
 let allStagesOptions = Object.keys(allStages).map((x) => {
   return { value: x, label: allStages[x] };
 });
-allStagesOptions = [
-  {
+allStagesOptions = [{
     value: "default",
     label: "All",
-  },
-  ...allStagesOptions,
-];
+  }, ...allStagesOptions]
+
 
 const styles = (theme) => ({
   clear: {
@@ -66,15 +64,8 @@ export class AdmissionsDash extends React.Component {
       fromDate: null,
       showLoader: true,
       filterValues: [],
-      numberOfRows: 10,
     };
   }
-
-  setNumbersOfRows = (value) => {
-    this.setState({
-      numberOfRows: value,
-    });
-  };
 
   getFilterValues = (value) => {
     this.setState({ filterValues: value });
@@ -169,7 +160,7 @@ export class AdmissionsDash extends React.Component {
 
   render = () => {
     const { classes, fetchPendingInterviewDetails } = this.props;
-    const { sData, data, showLoader, totalData, numberOfRows } = this.state;
+    const { sData, data, showLoader, totalData } = this.state;
     const options = (
       <Box>
         <Select
@@ -242,8 +233,6 @@ export class AdmissionsDash extends React.Component {
           dataSetup={this.dataSetup}
           totalData={totalData}
           filterValues={this.getFilterValues}
-          numberOfRows={numberOfRows}
-          setNumbersOfRows={this.setNumbersOfRows}
         />
       );
     }
@@ -270,8 +259,6 @@ export class AdmissionsDash extends React.Component {
             dataSetup={this.dataSetup}
             totalData={totalData}
             filterValues={this.getFilterValues}
-            numberOfRows={numberOfRows}
-            setNumbersOfRows={this.setNumbersOfRows}
           />
         </MuiThemeProvider>
       </Box>
@@ -299,7 +286,6 @@ export class AdmissionsDash extends React.Component {
 
   async fetchStudents(value) {
     const { fetchPendingInterviewDetails, loggedInUser } = this.props;
-    const { numberOfRows } = this.state;
     try {
       this.props.fetchingStart();
       let response;
@@ -321,7 +307,7 @@ export class AdmissionsDash extends React.Component {
           });
         response =
           value && value.length > 0
-            ? await axios.get(`${url}&limit=${numberOfRows}&page=0`, {
+            ? await axios.get(`${url}&limit=10&page=0`, {
                 params: {
                   dataType: this.dataType,
                   stage: this.stage,
@@ -329,17 +315,14 @@ export class AdmissionsDash extends React.Component {
                   to: this.toDate,
                 },
               })
-            : await axios.get(
-                `${this.studentsURL}?limit=${numberOfRows}&page=0`,
-                {
-                  params: {
-                    dataType: this.dataType,
-                    stage: this.stage,
-                    from: this.state.fromDate,
-                    to: this.toDate,
-                  },
-                }
-              );
+            : await axios.get(`${this.studentsURL}?limit=10&page=0`, {
+                params: {
+                  dataType: this.dataType,
+                  stage: this.stage,
+                  from: this.state.fromDate,
+                  to: this.toDate,
+                },
+              });
       }
 
       const studentData = response.data.data.results.map((student) => {

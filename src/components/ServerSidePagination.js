@@ -19,7 +19,7 @@ class ServerSidePagination extends React.Component {
       mainUrl: `${baseURL}students?`,
       query: "",
       value: "",
-      newColumns: this.props.columns,
+      newColumns: this.props.columns
     };
   }
 
@@ -79,7 +79,6 @@ class ServerSidePagination extends React.Component {
   };
 
   getfilterApi = async (query, value) => {
-    const { numberOfRows } = this.props;
     if (query === "gender" && value) {
       value = value === "Female" ? 1 : 2;
     }
@@ -123,12 +122,12 @@ class ServerSidePagination extends React.Component {
       await this.setState({
         mainUrl: `${url}&`,
       });
-      this.getStudents(`${url}&limit=${numberOfRows}&page=0`);
+      this.getStudents(`${url}&limit=10&page=0`);
     } else {
       await this.setState({
         mainUrl: `${url}`,
       });
-      this.getStudents(0, numberOfRows);
+      this.getStudents(0, 10);
     }
   };
 
@@ -136,12 +135,12 @@ class ServerSidePagination extends React.Component {
     if (query) {
       this.getStudentsDetailBySearch(`${baseURL}students?${query}=${value}`);
     } else {
-      this.getStudents(this.state.page, 50);
+      this.getStudents(this.state.page, 10);
     }
   };
   render() {
     const { page, isData, filterColumns, newColumns } = this.state;
-    const { data, totalData, setNumbersOfRows, numberOfRows } = this.props;
+    const { data, totalData } = this.props;
     const options = {
       selectableRows: false,
       filter: true,
@@ -150,10 +149,10 @@ class ServerSidePagination extends React.Component {
       filterType: "dropdown",
       onFilterChange: async (columnChanged, filterList) => {
         const indexObj = {
-          gender: 9,
-          campus: 23,
-          donor: 24,
-          studentOwner: 17,
+          gender: 8,
+          campus: 22,
+          donor: 23,
+          studentOwner: 16,
         };
         if (columnChanged) {
           const filterValue = filterList[indexObj[columnChanged]];
@@ -166,16 +165,15 @@ class ServerSidePagination extends React.Component {
             filterColumns: [],
           });
           this.props.filterValues(filterColumns);
-          return this.getStudents(0, numberOfRows);
+          return this.getStudents(0, 10);
         }
       },
       responsive: "stacked",
       rowsPerPageOptions: [10, 50, 100],
       count: totalData,
-      rowsPerPage: numberOfRows,
+      rowsPerPage: 10,
       page: page,
       onChangeRowsPerPage: (numberOfRows) => {
-        setNumbersOfRows(numberOfRows);
         this.getStudents(this.state.page, numberOfRows);
       },
       onTableChange: (action, tableState) => {
@@ -190,10 +188,10 @@ class ServerSidePagination extends React.Component {
                 newColumn.options.display = columns[index].display;
               }
               return newColumn;
-            });
+            })
             this.setState({
-              newColumns: updatedColumns,
-            });
+              newColumns: updatedColumns
+            })
             break;
         }
       },

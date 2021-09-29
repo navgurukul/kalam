@@ -353,12 +353,14 @@ export class AdmissionsDash extends React.Component {
       }
 
       const studentData = response.data.data.results.map((student) => {
+        let contacts = student.contacts[student.contacts.length - 1];
         return {
           ...student,
           qualification: qualificationKeys[student.qualification],
           studentOwner: "",
           campus: student.campus ? student.campus : null,
           donor: student.studentDonor ? student.studentDonor : null,
+          altNumber: contacts ? contacts.alt_mobile : contacts,
         };
       });
       this.setState({

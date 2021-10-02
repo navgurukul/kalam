@@ -133,16 +133,12 @@ const numberColumn = {
 };
 
 const AltNumberColumn = {
-  name: "contacts",
+  name: "altNumber",
   label: "Alternative Number",
   options: {
     filter: false,
     sort: true,
     display: false,
-    customBodyRender: (value) => {
-      let contacts = value[value.length - 1];
-      return contacts ? contacts.alt_mobile : contacts;
-    },
   },
 };
 
@@ -160,10 +156,11 @@ const ageColumn = {
   label: "Age",
   options: {
     filter: false,
-    sort: false,
-    display: true,
-  },
-};
+    sort: true,
+    display: true
+  }
+}
+
 
 const genderColumn = {
   name: "gender",
@@ -327,8 +324,8 @@ const lastUpdatedColumn = {
   label: "Last Updated",
   options: {
     filter: false,
-    sort: false,
-    customBodyRender: (value) => {
+    sort: true,
+    customBodyRender: value => {
       return (
         <Moment format="D MMM YYYY" withTitle>
           {value}
@@ -948,7 +945,7 @@ const partnerNameColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[15]) > -1) {
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
         return (
           <UpdatePartner
             studentId={rowMeta.rowData[0]}

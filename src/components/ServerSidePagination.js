@@ -139,15 +139,23 @@ class ServerSidePagination extends React.Component {
       this.getStudents(this.state.page, 50);
     }
   };
+
   render() {
     const { page, isData, filterColumns, newColumns } = this.state;
-    const { data, totalData, setNumbersOfRows, numberOfRows } = this.props;
+    const { data, totalData, setNumbersOfRows, sortChange, numberOfRows } = this.props;
     const options = {
       selectableRows: false,
       filter: true,
       search: false,
       serverSide: true,
       filterType: "dropdown",
+      onColumnSortChange: (changedColumn, direction) => {
+        let order = "desc";
+        if (direction === "ascending") {
+          order = "asc";
+        }
+        sortChange(changedColumn, order);
+      },
       onFilterChange: async (columnChanged, filterList) => {
         const indexObj = {
           gender: 9,

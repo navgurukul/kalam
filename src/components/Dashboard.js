@@ -40,7 +40,8 @@ let columns = [
     name: "pendingEnglishInterview",
     options: {
       viewColumns:false,
-      display:false
+      display:false,
+      filter:false
     },
   },
   {
@@ -48,7 +49,8 @@ let columns = [
     name: "englishInterviewFail",
     options: {
       viewColumns:false,
-      display:false
+      display:false,
+      filter:false,
     },
   },
   {
@@ -56,7 +58,8 @@ let columns = [
     name: "pendingAlgebraInterview",
     options: {
       viewColumns:false,
-      display:false
+      display:false,
+      filter:false,
     },
   },
   {
@@ -64,7 +67,8 @@ let columns = [
     name: "algebraInterviewFail",
     options: {
       viewColumns:false,
-      display:false
+      display:false,
+      filter:false,
     },
   },
   {
@@ -72,7 +76,8 @@ let columns = [
     name: "pendingCultureFitInterview",
     options: {
       viewColumns:false,
-      display:false
+      display:false,
+      filter:false,
     },
   },
   {
@@ -80,7 +85,8 @@ let columns = [
     name: "cultureFitInterviewFail",
     options: {
       viewColumns:false,
-      display:false
+      display:false,
+      filter:false,
     },
   },
   {
@@ -88,7 +94,8 @@ let columns = [
     name: "selected",
     options: {
       viewColumns:false,
-      display:false
+      display:false,
+      filter:false,
     },
   },
   {
@@ -96,7 +103,8 @@ let columns = [
     name: "offerLetterSent",
     options: {
       viewColumns:false,
-      display:false
+      display:false,
+      filter:false,
     },
   },
   {
@@ -104,7 +112,8 @@ let columns = [
     name: "notReachable",
     options: {
       viewColumns:false,
-      display:false
+      display:false,
+      filter:false,
     },
   },
 ];

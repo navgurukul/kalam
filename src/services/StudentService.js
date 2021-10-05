@@ -133,16 +133,12 @@ const numberColumn = {
 };
 
 const AltNumberColumn = {
-  name: "contacts",
+  name: "altNumber",
   label: "Alternative Number",
   options: {
     filter: false,
     sort: true,
     display: false,
-    customBodyRender: (value) => {
-      let contacts = value[value.length - 1];
-      return contacts ? contacts.alt_mobile : contacts;
-    },
   },
 };
 

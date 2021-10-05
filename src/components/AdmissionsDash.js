@@ -22,6 +22,7 @@ import { allStages } from "../config";
 import MainLayout from "./MainLayout";
 import { qualificationKeys } from "../config";
 import ServerSidePagination from "./ServerSidePagination";
+import _ from "lodash";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -100,7 +101,7 @@ export class AdmissionsDash extends React.Component {
     let newData = this.state.data;
     newData[iData.rowId] = dataElem;
 
-    this.setState({ data: newData }, function () {});
+    this.setState({ data: newData }, function () { });
   };
 
   changeDataType = (option) => {
@@ -166,6 +167,13 @@ export class AdmissionsDash extends React.Component {
     }
   };
 
+  sortChange = (column, order) => {
+    const { data } = this.state;
+    let sorted = _.orderBy(data, [column], [order]);
+    this.setState({
+      data: sorted,
+    });
+  };
 
   render = () => {
     const { classes, fetchPendingInterviewDetails } = this.props;
@@ -242,6 +250,7 @@ export class AdmissionsDash extends React.Component {
           dataSetup={this.dataSetup}
           totalData={totalData}
           filterValues={this.getFilterValues}
+          sortChange={this.sortChange}
           numberOfRows={numberOfRows}
           setNumbersOfRows={this.setNumbersOfRows}
         />
@@ -270,6 +279,7 @@ export class AdmissionsDash extends React.Component {
             dataSetup={this.dataSetup}
             totalData={totalData}
             filterValues={this.getFilterValues}
+            sortChange={this.sortChange}
             numberOfRows={numberOfRows}
             setNumbersOfRows={this.setNumbersOfRows}
           />
@@ -322,33 +332,35 @@ export class AdmissionsDash extends React.Component {
         response =
           value && value.length > 0
             ? await axios.get(`${url}&limit=${numberOfRows}&page=0`, {
+              params: {
+                dataType: this.dataType,
+                stage: this.stage,
+                from: this.state.fromDate,
+                to: this.toDate,
+              },
+            })
+            : await axios.get(
+              `${this.studentsURL}?limit=${numberOfRows}&page=0`,
+              {
                 params: {
                   dataType: this.dataType,
                   stage: this.stage,
                   from: this.state.fromDate,
                   to: this.toDate,
                 },
-              })
-            : await axios.get(
-                `${this.studentsURL}?limit=${numberOfRows}&page=0`,
-                {
-                  params: {
-                    dataType: this.dataType,
-                    stage: this.stage,
-                    from: this.state.fromDate,
-                    to: this.toDate,
-                  },
-                }
-              );
+              }
+            );
       }
 
       const studentData = response.data.data.results.map((student) => {
+        let contacts = student.contacts[student.contacts.length - 1];
         return {
           ...student,
           qualification: qualificationKeys[student.qualification],
           studentOwner: "",
           campus: student.campus ? student.campus : null,
           donor: student.studentDonor ? student.studentDonor : null,
+          altNumber: contacts ? contacts.alt_mobile : contacts,
         };
       });
       this.setState({

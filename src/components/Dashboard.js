@@ -34,7 +34,89 @@ const allStagesValue = Object.values(allStages);
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseUrl = process.env.API_URL;
 
-let columns;
+let columns = [
+  {
+    label: "English Interview Pending (2nd Round)",
+    name: "pendingEnglishInterview",
+    options: {
+      viewColumns:false,
+      display:false,
+      filter:false
+    },
+  },
+  {
+    label: "English Interview Failed",
+    name: "englishInterviewFail",
+    options: {
+      viewColumns:false,
+      display:false,
+      filter:false,
+    },
+  },
+  {
+    label: "Algebra Interview Pending (3rd Round)",
+    name: "pendingAlgebraInterview",
+    options: {
+      viewColumns:false,
+      display:false,
+      filter:false,
+    },
+  },
+  {
+    label: "Algebra Interview Failed",
+    name: "algebraInterviewFail",
+    options: {
+      viewColumns:false,
+      display:false,
+      filter:false,
+    },
+  },
+  {
+    label: "Culture Fit Interview Pending (4th Round)",
+    name: "pendingCultureFitInterview",
+    options: {
+      viewColumns:false,
+      display:false,
+      filter:false,
+    },
+  },
+  {
+    label: "Culture Interview Failed",
+    name: "cultureFitInterviewFail",
+    options: {
+      viewColumns:false,
+      display:false,
+      filter:false,
+    },
+  },
+  {
+    label: "Selected",
+    name: "selected",
+    options: {
+      viewColumns:false,
+      display:false,
+      filter:false,
+    },
+  },
+  {
+    label: "Offer Letter Sent",
+    name: "offerLetterSent",
+    options: {
+      viewColumns:false,
+      display:false,
+      filter:false,
+    },
+  },
+  {
+    label: "Unreachable",
+    name: "notReachable",
+    options: {
+      viewColumns:false,
+      display:false,
+      filter:false,
+    },
+  },
+];
 let filterFns = [];
 
 export class DashboardPage extends React.Component {
@@ -138,6 +220,8 @@ export class DashboardPage extends React.Component {
   };
   render = () => {
     const { displayData, title, location, data } = this.props;
+    // data[0]["data"] = 100;
+    console.log(data, "komal");
     const showAllStage = parseInt(
       location.pathname[location.pathname.length - 1]
     );
@@ -195,7 +279,7 @@ export class DashboardPage extends React.Component {
         {options}
         <MainLayout
           title={title}
-          columns={displayData}
+          columns={[...displayData, ...columns]}
           data={data}
           showLoader={showLoader}
         />
@@ -236,14 +320,28 @@ export class DashboardPage extends React.Component {
           to: this.toDate,
         },
       });
-
+      const obj = {};
       const studentData = response.data.data.map((student) => {
+        let value = student["lastTransition"]
+          ? student["lastTransition"]["to_stage"]
+          : "other";
+      let contacts = student.contacts[student.contacts.length - 1];
+
+        if (obj[value]) {
+          obj[value] = obj[value] + 1;
+        } else {
+          obj[value] = 1;
+        }
         return {
           ...student,
           qualification: qualificationKeys[student.qualification],
+          altNumber:contacts ? contacts.alt_mobile : contacts,
         };
       });
-      this.dataSetup(studentData);
+      if(studentData.length > 0){
+        studentData[0] =  {... studentData[0], ...obj}
+      }
+        this.dataSetup(studentData);
     } catch (e) {
       console.log(e);
       this.props.fetchingFinish();

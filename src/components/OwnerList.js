@@ -1,11 +1,19 @@
 import React from "react";
 import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import axios from "axios";
-import { Box } from "@material-ui/core";
+import {
+  Box,
+  DialogTitle,
+  DialogActions,
+  Dialog,
+  Button,
+} from "@material-ui/core";
 import { theme } from "../theme/theme";
 import { withRouter } from "react-router-dom";
 import MainLayout from "./MainLayout";
 import AddOwner from "./AddOwner";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { withSnackbar } from "notistack";
 
 const baseUrl = process.env.API_URL;
 
@@ -31,13 +39,15 @@ const stagesColor = {
   CultureFitInterview: "#75CFB8",
 };
 
-export class PartnerList extends React.Component {
+export class OwnerList extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       data: [],
       showLoader: true,
+      showModal: false,
+      ownerId: null,
     };
     this.columns = [
       {
@@ -46,19 +56,35 @@ export class PartnerList extends React.Component {
         options: {
           filter: true,
           sort: false,
-          customBodyRender: (value) => {
+          customBodyRender: (value, rowMeta) => {
             return (
-              <AddOwner
-                ownerId={value}
-                isEdit={true}
-                getUpdatedData={this.getUpdatedData}
-              />
+              <div
+                style={{
+                  display: "flex",
+                  margin: "10px",
+                  justifyContent: "space-between",
+                }}
+              >
+                <AddOwner
+                  ownerId={value}
+                  isEdit={true}
+                  getUpdatedData={this.getUpdatedData}
+                />
+                {rowMeta.rowData[3] ? null : (
+                  <DeleteIcon
+                    style={{ cursor: "pointer" }}
+                    onClick={() =>
+                      this.setState({ showModal: true, ownerId: value })
+                    }
+                  />
+                )}
+              </div>
             );
           },
         },
       },
       {
-        name: "user.user_name",
+        name: "user.mail_id",
         label: "Name",
         options: {
           filter: true,
@@ -154,22 +180,62 @@ export class PartnerList extends React.Component {
     }
   };
 
+  deleteOwner = (ownerId) => {
+    const { data } = this.state;
+    axios.delete(`${baseUrl}owner/${ownerId}`).then(() => {
+      this.props.enqueueSnackbar("Owner  successfully deleted", {
+        variant: "success",
+      });
+      const newData = data.filter((x) => x.id !== ownerId);
+      this.setState({
+        data: newData,
+        showModal: false,
+      });
+    });
+  };
+
+  handleClose = () => {
+    this.setState({
+      showModal: false,
+    });
+  };
   render = () => {
     const { classes } = this.props;
+    const { showModal, ownerId, data, showLoader } = this.state;
     return (
       <Box mt={2}>
         <MuiThemeProvider theme={theme}>
           <div className={classes.innerTable}>
-            <AddOwner
-              getUpdatedData={this.getUpdatedData}
-              ownerData={this.state.data}
-            />
+            <AddOwner getUpdatedData={this.getUpdatedData} ownerData={data} />
             <MainLayout
               title={"Owners"}
               columns={this.columns}
-              data={this.state.data}
-              showLoader={this.state.showLoader}
+              data={data}
+              showLoader={showLoader}
             />
+            <Dialog
+              open={showModal}
+              keepMounted
+              onClose={this.handleClose}
+              aria-labelledby="alert-dialog-slide-title"
+              aria-describedby="alert-dialog-slide-description"
+            >
+              <DialogTitle id="alert-dialog-slide-title">
+                {" "}
+                Do you want to delete owner ??
+              </DialogTitle>
+              <DialogActions>
+                <Button
+                  onClick={() => this.deleteOwner(ownerId)}
+                  color="primary"
+                >
+                  YES
+                </Button>
+                <Button onClick={this.handleClose} color="primary">
+                  NO
+                </Button>
+              </DialogActions>
+            </Dialog>
           </div>
         </MuiThemeProvider>
       </Box>
@@ -187,4 +253,4 @@ export class PartnerList extends React.Component {
   }
 }
 
-export default withRouter(withStyles(styles)(PartnerList));
+export default withSnackbar(withRouter(withStyles(styles)(OwnerList)));

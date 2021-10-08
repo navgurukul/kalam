@@ -119,7 +119,7 @@ export class AddOwner extends React.Component {
     const data = response.data.data[0];
 
     this.setState({
-      ownerName: data.user.user_name,
+      ownerName: data.user.mail_id,
       availablity: data.available ? "Yes" : "No",
       stage: data.type,
       limit: data.max_limit,
@@ -145,8 +145,18 @@ export class AddOwner extends React.Component {
             dialogOpen: false,
           });
           getUpdatedData(response.data.data[0], true);
+        })
+        .catch(() => {
+          this.props.enqueueSnackbar(`Interviews limit  should not be 0`, {
+            variant: "error",
+          });
+          this.setState({
+            dialogOpen: false,
+          });
+          getUpdatedData(response.data.data[0], true);
         });
-    } else {
+    }
+    else {
       this.props.enqueueSnackbar(`Please fill all fields`, {
         variant: "error",
       });

@@ -27,7 +27,7 @@ const columns = [
       sort: true,
       customBodyRender: (value, rowMeta) => {
         const id = rowMeta.rowData[0];
-        let url = `/campus/${id}/students`;
+        let url = value === "All" ?`/campus/allcampus/students`: `/campus/${id}/students`;
         return (
           <Link to={url} style={{ color: "#f05f40" }}>
             {value}
@@ -55,7 +55,7 @@ class CampusList extends Component {
       const dataURL = baseUrl + "campus";
       const response = await axios.get(dataURL);
       this.setState({
-        data: response.data.data,
+        data: [...response.data.data,{ campus: 'All'}],
         showLoader: false
       });
     } catch (e) {

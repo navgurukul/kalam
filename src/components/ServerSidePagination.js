@@ -19,7 +19,7 @@ class ServerSidePagination extends React.Component {
       mainUrl: `${baseURL}students?`,
       query: "",
       value: "",
-      newColumns: this.props.columns
+      newColumns: this.props.columns,
     };
   }
 
@@ -79,6 +79,7 @@ class ServerSidePagination extends React.Component {
   };
 
   getfilterApi = async (query, value) => {
+    const { numberOfRows } = this.props;
     if (query === "gender" && value) {
       value = value === "Female" ? 1 : 2;
     }
@@ -122,12 +123,12 @@ class ServerSidePagination extends React.Component {
       await this.setState({
         mainUrl: `${url}&`,
       });
-      this.getStudents(`${url}&limit=10&page=0`);
+      this.getStudents(`${url}&limit=${numberOfRows}&page=0`);
     } else {
       await this.setState({
         mainUrl: `${url}`,
       });
-      this.getStudents(0, 10);
+      this.getStudents(0, numberOfRows);
     }
   };
 
@@ -135,24 +136,32 @@ class ServerSidePagination extends React.Component {
     if (query) {
       this.getStudentsDetailBySearch(`${baseURL}students?${query}=${value}`);
     } else {
-      this.getStudents(this.state.page, 10);
+      this.getStudents(this.state.page, 50);
     }
   };
+
   render() {
     const { page, isData, filterColumns, newColumns } = this.state;
-    const { data, totalData } = this.props;
+    const { data, totalData, setNumbersOfRows, sortChange, numberOfRows } = this.props;
     const options = {
       selectableRows: false,
       filter: true,
       search: false,
       serverSide: true,
       filterType: "dropdown",
+      onColumnSortChange: (changedColumn, direction) => {
+        let order = "desc";
+        if (direction === "ascending") {
+          order = "asc";
+        }
+        sortChange(changedColumn, order);
+      },
       onFilterChange: async (columnChanged, filterList) => {
         const indexObj = {
-          gender: 8,
-          campus: 22,
-          donor: 23,
-          studentOwner: 16,
+          gender: 9,
+          campus: 23,
+          donor: 24,
+          studentOwner: 17,
         };
         if (columnChanged) {
           const filterValue = filterList[indexObj[columnChanged]];
@@ -165,15 +174,16 @@ class ServerSidePagination extends React.Component {
             filterColumns: [],
           });
           this.props.filterValues(filterColumns);
-          return this.getStudents(0, 10);
+          return this.getStudents(0, numberOfRows);
         }
       },
       responsive: "stacked",
       rowsPerPageOptions: [10, 50, 100],
       count: totalData,
-      rowsPerPage: 10,
+      rowsPerPage: numberOfRows,
       page: page,
       onChangeRowsPerPage: (numberOfRows) => {
+        setNumbersOfRows(numberOfRows);
         this.getStudents(this.state.page, numberOfRows);
       },
       onTableChange: (action, tableState) => {
@@ -188,10 +198,10 @@ class ServerSidePagination extends React.Component {
                 newColumn.options.display = columns[index].display;
               }
               return newColumn;
-            })
+            });
             this.setState({
-              newColumns: updatedColumns
-            })
+              newColumns: updatedColumns,
+            });
             break;
         }
       },

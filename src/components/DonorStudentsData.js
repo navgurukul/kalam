@@ -45,7 +45,7 @@ class DonorStudentsData extends React.Component {
         />
         {isShow ? (
           <DashboardPage
-            displayData={StudentService["CampusData"]}
+            displayData={StudentService["DonorData"]}
             url={`donor/${donorId}/students`}
           />
         ) : isShow === null ? (

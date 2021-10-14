@@ -1,27 +1,38 @@
 import React from "react";
+import { connect } from "react-redux";
+import { changeFetching, setupUsers } from "../store/actions/auth";
+
 import axios from "axios";
 
 import StudentService from "../services/StudentService";
-
-import MainLayout from "./MainLayout";
-import { qualificationKeys, donor } from "../config";
 import DashboardPage from "./Dashboard";
 import SelectUiByButtons from "./SelectUiByButtons";
 import StudentsProgressCards from "./StudentsProgressCards";
 import GraphingPresentationJob from "./GraphingPresentationJob.js";
+
 const baseUrl = process.env.API_URL;
 
-class DonorStudentsData extends React.Component {
+class CampusStudentsData extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isShow: true,
-      donorName: donor.find(
-        (x) => x.id === parseInt(this.props.match.params.donorId)
-      ).name,
     };
   }
-
+  async fetchUsers() {
+    const usersURL = baseUrl + "users/getall";
+    try {
+      const response = await axios.get(usersURL, {});
+      this.props.usersSetup(response.data.data);
+      this.props.fetchingFinish();
+    } catch (e) {
+      console.log(e);
+      this.props.fetchingFinish();
+    }
+  }
+  componentDidMount() {
+    this.fetchUsers();
+  }
   progressMade = (value) => {
     this.setState({ isShow: value });
   };
@@ -32,32 +43,35 @@ class DonorStudentsData extends React.Component {
     this.setState({ isShow: value });
   };
   render() {
-    const { donorName, isShow } = this.state;
-    const { donorId } = this.props.match.params;
-
+    const {  isShow } = this.state;
     return (
       <div>
         <SelectUiByButtons
-          name={`${donorName} Donor`}
+          name={`All Campus`}
           progressMade={this.progressMade}
           tabularData={this.tabularData}
           showGraphData={this.showGraphData}
         />
         {isShow ? (
           <DashboardPage
-            displayData={StudentService["DonorData"]}
-            url={`donor/${donorId}/students`}
+            displayData={StudentService["CampusData"]}
+            url={`/allcampus/students`}
           />
         ) : isShow === null ? (
           <GraphingPresentationJob
-            url={`/donor/${donorId}/students/distribution`}
+            url={`/allcampus/students/distribution`}
           />
         ) : (
-          <StudentsProgressCards url={`donor/${donorId}`} />
+          <StudentsProgressCards url={`allcampus`} />
         )}
       </div>
     );
   }
 }
 
-export default DonorStudentsData;
+const mapDispatchToProps = (dispatch) => ({
+  fetchingFinish: () => dispatch(changeFetching(false)),
+  usersSetup: (users) => dispatch(setupUsers(users)),
+});
+
+export default connect(undefined, mapDispatchToProps)(CampusStudentsData);

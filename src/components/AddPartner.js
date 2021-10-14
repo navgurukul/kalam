@@ -5,6 +5,7 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import TextField from "@material-ui/core/TextField";
 import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
+import Select from "react-select";
 
 import axios from "axios";
 import { Button } from "@material-ui/core";
@@ -50,7 +51,7 @@ const styles = (theme) => ({
 
 export class AddPartnerPage extends React.Component {
   async addPartner() {
-    const { name, email, notes, slug, districts } = this.state;
+    const { name, email, notes, slug, districts, state } = this.state;
     let removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
@@ -65,6 +66,7 @@ export class AddPartnerPage extends React.Component {
           email: email,
           notes: notes,
           slug: slug,
+          state: state,
           districts: removeExtraDistricts,
         },
         {
@@ -85,7 +87,7 @@ export class AddPartnerPage extends React.Component {
   }
 
   editPartner = (value) => {
-    const { name, email, notes, slug, districts } = this.state;
+    const { name, email, notes, slug, districts, state } = this.state;
     let removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
@@ -94,6 +96,7 @@ export class AddPartnerPage extends React.Component {
         name: name,
         email: email ? email : null,
         notes: notes,
+        state: state ? state : null,
         districts:
           removeExtraDistricts.length > 0 ? removeExtraDistricts : null,
       })
@@ -126,6 +129,8 @@ export class AddPartnerPage extends React.Component {
       email: "",
       slug: "",
       notes: "",
+      states: "",
+      state: "",
       districts: [""],
     };
   }
@@ -139,11 +144,26 @@ export class AddPartnerPage extends React.Component {
           email: data.email ? data.email : "",
           slug: data.slug ? data.slug : "",
           notes: data.notes ? data.notes : "",
+          state: data.state ? data.state : "",
           districts: data.districts ? data.districts : [""],
         });
       });
     }
+    this.getState();
   }
+
+  getState = async () => {
+    const response = await axios.get(
+      "https://api.countrystatecity.in/v1/countries/IN/states",
+      {
+        headers: {
+          "X-CSCAPI-KEY":
+            "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
+        },
+      }
+    );
+    this.setState({ states: response.data });
+  };
 
   addState = () => {
     this.setState({ districts: [...this.state.districts, ""] });
@@ -167,7 +187,7 @@ export class AddPartnerPage extends React.Component {
 
   render = () => {
     const { classes, value } = this.props;
-
+    const { states, state } = this.state;
     return (
       <Card className={classes.root}>
         <form className={classes.container}>
@@ -228,11 +248,32 @@ export class AddPartnerPage extends React.Component {
             </FormHelperText>
           </FormControl>
           <FormControl>
+            <Select
+              name="ownerName"
+              value={state && { value: state, label: state }}
+              onChange={(e) => this.setState({ state: e.label })}
+              options={
+                states &&
+                states.map((x) => {
+                  return { value: x.name, label: x.name };
+                })
+              }
+              placeholder={"Select State"}
+              isClearable={false}
+              closeMenuOnSelect={true}
+              isSearchable={true}
+            />
+          </FormControl>
+          <FormControl>
             {this.state.districts.map((state, index) => {
               return (
                 <div key={index}>
                   <TextField
-                    type={this.state.districts.length - 1 === index ? "search" : null}
+                    type={
+                      this.state.districts.length - 1 === index
+                        ? "search"
+                        : null
+                    }
                     id="PartnerDistrictsCities"
                     label=" Partner Districts/Cities"
                     aria-describedby="my-helper-text"

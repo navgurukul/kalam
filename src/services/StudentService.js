@@ -481,7 +481,7 @@ const statusColumn = {
   label: "Status",
   options: {
     filter: false,
-    sort: false,
+    sort: true,
     display: true,
     customBodyRender: (state) => {
       if (state) {

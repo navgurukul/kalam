@@ -162,7 +162,20 @@ export class AddPartnerPage extends React.Component {
         },
       }
     );
-    this.setState({ states: response.data });
+    const newData = response.data.sort((a, b) => {
+      let fa = a.name.toLowerCase(),
+        fb = b.name.toLowerCase();
+
+      if (fa < fb) {
+        return -1;
+      }
+      if (fa > fb) {
+        return 1;
+      }
+      return 0;
+    });
+
+    this.setState({ states: newData });
   };
 
   addState = () => {

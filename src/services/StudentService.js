@@ -480,9 +480,10 @@ const statusColumn = {
   name: "status",
   label: "Status",
   options: {
-    filter: false,
+    filter: true,
     sort: true,
     display: true,
+    filterOptions: feedbackableStagesData.pendingEnglishInterview.status.sort(),
     customBodyRender: (state) => {
       if (state) {
         return (state.charAt(0).toUpperCase() + state.slice(1))

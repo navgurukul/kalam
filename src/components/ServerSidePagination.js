@@ -89,6 +89,7 @@ class ServerSidePagination extends React.Component {
       donor: "searchDonorName",
       campus: "searchCampusName",
       studentOwner: "searchOwnerName",
+      status:"searchStatus"
     };
 
     await this.setState((prevState) => {
@@ -162,6 +163,7 @@ class ServerSidePagination extends React.Component {
           campus: 23,
           donor: 24,
           studentOwner: 17,
+          status:18,
         };
         if (columnChanged) {
           const filterValue = filterList[indexObj[columnChanged]];

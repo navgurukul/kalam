@@ -119,7 +119,7 @@ export class StudentFeedback extends React.Component {
     return (
       <Fragment>
         <Box onClick={this.handleOpen}>
-          <EditIcon style={{ cursor: "pointer" }} /> {rowData[5]}
+          <EditIcon style={{ cursor: "pointer" }} />
         </Box>
         <Dialog open={this.state.dialogOpen} onClose={this.handleClose}>
           <form className={classes.container}>

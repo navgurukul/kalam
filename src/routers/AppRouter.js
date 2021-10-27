@@ -23,6 +23,7 @@ import CampusList from '../components/CampusList'
 import CampusStudentsData from '../components/CampusStudentsData'
 import PartnerStudentsProgressInCampus from '../components/PartnerStudentsProgressInCampus'
 import OwnerList from '../components/OwnerList'
+import AllCampusStudentsData from '../components/AllCampusStudentsData'
 // if authenticated, redirect to /students else be there
 import PublicRoute from './PublicRouter'
 // if authenticated be there, else redirect to /login
@@ -45,6 +46,10 @@ const AppRouter = () => (
         <PublicRoute path='/login' component={LoginDesign} exact={true} />
         <PrivateRoute path='/tasks' component={MyTaskReport} />
         <PrivateRoute path='/donors' component={DonorList} />
+        <PrivateRoute
+          path='/campus/allcampus/students'
+          component={AllCampusStudentsData}
+        />
         <PrivateRoute
           path='/campus/:campusId/students'
           component={CampusStudentsData}

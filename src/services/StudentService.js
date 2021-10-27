@@ -30,6 +30,7 @@ import JoinedDate from "../components/JoinedDate";
 import DeleteRow from "../components/DeleteRow";
 import UpdateStudentName from "../components/UpdateStudentName";
 import UpdatePartner from "../components/UpdatePartner";
+import MonitoringEvaluation from '../components/MonitoringEvaluation'
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
@@ -960,6 +961,19 @@ const partnerNameColumn = {
   },
 };
 
+const navGurukulEvaluation = {
+  label: "Evaluation",
+  name: "partnerName",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      const {rowData} = rowMeta;
+     return < MonitoringEvaluation data = {{studentName:rowData[1],studentNumber:rowData[2],password:"3FF2hW$\(gNhJt6B[6xC{F"}}/>
+    },
+  },
+};
+
 
 const StudentService = {
   columns: {
@@ -1042,13 +1056,22 @@ const StudentService = {
     TotalDanglingReport,
   ],
   DonorData: [
+    ColumnTransitions,
     nameColumn,
     numberColumn,
+    AltNumberColumn,
     EmailColumn,
     genderColumn,
+    joinedDate,
     stageColumn,
+    JobKabLagegiColumn,
+    daysPassedColumn,
+    kitneAurDin,
+    kitneDinLagenge,
     QualificationColumn,
+    partnerNameColumn,
     campusColumn,
+    donorColumn,
   ],
   CampusData: [
     ColumnTransitions,
@@ -1067,6 +1090,7 @@ const StudentService = {
     partnerNameColumn,
     campusColumn,
     donorColumn,
+    navGurukulEvaluation,
   ],
 
   dConvert: (x) => {

@@ -30,7 +30,8 @@ import JoinedDate from "../components/JoinedDate";
 import DeleteRow from "../components/DeleteRow";
 import UpdateStudentName from "../components/UpdateStudentName";
 import UpdatePartner from "../components/UpdatePartner";
-import MonitoringEvaluation from "../components/MonitoringEvaluation";
+import MonitoringEvaluation from '../components/MonitoringEvaluation'
+
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
@@ -984,6 +985,7 @@ const navGurukulEvaluation = {
           }}
         />
       );
+
     },
   },
 };

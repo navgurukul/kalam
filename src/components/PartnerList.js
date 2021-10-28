@@ -205,7 +205,9 @@ export class PartnerList extends React.Component {
     try {
       this.props.fetchingStart();
       const dataURL = baseUrl + "partners";
-      const response = await axios.get(dataURL);
+      const response = await axios.get(dataURL, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+      });
       this.dataSetup(response.data.data);
     } catch (e) {
       this.props.fetchingFinish();

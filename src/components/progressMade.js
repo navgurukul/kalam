@@ -99,7 +99,9 @@ class ProgressMadeForPartner extends Component {
 
   componentDidMount() {
     axios
-      .get(`${baseURL}partners/${this.props.match.params.partnerId}`)
+      .get(`${baseURL}partners/${this.props.match.params.partnerId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+      })
       .then((res) => {
         this.setState({
           partnerName: res.data.data["name"],
@@ -108,7 +110,10 @@ class ProgressMadeForPartner extends Component {
 
     axios
       .get(
-        `${baseURL}partners/progress_made/${this.props.match.params.partnerId}`
+        `${baseURL}partners/progress_made/${this.props.match.params.partnerId}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        }
       )
       .then((res) => {
         this.setState({

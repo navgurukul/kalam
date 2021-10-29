@@ -69,7 +69,10 @@ export class StageSelect extends React.Component {
 
   getPartnerEmail = async (studentId) => {
     const response = await axios.get(
-      `${baseUrl}partners/studentId/${studentId}`
+      `${baseUrl}partners/studentId/${studentId}`,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+      }
     );
     const data = response.data.data;
     return data ? (data.email ? data.email : "") : "";

@@ -92,14 +92,20 @@ export class AddPartnerPage extends React.Component {
       (district) => district.length > 0
     );
     axios
-      .put(`${baseUrl}partners/${value}`, {
-        name: name,
-        email: email ? email : null,
-        notes: notes,
-        state: state ? state : null,
-        districts:
-          removeExtraDistricts.length > 0 ? removeExtraDistricts : null,
-      })
+      .put(
+        `${baseUrl}partners/${value}`,
+        {
+          name: name,
+          email: email ? email : null,
+          notes: notes,
+          state: state ? state : null,
+          districts:
+            removeExtraDistricts.length > 0 ? removeExtraDistricts : null,
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        }
+      )
       .then((response) => {
         this.props.enqueueSnackbar("Partner details Successfull edit", {
           variant: "success",
@@ -137,17 +143,21 @@ export class AddPartnerPage extends React.Component {
   componentDidMount() {
     if (this.props.value) {
       const dataURL = `${baseUrl}partners/${this.props.value}`;
-      axios.get(dataURL).then((response) => {
-        const data = response.data.data;
-        this.setState({
-          name: data.name ? data.name : "",
-          email: data.email ? data.email : "",
-          slug: data.slug ? data.slug : "",
-          notes: data.notes ? data.notes : "",
-          state: data.state ? data.state : "",
-          districts: data.districts ? data.districts : [""],
+      axios
+        .get(dataURL, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        })
+        .then((response) => {
+          const data = response.data.data;
+          this.setState({
+            name: data.name ? data.name : "",
+            email: data.email ? data.email : "",
+            slug: data.slug ? data.slug : "",
+            notes: data.notes ? data.notes : "",
+            state: data.state ? data.state : "",
+            districts: data.districts ? data.districts : [""],
+          });
         });
-      });
     }
     this.getState();
   }

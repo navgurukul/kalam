@@ -39,9 +39,15 @@ export class CreateAssessment extends React.Component {
       const dataURL =
         baseUrl + "partners/" + this.props.partnerId + "/assessments";
       await axios
-        .post(dataURL, {
-          name: this.state.inputValue,
-        })
+        .post(
+          dataURL,
+          {
+            name: this.state.inputValue,
+          },
+          {
+            headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+          }
+        )
         .then((response) => {
           this.setState({
             loading: false,

@@ -170,7 +170,13 @@ export class LandingPage extends React.Component {
   async partnerFetch(slug) {
     const { history } = this.props;
     try {
-      const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
+      const response = await axios.get(
+        `${baseUrl}partners/slug/${slug}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        }
+      );
       this.setState({
         partnerId: response.data.data["id"],
       });

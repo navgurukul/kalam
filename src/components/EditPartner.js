@@ -42,7 +42,10 @@ export class EditPartner extends React.Component {
           name: name,
           notes: notes,
           slug: slug,
-        })
+        },
+          {
+            headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+          })
         .then((response) => {
           console.log(response.data);
           this.setState({

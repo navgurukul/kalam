@@ -64,7 +64,8 @@ export class CsvUpload extends React.Component {
         const url = baseUrl+"partners/"+this.props.partnerId+"/assessments/"+this.props.assessmentId+"/attempts"
         const response = await axios.post(url, {
           "csvUrl": fileUrl
-        });
+        },{
+        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` }});
         if (response.data.errors != undefined){
           this.setState({
             errors: response.data,

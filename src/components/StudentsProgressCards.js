@@ -88,7 +88,9 @@ class StudentsProgressCards extends Component {
   }
   componentDidMount() {
     axios
-      .get(`${baseURL}${this.props.url}/students/progress_made_card`)
+      .get(`${baseURL}${this.props.url}/students/progress_made_card`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+      })
       .then((response) => {
         this.setState({
           data: response.data.data,

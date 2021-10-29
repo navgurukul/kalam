@@ -28,7 +28,9 @@ export class AddMerakiLink extends React.Component {
   creatMerakiLink = async (studentId) => {
     const { updateValue } = this.props;
     const response = await axios
-      .get(`${baseUrl}/partners/${studentId}/meraki-link`)
+      .get(`${baseUrl}/partners/${studentId}/meraki-link`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+      })
       .then((response) => {
         this.props.enqueueSnackbar("Meraki link successfully created", {
           variant: "success",

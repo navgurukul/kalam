@@ -25,11 +25,15 @@ class PieRechartReport extends React.Component {
   }
 
   componentDidMount() {
-    axios.get(`${baseUrl}${this.props.url}`).then((response) => {
-      this.setState({
-        data: response.data.data,
+    axios
+      .get(`${baseUrl}${this.props.url}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+      })
+      .then((response) => {
+        this.setState({
+          data: response.data.data,
+        });
       });
-    });
   }
 
   customizeText(arg) {

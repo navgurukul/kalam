@@ -18,11 +18,15 @@ class PartnerStudentsProgressInCampus extends Component {
   }
   componentDidMount() {
     const partnerId = this.props.match.params.partnerId;
-    axios.get(`${baseUrl}partners/${partnerId}`).then((res) => {
-      this.setState({
-        partnerName: res.data.data["name"],
+    axios
+      .get(`${baseUrl}partners/${partnerId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+      })
+      .then((res) => {
+        this.setState({
+          partnerName: res.data.data["name"],
+        });
       });
-    });
   }
 
   progressMade = (value) => {

@@ -16,7 +16,9 @@ class UpdatePartner extends Component {
   }
 
   componentDidMount() {
-    axios.get(`${baseURL}partners`).then((response) => {
+    axios.get(`${baseURL}partners`,{
+      headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+    }).then((response) => {
       this.setState({ data: response.data.data });
     });
   }

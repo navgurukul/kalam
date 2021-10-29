@@ -39,81 +39,81 @@ let columns = [
     label: "English Interview Pending (2nd Round)",
     name: "pendingEnglishInterview",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "English Interview Failed",
     name: "englishInterviewFail",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Algebra Interview Pending (3rd Round)",
     name: "pendingAlgebraInterview",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Algebra Interview Failed",
     name: "algebraInterviewFail",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Culture Fit Interview Pending (4th Round)",
     name: "pendingCultureFitInterview",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Culture Interview Failed",
     name: "cultureFitInterviewFail",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Selected",
     name: "selected",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Offer Letter Sent",
     name: "offerLetterSent",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Unreachable",
     name: "notReachable",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
 ];
@@ -220,8 +220,6 @@ export class DashboardPage extends React.Component {
   };
   render = () => {
     const { displayData, title, location, data } = this.props;
-    // data[0]["data"] = 100;
-    console.log(data, "komal");
     const showAllStage = parseInt(
       location.pathname[location.pathname.length - 1]
     );
@@ -314,12 +312,19 @@ export class DashboardPage extends React.Component {
       // );
       const { url } = this.props;
       const dataURL = baseUrl + url;
-      const response = await axios.get(dataURL, {
-        params: {
-          from: this.state.fromDate,
-          to: this.toDate,
+      const response = await axios.get(
+        dataURL,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
         },
-      });
+        {
+          params: {
+            from: this.state.fromDate,
+            to: this.toDate,
+          },
+        }
+      );
+
       const obj = {};
       const studentData = response.data.data.map((student) => {
         let value = student["lastTransition"]
@@ -335,13 +340,13 @@ export class DashboardPage extends React.Component {
         return {
           ...student,
           qualification: qualificationKeys[student.qualification],
-          altNumber:contacts ? contacts.alt_mobile : contacts,
+          altNumber: contacts ? contacts.alt_mobile : contacts,
         };
       });
-      if(studentData.length > 0){
-        studentData[0] =  {... studentData[0], ...obj}
+      if (studentData.length > 0) {
+        studentData[0] = { ...studentData[0], ...obj };
       }
-        this.dataSetup(studentData);
+      this.dataSetup(studentData);
     } catch (e) {
       console.log(e);
       this.props.fetchingFinish();

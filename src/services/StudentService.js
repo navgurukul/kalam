@@ -31,6 +31,7 @@ import DeleteRow from "../components/DeleteRow";
 import UpdateStudentName from "../components/UpdateStudentName";
 import UpdatePartner from "../components/UpdatePartner";
 import MonitoringEvaluation from '../components/MonitoringEvaluation'
+
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
@@ -158,10 +159,9 @@ const ageColumn = {
   options: {
     filter: false,
     sort: true,
-    display: true
-  }
-}
-
+    display: true,
+  },
+};
 
 const genderColumn = {
   name: "gender",
@@ -326,7 +326,7 @@ const lastUpdatedColumn = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: value => {
+    customBodyRender: (value) => {
       return (
         <Moment format="D MMM YYYY" withTitle>
           {value}
@@ -480,9 +480,15 @@ const statusColumn = {
   name: "status",
   label: "Status",
   options: {
-    filter: false,
-    sort: false,
+    filter: true,
+    sort: true,
     display: true,
+    filterOptions: [
+      "needBased",
+      "tutionGroup",
+      "perfectFit",
+      ...feedbackableStagesData.pendingEnglishInterview.status,
+    ].sort(),
     customBodyRender: (state) => {
       if (state) {
         return (state.charAt(0).toUpperCase() + state.slice(1))
@@ -747,7 +753,7 @@ const ownerColumnMyreport = {
   name: "studentOwner",
   options: {
     filter: true,
-    filterOptions: JSON.parse(localStorage.getItem("users")),
+    filterOptions: JSON.parse(localStorage.getItem("owners")),
   },
 };
 
@@ -943,7 +949,8 @@ const partnerNameColumn = {
   label: "Partner Name",
   name: "partnerName",
   options: {
-    filter: false,
+    filter: true,
+    filterOptions: JSON.parse(localStorage.getItem("partners")),
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
       if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
@@ -968,8 +975,17 @@ const navGurukulEvaluation = {
     filter: false,
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
-      const {rowData} = rowMeta;
-     return < MonitoringEvaluation data = {{studentName:rowData[1],studentNumber:rowData[2],password:"3FF2hW$\(gNhJt6B[6xC{F"}}/>
+
+      const { rowData } = rowMeta;
+      return (
+        <MonitoringEvaluation
+          data={{
+            studentName: rowData[1],
+            studentNumber: rowData[2],
+            password: "3FF2hW$(gNhJt6B[6xC{F",
+          }}
+        />
+      );
     },
   },
 };

@@ -89,6 +89,8 @@ class ServerSidePagination extends React.Component {
       donor: "searchDonorName",
       campus: "searchCampusName",
       studentOwner: "searchOwnerName",
+      status: "searchStatus",
+      partnerName: "searchPartnerName",
     };
 
     await this.setState((prevState) => {
@@ -142,7 +144,8 @@ class ServerSidePagination extends React.Component {
 
   render() {
     const { page, isData, filterColumns, newColumns } = this.state;
-    const { data, totalData, setNumbersOfRows, sortChange, numberOfRows } = this.props;
+    const { data, totalData, setNumbersOfRows, sortChange, numberOfRows } =
+      this.props;
     const options = {
       selectableRows: false,
       filter: true,
@@ -162,6 +165,8 @@ class ServerSidePagination extends React.Component {
           campus: 23,
           donor: 24,
           studentOwner: 17,
+          status: 18,
+          partnerName: 20,
         };
         if (columnChanged) {
           const filterValue = filterList[indexObj[columnChanged]];
@@ -172,7 +177,9 @@ class ServerSidePagination extends React.Component {
         } else {
           await this.setState({
             filterColumns: [],
+            mainUrl: `${`${baseURL}students?`}`,
           });
+          const { filterColumns } = this.state;
           this.props.filterValues(filterColumns);
           return this.getStudents(0, numberOfRows);
         }

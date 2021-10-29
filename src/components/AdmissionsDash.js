@@ -291,8 +291,22 @@ export class AdmissionsDash extends React.Component {
   componentDidMount() {
     this.fetchStudents();
     this.fetchUsers();
+    this.fetchOWner();
+    this.fetchPartner();
   }
 
+  async fetchOWner() {
+    const response = await axios.get(`${baseURL}owner`);
+    let newData = response.data.data.map((e) => e.user.mail_id);
+    localStorage.setItem("owners", JSON.stringify(newData.sort()));
+  }
+
+  async fetchPartner() {
+    const response = await axios.get(`${baseURL}partners`);
+    let newData = response.data.data.map((e) => e.name);
+    console.log(newData.sort());
+    localStorage.setItem("partners", JSON.stringify(newData.sort()));
+  }
   async fetchUsers() {
     try {
       this.props.fetchingStart();
@@ -332,24 +346,24 @@ export class AdmissionsDash extends React.Component {
         response =
           value && value.length > 0
             ? await axios.get(`${url}&limit=${numberOfRows}&page=0`, {
-              params: {
-                dataType: this.dataType,
-                stage: this.stage,
-                from: this.state.fromDate,
-                to: this.toDate,
-              },
-            })
-            : await axios.get(
-              `${this.studentsURL}?limit=${numberOfRows}&page=0`,
-              {
                 params: {
                   dataType: this.dataType,
                   stage: this.stage,
                   from: this.state.fromDate,
                   to: this.toDate,
                 },
-              }
-            );
+              })
+            : await axios.get(
+                `${this.studentsURL}?limit=${numberOfRows}&page=0`,
+                {
+                  params: {
+                    dataType: this.dataType,
+                    stage: this.stage,
+                    from: this.state.fromDate,
+                    to: this.toDate,
+                  },
+                }
+              );
       }
 
       const studentData = response.data.data.results.map((student) => {

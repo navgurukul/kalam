@@ -141,7 +141,7 @@ export class Transition extends React.Component {
                 alignItems="flex-start"
               >
                 <Typography variant="h6" id="modal-title">
-                  Student Name:- {studentName} (studentId {studentId})
+                  Student Name:- {studentName}
                 </Typography>
                 <br />
                 <StudentContact

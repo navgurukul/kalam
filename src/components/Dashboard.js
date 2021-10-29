@@ -220,8 +220,6 @@ export class DashboardPage extends React.Component {
   };
   render = () => {
     const { displayData, title, location, data } = this.props;
-    // data[0]["data"] = 100;
-    console.log(data, "komal");
     const showAllStage = parseInt(
       location.pathname[location.pathname.length - 1]
     );

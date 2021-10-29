@@ -187,7 +187,7 @@ const campusColumn = {
         return (
           <UpdateCampus
             allOptions={campus}
-            value={value}
+            value={value ? value : "No Campus Assigned"}
             rowMetatable={rowMeta}
             change={(event) => updateValue(event)}
           />

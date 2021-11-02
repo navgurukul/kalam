@@ -49,7 +49,7 @@ const UpdateDonorOrCampus = ({
         className={"filterSelectStage"}
         value={selectedValue}
         onChange={handleChange}
-        options={allOptions.map((x) => {
+        options={[...allOptions, { name: "No Campus Assigned" }].map((x) => {
           return { value: x.name, label: x.name };
         })}
         isClearable={false}

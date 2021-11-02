@@ -43,7 +43,7 @@ class PartnerStudentsProgressInCampus extends Component {
     return (
       <div>
         <SelectUiByButtons
-          name={`Hello, ${partnerName} Foundation`}
+          name={`Hello ${partnerName}`}
           progressMade={this.progressMade}
           tabularData={this.tabularData}
           showGraphData={this.showGraphData}

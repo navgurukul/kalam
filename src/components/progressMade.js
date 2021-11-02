@@ -186,7 +186,7 @@ class ProgressMadeForPartner extends Component {
           <Grid item xs={12} style={{ marginBottom: 40 }}>
             <Typography variant="h4">
               {" "}
-              Hello, {partnerName} Foundation
+              Hello {partnerName}
             </Typography>
           </Grid>
           <Grid item xs={12}>

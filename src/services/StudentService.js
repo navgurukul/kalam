@@ -187,7 +187,7 @@ const campusColumn = {
         return (
           <UpdateCampus
             allOptions={campus}
-            value={value}
+            value={value ? value : "No Campus Assigned"}
             rowMetatable={rowMeta}
             change={(event) => updateValue(event)}
           />
@@ -975,6 +975,7 @@ const navGurukulEvaluation = {
     filter: false,
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
+
       const { rowData } = rowMeta;
       return (
         <MonitoringEvaluation
@@ -985,7 +986,6 @@ const navGurukulEvaluation = {
           }}
         />
       );
-
     },
   },
 };

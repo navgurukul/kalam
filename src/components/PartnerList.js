@@ -199,6 +199,15 @@ export class PartnerList extends React.Component {
 
   componentDidMount() {
     this.fetchPartners();
+    axios
+        .get(
+          `${baseUrl}users/me
+          `,
+            {
+              headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+            }
+          
+        ).then((res)=>console.log(res,"checking res"))
   }
 
   async fetchPartners() {

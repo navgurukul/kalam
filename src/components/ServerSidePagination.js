@@ -79,6 +79,7 @@ class ServerSidePagination extends React.Component {
   };
 
   getfilterApi = async (query, value) => {
+    console.log(query, value);
     const { numberOfRows } = this.props;
     if (query === "gender" && value) {
       value = value === "Female" ? 1 : 2;
@@ -160,6 +161,9 @@ class ServerSidePagination extends React.Component {
         sortChange(changedColumn, order);
       },
       onFilterChange: async (columnChanged, filterList) => {
+        console.log(columnChanged, filterList, "hello ");
+        console.log("hello");
+
         const indexObj = {
           gender: 9,
           campus: 23,

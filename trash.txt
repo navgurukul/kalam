@@ -1,3 +1,199 @@
+options: {
+    filter: true,
+    filterType: "custom",
+    customFilterListOptions: {
+      render: (params) => {
+        return (
+          <div>
+            <input
+              type="text"
+              onChange={(event) => params.setFilterValue(event.target.value)}
+              value={params.filterValue}
+              placeholder="Search Partner Name"
+            />
+          </div>
+        );
+      },
+    },
+
+    filterOptions: JSON.parse(localStorage.getItem("partners")),
+    sort: false,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+        return (
+          <UpdatePartner
+            studentId={rowMeta.rowData[0]}
+            value={value}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
+  },
+
+
+  {
+    name: "date",
+    label: "Date",
+    options: {
+      filter: true,
+      sort: true,
+      sortDirection: 'desc',
+      customBodyRender: (value) => {
+        return new Date(value).toString();
+      },
+      filterType: 'custom',
+      customFilterListRender: v => {
+        if (v[0] && v[1]) {
+          return `Start Date: ${v[0]}, End Date: ${v[1]}`;
+        } else if (v[0]) {
+          return `Start Date: ${v[0]}`;
+        } else if (v[1]) {
+          return `End Date: ${v[1]}`;
+        }
+        return false;
+      },
+      filterOptions: {
+        names: [],
+        logic(date, filters) {
+          console.log(filters,"g")
+          var check = new Date(date);
+          var from = new Date(filters[0]);
+          var to = new Date(filters[1]);
+          from.setDate(from.getDate() + 1);
+          to.setDate(to.getDate() + 1);
+          from = new Date(from).setHours(0,0,0,0);
+          to = new Date(to).setHours(23,59,59,59);
+
+          if(filters[0] && filters[1] && check >= to && check <= from) {
+            return true;
+          } else if (filters[0] && check >= to) {
+            return true;
+          } else if (filters[1] && check <= from) {
+            return true;
+          }
+          return false;
+        },
+        display: (filterList, onChange, index, column) => (
+          <div>
+            <FormLabel>Date</FormLabel>
+            <FormGroup row>
+              <TextField
+                id="startDate"
+                label="Start Date"
+                type="date"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={filterList[index][0] || ''}
+                onChange={event => {
+                  console.log(event.target)
+                  filterList[index][0] = event.target.value;
+                  onChange(filterList[index], index, column);
+                }}
+                style={{ width: '45%', marginRight: '5%' }}
+              />
+              <TextField
+                id="endDate"
+                label="End Date"
+                type="date"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={filterList[index][1] || ''}
+                onChange={event => {
+                  filterList[index][1] = event.target.value;
+                  onChange(filterList[index], index, column);
+                }}
+                style={{ width: '45%', marginRight: '5%' }}
+              />
+            </FormGroup>
+          </div>
+        ),
+      },
+      print: false,
+    },
+  },
+
+
+
+
+
+  const partnerNameColumn = {
+  label: "Partner Name",
+  name: "partnerName",
+  options: {
+    filter: true,
+    sort: true,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+        return (
+          <UpdatePartner
+            studentId={rowMeta.rowData[0]}
+            value={value}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
+
+    filterType: "custom",
+
+    customFilterListRender: (value, rowMeta, updateValue) => {
+      return (
+        <UpdatePartner
+          studentId={rowMeta.rowData[0]}
+          value={value}
+          change={(event) => updateValue(event)}
+        />
+      );
+    },
+    filterOptions: JSON.parse(localStorage.getItem("partners")),
+    display: (filterlist, onChange, index, column) => {
+      return (
+        <div>
+          <select
+            className="form-control"
+            onChange={(event) => onChange(event, index, column)}
+            value={filterlist}
+          >
+            <option value="">Select Partner</option>
+            {JSON.parse(localStorage.getItem("partners")).map((item, i) => {
+              return (
+                <option key={i} value={item}>
+                  {item}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+      );
+    },
+    print: false,
+  },
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////
 import React from "react";
 import {
   allStages,
@@ -32,8 +228,6 @@ import UpdateStudentName from "../components/UpdateStudentName";
 import UpdatePartner from "../components/UpdatePartner";
 import MonitoringEvaluation from "../components/MonitoringEvaluation";
 import Autocomplete from "@mui/material/Autocomplete";
-import Box from "@material-ui/core/Box";
-import SelectReact from "./SelectReact";
 
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
@@ -173,23 +367,7 @@ const genderColumn = {
     filter: true,
     sort: true,
     display: false,
-    filterType: "custom",
-    filterOptions: {
-      display: (filterlist, onChange, index, column) => {
-        return (
-          <div>
-            <label style={Lables}>gender</label>
-            <SelectReact
-              options={[
-                { value: "All", label: "All" },
-                { value: "Male", label: "Male" },
-                { value: "Female", label: "Female" },
-              ]}
-            />
-          </div>
-        );
-      },
-    },
+    filterOptions: ["Male", "Female"],
   },
 };
 
@@ -200,51 +378,20 @@ const campusColumn = {
     filter: true,
     sort: true,
     display: false,
-    filterType: "custom",
-    filterOptions: {
-      names: campus,
-      logic: (value, filters) => {
-        return filters.reduce((memo, filter) => {
-          if (filter.value === "All") {
-            return memo;
-          }
-          return memo && value.indexOf(filter.value) > -1;
-        }, true);
-      },
-      display: (filterList, onChange, index, column) => {
-        console.log(filterList);
+    filterOptions: campus.map((campus) => campus.name),
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
         return (
-          <div>
-            <label style={Lables}>campus</label>
-            <SelectReact
-              options={campus.map((x) => {
-                return { value: x.name, label: x.name };
-              })}
-              // value={filterList[index][0] || ""}
-              // onChange={(event) => {
-              //   filterList[index][0] = event.target.value;
-              //   onChange(filterList[index], index, column);
-              // }}
-              value={filterList[index]}
-              renderValue={(selected) => selected.join(", ")}
-            />
-          </div>
+          <UpdateCampus
+            allOptions={campus}
+            value={value ? value : "No Campus Assigned"}
+            rowMetatable={rowMeta}
+            change={(event) => updateValue(event)}
+          />
         );
-      },
-      customBodyRender: (value, rowMeta, updateValue) => {
-        if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
-          return (
-            <UpdateCampus
-              allOptions={campus}
-              value={value ? value : "No Campus Assigned"}
-              rowMetatable={rowMeta}
-              change={(event) => updateValue(event)}
-            />
-          );
-        } else {
-          return value;
-        }
-      },
+      } else {
+        return value;
+      }
     },
   },
 };
@@ -261,14 +408,25 @@ const donorColumn = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => {
         return (
-          <div>
-            <label style={Lables}>donor</label>
-            <SelectReact
-              options={donor.map((donor) => {
-                return { value: donor.name, label: donor.name };
-              })}
-            />
-          </div>
+          <>
+            <label for="donor">Donor</label>
+
+            <div>
+              <select
+                id="donor"
+                className="form-control"
+                onChange={(event) => onChange(event, index, column)}
+                value={filterlist}
+              >
+                <option value="">All</option>
+                {donor.map((donor) => (
+                  <option key={donor.id} value={donor.name}>
+                    {donor.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
         );
       },
     },
@@ -527,13 +685,6 @@ const statusFilterList = [
   ...feedbackableStagesData.pendingEnglishInterview.status,
 ].sort();
 
-const Lables = {
-  fontSize: "15px",
-  fontWeight: "500",
-  color: "#808080",
-  marginBottom: "5px",
-};
-
 const statusColumn = {
   name: "status",
   label: "Status",
@@ -545,17 +696,25 @@ const statusColumn = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => {
         return (
-          <div>
-            <label style={Lables}>status</label>
-            <SelectReact
-              options={statusFilterList.map((status) => {
-                return {
-                  value: status,
-                  label: status,
-                };
-              })}
-            />
-          </div>
+          <>
+            <label for="status">Status</label>
+
+            <div>
+              <select
+                id=""
+                className="form-control"
+                onChange={(event) => onChange(event, index, column)}
+                value={filterlist}
+              >
+                <option value="">All</option>
+                {statusFilterList.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
         );
       },
     },
@@ -823,27 +982,7 @@ const ownerColumnMyreport = {
   name: "studentOwner",
   options: {
     filter: true,
-    // filterOptions: JSON.parse(localStorage.getItem("owners")),
-    filterType: "custom",
-    filterOptions: {
-      display: (filterlist, onChange, index, column) => {
-        return (
-          <div>
-            <label style={Lables}>owner</label>
-            <SelectReact
-              options={JSON.parse(localStorage.getItem("owners")).map(
-                (item) => {
-                  return {
-                    value: item,
-                    label: item,
-                  };
-                }
-              )}
-            />
-          </div>
-        );
-      },
-    },
+    filterOptions: JSON.parse(localStorage.getItem("owners")),
   },
 };
 
@@ -1041,142 +1180,52 @@ const partnerNameColumn = {
   options: {
     filter: true,
     sort: true,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+        return (
+          <UpdatePartner
+            studentId={rowMeta.rowData[0]}
+            value={value}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
+
     filterType: "custom",
-    // customBodyRender: (value, rowMeta, updateValue) => {
-    //   if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
-    //     return (
-    //       <UpdatePartner
-    //         studentId={rowMeta.rowData[0]}
-    //         value={value}
-    //         change={(event) => updateValue(event)}
-    //       />
-    //     );
-    //   } else {
-    //     return value;
-    //   }
-    // },
 
-    // customFilterListRender: (value, rowMeta, updateValue) => {
-    //   return (
-    //     <UpdatePartner
-    //       studentId={rowMeta.rowData[0]}
-    //       value={value}
-    //       change={(event) => updateValue(event)}
-    //     />
-    //   );
-    // },
-    // {
-    //   name: "date",
-    //   label: "Date",
-    //   options: {
-    //     filter: true,
-    //     sort: true,
-    //     sortDirection: 'desc',
-    //     customBodyRender: (value) => {
-    //       return new Date(value).toString();
-    //     },
-    //     filterType: 'custom',
-    //     customFilterListRender: v => {
-    //       if (v[0] && v[1]) {
-    //         return `Start Date: ${v[0]}, End Date: ${v[1]}`;
-    //       } else if (v[0]) {
-    //         return `Start Date: ${v[0]}`;
-    //       } else if (v[1]) {
-    //         return `End Date: ${v[1]}`;
-    //       }
-    //       return false;
-    //     },
-    //     filterOptions: {
-    //       names: [],
-    //       logic(date, filters) {
-    //         console.log(filters,"g")
-    //         var check = new Date(date);
-    //         var from = new Date(filters[0]);
-    //         var to = new Date(filters[1]);
-    //         from.setDate(from.getDate() + 1);
-    //         to.setDate(to.getDate() + 1);
-    //         from = new Date(from).setHours(0,0,0,0);
-    //         to = new Date(to).setHours(23,59,59,59);
-
-    //         if(filters[0] && filters[1] && check >= to && check <= from) {
-    //           return true;
-    //         } else if (filters[0] && check >= to) {
-    //           return true;
-    //         } else if (filters[1] && check <= from) {
-    //           return true;
-    //         }
-    //         return false;
-    //       },
-    //       display: (filterList, onChange, index, column) => (
-    //         <div>
-    //           <FormLabel>Date</FormLabel>
-    //           <FormGroup row>
-    //             <TextField
-    //               id="startDate"
-    //               label="Start Date"
-    //               type="date"
-    //               InputLabelProps={{
-    //                 shrink: true,
-    //               }}
-    //               value={filterList[index][0] || ''}
-    //               onChange={event => {
-    //                 console.log(event.target)
-    //                 filterList[index][0] = event.target.value;
-    //                 onChange(filterList[index], index, column);
-    //               }}
-    //               style={{ width: '45%', marginRight: '5%' }}
-    //             />
-    //             <TextField
-    //               id="endDate"
-    //               label="End Date"
-    //               type="date"
-    //               InputLabelProps={{
-    //                 shrink: true,
-    //               }}
-    //               value={filterList[index][1] || ''}
-    //               onChange={event => {
-    //                 filterList[index][1] = event.target.value;
-    //                 onChange(filterList[index], index, column);
-    //               }}
-    //               style={{ width: '45%', marginRight: '5%' }}
-    //             />
-    //           </FormGroup>
-    //         </div>
-    //       ),
-    //     },
-    //     print: false,
-    //   },
-    // },
-
+    customFilterListRender: (value, rowMeta, updateValue) => {
+      return (
+        <UpdatePartner
+          studentId={rowMeta.rowData[0]}
+          value={value}
+          change={(event) => updateValue(event)}
+        />
+      );
+    },
     filterOptions: {
       display: (filterlist, onChange, index, column) => {
-        console.log(index + " I AM INDEX");
-        console.log(column + " I AM COLUMN");
-        console.log(filterlist);
-        // console.log("hello" + filterlist);
         return (
-          <div>
-            <label style={Lables}>partner</label>
-            <SelectReact
-              options={JSON.parse(localStorage.getItem("partners")).map(
-                (partner) => {
-                  return {
-                    value: partner,
-                    label: partner,
-                  };
-                }
-              )}
-              filterList={filterlist}
-              onChange={onChange}
-              index={index}
-              column={column}
-            />
-          </div>
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={
+              JSON.parse(localStorage.getItem("partners"))
+                ? JSON.parse(localStorage.getItem("partners")).map(
+                    (item) => item.name
+                  )
+                : []
+            }
+            sx={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="Movie" />}
+          />
         );
       },
     },
 
-    // print: false,
+    print: false,
   },
 };
 

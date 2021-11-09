@@ -101,7 +101,7 @@ export class AdmissionsDash extends React.Component {
     let newData = this.state.data;
     newData[iData.rowId] = dataElem;
 
-    this.setState({ data: newData }, function () { });
+    this.setState({ data: newData }, function () {});
   };
 
   changeDataType = (option) => {

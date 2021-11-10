@@ -31,7 +31,7 @@ import DeleteRow from "../components/DeleteRow";
 import UpdateStudentName from "../components/UpdateStudentName";
 import UpdatePartner from "../components/UpdatePartner";
 import MonitoringEvaluation from "../components/MonitoringEvaluation";
-import SelectReact from "./SelectReact";
+import SelectReact from "../components/SelectReact";
 
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
@@ -555,7 +555,7 @@ const statusColumn = {
       display: (filterlist, onChange, index, column) => {
         return (
           <div>
-            <label style={Lables}>status</label>
+            <label style={Lables}>Status</label>
             <SelectReact
               options={statusFilterList.map((status) => {
                 return {

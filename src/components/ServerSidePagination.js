@@ -79,7 +79,6 @@ class ServerSidePagination extends React.Component {
   };
 
   getfilterApi = async (query, value) => {
-    console.log(query, value);
     const { numberOfRows } = this.props;
     if (query === "gender" && value) {
       value = value === "Female" ? 1 : 2;
@@ -100,7 +99,7 @@ class ServerSidePagination extends React.Component {
       );
       return {
         filterColumns:
-          value === undefined
+          value === "All"
             ? [...newData]
             : [...newData, { key: keys[query], value: value }],
       };
@@ -161,9 +160,6 @@ class ServerSidePagination extends React.Component {
         sortChange(changedColumn, order);
       },
       onFilterChange: async (columnChanged, filterList) => {
-        console.log(columnChanged, filterList, "hello ");
-        console.log("hello");
-
         const indexObj = {
           gender: 9,
           campus: 23,
@@ -174,10 +170,7 @@ class ServerSidePagination extends React.Component {
         };
         if (columnChanged) {
           const filterValue = filterList[indexObj[columnChanged]];
-          return this.getfilterApi(
-            columnChanged,
-            filterValue[filterValue.length - 1]
-          );
+          return this.getfilterApi(columnChanged, filterValue);
         } else {
           await this.setState({
             filterColumns: [],

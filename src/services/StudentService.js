@@ -36,14 +36,6 @@ import SelectReact from "./SelectReact";
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
-// _handleFocus = (text) => {
-//   console.log("Focused with text: " + text);
-// };
-
-// _handleFocusOut = (text) => {
-//   console.log("Left editor with text: " + text);
-// };
-
 const keysCampusStageOfLearning = Object.keys(campusStageOfLearning);
 const allStagesOptions = Object.keys(allStages).map((x) => {
   return allStages[x];
@@ -176,13 +168,18 @@ const genderColumn = {
       display: (filterlist, onChange, index, column) => {
         return (
           <div>
-            <label style={Lables}>gender</label>
+            <label style={Lables}>Gender</label>
             <SelectReact
               options={[
                 { value: "All", label: "All" },
                 { value: "Male", label: "Male" },
                 { value: "Female", label: "Female" },
               ]}
+              filterList={filterlist}
+              onChange={onChange}
+              index={index}
+              column={column}
+              value={filterlist[index]}
             />
           </div>
         );
@@ -200,31 +197,19 @@ const campusColumn = {
     display: false,
     filterType: "custom",
     filterOptions: {
-      names: campus,
-      logic: (value, filters) => {
-        return filters.reduce((memo, filter) => {
-          if (filter.value === "All") {
-            return memo;
-          }
-          return memo && value.indexOf(filter.value) > -1;
-        }, true);
-      },
-      display: (filterList, onChange, index, column) => {
-        console.log(filterList);
+      display: (filterlist, onChange, index, column) => {
         return (
           <div>
-            <label style={Lables}>campus</label>
+            <label style={Lables}>Campus</label>
             <SelectReact
-              options={campus.map((x) => {
+              options={[{ name: "All" }, ...campus].map((x) => {
                 return { value: x.name, label: x.name };
               })}
-              // value={filterList[index][0] || ""}
-              // onChange={(event) => {
-              //   filterList[index][0] = event.target.value;
-              //   onChange(filterList[index], index, column);
-              // }}
-              value={filterList[index]}
-              renderValue={(selected) => selected.join(", ")}
+              filterList={filterlist}
+              onChange={onChange}
+              index={index}
+              column={column}
+              value={filterlist[index]}
             />
           </div>
         );
@@ -253,22 +238,47 @@ const donorColumn = {
   options: {
     filter: true,
     sort: true,
+    display: false,
     filterType: "custom",
-    // filterOptions: donor.map((donor) => donor.name),
-
     filterOptions: {
       display: (filterlist, onChange, index, column) => {
         return (
           <div>
-            <label style={Lables}>donor</label>
+            <label style={Lables}>Donor</label>
             <SelectReact
-              options={donor.map((donor) => {
-                return { value: donor.name, label: donor.name };
+              options={[{ name: "All" }, ...donor].map((don) => {
+                return { value: don.name, label: don.name };
               })}
+              filterList={filterlist}
+              onChange={onChange}
+              index={index}
+              column={column}
+              value={filterlist[index]}
             />
           </div>
         );
       },
+    },
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+        return (
+          <UpdateDonor
+            allOptions={donor}
+            value={value}
+            rowMetatable={rowMeta}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        let newValue = "";
+        value
+          ? value.map((item) => {
+            newValue = `${newValue}   ${item.donor}`;
+          })
+          : (newValue = null);
+
+        return newValue;
+      }
     },
   },
 };
@@ -519,6 +529,7 @@ const deadlineColumn = {
 };
 
 const statusFilterList = [
+  "All",
   "needBased",
   "tutionGroup",
   "perfectFit",
@@ -552,6 +563,11 @@ const statusColumn = {
                   label: status,
                 };
               })}
+              filterList={filterlist}
+              onChange={onChange}
+              index={index}
+              column={column}
+              value={filterlist[index]}
             />
           </div>
         );
@@ -609,8 +625,8 @@ const feedbackColumnTransition = {
               />
               {rowData
                 ? rowData
-                    .split("\n\n")
-                    .map((item, i) => <p key={i}> {item} </p>)
+                  .split("\n\n")
+                  .map((item, i) => <p key={i}> {item} </p>)
                 : null}
             </div>
           ) : null}
@@ -827,16 +843,22 @@ const ownerColumnMyreport = {
       display: (filterlist, onChange, index, column) => {
         return (
           <div>
-            <label style={Lables}>owner</label>
+            <label style={Lables}>Owner</label>
             <SelectReact
-              options={JSON.parse(localStorage.getItem("owners")).map(
-                (item) => {
-                  return {
-                    value: item,
-                    label: item,
-                  };
-                }
-              )}
+              options={[
+                "All",
+                ...JSON.parse(localStorage.getItem("owners")),
+              ].map((item) => {
+                return {
+                  value: item,
+                  label: item,
+                };
+              })}
+              filterList={filterlist}
+              onChange={onChange}
+              index={index}
+              column={column}
+              value={filterlist[index]}
             />
           </div>
         );
@@ -1040,134 +1062,26 @@ const partnerNameColumn = {
     filter: true,
     sort: true,
     filterType: "custom",
-    // customBodyRender: (value, rowMeta, updateValue) => {
-    //   if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
-    //     return (
-    //       <UpdatePartner
-    //         studentId={rowMeta.rowData[0]}
-    //         value={value}
-    //         change={(event) => updateValue(event)}
-    //       />
-    //     );
-    //   } else {
-    //     return value;
-    //   }
-    // },
-
-    // customFilterListRender: (value, rowMeta, updateValue) => {
-    //   return (
-    //     <UpdatePartner
-    //       studentId={rowMeta.rowData[0]}
-    //       value={value}
-    //       change={(event) => updateValue(event)}
-    //     />
-    //   );
-    // },
-    // {
-    //   name: "date",
-    //   label: "Date",
-    //   options: {
-    //     filter: true,
-    //     sort: true,
-    //     sortDirection: 'desc',
-    //     customBodyRender: (value) => {
-    //       return new Date(value).toString();
-    //     },
-    //     filterType: 'custom',
-    //     customFilterListRender: v => {
-    //       if (v[0] && v[1]) {
-    //         return `Start Date: ${v[0]}, End Date: ${v[1]}`;
-    //       } else if (v[0]) {
-    //         return `Start Date: ${v[0]}`;
-    //       } else if (v[1]) {
-    //         return `End Date: ${v[1]}`;
-    //       }
-    //       return false;
-    //     },
-    //     filterOptions: {
-    //       names: [],
-    //       logic(date, filters) {
-    //         console.log(filters,"g")
-    //         var check = new Date(date);
-    //         var from = new Date(filters[0]);
-    //         var to = new Date(filters[1]);
-    //         from.setDate(from.getDate() + 1);
-    //         to.setDate(to.getDate() + 1);
-    //         from = new Date(from).setHours(0,0,0,0);
-    //         to = new Date(to).setHours(23,59,59,59);
-
-    //         if(filters[0] && filters[1] && check >= to && check <= from) {
-    //           return true;
-    //         } else if (filters[0] && check >= to) {
-    //           return true;
-    //         } else if (filters[1] && check <= from) {
-    //           return true;
-    //         }
-    //         return false;
-    //       },
-    //       display: (filterList, onChange, index, column) => (
-    //         <div>
-    //           <FormLabel>Date</FormLabel>
-    //           <FormGroup row>
-    //             <TextField
-    //               id="startDate"
-    //               label="Start Date"
-    //               type="date"
-    //               InputLabelProps={{
-    //                 shrink: true,
-    //               }}
-    //               value={filterList[index][0] || ''}
-    //               onChange={event => {
-    //                 console.log(event.target)
-    //                 filterList[index][0] = event.target.value;
-    //                 onChange(filterList[index], index, column);
-    //               }}
-    //               style={{ width: '45%', marginRight: '5%' }}
-    //             />
-    //             <TextField
-    //               id="endDate"
-    //               label="End Date"
-    //               type="date"
-    //               InputLabelProps={{
-    //                 shrink: true,
-    //               }}
-    //               value={filterList[index][1] || ''}
-    //               onChange={event => {
-    //                 filterList[index][1] = event.target.value;
-    //                 onChange(filterList[index], index, column);
-    //               }}
-    //               style={{ width: '45%', marginRight: '5%' }}
-    //             />
-    //           </FormGroup>
-    //         </div>
-    //       ),
-    //     },
-    //     print: false,
-    //   },
-    // },
-
     filterOptions: {
       display: (filterlist, onChange, index, column) => {
-        console.log(index + " I AM INDEX");
-        console.log(column + " I AM COLUMN");
-        console.log(filterlist);
-        // console.log("hello" + filterlist);
         return (
           <div>
-            <label style={Lables}>partner</label>
+            <label style={Lables}>Partner</label>
             <SelectReact
-              options={JSON.parse(localStorage.getItem("partners")).map(
-                (partner) => {
-                  return {
-                    value: partner,
-                    label: partner,
-                  };
-                }
-              )}
+              options={[
+                "All",
+                ...JSON.parse(localStorage.getItem("partners")),
+              ].map((partner) => {
+                return {
+                  value: partner,
+                  label: partner,
+                };
+              })}
               filterList={filterlist}
               onChange={onChange}
               index={index}
               column={column}
+              value={filterlist[index]}
             />
           </div>
         );

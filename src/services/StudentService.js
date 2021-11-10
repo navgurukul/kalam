@@ -179,7 +179,7 @@ const genderColumn = {
               onChange={onChange}
               index={index}
               column={column}
-              value={filterlist[index]}
+              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
             />
           </div>
         );
@@ -209,7 +209,7 @@ const campusColumn = {
               onChange={onChange}
               index={index}
               column={column}
-              value={filterlist[index]}
+              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
             />
           </div>
         );
@@ -253,7 +253,7 @@ const donorColumn = {
               onChange={onChange}
               index={index}
               column={column}
-              value={filterlist[index]}
+              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
             />
           </div>
         );
@@ -273,8 +273,8 @@ const donorColumn = {
         let newValue = "";
         value
           ? value.map((item) => {
-            newValue = `${newValue}   ${item.donor}`;
-          })
+              newValue = `${newValue}   ${item.donor}`;
+            })
           : (newValue = null);
 
         return newValue;
@@ -567,7 +567,7 @@ const statusColumn = {
               onChange={onChange}
               index={index}
               column={column}
-              value={filterlist[index]}
+              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
             />
           </div>
         );
@@ -625,8 +625,8 @@ const feedbackColumnTransition = {
               />
               {rowData
                 ? rowData
-                  .split("\n\n")
-                  .map((item, i) => <p key={i}> {item} </p>)
+                    .split("\n\n")
+                    .map((item, i) => <p key={i}> {item} </p>)
                 : null}
             </div>
           ) : null}
@@ -837,7 +837,6 @@ const ownerColumnMyreport = {
   name: "studentOwner",
   options: {
     filter: true,
-    // filterOptions: JSON.parse(localStorage.getItem("owners")),
     filterType: "custom",
     filterOptions: {
       display: (filterlist, onChange, index, column) => {
@@ -858,7 +857,7 @@ const ownerColumnMyreport = {
               onChange={onChange}
               index={index}
               column={column}
-              value={filterlist[index]}
+              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
             />
           </div>
         );
@@ -1064,6 +1063,7 @@ const partnerNameColumn = {
     filterType: "custom",
     filterOptions: {
       display: (filterlist, onChange, index, column) => {
+        console.log(filterlist[index]);
         return (
           <div>
             <label style={Lables}>Partner</label>
@@ -1081,7 +1081,7 @@ const partnerNameColumn = {
               onChange={onChange}
               index={index}
               column={column}
-              value={filterlist[index]}
+              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
             />
           </div>
         );

@@ -94,6 +94,7 @@ export class Transition extends React.Component {
           ...v,
         }));
       }
+
       this.setState(
         {
           data: newData,
@@ -122,6 +123,45 @@ export class Transition extends React.Component {
   };
 
   render = () => {
+    const campusMilestones = {
+      finallyJoined: "Joined",
+      M1: "English & Quarantine",
+      M2: "Dry Run",
+      M3: "If - Else",
+      M4: "Loops",
+      M5: "Lists",
+      M6: "Functions",
+      M7: "Python Complete",
+      M8: "Hangman, Requests & more",
+      M9: "Web Scraping",
+      M10: "Javascript / ES6",
+      M11: "NodeJS - Callbacks & Async",
+      M12: "React - HTML & CSS",
+      M13: "NodeJS - CRUD",
+      M14: "React - Bootstrap & Jquery",
+      M15: "NodeJS - MySQL/Knex/Joi",
+      M16: "React - State, Props & Components",
+      M17: "NodeJS: JWT",
+      M18: "React - React Lifecycle",
+      M19: "Project 1",
+      M20: "Project 2",
+      M21: "Interview Preparation",
+      M22: "Job Search",
+      onLeave: "On Leave",
+      droppedOut: "Dropped Out",
+      inJob: "In Job",
+      payingForward: "Paying Forward",
+      paidForward: "Paid Forward",
+    };
+    const campusMilestonesKey = Object.keys(campusMilestones);
+
+    const newDataUpdated = [];
+    this.state.data.map((item) => {
+      if (campusMilestonesKey.includes(item.to_stage)) {
+        newDataUpdated.push(item);
+      }
+    });
+
     const { classes, studentName, studentId, location } = this.props;
     const modalStyle = getModalStyle();
     return !this.state.modalOpen ? (
@@ -153,7 +193,7 @@ export class Transition extends React.Component {
                   studentId={studentId}
                   handleClose={this.handleClose}
                   pathname={location.pathname}
-                  studentName = {studentName}
+                  studentName={studentName}
                 />
               </Grid>
               <Box onClick={this.handleClose}>
@@ -162,7 +202,7 @@ export class Transition extends React.Component {
             </Box>
             <MUIDataTable
               columns={StudentService.columns[this.props.dataType]}
-              data={this.state.data}
+              data={newDataUpdated}
               icons={GlobalService.tableIcons}
               options={{
                 headerStyle: {

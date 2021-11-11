@@ -156,7 +156,7 @@ const ageColumn = {
   },
 };
 
-const genderColumn = {
+const dashboardGenderColumn = {
   name: "gender",
   label: "Gender",
   options: {
@@ -188,13 +188,38 @@ const genderColumn = {
   },
 };
 
-const campusColumn = {
+const genderColumn = {
+  name: "gender",
+  label: "Gender",
+  options: {
+    filter: true,
+    sort: true,
+    display: false,
+    filterOptions: ["Male", "Female"],
+  },
+};
+
+const dashboardCampusColumn = {
   name: "campus",
   label: "Campus",
   options: {
     filter: true,
     sort: true,
     display: false,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+        return (
+          <UpdateCampus
+            allOptions={campus}
+            value={value ? value : "No Campus Assigned"}
+            rowMetatable={rowMeta}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
     filterType: "custom",
     filterOptions: {
       display: (filterlist, onChange, index, column) => {
@@ -214,25 +239,35 @@ const campusColumn = {
           </div>
         );
       },
-      customBodyRender: (value, rowMeta, updateValue) => {
-        if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
-          return (
-            <UpdateCampus
-              allOptions={campus}
-              value={value ? value : "No Campus Assigned"}
-              rowMetatable={rowMeta}
-              change={(event) => updateValue(event)}
-            />
-          );
-        } else {
-          return value;
-        }
-      },
     },
   },
 };
 
-const donorColumn = {
+const campusColumn = {
+  name: "campus",
+  label: "Campus",
+  options: {
+    filter: true,
+    sort: true,
+    display: false,
+    filterOptions: campus.map((campus) => campus.name),
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+        return (
+          <UpdateCampus
+            allOptions={campus}
+            value={value ? value : "No Campus Assigned"}
+            rowMetatable={rowMeta}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
+  },
+};
+const dashboardDonorColumn = {
   name: "donor",
   label: "Donor",
   options: {
@@ -259,6 +294,38 @@ const donorColumn = {
         );
       },
     },
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+        return (
+          <UpdateDonor
+            allOptions={donor}
+            value={value}
+            rowMetatable={rowMeta}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        let newValue = "";
+        value
+          ? value.map((item) => {
+              newValue = `${newValue}   ${item.donor}`;
+            })
+          : (newValue = null);
+
+        return newValue;
+      }
+    },
+  },
+};
+
+const donorColumn = {
+  name: "donor",
+  label: "Donor",
+  options: {
+    filter: true,
+    sort: true,
+    display: false,
+    filterOptions: donor.map((donor) => donor.name),
     customBodyRender: (value, rowMeta, updateValue) => {
       if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
         return (
@@ -543,7 +610,7 @@ const Lables = {
   marginBottom: "5px",
 };
 
-const statusColumn = {
+const dashboardStatusColumn = {
   name: "status",
   label: "Status",
   options: {
@@ -573,6 +640,29 @@ const statusColumn = {
         );
       },
     },
+    customBodyRender: (state) => {
+      if (state) {
+        return (state.charAt(0).toUpperCase() + state.slice(1))
+          .match(/[A-Z][a-z]+|[0-9]+/g)
+          .join(" ");
+      }
+    },
+  },
+};
+
+const statusColumn = {
+  name: "status",
+  label: "Status",
+  options: {
+    filter: true,
+    sort: true,
+    display: true,
+    filterOptions: [
+      "needBased",
+      "tutionGroup",
+      "perfectFit",
+      ...feedbackableStagesData.pendingEnglishInterview.status,
+    ].sort(),
     customBodyRender: (state) => {
       if (state) {
         return (state.charAt(0).toUpperCase() + state.slice(1))
@@ -832,7 +922,7 @@ const statusColumnMyreport = {
   },
 };
 
-const ownerColumnMyreport = {
+const dashboardOwnerColumnMyreport = {
   label: "Owner",
   name: "studentOwner",
   options: {
@@ -863,6 +953,14 @@ const ownerColumnMyreport = {
         );
       },
     },
+  },
+};
+const ownerColumnMyreport = {
+  label: "Owner",
+  name: "studentOwner",
+  options: {
+    filter: true,
+    filterOptions: JSON.parse(localStorage.getItem("owners")),
   },
 };
 
@@ -1054,7 +1152,7 @@ const ColumnTransitionsStatus = {
   },
 };
 
-const partnerNameColumn = {
+const dashboardPartnerNameColumn = {
   label: "Partner Name",
   name: "partnerName",
   options: {
@@ -1063,7 +1161,6 @@ const partnerNameColumn = {
     filterType: "custom",
     filterOptions: {
       display: (filterlist, onChange, index, column) => {
-        console.log(filterlist[index]);
         return (
           <div>
             <label style={Lables}>Partner</label>
@@ -1088,7 +1185,29 @@ const partnerNameColumn = {
       },
     },
 
-    // print: false,
+  },
+};
+
+const partnerNameColumn = {
+  label: "Partner Name",
+  name: "partnerName",
+  options: {
+    filter: true,
+    filterOptions: JSON.parse(localStorage.getItem("partners")),
+    sort: true,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+        return (
+          <UpdatePartner
+            studentId={rowMeta.rowData[0]}
+            value={value}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
   },
 };
 
@@ -1122,6 +1241,33 @@ const StudentService = {
       lastUpdatedColumn,
     ],
     softwareCourse: [
+      ColumnTransitions,
+      nameColumn,
+      setColumn,
+      cityColumn,
+      stateColumn,
+      numberColumn,
+      AltNumberColumn,
+      marksColumn,
+      EmailColumn,
+      dashboardGenderColumn,
+      stageColumn,
+      addedAtColumn,
+      lastUpdatedColumn,
+      QualificationColumn,
+      ReligionColumn,
+      CasteColumn,
+      loggedInUserColumn,
+      dashboardOwnerColumnMyreport,
+      dashboardStatusColumn,
+      deadlineColumn,
+      dashboardPartnerNameColumn,
+      onlineClassColumn,
+      ageColumn,
+      dashboardCampusColumn,
+      dashboardDonorColumn,
+    ],
+    partnerData:[
       ColumnTransitions,
       nameColumn,
       setColumn,
@@ -1209,7 +1355,6 @@ const StudentService = {
     QualificationColumn,
     partnerNameColumn,
     campusColumn,
-    donorColumn,
   ],
   CampusData: [
     ColumnTransitions,
@@ -1217,7 +1362,6 @@ const StudentService = {
     numberColumn,
     AltNumberColumn,
     EmailColumn,
-    genderColumn,
     joinedDate,
     stageColumn,
     JobKabLagegiColumn,
@@ -1226,7 +1370,6 @@ const StudentService = {
     kitneDinLagenge,
     QualificationColumn,
     partnerNameColumn,
-    campusColumn,
     donorColumn,
     navGurukulEvaluation,
   ],

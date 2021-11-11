@@ -1288,7 +1288,6 @@ const StudentService = {
       ownerColumnMyreport,
       statusColumn,
       deadlineColumn,
-      partnerNameColumn,
       onlineClassColumn,
       ageColumn,
       campusColumn,

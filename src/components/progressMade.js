@@ -274,7 +274,7 @@ class ProgressMadeForPartner extends Component {
         </Container>
         {tabular && (
           <DashboardPage
-            displayData={StudentService.columns["softwareCourse"]}
+            displayData={StudentService.columns["partnerData"]}
             url={`partners/${this.props.match.params.partnerId}/students`}
           />
         )}

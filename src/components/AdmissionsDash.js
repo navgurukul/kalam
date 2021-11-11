@@ -304,7 +304,6 @@ export class AdmissionsDash extends React.Component {
   async fetchPartner() {
     const response = await axios.get(`${baseURL}partners`);
     let newData = response.data.data.map((e) => e.name);
-    console.log(newData.sort());
     localStorage.setItem("partners", JSON.stringify(newData.sort()));
   }
   async fetchUsers() {

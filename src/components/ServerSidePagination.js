@@ -99,7 +99,7 @@ class ServerSidePagination extends React.Component {
       );
       return {
         filterColumns:
-          value === undefined
+          value === "All"
             ? [...newData]
             : [...newData, { key: keys[query], value: value }],
       };
@@ -170,10 +170,7 @@ class ServerSidePagination extends React.Component {
         };
         if (columnChanged) {
           const filterValue = filterList[indexObj[columnChanged]];
-          return this.getfilterApi(
-            columnChanged,
-            filterValue[filterValue.length - 1]
-          );
+          return this.getfilterApi(columnChanged, filterValue);
         } else {
           await this.setState({
             filterColumns: [],

@@ -85,15 +85,45 @@ export class Transition extends React.Component {
       this.props.fetchingStart();
       const response = await axios.get(this.transitionURL, {});
       let newData;
+      let joinedStudent = [];
+      let joinedOutreach = [];
+      const campusMilestoneKey = Object.keys(campusStageOfLearning);
+
       if (this.props.loggedInUser) {
-        newData = response.data.data.map((v) => ({
-          ...v,
-          loggedInUser: this.props.loggedInUser,
-        }));
+        newData = response.data.data.map((v) => {
+          if (campusMilestoneKey.indexOf(v.to_stage) !== -1) {
+            joinedStudent.push(v);
+          } else {
+            joinedOutreach.push(v);
+          }
+          return {
+            ...v,
+            loggedInUser: this.props.loggedInUser,
+          };
+        });
+        const { location } = this.props;
+        let locationCampus = location.pathname.split("/")[1];
+
+        if (locationCampus === "campus") {
+          newData = joinedStudent;
+        }
       } else {
-        newData = response.data.data.map((v) => ({
-          ...v,
-        }));
+        newData = response.data.data.map((v) => {
+          if (campusMilestoneKey.indexOf(v.to_stage) !== -1) {
+            joinedStudent.push(v);
+          } else {
+            joinedOutreach.push(v);
+          }
+          return {
+            ...v,
+          };
+        });
+        const { location } = this.props;
+        let locationCampus = location.pathname.split("/")[1];
+
+        if (locationCampus === "campus") {
+          newData = joinedStudent;
+        }
       }
 
       this.setState(
@@ -125,20 +155,6 @@ export class Transition extends React.Component {
 
   render = () => {
     const { classes, studentName, studentId, location } = this.props;
-    let locationCampus = location.pathname.split("/")[1];
-
-    const campusMilestonesKey = Object.keys(campusStageOfLearning);
-
-    if (locationCampus === "campus") {
-      const newDataUpdated = [];
-      this.state.data.map((item) => {
-        if (campusMilestonesKey.includes(item.to_stage)) {
-          newDataUpdated.push(item);
-        }
-      });
-      this.state.data = newDataUpdated;
-    }
-
     const modalStyle = getModalStyle();
     return !this.state.modalOpen ? (
       <div>

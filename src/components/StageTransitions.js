@@ -14,13 +14,14 @@ import { theme } from "../theme/theme";
 import { changeFetching } from "../store/actions/auth";
 import { withRouter } from "react-router-dom";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-
+import { useLocation } from "react-router";
 import GlobalService from "../services/GlobalService";
 import StudentService from "../services/StudentService";
 import DetailsIcon from "@material-ui/icons/Details";
 import StudentContact from "./StudentContact";
 import Loader from "./Loader";
 import DeleteStudentDetails from "./DeleteStudentDetails";
+import { campusStageOfLearning } from "../config";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
@@ -123,46 +124,21 @@ export class Transition extends React.Component {
   };
 
   render = () => {
-    const campusMilestones = {
-      finallyJoined: "Joined",
-      M1: "English & Quarantine",
-      M2: "Dry Run",
-      M3: "If - Else",
-      M4: "Loops",
-      M5: "Lists",
-      M6: "Functions",
-      M7: "Python Complete",
-      M8: "Hangman, Requests & more",
-      M9: "Web Scraping",
-      M10: "Javascript / ES6",
-      M11: "NodeJS - Callbacks & Async",
-      M12: "React - HTML & CSS",
-      M13: "NodeJS - CRUD",
-      M14: "React - Bootstrap & Jquery",
-      M15: "NodeJS - MySQL/Knex/Joi",
-      M16: "React - State, Props & Components",
-      M17: "NodeJS: JWT",
-      M18: "React - React Lifecycle",
-      M19: "Project 1",
-      M20: "Project 2",
-      M21: "Interview Preparation",
-      M22: "Job Search",
-      onLeave: "On Leave",
-      droppedOut: "Dropped Out",
-      inJob: "In Job",
-      payingForward: "Paying Forward",
-      paidForward: "Paid Forward",
-    };
-    const campusMilestonesKey = Object.keys(campusMilestones);
-
-    const newDataUpdated = [];
-    this.state.data.map((item) => {
-      if (campusMilestonesKey.includes(item.to_stage)) {
-        newDataUpdated.push(item);
-      }
-    });
-
     const { classes, studentName, studentId, location } = this.props;
+    let locationCampus = location.pathname.split("/")[1];
+
+    const campusMilestonesKey = Object.keys(campusStageOfLearning);
+
+    if (locationCampus === "campus") {
+      const newDataUpdated = [];
+      this.state.data.map((item) => {
+        if (campusMilestonesKey.includes(item.to_stage)) {
+          newDataUpdated.push(item);
+        }
+      });
+      this.state.data = newDataUpdated;
+    }
+
     const modalStyle = getModalStyle();
     return !this.state.modalOpen ? (
       <div>
@@ -202,7 +178,7 @@ export class Transition extends React.Component {
             </Box>
             <MUIDataTable
               columns={StudentService.columns[this.props.dataType]}
-              data={newDataUpdated}
+              data={this.state.data}
               icons={GlobalService.tableIcons}
               options={{
                 headerStyle: {

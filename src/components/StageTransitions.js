@@ -14,7 +14,6 @@ import { theme } from "../theme/theme";
 import { changeFetching } from "../store/actions/auth";
 import { withRouter } from "react-router-dom";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-import { useLocation } from "react-router";
 import GlobalService from "../services/GlobalService";
 import StudentService from "../services/StudentService";
 import DetailsIcon from "@material-ui/icons/Details";

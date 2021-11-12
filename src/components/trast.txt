@@ -1,3 +1,0 @@
-// 2 vegle variables 4--> joinedStudent  --> joinedOutreach
-
-joinedStudent

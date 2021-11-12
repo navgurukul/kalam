@@ -101,12 +101,6 @@ export class Transition extends React.Component {
             loggedInUser: this.props.loggedInUser,
           };
         });
-        const { location } = this.props;
-        let locationCampus = location.pathname.split("/")[1];
-
-        if (locationCampus === "campus") {
-          newData = joinedStudent;
-        }
       } else {
         newData = response.data.data.map((v) => {
           if (campusMilestoneKey.indexOf(v.to_stage) !== -1) {
@@ -118,12 +112,12 @@ export class Transition extends React.Component {
             ...v,
           };
         });
-        const { location } = this.props;
-        let locationCampus = location.pathname.split("/")[1];
+      }
+      const { location } = this.props;
+      let locationCampus = location.pathname.split("/")[1];
 
-        if (locationCampus === "campus") {
-          newData = joinedStudent;
-        }
+      if (locationCampus === "campus") {
+        newData = joinedStudent;
       }
 
       this.setState(

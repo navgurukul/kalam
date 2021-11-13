@@ -6,6 +6,8 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import { Button, Typography, CardContent } from "@material-ui/core";
 import { allStages } from "../config";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 import Card from "@material-ui/core/Card";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
@@ -98,16 +100,22 @@ class ProgressMadeForPartner extends Component {
   }
 
   componentDidMount() {
-    axios
-      .get(`${baseURL}partners/${this.props.match.params.partnerId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
-      })
-      .then((res) => {
-        this.setState({
-          partnerName: res.data.data["name"],
-        });
-      });
+    const { loggedInUser } = this.props;
+    if (loggedInUser) {
+      const { partner_id, scope } = loggedInUser;
+      let parId = location.pathname.split("/");
+      let index = partnerId.length - 1;
+      if (parId[index] === partner_id || scope.indexOf("admin")) {
+        this.getPartnerName();
+        this.getStudentSDataCards()
+      }
+    }
+    else {
+      this.props.history.push("/login")
+    }
+  }
 
+  getStudentSDataCards = () => {
     axios
       .get(
         `${baseURL}partners/progress_made/${this.props.match.params.partnerId}`,
@@ -123,6 +131,18 @@ class ProgressMadeForPartner extends Component {
         });
         this.whatsAppMessage();
       });
+  }
+  getPartnerName = () => {
+    axios
+      .get(`${baseURL}partners/${this.props.match.params.partnerId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+      })
+      .then((res) => {
+        this.setState({
+          partnerName: res.data.data["name"],
+        });
+      });
+
   }
 
   whatsAppMessage = () => {
@@ -145,7 +165,7 @@ class ProgressMadeForPartner extends Component {
   };
 
   progressMade = () => {
-    this.componentDidMount();
+    this.getStudentSDataCards();
   };
 
   tabularData = () => {
@@ -288,4 +308,12 @@ class ProgressMadeForPartner extends Component {
   }
 }
 
-export default withSnackbar(withStyles(styles)(ProgressMadeForPartner));
+
+const mapStateToProps = (state) => ({
+  loggedInUser: state.auth.loggedInUser
+});
+
+
+export default withRouter(
+  withStyles(styles)(connect(mapStateToProps, undefined)(ProgressMadeForPartner))
+);

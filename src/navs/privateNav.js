@@ -80,8 +80,23 @@ export const publicNavs = [
   // add new Nav links here as a json object, in this file the public navigations
 ]
 
+const getUserScope = () => {
+  let userScope = JSON.parse(localStorage.getItem("user")).scope;
+  if (userScope) {
+    if (userScope.indexOf("admin") > -1) {
+      return true
+    }
+  }
+  return false;
+
+}
+
 export default () =>
   publicNavs.map(navItem => {
+    if (navItem.name === "Partners" && !getUserScope()) {
+      console.log("komal")
+      return null
+    }
     return (
       <NavLink
         to={navItem.url}

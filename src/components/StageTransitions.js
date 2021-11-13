@@ -21,6 +21,7 @@ import StudentContact from "./StudentContact";
 import Loader from "./Loader";
 import DeleteStudentDetails from "./DeleteStudentDetails";
 import { campusStageOfLearning } from "../config";
+import OutreachData from "./OutreachData";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
@@ -71,6 +72,9 @@ export class Transition extends React.Component {
       contacts: [],
       modalOpen: false,
       showLoader: true,
+      toggleOutreach: false,
+      joinedStudentData: [],
+      joinedOutreachData: [],
     };
   }
 
@@ -122,6 +126,8 @@ export class Transition extends React.Component {
       this.setState(
         {
           data: newData,
+          joinedStudentData: joinedStudent,
+          joinedOutreachData: joinedOutreach,
           contacts: response.data.contacts,
           showLoader: false,
         },
@@ -147,8 +153,29 @@ export class Transition extends React.Component {
   };
 
   render = () => {
+    const handleChange = () => {
+      this.setState({
+        toggleOutreach: !this.state.toggleOutreach,
+        data: this.state.toggleOutreach
+          ? this.state.joinedStudentData
+          : this.state.joinedOutreachData,
+      });
+    };
+    const style = {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "120%",
+      marginBottom: "10px",
+      minHeight: "40px",
+      maxHeight: "140px",
+      flexWrap: "wrap",
+    };
     const { classes, studentName, studentId, location } = this.props;
+    let campusPath = location.pathname.split("/")[1];
+
     const modalStyle = getModalStyle();
+    console.log(this.state.joinedOutreachData, "outreach");
     return !this.state.modalOpen ? (
       <div>
         <Button color="primary" align="right" onClick={this.handleOpen}>
@@ -169,17 +196,23 @@ export class Transition extends React.Component {
                   Student Name:- {studentName}
                 </Typography>
                 <br />
-                <StudentContact
-                  studentId={studentId}
-                  contacts={this.state.contacts}
-                  closeTransition={this.handleClose}
-                />
-                <DeleteStudentDetails
-                  studentId={studentId}
-                  handleClose={this.handleClose}
-                  pathname={location.pathname}
-                  studentName={studentName}
-                />
+                <div className="transition-tools" style={style}>
+                  <StudentContact
+                    studentId={studentId}
+                    contacts={this.state.contacts}
+                    closeTransition={this.handleClose}
+                  />
+
+                  {campusPath === "campus" ? (
+                    <OutreachData onChange={handleChange} />
+                  ) : null}
+                  <DeleteStudentDetails
+                    studentId={studentId}
+                    handleClose={this.handleClose}
+                    pathname={location.pathname}
+                    studentName={studentName}
+                  />
+                </div>
               </Grid>
               <Box onClick={this.handleClose}>
                 <CancelIcon />

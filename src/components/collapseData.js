@@ -9,6 +9,7 @@ import { Typography, CardContent } from "@material-ui/core";
 import { allStages } from "../config";
 
 const showContact = (student) => {
+  console.log(student, "I am studenttttt");
   let studentStatus = "";
   if (student.status != null) {
     const status_student =
@@ -19,17 +20,36 @@ const showContact = (student) => {
 
   return (
     <center>
-      <div
-        key={student.name}
-        style={{
-          fontSize: 15,
-          marginTop: 10,
-          fontFamily: ("Roboto", "Helvetica", "Arial"),
-        }}
-      >
-        {student.name} :
-        {student.mobile ? student.mobile : student.contacts[0]["mobile"]}
-      </div>
+      <ul>
+        <li>
+          <a
+            key={student.id}
+            style={{
+              fontSize: 15,
+              marginTop: 10,
+              fontStyle: "italic",
+              fontFamily: ("Roboto", "Helvetica", "Arial"),
+              cursor: "pointer",
+            }}
+          >
+            <a
+              onClick={() => {
+                console.log("hello , ", student.id);
+              }}
+              onMouseOver={(e) => {
+                e.target.style.color = "red";
+              }}
+              onMouseOut={(e) => {
+                e.target.style.color = "black";
+              }}
+            >
+              {student.name}
+            </a>
+            :{student.mobile ? student.mobile : student.contacts[0]["mobile"]}
+          </a>
+        </li>
+      </ul>
+
       {student.status != null ? (
         <span style={{ fontSize: 15, fontWeight: 500 }}>({studentStatus})</span>
       ) : (
@@ -55,6 +75,7 @@ class CollapseStudentData extends Component {
 
   render() {
     const { classes, details, stage } = this.props;
+    console.log(details, "I am details");
     const { expanded } = this.state;
 
     if (!details.length) {

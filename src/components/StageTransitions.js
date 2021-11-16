@@ -151,15 +151,15 @@ export class Transition extends React.Component {
     });
   };
 
+  handleChange = () => {
+    this.setState({
+      toggleOutreach: !this.state.toggleOutreach,
+      data: this.state.toggleOutreach
+        ? this.state.joinedStudentData
+        : this.state.joinedOutreachData,
+    });
+  };
   render = () => {
-    const handleChange = () => {
-      this.setState({
-        toggleOutreach: !this.state.toggleOutreach,
-        data: this.state.toggleOutreach
-          ? this.state.joinedStudentData
-          : this.state.joinedOutreachData,
-      });
-    };
     const style = {
       display: "flex",
       justifyContent: "space-between",
@@ -202,7 +202,7 @@ export class Transition extends React.Component {
                   />
 
                   {campusPath === "campus" ? (
-                    <OutreachData onChange={handleChange} />
+                    <OutreachData onChange={this.handleChange} />
                   ) : null}
                   <DeleteStudentDetails
                     studentId={studentId}

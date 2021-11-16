@@ -134,7 +134,6 @@ export class Transition extends React.Component {
         this.props.fetchingFinish
       );
     } catch (e) {
-      console.log(e);
       this.props.fetchingFinish();
     }
   }
@@ -175,7 +174,6 @@ export class Transition extends React.Component {
     let campusPath = location.pathname.split("/")[1];
 
     const modalStyle = getModalStyle();
-    console.log(this.state.joinedOutreachData, "outreach");
     return !this.state.modalOpen ? (
       <div>
         <Button color="primary" align="right" onClick={this.handleOpen}>

@@ -8,10 +8,8 @@ import CardActions from "@material-ui/core/CardActions";
 import { Typography, CardContent } from "@material-ui/core";
 import { allStages } from "../config";
 
-import Box from "@material-ui/core/Box";
-import Button from "@material-ui/core/Button";
-import { Modal } from "@material-ui/core";
 
+import StageTransitions from "./StageTransitions"; 
 const style = {
   position: "absolute",
   top: "50%",
@@ -24,15 +22,8 @@ const style = {
   p: 4,
 };
 
-export const showContact = (student) => {
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const handleOpen = () => {
-    setModalOpen(true);
-  };
-  const handleClose = () => {
-    setModalOpen(false);
-  };
 
+const showContact = (student) => {
   let studentStatus = "";
   if (student.status != null) {
     const status_student =
@@ -40,61 +31,28 @@ export const showContact = (student) => {
     const status = status_student.split(/(?=[A-Z])/);
     studentStatus = status.join(" ");
   }
-  return !modalOpen ? (
+  let locationCampus = location.pathname.split("/")[1];
+  return (
     <center>
-      <ul>
-        <li>
-          <a
-            key={student.id}
-            style={{
-              fontSize: 15,
-              marginTop: 10,
-              fontStyle: "italic",
-              fontFamily: ("Roboto", "Helvetica", "Arial"),
-              cursor: "pointer",
-            }}
-          >
-            <a
-              onClick={() => {
-                console.log("hello , ", student.id);
-                handleOpen();
-              }}
-              onMouseOver={(e) => {
-                e.target.style.color = "red";
-              }}
-              onMouseOut={(e) => {
-                e.target.style.color = "black";
-              }}
-            >
-              {student.name}
-            </a>
-            :{student.mobile ? student.mobile : student.contacts[0]["mobile"]}
-          </a>
-        </li>
-      </ul>
+      <div
+        key={student.name}
+        style={{
+          fontSize: 15,
+          marginTop: 10,
+          fontFamily: ("Roboto", "Helvetica", "Arial"),
+        }}
+      >
+        {locationCampus === "campus" ?  <StageTransitions isShow = {true} studentName = {student.name} studentId = {student.id} dataType = "columnTransition"/> :  student.name}
 
+        :
+        {student.mobile ? student.mobile : student.contacts[0]["mobile"]}
+      </div>
       {student.status != null ? (
         <span style={{ fontSize: 15, fontWeight: 500 }}>({studentStatus})</span>
       ) : (
         <span>{student.status}</span>
       )}
     </center>
-  ) : (
-    <Modal
-      open={modalOpen}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          {student.name}
-        </Typography>
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          {student.id}
-        </Typography>
-      </Box>
-    </Modal>
   );
 };
 

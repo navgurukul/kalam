@@ -8,20 +8,7 @@ import CardActions from "@material-ui/core/CardActions";
 import { Typography, CardContent } from "@material-ui/core";
 import { allStages } from "../config";
 
-
-import StageTransitions from "./StageTransitions"; 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
-
+import StageTransitions from "./StageTransitions";
 
 const showContact = (student) => {
   let studentStatus = "";
@@ -36,16 +23,27 @@ const showContact = (student) => {
     <center>
       <div
         key={student.name}
+        align="start"
         style={{
           fontSize: 15,
           marginTop: 10,
           fontFamily: ("Roboto", "Helvetica", "Arial"),
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
         }}
       >
-        {locationCampus === "campus" ?  <StageTransitions isShow = {true} studentName = {student.name} studentId = {student.id} dataType = "columnTransition"/> :  student.name}
-
-        :
-        {student.mobile ? student.mobile : student.contacts[0]["mobile"]}
+        {locationCampus === "campus" ? (
+          <StageTransitions
+            isShow={true}
+            studentName={student.name}
+            studentId={student.id}
+            dataType="columnTransition"
+          />
+        ) : (
+          student.name
+        )}
+        :{student.mobile ? student.mobile : student.contacts[0]["mobile"]}
       </div>
       {student.status != null ? (
         <span style={{ fontSize: 15, fontWeight: 500 }}>({studentStatus})</span>

@@ -83,7 +83,7 @@ export const publicNavs = [
 const getUserScope = () => {
   let userScope = JSON.parse(localStorage.getItem("user")).scope;
   if (userScope) {
-    if (userScope.indexOf("admin") > -1) {
+    if (userScope.indexOf("admin") > -1 || userScope.indexOf("partner") > -1) {
       return true
     }
   }

@@ -40,13 +40,15 @@ export class LoginDesign extends React.Component {
           const { userToken, user } = resp.data;
           localStorage.setItem("jwt", userToken);
           localStorage.setItem("user", JSON.stringify(user));
-          if (user.mobile) {
-            const { history } = this.props;
+          const { history } = this.props;
+          if(user.scope && user.scope.indexOf("partner") > -1){          
+            history.push(`/partner/${user.partner_id}`)
+          }
+         else if (user.mobile) {
             console.log(this.props, "hi");
             this.props.login();
             history.push("/students");
           } else {
-            const { history } = this.props;
             this.props.login();
             history.push("/user/mobile/number");
           }

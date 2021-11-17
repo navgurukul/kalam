@@ -1158,6 +1158,20 @@ const dashboardPartnerNameColumn = {
   options: {
     filter: true,
     sort: true,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+        console.log("komal")
+        return (
+          <UpdatePartner
+            studentId={rowMeta.rowData[0]}
+            value={value}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
     filterType: "custom",
     filterOptions: {
       display: (filterlist, onChange, index, column) => {

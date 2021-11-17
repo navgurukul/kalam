@@ -14,13 +14,14 @@ import { theme } from "../theme/theme";
 import { changeFetching } from "../store/actions/auth";
 import { withRouter } from "react-router-dom";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-
 import GlobalService from "../services/GlobalService";
 import StudentService from "../services/StudentService";
 import DetailsIcon from "@material-ui/icons/Details";
 import StudentContact from "./StudentContact";
 import Loader from "./Loader";
 import DeleteStudentDetails from "./DeleteStudentDetails";
+import { campusStageOfLearning } from "../config";
+import OutreachData from "./OutreachData";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
@@ -71,6 +72,9 @@ export class Transition extends React.Component {
       contacts: [],
       modalOpen: false,
       showLoader: true,
+      toggleOutreach: false,
+      joinedStudentData: [],
+      joinedOutreachData: [],
     };
   }
 
@@ -84,26 +88,52 @@ export class Transition extends React.Component {
       this.props.fetchingStart();
       const response = await axios.get(this.transitionURL, {});
       let newData;
+      let joinedStudent = [];
+      let joinedOutreach = [];
+      const campusMilestoneKey = Object.keys(campusStageOfLearning);
+
       if (this.props.loggedInUser) {
-        newData = response.data.data.map((v) => ({
-          ...v,
-          loggedInUser: this.props.loggedInUser,
-        }));
+        newData = response.data.data.map((v) => {
+          if (campusMilestoneKey.indexOf(v.to_stage) !== -1) {
+            joinedStudent.push(v);
+          } else {
+            joinedOutreach.push(v);
+          }
+          return {
+            ...v,
+            loggedInUser: this.props.loggedInUser,
+          };
+        });
       } else {
-        newData = response.data.data.map((v) => ({
-          ...v,
-        }));
+        newData = response.data.data.map((v) => {
+          if (campusMilestoneKey.indexOf(v.to_stage) !== -1) {
+            joinedStudent.push(v);
+          } else {
+            joinedOutreach.push(v);
+          }
+          return {
+            ...v,
+          };
+        });
       }
+      const { location } = this.props;
+      let locationCampus = location.pathname.split("/")[1];
+
+      if (locationCampus === "campus") {
+        newData = joinedStudent;
+      }
+
       this.setState(
         {
           data: newData,
+          joinedStudentData: joinedStudent,
+          joinedOutreachData: joinedOutreach,
           contacts: response.data.contacts,
           showLoader: false,
         },
         this.props.fetchingFinish
       );
     } catch (e) {
-      console.log(e);
       this.props.fetchingFinish();
     }
   }
@@ -121,8 +151,28 @@ export class Transition extends React.Component {
     });
   };
 
+  handleChange = () => {
+    this.setState({
+      toggleOutreach: !this.state.toggleOutreach,
+      data: this.state.toggleOutreach
+        ? this.state.joinedStudentData
+        : this.state.joinedOutreachData,
+    });
+  };
   render = () => {
+    const style = {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "120%",
+      marginBottom: "10px",
+      minHeight: "40px",
+      maxHeight: "140px",
+      flexWrap: "wrap",
+    };
     const { classes, studentName, studentId, location } = this.props;
+    let campusPath = location.pathname.split("/")[1];
+
     const modalStyle = getModalStyle();
     return !this.state.modalOpen ? (
       <div>
@@ -144,17 +194,23 @@ export class Transition extends React.Component {
                   Student Name:- {studentName}
                 </Typography>
                 <br />
-                <StudentContact
-                  studentId={studentId}
-                  contacts={this.state.contacts}
-                  closeTransition={this.handleClose}
-                />
-                <DeleteStudentDetails
-                  studentId={studentId}
-                  handleClose={this.handleClose}
-                  pathname={location.pathname}
-                  studentName = {studentName}
-                />
+                <div className="transition-tools" style={style}>
+                  <StudentContact
+                    studentId={studentId}
+                    contacts={this.state.contacts}
+                    closeTransition={this.handleClose}
+                  />
+
+                  {campusPath === "campus" ? (
+                    <OutreachData onChange={this.handleChange} />
+                  ) : null}
+                  <DeleteStudentDetails
+                    studentId={studentId}
+                    handleClose={this.handleClose}
+                    pathname={location.pathname}
+                    studentName={studentName}
+                  />
+                </div>
               </Grid>
               <Box onClick={this.handleClose}>
                 <CancelIcon />

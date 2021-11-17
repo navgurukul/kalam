@@ -49,7 +49,6 @@ class CampusStudentsData extends React.Component {
   render() {
     const { campusName, isShow } = this.state;
     const { campusId } = this.props.match.params;
-    console.log(isShow, "isShow");
     return (
       <div>
         <SelectUiByButtons

@@ -100,19 +100,19 @@ class ProgressMadeForPartner extends Component {
   }
 
   componentDidMount() {
-    const { loggedInUser } = this.props;
-    if (loggedInUser) {
-      const { partner_id, scope } = loggedInUser;
-      let parId = location.pathname.split("/");
-      let index = partnerId.length - 1;
-      if (parId[index] === partner_id || scope.indexOf("admin")) {
+    // const { loggedInUser } = this.props;
+    // if (loggedInUser) {
+    //   const { partner_id, scope } = loggedInUser;
+    //   let parId = location.pathname.split("/");
+    //   let index = partnerId.length - 1;
+      // if (parId[index] === partner_id || scope.indexOf("admin")) {
         this.getPartnerName();
         this.getStudentSDataCards()
-      }
-    }
-    else {
-      this.props.history.push("/login")
-    }
+    //   }
+    // }
+    // else {
+    //   this.props.history.push("/login")
+    // }
   }
 
   getStudentSDataCards = () => {

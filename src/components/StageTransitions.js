@@ -184,6 +184,7 @@ export class Transition extends React.Component {
               fontStyle: "italic",
               fontFamily: ("Roboto", "Helvetica", "Arial"),
               cursor: "pointer",
+              display: "inline"
             }}
             onMouseOver={(e) => {
               e.target.style.color = "red";

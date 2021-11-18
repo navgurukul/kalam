@@ -22,14 +22,10 @@ const showContact = (student) => {
     <center>
       <div
         key={student.name}
-        align="start"
         style={{
           fontSize: 15,
-          marginTop: 10,
           fontFamily: ("Roboto", "Helvetica", "Arial"),
           display: "flex",
-          alignItems: "center",
-          flexWrap: "wrap",
         }}
       >
         {locationCampus === "campus" ? (

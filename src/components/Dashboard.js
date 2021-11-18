@@ -171,7 +171,6 @@ export class DashboardPage extends React.Component {
     let countOnLeave = 0;
     let countInCampus = 0;
     if (locationCampus === "campus") {
-      console.log(studentData[2].stage);
       if (studentData.length > 0) {
         studentData.forEach((e) => {
           if (e.stage === "droppedOut") {
@@ -334,7 +333,7 @@ export class DashboardPage extends React.Component {
           closeMenuOnSelect={true}
         />
 
-        {locationCampus === "campus" && (
+        {locationCampus === "campus" && inCampusCount ? (
           <span
             style={{
               fontSize: "17px",
@@ -351,7 +350,7 @@ export class DashboardPage extends React.Component {
             <span> OnLeave : {onLeaveCount}</span>
             <span> DropOut : {dropoutCount} </span>
           </span>
-        )}
+        ) : null}
       </div>
     );
     return (

@@ -7,6 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CardActions from "@material-ui/core/CardActions";
 import { Typography, CardContent } from "@material-ui/core";
 import { allStages } from "../config";
+import StageTransitions from "./StageTransitions";
 
 const showContact = (student) => {
   let studentStatus = "";
@@ -16,19 +17,28 @@ const showContact = (student) => {
     const status = status_student.split(/(?=[A-Z])/);
     studentStatus = status.join(" ");
   }
-
+  let locationCampus = location.pathname.split("/")[1];
   return (
     <center>
       <div
         key={student.name}
         style={{
           fontSize: 15,
-          marginTop: 10,
           fontFamily: ("Roboto", "Helvetica", "Arial"),
+          display: "flex",
         }}
       >
-        {student.name} :
-        {student.mobile ? student.mobile : student.contacts[0]["mobile"]}
+        {locationCampus === "campus" ? (
+          <StageTransitions
+            isShow={true}
+            studentName={student.name}
+            studentId={student.id}
+            dataType="columnTransition"
+          />
+        ) : (
+          student.name
+        )}{" "}
+        :{student.mobile ? student.mobile : student.contacts[0]["mobile"]}
       </div>
       {student.status != null ? (
         <span style={{ fontSize: 15, fontWeight: 500 }}>({studentStatus})</span>
@@ -73,7 +83,6 @@ class CollapseStudentData extends Component {
         </CardContent>
       );
     }
-
     return (
       <div>
         <CardContent>

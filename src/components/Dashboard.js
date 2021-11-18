@@ -39,81 +39,81 @@ let columns = [
     label: "English Interview Pending (2nd Round)",
     name: "pendingEnglishInterview",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "English Interview Failed",
     name: "englishInterviewFail",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Algebra Interview Pending (3rd Round)",
     name: "pendingAlgebraInterview",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Algebra Interview Failed",
     name: "algebraInterviewFail",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Culture Fit Interview Pending (4th Round)",
     name: "pendingCultureFitInterview",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Culture Interview Failed",
     name: "cultureFitInterviewFail",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Selected",
     name: "selected",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Offer Letter Sent",
     name: "offerLetterSent",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
   {
     label: "Unreachable",
     name: "notReachable",
     options: {
-      viewColumns:false,
-      display:false,
-      filter:false,
+      viewColumns: false,
+      display: false,
+      filter: false,
     },
   },
 ];
@@ -128,6 +128,9 @@ export class DashboardPage extends React.Component {
       showLoader: true,
       fromStage: null,
       toStage: null,
+      dropoutCount: null,
+      onLeaveCount: null,
+      inCampusCount: null,
     };
 
     EventEmitter.subscribe("stageChange", this.stageChangeEvent);
@@ -135,6 +138,7 @@ export class DashboardPage extends React.Component {
 
   stageChangeEvent = (iData) => {
     const { data, getStudentsData } = this.props;
+
     const rowIds = data.map((x) => x.id);
     const rowIndex = rowIds.indexOf(iData.rowData.id);
 
@@ -160,17 +164,46 @@ export class DashboardPage extends React.Component {
   };
 
   dataSetup = (studentData) => {
-    const { getStudentsData } = this.props;
+    const { data, getStudentsData } = this.props;
+    let locationCampus = location.pathname.split("/")[1];
+
+    let countDropOut = 0;
+    let countOnLeave = 0;
+    let countInCampus = 0;
+    if (locationCampus === "campus") {
+      if (studentData.length > 0) {
+        studentData.forEach((e) => {
+          if (e.stage === "droppedOut") {
+            countDropOut++;
+          } else if (e.stage === "onLeave") {
+            countOnLeave++;
+          } else if (
+            e.stage !== "M22" ||
+            e.stage !== "M21" ||
+            e.stage !== "offerLetterSent" ||
+            e.stage !== "inJob" ||
+            e.stage !== "payingForward" ||
+            e.stage !== "paidForward"
+          ) {
+            countInCampus++;
+          }
+        });
+      }
+    }
+
     for (let i = 0; i < studentData.length; i++) {
       studentData[i] = StudentService.dConvert(studentData[i]);
     }
     getStudentsData(studentData);
-    const { data } = this.props;
+
     this.setState(
       {
         mainData: data,
         fromDate: data.length > 0 ? data[0].created_at : null,
         showLoader: false,
+        dropoutCount: countDropOut,
+        onLeaveCount: countOnLeave,
+        inCampusCount: countInCampus,
       },
       function () {
         this.props.fetchingFinish();
@@ -218,13 +251,18 @@ export class DashboardPage extends React.Component {
       this.filterData();
     }
   };
+
   render = () => {
     const { displayData, title, location, data } = this.props;
+    const { dropoutCount, onLeaveCount, inCampusCount } = this.state;
+    let locationCampus = location.pathname.split("/")[1];
+
     const showAllStage = parseInt(
       location.pathname[location.pathname.length - 1]
     );
     const { fromStage, toStage, mainData, showLoader } = this.state;
-    const options = mainData.length > 0 && (
+
+    const options = data.length > 0 && (
       <Box>
         <Select
           className={"filterSelectGlobal"}
@@ -242,7 +280,6 @@ export class DashboardPage extends React.Component {
           isClearable={false}
           closeMenuOnSelect={true}
         />
-
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
             margin="dense"
@@ -256,7 +293,6 @@ export class DashboardPage extends React.Component {
               "aria-label": "change date",
             }}
           />
-
           <KeyboardDatePicker
             margin="dense"
             style={{ marginLeft: 16, maxWidth: "40%" }}
@@ -272,9 +308,54 @@ export class DashboardPage extends React.Component {
         </MuiPickersUtilsProvider>
       </Box>
     );
+
+    const options2 = data.length > 0 && (
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+        }}
+      >
+        <Select
+          className={"filterSelectGlobal"}
+          onChange={this.onChangeFromStage}
+          options={showAllStage ? partnerStages : allStagesOptions}
+          placeholder={"from Stage"}
+          isClearable={false}
+          closeMenuOnSelect={true}
+        />
+        <Select
+          className={"filterSelectGlobal"}
+          onChange={this.onChangeToStage}
+          options={showAllStage ? partnerStages : allStagesOptions}
+          placeholder={"to Stage"}
+          isClearable={false}
+          closeMenuOnSelect={true}
+        />
+
+        {locationCampus === "campus" && inCampusCount ? (
+          <span
+            style={{
+              fontSize: "17px",
+              padding: "8px 10px",
+              border: "1px solid #B3B3B3",
+
+              fontFamily: "Times New Roman",
+              marginLeft: "15px",
+              borderRadius: "4px",
+              marginTop: "16px",
+            }}
+          >
+            <span style={{}}>InCampus : {inCampusCount}</span>
+            <span> OnLeave : {onLeaveCount}</span>
+            <span> DropOut : {dropoutCount} </span>
+          </span>
+        ) : null}
+      </div>
+    );
     return (
       <div>
-        {options}
+        {locationCampus === "campus" ? options2 : options}
         <MainLayout
           title={title}
           columns={[...displayData, ...columns]}
@@ -323,7 +404,7 @@ export class DashboardPage extends React.Component {
         let value = student["lastTransition"]
           ? student["lastTransition"]["to_stage"]
           : "other";
-      let contacts = student.contacts[student.contacts.length - 1];
+        let contacts = student.contacts[student.contacts.length - 1];
 
         if (obj[value]) {
           obj[value] = obj[value] + 1;
@@ -333,13 +414,14 @@ export class DashboardPage extends React.Component {
         return {
           ...student,
           qualification: qualificationKeys[student.qualification],
-          altNumber:contacts ? contacts.alt_mobile : contacts,
+          altNumber: contacts ? contacts.alt_mobile : contacts,
         };
       });
-      if(studentData.length > 0){
-        studentData[0] =  {... studentData[0], ...obj}
+
+      if (studentData.length > 0) {
+        studentData[0] = { ...studentData[0], ...obj };
       }
-        this.dataSetup(studentData);
+      this.dataSetup(studentData);
     } catch (e) {
       console.log(e);
       this.props.fetchingFinish();

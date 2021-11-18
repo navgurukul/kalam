@@ -342,7 +342,7 @@ export class DashboardPage extends React.Component {
               border: "1px solid #B3B3B3",
 
               fontFamily: "Times New Roman",
-              marginLeft: "20px",
+              marginLeft: "15px",
               borderRadius: "4px",
               marginTop: "16px",
             }}

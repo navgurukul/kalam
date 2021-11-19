@@ -29,10 +29,10 @@ import UpdateDonor from "../components/UpdateDonor";
 import JoinedDate from "../components/JoinedDate";
 import DeleteRow from "../components/DeleteRow";
 import UpdateStudentName from "../components/UpdateStudentName";
-
 import SelectReact from "../components/SelectReact";
 import SurveyForm from "../components/SurveyForm";
 import EvaluationSelect from "../components/EvaluationSelect";
+import { evaluationList } from "../config";
 
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
@@ -44,6 +44,10 @@ const allStagesOptions = Object.keys(allStages).map((x) => {
 const allTagsOptions = Object.keys(allTagsForOnlineClass).map((x) => {
   return allTagsForOnlineClass[x];
 });
+
+const user = window.localStorage.user
+  ? JSON.parse(window.localStorage.user).mail_id
+  : null;
 
 const ColumnTransitions = {
   name: "id",
@@ -356,6 +360,7 @@ const stageColumn = {
   label: "Stage",
   options: {
     filter: false,
+    display: true,
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
       const user = window.localStorage.user
@@ -387,23 +392,18 @@ const EvaluationColumn = {
   options: {
     filter: false,
     sort: true,
+    display: permissions.updateStudentName.indexOf(user) > -1 ? true : false,
+    viewColumns:
+      permissions.updateStudentName.indexOf(user) > -1 ? true : false,
     customBodyRender: (value, rowMeta, updateValue) => {
-      const user = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).mail_id
-        : null;
-
-      if (permissions.updateStage.indexOf(user) > -1) {
-        return (
-          <EvaluationSelect
-            rowMetatable={rowMeta}
-            evaluation={value}
-            evaluationList={evaluationList}
-            change={(event) => updateValue(event)}
-          />
-        );
-      } else {
-        return value;
-      }
+      return (
+        <EvaluationSelect
+          rowMetatable={rowMeta}
+          evaluation={value}
+          evaluationList={evaluationList}
+          change={(event) => updateValue(event)}
+        />
+      );
     },
   },
 };

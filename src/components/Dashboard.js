@@ -333,7 +333,7 @@ export class DashboardPage extends React.Component {
           closeMenuOnSelect={true}
         />
 
-        {locationCampus === "campus" && inCampusCount ? (
+        {locationCampus === "campus" ? (
           <span
             style={{
               fontSize: "17px",

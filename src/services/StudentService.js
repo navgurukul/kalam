@@ -32,8 +32,6 @@ import UpdateStudentName from "../components/UpdateStudentName";
 import SelectReact from "../components/SelectReact";
 import SurveyForm from "../components/SurveyForm";
 import EvaluationSelect from "../components/EvaluationSelect";
-import { evaluationList } from "../config";
-
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
@@ -400,7 +398,6 @@ const EvaluationColumn = {
         <EvaluationSelect
           rowMetatable={rowMeta}
           evaluation={value}
-          evaluationList={evaluationList}
           change={(event) => updateValue(event)}
         />
       );

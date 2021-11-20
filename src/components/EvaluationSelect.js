@@ -3,37 +3,19 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { withSnackbar } from "notistack";
-const _ = require("underscore");
 const baseUrl = process.env.API_URL;
 const animatedComponents = makeAnimated();
 
 export class Evaluation extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      payload: {
-        receiverEmail: "",
-        name: "",
-        campus: "",
-        cc: "",
-      },
-    };
   }
 
   handleChange = async (selectedValue) => {
     const { value } = selectedValue;
 
-    if (
-      value === "Struggling" ||
-      value === "Manageable" ||
-      value === "Good" ||
-      value === "Excellent"
-    ) {
+    if (value) {
       this.changeEvaluation(selectedValue);
-    } else {
-      this.props.enqueueSnackbar("Not able to change Evaluation Category", {
-        variant: "error",
-      });
     }
   };
 
@@ -59,14 +41,9 @@ export class Evaluation extends React.Component {
       });
   };
 
-  handleClose = () => {
-    this.setState({
-      flag: false,
-    });
-  };
-
   render = () => {
-    const { evaluationList, evaluation, rowMetatable } = this.props;
+    const { evaluation } = this.props;
+    const evaluationList = ["Struggling", "Manageable", "Good", "Excellent"];
 
     const evaluationOptions = evaluationList.map((item) => {
       return {

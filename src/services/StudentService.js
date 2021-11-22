@@ -1154,7 +1154,7 @@ const ColumnTransitionsStatus = {
 
 const dashboardPartnerNameColumn = {
   label: "Partner Name",
-  name: "partnerName",
+  name: "partner.name",
   options: {
     filter: true,
     sort: true,
@@ -1183,6 +1183,19 @@ const dashboardPartnerNameColumn = {
           </div>
         );
       },
+    },
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+        return (
+          <UpdatePartner
+            studentId={rowMeta.rowData[0]}
+            value={value}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
     },
   },
 };
@@ -1263,7 +1276,7 @@ const StudentService = {
       dashboardOwnerColumnMyreport,
       dashboardStatusColumn,
       deadlineColumn,
-      partnerNameColumn,
+      dashboardPartnerNameColumn,
       onlineClassColumn,
       ageColumn,
       dashboardCampusColumn,

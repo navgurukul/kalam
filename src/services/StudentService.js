@@ -1184,19 +1184,21 @@ const dashboardPartnerNameColumn = {
         );
       },
     },
-
   },
 };
 
 const partnerNameColumn = {
   label: "Partner Name",
-  name: "partnerName",
+  name: "partner.name",
   options: {
     filter: true,
     filterOptions: JSON.parse(localStorage.getItem("partners")),
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+      const user = window.localStorage.user
+        ? JSON.parse(window.localStorage.user).mail_id
+        : null;
+      if (!value && permissions.updateStage.indexOf(user) > -1) {
         return (
           <UpdatePartner
             studentId={rowMeta.rowData[0]}
@@ -1261,13 +1263,13 @@ const StudentService = {
       dashboardOwnerColumnMyreport,
       dashboardStatusColumn,
       deadlineColumn,
-      dashboardPartnerNameColumn,
+      partnerNameColumn,
       onlineClassColumn,
       ageColumn,
       dashboardCampusColumn,
       dashboardDonorColumn,
     ],
-    partnerData:[
+    partnerData: [
       ColumnTransitions,
       nameColumn,
       setColumn,

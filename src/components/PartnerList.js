@@ -46,7 +46,7 @@ const columns = [
       filter: true,
       sort: true,
       customBodyRender: (value, rowMeta) => {
-        return <EditPartnerDetails value = {value}/>
+        return <EditPartnerDetails value={value} />;
       },
     },
   },
@@ -158,12 +158,12 @@ const columns = [
   },
   {
     name: "id",
-    label: "Students Report",
+    label: "Send Report",
     options: {
-      filter: true,
-      sort: true,
-      customBodyRender: (value, rowMeta) => {
-        return <ReportSend value = {value}/>
+      filter: false,
+      sort: false,
+      customBodyRender: (value, rowMeta, updateValue) => {
+        return <ReportSend partnerId={value} />;
       },
     },
   },

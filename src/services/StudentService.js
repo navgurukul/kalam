@@ -32,6 +32,7 @@ import UpdateStudentName from "../components/UpdateStudentName";
 import SelectReact from "../components/SelectReact";
 import SurveyForm from "../components/SurveyForm";
 import EvaluationSelect from "../components/EvaluationSelect";
+import UpdatePartner from "../components/UpdatePartner";
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
@@ -1178,7 +1179,7 @@ const ColumnTransitionsStatus = {
 
 const dashboardPartnerNameColumn = {
   label: "Partner Name",
-  name: "partnerName",
+  name: "partner.name",
   options: {
     filter: true,
     sort: true,
@@ -1208,18 +1209,34 @@ const dashboardPartnerNameColumn = {
         );
       },
     },
+    customBodyRender: (value, rowMeta, updateValue) => {
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+        return (
+          <UpdatePartner
+            studentId={rowMeta.rowData[0]}
+            value={value}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
   },
 };
 
 const partnerNameColumn = {
   label: "Partner Name",
-  name: "partnerName",
+  name: "partner.name",
   options: {
     filter: true,
     filterOptions: JSON.parse(localStorage.getItem("partners")),
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+      const user = window.localStorage.user
+        ? JSON.parse(window.localStorage.user).mail_id
+        : null;
+      if (!value && permissions.updateStage.indexOf(user) > -1) {
         return (
           <UpdatePartner
             studentId={rowMeta.rowData[0]}

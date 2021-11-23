@@ -198,7 +198,7 @@ export class DashboardPage extends React.Component {
 
     this.setState(
       {
-        mainData: data,
+        mainData: studentData,
         fromDate: data.length > 0 ? data[0].created_at : null,
         showLoader: false,
         dropoutCount: countDropOut,
@@ -262,7 +262,7 @@ export class DashboardPage extends React.Component {
     );
     const { fromStage, toStage, mainData, showLoader } = this.state;
 
-    const options = data.length > 0 && (
+    const options = mainData.length > 0 && (
       <Box>
         <Select
           className={"filterSelectGlobal"}
@@ -309,7 +309,7 @@ export class DashboardPage extends React.Component {
       </Box>
     );
 
-    const options2 = data.length > 0 && (
+    const options2 = mainData.length > 0 && (
       <div
         style={{
           display: "flex",
@@ -359,7 +359,7 @@ export class DashboardPage extends React.Component {
         <MainLayout
           title={title}
           columns={[...displayData, ...columns]}
-          data={data}
+          data={mainData}
           showLoader={showLoader}
         />
       </div>

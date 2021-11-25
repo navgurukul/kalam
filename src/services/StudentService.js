@@ -24,6 +24,7 @@ import StageTransitionsStudentStatus from "../components/StageTransitionsStudent
 import AudioRecorder from "../components/audioRecording";
 import AudiofileUpload from "../components/ulpoadAudioFile";
 import TagsForOnlineClass from "../components/tagsForOnlineClass";
+
 import UpdateCampus from "../components/UpdateCampus";
 import UpdateDonor from "../components/UpdateDonor";
 import JoinedDate from "../components/JoinedDate";
@@ -32,6 +33,7 @@ import UpdateStudentName from "../components/UpdateStudentName";
 import UpdatePartner from "../components/UpdatePartner";
 import MonitoringEvaluation from "../components/MonitoringEvaluation";
 import SelectReact from "../components/SelectReact";
+import RedFlag from "../components/FlagModal";
 
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
@@ -726,6 +728,31 @@ const feedbackColumnTransition = {
   },
 };
 
+const redFlagColumn = {
+  label: "Red Flag",
+  name: "flag",
+  options: {
+    filter: false,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const ifExistingFeedback =
+        rowData || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+
+      console.log(rowMeta.rowData[0], "i am student id");
+      return (
+        <div>
+          <div>
+            <RedFlag
+              rowMetaTable={rowMeta}
+              studentId={rowMeta.rowData[0]}
+              change={(event) => updateValue(event)}
+            />
+          </div>
+        </div>
+      );
+    },
+  },
+};
+
 const ownerColumnTransition = {
   name: "to_assign",
   label: "Owner",
@@ -1385,6 +1412,7 @@ const StudentService = {
     QualificationColumn,
     partnerNameColumn,
     donorColumn,
+    redFlagColumn,
     navGurukulEvaluation,
   ],
 

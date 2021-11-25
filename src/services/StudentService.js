@@ -667,9 +667,7 @@ const dashboardStatusColumn = {
     },
     customBodyRender: (state) => {
       if (state) {
-        return (state.charAt(0).toUpperCase() + state.slice(1))
-          .match(/[A-Z][a-z]+|[0-9]+/g)
-          .join(" ");
+        return (state.charAt(0).toUpperCase() + state.slice(1));
       }
     },
   },
@@ -1179,7 +1177,7 @@ const ColumnTransitionsStatus = {
 
 const dashboardPartnerNameColumn = {
   label: "Partner Name",
-  name: "partner.name",
+  name: "partnerName",
   options: {
     filter: true,
     sort: true,

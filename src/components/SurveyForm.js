@@ -20,7 +20,7 @@ const formColor = [
     link: "https://docs.google.com/forms/d/e/1FAIpQLSetOkINBkhw4DKDAW81HajHvSr4vAGKa6epcFKN-4CmvUhsyA/viewform?usp=pp_url&entry.1823157052=",
   },
 ];
-class MonitoringEvaluation extends React.Component {
+class SurveyForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -65,4 +65,4 @@ class MonitoringEvaluation extends React.Component {
   }
 }
 
-export default MonitoringEvaluation;
+export default SurveyForm;

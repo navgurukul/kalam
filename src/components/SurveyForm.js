@@ -11,16 +11,16 @@ const formColor = [
   },
   {
     name: "Form B",
-    color: "#EFB7B7",
-    link: "https://docs.google.com/forms/d/e/1FAIpQLSetOkINBkhw4DKDAW81HajHvSr4vAGKa6epcFKN-4CmvUhsyA/viewform?usp=pp_url&entry.1823157052=",
-  },
-  {
-    name: "Form C",
     color: "#75CFB8",
     link: "https://docs.google.com/forms/d/e/1FAIpQLSd3f9XiYVkzGV7ZggLAlTSg-rDM4HqsdtafCzNJSXyVKFp24A/viewform?usp=pp_url&entry.824382679=",
   },
+  {
+    name: "Form C",
+    color: "#EFB7B7",
+    link: "https://docs.google.com/forms/d/e/1FAIpQLSetOkINBkhw4DKDAW81HajHvSr4vAGKa6epcFKN-4CmvUhsyA/viewform?usp=pp_url&entry.1823157052=",
+  },
 ];
-class MonitoringEvaluation extends React.Component {
+class SurveyForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -65,4 +65,4 @@ class MonitoringEvaluation extends React.Component {
   }
 }
 
-export default MonitoringEvaluation;
+export default SurveyForm;

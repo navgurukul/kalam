@@ -170,15 +170,36 @@ export class Transition extends React.Component {
       maxHeight: "140px",
       flexWrap: "wrap",
     };
-    const { classes, studentName, studentId, location } = this.props;
+    const { classes, studentName, studentId, location, isShow } = this.props;
     let campusPath = location.pathname.split("/")[1];
 
     const modalStyle = getModalStyle();
     return !this.state.modalOpen ? (
       <div>
-        <Button color="primary" align="right" onClick={this.handleOpen}>
-          <DetailsIcon color="primary" />
-        </Button>
+        {isShow ? (
+          <p
+            onClick={this.handleOpen}
+            style={{
+              fontSize: 17,
+              fontStyle: "italic",
+              fontFamily: ("Roboto", "Helvetica", "Arial"),
+              cursor: "pointer",
+              display: "inline"
+            }}
+            onMouseOver={(e) => {
+              e.target.style.color = "red";
+            }}
+            onMouseOut={(e) => {
+              e.target.style.color = "black";
+            }}
+          >
+            {studentName}{" "}
+          </p>
+        ) : (
+          <Button color="primary" align="right" onClick={this.handleOpen}>
+            <DetailsIcon color="primary" />
+          </Button>
+        )}
       </div>
     ) : (
       <Modal open={this.state.modalOpen} onClose={this.handleClose}>

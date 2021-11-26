@@ -67,6 +67,9 @@ export class LandingPage extends React.Component {
     super(props);
     this.state = {
       mobileNumber: "",
+      firstName: "",
+      middleName: "",
+      lastName: "",
       mobile: "",
       selectedLang: "en",
       partnerId: "",
@@ -110,6 +113,24 @@ export class LandingPage extends React.Component {
     });
   };
 
+  onFirstNameChange = (e) => {
+    this.setState({
+      firstName: e.target.value,
+    });
+  };
+
+  onMiddleNameChange = (e) => {
+    this.setState({
+      middleName: e.target.value,
+    });
+  };
+
+  onLastNameChange = (e) => {
+    this.setState({
+      lastName: e.target.value,
+    });
+  };
+
   onChangeEventStatus = (e) => {
     this.setState({
       mobile: e.target.value,
@@ -119,6 +140,7 @@ export class LandingPage extends React.Component {
     try {
       const partnerId = this.state.partnerId ? this.state.partnerId : null;
       const mobile = "0" + this.state.mobileNumber;
+
       this.props.fetchingStart();
       const dataURL = baseUrl + "helpline/register_exotel_call";
       const response = await axios.get(dataURL, {
@@ -145,7 +167,12 @@ export class LandingPage extends React.Component {
   async openTest() {
     const response = await this.generateTestLink();
     window.open(`${testUrl}${response.data.key}`, "_blank");
-    this.setState({ mobileNumber: "" });
+    this.setState({
+      mobileNumber: "",
+      firstName: "",
+      middleName: "",
+      lastName: "",
+    });
     this.props.fetchingFinish();
   }
 
@@ -183,6 +210,9 @@ export class LandingPage extends React.Component {
   render = () => {
     const { classes } = this.props;
     let mobile = this.state.mobile;
+    let firstName = this.state.firstName;
+    let middleName = this.state.middleName;
+    let lastName = this.state.lastName;
     return (
       <div
         style={{
@@ -228,11 +258,67 @@ export class LandingPage extends React.Component {
                     </Grid>
                   </Box>
                   <Box style={{ height: theme.spacing(2) }} />
-                  <Box>
+                  <div
+                    style={{
+                      display: "flex",
+                    }}
+                  >
+                    <TextField
+                      required
+                      id="filled-full-width"
+                      margin="normal"
+                      style={{ margin: 8 }}
+                      label="First Name"
+                      value={this.state.firstName}
+                      placeholder="First Name..."
+                      onChange={this.onFirstNameChange}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant="outlined"
+                    />
+
                     <TextField
                       id="filled-full-width"
                       margin="normal"
-                      style={{ margin: 8, width: 300 }}
+                      style={{ margin: 8 }}
+                      label="Middle Name"
+                      value={this.state.middleName}
+                      placeholder="Middle Name..."
+                      onChange={this.onMiddleNameChange}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant="outlined"
+                    />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                    }}
+                  >
+                    <TextField
+                      required
+                      id="filled-full-width"
+                      margin="normal"
+                      style={{ margin: 8 }}
+                      label="Last Name"
+                      value={this.state.lastName}
+                      placeholder="Last Name..."
+                      onChange={this.onLastNameChange}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant="outlined"
+                    />
+
+                    <TextField
+                      required
+                      id="filled-full-width"
+                      margin="normal"
+                      style={{
+                        margin: 8,
+                      }}
                       label="Mobile Number"
                       value={this.state.mobileNumber}
                       placeholder="Mobile Number..."
@@ -242,7 +328,7 @@ export class LandingPage extends React.Component {
                       }}
                       variant="outlined"
                     />
-                  </Box>
+                  </div>
                   <div className={classes.root}>
                     <Button
                       variant="outlined"
@@ -278,7 +364,7 @@ export class LandingPage extends React.Component {
                     <TextField
                       id="filled-full-width"
                       margin="normal"
-                      style={{ margin: 8, width: 300 }}
+                      style={{ margin: 8 }}
                       label="Mobile Number"
                       value={this.state.mobile}
                       placeholder="Mobile Number..."

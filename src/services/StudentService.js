@@ -472,9 +472,9 @@ const lastUpdatedColumn = {
     sort: true,
     customBodyRender: (value) => {
       return (
-        <Moment format="D MMM YYYY" withTitle>
+        value ? <Moment format="D MMM YYYY" withTitle>
           {value}
-        </Moment>
+        </Moment> : null
       );
     },
   },

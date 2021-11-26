@@ -201,7 +201,6 @@ export class DashboardPage extends React.Component {
       {
         mainData: studentData,
         wholeData: studentData,
-        fromDate: data.length > 0 ? data[0].created_at : null,
         showLoader: false,
         dropoutCount: countDropOut,
         onLeaveCount: countOnLeave,
@@ -269,7 +268,7 @@ export class DashboardPage extends React.Component {
     );
     const { fromStage, toStage, mainData, showLoader, wholeData } = this.state;
 
-    const options = wholeData.length > 0 && (
+    const options =  (
       <Box>
         <Select
           className={"filterSelectGlobal"}

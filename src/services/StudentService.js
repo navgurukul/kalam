@@ -29,10 +29,10 @@ import UpdateDonor from "../components/UpdateDonor";
 import JoinedDate from "../components/JoinedDate";
 import DeleteRow from "../components/DeleteRow";
 import UpdateStudentName from "../components/UpdateStudentName";
-import UpdatePartner from "../components/UpdatePartner";
-import MonitoringEvaluation from "../components/MonitoringEvaluation";
 import SelectReact from "../components/SelectReact";
-
+import SurveyForm from "../components/SurveyForm";
+import EvaluationSelect from "../components/EvaluationSelect";
+import UpdatePartner from "../components/UpdatePartner";
 const _ = require("underscore");
 const animatedComponents = makeAnimated();
 
@@ -43,6 +43,10 @@ const allStagesOptions = Object.keys(allStages).map((x) => {
 const allTagsOptions = Object.keys(allTagsForOnlineClass).map((x) => {
   return allTagsForOnlineClass[x];
 });
+
+const user = window.localStorage.user
+  ? JSON.parse(window.localStorage.user).mail_id
+  : null;
 
 const ColumnTransitions = {
   name: "id",
@@ -355,6 +359,7 @@ const stageColumn = {
   label: "Stage",
   options: {
     filter: false,
+    display: true,
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
       const user = window.localStorage.user
@@ -365,7 +370,6 @@ const stageColumn = {
       if (permissions.updateStage.indexOf(user) > -1) {
         return (
           <StageSelect
-            allStagesOptions={allStagesOptions}
             rowMetatable={rowMeta}
             stage={value}
             allStages={
@@ -377,6 +381,27 @@ const stageColumn = {
       } else {
         return value;
       }
+    },
+  },
+};
+
+const EvaluationColumn = {
+  name: "evaluation",
+  label: "Evaluation",
+  options: {
+    filter: false,
+    sort: true,
+    display: permissions.updateStudentName.indexOf(user) > -1 ? true : false,
+    viewColumns:
+      permissions.updateStudentName.indexOf(user) > -1 ? true : false,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      return (
+        <EvaluationSelect
+          rowMetatable={rowMeta}
+          evaluation={value}
+          change={(event) => updateValue(event)}
+        />
+      );
     },
   },
 };
@@ -447,9 +472,9 @@ const lastUpdatedColumn = {
     sort: true,
     customBodyRender: (value) => {
       return (
-        <Moment format="D MMM YYYY" withTitle>
+        value ? <Moment format="D MMM YYYY" withTitle>
           {value}
-        </Moment>
+        </Moment> : null
       );
     },
   },
@@ -642,9 +667,7 @@ const dashboardStatusColumn = {
     },
     customBodyRender: (state) => {
       if (state) {
-        return (state.charAt(0).toUpperCase() + state.slice(1))
-          .match(/[A-Z][a-z]+|[0-9]+/g)
-          .join(" ");
+        return (state.charAt(0).toUpperCase() + state.slice(1));
       }
     },
   },
@@ -1154,7 +1177,7 @@ const ColumnTransitionsStatus = {
 
 const dashboardPartnerNameColumn = {
   label: "Partner Name",
-  name: "partner.name",
+  name: "partnerName",
   options: {
     filter: true,
     sort: true,
@@ -1226,8 +1249,8 @@ const partnerNameColumn = {
   },
 };
 
-const navGurukulEvaluation = {
-  label: "Evaluation",
+const navGurukulSurveyForm = {
+  label: "Survey Form",
   name: "partnerName",
   options: {
     filter: false,
@@ -1235,7 +1258,7 @@ const navGurukulEvaluation = {
     customBodyRender: (value, rowMeta, updateValue) => {
       const { rowData } = rowMeta;
       return (
-        <MonitoringEvaluation
+        <SurveyForm
           data={{
             studentName: rowData[1],
             studentNumber: rowData[2],
@@ -1385,7 +1408,8 @@ const StudentService = {
     QualificationColumn,
     partnerNameColumn,
     donorColumn,
-    navGurukulEvaluation,
+    EvaluationColumn,
+    navGurukulSurveyForm,
   ],
 
   dConvert: (x) => {

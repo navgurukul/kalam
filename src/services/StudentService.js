@@ -753,7 +753,7 @@ const feedbackColumnTransition = {
 };
 
 const redFlagColumn = {
-  label: "Red Flag",
+  label: "Flag",
   name: "redflag",
   options: {
     filter: false,

@@ -48,6 +48,7 @@ export class RedFlag extends React.Component {
           console.log(response);
           this.setState({
             dialogOpen: false,
+            flagColorToggle: this.state.flagComment,
           });
           this.props.enqueueSnackbar("Flag Raised successfully!", {
             variant: "success",
@@ -67,7 +68,6 @@ export class RedFlag extends React.Component {
   onSubmit = () => {
     this.setState({
       loading: true,
-      flagColorToggle: this.state.flagComment,
     });
     this.addFlagComment();
   };

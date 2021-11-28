@@ -50,9 +50,16 @@ export class RedFlag extends React.Component {
             dialogOpen: false,
             flagColorToggle: this.state.flagComment,
           });
-          this.props.enqueueSnackbar("Flag Raised successfully!", {
-            variant: "success",
-          });
+          if (this.state.flagComment === "") {
+            this.props.enqueueSnackbar("Cleared Flag!", {
+              variant: "success",
+            });
+          } else {
+            this.props.enqueueSnackbar("Flag Raised successfully!", {
+              variant: "success",
+            });
+          }
+
           change(this.state.redflag, columnIndex);
         });
       this.props.fetchingFinish();

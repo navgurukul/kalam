@@ -33,28 +33,26 @@ const styles = (theme) => ({
 });
 
 export class RedFlag extends React.Component {
-  async addFeedbck() {
+  async addFlagComment() {
     try {
       this.props.fetchingStart();
       const { change, rowMetaTable } = this.props;
-      const { rowData, columnIndex } = rowMetaTable;
-      const studentId = rowData[5];
-      const userId = rowData[8].id;
-      const dataURL = `${baseUrl}students/feedback/${studentId}/${userId}`;
+      const { columnIndex } = rowMetaTable;
+      const { studentId } = this.props;
+
       await axios
-        .post(dataURL, {
-          student_stage: rowData[0],
-          feedback: this.state.feedback,
+        .put(`${baseUrl}students/redflag/${studentId}`, {
+          flag: this.state.flagComment,
         })
         .then((response) => {
-          console.log(response.data);
+          console.log(response);
           this.setState({
             dialogOpen: false,
           });
-          this.props.enqueueSnackbar("Feedback is successfully added!", {
+          this.props.enqueueSnackbar("Flag Raised successfully!", {
             variant: "success",
           });
-          change(this.state.feedback, columnIndex);
+          change(this.state.redflag, columnIndex);
         });
       this.props.fetchingFinish();
     } catch (e) {
@@ -69,25 +67,30 @@ export class RedFlag extends React.Component {
   onSubmit = () => {
     this.setState({
       loading: true,
+      flagColorToggle: this.state.flagComment,
     });
-    this.addFeedbck();
+    this.addFlagComment();
   };
 
   validate = () => {};
 
   constructor(props) {
     super(props);
+    const { comment } = this.props;
     this.state = {
-      feedback: "",
+      redflag: "",
       dialogOpen: false,
+      flagComment: comment,
+      flagColorToggle: comment,
     };
   }
 
-  handleChange = (name) => (event) => {
-    let valChange = {};
-    valChange[name] = event.target.value;
-
-    this.setState(valChange);
+  handleChange = () => (event) => {
+    if (event.target.value.length === 0) {
+      this.setState({ flagComment: "" });
+    } else {
+      this.setState({ flagComment: event.target.value });
+    }
   };
 
   handleClose = () => {
@@ -101,31 +104,28 @@ export class RedFlag extends React.Component {
       dialogOpen: true,
     });
   };
-  addFeedbackDetails = (user, feedback) => {
-    const time = new Date();
-    const month = time.getMonth() + 1;
-    const feedbackTime = `Feedback date ${time.getDate()}/${month}/${time.getFullYear()}`;
-    return feedback
-      ? user + ": " + feedbackTime + "\n\n" + feedback
-      : user + ": " + feedbackTime + "\n\n";
-  };
 
   render = () => {
-    const { classes, feedback, rowMetaTable } = this.props;
-    const { rowData } = rowMetaTable;
-    console.log(feedback, " I am feedback");
-    const user = rowData[8]
-      ? "@" + rowData[8].user_name.toString().split(" ").join("").toLowerCase()
-      : "guest_id";
+    const { classes } = this.props;
+
     return (
       <Fragment>
         <Box onClick={this.handleOpen}>
-          <FlagIcon
-            style={{
-              cursor: "pointer",
-              color: "green",
-            }}
-          />
+          {this.state.flagColorToggle ? (
+            <FlagIcon
+              style={{
+                cursor: "pointer",
+                color: "red",
+              }}
+            />
+          ) : (
+            <FlagIcon
+              style={{
+                cursor: "pointer",
+                color: "green",
+              }}
+            />
+          )}
         </Box>
         <Dialog open={this.state.dialogOpen} onClose={this.handleClose}>
           <form className={classes.container}>
@@ -141,11 +141,12 @@ export class RedFlag extends React.Component {
             <TextField
               id="outlined-multiline-static"
               label="comment"
+              placeholder="Add your comment here"
               multiline
               rows="6"
               name="redFlag"
-              defaultValue={this.addFeedbackDetails(user, feedback)}
-              onChange={this.handleChange("feedback")}
+              defaultValue={this.state.flagComment}
+              onChange={this.handleChange()}
               className={classes.textField}
               margin="normal"
               variant="outlined"

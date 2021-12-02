@@ -24,12 +24,15 @@ import StageTransitionsStudentStatus from "../components/StageTransitionsStudent
 import AudioRecorder from "../components/audioRecording";
 import AudiofileUpload from "../components/ulpoadAudioFile";
 import TagsForOnlineClass from "../components/tagsForOnlineClass";
+
 import UpdateCampus from "../components/UpdateCampus";
 import UpdateDonor from "../components/UpdateDonor";
 import JoinedDate from "../components/JoinedDate";
 import DeleteRow from "../components/DeleteRow";
 import UpdateStudentName from "../components/UpdateStudentName";
 import SelectReact from "../components/SelectReact";
+import RedFlag from "../components/FlagModal";
+
 import SurveyForm from "../components/SurveyForm";
 import EvaluationSelect from "../components/EvaluationSelect";
 import UpdatePartner from "../components/UpdatePartner";
@@ -471,11 +474,11 @@ const lastUpdatedColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
-      return (
-        value ? <Moment format="D MMM YYYY" withTitle>
+      return value ? (
+        <Moment format="D MMM YYYY" withTitle>
           {value}
-        </Moment> : null
-      );
+        </Moment>
+      ) : null;
     },
   },
 };
@@ -667,7 +670,7 @@ const dashboardStatusColumn = {
     },
     customBodyRender: (state) => {
       if (state) {
-        return (state.charAt(0).toUpperCase() + state.slice(1));
+        return state.charAt(0).toUpperCase() + state.slice(1);
       }
     },
   },
@@ -743,6 +746,30 @@ const feedbackColumnTransition = {
                 : null}
             </div>
           ) : null}
+        </div>
+      );
+    },
+  },
+};
+
+const redFlagColumn = {
+  label: "Flag",
+  name: "redflag",
+  options: {
+    filter: false,
+    display: permissions.updateStudentName.indexOf(user) > -1 ? true : false,
+    viewColumns:
+      permissions.updateStudentName.indexOf(user) > -1 ? true : false,
+
+    customBodyRender: (value, rowMeta, updateValue) => {
+      return (
+        <div>
+          <RedFlag
+            rowMetaTable={rowMeta}
+            studentId={rowMeta.rowData[0]}
+            comment={value}
+            change={(event) => updateValue(event)}
+          />
         </div>
       );
     },
@@ -1409,6 +1436,7 @@ const StudentService = {
     partnerNameColumn,
     donorColumn,
     EvaluationColumn,
+    redFlagColumn,
     navGurukulSurveyForm,
   ],
 

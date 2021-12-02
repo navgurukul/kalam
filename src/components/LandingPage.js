@@ -14,6 +14,9 @@ import VideoSlider from "./VideoSlider";
 import Grid from "@material-ui/core/Grid";
 import StudentStatus from "./StudentStatus";
 import Header from "./Header";
+import { Modal } from "@material-ui/core";
+import MUIDataTable from "mui-datatables";
+import { allStages } from "../config";
 
 const baseUrl = process.env.API_URL;
 const testUrl = "https://join.navgurukul.org/k/";
@@ -60,53 +63,152 @@ const styles = (theme) => ({
       bottom: 0,
     },
   },
+  modal: {
+    position: "absolute",
+    marginLeft: "3vw",
+    marginRight: "3vw",
+    width: "94vw",
+    [theme.breakpoints.up("md")]: {
+      margin: "auto",
+      width: "50%",
+    },
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(4),
+    outline: "none",
+  },
 });
+
+function getModalStyle() {
+  const top = 50; // + rand()
+  const left = 50; //+ rand()
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+    overflowY: "scroll",
+    maxHeight: "80vh",
+    width: "60%",
+  };
+}
 
 export class LandingPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       mobileNumber: "",
+      firstName: "",
+      middleName: "",
+      lastName: "",
       mobile: "",
       selectedLang: "en",
       partnerId: "",
+      modalOpen: false,
+      data: [],
+      pendingInterviewStage: "checking",
     };
 
     this.lang = {
       Heading: {
         en: "Software Engineering Scholarship",
-        hi: "सॉफ्टवेयर Engineering शिष्यवृत्ती",
+        hi: "Software Engineering Scholarship",
       },
       Course: {
         en: "Course Information",
         hi: "कोर्स के बारे में जाने",
       },
       Status: {
-        en: "Check Status By Registered Number",
-        hi: "रजिस्टर मोबाइल नंबर से अपना स्टेटस देखे",
+        en: "Check your test result by entering the number you gave test from",
+        hi: "आपने जिस नंबर से परीक्षा दी है, उसे एंटर करके अपना परीक्षा रिजल्ट देखें",
       },
       AdmisssionTitle: {
         en: "Start Admisssion Test",
-        hi: "परीक्षा सुरु करे ",
+        hi: "परीक्षा शुरू करें",
       },
       TestButton: {
         en: "GIVE TEST",
         hi: "परीक्षा दे।",
       },
       StatusButton: {
-        en: "GET STATUS",
-        hi: "स्तिथि देखे",
+        en: "Check Result",
+        hi: "रिजल्ट देखे",
       },
       Footer: {
         en: "For more queries, write at hi@navgurukul.org",
         hi: "अधिक जानकारी के लिए ईमेल करे: hi@navgurukul.org",
       },
+      mandatoryField: {
+        en: "To attempt the test, it is compulsory to enter your First Name, Last Name and Mobile Number. Middle Name is optional, you can choose not to enter.",
+        hi: "टेस्ट देने के लिए अपना फर्स्ट नेम, लास्ट नेम और मोबाइल नंबर डालना आवश्यक  है। मध्य नाम वैकल्पिक है, आप प्रवेश नहीं करना चुन सकते हैं।",
+      },
+      mobileNumber: {
+        en: "Please give 10 digits of the mobile number.",
+        hi: "कृपया मोबाइल नंबर के 10 अंक दें।",
+      },
+      testFailedMessage: {
+        en: ` , Your previous attempts were unsuccessful/test failed, please give the 1st stage of the online test again.`,
+        hi: ` , आपके पिछले टेस्ट असफल रहे या आप पास नहीं हो पाए, कृपया ऑनलाइन टेस्ट वापस से दे।`,
+      },
     };
+    this.columns = [
+      {
+        name: "id",
+        label: "Re-Test",
+        options: {
+          filter: false,
+          customBodyRender: (value) => {
+            return (
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ fontSize: "10px" }}
+                onClick={async () => {
+                  const response = await this.generateTestLink(value);
+                  const url = `${testUrl}${response.data.key}?student_id=${value}`;
+
+                  window.open(url, "_blank");
+                }}
+              >
+                Re-Test
+              </Button>
+            );
+          },
+        },
+      },
+      {
+        name: "stage",
+        label: "Stage",
+        options: {
+          filter: false,
+          customBodyRender: (value) => {
+            return allStages[value];
+          },
+        },
+      },
+      {
+        name: "total_marks",
+        label: "Marks",
+        options: {
+          filter: false,
+        },
+      },
+
+      {
+        name: "key",
+        label: "Key",
+        options: {
+          filter: false,
+          display: false,
+          viewColumns: false,
+        },
+      },
+    ];
   }
 
   onChangeEvent = (e) => {
     this.setState({
-      mobileNumber: e.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -115,7 +217,86 @@ export class LandingPage extends React.Component {
       mobile: e.target.value,
     });
   };
-  async generateTestLink() {
+
+  isDuplicate = () => {
+    const { mobileNumber, firstName, middleName, lastName } = this.state;
+    axios
+      .get(baseUrl + "/check_duplicate", {
+        params: {
+          Name: firstName.concat(" ", middleName, lastName),
+          Number: mobileNumber,
+        },
+      })
+      .then(async (data) => {
+        const response = data.data.data;
+        if (response.alreadyGivenTest) {
+          this.setState({
+            data: response.data,
+            modalOpen: true,
+            pendingInterviewStage: response.pendingInterviewStage,
+          });
+        } else {
+          const response = await this.generateTestLink();
+          const params = {
+            firstNam: firstName,
+            middleName: middleName,
+            lastName: lastName,
+            mobileNumber: mobileNumber,
+          };
+          const queryString = Object.keys(params)
+            .map((filter) => {
+              if (params[filter]) {
+                return `${filter}=${params[filter]}`;
+              }
+              return null;
+            })
+            .filter((item) => item)
+            .join("&");
+          const url = `${testUrl}${response.data.key}?${queryString}`;
+          window.open(url, "_blank");
+          this.setState({
+            mobileNumber: "",
+            firstName: "",
+            middleName: "",
+            lastName: "",
+          });
+          this.props.fetchingFinish();
+        }
+      });
+  };
+
+  giveTest = async () => {
+    const { mobileNumber, firstName, lastName, selectedLang } = this.state;
+    if (!mobileNumber || !firstName || !lastName) {
+      this.props.enqueueSnackbar(
+        <strong>{this.lang.mandatoryField[selectedLang]}</strong>,
+        {
+          variant: "error",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+        }
+      );
+      return;
+    }
+    if (mobileNumber.toString().length !== 10) {
+      this.props.enqueueSnackbar(
+        <strong>{this.lang.mobileNumber[selectedLang]}</strong>,
+        {
+          variant: "error",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+        }
+      );
+      return;
+    }
+    await this.isDuplicate();
+  };
+
+  async generateTestLink(studentId) {
     try {
       const partnerId = this.state.partnerId ? this.state.partnerId : null;
       const mobile = "0" + this.state.mobileNumber;
@@ -126,35 +307,23 @@ export class LandingPage extends React.Component {
           ngCallType: "getEnrolmentKey",
           From: mobile,
           partner_id: partnerId,
+          student_id: studentId,
         },
       });
       return response;
     } catch (e) {
-      this.props.enqueueSnackbar("Please enter valid mobile number!", {
+      this.props.enqueueSnackbar("Something went wrong", {
         variant: "error",
         anchorOrigin: {
           vertical: "top",
           horizontal: "center",
         },
       });
-      console.log(e);
       this.props.fetchingFinish();
     }
   }
 
-  async openTest() {
-    const response = await this.generateTestLink();
-    window.open(`${testUrl}${response.data.key}`, "_blank");
-    this.setState({ mobileNumber: "" });
-    this.props.fetchingFinish();
-  }
-
-  giveTest = () => {
-    this.openTest();
-  };
-
   handleChange = (e) => {
-    console.log("changing value to", e.target.value);
     this.setState({
       selectedLang: e.target.value,
     });
@@ -175,14 +344,27 @@ export class LandingPage extends React.Component {
         partnerId: response.data.data["id"],
       });
     } catch (e) {
-      console.log(e);
       history.push("/notFound");
     }
   }
 
   render = () => {
     const { classes } = this.props;
-    let mobile = this.state.mobile;
+    const {
+      mobileNumber,
+      firstName,
+      middleName,
+      lastName,
+      mobile,
+      selectedLang,
+      data,
+      pendingInterviewStage,
+    } = this.state;
+    const stageMessage = {
+      en: `Your  ${allStages[pendingInterviewStage]} is still pending. You’re not required to give the online test now. We will soon complete your admission process.`,
+      hi: `आपका  ${allStages[pendingInterviewStage]}  अभी भी चल रहा हैं। अभी आपको ऑनलाइन परीक्षा देने की आवश्यकता नहीं है। हम जल्द ही आपकी प्रवेश प्रक्रिया (एडमिशन प्रोसेस) पूरी कर देंगे।`,
+    };
+    const modalStyle = getModalStyle();
     return (
       <div
         style={{
@@ -193,10 +375,46 @@ export class LandingPage extends React.Component {
           display: "flex",
         }}
       >
-        <Header onChange={this.handleChange} value={this.state.selectedLang} />
-        <MuiThemeProvider theme={theme}>
+        <Modal
+          open={this.state.modalOpen}
+          onClose={() => this.setState({ modalOpen: false, data: [] })}
+        >
+          <div style={modalStyle} className={classes.modal}>
+            <MUIDataTable
+              title={
+                pendingInterviewStage
+                  ? `${firstName.concat(" ", middleName," " ,lastName)},  ${
+                      stageMessage[selectedLang]
+                    }`
+                  : `${firstName.concat(" ", middleName, " ",lastName)}  ${
+                      this.lang.testFailedMessage[selectedLang]
+                    }`
+              }
+              columns={this.columns}
+              data={data}
+              options={{
+                headerStyle: {
+                  color: theme.palette.primary.main,
+                },
+                viewColumns: false,
+                print: false,
+                download: false,
+                exportButton: true,
+                pageSize: 100,
+                selectableRows: "none",
+                rowsPerPage: 20,
+                rowsPerPageOptions: [20, 40, 60],
+                toolbar: false,
+                filter: false,
+                responsive: "stacked",
+              }}
+            />
+          </div>
+        </Modal>
+        <Header onChange={this.handleChange} value={selectedLang} />
+        <MuiThemeProvider>
           <Typography className={classes.paper}>
-            {this.lang.Heading[this.state.selectedLang]}
+            {this.lang.Heading[selectedLang]}
           </Typography>
           <Grid container>
             <Grid
@@ -211,7 +429,7 @@ export class LandingPage extends React.Component {
               }}
             >
               <Grid item>
-                <VideoSlider language={this.state.selectedLang} />
+                <VideoSlider language={selectedLang} />
               </Grid>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -223,18 +441,79 @@ export class LandingPage extends React.Component {
                   <Box>
                     <Grid item xs={12}>
                       <Typography variant="h5" component="h4">
-                        {this.lang.AdmisssionTitle[this.state.selectedLang]}
+                        {this.lang.AdmisssionTitle[selectedLang]}
                       </Typography>
                     </Grid>
                   </Box>
                   <Box style={{ height: theme.spacing(2) }} />
-                  <Box>
+                  <div
+                    style={{
+                      display: "flex",
+                    }}
+                  >
+                    <TextField
+                      required
+                      id="filled-full-width"
+                      margin="normal"
+                      style={{ margin: 8 }}
+                      label="First Name"
+                      name="firstName"
+                      value={firstName}
+                      placeholder="First Name..."
+                      onChange={this.onChangeEvent}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant="outlined"
+                    />
+
                     <TextField
                       id="filled-full-width"
                       margin="normal"
-                      style={{ margin: 8, width: 300 }}
+                      style={{ margin: 8 }}
+                      name="middleName"
+                      label="Middle Name"
+                      value={middleName}
+                      placeholder="Middle Name..."
+                      onChange={this.onChangeEvent}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant="outlined"
+                    />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                    }}
+                  >
+                    <TextField
+                      required
+                      id="filled-full-width"
+                      margin="normal"
+                      name="lastName"
+                      style={{ margin: 8 }}
+                      label="Last Name"
+                      value={lastName}
+                      placeholder="Last Name..."
+                      onChange={this.onChangeEvent}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant="outlined"
+                    />
+
+                    <TextField
+                      required
+                      id="filled-full-width"
+                      margin="normal"
+                      style={{
+                        margin: 8,
+                      }}
+                      type="number"
+                      name="mobileNumber"
                       label="Mobile Number"
-                      value={this.state.mobileNumber}
+                      value={mobileNumber}
                       placeholder="Mobile Number..."
                       onChange={this.onChangeEvent}
                       InputLabelProps={{
@@ -242,14 +521,14 @@ export class LandingPage extends React.Component {
                       }}
                       variant="outlined"
                     />
-                  </Box>
+                  </div>
                   <div className={classes.root}>
                     <Button
                       variant="outlined"
                       onClick={this.giveTest}
                       color="primary"
                     >
-                      {this.lang.TestButton[this.state.selectedLang]}
+                      {this.lang.TestButton[selectedLang]}
                     </Button>
                   </div>
                 </Paper>
@@ -268,7 +547,7 @@ export class LandingPage extends React.Component {
                     variant="h5"
                     component="h3"
                   >
-                    {this.lang.Status[this.state.selectedLang]}
+                    {this.lang.Status[selectedLang]}
                   </Typography>
                 </Box>
               </Grid>
@@ -278,7 +557,7 @@ export class LandingPage extends React.Component {
                     <TextField
                       id="filled-full-width"
                       margin="normal"
-                      style={{ margin: 8, width: 300 }}
+                      style={{ margin: 8 }}
                       label="Mobile Number"
                       value={this.state.mobile}
                       placeholder="Mobile Number..."
@@ -292,7 +571,7 @@ export class LandingPage extends React.Component {
                   <div className={classes.root}>
                     <StudentStatus
                       mobile={mobile}
-                      lang={this.lang.StatusButton[this.state.selectedLang]}
+                      lang={this.lang.StatusButton[selectedLang]}
                     />
                   </div>
                 </Paper>
@@ -309,7 +588,7 @@ export class LandingPage extends React.Component {
             mt={2}
           >
             <Typography variant="body1">
-              {this.lang.Footer[this.state.selectedLang]}
+              {this.lang.Footer[selectedLang]}
             </Typography>
           </Box>
         </Box>

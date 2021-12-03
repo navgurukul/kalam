@@ -238,7 +238,7 @@ export class LandingPage extends React.Component {
         } else {
           const response = await this.generateTestLink();
           const params = {
-            firstNam: firstName,
+            firstName: firstName,
             middleName: middleName,
             lastName: lastName,
             mobileNumber: mobileNumber,

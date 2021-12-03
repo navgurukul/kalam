@@ -80,7 +80,7 @@ class ServerSidePagination extends React.Component {
 
   getfilterApi = async (query, value) => {
     const { numberOfRows } = this.props;
-    if (query === "gender" && value) {
+    if (query === "gender" && value !== "All") {
       value = value === "Female" ? 1 : 2;
     }
 

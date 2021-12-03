@@ -124,6 +124,7 @@ export class DashboardPage extends React.Component {
     super(props);
     this.state = {
       mainData: [],
+      wholeData: [],
       fromDate: null,
       showLoader: true,
       fromStage: null,
@@ -198,8 +199,8 @@ export class DashboardPage extends React.Component {
 
     this.setState(
       {
-        mainData: data,
-        fromDate: data.length > 0 ? data[0].created_at : null,
+        mainData: studentData,
+        wholeData: studentData,
         showLoader: false,
         dropoutCount: countDropOut,
         onLeaveCount: countOnLeave,
@@ -213,20 +214,25 @@ export class DashboardPage extends React.Component {
 
   filterData = () => {
     const { getStudentsData } = this.props;
-    const { fromStage, toStage, mainData } = this.state;
+    const { fromStage, toStage, mainData, wholeData } = this.state;
     getStudentsData(mainData);
-    const { data } = this.props;
     if (allStagesValue.indexOf(fromStage) <= allStagesValue.indexOf(toStage)) {
       const newAllStagesValue = allStagesValue.slice(
         allStagesValue.indexOf(fromStage),
         allStagesValue.indexOf(toStage) + 1
       );
-      const newData = data.filter((element) => {
+      const newData = wholeData.filter((element) => {
         return newAllStagesValue.indexOf(element.stage) > -1;
       });
       getStudentsData(newData);
+      this.setState({
+        mainData: newData,
+      });
     } else {
       getStudentsData([]);
+      this.setState({
+        mainData: [],
+      });
       this.props.enqueueSnackbar(
         `Stage inputs not correct. Please check once.`,
         {
@@ -260,9 +266,9 @@ export class DashboardPage extends React.Component {
     const showAllStage = parseInt(
       location.pathname[location.pathname.length - 1]
     );
-    const { fromStage, toStage, mainData, showLoader } = this.state;
+    const { fromStage, toStage, mainData, showLoader, wholeData } = this.state;
 
-    const options = data.length > 0 && (
+    const options =  (
       <Box>
         <Select
           className={"filterSelectGlobal"}
@@ -309,7 +315,7 @@ export class DashboardPage extends React.Component {
       </Box>
     );
 
-    const options2 = data.length > 0 && (
+    const options2 = wholeData.length > 0 && (
       <div
         style={{
           display: "flex",
@@ -333,7 +339,7 @@ export class DashboardPage extends React.Component {
           closeMenuOnSelect={true}
         />
 
-        {locationCampus === "campus" && inCampusCount ? (
+        {locationCampus === "campus" ? (
           <span
             style={{
               fontSize: "17px",
@@ -359,7 +365,7 @@ export class DashboardPage extends React.Component {
         <MainLayout
           title={title}
           columns={[...displayData, ...columns]}
-          data={data}
+          data={mainData}
           showLoader={showLoader}
         />
       </div>

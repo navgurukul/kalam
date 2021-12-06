@@ -752,29 +752,29 @@ const feedbackColumnTransition = {
   },
 };
 
-const redFlagColumn = {
-  label: "Flag",
-  name: "redflag",
-  options: {
-    filter: false,
-    display: permissions.updateStudentName.indexOf(user) > -1 ? true : false,
-    viewColumns:
-      permissions.updateStudentName.indexOf(user) > -1 ? true : false,
+// const redFlagColumn = {
+//   label: "Flag",
+//   name: "redflag",
+//   options: {
+//     filter: false,
+//     display: permissions.updateStudentName.indexOf(user) > -1 ? true : false,
+//     viewColumns:
+//       permissions.updateStudentName.indexOf(user) > -1 ? true : false,
 
-    customBodyRender: (value, rowMeta, updateValue) => {
-      return (
-        <div>
-          <RedFlag
-            rowMetaTable={rowMeta}
-            studentId={rowMeta.rowData[0]}
-            comment={value}
-            change={(event) => updateValue(event)}
-          />
-        </div>
-      );
-    },
-  },
-};
+//     customBodyRender: (value, rowMeta, updateValue) => {
+//       return (
+//         <div>
+//           <RedFlag
+//             rowMetaTable={rowMeta}
+//             studentId={rowMeta.rowData[0]}
+//             comment={value}
+//             change={(event) => updateValue(event)}
+//           />
+//         </div>
+//       );
+//     },
+//   },
+// };
 
 const ownerColumnTransition = {
   name: "to_assign",
@@ -1436,7 +1436,6 @@ const StudentService = {
     partnerNameColumn,
     donorColumn,
     EvaluationColumn,
-    redFlagColumn,
     navGurukulSurveyForm,
   ],
 

@@ -139,9 +139,8 @@ export class Header extends React.Component {
                     />
                   </Link>
                 </Box>
-              </Box>
-              <Box>
-                {location.pathname === "/" && (
+                {(location.pathname === "/" ||
+                  location.pathname.indexOf("partnerLanding") > -1) && (
                   <Box pt={0.5} pl={2}>
                     <FormControl style={{ margin: 0, minWidth: 121 }}>
                       <InputLabel id="demo-controlled-open-select-label">

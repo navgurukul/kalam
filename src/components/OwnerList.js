@@ -92,6 +92,21 @@ export class OwnerList extends React.Component {
         },
       },
       {
+        name: "gender",
+        label: "Gender",
+        options: {
+          filter: true,
+          sort: true,
+          customBodyRender: (value) => {
+            console.log("value", value);
+            if (value === 1) return "Female";
+            else if (value === 2) return "Male";
+            else if (value === 3) return "Transgender";
+            else return "NA";
+          },
+        },
+      },
+      {
         name: "available",
         label: "Available",
         options: {
@@ -167,6 +182,7 @@ export class OwnerList extends React.Component {
           x.available = data.available;
           x.type = data.type;
           x.max_limit = data.max_limit;
+          x.gender = data.gender;
         }
         return x;
       });
@@ -202,6 +218,7 @@ export class OwnerList extends React.Component {
   render = () => {
     const { classes } = this.props;
     const { showModal, ownerId, data, showLoader } = this.state;
+    console.log("data", data);
     return (
       <Box mt={2}>
         <MuiThemeProvider theme={theme}>

@@ -12,9 +12,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new webpack.DefinePlugin({
-      "process.env.API_URL": JSON.stringify(
-        "http://dev-join.navgurukul.org/api/"
-      ),
+      "process.env.API_URL": JSON.stringify("https://join.navgurukul.org/api/"),
     }),
   ],
 });

@@ -67,6 +67,7 @@ export class AddOwner extends React.Component {
       availablity: null,
       stage: null,
       limit: undefined,
+      gender: null,
     };
   }
 
@@ -83,7 +84,8 @@ export class AddOwner extends React.Component {
   };
 
   createOwner = () => {
-    const { ownerName, ownerId, availablity, stage, limit } = this.state;
+    const { ownerName, gender, ownerId, availablity, stage, limit } =
+      this.state;
     const { ownerData, getUpdatedData } = this.props;
     const duplicateData = ownerData.filter((x) => x.user.mail_id === ownerName);
     if (duplicateData.length > 0) {
@@ -97,6 +99,7 @@ export class AddOwner extends React.Component {
           available: availablity === "Yes" ? true : false,
           max_limit: limit ? limit : undefined,
           type: stage,
+          gender: gender,
         })
         .then((response) => {
           this.props.enqueueSnackbar(`Owner Successfull created !`, {
@@ -117,9 +120,9 @@ export class AddOwner extends React.Component {
   getOnwer = async (ownerId) => {
     const response = await axios.get(`${baseUrl}owner/${ownerId}`);
     const data = response.data.data[0];
-
     this.setState({
       ownerName: data.user.mail_id,
+      gender: data.gender,
       availablity: data.available ? "Yes" : "No",
       stage: data.type,
       limit: data.max_limit,
@@ -128,7 +131,8 @@ export class AddOwner extends React.Component {
   };
 
   editOwner = () => {
-    const { ownerName, ownerId, availablity, stage, limit } = this.state;
+    const { ownerName, gender, ownerId, availablity, stage, limit } =
+      this.state;
     const { getUpdatedData } = this.props;
     if (ownerName && ownerId && availablity && stage) {
       axios
@@ -136,6 +140,7 @@ export class AddOwner extends React.Component {
           available: availablity === "Yes" ? true : false,
           max_limit: limit ? limit : undefined,
           type: stage,
+          gender: gender,
         })
         .then((response) => {
           this.props.enqueueSnackbar(`Owner Successfull updated !`, {
@@ -155,8 +160,7 @@ export class AddOwner extends React.Component {
           });
           getUpdatedData(response.data.data[0], true);
         });
-    }
-    else {
+    } else {
       this.props.enqueueSnackbar(`Please fill all fields`, {
         variant: "error",
       });
@@ -202,7 +206,13 @@ export class AddOwner extends React.Component {
 
   render = () => {
     const { classes, isEdit } = this.props;
-    const { data, ownerName, ownerId, availablity, stage, limit } = this.state;
+    const { data, ownerName, gender, ownerId, availablity, stage, limit } =
+      this.state;
+    let ownerGender = "Na";
+    if (gender === 1) ownerGender = "Female";
+    else if (gender === 2) ownerGender = "Male";
+    else if (gender === 3) ownerGender = "Transgender";
+    else ownerGender = "NA";
     return (
       <div>
         {isEdit ? (
@@ -241,6 +251,34 @@ export class AddOwner extends React.Component {
                 />
                 <FormHelperText className={classes.text} id="my-helper-text">
                   Please select owner
+                </FormHelperText>
+              </FormControl>
+
+              <FormControl>
+                <Select
+                  name="gender"
+                  value={
+                    gender && {
+                      value: ownerId,
+                      label: ownerGender,
+                    }
+                  }
+                  onChange={this.handleChange("gender")}
+                  options={[
+                    { value: 1, label: "Female" },
+                    { value: 2, label: "Male" },
+                    { value: 3, label: "Transgender" },
+                  ].map((x) => {
+                    return { value: x.value, label: x.label };
+                  })}
+                  placeholder={"Select Gender"}
+                  isClearable={false}
+                  closeMenuOnSelect={true}
+                  isSearchable={true}
+                  // isDisabled={isEdit ? true : false}
+                />
+                <FormHelperText className={classes.text} id="my-helper-text">
+                  Please select your gender
                 </FormHelperText>
               </FormControl>
 

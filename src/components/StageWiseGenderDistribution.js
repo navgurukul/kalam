@@ -1,34 +1,27 @@
 // Todo
 // Logic of RQC Columns
 
-import 'date-fns';
-import React from 'react';
-import { connect } from 'react-redux';
-import axios from 'axios';
+import "date-fns";
+import React from "react";
+import { connect } from "react-redux";
+import axios from "axios";
 
-
-import { changeFetching } from '../store/actions/auth';
-import { allStages, feedbackableStagesData } from '../config';
-import StudentService from '../services/StudentService';
-import MainLayout from './MainLayout';
-
-
+import { changeFetching } from "../store/actions/auth";
+import { allStages, feedbackableStagesData } from "../config";
+import StudentService from "../services/StudentService";
+import MainLayout from "./MainLayout";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
 
-
-
 export class StageWiseGenderDistribution extends React.Component {
-
   constructor(props) {
-
     super(props);
-    this.StageWiseGenderDistributionURL = baseURL + 'students/report/all';
+    this.StageWiseGenderDistributionURL = baseURL + "students/report/all";
 
     this.state = {
       data: [],
-    }
+    };
   }
 
   dataConvert = (data) => {
@@ -48,12 +41,16 @@ export class StageWiseGenderDistribution extends React.Component {
     this.setState({
       data: newData,
     });
-  }
+  };
 
   render = () => {
-    return (<MainLayout columns={StudentService.columnDanglingReports}
-      data={this.state.data} />)
-  }
+    return (
+      <MainLayout
+        columns={StudentService.columnDanglingReports}
+        data={this.state.data}
+      />
+    );
+  };
 
   componentDidMount() {
     this.fetchonwerReport();
@@ -61,24 +58,27 @@ export class StageWiseGenderDistribution extends React.Component {
 
   async fetchonwerReport() {
     try {
-      this.props.fetchingStart()
+      this.props.fetchingStart();
       const response = await axios.get(this.StageWiseGenderDistributionURL, {});
       this.dataConvert(response.data.data);
       this.props.fetchingFinish();
     } catch (e) {
-      console.log(e)
-      this.props.fetchingFinish()
+      console.log(e);
+      this.props.fetchingFinish();
     }
-  };
-};
+  }
+}
 
 const mapStateToProps = (state) => ({
-  loggedInUser: state.auth.loggedInUser
+  loggedInUser: state.auth.loggedInUser,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   fetchingStart: () => dispatch(changeFetching(true)),
-  fetchingFinish: () => dispatch(changeFetching(false))
+  fetchingFinish: () => dispatch(changeFetching(false)),
 });
 
-export default (connect(mapStateToProps, mapDispatchToProps)(StageWiseGenderDistribution));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(StageWiseGenderDistribution);

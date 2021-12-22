@@ -70,7 +70,7 @@ export class AddMerakiLink extends React.Component {
         // style={{ fontSize: "10px" }}
         onClick={() => this.creatMerakiLink(studentId)}
       >
-        Create Link
+        Create
       </Button>
     );
   };

@@ -20,7 +20,7 @@ import EditPartnerDetails from "./EditIcon";
 import { changeFetching } from "../store/actions/auth";
 import { withRouter } from "react-router-dom";
 import MainLayout from "./MainLayout";
-
+import ReportSend from "./ReportSend";
 const baseUrl = process.env.API_URL;
 
 const styles = (theme) => ({
@@ -46,7 +46,7 @@ const columns = [
       filter: true,
       sort: true,
       customBodyRender: (value, rowMeta) => {
-        return <EditPartnerDetails value = {value}/>
+        return <EditPartnerDetails value={value} />;
       },
     },
   },
@@ -153,6 +153,17 @@ const columns = [
             updateValue={updateValue}
           />
         );
+      },
+    },
+  },
+  {
+    name: "id",
+    label: "Send Report",
+    options: {
+      filter: false,
+      sort: false,
+      customBodyRender: (value, rowMeta, updateValue) => {
+        return <ReportSend partnerId={value} />;
       },
     },
   },

@@ -17,6 +17,7 @@ import Header from "./Header";
 import { Modal } from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
 import { allStages } from "../config";
+import { Link } from "react-router-dom";
 
 const baseUrl = process.env.API_URL;
 const testUrl = "https://join.navgurukul.org/k/";
@@ -383,10 +384,10 @@ export class LandingPage extends React.Component {
             <MUIDataTable
               title={
                 pendingInterviewStage
-                  ? `${firstName.concat(" ", middleName," " ,lastName)},  ${
+                  ? `${firstName.concat(" ", middleName, " ", lastName)},  ${
                       stageMessage[selectedLang]
                     }`
-                  : `${firstName.concat(" ", middleName, " ",lastName)}  ${
+                  : `${firstName.concat(" ", middleName, " ", lastName)}  ${
                       this.lang.testFailedMessage[selectedLang]
                     }`
               }
@@ -569,10 +570,16 @@ export class LandingPage extends React.Component {
                     />
                   </Box>
                   <div className={classes.root}>
-                    <StudentStatus
-                      mobile={mobile}
-                      lang={this.lang.StatusButton[selectedLang]}
-                    />
+                    <Link
+                      to={{
+                        pathname: `/status/${mobile}`,
+                        state: { mobile: mobile },
+                      }}
+                    >
+                      <Button variant="outlined" color="primary">
+                        {this.lang.StatusButton[selectedLang]}
+                      </Button>
+                    </Link>
                   </div>
                 </Paper>
               </Grid>

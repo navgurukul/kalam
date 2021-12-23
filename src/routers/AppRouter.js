@@ -33,6 +33,7 @@ import AnyRoute from "./AnyRouter";
 
 import history from "../utils/history";
 import StudentStatus from "../components/StudentStatus";
+import DuplicateStudents from "../components/DuplicateStudents";
 
 const AppRouter = () => (
   <Router history={history}>
@@ -86,6 +87,11 @@ const AppRouter = () => (
         />
         <AnyRoute path="/partnerLanding/:slug" component={LandingPage} />
         <AnyRoute path="/status/:mobile" component={StudentStatus} />
+        <AnyRoute
+          path="/check_duplicate/Name=:fnamemnamelname&Number=:number"
+          component={DuplicateStudents}
+        />
+        {/* <AnyRoute path="/check_duplicate" component={DuplicateStudents} /> */}
         <PrivateRoute path="/partners" component={PartnerList} />
         <PrivateRoute path="/outreachDetails" component={OutreachDetails} />
         <PrivateRoute path="/owner" component={OwnerList} />

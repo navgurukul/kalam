@@ -147,64 +147,7 @@ export class LandingPage extends React.Component {
         en: "Please give 10 digits of the mobile number.",
         hi: "कृपया मोबाइल नंबर के 10 अंक दें।",
       },
-      testFailedMessage: {
-        en: ` , Your previous attempts were unsuccessful/test failed, please give the 1st stage of the online test again.`,
-        hi: ` , आपके पिछले टेस्ट असफल रहे या आप पास नहीं हो पाए, कृपया ऑनलाइन टेस्ट वापस से दे।`,
-      },
     };
-    this.columns = [
-      {
-        name: "id",
-        label: "Re-Test",
-        options: {
-          filter: false,
-          customBodyRender: (value) => {
-            return (
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ fontSize: "10px" }}
-                onClick={async () => {
-                  const response = await this.generateTestLink(value);
-                  const url = `${testUrl}${response.data.key}?student_id=${value}`;
-
-                  window.open(url, "_blank");
-                }}
-              >
-                Re-Test
-              </Button>
-            );
-          },
-        },
-      },
-      {
-        name: "stage",
-        label: "Stage",
-        options: {
-          filter: false,
-          customBodyRender: (value) => {
-            return allStages[value];
-          },
-        },
-      },
-      {
-        name: "total_marks",
-        label: "Marks",
-        options: {
-          filter: false,
-        },
-      },
-
-      {
-        name: "key",
-        label: "Key",
-        options: {
-          filter: false,
-          display: false,
-          viewColumns: false,
-        },
-      },
-    ];
   }
 
   onChangeEvent = (e) => {
@@ -231,10 +174,13 @@ export class LandingPage extends React.Component {
       .then(async (data) => {
         const response = data.data.data;
         if (response.alreadyGivenTest) {
-          this.setState({
-            data: response.data,
-            modalOpen: true,
-            pendingInterviewStage: response.pendingInterviewStage,
+          this.props.history.push({
+            pathname: `/check_duplicate/Name=${firstName}${middleName}${lastName}&Number=${mobileNumber}`,
+            state: {
+              state: this.state,
+              data: response.data,
+              pendingInterviewStage: response.pendingInterviewStage,
+            },
           });
         } else {
           const response = await this.generateTestLink();
@@ -267,7 +213,8 @@ export class LandingPage extends React.Component {
   };
 
   giveTest = async () => {
-    const { mobileNumber, firstName, lastName, selectedLang } = this.state;
+    const { mobileNumber, firstName, middleName, lastName, selectedLang } =
+      this.state;
     if (!mobileNumber || !firstName || !lastName) {
       this.props.enqueueSnackbar(
         <strong>{this.lang.mandatoryField[selectedLang]}</strong>,
@@ -358,14 +305,7 @@ export class LandingPage extends React.Component {
       lastName,
       mobile,
       selectedLang,
-      data,
-      pendingInterviewStage,
     } = this.state;
-    const stageMessage = {
-      en: `Your  ${allStages[pendingInterviewStage]} is still pending. You’re not required to give the online test now. We will soon complete your admission process.`,
-      hi: `आपका  ${allStages[pendingInterviewStage]}  अभी भी चल रहा हैं। अभी आपको ऑनलाइन परीक्षा देने की आवश्यकता नहीं है। हम जल्द ही आपकी प्रवेश प्रक्रिया (एडमिशन प्रोसेस) पूरी कर देंगे।`,
-    };
-    const modalStyle = getModalStyle();
     return (
       <div
         style={{
@@ -376,42 +316,6 @@ export class LandingPage extends React.Component {
           display: "flex",
         }}
       >
-        <Modal
-          open={this.state.modalOpen}
-          onClose={() => this.setState({ modalOpen: false, data: [] })}
-        >
-          <div style={modalStyle} className={classes.modal}>
-            <MUIDataTable
-              title={
-                pendingInterviewStage
-                  ? `${firstName.concat(" ", middleName, " ", lastName)},  ${
-                      stageMessage[selectedLang]
-                    }`
-                  : `${firstName.concat(" ", middleName, " ", lastName)}  ${
-                      this.lang.testFailedMessage[selectedLang]
-                    }`
-              }
-              columns={this.columns}
-              data={data}
-              options={{
-                headerStyle: {
-                  color: theme.palette.primary.main,
-                },
-                viewColumns: false,
-                print: false,
-                download: false,
-                exportButton: true,
-                pageSize: 100,
-                selectableRows: "none",
-                rowsPerPage: 20,
-                rowsPerPageOptions: [20, 40, 60],
-                toolbar: false,
-                filter: false,
-                responsive: "stacked",
-              }}
-            />
-          </div>
-        </Modal>
         <Header onChange={this.handleChange} value={selectedLang} />
         <MuiThemeProvider>
           <Typography className={classes.paper}>

@@ -115,7 +115,9 @@ export class DuplicateStudents extends React.Component {
   async generateTestLink(studentId) {
     try {
       const partnerId = this.state.partnerId ? this.state.partnerId : null;
-      const { mobileNumber } = history.state.state.state;
+      // const { mobileNumber } = history.state.state.state;
+      const details = window.location.href.split("Name=")[1];
+      const mobileNumber = details.split("&Number=")[1];
       const mobile = "0" + mobileNumber;
       this.props.fetchingStart();
       const dataURL = baseUrl + "helpline/register_exotel_call";
@@ -141,6 +143,40 @@ export class DuplicateStudents extends React.Component {
   }
 
   componentDidMount() {
+    isDuplicate = () => {
+      // const { mobileNumber, firstName, middleName, lastName } = this.state;
+      const details = window.location.href.split("Name=")[1];
+      const name = details.split("&Number=")[0];
+      const splitedName = name.match(/[A-Z][a-z]+/g);
+      let firstName;
+      let middleName;
+      let lastName;
+      if (splitedName.length === 3) {
+        firstName = splitedName[0];
+        middleName = splitedName[1];
+        lastName = splitedName[2];
+      } else {
+        firstName = splitedName[0];
+        middleName = "";
+        lastName = splitedName[1];
+      }
+      axios
+        .get(baseUrl + "/check_duplicate", {
+          params: {
+            Name: firstName.concat(" ", middleName, lastName),
+            Number: mobileNumber,
+          },
+        })
+        .then(async (data) => {
+          const response = data.data.data;
+          if (response.alreadyGivenTest) {
+            this.setState({ data: response.data });
+          }
+        });
+    };
+  }
+
+  componentDidMount() {
     const slug = window.location.href.split("partnerLanding/")[1];
     console.log("slug", slug);
     if (slug) {
@@ -162,8 +198,25 @@ export class DuplicateStudents extends React.Component {
 
   render = () => {
     const { data, pendingInterviewStage } = history.state.state;
-    const { firstName, middleName, lastName, selectedLang } =
-      history.state.state.state;
+    // const { firstName, middleName, lastName, selectedLang } =
+    //   history.state.state.state;
+    const { selectedLang } = history.state.state.state;
+    let firstName;
+    let middleName;
+    let lastName;
+    const details = window.location.href.split("Name=")[1];
+    const name = details.split("&Number=")[0];
+    const splitedName = name.match(/[A-Z][a-z]+/g);
+    if (splitedName.length === 3) {
+      firstName = splitedName[0];
+      middleName = splitedName[1];
+      lastName = splitedName[2];
+    } else {
+      firstName = splitedName[0];
+      middleName = "";
+      lastName = splitedName[1];
+    }
+
     return (
       <div>
         <Typography variant="h5" id="modal-title">

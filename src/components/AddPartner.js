@@ -121,7 +121,6 @@ export class AddPartnerPage extends React.Component {
     }
   };
 
-
   constructor(props) {
     super(props);
     this.state = {
@@ -260,23 +259,7 @@ export class AddPartnerPage extends React.Component {
               Partner ke student ko online test dene ke liye Slug add karo.
             </FormHelperText>
           </FormControl>
-          <FormControl>
-            <Select
-              name="ownerName"
-              value={state && { value: state, label: state }}
-              onChange={(e) => this.setState({ state: e.label })}
-              options={
-                states &&
-                states.map((x) => {
-                  return { value: x.name, label: x.name };
-                })
-              }
-              placeholder={"Select State"}
-              isClearable={false}
-              closeMenuOnSelect={true}
-              isSearchable={true}
-            />
-          </FormControl>
+
           <FormControl>
             {this.state.districts.map((state, index) => {
               return (

@@ -88,10 +88,9 @@ const AppRouter = () => (
         <AnyRoute path="/partnerLanding/:slug" component={LandingPage} />
         <AnyRoute path="/status/:mobile" component={StudentStatus} />
         <AnyRoute
-          path="/check_duplicate/Name=:fnamemnamelname&Number=:number"
+          path="/check_duplicate/Name=:fnamemnamelname&Number=:number&Stage=:stage"
           component={DuplicateStudents}
         />
-        {/* <AnyRoute path="/check_duplicate" component={DuplicateStudents} /> */}
         <PrivateRoute path="/partners" component={PartnerList} />
         <PrivateRoute path="/outreachDetails" component={OutreachDetails} />
         <PrivateRoute path="/owner" component={OwnerList} />

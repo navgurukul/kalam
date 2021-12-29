@@ -50,7 +50,6 @@ export class DuplicateStudents extends React.Component {
         options: {
           filter: false,
           customBodyRender: (value) => {
-            console.log("value", value);
             return (
               <Button
                 variant="contained"
@@ -116,7 +115,7 @@ export class DuplicateStudents extends React.Component {
     try {
       const partnerId = this.state.partnerId ? this.state.partnerId : null;
       const details = window.location.href.split("Name=")[1];
-      const mobileNumber = details.split("&Number=")[1];
+      const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
       const mobile = "0" + mobileNumber;
       this.props.fetchingStart();
       const dataURL = baseUrl + "helpline/register_exotel_call";
@@ -143,7 +142,7 @@ export class DuplicateStudents extends React.Component {
 
   isDuplicate = () => {
     const details = window.location.href.split("Name=")[1];
-    const mobileNumber = details.split("&Number=")[1];
+    const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
     const name = details.split("&Number=")[0];
     axios
       .get(baseUrl + "/check_duplicate", {
@@ -162,7 +161,6 @@ export class DuplicateStudents extends React.Component {
 
   componentDidMount() {
     const slug = window.location.href.split("partnerLanding/")[1];
-    console.log("slug", slug);
     if (slug) {
       this.partnerFetch(slug);
     }
@@ -182,16 +180,18 @@ export class DuplicateStudents extends React.Component {
   }
 
   render = () => {
-    // const { data, pendingInterviewStage } = history.state.state;
-    const pendingInterviewStage = history.state.state.pendingInterviewStage;
     const data = this.state.data;
-    const { selectedLang } = history.state.state.state;
+    const selectedLang =
+      history.state === null ? "en" : history.state.state.state.selectedLang;
     let firstName;
     let middleName;
     let lastName;
     const details = window.location.href.split("Name=")[1];
     const name = details.split("&Number=")[0];
     const splitedName = name.match(/[A-Z][a-z]+/g);
+    const pendingInterviewStage = details
+      .split("&Number=")[1]
+      .split("&Stage=")[1];
     if (splitedName.length === 3) {
       firstName = splitedName[0];
       middleName = splitedName[1];
@@ -212,9 +212,9 @@ export class DuplicateStudents extends React.Component {
           title={
             pendingInterviewStage
               ? `${firstName.concat(" ", middleName, " ", lastName)}
-               ${this.message.stageMessage[selectedLang]}`
-              : `${firstName.concat(" ", middleName, " ", lastName)}
             ${this.message.testFailedMessage[selectedLang]}`
+              : `${firstName.concat(" ", middleName, " ", lastName)}
+               ${this.message.stageMessage[selectedLang]}`
           }
           columns={this.columns}
           data={data}

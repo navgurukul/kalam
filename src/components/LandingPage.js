@@ -175,11 +175,10 @@ export class LandingPage extends React.Component {
         const response = data.data.data;
         if (response.alreadyGivenTest) {
           this.props.history.push({
-            pathname: `/check_duplicate/Name=${firstName}${middleName}${lastName}&Number=${mobileNumber}`,
+            pathname: `/check_duplicate/Name=${firstName}${middleName}${lastName}&Number=${mobileNumber}&Stage=${response.pendingInterviewStage}`,
             state: {
               state: this.state,
               data: response.data,
-              pendingInterviewStage: response.pendingInterviewStage,
             },
           });
         } else {

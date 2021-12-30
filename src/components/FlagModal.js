@@ -141,31 +141,35 @@ export class RedFlag extends React.Component {
                 color: "#f05f40",
                 textAlign: "center",
                 marginTop: "0px",
+                position: "relative",
+                bottom: "20px",
               }}
             >
-              Add Comment
+              Raised Flag
             </h1>
             <TextField
+              style={{
+                position: "relative",
+                bottom: "20px",
+              }}
               id="outlined-multiline-static"
-              label="comment"
-              placeholder="Add your comment here"
+              label="raised flag"
+              placeholder="no red flag raised"
               multiline
-              rows="6"
+              readOnly="true"
+              rows="4"
               name="redFlag"
-              defaultValue={this.state.flagComment}
+              defaultValue={
+                this.state.flagComment === null
+                  ? "no red flag raised"
+                  : this.state.flagComment
+              }
               onChange={this.handleChange()}
               className={classes.textField}
               margin="normal"
               variant="outlined"
+              inputProps={{ readOnly: true }}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={this.onSubmit}
-              className={classes.btn}
-            >
-              Submit Comment
-            </Button>
           </form>
         </Dialog>
       </Fragment>

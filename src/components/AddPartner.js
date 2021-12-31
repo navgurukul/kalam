@@ -51,10 +51,13 @@ const styles = (theme) => ({
 
 export class AddPartnerPage extends React.Component {
   async addPartner() {
-    const { name, email, notes, slug, districts, state } = this.state;
+    const { name, email, notes, slug, partner_user, districts, state } =
+      this.state;
     let removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
+
+    console.log("state", this.state);
 
     try {
       this.props.fetchingStart();
@@ -67,6 +70,7 @@ export class AddPartnerPage extends React.Component {
           notes: notes,
           slug: slug,
           state: state,
+          partner_user: partner_user,
           districts: removeExtraDistricts,
         },
         {
@@ -97,6 +101,7 @@ export class AddPartnerPage extends React.Component {
         email: email ? email : null,
         notes: notes,
         state: state ? state : null,
+        partner_user: partner_user.length > 0 ? partner_user : null,
         districts:
           removeExtraDistricts.length > 0 ? removeExtraDistricts : null,
       })
@@ -130,6 +135,7 @@ export class AddPartnerPage extends React.Component {
       notes: "",
       states: "",
       state: "",
+      partner_user: [""],
       districts: [""],
     };
   }
@@ -144,6 +150,7 @@ export class AddPartnerPage extends React.Component {
           slug: data.slug ? data.slug : "",
           notes: data.notes ? data.notes : "",
           state: data.state ? data.state : "",
+          partner_user: data.partner_user ? data.partner_user : "",
           districts: data.districts ? data.districts : [""],
         });
       });
@@ -181,6 +188,10 @@ export class AddPartnerPage extends React.Component {
     this.setState({ districts: [...this.state.districts, ""] });
   };
 
+  addEmail = () => {
+    this.setState({ partner_user: [...this.state.partner_user, ""] });
+  };
+
   handleChange = (name) => (event) => {
     let valChange = {};
     valChange[name] = event.target.value;
@@ -188,16 +199,31 @@ export class AddPartnerPage extends React.Component {
   };
 
   changeHandler = (index) => {
-    const districts = this.state.districts;
-    if (event.target.value) {
-      districts[index] = event.target.value;
-    } else {
-      districts.splice(index, 1);
+    console.log("e", event.target.name);
+    if (event.target.name === "state") {
+      const districts = this.state.districts;
+      if (event.target.value) {
+        districts[index] = event.target.value;
+      } else {
+        districts.splice(index, 1);
+      }
+      this.setState({ districts: districts.length < 1 ? [""] : districts });
     }
-    this.setState({ districts: districts.length < 1 ? [""] : districts });
+    if (event.target.name === "user") {
+      const partner_user = this.state.partner_user;
+      if (event.target.value) {
+        partner_user[index] = event.target.value;
+      } else {
+        partner_user.splice(index, 1);
+      }
+      this.setState({
+        partner_user: partner_user.length < 1 ? [""] : partner_user,
+      });
+    }
   };
 
   render = () => {
+    console.log("state", this.state);
     const { classes, value } = this.props;
     const { states, state } = this.state;
     return (
@@ -258,6 +284,44 @@ export class AddPartnerPage extends React.Component {
             <FormHelperText className={classes.text} id="my-helper-text">
               Partner ke student ko online test dene ke liye Slug add karo.
             </FormHelperText>
+          </FormControl>
+
+          <FormControl>
+            {this.state.partner_user.map((state, index) => {
+              return (
+                <div key={index}>
+                  <TextField
+                    type={
+                      this.state.partner_user.length - 1 === index
+                        ? "search"
+                        : null
+                    }
+                    id="PartnerDistrictsCities"
+                    label="Users"
+                    aria-describedby="my-helper-text"
+                    name="user"
+                    value={state}
+                    onChange={() => this.changeHandler(index)}
+                  />
+                </div>
+              );
+            })}
+
+            <FormHelperText className={classes.text} id="my-helper-text">
+              Multiple Email Enter karein
+            </FormHelperText>
+            <Fab
+              className={classes.addIcon}
+              color="primary"
+              aria-label="add"
+              onClick={this.addEmail}
+              disabled={
+                this.state.partner_user[this.state.partner_user.length - 1] ===
+                ""
+              }
+            >
+              <AddIcon />
+            </Fab>
           </FormControl>
 
           <FormControl>

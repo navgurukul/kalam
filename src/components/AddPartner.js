@@ -57,8 +57,6 @@ export class AddPartnerPage extends React.Component {
       (district) => district.length > 0
     );
 
-    console.log("state", this.state);
-
     try {
       this.props.fetchingStart();
       const dataURL = baseUrl + "partners";
@@ -91,17 +89,19 @@ export class AddPartnerPage extends React.Component {
   }
 
   editPartner = (value) => {
-    const { name, email, notes, slug, districts, state } = this.state;
+    const { name, email, notes, slug, partner_user, districts, state } =
+      this.state;
     let removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
+
     axios
       .put(`${baseUrl}partners/${value}`, {
         name: name,
         email: email ? email : null,
         notes: notes,
         state: state ? state : null,
-        partner_user: partner_user.length > 0 ? partner_user : null,
+        partner_user: partner_user ? partner_user : null,
         districts:
           removeExtraDistricts.length > 0 ? removeExtraDistricts : null,
       })
@@ -150,8 +150,8 @@ export class AddPartnerPage extends React.Component {
           slug: data.slug ? data.slug : "",
           notes: data.notes ? data.notes : "",
           state: data.state ? data.state : "",
-          partner_user: data.partner_user ? data.partner_user : "",
-          districts: data.districts ? data.districts : [""],
+          partner_user: data.partnerUser.length > 0 ? data.partnerUser : [],
+          districts: data.districts.length > 0 ? data.districts : [""],
         });
       });
     }
@@ -199,7 +199,7 @@ export class AddPartnerPage extends React.Component {
   };
 
   changeHandler = (index) => {
-    console.log("e", event.target.name);
+    const { value } = this.props;
     if (event.target.name === "state") {
       const districts = this.state.districts;
       if (event.target.value) {
@@ -212,7 +212,17 @@ export class AddPartnerPage extends React.Component {
     if (event.target.name === "user") {
       const partner_user = this.state.partner_user;
       if (event.target.value) {
-        partner_user[index] = event.target.value;
+        if (partner_user[index]) {
+          partner_user[index] = {
+            ...partner_user[index],
+            email: event.target.value,
+          };
+        } else {
+          partner_user[index] = {
+            email: event.target.value,
+            partner_id: value,
+          };
+        }
       } else {
         partner_user.splice(index, 1);
       }
@@ -223,7 +233,6 @@ export class AddPartnerPage extends React.Component {
   };
 
   render = () => {
-    console.log("state", this.state);
     const { classes, value } = this.props;
     const { states, state } = this.state;
     return (
@@ -287,7 +296,7 @@ export class AddPartnerPage extends React.Component {
           </FormControl>
 
           <FormControl>
-            {this.state.partner_user.map((state, index) => {
+            {this.state.partner_user.map((user, index) => {
               return (
                 <div key={index}>
                   <TextField
@@ -296,11 +305,12 @@ export class AddPartnerPage extends React.Component {
                         ? "search"
                         : null
                     }
-                    id="PartnerDistrictsCities"
-                    label="Users"
+                    id="PartnerUsers"
+                    // label="Users"
+                    placeholder="User"
                     aria-describedby="my-helper-text"
                     name="user"
-                    value={state}
+                    value={user.email}
                     onChange={() => this.changeHandler(index)}
                   />
                 </div>

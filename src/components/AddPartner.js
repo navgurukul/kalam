@@ -297,6 +297,7 @@ export class AddPartnerPage extends React.Component {
 
           <FormControl>
             {this.state.partner_user.map((user, index) => {
+              console.log("user", user);
               return (
                 <div key={index}>
                   <TextField

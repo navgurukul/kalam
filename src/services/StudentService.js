@@ -756,8 +756,9 @@ const redFlagColumn = {
   label: "Flag",
   name: "redflag",
   options: {
-    filter: false,
+    filter: true,
     display: permissions.updateStudentName.indexOf(user) > -1 ? true : false,
+    filterType: "dropdown",
     viewColumns:
       permissions.updateStudentName.indexOf(user) > -1 ? true : false,
 

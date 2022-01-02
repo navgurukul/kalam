@@ -32,8 +32,6 @@ for (let a = 1; a <= 31; a++) {
   dates.push({ value: a, label: a });
 }
 
-
-
 const baseUrl = process.env.API_URL;
 const styles = (theme) => ({
   container: {
@@ -105,8 +103,11 @@ export class AddOwner extends React.Component {
 
   sendReport = () => {
     const { emails, repeat, date, status, report } = this.state;
+    console.log(emails, repeat, date, status, report);
     const { partnerId } = this.props;
+
     if (this.validations()) {
+      console.log("Callingg..");
       return;
     } else {
       axios
@@ -133,17 +134,19 @@ export class AddOwner extends React.Component {
       });
       return true;
     }
-    for (let d of date) {
-      if (repeat.indexOf("Monthly") > -1 && isNaN(d.value)) {
-        this.props.enqueueSnackbar("You have given week day to date field", {
-          variant: "error",
-        });
-        return true;
-      } else if (repeat.indexOf("Weekly") > -1 && parseInt(d.value)) {
-        this.props.enqueueSnackbar("You have given date to week field", {
-          variant: "error",
-        });
-        return true;
+    if (repeat != "Daily") {
+      for (let d of date) {
+        if (repeat.indexOf("Monthly") > -1 && isNaN(d.value)) {
+          this.props.enqueueSnackbar("You have given week day to date field", {
+            variant: "error",
+          });
+          return true;
+        } else if (repeat.indexOf("Weekly") > -1 && parseInt(d.value)) {
+          this.props.enqueueSnackbar("You have given date to week field", {
+            variant: "error",
+          });
+          return true;
+        }
       }
     }
     if (!status) {
@@ -154,6 +157,7 @@ export class AddOwner extends React.Component {
     }
     return false;
   };
+
   getRepeatValue = (repeat, date) => {
     if (repeat === "Daily") {
       return repeat;
@@ -190,7 +194,7 @@ export class AddOwner extends React.Component {
 
     axios.get(`${baseUrl}partners/emailreport/${partnerId}`).then((data) => {
       const resp = data.data.data[0];
-      if(resp){
+      if (resp) {
         let splitRepeat = resp.repeat.split(" ");
         const dateData = splitRepeat.splice(1, splitRepeat.length);
         this.setState({
@@ -207,7 +211,6 @@ export class AddOwner extends React.Component {
           emailreportId: resp.id,
         });
       }
-   
     });
   };
 

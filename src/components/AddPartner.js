@@ -75,9 +75,15 @@ export class AddPartnerPage extends React.Component {
           headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
         }
       );
-
-      this.props.fetchingFinish();
-      this.props.history.push("/partners");
+      if (response.data.error) {
+        this.props.enqueueSnackbar(response.data.message, { variant: "error" });
+      } else {
+        this.props.enqueueSnackbar("Partner details added Successfull!", {
+          variant: "success",
+        });
+        this.props.fetchingFinish();
+        this.props.history.push("/partners");
+      }
     } catch (e) {
       console.log(e);
       this.props.enqueueSnackbar(
@@ -106,12 +112,23 @@ export class AddPartnerPage extends React.Component {
           removeExtraDistricts.length > 0 ? removeExtraDistricts : null,
       })
       .then((response) => {
-        this.props.enqueueSnackbar("Partner details Successfull edit", {
-          variant: "success",
-        });
+        if (response.data.error) {
+          this.props.enqueueSnackbar(
+            `Something went wrong, ${response.data.message}`,
+            {
+              variant: "error",
+            }
+          );
+        } else {
+          this.props.enqueueSnackbar("Partner details Successfull edit", {
+            variant: "success",
+          });
+          this.props.fetchingFinish();
+          this.props.history.push("/partners");
+        }
       })
-      .catch((e) => {
-        this.props.enqueueSnackbar("Something went wrong", {
+      .catch((error) => {
+        this.props.enqueueSnackbar(`Something went wrong, ${error}`, {
           variant: "error",
         });
       });
@@ -135,6 +152,7 @@ export class AddPartnerPage extends React.Component {
       notes: "",
       states: "",
       state: "",
+      partnerEmail: "",
       partner_user: [""],
       districts: [""],
     };
@@ -144,14 +162,15 @@ export class AddPartnerPage extends React.Component {
       const dataURL = `${baseUrl}partners/${this.props.value}`;
       axios.get(dataURL).then((response) => {
         const data = response.data.data;
+        console.log("data", data);
         this.setState({
           name: data.name ? data.name : "",
           email: data.email ? data.email : "",
           slug: data.slug ? data.slug : "",
           notes: data.notes ? data.notes : "",
           state: data.state ? data.state : "",
-          partner_user: data.partnerUser.length > 0 ? data.partnerUser : [],
-          districts: data.districts.length > 0 ? data.districts : [""],
+          partner_user: data.partnerUser ? data.partnerUser : [""],
+          districts: data.districts ? data.districts : [""],
         });
       });
     }
@@ -212,16 +231,24 @@ export class AddPartnerPage extends React.Component {
     if (event.target.name === "user") {
       const partner_user = this.state.partner_user;
       if (event.target.value) {
-        if (partner_user[index]) {
-          partner_user[index] = {
-            ...partner_user[index],
-            email: event.target.value,
-          };
-        } else {
-          partner_user[index] = {
-            email: event.target.value,
+        if (partner_user.length < 1) {
+          this.state.partnerEmail += event.target.value;
+          partner_user[0] = {
+            email: this.state.partnerEmail,
             partner_id: value,
           };
+        } else {
+          if (partner_user[index]) {
+            partner_user[index] = {
+              ...partner_user[index],
+              email: event.target.value,
+            };
+          } else {
+            partner_user[index] = {
+              email: event.target.value,
+              partner_id: value,
+            };
+          }
         }
       } else {
         partner_user.splice(index, 1);
@@ -235,6 +262,7 @@ export class AddPartnerPage extends React.Component {
   render = () => {
     const { classes, value } = this.props;
     const { states, state } = this.state;
+    console.log("this.state", this.state);
     return (
       <Card className={classes.root}>
         <form className={classes.container}>
@@ -296,27 +324,41 @@ export class AddPartnerPage extends React.Component {
           </FormControl>
 
           <FormControl>
-            {this.state.partner_user.map((user, index) => {
-              console.log("user", user);
-              return (
-                <div key={index}>
-                  <TextField
-                    type={
-                      this.state.partner_user.length - 1 === index
-                        ? "search"
-                        : null
-                    }
-                    id="PartnerUsers"
-                    // label="Users"
-                    placeholder="User"
-                    aria-describedby="my-helper-text"
-                    name="user"
-                    value={user.email}
-                    onChange={() => this.changeHandler(index)}
-                  />
-                </div>
-              );
-            })}
+            {this.state.partner_user.length > 0 ? (
+              this.state.partner_user.map((user, index) => {
+                console.log("user", user);
+                return (
+                  <div key={index}>
+                    <TextField
+                      type={
+                        this.state.partner_user.length - 1 === index
+                          ? "search"
+                          : null
+                      }
+                      id="PartnerUsers"
+                      // label="Users"
+                      placeholder="User"
+                      aria-describedby="my-helper-text"
+                      name="user"
+                      value={user.email}
+                      onChange={() => this.changeHandler(index)}
+                    />
+                  </div>
+                );
+              })
+            ) : (
+              <div>
+                <TextField
+                  id="PartnerUsers"
+                  // label="Users"
+                  placeholder="User"
+                  aria-describedby="my-helper-text"
+                  name="user"
+                  value={this.state.partnerEmail}
+                  onChange={() => this.changeHandler()}
+                />
+              </div>
+            )}
 
             <FormHelperText className={classes.text} id="my-helper-text">
               Multiple Email Enter karein

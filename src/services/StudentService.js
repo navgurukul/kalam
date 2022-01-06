@@ -159,7 +159,7 @@ const ageColumn = {
   options: {
     filter: false,
     sort: true,
-    display: true,
+    display: false,
   },
 };
 
@@ -1298,6 +1298,31 @@ const navGurukulSurveyForm = {
   },
 };
 
+const profileImage = {
+  label: "Profile Image",
+  name: "image_url",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      return value !== null ? (
+        <img
+          src={value}
+          alt="profile"
+          style={{
+            width: "60px",
+            height: "60px",
+            borderRadius: "50%",
+            objectFit: "cover",
+          }}
+        />
+      ) : (
+        <p> </p>
+      );
+    },
+  },
+};
+
 const StudentService = {
   columns: {
     requestCallback: [
@@ -1308,6 +1333,7 @@ const StudentService = {
     ],
     softwareCourse: [
       ColumnTransitions,
+      profileImage,
       nameColumn,
       setColumn,
       cityColumn,

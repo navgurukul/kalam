@@ -181,6 +181,7 @@ const dashboardGenderColumn = {
                 { value: "All", label: "All" },
                 { value: "Male", label: "Male" },
                 { value: "Female", label: "Female" },
+                { value: "Transgender", label: "Transgender" },
               ]}
               filterList={filterlist}
               onChange={onChange}

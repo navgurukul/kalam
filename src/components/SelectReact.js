@@ -19,9 +19,9 @@ export default class SelectReact extends React.Component {
       <Select
         value={selectedOption}
         onChange={(event) => {
-          filterList[index] = event.value;
+          filterList[index - 1] = event.value;
           this.setState({ selectedOption: event });
-          onChange(filterList[index], index, column);
+          onChange(filterList[index - 1], index - 1, column);
         }}
         options={options}
         value={this.state.selectedOption}

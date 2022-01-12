@@ -81,7 +81,7 @@ class ServerSidePagination extends React.Component {
   getfilterApi = async (query, value) => {
     const { numberOfRows } = this.props;
     if (query === "gender" && value !== "All") {
-      value = value === "Female" ? 1 : 2;
+      value = value === "Female" ? 1 : value === "Male" ? 2 : 3;
     }
 
     const keys = {
@@ -161,12 +161,12 @@ class ServerSidePagination extends React.Component {
       },
       onFilterChange: async (columnChanged, filterList) => {
         const indexObj = {
-          gender: 9,
-          campus: 23,
-          donor: 24,
-          studentOwner: 17,
-          status: 18,
-          partnerName: 20,
+          gender: 10,
+          campus: 24,
+          donor: 25,
+          studentOwner: 18,
+          status: 19,
+          partnerName: 21,
         };
         if (columnChanged) {
           const filterValue = filterList[indexObj[columnChanged]];

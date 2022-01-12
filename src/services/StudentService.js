@@ -1478,7 +1478,8 @@ const StudentService = {
       x.number = null;
     }
 
-    x.gender = x.gender == 1 ? "Female" : "Male";
+    x.gender =
+      x.gender == 1 ? "Female" : x.gender == 2 ? "Male" : "Transgender";
     x.stage = allStages[x.stage];
     x.marks = x.enrolmentKey[0]
       ? parseInt(x.enrolmentKey[0].total_marks, 10)

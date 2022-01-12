@@ -215,7 +215,7 @@ const dashboardCampusColumn = {
     sort: true,
     display: false,
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[17]) > -1) {
         return (
           <UpdateCampus
             allOptions={campus}
@@ -260,7 +260,7 @@ const campusColumn = {
     display: false,
     filterOptions: campus.map((campus) => campus.name),
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[17]) > -1) {
         return (
           <UpdateCampus
             allOptions={campus}
@@ -303,7 +303,7 @@ const dashboardDonorColumn = {
       },
     },
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[17]) > -1) {
         return (
           <UpdateDonor
             allOptions={donor}
@@ -335,7 +335,7 @@ const donorColumn = {
     display: false,
     filterOptions: donor.map((donor) => donor.name),
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+      if (permissions.updateStage.indexOf(rowMeta.rowData[17]) > -1) {
         return (
           <UpdateDonor
             allOptions={donor}
@@ -1237,7 +1237,7 @@ const dashboardPartnerNameColumn = {
       },
     },
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[16]) > -1) {
+      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[17]) > -1) {
         return (
           <UpdatePartner
             studentId={rowMeta.rowData[0]}

@@ -68,6 +68,7 @@ export class AdmissionsDash extends React.Component {
       showLoader: true,
       filterValues: [],
       numberOfRows: 10,
+      selectedOption: [],
     };
   }
 
@@ -111,16 +112,31 @@ export class AdmissionsDash extends React.Component {
     this.fetchStudents();
   };
 
-  changeStudentStage = (option) => {
-    this.value = { value: option.value, label: allStages[option.value] };
+  changeStudentStage = (selectedOption) => {
+    this.setState({
+      selectedOption,
+    });
+    console.log(selectedOption, "selectedOption");
     const { filterValues } = this.state;
-    if (option.value === "default") {
+    if (selectedOption === null) {
       this.stage = null;
       this.dataType = "softwareCourse";
       this.fetchStudents(filterValues);
       this.value = "Student Details";
     } else {
-      this.stage = option.value;
+      // const arr = [];
+      let arr = selectedOption.map((option) => {
+        return option.value;
+      });
+      console.log(arr, " i am arr");
+      if (arr.includes("default")) {
+        this.stage = null;
+      } else {
+        this.stage = selectedOption.map((option) => {
+          return option.value;
+        });
+      }
+
       this.fetchStudents(filterValues);
       this.dataType = "softwareCourse";
     }
@@ -177,7 +193,9 @@ export class AdmissionsDash extends React.Component {
 
   render = () => {
     const { classes, fetchPendingInterviewDetails } = this.props;
-    const { sData, data, showLoader, totalData, numberOfRows } = this.state;
+    const { sData, data, showLoader, totalData, numberOfRows, selectedOption } =
+      this.state;
+
     const options = (
       <Box>
         <Select
@@ -195,7 +213,8 @@ export class AdmissionsDash extends React.Component {
         />
         <Select
           className={"filterSelectGlobal"}
-          value={this.value}
+          value={selectedOption}
+          isMulti={true}
           onChange={this.changeStudentStage}
           options={allStagesOptions}
           placeholder={"Get Student Details By Stage"}
@@ -323,6 +342,8 @@ export class AdmissionsDash extends React.Component {
   async fetchStudents(value) {
     const { fetchPendingInterviewDetails, loggedInUser } = this.props;
     const { numberOfRows } = this.state;
+    var concatinateStage =
+      this.stage === null ? this.stage : this.stage.join(",");
     try {
       this.props.fetchingStart();
       let response;
@@ -357,7 +378,7 @@ export class AdmissionsDash extends React.Component {
                 {
                   params: {
                     dataType: this.dataType,
-                    stage: this.stage,
+                    stage: concatinateStage,
                     from: this.state.fromDate,
                     to: this.toDate,
                   },

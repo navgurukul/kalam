@@ -25,9 +25,10 @@ export class StageSelect extends React.Component {
   handleChange = async (selectedValue) => {
     const { value } = selectedValue;
     const { rowMetatable } = this.props;
-    const email = rowMetatable.rowData[8];
-    const name = rowMetatable.rowData[1];
-    const campus = rowMetatable.rowData[23];
+    const email = rowMetatable.rowData[9];
+    const name = rowMetatable.rowData[2];
+    const campus = rowMetatable.rowData[24];
+
     if (value === "offerLetterSent" && campus && name && email) {
       this.setState({
         flag: true,

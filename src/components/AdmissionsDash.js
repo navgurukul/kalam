@@ -195,6 +195,8 @@ export class AdmissionsDash extends React.Component {
     const { classes, fetchPendingInterviewDetails } = this.props;
     const { sData, data, showLoader, totalData, numberOfRows, selectedOption } =
       this.state;
+    var concatinateStage =
+      this.stage === null ? this.stage : this.stage.join(",");
 
     const options = (
       <Box>
@@ -261,7 +263,7 @@ export class AdmissionsDash extends React.Component {
           params={{
             params: {
               dataType: this.dataType,
-              stage: this.stage,
+              stage: concatinateStage,
               from: this.state.fromDate,
               to: this.toDate,
             },
@@ -289,7 +291,7 @@ export class AdmissionsDash extends React.Component {
             params={{
               params: {
                 dataType: this.dataType,
-                stage: this.stage,
+                stage: concatinateStage,
                 from: this.state.fromDate,
                 to: this.toDate,
               },
@@ -368,7 +370,7 @@ export class AdmissionsDash extends React.Component {
             ? await axios.get(`${url}&limit=${numberOfRows}&page=0`, {
                 params: {
                   dataType: this.dataType,
-                  stage: this.stage,
+                  stage: concatinateStage,
                   from: this.state.fromDate,
                   to: this.toDate,
                 },

@@ -61,7 +61,7 @@ const ColumnTransitions = {
       return (
         <StageTransitions
           studentId={value}
-          studentName={rowMeta.rowData[1]}
+          studentName={rowMeta.rowData[2]}
           dataType={"columnTransition"}
         />
       );

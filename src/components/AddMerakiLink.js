@@ -27,14 +27,22 @@ const styles = (theme) => ({
 export class AddMerakiLink extends React.Component {
   creatMerakiLink = async (studentId) => {
     const { updateValue } = this.props;
-    const response = await axios
-      .get(`${baseUrl}/partners/${studentId}/meraki-link`)
+    const response = await axios({
+      method: "put",
+      url: `${baseUrl}partners/${studentId}/merakiLink`,
+      headers: {
+        platform: "android",
+      },
+    })
       .then((response) => {
         this.props.enqueueSnackbar("Meraki link successfully created", {
           variant: "success",
         });
-        const data = response.data.data[0].meraki_link;
+        console.log(response, "response");
+        const data = response.data.data.meraki_link;
+        console.log(data, "data");
         updateValue(data);
+        console.log(this.props.updateValue, "updateValue");
       })
       .catch((e) => {
         this.props.enqueueSnackbar(`Something went wrong`, {
@@ -42,6 +50,7 @@ export class AddMerakiLink extends React.Component {
         });
       });
   };
+
   render = () => {
     const { isValue, studentId } = this.props;
     const { classes } = this.props;

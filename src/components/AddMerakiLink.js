@@ -27,49 +27,30 @@ const styles = (theme) => ({
 export class AddMerakiLink extends React.Component {
   creatMerakiLink = async (studentId) => {
     const { updateValue } = this.props;
-    // const response = await axios
-    //   .put(`${baseUrl}partners/${studentId}/merakiLink`, {
-    //     headers: {
-    //       platform: "web",
-    //     },
-    //   })
-    //   .then((response) => {
-    //     this.props.enqueueSnackbar("Meraki link successfully created", {
-    //       variant: "success",
-    //     });
-    //     console.log(response, "response");
-    //     const data = response.data.data[0].meraki_link;
-    //     updateValue(data);
-    //     console.log(this.props.updateValue, "updateValue");
-    //   })
-    //   .catch((e) => {
-    //     this.props.enqueueSnackbar(`Something went wrong`, {
-    //       variant: "error",
-    //     });
-    //   });
-    try {
-      const { data } = await axios({
-        method: "put",
-        url: `${baseUrl}partners/${studentId}/merakiLink`,
-        headers: {
-          platform: "android",
-        },
+    const response = await axios({
+      method: "put",
+      url: `${baseUrl}partners/${studentId}/merakiLink`,
+      headers: {
+        platform: "android",
+      },
+    })
+      .then((response) => {
+        this.props.enqueueSnackbar("Meraki link successfully created", {
+          variant: "success",
+        });
+        console.log(response, "response");
+        const data = response.data.data.meraki_link;
+        console.log(data, "data");
+        updateValue(data);
+        console.log(this.props.updateValue, "updateValue");
+      })
+      .catch((e) => {
+        this.props.enqueueSnackbar(`Something went wrong`, {
+          variant: "error",
+        });
       });
-
-      console.log(data.data.meraki_link);
-      this.props.enqueueSnackbar("Meraki link successfully created", {
-        variant: "success",
-      });
-
-      const updatedData = data.data.meraki_link;
-      updateValue(updatedData);
-      console.log(this.props.updateValue, "updateValue");
-    } catch (err) {
-      this.props.enqueueSnackbar(`Something went wrong`, {
-        variant: "error",
-      });
-    }
   };
+
   render = () => {
     const { isValue, studentId } = this.props;
     const { classes } = this.props;

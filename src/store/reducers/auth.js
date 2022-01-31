@@ -13,7 +13,6 @@ export default (
         isFetching: action.isFetchingStatus,
       });
     case "LOGIN":
-      window.location.reload(false);
       return Object.assign({}, state, {
         isAuthenticated: localStorage.getItem("jwt") ? true : false,
         loggedInUser: JSON.parse(localStorage.getItem("user")),

@@ -152,7 +152,6 @@ export class DuplicateStudents extends React.Component {
         },
       })
       .then(async (data) => {
-        console.log("data", data);
         const response = data.data.data;
         if (response.alreadyGivenTest) {
           this.setState({ data: response.data });
@@ -189,9 +188,7 @@ export class DuplicateStudents extends React.Component {
     let lastName;
     const details = window.location.href.split("Name=")[1];
     const name = details.split("&Number=")[0];
-    console.log("name", name);
     const splitedName = name.match(/[A-Z][a-z]+/g);
-    console.log("splitedName", splitedName);
     const pendingInterviewStage = details
       .split("&Number=")[1]
       .split("&Stage=")[1];

@@ -181,7 +181,6 @@ export class LandingPage extends React.Component {
       })
       .then(async (data) => {
         const response = data.data.data;
-        console.log("response", response);
         if (response.alreadyGivenTest) {
           this.props.history.push({
             pathname: `/check_duplicate/Name=${first_name}${middle_name}${last_name}&Number=${mobileNumber}&Stage=${response.pendingInterviewStage}`,
@@ -193,9 +192,9 @@ export class LandingPage extends React.Component {
         } else {
           const response = await this.generateTestLink();
           const params = {
-            firstName: first_name,
-            middleName: middle_name,
-            lastName: last_name,
+            firstName: firstName,
+            middleName: middleName,
+            lastName: lastName,
             mobileNumber: mobileNumber,
           };
           const queryString = Object.keys(params)

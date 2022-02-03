@@ -15,23 +15,43 @@ export class OwnerSelect extends React.Component {
       const { change, rowMetaTable } = this.props;
       const { value } = selectedValue;
       const { columnIndex, rowData } = rowMetaTable;
-      const whoAssign = rowData[8].email.split("@")[0];
-      const stage = rowData[0];
-      const studentId = rowData[5];
-      axios
-        .post(`${baseUrl}students/assign_feedback_work`, {
-          who_assign: whoAssign,
-          to_assign: value,
-          student_stage: stage,
-          student_id: studentId,
-        })
-        .then(() => {
-          this.props.enqueueSnackbar(
-            `successfully Assigned work for ${value}`,
-            { variant: "success" }
-          );
-          change(value, columnIndex);
-        });
+      if (rowData[8]) {
+        const whoAssign = rowData[8].email.split("@")[0];
+        const stage = rowData[0];
+        const studentId = rowData[5];
+        axios
+          .post(`${baseUrl}students/assign_feedback_work`, {
+            who_assign: whoAssign,
+            to_assign: value,
+            student_stage: stage,
+            student_id: studentId,
+          })
+          .then(() => {
+            this.props.enqueueSnackbar(
+              `successfully Assigned work for ${value}`,
+              { variant: "success" }
+            );
+            change(value, columnIndex);
+          });
+      } else {
+        const whoAssign = JSON.parse(localStorage.getItem("user")).mail_id;
+        const stage = rowData[0];
+        const studentId = rowData[5];
+        axios
+          .post(`${baseUrl}students/assign_feedback_work`, {
+            who_assign: whoAssign,
+            to_assign: value,
+            student_stage: stage,
+            student_id: studentId,
+          })
+          .then(() => {
+            this.props.enqueueSnackbar(
+              `successfully Assigned work for ${value}`,
+              { variant: "success" }
+            );
+            change(value, columnIndex);
+          });
+      }
     } catch (e) {
       this.props.enqueueSnackbar(e, { variant: "error" });
     }
@@ -39,9 +59,11 @@ export class OwnerSelect extends React.Component {
 
   render = () => {
     const { value, currentValue } = this.props;
-    const allUserOptions =  JSON.parse(localStorage.getItem("owners")).map((x) => {
-      return { label: x, value: x };
-    });
+    const allUserOptions = JSON.parse(localStorage.getItem("owners")).map(
+      (x) => {
+        return { label: x, value: x };
+      }
+    );
     let selectedValue = { value: null, label: null };
 
     if (value) {

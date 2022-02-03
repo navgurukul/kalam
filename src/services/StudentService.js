@@ -48,7 +48,7 @@ const allTagsOptions = Object.keys(allTagsForOnlineClass).map((x) => {
 });
 
 const user = window.localStorage.user
-  ? JSON.parse(window.localStorage.user).mail_id
+  ? JSON.parse(window.localStorage.user).email
   : null;
 
 const ColumnTransitions = {
@@ -89,8 +89,9 @@ const nameColumn = {
     customBodyRender: (rowData, rowMeta, updateValue) => {
       const name = rowData ? rowData : "Update Name";
       const user = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).mail_id
+        ? JSON.parse(window.localStorage.user).email
         : null;
+
       if (permissions.updateStudentName.indexOf(user) > -1) {
         return (
           <UpdateStudentName
@@ -215,7 +216,7 @@ const dashboardCampusColumn = {
     sort: true,
     display: false,
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (permissions.updateStage.indexOf(rowMeta.rowData[17]) > -1) {
+      if (permissions.updateStage.indexOf(user) > -1) {
         return (
           <UpdateCampus
             allOptions={campus}
@@ -260,7 +261,7 @@ const campusColumn = {
     display: false,
     filterOptions: campus.map((campus) => campus.name),
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (permissions.updateStage.indexOf(rowMeta.rowData[17]) > -1) {
+      if (permissions.updateStage.indexOf(user) > -1) {
         return (
           <UpdateCampus
             allOptions={campus}
@@ -303,7 +304,7 @@ const dashboardDonorColumn = {
       },
     },
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (permissions.updateStage.indexOf(rowMeta.rowData[17]) > -1) {
+      if (permissions.updateStage.indexOf(user) > -1) {
         return (
           <UpdateDonor
             allOptions={donor}
@@ -335,7 +336,7 @@ const donorColumn = {
     display: false,
     filterOptions: donor.map((donor) => donor.name),
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (permissions.updateStage.indexOf(rowMeta.rowData[17]) > -1) {
+      if (permissions.updateStage.indexOf(user) > -1) {
         return (
           <UpdateDonor
             allOptions={donor}
@@ -367,7 +368,7 @@ const stageColumn = {
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
       const user = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).mail_id
+        ? JSON.parse(window.localStorage.user).email
         : null;
 
       const isCampusPathname = window.location.pathname.indexOf("campus");
@@ -443,7 +444,7 @@ const addedAtColumn = {
     sort: true,
     customBodyRender: (value, rowMeta) => {
       const user = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).mail_id
+        ? JSON.parse(window.localStorage.user).email
         : null;
 
       if (typeof rowMeta.rowData[0] === "number") {
@@ -707,7 +708,7 @@ const stageColumnTransition = {
     sort: true,
     customBodyRender: (rowData, rowMeta) => {
       const user = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).mail_id
+        ? JSON.parse(window.localStorage.user).email
         : null;
       return permissions.updateStage.indexOf(user) > -1 &&
         keysCampusStageOfLearning.indexOf(rowData) > -1 ? (
@@ -788,9 +789,10 @@ const ownerColumnTransition = {
     customBodyRender: (rowData, rowMeta, updateValue) => {
       const ifExistingFeedback =
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      const permissionForOwner = permissions.updateStage.indexOf(user) > -1;
       return (
         <div>
-          {ifExistingFeedback ? (
+          {ifExistingFeedback && permissionForOwner ? (
             <OwnerSelect
               currentValue={"Saquib"}
               rowMetaTable={rowMeta}
@@ -1237,7 +1239,7 @@ const dashboardPartnerNameColumn = {
       },
     },
     customBodyRender: (value, rowMeta, updateValue) => {
-      if (!value && permissions.updateStage.indexOf(rowMeta.rowData[17]) > -1) {
+      if (!value && permissions.updateStage.indexOf(user) > -1) {
         return (
           <UpdatePartner
             studentId={rowMeta.rowData[0]}
@@ -1261,7 +1263,7 @@ const partnerNameColumn = {
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
       const user = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).mail_id
+        ? JSON.parse(window.localStorage.user).email
         : null;
       if (!value && permissions.updateStage.indexOf(user) > -1) {
         return (

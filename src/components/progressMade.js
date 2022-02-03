@@ -25,6 +25,8 @@ import DashboardPage from "./Dashboard";
 import CollapseStudentData from "./collapseData";
 import Tooltip from "@material-ui/core/Tooltip";
 import StudentService from "../services/StudentService";
+import PieRechartData from "./GraphPage";
+import GraphPage from "./GraphPage";
 
 const baseURL = process.env.API_URL;
 
@@ -75,6 +77,7 @@ class ProgressMadeForPartner extends Component {
       partnerName: "",
       progress: true,
       tabular: false,
+      graph: false,
       "Selected for Navgurukul One-year Fellowship": "",
       "Need Action": "",
       "Need Your Help": "",
@@ -115,6 +118,7 @@ class ProgressMadeForPartner extends Component {
           data: res.data.data,
           progress: true,
           tabular: false,
+          graph: false,
         });
         this.whatsAppMessage();
       });
@@ -147,6 +151,15 @@ class ProgressMadeForPartner extends Component {
     this.setState({
       tabular: true,
       progress: false,
+      graph: false,
+    });
+  };
+
+  graphData = () => {
+    this.setState({
+      tabular: false,
+      progress: false,
+      graph: true,
     });
   };
 
@@ -179,10 +192,7 @@ class ProgressMadeForPartner extends Component {
         <CssBaseline />
         <Container className={classes.container}>
           <Grid item xs={12} style={{ marginBottom: 40 }}>
-            <Typography variant="h4">
-              {" "}
-              Hello {partnerName}
-            </Typography>
+            <Typography variant="h4"> Hello {partnerName}</Typography>
           </Grid>
           <Grid item xs={12}>
             <ButtonGroup
@@ -192,6 +202,7 @@ class ProgressMadeForPartner extends Component {
             >
               <Button onClick={this.progressMade}>Progress Made</Button>
               <Button onClick={this.tabularData}>Tabular Data</Button>
+              <Button onClick={this.graphData}>Graph Data</Button>
             </ButtonGroup>
           </Grid>
           {progress && (
@@ -275,6 +286,11 @@ class ProgressMadeForPartner extends Component {
         {tabular && (
           <DashboardPage
             displayData={StudentService.columns["partnerData"]}
+            url={`partners/${this.props.match.params.partnerId}/students`}
+          />
+        )}
+        {this.state.graph && (
+          <GraphPage
             url={`partners/${this.props.match.params.partnerId}/students`}
           />
         )}

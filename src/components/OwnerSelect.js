@@ -18,7 +18,9 @@ export class OwnerSelect extends React.Component {
       if (rowData[8]) {
         const whoAssign = rowData[8].email.split("@")[0];
         const stage = rowData[0];
-        const studentId = rowData[5];
+        console.log("first condition", rowData);
+
+        const studentId = rowData[7];
         axios
           .post(`${baseUrl}students/assign_feedback_work`, {
             who_assign: whoAssign,
@@ -35,8 +37,12 @@ export class OwnerSelect extends React.Component {
           });
       } else {
         const whoAssign = JSON.parse(localStorage.getItem("user")).mail_id;
+
         const stage = rowData[0];
-        const studentId = rowData[5];
+        const studentId = rowData[7];
+        console.log("second condition", rowData);
+
+        console.log(rowData[5], "rowData[5]");
         axios
           .post(`${baseUrl}students/assign_feedback_work`, {
             who_assign: whoAssign,

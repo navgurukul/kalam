@@ -38,7 +38,7 @@ export class StudentFeedback extends React.Component {
       const { change, rowMetaTable } = this.props;
       const { rowData, columnIndex } = rowMetaTable;
       const studentId = rowData[5];
-      const userId = rowData[8].id;
+      const userId = rowData[6].id;
       const dataURL = `${baseUrl}students/feedback/${studentId}/${userId}`;
       await axios
         .post(dataURL, {
@@ -112,9 +112,11 @@ export class StudentFeedback extends React.Component {
   render = () => {
     const { classes, feedback, rowMetaTable } = this.props;
     const { rowData } = rowMetaTable;
+    console.log(rowData, "I am rowData");
+    console.log(rowData[6], "I am rowData[8]");
 
-    const user = rowData[8]
-      ? "@" + rowData[8].user_name.toString().split(" ").join("").toLowerCase()
+    const user = rowData[6]
+      ? "@" + rowData[6].user_name.toString().split(" ").join("").toLowerCase()
       : "guest_id";
     return (
       <Fragment>

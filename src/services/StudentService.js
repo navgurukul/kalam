@@ -58,11 +58,32 @@ const ColumnTransitions = {
     filter: false,
     sort: false,
     customBodyRender: (value, rowMeta) => {
+      console.log(value, "value");
       return (
         <StageTransitions
           studentId={value}
           studentName={rowMeta.rowData[2]}
           dataType={"columnTransition"}
+        />
+      );
+    },
+  },
+};
+
+const ColumnTransitionForStudentDashboard = {
+  name: "id",
+  label: "Transitions",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (value, rowMeta) => {
+      console.log(rowMeta.rowData, "rowData, meta");
+      console.log(value, "value");
+      return (
+        <StageTransitions
+          studentId={value}
+          studentName={rowMeta.rowData[1]}
+          dataType={"columnTransition2"}
         />
       );
     },
@@ -216,6 +237,10 @@ const dashboardCampusColumn = {
     sort: true,
     display: false,
     customBodyRender: (value, rowMeta, updateValue) => {
+      const user = window.localStorage.user
+        ? JSON.parse(window.localStorage.user).email
+        : null;
+
       if (permissions.updateStage.indexOf(user) > -1) {
         return (
           <UpdateCampus
@@ -437,6 +462,40 @@ const onlineClassColumn = {
 };
 
 const addedAtColumn = {
+  name: "created_at",
+  label: "When",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (value, rowMeta) => {
+      const user = window.localStorage.user
+        ? JSON.parse(window.localStorage.user).email
+        : null;
+
+      if (typeof rowMeta.rowData[0] === "number") {
+        return (
+          <Moment format="D MMM YYYY" withTitle>
+            {value}
+          </Moment>
+        );
+      } else if (
+        permissions.updateStage.indexOf(user) > -1 &&
+        (rowMeta.rowData[0].indexOf("Joined") > -1 ||
+          keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
+      ) {
+        return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
+      }
+      return (
+        <Moment format="D MMM YYYY" withTitle>
+          {value}
+        </Moment>
+      );
+    },
+  },
+};
+
+//addedAtColumnCampus
+const addedAtColumnCampus = {
   name: "created_at",
   label: "Start Date",
   options: {
@@ -884,6 +943,24 @@ const deadlineColumnTrnasition = {
 };
 
 const finishedColumnTransition = {
+  name: "finished_at",
+  label: "Finished",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const ifExistingFinishedDate = rowData;
+      return ifExistingFinishedDate ? (
+        <Moment format="D MMM YYYY" withTitle>
+          {rowData}
+        </Moment>
+      ) : null;
+    },
+  },
+};
+
+//finishedColumnTransitionCampus
+const finishedColumnTransitionCampus = {
   name: "finished_at",
   label: "End Date",
   options: {
@@ -1391,8 +1468,6 @@ const StudentService = {
     columnTransition: [
       stageColumnTransition,
       addedAtColumn,
-      finishedColumnTransition,
-      deadlineColumnTrnasition,
       feedbackColumnTransition,
       ownerColumnTransition,
       statusColumnTransition,
@@ -1400,6 +1475,8 @@ const StudentService = {
       loggedInUser,
       AudioPlayer,
       transitionIdColumn,
+      deadlineColumnTrnasition,
+      finishedColumnTransition,
     ],
     columnStudentStatus: [
       ColumnTransitionsStatus,
@@ -1414,6 +1491,19 @@ const StudentService = {
       linkForOnlineTestColumn,
       campusColumn,
       donorColumn,
+    ],
+    columnTransition2: [
+      stageColumnTransition,
+      addedAtColumnCampus,
+      finishedColumnTransitionCampus,
+      deadlineColumnTrnasition,
+      feedbackColumnTransition,
+      ownerColumnTransition,
+      statusColumnTransition,
+      timeColumnTransition,
+      loggedInUser,
+      AudioPlayer,
+      transitionIdColumn,
     ],
   },
   columnMyReports: [
@@ -1451,7 +1541,7 @@ const StudentService = {
     campusColumn,
   ],
   CampusData: [
-    ColumnTransitions,
+    ColumnTransitionForStudentDashboard,
     nameColumn,
     numberColumn,
     AltNumberColumn,

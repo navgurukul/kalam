@@ -438,7 +438,7 @@ const onlineClassColumn = {
 
 const addedAtColumn = {
   name: "created_at",
-  label: "Start Date",
+  label: "When?",
   options: {
     filter: false,
     sort: true,
@@ -885,7 +885,7 @@ const deadlineColumnTrnasition = {
 
 const finishedColumnTransition = {
   name: "finished_at",
-  label: "End Date",
+  label: "Finished",
   options: {
     filter: false,
     sort: true,
@@ -1391,12 +1391,12 @@ const StudentService = {
     columnTransition: [
       stageColumnTransition,
       addedAtColumn,
-      finishedColumnTransition,
-      deadlineColumnTrnasition,
       feedbackColumnTransition,
       ownerColumnTransition,
       statusColumnTransition,
       timeColumnTransition,
+      deadlineColumnTrnasition,
+      finishedColumnTransition,
       loggedInUser,
       AudioPlayer,
       transitionIdColumn,

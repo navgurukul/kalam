@@ -498,6 +498,7 @@ const addedAtColumn = {
 const addedAtColumnCampus = {
   name: "created_at",
   label: "Start Date",
+  label: "When?",
   options: {
     filter: false,
     sort: true,
@@ -1472,6 +1473,8 @@ const StudentService = {
       ownerColumnTransition,
       statusColumnTransition,
       timeColumnTransition,
+      deadlineColumnTrnasition,
+      finishedColumnTransition,
       loggedInUser,
       AudioPlayer,
       transitionIdColumn,

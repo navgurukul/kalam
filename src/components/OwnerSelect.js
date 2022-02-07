@@ -15,12 +15,12 @@ export class OwnerSelect extends React.Component {
       const { change, rowMetaTable } = this.props;
       const { value } = selectedValue;
       const { columnIndex, rowData } = rowMetaTable;
-      if (rowData[8]) {
-        const whoAssign = rowData[8].email.split("@")[0];
+      if (rowData[6]) {
+        const whoAssign = rowData[6].email.split("@")[0];
         const stage = rowData[0];
         console.log("first condition", rowData);
+        const studentId = rowData[5];
 
-        const studentId = rowData[7];
         axios
           .post(`${baseUrl}students/assign_feedback_work`, {
             who_assign: whoAssign,

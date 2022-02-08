@@ -12,7 +12,13 @@ export class StatusSelect extends React.Component {
   handleChange = (selectedValue) => {
     try {
       const { change, rowMetaTable } = this.props;
-      const studentId = rowMetaTable.rowData[5];
+      var studentId;
+      if (window.location.pathname.includes("/campus")) {
+        studentId = rowMetaTable.rowData[7];
+      } else {
+        studentId = rowMetaTable.rowData[5];
+      }
+
       const columnIndex = rowMetaTable.columnIndex;
       const stage = rowMetaTable.rowData[0];
       const { value } = selectedValue;

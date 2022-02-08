@@ -15,43 +15,26 @@ export class OwnerSelect extends React.Component {
       const { change, rowMetaTable } = this.props;
       const { value } = selectedValue;
       const { columnIndex, rowData } = rowMetaTable;
-      if (rowData[8]) {
-        const whoAssign = rowData[8].email.split("@")[0];
-        const stage = rowData[0];
-        const studentId = rowData[5];
-        axios
-          .post(`${baseUrl}students/assign_feedback_work`, {
-            who_assign: whoAssign,
-            to_assign: value,
-            student_stage: stage,
-            student_id: studentId,
-          })
-          .then(() => {
-            this.props.enqueueSnackbar(
-              `successfully Assigned work for ${value}`,
-              { variant: "success" }
-            );
-            change(value, columnIndex);
-          });
-      } else {
-        const whoAssign = JSON.parse(localStorage.getItem("user")).mail_id;
-        const stage = rowData[0];
-        const studentId = rowData[5];
-        axios
-          .post(`${baseUrl}students/assign_feedback_work`, {
-            who_assign: whoAssign,
-            to_assign: value,
-            student_stage: stage,
-            student_id: studentId,
-          })
-          .then(() => {
-            this.props.enqueueSnackbar(
-              `successfully Assigned work for ${value}`,
-              { variant: "success" }
-            );
-            change(value, columnIndex);
-          });
-      }
+
+      const whoAssign = JSON.parse(localStorage.getItem("user")).email;
+      const stage = rowData[0];
+      const studentId = rowData[7];
+      console.log("second condition", rowData);
+      console.log(rowData[5], "rowData[5]");
+      axios
+        .post(`${baseUrl}students/assign_feedback_work`, {
+          who_assign: whoAssign,
+          to_assign: value,
+          student_stage: stage,
+          student_id: studentId,
+        })
+        .then(() => {
+          this.props.enqueueSnackbar(
+            `successfully Assigned work for ${value}`,
+            { variant: "success" }
+          );
+          change(value, columnIndex);
+        });
     } catch (e) {
       this.props.enqueueSnackbar(e, { variant: "error" });
     }

@@ -51,6 +51,7 @@ const user = window.localStorage.user
 	? JSON.parse(window.localStorage.user).email
 	: null;
 
+//column transitions for student dashboard
 const ColumnTransitions = {
 	name: "id",
 	label: "Transitions",
@@ -67,6 +68,308 @@ const ColumnTransitions = {
 			);
 		},
 	},
+  name: "id",
+  label: "Transitions",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (value, rowMeta) => {
+      console.log(value, "value");
+      return (
+        <StageTransitions
+          studentId={value}
+          studentName={rowMeta.rowData[2]}
+          dataType={"columnTransition"}
+        />
+      );
+    },
+  },
+};
+
+//columns related to student dashboard's transitions
+/*
+ stageColumnTransition,
+      addedAtColumn,
+      feedbackColumnTransition,
+      ownerColumnTransition,
+      statusColumnTransition,
+      timeColumnTransition,
+      loggedInUser,
+      AudioPlayer,
+      transitionIdColumn,
+      deadlineColumnTrnasition,
+      finishedColumnTransition,
+*/
+
+const stageColumnTransition = {
+  name: "to_stage",
+  label: "Stage",
+  options: {
+    filter: true,
+    sort: true,
+    customBodyRender: (rowData, rowMeta) => {
+      const user = window.localStorage.user
+        ? JSON.parse(window.localStorage.user).email
+        : null;
+      return permissions.updateStage.indexOf(user) > -1 &&
+        keysCampusStageOfLearning.indexOf(rowData) > -1 ? (
+        <div>
+          <DeleteRow transitionId={rowMeta.rowData[10]} />
+          {allStages[rowData]}
+        </div>
+      ) : (
+        allStages[rowData]
+      );
+    },
+  },
+};
+
+const addedAtColumn = {
+  name: "created_at",
+  label: "When",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (value, rowMeta) => {
+      const user = window.localStorage.user
+        ? JSON.parse(window.localStorage.user).email
+        : null;
+
+      if (typeof rowMeta.rowData[0] === "number") {
+        return (
+          <Moment format="D MMM YYYY" withTitle>
+            {value}
+          </Moment>
+        );
+      } else if (
+        permissions.updateStage.indexOf(user) > -1 &&
+        (rowMeta.rowData[0].indexOf("Joined") > -1 ||
+          keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
+      ) {
+        return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
+      }
+      return (
+        <Moment format="D MMM YYYY" withTitle>
+          {value}
+        </Moment>
+      );
+    },
+  },
+};
+
+const feedbackColumnTransition = {
+  name: "feedback",
+  label: "Feedback",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const ifExistingFeedback =
+        rowData || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      return (
+        <div>
+          {ifExistingFeedback ? (
+            <div>
+              <StudentFeedback
+                rowMetaTable={rowMeta}
+                feedback={rowData}
+                change={(event) => updateValue(event)}
+              />
+              {rowData
+                ? rowData
+                    .split("\n\n")
+                    .map((item, i) => <p key={i}> {item} </p>)
+                : null}
+            </div>
+          ) : null}
+        </div>
+      );
+    },
+  },
+};
+
+const ownerColumnTransition = {
+  name: "to_assign",
+  label: "Owner",
+  options: {
+    filter: false,
+    sort: true,
+    display: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const ifExistingFeedback =
+        feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      const permissionForOwner = permissions.updateStage.indexOf(user) > -1;
+      return (
+        <div>
+          {ifExistingFeedback && permissionForOwner ? (
+            <OwnerSelect
+              currentValue={"Saquib"}
+              rowMetaTable={rowMeta}
+              value={rowData}
+              change={(event) => updateValue(event)}
+            />
+          ) : null}
+        </div>
+      );
+    },
+  },
+};
+
+const statusColumnTransition = {
+  name: "state",
+  label: "Status",
+  options: {
+    filter: false,
+    sort: true,
+    display: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const feedbackableStage =
+        feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      if (rowMeta.rowData[0] === "selectedButNotJoined") {
+        return null;
+      } else if ((rowData || rowMeta.rowData[3]) && feedbackableStage) {
+        return (
+          <div>
+            <StatusSelect
+              feedbackableStagesData={feedbackableStagesData}
+              rowMetaTable={rowMeta}
+              state={rowData}
+              change={(event) => updateValue(event)}
+            />
+          </div>
+        );
+      }
+      return null;
+    },
+  },
+};
+
+const timeColumnTransition = {
+  name: "student_id",
+  label: "Time",
+  options: {
+    filter: false,
+    display: false,
+  },
+};
+
+const loggedInUserColumn = {
+  name: "loggedInUser",
+  label: "Logged In User",
+  options: {
+    filter: false,
+    sort: true,
+    display: false,
+  },
+};
+
+const AudioPlayer = {
+  name: "audio_recording",
+  label: "Audio Recording",
+  options: {
+    filter: false,
+    display: false,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      const ifExistingFeedback =
+        rowMeta.rowData[2] ||
+        feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      return (
+        <div>
+          {ifExistingFeedback && value ? (
+            <AudioRecorder audioUrl={value} />
+          ) : null}
+          {ifExistingFeedback && !value ? (
+            <AudiofileUpload
+              studentId={rowMeta.rowData[5]}
+              userId={rowMeta.rowData[8] ? rowMeta.rowData[8].id : "guest_id"}
+              student_stage={rowMeta.rowData[0]}
+              change={(event) => updateValue(event)}
+              columnIndex={rowMeta.columnIndex}
+            />
+          ) : null}
+        </div>
+      );
+    },
+  },
+};
+
+const transitionIdColumn = {
+  name: "id",
+  label: "Transition Id",
+  options: {
+    viewColumns: false,
+    filter: false,
+    display: false,
+  },
+};
+
+const deadlineColumnTrnasition = {
+  name: "deadline",
+  label: "Deadline",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
+      const ifExistingDeadlineDate =
+        rowData && !rowMeta.rowData[7] && feedbackableStage;
+      if (ifExistingDeadlineDate) {
+        const deadline = feedbackableStagesData[rowMeta.rowData[0]].deadline;
+        const diff = new Date().getTime() - new Date(rowData).getTime();
+        const hours = Math.floor(diff / 1000 / 60 / 60);
+        const remainingTime = deadline - hours;
+        if (remainingTime < 0 && !rowMeta.rowData[7]) {
+          return "Your deadline is fineshed please do this work ASAP.";
+        } else if (!rowMeta.rowData[2]) {
+          return (
+            <p>
+              {" "}
+              <b>{remainingTime}</b> Hours are remaining.
+            </p>
+          );
+        }
+        return null;
+      }
+    },
+  },
+};
+
+const finishedColumnTransition = {
+  name: "finished_at",
+  label: "Finished",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const ifExistingFinishedDate = rowData;
+      return ifExistingFinishedDate ? (
+        <Moment format="D MMM YYYY" withTitle>
+          {rowData}
+        </Moment>
+      ) : null;
+    },
+  },
+};
+
+//column transitions for campus dashboard
+const ColumnTransitionForCampusDashboard = {
+  name: "id",
+  label: "Transitions",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (value, rowMeta) => {
+      console.log(rowMeta.rowData, "rowData, meta");
+      console.log(value, "value");
+      return (
+        <StageTransitions
+          studentId={value}
+          studentName={rowMeta.rowData[1]}
+          dataType={"columnTransition2"}
+        />
+      );
+    },
+  },
 };
 
 const setColumn = {
@@ -250,6 +553,51 @@ const dashboardCampusColumn = {
 			},
 		},
 	},
+  name: "campus",
+  label: "Campus",
+  options: {
+    filter: true,
+    sort: true,
+    display: false,
+    customBodyRender: (value, rowMeta, updateValue) => {
+      const user = window.localStorage.user
+        ? JSON.parse(window.localStorage.user).email
+        : null;
+
+      if (permissions.updateStage.indexOf(user) > -1) {
+        return (
+          <UpdateCampus
+            allOptions={campus}
+            value={value ? value : "No Campus Assigned"}
+            rowMetatable={rowMeta}
+            change={(event) => updateValue(event)}
+          />
+        );
+      } else {
+        return value;
+      }
+    },
+    filterType: "custom",
+    filterOptions: {
+      display: (filterlist, onChange, index, column) => {
+        return (
+          <div>
+            <label style={Lables}>Campus</label>
+            <SelectReact
+              options={[{ name: "All" }, ...campus].map((x) => {
+                return { value: x.name, label: x.name };
+              })}
+              filterList={filterlist}
+              onChange={onChange}
+              index={index}
+              column={column}
+              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
+            />
+          </div>
+        );
+      },
+    },
+  },
 };
 
 const campusColumn = {
@@ -467,6 +815,39 @@ const addedAtColumn = {
 			);
 		},
 	},
+//addedAtColumnCampus
+const addedAtColumnCampus = {
+  name: "created_at",
+  label: "Start Date",
+  label: "When?",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (value, rowMeta) => {
+      const user = window.localStorage.user
+        ? JSON.parse(window.localStorage.user).email
+        : null;
+
+      if (typeof rowMeta.rowData[0] === "number") {
+        return (
+          <Moment format="D MMM YYYY" withTitle>
+            {value}
+          </Moment>
+        );
+      } else if (
+        permissions.updateStage.indexOf(user) > -1 &&
+        (rowMeta.rowData[0].indexOf("Joined") > -1 ||
+          keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
+      ) {
+        return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
+      }
+      return (
+        <Moment format="D MMM YYYY" withTitle>
+          {value}
+        </Moment>
+      );
+    },
+  },
 };
 
 const lastUpdatedColumn = {
@@ -943,6 +1324,42 @@ const AudioPlayer = {
 			);
 		},
 	},
+//finishedColumnTransitionCampus
+const finishedColumnTransitionCampus = {
+  name: "finished_at",
+  label: "End Date",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const ifExistingFinishedDate = rowData;
+      return ifExistingFinishedDate ? (
+        <Moment format="D MMM YYYY" withTitle>
+          {rowData}
+        </Moment>
+      ) : null;
+    },
+  },
+};
+
+const loggedInUser = {
+  name: "loggedInUser",
+  label: "LoggedIn User",
+  options: {
+    filter: false,
+    display: false,
+    customBodyRender: (rowData) => {
+      if (localStorage.getItem("user")) {
+        const user = JSON.parse(localStorage.getItem("user"))
+          ? JSON.parse(localStorage.getItem("user"))
+          : {};
+
+        return user.user_name;
+      }
+
+      return "guest_username";
+    },
+  },
 };
 
 const StageColumnMyreport = {
@@ -1506,6 +1923,196 @@ const StudentService = {
 			return column;
 		});
 	},
+  columns: {
+    requestCallback: [
+      ColumnTransitions,
+      numberColumn,
+      addedAtColumn,
+      lastUpdatedColumn,
+    ],
+    softwareCourse: [
+      ColumnTransitions,
+      profileImage,
+      nameColumn,
+      setColumn,
+      cityColumn,
+      stateColumn,
+      numberColumn,
+      AltNumberColumn,
+      marksColumn,
+      EmailColumn,
+      dashboardGenderColumn,
+      stageColumn,
+      addedAtColumn,
+      lastUpdatedColumn,
+      QualificationColumn,
+      ReligionColumn,
+      CasteColumn,
+      loggedInUserColumn,
+      dashboardOwnerColumnMyreport,
+      dashboardStatusColumn,
+      deadlineColumn,
+      dashboardPartnerNameColumn,
+      onlineClassColumn,
+      ageColumn,
+      dashboardCampusColumn,
+      dashboardDonorColumn,
+    ],
+    partnerData: [
+      ColumnTransitions,
+      nameColumn,
+      setColumn,
+      cityColumn,
+      stateColumn,
+      numberColumn,
+      AltNumberColumn,
+      marksColumn,
+      EmailColumn,
+      genderColumn,
+      stageColumn,
+      addedAtColumn,
+      lastUpdatedColumn,
+      QualificationColumn,
+      ReligionColumn,
+      CasteColumn,
+      loggedInUserColumn,
+      ownerColumnMyreport,
+      statusColumn,
+      deadlineColumn,
+      onlineClassColumn,
+      ageColumn,
+      campusColumn,
+      donorColumn,
+    ],
+    columnTransition: [
+      stageColumnTransition,
+      addedAtColumn,
+      feedbackColumnTransition,
+      ownerColumnTransition,
+      statusColumnTransition,
+      timeColumnTransition,
+      loggedInUser,
+      AudioPlayer,
+      transitionIdColumn,
+      deadlineColumnTrnasition,
+      finishedColumnTransition,
+    ],
+    columnStudentStatus: [
+      ColumnTransitionsStatus,
+      nameColumn,
+      cityColumnStatus,
+      stateColumnStatus,
+      marksColumn,
+      genderColumn,
+      stageColumnStatus,
+      lastStageColumn,
+      linkForEnglishTestColumn,
+      linkForOnlineTestColumn,
+      campusColumn,
+      donorColumn,
+    ],
+    columnTransition2: [
+      stageColumnTransition,
+      addedAtColumnCampus,
+      finishedColumnTransitionCampus,
+      deadlineColumnTrnasition,
+      feedbackColumnTransition,
+      ownerColumnTransition,
+      statusColumnTransition,
+      timeColumnTransition,
+      loggedInUser,
+      AudioPlayer,
+      transitionIdColumn,
+    ],
+  },
+  columnMyReports: [
+    nameColumn,
+    StageColumnMyreport,
+    feedbackColumnMyreport,
+    statusColumnMyreport,
+    ownerColumnMyreport,
+    assignDateColumnMyreport,
+  ],
+
+  columnDanglingReports: [
+    StageColumnDanglingReport,
+    TotalFemaleDanglingReport,
+    TotalmaleDanglingReport,
+    TotalTransDanglingReport,
+    TotalUnspecifiedDanglingReport,
+    TotalDanglingReport,
+  ],
+  DonorData: [
+    ColumnTransitions,
+    nameColumn,
+    numberColumn,
+    AltNumberColumn,
+    EmailColumn,
+    genderColumn,
+    joinedDate,
+    stageColumn,
+    JobKabLagegiColumn,
+    daysPassedColumn,
+    kitneAurDin,
+    kitneDinLagenge,
+    QualificationColumn,
+    partnerNameColumn,
+    campusColumn,
+  ],
+  CampusData: [
+    ColumnTransitionForCampusDashboard,
+    nameColumn,
+    numberColumn,
+    AltNumberColumn,
+    EmailColumn,
+    joinedDate,
+    stageColumn,
+    JobKabLagegiColumn,
+    daysPassedColumn,
+    kitneAurDin,
+    kitneDinLagenge,
+    QualificationColumn,
+    partnerNameColumn,
+    donorColumn,
+    EvaluationColumn,
+    redFlagColumn,
+    navGurukulSurveyForm,
+  ],
+
+  dConvert: (x) => {
+    const getKeyByValue = (object, value) => {
+      return Object.keys(object).find((key) => object[key] === value);
+    };
+    try {
+      x.number = x["contacts"][0]["mobile"];
+    } catch (e) {
+      x.number = null;
+    }
+
+    x.gender =
+      x.gender == 1 ? "Female" : x.gender == 2 ? "Male" : "Transgender";
+    x.stage = allStages[x.stage];
+    x.marks = x.enrolmentKey[0]
+      ? parseInt(x.enrolmentKey[0].total_marks, 10)
+      : null;
+    x.marks = isNaN(x.marks) ? null : x.marks;
+    x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;
+    x.age = x.dob ? new Date().getFullYear() - +x.dob.slice(0, 4) : "NA";
+    x.studentOwner = x.feedbacks ? x.feedbacks.to_assign : x.to_assign;
+    x.caste = caste ? getKeyByValue(caste, x.caste) : caste;
+    return x;
+  },
+
+  addOptions: (columns, dataRow) => {
+    return columns.map((column) => {
+      if ("selectFilter" in column) {
+        if (column.options.indexOf(dataRow[column.field]) == -1) {
+          column.options.push(dataRow[column.field]);
+        }
+      }
+      return column;
+    });
+  },
 };
 
 export default StudentService;

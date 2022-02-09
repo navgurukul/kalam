@@ -1088,6 +1088,7 @@ const EmailColumn = {
       const emailAddress = rowData ? rowData : "Update Email";
       return (
         <UpdateEmail
+        prevEmail={emailAddress}
           email={emailAddress}
           rowMetatable={rowMeta}
           change={(event) => updateValue(event)}

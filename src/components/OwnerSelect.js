@@ -15,9 +15,12 @@ export class OwnerSelect extends React.Component {
       const { change, rowMetaTable } = this.props;
       const { value } = selectedValue;
       const { columnIndex, rowData } = rowMetaTable;
-      const whoAssign = rowData[8].email.split("@")[0];
+
+      const whoAssign = JSON.parse(localStorage.getItem("user")).email;
       const stage = rowData[0];
-      const studentId = rowData[5];
+      const studentId = rowData[7];
+      console.log("second condition", rowData);
+      console.log(rowData[5], "rowData[5]");
       axios
         .post(`${baseUrl}students/assign_feedback_work`, {
           who_assign: whoAssign,
@@ -39,9 +42,11 @@ export class OwnerSelect extends React.Component {
 
   render = () => {
     const { value, currentValue } = this.props;
-    const allUserOptions =  JSON.parse(localStorage.getItem("owners")).map((x) => {
-      return { label: x, value: x };
-    });
+    const allUserOptions = JSON.parse(localStorage.getItem("owners")).map(
+      (x) => {
+        return { label: x, value: x };
+      }
+    );
     let selectedValue = { value: null, label: null };
 
     if (value) {

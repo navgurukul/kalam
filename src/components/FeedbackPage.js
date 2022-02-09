@@ -37,8 +37,14 @@ export class StudentFeedback extends React.Component {
       this.props.fetchingStart();
       const { change, rowMetaTable } = this.props;
       const { rowData, columnIndex } = rowMetaTable;
-      const studentId = rowData[5];
-      const userId = rowData[8].id;
+      var studentId;
+
+      if (window.location.pathname.includes("/campus")) {
+        studentId = rowData[7];
+      } else {
+        studentId = rowData[5];
+      }
+      const userId = JSON.parse(localStorage.getItem("user")).id;
       const dataURL = `${baseUrl}students/feedback/${studentId}/${userId}`;
       await axios
         .post(dataURL, {
@@ -55,6 +61,7 @@ export class StudentFeedback extends React.Component {
           });
           change(this.state.feedback, columnIndex);
         });
+
       this.props.fetchingFinish();
     } catch (e) {
       console.log(e);
@@ -112,10 +119,20 @@ export class StudentFeedback extends React.Component {
   render = () => {
     const { classes, feedback, rowMetaTable } = this.props;
     const { rowData } = rowMetaTable;
-
-    const user = rowData[8]
-      ? "@" + rowData[8].user_name.toString().split(" ").join("").toLowerCase()
-      : "guest_id";
+    console.log(rowData, "I am rowData");
+    console.log(rowData[6], "I am rowData[8]");
+    var user;
+    if (localStorage.getItem("user")) {
+      user =
+        "@" +
+        JSON.parse(localStorage.getItem("user"))
+          .user_name.toString()
+          .split(" ")
+          .join("")
+          .toLowerCase();
+    } else {
+      user = "@" + "guest";
+    }
     return (
       <Fragment>
         <Box onClick={this.handleOpen}>

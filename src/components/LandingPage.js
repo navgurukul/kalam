@@ -164,6 +164,14 @@ export class LandingPage extends React.Component {
 
   isDuplicate = () => {
     const { mobileNumber, firstName, middleName, lastName } = this.state;
+    const first_name = firstName.replace(
+      firstName[0],
+      firstName[0].toUpperCase()
+    );
+    const middle_name =
+      middleName &&
+      middleName.replace(middleName[0], middleName[0].toUpperCase());
+    const last_name = lastName.replace(lastName[0], lastName[0].toUpperCase());
     axios
       .get(baseUrl + "/check_duplicate", {
         params: {
@@ -175,7 +183,7 @@ export class LandingPage extends React.Component {
         const response = data.data.data;
         if (response.alreadyGivenTest) {
           this.props.history.push({
-            pathname: `/check_duplicate/Name=${firstName}${middleName}${lastName}&Number=${mobileNumber}&Stage=${response.pendingInterviewStage}`,
+            pathname: `/check_duplicate/Name=${first_name}${middle_name}${last_name}&Number=${mobileNumber}&Stage=${response.pendingInterviewStage}`,
             state: {
               state: this.state,
               data: response.data,

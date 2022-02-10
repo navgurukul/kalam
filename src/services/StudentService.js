@@ -732,7 +732,6 @@ const onlineClassColumn = {
 const addedAtColumnCampus = {
   name: "created_at",
   label: "Start Date",
-  label: "When?",
   options: {
     filter: false,
     sort: true,
@@ -1191,7 +1190,7 @@ const EmailColumn = {
       const emailAddress = rowData ? rowData : "Update Email";
       return (
         <UpdateEmail
-        prevEmail={emailAddress}
+          prevEmail={emailAddress}
           email={emailAddress}
           rowMetatable={rowMeta}
           change={(event) => updateValue(event)}

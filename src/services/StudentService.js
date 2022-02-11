@@ -173,7 +173,7 @@ const feedbackColumnTransition = {
   },
 };
 
-const ownerColumnTransition = {
+const ownerColumnTransitionDashboard = {
   name: "to_assign",
   label: "Owner",
   options: {
@@ -181,6 +181,8 @@ const ownerColumnTransition = {
     sort: true,
     display: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
+      //for admissiong dashboard student id is coming at rowMeta.rowData[7]
+
       const ifExistingFeedback =
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       const permissionForOwner = permissions.updateStage.indexOf(user) > -1;
@@ -191,6 +193,37 @@ const ownerColumnTransition = {
               currentValue={"Saquib"}
               rowMetaTable={rowMeta}
               value={rowData}
+              studentId={rowMeta.rowData[5]}
+              change={(event) => updateValue(event)}
+            />
+          ) : null}
+        </div>
+      );
+    },
+  },
+};
+
+const ownerColumnTransitionCampus = {
+  name: "to_assign",
+  label: "Owner",
+  options: {
+    filter: false,
+    sort: true,
+    display: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      //for admissiong dashboard student id is coming at rowMeta.rowData[5]
+
+      const ifExistingFeedback =
+        feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      const permissionForOwner = permissions.updateStage.indexOf(user) > -1;
+      return (
+        <div>
+          {ifExistingFeedback && permissionForOwner ? (
+            <OwnerSelect
+              currentValue={"Saquib"}
+              rowMetaTable={rowMeta}
+              value={rowData}
+              studentId={rowMeta.rowData[7]}
               change={(event) => updateValue(event)}
             />
           ) : null}
@@ -1495,7 +1528,7 @@ const StudentService = {
       stageColumnTransition,
       addedAtColumn,
       feedbackColumnTransition,
-      ownerColumnTransition,
+      ownerColumnTransitionDashboard,
       statusColumnTransition,
       timeColumnTransition,
       loggedInUser,
@@ -1524,7 +1557,7 @@ const StudentService = {
       finishedColumnTransitionCampus,
       deadlineColumnTrnasition,
       feedbackColumnTransition,
-      ownerColumnTransition,
+      ownerColumnTransitionCampus,
       statusColumnTransition,
       timeColumnTransition,
       loggedInUser,

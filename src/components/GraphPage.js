@@ -20,116 +20,26 @@ class GraphPage extends React.Component {
   constructor() {
     super();
     this.state = {
-      data: {
-        note: "Testing our graph",
-        noOfStudentsWithMilestone: 0,
-        noOfStudentsWithOutMilestone: 52,
-        totalStudents: 52,
-        graphData: [
-          {
-            name: "Selected & Joining Awaited",
-            value: 0,
-            studentNames: [],
-            percentage: 0,
-          },
-          {
-            name: "Offer Letter Sent",
-            value: 10,
-            studentNames: [],
-            percentage: 0,
-          },
-          {
-            name: "Pending Travel Plans",
-            value: 0,
-            studentNames: [],
-            percentage: 0,
-          },
-          {
-            name: "Finalized Travel Plans",
-            value: 0,
-            studentNames: [],
-            percentage: 0,
-          },
-          {
-            name: "Deferred Joining",
-            value: 10,
-            studentNames: ["Neha Nayan Randhavan "],
-            percentage: 100,
-          },
-          {
-            name: "Algebra Interview Pending ",
-            value: 20,
-            studentNames: [],
-            percentage: 0,
-          },
-          {
-            name: "English Interview Pending",
-            value: 30,
-            studentNames: [
-              "Neha Nayan Randhavan",
-              "Vaibhav Magar",
-              "Krithiv Tester",
-              "Krithiv",
-              "Random1 ",
-              "Neha Nayan Randhavan",
-              "Vaibhav Magar",
-              "Krithiv Tester",
-              "Krithiv",
-              "Random1 ",
-            ],
-            percentage: 0,
-          },
-          {
-            name: "Culture Fit Interview Pending",
-            value: 10,
-            studentNames: [],
-            percentage: 0,
-          },
-          {
-            name: "Pending Parent Conversations",
-            value: 10,
-            studentNames: [
-              "Neha Nayan Randhavan",
-              "Vaibhav Magar",
-              "Krithiv Tester",
-              "Krithiv, Random1 ",
-            ],
-            percentage: 0,
-          },
-          {
-            name: "Became Disinterested",
-            value: 10,
-            studentNames: [
-              "Neha Nayan Randhavan",
-              "Vaibhav Magar",
-              "Krithiv Tester",
-              "Krithiv, Random1 ",
-            ],
-            percentage: 100,
-          },
-          {
-            name: "Algebra Interview Pending ",
-            value: 0,
-            studentNames: [],
-            percentage: 0,
-          },
-        ],
-      },
+      data: null,
+      partnerId: window.location.pathname.split("/")[2],
     };
   }
 
-  // componentDidMount() {
-  //   axios.get(`${baseUrl}${this.props.url}`).then((response) => {
-  //     this.setState(
-  //       {
-  //         data: response.data.data,
-  //       },
-  //       () => {
-  //         console.log(this.state.data, "datatatata");
-  //       }
-  //     );
-  //   });
-  // }
+  componentDidMount() {
+    axios
+      .get(`${baseUrl}partners/graph/progress_made/${this.state.partnerId}`)
+      .then((response) => {
+        console.log("response.data.data", response.data.data);
+        // this.setState(
+        //   {
+        //     data: response.data.data,
+        //   },
+        //   () => {
+        //     console.log(this.state.data, "datatatata");
+        //   }
+        // );
+      });
+  }
 
   /*
     {
@@ -157,10 +67,14 @@ class GraphPage extends React.Component {
     };
   };
   render() {
+    const partnerId = window.location.pathname.split("/")[2];
+    // const { partnerId } = this.props;
+    console.log(partnerId, "partnerId");
     if (this.state.data) {
       const { graphData, note } = this.state.data;
 
       console.log(graphData, "graphData");
+
       return (
         <Container maxWidth="md">
           <PieChart

@@ -20,6 +20,7 @@ export default (
     case "LOGOUT": {
       localStorage.removeItem("jwt");
       localStorage.removeItem("user");
+      localStorage.removeItem("permissions");
       return Object.assign({}, state, {
         isAuthenticated: false,
         loggedInUser: null,

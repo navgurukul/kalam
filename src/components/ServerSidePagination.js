@@ -6,6 +6,7 @@ import { withRouter } from "react-router-dom";
 import axios from "axios";
 import Loader from "./Loader";
 import SearchBar from "./SearchBar";
+import { permissions } from "../config";
 
 const baseURL = process.env.API_URL;
 
@@ -144,6 +145,13 @@ class ServerSidePagination extends React.Component {
 
   render() {
     const { page, isData, filterColumns, newColumns } = this.state;
+    const user = window.localStorage.user
+      ? JSON.parse(window.localStorage.user).email
+      : null;
+    if (permissions.permissionsView.indexOf(user) > -1) {
+      localStorage.setItem("permissions", JSON.stringify(permissions));
+    }
+
     const { data, totalData, setNumbersOfRows, sortChange, numberOfRows } =
       this.props;
     const options = {

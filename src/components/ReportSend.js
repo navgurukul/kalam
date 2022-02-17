@@ -3,6 +3,8 @@ import { withStyles } from "@material-ui/core/styles";
 import Select from "react-select";
 import SendIcon from "@material-ui/icons/Send";
 import AddIcon from "@material-ui/icons/Add";
+//mail icon from material icons
+import MailIcon from "@material-ui/icons/Mail";
 import {
   Typography,
   Modal,
@@ -188,6 +190,19 @@ export class AddOwner extends React.Component {
         });
     }
   };
+
+  instantReportSend = () => {
+    const { partnerId } = this.props;
+
+    axios
+      .get(`${baseUrl}emailreport/send/partner/${partnerId}`)
+      .then((data) => {
+        this.props.enqueueSnackbar(`Instant Report Sent!!!`, {
+          variant: "success",
+        });
+      });
+  };
+
   openModal = () => {
     const { partnerId } = this.props;
     this.setState({ dialogOpen: true });
@@ -221,7 +236,23 @@ export class AddOwner extends React.Component {
     const { classes } = this.props;
     return (
       <div>
-        <SendIcon onClick={this.openModal} />
+        <a target="_blank" title="Report Sending Option">
+          <SendIcon
+            style={{
+              cursor: "pointer",
+            }}
+            onClick={this.openModal}
+          />
+        </a>
+        <a target="_blank" title="Send Instant Report">
+          <MailIcon
+            style={{
+              cursor: "pointer",
+              marginLeft: "10px",
+            }}
+            onClick={this.instantReportSend}
+          />
+        </a>
         <Modal
           open={dialogOpen}
           style={{ overflow: "scroll" }}

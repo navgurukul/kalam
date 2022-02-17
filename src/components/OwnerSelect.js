@@ -12,15 +12,11 @@ const animatedComponents = makeAnimated();
 export class OwnerSelect extends React.Component {
   handleChange = (selectedValue) => {
     try {
-      const { change, rowMetaTable } = this.props;
+      const { change, rowMetaTable, studentId } = this.props;
       const { value } = selectedValue;
       const { columnIndex, rowData } = rowMetaTable;
-
       const whoAssign = JSON.parse(localStorage.getItem("user")).email;
       const stage = rowData[0];
-      const studentId = rowData[7];
-      console.log("second condition", rowData);
-      console.log(rowData[5], "rowData[5]");
       axios
         .post(`${baseUrl}students/assign_feedback_work`, {
           who_assign: whoAssign,

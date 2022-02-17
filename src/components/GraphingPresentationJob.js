@@ -63,14 +63,7 @@ class PieRechartReport extends React.Component {
         noOfStudentsWithMilestone,
         noOfStudentsWithOutMilestone,
       } = this.state.data;
-      console.log(this.state.data, "state data");
-      console.log(graphData, "graph data");
-      console.log(note, "note");
-      console.log(noOfStudentsWithMilestone, "no of students with milestone");
-      console.log(
-        noOfStudentsWithOutMilestone,
-        "no of students with out milestone"
-      );
+
       return (
         <Container maxWidth="md">
           <PieChart

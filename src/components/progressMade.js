@@ -75,9 +75,9 @@ class ProgressMadeForPartner extends Component {
     this.state = {
       data: {},
       partnerName: "",
-      progress: true,
+      progress: false,
       tabular: false,
-      graph: false,
+      graph: true,
       "Selected for Navgurukul One-year Fellowship": "",
       "Need Action": "",
       "Need Your Help": "",
@@ -100,7 +100,7 @@ class ProgressMadeForPartner extends Component {
     ];
   }
 
-  componentDidMount() {
+  progressMadeData() {
     axios
       .get(`${baseURL}partners/${this.props.match.params.partnerId}`)
       .then((res) => {
@@ -119,6 +119,30 @@ class ProgressMadeForPartner extends Component {
           progress: true,
           tabular: false,
           graph: false,
+        });
+        this.whatsAppMessage();
+      });
+  }
+
+  componentDidMount() {
+    axios
+      .get(`${baseURL}partners/${this.props.match.params.partnerId}`)
+      .then((res) => {
+        this.setState({
+          partnerName: res.data.data["name"],
+        });
+      });
+
+    axios
+      .get(
+        `${baseURL}partners/progress_made/${this.props.match.params.partnerId}`
+      )
+      .then((res) => {
+        this.setState({
+          data: res.data.data,
+          progress: false,
+          tabular: false,
+          graph: true,
         });
         this.whatsAppMessage();
       });
@@ -144,7 +168,11 @@ class ProgressMadeForPartner extends Component {
   };
 
   progressMade = () => {
-    this.componentDidMount();
+    this.setState({
+      tabular: false,
+      progress: true,
+      graph: false,
+    });
   };
 
   tabularData = () => {

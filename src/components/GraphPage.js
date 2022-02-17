@@ -13,6 +13,7 @@ import axios from "axios";
 import Container from "@material-ui/core/Container";
 import { Typography, Box } from "@material-ui/core";
 import Loader from "./Loader";
+import { allStages } from "../config/index";
 
 const baseUrl = process.env.API_URL;
 
@@ -29,36 +30,41 @@ class GraphPage extends React.Component {
     axios
       .get(`${baseUrl}partners/graph/progress_made/${this.state.partnerId}`)
       .then((response) => {
-        console.log("response.data.data", response.data.data);
-        // this.setState(
-        //   {
-        //     data: response.data.data,
-        //   },
-        //   () => {
-        //     console.log(this.state.data, "datatatata");
-        //   }
+        // const mappedData = response.data.map(
+        //   (element) => (element.name = allStages[element.name])
         // );
+        // console.log(mappedData, "mapped data");
+        const mappedData = response.data.map((item) => {
+          return {
+            name: allStages[item.name],
+            value: item.value,
+            studentNames: item.studentNames,
+            percentage: item.percentage,
+          };
+        });
+
+        this.setState({
+          data: mappedData,
+        });
+        console.log(this.state.data, "data console");
       });
   }
 
-  /*
-    {
-        name: "krithivTester",
-        
-    }
-    */
   customizeText(arg) {
-    return `${arg.valueText} ${arg.argument} (${arg.percentText})`;
+    console.log(arg, "arg");
+    return `${arg.valueText} ${arg.argument} (${(arg.percent * 100).toFixed(
+      2
+    )}%)`;
   }
 
   customizeTooltip = (pointInfo) => {
-    const { graphData } = this.state.data;
+    const graphData = this.state.data;
     console.log(this.state.data, "state data");
-
+    console.log(pointInfo, "point info");
+    console.log(graphData, "graph data");
     const studentNames = graphData.find(
       (element) => element.name === pointInfo.argument
     ).studentNames;
-    console.log(studentNames, "studentNames");
 
     return {
       text: studentNames.sort().map((studentName, index) => {
@@ -67,16 +73,17 @@ class GraphPage extends React.Component {
     };
   };
   render() {
-    const partnerId = window.location.pathname.split("/")[2];
-    // const { partnerId } = this.props;
-    console.log(partnerId, "partnerId");
     if (this.state.data) {
-      const { graphData, note } = this.state.data;
-
-      console.log(graphData, "graphData");
+      const graphData = this.state.data;
+      const note = "Progress Made Graph";
 
       return (
-        <Container maxWidth="md">
+        <Container
+          // minWidth="lg"
+          style={{
+            height: "800px",
+          }}
+        >
           <PieChart
             resolveLabelOverlapping="shift"
             id="pie"
@@ -84,13 +91,22 @@ class GraphPage extends React.Component {
             palette="Bright"
             dataSource={graphData}
             title={note}
+            style={{
+              height: "750px",
+              // margin: "100x 0px",
+            }}
           >
             <Legend
               orientation="horizontal"
               itemTextPosition="right"
               horizontalAlignment="center"
               verticalAlignment="bottom"
-              columnCount={2}
+              columnCount={4}
+              style={
+                {
+                  // marginBottom: "100px",
+                }
+              }
             >
               <Font size={16} />
             </Legend>
@@ -106,9 +122,6 @@ class GraphPage extends React.Component {
               </Label>
             </Series>
             <Tooltip
-              style={{
-                marginTop: "500px",
-              }}
               enabled={true}
               customizeTooltip={this.customizeTooltip}
             ></Tooltip>

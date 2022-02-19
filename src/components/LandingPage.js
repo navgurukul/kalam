@@ -20,7 +20,7 @@ import { allStages } from "../config";
 import { Link } from "react-router-dom";
 
 const baseUrl = process.env.API_URL;
-const testUrl = "https://join.navgurukul.org/k/";
+const testUrl = "https://join.navgurukul.org/api/";
 
 const styles = (theme) => ({
   loginContainer: {
@@ -207,7 +207,9 @@ export class LandingPage extends React.Component {
             .filter((item) => item)
             .join("&");
           const url = `${testUrl}${response.data.key}?${queryString}`;
-          window.open(url, "_blank");
+          this.props.history.push({
+            pathname: `test/${response.data.key}`,
+          });
           this.setState({
             mobileNumber: "",
             firstName: "",

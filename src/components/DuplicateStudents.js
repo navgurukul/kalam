@@ -15,7 +15,6 @@ import { allStages } from "../config";
 import { changeFetching } from "../store/actions/auth";
 
 const baseUrl = process.env.API_URL;
-const testUrl = "https://join.navgurukul.org/k/";
 
 const useStyles = (theme) => ({
   paper: {
@@ -56,9 +55,13 @@ export class DuplicateStudents extends React.Component {
                 color="primary"
                 style={{ fontSize: "10px" }}
                 onClick={async () => {
+                  console.log("value", value);
+
                   const response = await this.generateTestLink(value);
-                  const url = `${testUrl}${response.data.key}?student_id=${value}`;
-                  window.open(url, "_blank");
+                  this.props.history.push({
+                    pathname: `/test/${response.data.key}/${value}`,
+                  });
+                  this.props.fetchingFinish();
                 }}
               >
                 Re-Test
@@ -156,6 +159,8 @@ export class DuplicateStudents extends React.Component {
         if (response.alreadyGivenTest) {
           this.setState({ data: response.data });
         }
+        console.log(response);
+        return response;
       });
   };
 

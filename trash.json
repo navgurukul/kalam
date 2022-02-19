@@ -1,0 +1,207 @@
+{
+  "data": [
+    {
+      "id": 19626,
+      "name": "kartik ajay shikhare",
+      "gender": 2,
+      "dob": "1984-04-15T00:00:00.000Z",
+      "email": "shikharepratik@rediffmail.com",
+      "state": "MH",
+      "city": "nashik",
+      "gps_lat": "-1",
+      "gps_long": "-1",
+      "pin_code": "422101",
+      "qualification": null,
+      "current_status": null,
+      "school_medium": null,
+      "religon": null,
+      "caste": null,
+      "percentage_in10th": null,
+      "math_marks_in10th": null,
+      "percentage_in12th": null,
+      "math_marks_in12th": null,
+      "stage": "enrolmentKeyGenerated",
+      "tag": null,
+      "partner_id": null,
+      "created_at": "2022-02-09T06:33:30.372Z",
+      "last_updated": "2022-02-11T08:28:50.863Z",
+      "district": "Ambad",
+      "current_owner_id": null,
+      "partner_refer": "NONE",
+      "evaluation": null,
+      "redflag": null,
+      "image_url": "https://s3.ap-south-1.amazonaws.com/chanakya-prod//5812377c-9776-4151-ba71-4527f74a4f3c-Web capture_2-6-2021_9269_.jpeg",
+      "partner": null,
+      "partnerAssessment": null,
+      "contacts": [
+        {
+          "id": 22150,
+          "student_id": 19626,
+          "mobile": "8007338550",
+          "is_whatsapp": true,
+          "contact_type": "whatsapp",
+          "created_at": "2022-02-09T06:33:30.398Z",
+          "alt_mobile": "8007338550"
+        }
+      ],
+      "enrolmentKey": [
+        {
+          "id": 16867,
+          "key": "0P08AU",
+          "student_id": 19626,
+          "start_time": "2022-02-09T06:36:20.732Z",
+          "end_time": "2022-02-09T06:38:00.578Z",
+          "total_marks": "0",
+          "type_of_test": "onlineTest",
+          "question_set_id": 7690,
+          "created_at": "2022-02-09T06:33:30.415Z"
+        },
+        {
+          "id": 16957,
+          "key": "VGHI89",
+          "student_id": 19626,
+          "start_time": null,
+          "end_time": null,
+          "total_marks": null,
+          "type_of_test": "onlineTest",
+          "question_set_id": null,
+          "created_at": "2022-02-16T11:11:57.204Z"
+        },
+        {
+          "id": 16969,
+          "key": "30BFAI",
+          "student_id": 19626,
+          "start_time": null,
+          "end_time": null,
+          "total_marks": null,
+          "type_of_test": "onlineTest",
+          "question_set_id": null,
+          "created_at": "2022-02-16T15:13:06.200Z"
+        },
+        {
+          "id": 16976,
+          "key": "4GO5QI",
+          "student_id": 19626,
+          "start_time": null,
+          "end_time": null,
+          "total_marks": null,
+          "type_of_test": "onlineTest",
+          "question_set_id": null,
+          "created_at": "2022-02-17T07:18:08.157Z"
+        },
+        {
+          "id": 16977,
+          "key": "BAFNNH",
+          "student_id": 19626,
+          "start_time": null,
+          "end_time": null,
+          "total_marks": null,
+          "type_of_test": "onlineTest",
+          "question_set_id": null,
+          "created_at": "2022-02-17T07:19:15.100Z"
+        },
+        {
+          "id": 16979,
+          "key": "E2ED8C",
+          "student_id": 19626,
+          "start_time": null,
+          "end_time": null,
+          "total_marks": null,
+          "type_of_test": "onlineTest",
+          "question_set_id": null,
+          "created_at": "2022-02-17T07:29:14.908Z"
+        },
+        {
+          "id": 16980,
+          "key": "U8HVOJ",
+          "student_id": 19626,
+          "start_time": null,
+          "end_time": null,
+          "total_marks": null,
+          "type_of_test": "onlineTest",
+          "question_set_id": null,
+          "created_at": "2022-02-17T07:29:41.708Z"
+        },
+        {
+          "id": 16981,
+          "key": "ICEYZF",
+          "student_id": 19626,
+          "start_time": null,
+          "end_time": null,
+          "total_marks": null,
+          "type_of_test": "onlineTest",
+          "question_set_id": null,
+          "created_at": "2022-02-17T07:30:37.444Z"
+        },
+        {
+          "id": 16982,
+          "key": "XGXJGM",
+          "student_id": 19626,
+          "start_time": null,
+          "end_time": null,
+          "total_marks": null,
+          "type_of_test": "onlineTest",
+          "question_set_id": null,
+          "created_at": "2022-02-17T07:30:51.150Z"
+        },
+        {
+          "id": 16983,
+          "key": "PL2HHH",
+          "student_id": 19626,
+          "start_time": null,
+          "end_time": null,
+          "total_marks": null,
+          "type_of_test": "onlineTest",
+          "question_set_id": null,
+          "created_at": "2022-02-17T07:31:01.831Z"
+        },
+        {
+          "id": 16984,
+          "key": "M8JVI8",
+          "student_id": 19626,
+          "start_time": null,
+          "end_time": null,
+          "total_marks": null,
+          "type_of_test": "onlineTest",
+          "question_set_id": null,
+          "created_at": "2022-02-17T07:31:37.039Z"
+        },
+        {
+          "id": 16987,
+          "key": "7P3ZQJ",
+          "student_id": 19626,
+          "start_time": null,
+          "end_time": null,
+          "total_marks": null,
+          "type_of_test": "onlineTest",
+          "question_set_id": null,
+          "created_at": "2022-02-17T07:42:17.609Z"
+        },
+        {
+          "id": 16988,
+          "key": "GTBRYU",
+          "student_id": 19626,
+          "start_time": null,
+          "end_time": null,
+          "total_marks": null,
+          "type_of_test": "onlineTest",
+          "question_set_id": null,
+          "created_at": "2022-02-17T07:42:45.991Z"
+        }
+      ],
+      "campus": null,
+      "lastTransition": {
+        "id": 53281,
+        "student_id": 19626,
+        "from_stage": null,
+        "to_stage": "enrolmentKeyGenerated",
+        "created_at": "2022-02-17T07:42:45.985Z"
+      },
+      "feedbacks": null,
+      "feedback": [],
+      "studentDonor": null,
+      "joinedDate": null,
+      "jobKabLagega": null
+    }
+  ]
+}

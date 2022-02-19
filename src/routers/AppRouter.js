@@ -34,6 +34,9 @@ import AnyRoute from "./AnyRouter";
 import history from "../utils/history";
 import StudentStatus from "../components/StudentStatus";
 import DuplicateStudents from "../components/DuplicateStudents";
+import SlideShow from "../onlineTest/SlideShow";
+import EkAurBaat from "../onlineTest/EkAurBaat";
+import Questions from "../onlineTest/Questions";
 
 const AppRouter = () => (
   <Router history={history}>
@@ -81,12 +84,16 @@ const AppRouter = () => (
           path="/partner/:partnerId/progress"
           component={PartnerStudentsProgressInCampus}
         />
+        <AnyRoute path="/test/:enrollmentKey" component={SlideShow} />
+        <AnyRoute path="/EkAurBaat/:enrollmentKey" component={EkAurBaat} />
+        <AnyRoute path="/questions/:enrollmentKey" component={Questions} />
         <AnyRoute
           path="/partner/:partnerId"
           component={ProgressMadeForPartner}
         />
         <AnyRoute path="/partnerLanding/:slug" component={LandingPage} />
         <AnyRoute path="/status/:mobile" component={StudentStatus} />
+        <AnyRoute path="/check_duplicate" component={DuplicateStudents} />
         <AnyRoute
           path="/check_duplicate/Name=:fnamemnamelname&Number=:number&Stage=:stage"
           component={DuplicateStudents}

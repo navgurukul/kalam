@@ -23,6 +23,8 @@ import MainLayout from "./MainLayout";
 import { qualificationKeys } from "../config";
 import ServerSidePagination from "./ServerSidePagination";
 import _ from "lodash";
+import user from "../utils/user";
+import NotHaveAccess from "./NotHaveAccess";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -69,6 +71,9 @@ export class AdmissionsDash extends React.Component {
       filterValues: [],
       numberOfRows: 10,
       selectedOption: [],
+      access: null, //access object to store who are having access data
+      userLoggedIn: user(), //user object to store who is logged in
+      studentDashboardCondition: false, //condition to show student dashboard
     };
   }
 
@@ -278,34 +283,40 @@ export class AdmissionsDash extends React.Component {
       );
     }
     return (
-      <Box>
-        {this.options}
-        <MuiThemeProvider theme={theme}>
-          {this.props.fetchPendingInterviewDetails ? null : options}
-          <div className={classes.clear}></div>
-          <ServerSidePagination
-            columns={StudentService.columns[this.dataType]}
-            data={sData ? sData : data}
-            showLoader={showLoader}
-            fun={this.fetchStudents}
-            params={{
-              params: {
-                dataType: this.dataType,
-                stage: concatinateStage,
-                from: this.state.fromDate,
-                to: this.toDate,
-              },
-            }}
-            stages={this.value}
-            dataSetup={this.dataSetup}
-            totalData={totalData}
-            filterValues={this.getFilterValues}
-            sortChange={this.sortChange}
-            numberOfRows={numberOfRows}
-            setNumbersOfRows={this.setNumbersOfRows}
-          />
-        </MuiThemeProvider>
-      </Box>
+      <div>
+        {this.state.studentDashboardCondition ? (
+          <Box>
+            {this.options}
+            <MuiThemeProvider theme={theme}>
+              {this.props.fetchPendingInterviewDetails ? null : options}
+              <div className={classes.clear}></div>
+              <ServerSidePagination
+                columns={StudentService.columns[this.dataType]}
+                data={sData ? sData : data}
+                showLoader={showLoader}
+                fun={this.fetchStudents}
+                params={{
+                  params: {
+                    dataType: this.dataType,
+                    stage: concatinateStage,
+                    from: this.state.fromDate,
+                    to: this.toDate,
+                  },
+                }}
+                stages={this.value}
+                dataSetup={this.dataSetup}
+                totalData={totalData}
+                filterValues={this.getFilterValues}
+                sortChange={this.sortChange}
+                numberOfRows={numberOfRows}
+                setNumbersOfRows={this.setNumbersOfRows}
+              />
+            </MuiThemeProvider>
+          </Box>
+        ) : (
+          <NotHaveAccess />
+        )}
+      </div>
     );
   };
 
@@ -314,6 +325,42 @@ export class AdmissionsDash extends React.Component {
     this.fetchUsers();
     this.fetchOWner();
     this.fetchPartner();
+    this.fetchAccess();
+  }
+  async fetchAccess() {
+    try {
+      const accessUrl = baseURL + "rolebaseaccess";
+      axios.get(accessUrl).then((response) => {
+        const studentDashboardData = response.data; //variable to store the response
+        this.setState(
+          {
+            access: studentDashboardData ? studentDashboardData : null, //set access to state
+          },
+          () => {
+            const conditions = //variable to store the conditions
+              this.state.access &&
+              this.state.userLoggedIn &&
+              this.state.userLoggedIn.email &&
+              this.state.access.students &&
+              this.state.access.students.view &&
+              this.state.access.students.view.includes(
+                this.state.userLoggedIn.email
+              );
+
+            this.setState(
+              {
+                studentDashboardCondition: conditions, //set the condition to state
+              },
+              () => {
+                console.log(this.state.studentDashboardCondition);
+              }
+            );
+          }
+        );
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async fetchOWner() {

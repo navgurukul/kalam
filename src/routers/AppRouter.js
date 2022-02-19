@@ -52,7 +52,6 @@ const AppRouter = () => {
     setUserLoggedIn(user());
     await axios.get(`${baseUrl}rolebaseaccess`).then((res) => {
       setAccess(res.data);
-      console.log(access, "access");
     });
     var campusRouteCondition1 =
       window.location.href.split("/")[4] == 1
@@ -142,16 +141,7 @@ const AppRouter = () => {
           />
           <PrivateRoute
             path="/campus/:campusId/students"
-            component={
-              access &&
-              userLoggedIn &&
-              userLoggedIn.email &&
-              access.campus &&
-              access.campus.view &&
-              campusRouteCondition
-                ? CampusStudentsData
-                : NotHaveAccess
-            }
+            component={CampusStudentsData}
           />
 
           <PrivateRoute

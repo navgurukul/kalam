@@ -30,9 +30,27 @@ const styles = (theme) => ({
 });
 
 export class LoginDesign extends React.Component {
+  //maintaing a state for special login
+  state = {
+    specialLogin: [],
+  };
+
+  componentDidMount() {
+    axios.get(`${baseUrl}rolebaseaccess`).then((res) => {
+      console.log("res", res.data.specialLogin);
+      this.setState({
+        specialLogin: res.data.specialLogin,
+      });
+    });
+  }
+
   responseGoogle = (response) => {
-    console.log("response", response.profileObj.email);
-    if (response.profileObj.email.includes("@navgurukul.org")) {
+    console.log("response.profileObj", response.profileObj.email);
+
+    if (
+      response.profileObj.email.includes("@navgurukul.org") ||
+      this.state.specialLogin.includes(response.profileObj.email)
+    ) {
       axios
         .post(`${baseUrl}users/login/google`, {
           idToken: response.tokenObj.id_token,

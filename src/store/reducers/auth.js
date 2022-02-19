@@ -17,6 +17,7 @@ export default (
         isAuthenticated: localStorage.getItem("jwt") ? true : false,
         loggedInUser: JSON.parse(localStorage.getItem("user")),
       });
+
     case "LOGOUT": {
       localStorage.removeItem("jwt");
       localStorage.removeItem("user");

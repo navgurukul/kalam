@@ -35,60 +35,11 @@ import history from "../utils/history";
 import StudentStatus from "../components/StudentStatus";
 import DuplicateStudents from "../components/DuplicateStudents";
 import axios from "axios";
-import user from "../utils/user";
 
-import NotHaveAccess from "../components/NotHaveAccess.js";
 import eachDayOfInterval from "date-fns/eachDayOfInterval";
 const baseUrl = process.env.API_URL;
 
-//importing user from utils/user.js
-
 const AppRouter = () => {
-  const [access, setAccess] = useState({});
-  const [userLoggedIn, setUserLoggedIn] = useState(user());
-  const [campusRouteCondition, setCampusRouteCondition] = useState(false);
-
-  useEffect(async () => {
-    setUserLoggedIn(user());
-    await axios.get(`${baseUrl}rolebaseaccess`).then((res) => {
-      setAccess(res.data);
-    });
-    var campusRouteCondition1 =
-      window.location.href.split("/")[4] == 1
-        ? access.campus &&
-          access.campus.Pune &&
-          access.campus.Pune.view &&
-          access.campus.Pune.view.includes(userLoggedIn.email)
-        : window.location.href.split("/")[4] == 2
-        ? access.campus &&
-          access.campus.Dharamshala &&
-          access.campus.Dharamshala.view &&
-          access.campus.Dharamshala.view.includes(userLoggedIn.email)
-        : window.location.href.split("/")[4] == 3
-        ? access.campus &&
-          access.campus.Bangalore &&
-          access.campus.Bangalore.view &&
-          access.campus.Bangalore.view.includes(userLoggedIn.email)
-        : window.location.href.split("/")[4] == 4
-        ? access.campus &&
-          access.campus.Sarjapura &&
-          access.campus.Sarjapura.view &&
-          access.campus.Sarjapura.view.includes(userLoggedIn.email)
-        : window.location.href.split("/")[4] == 5
-        ? access.campus &&
-          access.campus.Tripura &&
-          access.campus.Tripura.view &&
-          access.campus.Tripura.view.includes(userLoggedIn.email)
-        : window.location.href.split("/")[4] == 6
-        ? access.campus &&
-          access.campus.Delhi &&
-          access.campus.Delhi.view &&
-          access.campus.Delhi.view.includes(userLoggedIn.email)
-        : false;
-
-    setCampusRouteCondition(campusRouteCondition1);
-  }, []);
-
   return (
     <Router history={history}>
       <div>
@@ -99,77 +50,19 @@ const AppRouter = () => {
             component={UpdateMobileNumber}
             exact={true}
           />
-          <PrivateRoute
-            path="/students"
-            component={
-              access &&
-              userLoggedIn &&
-              userLoggedIn.email &&
-              access.students &&
-              access.students.view &&
-              access.students.view.includes(userLoggedIn.email)
-                ? AdmissionsDash
-                : NotHaveAccess
-            }
-          />
-          <PrivateRoute
-            path="/students/:dataType"
-            component={
-              access &&
-              userLoggedIn &&
-              userLoggedIn.email &&
-              access.students &&
-              access.students.view &&
-              access.students.view.includes(userLoggedIn.email)
-                ? AdmissionsDash
-                : NotHaveAccess
-            }
-          />
+          <PrivateRoute path="/students" component={AdmissionsDash} />
+          <PrivateRoute path="/students/:dataType" component={AdmissionsDash} />
           <PrivateRoute
             path="/campus/allcampus/students"
-            component={
-              access &&
-              userLoggedIn &&
-              userLoggedIn.email &&
-              access.campus &&
-              access.campus.All &&
-              access.campus.All.view &&
-              access.campus.All.view.includes(userLoggedIn.email)
-                ? AllCampusStudentsData
-                : NotHaveAccess
-            }
+            component={AllCampusStudentsData}
           />
           <PrivateRoute
             path="/campus/:campusId/students"
             component={CampusStudentsData}
           />
 
-          <PrivateRoute
-            path="/campus"
-            component={
-              access &&
-              userLoggedIn &&
-              userLoggedIn.email &&
-              access.campus &&
-              access.campus.view &&
-              access.campus.view.includes(userLoggedIn.email)
-                ? CampusList
-                : NotHaveAccess
-            }
-          />
-          <PrivateRoute
-            path="/partners"
-            component={
-              access &&
-              userLoggedIn &&
-              userLoggedIn.email &&
-              access.partners &&
-              access.partners.view &&
-              access.partners.view.includes(userLoggedIn.email)
-                ? PartnerList
-                : NotHaveAccess
-            }
-          />
+          <PrivateRoute path="/campus" component={CampusList} />
+          <PrivateRoute path="/partners" component={PartnerList} />
 
           <PublicRoute path="/login" component={LoginDesign} exact={true} />
           <PrivateRoute path="/tasks" component={MyTaskReport} />

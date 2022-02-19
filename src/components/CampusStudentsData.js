@@ -26,48 +26,19 @@ class CampusStudentsData extends React.Component {
       access: null,
       userLoggedIn: user(),
       campusRouteCondition: false,
-      // campusID: this.props.campusID,
     };
   }
   async fetchAccess() {
     try {
-      // this.props.fetchingStart();
-      const { campusId } = this.props.match.params;
       const accessUrl = baseUrl + "rolebaseaccess";
 
       axios.get(accessUrl).then((response) => {
         const campusData = response.data.campus;
-        // const { access, userLoggedIn, campusName } = this.state;
-
         this.setState(
           {
             access: campusData ? campusData : null,
           },
           () => {
-            // console.log(this.state.access, "accessesss");
-
-            // console.log(this.state, "state");
-            // console.log(this.state.access, "condition - access");
-            // console.log(this.state.userLoggedIn, "condition - userLoggedIn");
-            // console.log(
-            //   this.state.userLoggedIn.email,
-            //   "condition - userLoggedIn.email"
-            // );
-            // console.log(
-            //   this.state.access[this.state.campusName] ? true : false,
-            //   "condition - access[campusName]"
-            // );
-            // console.log(
-            //   this.state.access[this.state.campusName].view,
-            //   "condition - access[campusName].view"
-            // );
-            // console.log(
-            //   this.state.access[this.state.campusName].view.includes(
-            //     this.state.userLoggedIn.email
-            //   ),
-            //   "condition - access[campusName].view.includes(userLoggedIn.email)"
-            // );
-
             const conditions =
               this.state.access &&
               this.state.userLoggedIn &&
@@ -78,47 +49,14 @@ class CampusStudentsData extends React.Component {
                 this.state.userLoggedIn.email
               );
 
-            console.log(conditions, "conditions");
-            this.setState(
-              {
-                campusRouteCondition: conditions,
-              },
-              () => {
-                console.log(
-                  this.state.campusRouteCondition,
-                  "campusRouteCondition"
-                );
-              }
-            );
+            this.setState({
+              campusRouteCondition: conditions,
+            });
           }
         );
-        console.log(response.data.campus, "campus access");
-        // this.props.fetchingFinish();
       });
-
-      // console.log(conditionCampus, "condition - conditionCampus");
-      // const conditionCampus =
-      //   access &&
-      //   userLoggedIn &&
-      //   userLoggedIn.email &&
-      //   access[campusName] &&
-      //   access[campusName].view &&
-      //   access[campusName].view.includes(userLoggedIn.email)
-      //     ? true
-      //     : false;
-      // console.log(conditionCampus, "campus condition");
-      // this.setState(
-      //   {
-      //     campusRouteCondition: conditionCampus,
-      //   },
-      //   () => {
-      //     console.log(this.state.campusRouteCondition, "campus condition 2");
-      //   }
-      // );
-      // this.props.fetchingFinish();
     } catch (e) {
       console.log(e);
-      // this.props.fetchingFinish();
     }
   }
   async fetchUsers() {

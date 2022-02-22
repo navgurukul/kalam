@@ -90,7 +90,7 @@ function SlideShow(props) {
   const [activeStep, setActiveStep] = React.useState(0);
   const maxSteps = tutorialSteps.length;
   const [value, setValue] = useState("En");
-  const [shuruKarein, SetShuruKarein] = useState(true);
+  const [shuruKarein, SetShuruKarein] = useState(false);
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };

@@ -13,11 +13,15 @@ import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import history from "../../utils/history";
 import { useSnackbar } from "notistack";
-import { Avatar, FilledInput, Input, Snackbar } from "@material-ui/core";
+import { Avatar, FilledInput, Grid, Input, Snackbar } from "@material-ui/core";
 import { set } from "date-fns";
 import KuchAurDetails from "../KuchAurDetails";
 import transitions from "@material-ui/core/styles/transitions";
-
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 const baseUrl = process.env.API_URL;
 
 const useStyles = makeStyles((theme) => ({
@@ -46,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 function Form(props) {
   const classes = useStyles();
   const [enrolment_key, setEnrolment_key] = useState("");
+  const [prevData, setPrevData] = useState({});
   let lang = props.lang;
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -56,28 +61,36 @@ function Form(props) {
     setEnrolment_key(enrkey);
   }, []);
 
+  const handleDateChange = (date) => {
+    setValues({ ...values, dob: date });
+  };
+  let gender = {
+    1: "female",
+    2: "male",
+    3: "other",
+  };
   useEffect(() => {
     if (location.pathname.split("/")[3]) {
       axios
-        .get(
-          `http://dev-join.navgurukul.org/api/students/${
-            location.pathname.split("/")[3]
-          }`
-        )
+        .get(`${baseUrl}/students/${location.pathname.split("/")[3]}`)
         .then((res) => {
-          console.log("res");
-          let PrevDatas = res.data.data[0];
-          setValues({
-            ...values,
-            // ProfileImage: PrevDatas.image_url,
-            FirstName: PrevDatas.name.split(" ")[0],
-            MiddleName: PrevDatas.name.split(" ")[1],
-            LastName: PrevDatas.name.split(" ")[2],
-            email: PrevDatas.email,
-            whatsapp: PrevDatas.contacts[0].mobile,
-            AlternateNumber: PrevDatas.contacts[0].alt_mobile,
-            dob: PrevDatas.dob.split("T")[0],
-          });
+          if (res.data.data.length > 0) {
+            let PrevDatas = res.data.data[0];
+
+            setPrevData(PrevDatas);
+            setValues({
+              ...values,
+              PrevImage: PrevDatas.image_url,
+              FirstName: PrevDatas.name.split(" ")[0],
+              MiddleName: PrevDatas.name.split(" ")[1],
+              LastName: PrevDatas.name.split(" ")[2],
+              email: PrevDatas.email,
+              whatsapp: PrevDatas.contacts[0].mobile,
+              AlternateNumber: PrevDatas.contacts[1].alt_mobile,
+              dob: PrevDatas.dob,
+              gender: gender[PrevDatas.gender],
+            });
+          }
         });
     }
   }, []);
@@ -94,6 +107,8 @@ function Form(props) {
     dob: "",
     gps_lat: "-1",
     gps_long: "-1",
+    PrevImage: "",
+    
   });
 
   const savePhoto = (e) => {
@@ -121,8 +136,7 @@ function Form(props) {
   const [Next, setNext] = useState(true);
 
   const changeHandler = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value, dob: date });
-    e.preventDefault();
+    setValues({ ...values, [e.target.name]: e.target.value });
   };
   //   console.log("Date", selectedDate);
   let data = {
@@ -139,6 +153,7 @@ function Form(props) {
     gps_lat: "-1",
     gps_long: "-1",
     partner_refer: "NONE",
+    image_url: values.ProfileImage,
   };
 
   const submitHandler = () => {
@@ -147,7 +162,6 @@ function Form(props) {
       data.name !== "" &&
       data.whatsapp.length == 10 &&
       data.gender !== "" &&
-      values.ProfileImage !== "" &&
       data.dob !== ""
     ) {
       if (data.gender == "female") {
@@ -212,7 +226,7 @@ function Form(props) {
                   src={
                     values.ProfileImage
                       ? URL.createObjectURL(values.ProfileImage)
-                      : ""
+                      : values.PrevImage
                   }
                 />
                 <Typography variant="h6" className={classes.text}>
@@ -315,7 +329,25 @@ function Form(props) {
               />
 
               <div className={classes.date}>
-                <Date lang={lang} forDate={wantDate} />
+                {/* <Date lang={lang} forDate={wantDate} filledDate={values.dob} /> */}
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <Grid container justify="space-around">
+                    <KeyboardDatePicker
+                      margin="normal"
+                      id="date-picker-dialog"
+                      format="dd/MM/yyyy"
+                      inputVariant="outlined"
+                      fullWidth
+                      placeholder={lang == "En" ? "Your dob" : "आपका जन्मदिन"}
+                      value={values.dob}
+                      onChange={handleDateChange}
+                      name="dob"
+                      KeyboardButtonProps={{
+                        "aria-label": "change date",
+                      }}
+                    />
+                  </Grid>
+                </MuiPickersUtilsProvider>
               </div>
               <FormControl
                 fullWidth
@@ -414,7 +446,7 @@ function Form(props) {
           </div>
         </Container>
       ) : (
-        <KuchAurDetails prevData={data} lang={lang} />
+        <KuchAurDetails prevData={data} lang={lang} prevFilledData={prevData} />
       )}
     </>
   );

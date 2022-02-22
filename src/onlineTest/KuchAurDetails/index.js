@@ -43,44 +43,48 @@ const useStyles = makeStyles((theme) => ({
 function KuchAurDetails(props) {
   const classes = useStyles();
   let prevData = props.prevData;
+  let caste = ["", "obc", "scSt", "general", "others"];
+  let qualification = [
+    "",
+    "lessThan10th",
+    "class10th",
+    "class12th",
+    "graduate",
+    "ba",
+    "bcom",
+    "mcom",
+    "msc",
+    "bca",
+    "bsc",
+    "bba",
+  ];
+  let religion = ["", "hindu", "islam", "sikh", "jain", "christian", "others"];
+
+  let CurrentStatus = ["", "nothing", "job", "study", "other"];
+  let school_medium = ["", "en", "other"];
+  let prevFilledData = props.prevFilledData;
   let lang = props.lang;
   const { enqueueSnackbar } = useSnackbar();
+  useEffect(() => {
+    if (prevFilledData) {
+      setValues({
+        district: prevFilledData.district,
+        pin_code: prevFilledData.pin_code,
+        state: prevFilledData.state,
+        city: prevFilledData.city,
+        current_status: CurrentStatus[prevFilledData.current_status],
+        qualification: qualification[prevFilledData.qualification],
+        school_medium: school_medium[prevFilledData.school_medium],
+        caste: caste[prevFilledData.caste],
+        religion: religion[prevFilledData.religon],
+        math_marks_in10th: prevFilledData.math_marks_in10th,
+        percentage_in10th: prevFilledData.percentage_in10th,
+        math_marks_in12th: prevFilledData.math_marks_in12th,
+        percentage_in12th: prevFilledData.percentage_in12th,
+      });
+    }
+  }, [prevFilledData]);
 
-  //   qualification: {
-  //   lessThan10th: 1,
-  //   class10th: 2,
-  //   class12th: 3,
-  //   graduate: 4,
-  //   ba: 5,
-  //   bcom: 6,
-  //   mcom: 7,
-  //   msc: 8,
-  //   bca: 9,
-  //   bsc: 10,
-  //   bba: 11,
-  // },
-
-  // CurrentStatus
-  //   nothing: 1,
-  // job: 2,
-  // study: 3,
-  // other: 4,
-
-  //   caste: {
-  //   obc: 1,
-  //   scSt: 2,
-  //   general: 3,
-  //   others: 4,
-  // },
-
-  //   religon: {
-  //   hindu: 1,
-  //   islam: 2,
-  //   sikh: 3,
-  //   jain: 4,
-  //   christian: 5,
-  //   others: 6,
-  // },
   const [districts, setDistricts] = useState([]);
   async function getCityFromState(state) {
     fetch(
@@ -125,8 +129,6 @@ function KuchAurDetails(props) {
     console.log("Values", values);
   };
 
-  console.log("values.pin_code.length", values.pin_code.length);
-
   const isNotEmpty = (values) => {
     const valuesKey = Object.keys(values);
 
@@ -144,9 +146,6 @@ function KuchAurDetails(props) {
       // if (values[key] === "") {
       //   return false;
       // }
-      if (values.pin_code.length !== "7") {
-        return false;
-      }
     }
     return true;
   };
@@ -177,7 +176,7 @@ function KuchAurDetails(props) {
       school_medium: values.school_medium,
       pin_code: values.pin_code,
       caste: values.caste,
-      religon: values.religon,
+      religon: values.religion,
       percentage_in10th: values.percentage_in10th,
       math_marks_in10th: values.math_marks_in10th,
       math_marks_in12th: values.math_marks_in12th,
@@ -506,7 +505,7 @@ function KuchAurDetails(props) {
                 name="school_medium"
                 required={true}
               >
-                <MenuItem value={"other"}>Select Option</MenuItem>
+                <MenuItem value={""}>Select Option</MenuItem>
                 <MenuItem value={"other"}>Hindi</MenuItem>
                 <MenuItem value={"en"}>English</MenuItem>
               </Select>
@@ -520,7 +519,7 @@ function KuchAurDetails(props) {
                 Caste/Tribe
               </InputLabel>
               <Select
-                value={values.cast}
+                value={values.caste}
                 onChange={changeHandler}
                 label="Caste/Tribe"
                 name="caste"
@@ -550,13 +549,13 @@ function KuchAurDetails(props) {
                 label="Religion/dharam"
                 name="religion"
               >
-                <MenuItem value={""}>Select Option</MenuItem>
-                <MenuItem value={"hindu"}>Hindu</MenuItem>
-                <MenuItem value={"islam"}>Islam</MenuItem>
-                <MenuItem value={"sikh"}>Sikh</MenuItem>
-                <MenuItem value={"christian"}>Christian</MenuItem>
-                <MenuItem value={"jain"}>Jain</MenuItem>
-                <MenuItem value={"others"}>Others</MenuItem>
+                <MenuItem value="">Select Option</MenuItem>
+                <MenuItem value="hindu">Hindu</MenuItem>
+                <MenuItem value="islam">Islam</MenuItem>
+                <MenuItem value="sikh">Sikh</MenuItem>
+                <MenuItem value="christian">Christian</MenuItem>
+                <MenuItem value="jain">Jain</MenuItem>
+                <MenuItem value="others">Others</MenuItem>
               </Select>
             </FormControl>
           </Paper>

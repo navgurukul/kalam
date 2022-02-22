@@ -28,7 +28,7 @@ export default function MaterialUIPickers(props) {
           fullWidth
           label={props.lang == "En" ? "Your dob" : "आपका जन्मदिन"}
           placeholder={props.lang == "En" ? "Your dob" : "आपका जन्मदिन"}
-          value={selectedDate}
+          value={props.filledDate ? props.filledDate : selectedDate}
           onChange={handleDateChange}
           KeyboardButtonProps={{
             "aria-label": "change date",

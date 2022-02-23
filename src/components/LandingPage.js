@@ -108,6 +108,7 @@ export class LandingPage extends React.Component {
       modalOpen: false,
       data: [],
       pendingInterviewStage: "checking",
+      enrollmentKey: "",
     };
 
     this.lang = {
@@ -208,13 +209,15 @@ export class LandingPage extends React.Component {
             .join("&");
           const url = `${testUrl}${response.data.key}?${queryString}`;
           this.props.history.push({
-            pathname: `test/${response.data.key}`,
+            pathname: `/test/${response.data.key}`,
           });
+
           this.setState({
             mobileNumber: "",
             firstName: "",
             middleName: "",
             lastName: "",
+            enrollmentKey: response.data.key,
           });
           this.props.fetchingFinish();
         }
@@ -295,14 +298,10 @@ export class LandingPage extends React.Component {
 
   async partnerFetch(slug) {
     const { history } = this.props;
-    try {
-      const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
-      this.setState({
-        partnerId: response.data.data["id"],
-      });
-    } catch (e) {
-      history.push("/notFound");
-    }
+    const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
+    this.setState({
+      partnerId: response.data.data["id"],
+    });
   }
 
   render = () => {

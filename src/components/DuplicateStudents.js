@@ -51,6 +51,7 @@ export class DuplicateStudents extends React.Component {
           customBodyRender: (value) => {
             return (
               <Button
+                disabled={this.state.data.pendingInterview ? "true" : "false"}
                 variant="contained"
                 color="primary"
                 style={{ fontSize: "10px" }}

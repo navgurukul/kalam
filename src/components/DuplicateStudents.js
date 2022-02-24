@@ -40,8 +40,8 @@ export class DuplicateStudents extends React.Component {
       partnerId: "",
       data: [],
       pendingInterviewStage: "checking",
+      response: {},
     };
-
     this.columns = [
       {
         name: "id",
@@ -51,7 +51,7 @@ export class DuplicateStudents extends React.Component {
           customBodyRender: (value) => {
             return (
               <Button
-                disabled={this.state.data.pendingInterview ? "true" : "false"}
+                disabled={this.state.response.pendingInterview}
                 variant="contained"
                 color="primary"
                 style={{ fontSize: "10px" }}
@@ -157,10 +157,16 @@ export class DuplicateStudents extends React.Component {
       })
       .then(async (data) => {
         const response = data.data.data;
+        console.log("response", response);
+        this.setState({
+          response: response,
+        });
         if (response.alreadyGivenTest) {
           this.setState({ data: response.data });
+          console.log("data", this.state.data);
         }
-        console.log(response);
+        console.log("data", this.state.data);
+
         return response;
       });
   };

@@ -1,12 +1,14 @@
 import React from "react";
 import MUIDataTable from "mui-datatables";
 import { qualificationKeys, allStages } from "../config";
-
+import { withSnackbar } from "notistack";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
 import Loader from "./Loader";
 import SearchBar from "./SearchBar";
 import { permissions } from "../config";
+import StudentService from "../services/StudentService";
+import { CircularProgress } from "@material-ui/core";
 
 const baseURL = process.env.API_URL;
 
@@ -52,7 +54,7 @@ class ServerSidePagination extends React.Component {
     dataSetup(studentData, response.data.data.total);
   };
 
-  getStudentsDetailBySearch = async (url) => {
+  getStudentsDetailBySearch =   async (url) => {
     const { dataSetup } = this.props;
     this.setState({
       isData: true,
@@ -143,6 +145,53 @@ class ServerSidePagination extends React.Component {
     }
   };
 
+  
+
+  downloadCSV = async () => {
+    const CustomSnack = () => (<CircularProgress size='1.6rem' color="inherit" />)
+    const snackKey = this.props.enqueueSnackbar("Downloading CSV!", {
+      variant: "info",
+      action:CustomSnack,
+      persist:true
+    });
+    const response = await axios.get(this.state.mainUrl, this.props.params);
+    const studentData = await response.data.data.results.map((student) => {
+      student = StudentService.dConvert({
+        ...student,
+        qualification: qualificationKeys[student.qualification],
+        studentOwner: "",
+        campus: student.campus ? student.campus : null,
+        donor: student.studentDonor ? student.studentDonor : null,
+      });
+      let body = "";
+      this.state.newColumns.forEach((col,colInx) => {
+        if(colInx === this.state.newColumns.length-1) body += `"${!student[col.name] || student[col.name] === undefined ?" ":student[col.name]}"`
+        else body += `"${!student[col.name] || student[col.name] == undefined ?" ":student[col.name]}",`
+      })
+      return body;
+    }).join("\n");
+    let csvContent = `${await this.state.newColumns.map(col => (col.label)).join(",")}"\n"${studentData}`;
+    let encoded = new Blob([csvContent],{type:'text/csv:encoding=utf-8'})
+    if(navigator.msSaveBlob) navigator.msSaveBlob(encoded, "data.csv");
+    else{
+      let link = document.createElement("a");
+        if (link.download !== undefined) { // feature detection
+            // Browsers that support HTML5 download attribute
+            let url = URL.createObjectURL(encoded);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "data.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+    this.props.closeSnackbar(snackKey);
+    this.props.enqueueSnackbar("CSV File Downloaded", {
+      variant: "success",
+    });
+  }
+  
   render() {
     const { page, isData, filterColumns, newColumns } = this.state;
     const user = window.localStorage.user
@@ -160,6 +209,10 @@ class ServerSidePagination extends React.Component {
       search: false,
       serverSide: true,
       filterType: "dropdown",
+      onDownload: () => {
+        this.downloadCSV();
+        return false;
+      },
       onColumnSortChange: (changedColumn, direction) => {
         let order = "desc";
         if (direction === "ascending") {
@@ -200,12 +253,13 @@ class ServerSidePagination extends React.Component {
       },
       onTableChange: (action, tableState) => {
         const { rowsPerPage, page, columns } = tableState;
+        let updatedColumns;
         switch (action) {
           case "changePage":
             this.changePage(page, rowsPerPage);
             break;
           case "columnViewChange":
-            const updatedColumns = newColumns.map((newColumn, index) => {
+            updatedColumns = newColumns.map((newColumn, index) => {
               if (columns[index].name === newColumn.name) {
                 newColumn.options.display = columns[index].display;
               }
@@ -238,4 +292,4 @@ class ServerSidePagination extends React.Component {
   }
 }
 
-export default withRouter(ServerSidePagination);
+export default withSnackbar(withRouter(ServerSidePagination));

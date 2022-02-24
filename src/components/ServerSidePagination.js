@@ -54,26 +54,84 @@ class ServerSidePagination extends React.Component {
     dataSetup(studentData, response.data.data.total);
   };
 
-  getStudentsDetailBySearch =   async (url) => {
-    const { dataSetup } = this.props;
-    this.setState({
-      isData: true,
-    });
-    const response = await axios.get(url);
-    const studentData = response.data.data.results.map((student) => {
+  // getStudentsDetailBySearch =   async (url) => {
+  //   const { dataSetup } = this.props;
+  //   this.setState({
+  //     isData: true,
+  //   });
+  //   const response = await axios.get(url);
+  //   const studentData = response.data.data.results.map((student) => {
+  //     return {
+  //       ...student,
+  //       qualification: qualificationKeys[student.qualification],
+  //       studentOwner: "",
+  //       campus: student.campus ? student.campus : null,
+  //       donor: student.studentDonor ? student.studentDonor : null,
+  //     };
+  //   });
+  //   this.setState({
+  //     isData: false,
+  //   });
+  //   dataSetup(studentData, response.data.data.total);
+  // };
+
+  getStudentsDetailBySearch = async (query, value) => {
+    const {numberOfRows} = this.props;
+
+    const keys = {
+      // gender: "gender",
+      // donor: "searchDonorName",
+      // campus: "searchCampusName",
+      // studentOwner: "searchOwnerName",
+      // status: "searchStatus",
+      // partnerName: "searchPartnerName",
+      name:"searchName",
+      number:"searchNumber"
+    };
+    
+    await this.setState((prevState) => {
+      const newData = prevState.filterColumns.filter(
+        (filterColumn) => this.getKeyByValue(keys, filterColumn.key) !== query
+      );
+      console.log(newData);
       return {
-        ...student,
-        qualification: qualificationKeys[student.qualification],
-        studentOwner: "",
-        campus: student.campus ? student.campus : null,
-        donor: student.studentDonor ? student.studentDonor : null,
+        filterColumns:
+          value === ""
+            ? [...newData]
+            : [...newData, { key: keys[query], value: value }],
       };
     });
-    this.setState({
-      isData: false,
+    const { filterColumns } = this.state;
+    this.props.filterValues(filterColumns);
+    let url = `${baseURL}students?`;
+
+    filterColumns.map((filterColumn, index) => {
+      if (index > 0) {
+        url = url + `&${filterColumn.key}=${filterColumn.value}`;
+      } else {
+        if (this.state.query) {
+          url =
+            url +
+            `${this.state.query}=${this.state.value}&${filterColumn.key}=${filterColumn.value}`;
+        } else {
+          url = url + `${filterColumn.key}=${filterColumn.value}`;
+        }
+      }
     });
-    dataSetup(studentData, response.data.data.total);
-  };
+    if (filterColumns.length > 0) {
+      await this.setState({
+        mainUrl: `${url}&`,
+      });
+      this.getStudents(`${url}&limit=${numberOfRows}&page=0`);
+    } else {
+      await this.setState({
+        mainUrl: `${url}`,
+      });
+      this.getStudents(0, numberOfRows);
+    }
+    console.log(filterColumns,url);
+  }
+
   changePage = (page, rowsPerPage) => {
     this.getStudents(page, rowsPerPage);
     this.setState({
@@ -138,11 +196,12 @@ class ServerSidePagination extends React.Component {
   };
 
   getSearchApi = (query, value) => {
-    if (query) {
-      this.getStudentsDetailBySearch(`${baseURL}students?${query}=${value}`);
-    } else {
-      this.getStudents(this.state.page, 50);
-    }
+    this.getStudentsDetailBySearch(query, value);
+    // if (query) {
+    //   this.getStudentsDetailBySearch(`${baseURL}students?${query}=${value}`);
+    // } else {
+    //   this.getStudents(this.state.page, 50);
+    // }
   };
 
   
@@ -164,8 +223,10 @@ class ServerSidePagination extends React.Component {
         donor: student.studentDonor ? student.studentDonor : null,
       });
       let body = "";
+      console.log(student['donor']);
       this.state.newColumns.forEach((col,colInx) => {
-        if(colInx === this.state.newColumns.length-1) body += `"${!student[col.name] || student[col.name] === undefined ?" ":student[col.name]}"`
+        if(col.name === 'donor'){ body += `"${student['donor']?student['donor'].map((donor) => (donor.donor)).join(", "):""}",` }
+        else if(colInx === this.state.newColumns.length-1) body += `"${!student[col.name] || student[col.name] === undefined ?" ":student[col.name]}"`
         else body += `"${!student[col.name] || student[col.name] == undefined ?" ":student[col.name]}",`
       })
       return body;

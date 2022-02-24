@@ -26,11 +26,12 @@ export default class Text extends Component {
   onSearchText = (input) => {
     let isValidInput = this.validInput(input);
     if (input.length >= 2 && isValidInput === "letter") {
-      return this.props.searchByName("searchName", input);
+      return this.props.searchByName("name", input);
     } else if (input.length >= 5 && isValidInput === "number") {
-      return this.props.searchByName("searchNumber", input);
+      return this.props.searchByName("number", input);
     } else if (input.length === 0) {
-      return this.props.searchByName();
+      this.props.searchByName("name","");
+      return this.props.searchByName("number","");
     }
   };
 

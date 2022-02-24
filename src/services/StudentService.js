@@ -59,7 +59,7 @@ const ColumnTransitions = {
     filter: false,
     sort: false,
     customBodyRender: (value, rowMeta) => {
-      console.log(value, "value");
+      //console.log(value, "value");
       return (
         <StageTransitions
           studentId={value}

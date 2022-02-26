@@ -23,23 +23,23 @@ body {
 }
 
 .slick-prev:before {
-  color:  #f05f40;
+  color: #f05f40;
   opacity: 0.9;
   font-size: 24px;
 }
 
 .slick-next:before {
-  color:  #f05f40;
+  color: #f05f40;
   opacity: 0.9;
   font-size: 24px;
 }
 
 .filterSelect {
-    z-index: 900;
-    width: 23%;
-    float: left;
-    padding-left: 16px;
-    padding-top: 8px;
+  z-index: 900;
+  width: 23%;
+  float: left;
+  padding-left: 16px;
+  padding-top: 8px;
 }
 .filterSelectStage {
   min-width: 200px;
@@ -59,7 +59,8 @@ table {
   width: 100%;
 }
 
-td, th {
+td,
+th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
@@ -85,17 +86,16 @@ tr:nth-child(even) {
     padding-top: 8px;
 } */
 
-
 .MuiToolbar-regular {
-    min-height: 48px !important;
+  min-height: 48px !important;
 }
 
 .MuiAppBar-root.MuiAppBar-positionFixed {
-    z-index: 1200;
+  z-index: 1200;
 }
 
 #app {
-    padding-top: 48px;
+  padding-top: 48px;
 }
 
 /*a{
@@ -129,7 +129,7 @@ a {
 
 .iconbuttonsyle {
   margin-left: -12px;
-  margin-right: 20px
+  margin-right: 20px;
 }
 
 .headertypoclass {
@@ -211,7 +211,7 @@ a {
   display: block;
   margin-top: 1.5em;
   background: transparent;
-  border-radius: .25em .25em .4em .4em;
+  border-radius: 0.25em 0.25em 0.4em 0.4em;
   text-align: center;
   color: #fff;
   padding-bottom: 1.5em;
@@ -234,7 +234,8 @@ a {
   text-align: center;
 }
 
-.Topgridcontactpage {}
+.Topgridcontactpage {
+}
 
 .loginheaderpart h1 {
   color: white;
@@ -278,10 +279,10 @@ form {
   border-width: 0;
   outline: none;
   border-radius: 2px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
   background-color: #ff0077;
   color: #ecf0f1;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
 }
 
 .logintypography {
@@ -302,7 +303,6 @@ form {
 .getstartedpagepaper {
   padding: 30px;
 }
-
 
 /* Media queries for desktop */
 
@@ -327,7 +327,6 @@ form {
   }
 }
 
-
 /* Media query for tablets */
 
 @media only screen and (min-width: 600px) {
@@ -349,4 +348,12 @@ form {
     margin-left: 0.25em;
     width: 19em;
   }
+}
+
+.FirstNameLast {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 5px;
+  grid-row-gap: 0px;
 }

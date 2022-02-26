@@ -13,9 +13,9 @@ import { useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import { allStages } from "../config";
 import { changeFetching } from "../store/actions/auth";
+import SlotBooking from "./SlotBooking";
 
 const baseUrl = process.env.API_URL;
-const testUrl = "https://join.navgurukul.org/k/";
 
 const useStyles = (theme) => ({
   paper: {
@@ -41,24 +41,35 @@ export class DuplicateStudents extends React.Component {
       partnerId: "",
       data: [],
       pendingInterviewStage: "checking",
+      response: {},
+      slotBooking: false,
+      slotBookingData: {},
     };
-
     this.columns = [
       {
         name: "id",
         label: "Re-Test",
         options: {
           filter: false,
-          customBodyRender: (value) => {
+          customBodyRender: (value, rowData) => {
             return (
               <Button
+                disabled={
+                  rowData.rowData[1] === "pendingEnglishInterview"
+                    ? true
+                    : false
+                }
                 variant="contained"
                 color="primary"
                 style={{ fontSize: "10px" }}
                 onClick={async () => {
+                  console.log("value", value);
+
                   const response = await this.generateTestLink(value);
-                  const url = `${testUrl}${response.data.key}?student_id=${value}`;
-                  window.open(url, "_blank");
+                  this.props.history.push({
+                    pathname: `/test/${response.data.key}/${value}`,
+                  });
+                  this.props.fetchingFinish();
                 }}
               >
                 Re-Test
@@ -74,6 +85,40 @@ export class DuplicateStudents extends React.Component {
           filter: false,
           customBodyRender: (value) => {
             return allStages[value];
+          },
+        },
+      },
+      {
+        name: "stage",
+        label: "Book Slot",
+        options: {
+          filter: false,
+          customBodyRender: (value, rowData) => {
+            return (
+              <Button
+                disabled={
+                  rowData.rowData[1] === "pendingEnglishInterview"
+                    ? false
+                    : true
+                }
+                variant="contained"
+                color="primary"
+                style={{ fontSize: "10px" }}
+                onClick={() => {
+                  console.log(rowData.rowData[0]);
+                  console.log(rowData.rowData[1]);
+                  this.setState({
+                    slotBooking: true,
+                    slotBookingData: {
+                      studentId: rowData.rowData[0],
+                      stage: allStages[rowData.rowData[1]],
+                    },
+                  });
+                }}
+              >
+                Book Slot
+              </Button>
+            );
           },
         },
       },
@@ -153,9 +198,17 @@ export class DuplicateStudents extends React.Component {
       })
       .then(async (data) => {
         const response = data.data.data;
+        console.log("response", response);
+        this.setState({
+          response: response,
+        });
         if (response.alreadyGivenTest) {
           this.setState({ data: response.data });
+          console.log("data", this.state.data);
         }
+        console.log("data", this.state.data);
+
+        return response;
       });
   };
 
@@ -201,38 +254,51 @@ export class DuplicateStudents extends React.Component {
       middleName = "";
       lastName = splitedName[1];
     }
-
+    const closeModal = () => {
+      this.setState({ slotBooking: false });
+    };
     return (
-      <div>
-        <Typography variant="h5" id="modal-title">
-          Student Status
-          <br />
-        </Typography>
-        <MUIDataTable
-          title={
-            pendingInterviewStage
-              ? `${firstName.concat(" ", middleName, " ", lastName)}
+      <>
+        <div>
+          <Typography variant="h5" id="modal-title">
+            Student Status
+            <br />
+          </Typography>
+          <MUIDataTable
+            title={
+              pendingInterviewStage
+                ? `${firstName.concat(" ", middleName, " ", lastName)}
             ${this.message.testFailedMessage[selectedLang]}`
-              : `${firstName.concat(" ", middleName, " ", lastName)}
+                : `${firstName.concat(" ", middleName, " ", lastName)}
                ${this.message.stageMessage[selectedLang]}`
-          }
-          columns={this.columns}
-          data={data}
-          options={{
-            viewColumns: false,
-            print: false,
-            download: false,
-            exportButton: true,
-            pageSize: 100,
-            selectableRows: "none",
-            rowsPerPage: 20,
-            rowsPerPageOptions: [20, 40, 60],
-            toolbar: false,
-            filter: false,
-            responsive: "stacked",
-          }}
-        />
-      </div>
+            }
+            columns={this.columns}
+            data={data}
+            options={{
+              viewColumns: false,
+              print: false,
+              download: false,
+              exportButton: true,
+              pageSize: 100,
+              selectableRows: "none",
+              rowsPerPage: 20,
+              rowsPerPageOptions: [20, 40, 60],
+              toolbar: false,
+              filter: false,
+              responsive: "stacked",
+            }}
+          />
+        </div>
+        {this.state.slotBooking ? (
+          <SlotBooking
+            slotBookingData={this.state.slotBookingData}
+            name={firstName.concat(" ", middleName, " ", lastName)}
+            closeModal={closeModal}
+          />
+        ) : (
+          <></>
+        )}
+      </>
     );
   };
 }

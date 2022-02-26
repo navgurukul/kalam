@@ -34,6 +34,9 @@ import AnyRoute from "./AnyRouter";
 import history from "../utils/history";
 import StudentStatus from "../components/StudentStatus";
 import DuplicateStudents from "../components/DuplicateStudents";
+import SlideShow from "../onlineTest/SlideShow";
+import EkAurBaat from "../onlineTest/EkAurBaat";
+import Questions from "../onlineTest/Questions";
 import axios from "axios";
 
 import eachDayOfInterval from "date-fns/eachDayOfInterval";
@@ -61,6 +64,41 @@ const AppRouter = () => {
             component={CampusStudentsData}
           />
 
+        <PublicRoute path="/user/mobile/number" component={UserMoblieNumber} />
+        <PrivateRoute path="/partner/add" component={AddPartner} />
+        <AnyRoute
+          path="/donor/:donorId/students"
+          component={DonorStudentsData}
+        />
+        <AnyRoute
+          path="/partner/:partnerId/assessments"
+          component={ViewAssessments}
+        />
+        <AnyRoute
+          path="/partner/:partnerId/progress"
+          component={PartnerStudentsProgressInCampus}
+        />
+        <AnyRoute path="/test/:enrollmentKey" component={SlideShow} />
+        <AnyRoute path="/EkAurBaat/:enrollmentKey" component={EkAurBaat} />
+        <AnyRoute path="/questions/:enrollmentKey" component={Questions} />
+        <AnyRoute
+          path="/partner/:partnerId"
+          component={ProgressMadeForPartner}
+        />
+        <AnyRoute path="/partnerLanding/:slug" component={LandingPage} />
+        <AnyRoute path="/status/:mobile" component={StudentStatus} />
+        <AnyRoute path="/check_duplicate" component={DuplicateStudents} />
+        <AnyRoute
+          path="/check_duplicate/Name=:fnamemnamelname&Number=:number&Stage=:stage"
+          component={DuplicateStudents}
+        />
+        <PrivateRoute path="/partners" component={PartnerList} />
+        <PrivateRoute path="/outreachDetails" component={OutreachDetails} />
+        <PrivateRoute path="/owner" component={OwnerList} />
+        <AnyRoute
+          path="/partners/:partnerId/assessments/:assessmentId"
+          component={AssessmentAttempts}
+        />
           <PrivateRoute path="/campus" component={CampusList} />
           <PrivateRoute path="/partners" component={PartnerList} />
 

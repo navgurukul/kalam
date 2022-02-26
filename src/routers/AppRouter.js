@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import LandingPage from "../components/LandingPage";
 import DashboardPage from "../components/Dashboard";
@@ -37,38 +37,32 @@ import DuplicateStudents from "../components/DuplicateStudents";
 import SlideShow from "../onlineTest/SlideShow";
 import EkAurBaat from "../onlineTest/EkAurBaat";
 import Questions from "../onlineTest/Questions";
+import axios from "axios";
 
-const AppRouter = () => (
-  <Router history={history}>
-    <div>
-      <Switch>
-        <PublicRoute path="/" component={LandingPage} exact={true} />
-        <PrivateRoute
-          path="/update/mobile/number"
-          component={UpdateMobileNumber}
-          exact={true}
-        />
-        <PublicRoute path="/login" component={LoginDesign} exact={true} />
-        <PrivateRoute path="/tasks" component={MyTaskReport} />
-        <PrivateRoute path="/donors" component={DonorList} />
-        <PrivateRoute
-          path="/campus/allcampus/students"
-          component={AllCampusStudentsData}
-        />
-        <PrivateRoute
-          path="/campus/:campusId/students"
-          component={CampusStudentsData}
-        />
-        <PrivateRoute path="/campus" component={CampusList} />
+import eachDayOfInterval from "date-fns/eachDayOfInterval";
+const baseUrl = process.env.API_URL;
 
-        <PrivateRoute
-          path="/report/dangling"
-          component={StageWiseDanglingReport}
-        />
-        <PrivateRoute path="/report/all" component={ReportContainer} />
-        <PrivateRoute path="/assign/user" component={MyAssignReport} />
-        <PrivateRoute path="/students" component={AdmissionsDash} />
-        <PrivateRoute path="/students/:dataType" component={AdmissionsDash} />
+const AppRouter = () => {
+  return (
+    <Router history={history}>
+      <div>
+        <Switch>
+          <PublicRoute path="/" component={LandingPage} exact={true} />
+          <PrivateRoute
+            path="/update/mobile/number"
+            component={UpdateMobileNumber}
+            exact={true}
+          />
+          <PrivateRoute path="/students" component={AdmissionsDash} />
+          <PrivateRoute path="/students/:dataType" component={AdmissionsDash} />
+          <PrivateRoute
+            path="/campus/allcampus/students"
+            component={AllCampusStudentsData}
+          />
+          <PrivateRoute
+            path="/campus/:campusId/students"
+            component={CampusStudentsData}
+          />
 
         <PublicRoute path="/user/mobile/number" component={UserMoblieNumber} />
         <PrivateRoute path="/partner/add" component={AddPartner} />
@@ -105,11 +99,56 @@ const AppRouter = () => (
           path="/partners/:partnerId/assessments/:assessmentId"
           component={AssessmentAttempts}
         />
+          <PrivateRoute path="/campus" component={CampusList} />
+          <PrivateRoute path="/partners" component={PartnerList} />
 
-        <Route component={NotFoundPage} />
-      </Switch>
-    </div>
-  </Router>
-);
+          <PublicRoute path="/login" component={LoginDesign} exact={true} />
+          <PrivateRoute path="/tasks" component={MyTaskReport} />
+          <PrivateRoute path="/donors" component={DonorList} />
+          <PrivateRoute
+            path="/report/dangling"
+            component={StageWiseDanglingReport}
+          />
+          <PrivateRoute path="/report/all" component={ReportContainer} />
+          <PrivateRoute path="/assign/user" component={MyAssignReport} />
+          <PublicRoute
+            path="/user/mobile/number"
+            component={UserMoblieNumber}
+          />
+          <PrivateRoute path="/partner/add" component={AddPartner} />
+          <AnyRoute
+            path="/donor/:donorId/students"
+            component={DonorStudentsData}
+          />
+          <AnyRoute
+            path="/partner/:partnerId/assessments"
+            component={ViewAssessments}
+          />
+          <AnyRoute
+            path="/partner/:partnerId/progress"
+            component={PartnerStudentsProgressInCampus}
+          />
+          <AnyRoute
+            path="/partner/:partnerId"
+            component={ProgressMadeForPartner}
+          />
+          <AnyRoute path="/partnerLanding/:slug" component={LandingPage} />
+          <AnyRoute path="/status/:mobile" component={StudentStatus} />
+          <AnyRoute
+            path="/check_duplicate/Name=:fnamemnamelname&Number=:number&Stage=:stage"
+            component={DuplicateStudents}
+          />
+          <PrivateRoute path="/outreachDetails" component={OutreachDetails} />
+          <PrivateRoute path="/owner" component={OwnerList} />
+          <AnyRoute
+            path="/partners/:partnerId/assessments/:assessmentId"
+            component={AssessmentAttempts}
+          />
+          <Route component={NotFoundPage} />
+        </Switch>
+      </div>
+    </Router>
+  );
+};
 
 export default AppRouter;

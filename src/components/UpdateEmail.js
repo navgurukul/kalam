@@ -8,116 +8,56 @@ import { StageSelect } from "./StageSelect";
 const baseUrl = process.env.API_URL;
 
 export class UpdateEmail extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			email: this.props.email,
-			editable: false,
-		};
-	}
+  constructor(props) {
+    super(props);
+  }
+  handleUpdate = (email) => {
+    const { rowMetatable, change } = this.props;
+    const studentId = rowMetatable.rowData[0];
+    // const columnIndex = rowMetatable.columnIndex;
+    axios
+      .put(`${baseUrl}students/updateEmail/${studentId}`, { email })
+      .then(() => {
+        console.log("Success");
+        this.props.enqueueSnackbar("Email updated successfully!", {
+          variant: "success",
+        });
+        // #TODO this.props.change goes unused
+        change(email);
+      })
+      .catch(() => {
+        console.log("Failed");
+        this.props.enqueueSnackbar("Couldn't update email!", {
+          variant: "error",
+        });
+      });
+  };
 
-	handleUpdate = (email) => {
-		const { rowMetatable, change } = this.props;
-		const studentId = rowMetatable.rowData[0];
-		// const columnIndex = rowMetatable.columnIndex;
+  render = () => {
+    return (
+      <div>
+        <EasyEdit
+          type="text"
+          value={this.props.email}
+          onSave={(email) => this.handleUpdate(email)}
+          saveButtonLabel="✔"
+          cancelButtonLabel="✖"
+          validationMessage="Please Provide Valid Email"
+          onValidate={(email) => {
+            const isValidEmail =
+              /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-		if (
-			email.includes("@navgurukul.org") ||
-			email.includes("@gmail.com") ||
-			email.includes("@yahoo.com") ||
-			email.includes("@hotmail.com") ||
-			email.includes("@outlook.com") ||
-			email.includes("@live.com") ||
-			email.includes("@rediffmail.com")
-		) {
-			axios
-				.put(`${baseUrl}students/updateEmail/${studentId}`, { email })
-				.then(() => {
-					console.log("Success");
-					this.setState({
-						editable: false,
-					});
-					this.props.enqueueSnackbar("Email updated successfully!", {
-						variant: "success",
-					});
-				})
-				.catch(() => {
-					console.log("Failed");
-					this.setState({
-						editable: false,
-						email: this.props.prevEmail,
-					});
-					this.props.enqueueSnackbar("Couldn't update email!", {
-						variant: "error",
-					});
-				});
-		} else {
-			this.setState({
-				email: this.props.prevEmail,
-			});
-			this.props.enqueueSnackbar("Invalid email!", {
-				variant: "error",
-			});
-		}
-	};
-
-	render = () => {
-		return (
-			<>
-				{!this.state.editable ? (
-					<p
-						style={{
-							cursor: "pointer",
-						}}
-						onClick={() => {
-							this.setState({
-								editable: true,
-							});
-						}}
-					>
-						{this.state.email}
-					</p>
-				) : (
-					<>
-						<input
-							type="text"
-							value={this.state.email}
-							onChange={(e) => {
-								this.setState({
-									email: e.target.value,
-								});
-							}}
-						/>
-						<span
-							style={{
-								marginLeft: "10px",
-								cursor: "pointer",
-							}}
-							onClick={() => {
-								this.handleUpdate(this.state.email);
-							}}
-						>
-							✓
-						</span>
-						<span
-							style={{
-								marginLeft: "10px",
-								cursor: "pointer",
-							}}
-							onClick={() => {
-								this.setState({
-									editable: false,
-									email: this.props.prevEmail,
-								});
-							}}
-						>
-							X
-						</span>
-					</>
-				)}
-			</>
-		);
-	};
+            if (email && isValidEmail.test(email)) {
+              return true;
+            } else {
+              return false;
+            }
+          }}
+          disableAutoCancel={true}
+        />
+      </div>
+    );
+  };
 }
 
 export default withSnackbar(UpdateEmail);

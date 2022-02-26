@@ -25,6 +25,8 @@ import DashboardPage from "./Dashboard";
 import CollapseStudentData from "./collapseData";
 import Tooltip from "@material-ui/core/Tooltip";
 import StudentService from "../services/StudentService";
+import PieRechartData from "./GraphPage";
+import GraphPage from "./GraphPage";
 
 const baseURL = process.env.API_URL;
 
@@ -73,8 +75,9 @@ class ProgressMadeForPartner extends Component {
     this.state = {
       data: {},
       partnerName: "",
-      progress: true,
+      progress: false,
       tabular: false,
+      graph: true,
       "Selected for Navgurukul One-year Fellowship": "",
       "Need Action": "",
       "Need Your Help": "",
@@ -97,7 +100,7 @@ class ProgressMadeForPartner extends Component {
     ];
   }
 
-  componentDidMount() {
+  progressMadeData() {
     axios
       .get(`${baseURL}partners/${this.props.match.params.partnerId}`)
       .then((res) => {
@@ -115,6 +118,31 @@ class ProgressMadeForPartner extends Component {
           data: res.data.data,
           progress: true,
           tabular: false,
+          graph: false,
+        });
+        this.whatsAppMessage();
+      });
+  }
+
+  componentDidMount() {
+    axios
+      .get(`${baseURL}partners/${this.props.match.params.partnerId}`)
+      .then((res) => {
+        this.setState({
+          partnerName: res.data.data["name"],
+        });
+      });
+
+    axios
+      .get(
+        `${baseURL}partners/progress_made/${this.props.match.params.partnerId}`
+      )
+      .then((res) => {
+        this.setState({
+          data: res.data.data,
+          progress: false,
+          tabular: false,
+          graph: true,
         });
         this.whatsAppMessage();
       });
@@ -140,13 +168,26 @@ class ProgressMadeForPartner extends Component {
   };
 
   progressMade = () => {
-    this.componentDidMount();
+    this.setState({
+      tabular: false,
+      progress: true,
+      graph: false,
+    });
   };
 
   tabularData = () => {
     this.setState({
       tabular: true,
       progress: false,
+      graph: false,
+    });
+  };
+
+  graphData = () => {
+    this.setState({
+      tabular: false,
+      progress: false,
+      graph: true,
     });
   };
 
@@ -179,10 +220,7 @@ class ProgressMadeForPartner extends Component {
         <CssBaseline />
         <Container className={classes.container}>
           <Grid item xs={12} style={{ marginBottom: 40 }}>
-            <Typography variant="h4">
-              {" "}
-              Hello {partnerName}
-            </Typography>
+            <Typography variant="h4"> Hello {partnerName}</Typography>
           </Grid>
           <Grid item xs={12}>
             <ButtonGroup
@@ -192,6 +230,7 @@ class ProgressMadeForPartner extends Component {
             >
               <Button onClick={this.progressMade}>Progress Made</Button>
               <Button onClick={this.tabularData}>Tabular Data</Button>
+              <Button onClick={this.graphData}>Graph Data</Button>
             </ButtonGroup>
           </Grid>
           {progress && (
@@ -275,6 +314,11 @@ class ProgressMadeForPartner extends Component {
         {tabular && (
           <DashboardPage
             displayData={StudentService.columns["partnerData"]}
+            url={`partners/${this.props.match.params.partnerId}/students`}
+          />
+        )}
+        {this.state.graph && (
+          <GraphPage
             url={`partners/${this.props.match.params.partnerId}/students`}
           />
         )}

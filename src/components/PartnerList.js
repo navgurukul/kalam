@@ -21,6 +21,8 @@ import { changeFetching } from "../store/actions/auth";
 import { withRouter } from "react-router-dom";
 import MainLayout from "./MainLayout";
 import ReportSend from "./ReportSend";
+import user from "../utils/user";
+import NotHaveAccess from "./NotHaveAccess";
 const baseUrl = process.env.API_URL;
 
 const styles = (theme) => ({
@@ -175,6 +177,9 @@ export class PartnerList extends React.Component {
 
     this.state = {
       data: [],
+      access: null, //access object to store access data
+      userLoggedIn: user(), //user object to store user data
+      partnerRouteConditon: false, //to check condition of partner route
     };
   }
 
@@ -194,22 +199,64 @@ export class PartnerList extends React.Component {
       return <Box></Box>;
     }
     return (
-      <Box>
-        <MuiThemeProvider theme={theme}>
-          <div className={classes.innerTable}>
-            <MainLayout
-              title={"Partners"}
-              columns={columns}
-              data={this.state.data}
-            />
-          </div>
-        </MuiThemeProvider>
-      </Box>
+      <div>
+        {this.state.partnerRouteConditon ? (
+          <Box>
+            <MuiThemeProvider theme={theme}>
+              <div className={classes.innerTable}>
+                <MainLayout
+                  title={"Partners"}
+                  columns={columns}
+                  data={this.state.data}
+                />
+              </div>
+            </MuiThemeProvider>
+          </Box>
+        ) : (
+          <NotHaveAccess />
+        )}
+      </div>
     );
   };
 
   componentDidMount() {
     this.fetchPartners();
+    this.fetchAccess();
+  }
+  async fetchAccess() {
+    try {
+      const accessUrl = baseUrl + "rolebaseaccess";
+      axios.get(accessUrl).then((response) => {
+        const partnerData = response.data; //variable to store response data
+        this.setState(
+          {
+            access: partnerData ? partnerData : null, //set access data to state
+          },
+          () => {
+            const conditions =
+              this.state.access &&
+              this.state.userLoggedIn &&
+              this.state.userLoggedIn.email &&
+              this.state.access.partners &&
+              this.state.access.partners.view &&
+              this.state.access.partners.view.includes(
+                this.state.userLoggedIn.email
+              );
+
+            this.setState(
+              {
+                partnerRouteConditon: conditions,
+              },
+              () => {
+                console.log(this.state.partnerRouteConditon);
+              }
+            );
+          }
+        );
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async fetchPartners() {

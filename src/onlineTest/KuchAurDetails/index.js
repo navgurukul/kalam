@@ -180,6 +180,7 @@ function KuchAurDetails(props) {
       percentage_in10th: values.percentage_in10th,
       math_marks_in10th: values.math_marks_in10th,
       math_marks_in12th: values.math_marks_in12th,
+      percentage_in12th: values.percentage_in12th,
     };
 
     if (/^([a-zA-Z0-9]|\s)+$/i.test(data.city) === false) {

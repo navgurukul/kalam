@@ -226,7 +226,7 @@ function KuchAurDetails(props) {
           align="center"
         >
           <Typography variant="h4" className={classes.text}>
-            Aapki Kuch Details
+            {lang == "En" ? "Your Details" : "आपकी जानकारी"}
           </Typography>
         </Paper>
         <form onSubmit={submitHandler}>
@@ -242,8 +242,8 @@ function KuchAurDetails(props) {
               fullWidth
               // id="pin_code"
               className={classes.spacing}
-              label="Pin Code"
-              placeholder="Pin Code"
+              label={lang == "En" ? "Pin code" : "पिन कोड"}
+              placeholder={lang == "En" ? "Pin code" : "पिन कोड"}
               value={values.pin_code}
               name="pin_code"
               autoComplete="off"
@@ -256,7 +256,7 @@ function KuchAurDetails(props) {
               className={classes.spacing}
             >
               <InputLabel id="demo-simple-select-outlined-label">
-                Aap kis State me rehte hai
+                {lang == "En" ? "Select State" : "राज्य चुनें"}
               </InputLabel>
               <Select
                 required={true}
@@ -353,12 +353,12 @@ function KuchAurDetails(props) {
               className={classes.spacing}
             >
               <InputLabel id="demo-simple-select-outlined-label">
-                Current status
+                {lang == "En" ? "Current Status" : "वर्तमान स्थिति"}
               </InputLabel>
               <Select
                 value={values.current_status}
                 onChange={changeHandler}
-                label="Current status"
+                label={lang == "En" ? "Current Status" : "वर्तमान स्थिति"}
                 required={true}
                 name="current_status"
               >
@@ -375,12 +375,14 @@ function KuchAurDetails(props) {
               className={classes.spacing}
             >
               <InputLabel id="demo-simple-select-outlined-label">
-                Maximum Qualification
+                {lang == "En" ? "Maximum Qualification" : "अधिकतम योग्यता"}
               </InputLabel>
               <Select
                 value={values.qualification}
                 onChange={changeHandler}
-                label="Maximum Qualification"
+                label={
+                  lang == "En" ? "Maximum Qualification" : "अधिकतम योग्यता"
+                }
                 required={true}
                 name="qualification"
               >
@@ -400,8 +402,16 @@ function KuchAurDetails(props) {
                   fullWidth
                   // id="city"
                   className={classes.spacing}
-                  label="Marks in Maths in 10th class"
-                  placeholder="Marks in Maths in 10th class"
+                  label={
+                    lang == "En"
+                      ? "Marks in Maths in 10th class"
+                      : "10वीं कक्षा में गणित में अंक"
+                  }
+                  placeholder={
+                    lang == "En"
+                      ? "Marks in Maths in 10th class"
+                      : "10वीं कक्षा में गणित के अंक"
+                  }
                   value={values.math_marks_in10th}
                   name="math_marks_in10th"
                   type="number"
@@ -415,8 +425,16 @@ function KuchAurDetails(props) {
                   required={true}
                   // id="city"
                   className={classes.spacing}
-                  label="Percentage in 10th class"
-                  placeholder="Percentage in 10th class"
+                  label={
+                    lang == "En"
+                      ? "Percentage in 10th class"
+                      : "10वीं कक्षा के प्रतिशत अंक"
+                  }
+                  placeholder={
+                    lang == "En"
+                      ? "Percentage in 10th class"
+                      : "10वीं कक्षा के प्रतिशत अंक"
+                  }
                   value={values.percentage_in10th}
                   name="percentage_in10th"
                   type="number"
@@ -435,8 +453,16 @@ function KuchAurDetails(props) {
                   fullWidth
                   // id="city"
                   className={classes.spacing}
-                  label="Marks in Maths in 10th class"
-                  placeholder="Marks in Maths in 10th class"
+                  label={
+                    lang == "En"
+                      ? "Marks in Maths in 10th class"
+                      : "10वीं कक्षा में गणित में अंक"
+                  }
+                  placeholder={
+                    lang == "En"
+                      ? "Marks in Maths in 10th class"
+                      : "10वीं कक्षा में गणित के अंक"
+                  }
                   value={values.math_marks_in10th}
                   name="math_marks_in10th"
                   type="number"
@@ -450,8 +476,16 @@ function KuchAurDetails(props) {
                   fullWidth
                   // id="city"
                   className={classes.spacing}
-                  label="Percentage in 10th class"
-                  placeholder="Percentage in 10th class"
+                  label={
+                    lang == "En"
+                      ? "Percentage in 10th class"
+                      : "10वीं कक्षा के प्रतिशत अंक"
+                  }
+                  placeholder={
+                    lang == "En"
+                      ? "Percentage in 10th class"
+                      : "10वीं कक्षा के प्रतिशत अंक"
+                  }
                   value={values.percentage_in10th}
                   name="percentage_in10th"
                   type="number"
@@ -465,8 +499,16 @@ function KuchAurDetails(props) {
                   fullWidth
                   // id="city"
                   className={classes.spacing}
-                  label="Marks in Maths in 12th class"
-                  placeholder="Marks in Maths in 12th class"
+                  label={
+                    lang == "En"
+                      ? "Marks in Maths in 12th class"
+                      : "12वीं कक्षा में गणित में अंक"
+                  }
+                  placeholder={
+                    lang == "En"
+                      ? "Marks in Maths in 12th class"
+                      : "12वीं कक्षा में गणित के अंक"
+                  }
                   value={values.math_marks_in12th}
                   name="math_marks_in12th"
                   type="number"
@@ -480,8 +522,16 @@ function KuchAurDetails(props) {
                   fullWidth
                   // id="city"
                   className={classes.spacing}
-                  label="Percentage in 12th class"
-                  placeholder="Percentage in 12th class"
+                  label={
+                    lang == "En"
+                      ? "Percentage in 10th class"
+                      : "12वीं कक्षा के प्रतिशत अंक"
+                  }
+                  placeholder={
+                    lang == "En"
+                      ? "Percentage in 10th class"
+                      : "12वीं कक्षा के प्रतिशत अंक"
+                  }
                   value={values.percentage_in12th}
                   name="percentage_in12th"
                   type="number"
@@ -496,18 +546,24 @@ function KuchAurDetails(props) {
               className={classes.spacing}
             >
               <InputLabel id="demo-simple-select-outlined-label">
-                School Medium
+                {lang == "En" ? "School Medium" : "स्कूल माध्यम"}
               </InputLabel>
               <Select
                 value={values.school_medium}
                 onChange={changeHandler}
-                label="School Medium"
+                label={lang == "En" ? "School Medium" : "स्कूल माध्यम"}
                 name="school_medium"
                 required={true}
               >
-                <MenuItem value={""}>Select Option</MenuItem>
-                <MenuItem value={"other"}>Hindi</MenuItem>
-                <MenuItem value={"en"}>English</MenuItem>
+                <MenuItem value={""}>
+                  {lang == "En" ? "Select Langauge" : "भाषा चुने"}
+                </MenuItem>
+                <MenuItem value={"other"}>
+                  {lang == "En" ? "Hindi" : "हिन्दी"}
+                </MenuItem>
+                <MenuItem value={"en"}>
+                  {lang == "En" ? "English" : "अंग्रेज़ी"}
+                </MenuItem>
               </Select>
             </FormControl>
             <FormControl
@@ -516,12 +572,12 @@ function KuchAurDetails(props) {
               className={classes.spacing}
             >
               <InputLabel id="demo-simple-select-outlined-label">
-                Caste/Tribe
+                {lang == "En" ? " Caste/Tribe" : "जाति/जनजाति"}
               </InputLabel>
               <Select
                 value={values.caste}
                 onChange={changeHandler}
-                label="Caste/Tribe"
+                label={lang == "En" ? " Caste/Tribe" : "जाति/जनजाति"}
                 name="caste"
                 required={true}
               >
@@ -541,12 +597,12 @@ function KuchAurDetails(props) {
               className={classes.spacing}
             >
               <InputLabel id="demo-simple-select-outlined-label">
-                Religion/dharam
+                {lang == "En" ? "Religion" : "धर्म"}
               </InputLabel>
               <Select
                 value={values.religion}
                 onChange={changeHandler}
-                label="Religion/dharam"
+                label={lang == "En" ? "Religion" : "धर्म"}
                 name="religion"
               >
                 <MenuItem value="">Select Option</MenuItem>

@@ -19,11 +19,11 @@ export class LoginPage extends React.Component {
   // this.props.history.push('/home');
 
   onSuccess = (response) => {
-    console.log(response);
+    //console.log(response);
   };
 
   onFailure = (error) => {
-    console.log(error);
+    console.error(error);
   };
 
   render() {

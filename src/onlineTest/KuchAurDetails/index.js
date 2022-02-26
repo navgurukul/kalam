@@ -99,7 +99,7 @@ function KuchAurDetails(props) {
     ).then((response) => {
       response.json().then((data) => {
         setDistricts(data);
-        console.log(districts);
+        //console.log(districts);
       });
     });
   }
@@ -126,7 +126,7 @@ function KuchAurDetails(props) {
 
   const changeHandler = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
-    console.log("Values", values);
+    //console.log("Values", values);
   };
 
   const isNotEmpty = (values) => {
@@ -150,7 +150,7 @@ function KuchAurDetails(props) {
     return true;
   };
 
-  console.log("isNotEmpty", isNotEmpty(values));
+  //console.log("isNotEmpty", isNotEmpty(values));
 
   // const totalScore = props.location.totalScore;
   // console.log("totalScore", totalScore);
@@ -194,11 +194,11 @@ function KuchAurDetails(props) {
       data
     )
       .then((res) => {
-        console.log("res", res);
+        //console.log("res", res);
         history.push(`/EkAurBaat/${location.pathname.split("/")[2]}`);
       })
       .catch((err) => {
-        console.log("err", err);
+        console.error(err);
         enqueueSnackbar("Please fill all the fields properly", {
           variant: "error",
         });
@@ -215,7 +215,7 @@ function KuchAurDetails(props) {
     //   });
   };
 
-  console.log("values.qualification", values.qualification);
+  //console.log("values.qualification", values.qualification);
 
   return (
     <Container maxWidth="lg" align="center" className={classes.container}>

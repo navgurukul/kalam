@@ -105,11 +105,11 @@ export class AddOwner extends React.Component {
 
   sendReport = () => {
     const { emails, repeat, date, status, report } = this.state;
-    console.log(emails, repeat, date, status, report);
+    //console.log(emails, repeat, date, status, report);
     const { partnerId } = this.props;
 
     if (this.validations()) {
-      console.log("Callingg..");
+      //console.log("Callingg..");
       return;
     } else {
       axios

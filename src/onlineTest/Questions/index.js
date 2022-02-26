@@ -63,7 +63,7 @@ function Questions(props) {
     }
   }, [index]);
   useEffect(() => {
-    console.log("Answer List", answerList);
+    //console.log("Answer List", answerList);
   }, [answerList]);
 
   useEffect(() => {
@@ -79,7 +79,7 @@ function Questions(props) {
       return acc;
     }, {});
     setAnswerList(data);
-    console.log("answerList", data);
+    //console.log("answerList", data);
   }, []);
 
   const correctAnswerObj = JSON.parse(localStorage.getItem("correctAnswerObj"));
@@ -99,9 +99,9 @@ function Questions(props) {
   const nextClickHandler = () => {
     setIndex(index + 1);
     localStorage.setItem("answerObj", JSON.stringify({ ...answerObj }));
-    console.log("answerObj", answerObj);
+    //console.log("answerObj", answerObj);
 
-    console.log("correctAnswerObj in nextClickHandler ", correctAnswerObj);
+    //console.log("correctAnswerObj in nextClickHandler ", correctAnswerObj);
 
     let correctAnswer;
     questionsList[index].options.length > 0
@@ -119,8 +119,8 @@ function Questions(props) {
     localStorage.setItem("answerList", JSON.stringify({ ...answerList }));
   };
 
-  console.log("answerObj", answerObj);
-  console.log("correctAnswerObj", correctAnswerObj);
+  //console.log("answerObj", answerObj);
+  //console.log("correctAnswerObj", correctAnswerObj);
 
   const submitHandler = () => {
     let correctAnswer;
@@ -159,7 +159,7 @@ function Questions(props) {
           }
         ).then((res) => {
           res.json().then((data) => {
-            console.log("data", data);
+            //console.log("data", data);
             setResult({
               ...result,
               total_marks: data.total_marks,
@@ -181,12 +181,12 @@ function Questions(props) {
         });
       })
       .catch((err) => {
-        console.log("error", err);
+        //console.log("error", err);
       });
   };
 
   const isEqual = (answerObj, correctAnswerObj) => {
-    console.log("answerObj in isEqual", answerObj);
+    //console.log("answerObj in isEqual", answerObj);
     const userAnswerKey = Object.keys(answerObj);
     const correctAnswerKey = Object.keys(correctAnswerObj);
 
@@ -200,7 +200,7 @@ function Questions(props) {
   };
 
   if (index !== null) {
-    console.log("questionsList inside the condition", questionsList);
+    //console.log("questionsList inside the condition", questionsList);
     const en_text = DOMPurify.sanitize(questionsList[index].en_text);
     const hi_text = DOMPurify.sanitize(questionsList[index].hi_text);
     const common_text = DOMPurify.sanitize(questionsList[index].common_text);

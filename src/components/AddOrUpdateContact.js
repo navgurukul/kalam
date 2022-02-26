@@ -53,7 +53,7 @@ class AddOrUpdateContact extends Component {
           });
         }
       } catch (e) {
-        console.log(e);
+        //console.log(e);
         this.props.enqueueSnackbar("Something went wrong in server", {
           variant: "error",
         });

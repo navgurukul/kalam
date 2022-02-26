@@ -52,7 +52,7 @@ export class StudentFeedback extends React.Component {
           feedback: this.state.feedback,
         })
         .then((response) => {
-          console.log(response.data);
+          //console.log(response.data);
           this.setState({
             dialogOpen: false,
           });
@@ -64,7 +64,7 @@ export class StudentFeedback extends React.Component {
 
       this.props.fetchingFinish();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       this.props.enqueueSnackbar("Please select student Status", {
         variant: "error",
       });
@@ -119,8 +119,8 @@ export class StudentFeedback extends React.Component {
   render = () => {
     const { classes, feedback, rowMetaTable } = this.props;
     const { rowData } = rowMetaTable;
-    console.log(rowData, "I am rowData");
-    console.log(rowData[6], "I am rowData[8]");
+    //console.log(rowData, "I am rowData");
+    //console.log(rowData[6], "I am rowData[8]");
     var user;
     if (localStorage.getItem("user")) {
       user =

@@ -142,7 +142,7 @@ export class ModalStages extends React.Component {
       const response = await axios.get(dataURL);
       this.setState({ data: response.data.data })
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 

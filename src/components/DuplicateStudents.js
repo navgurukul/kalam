@@ -63,7 +63,7 @@ export class DuplicateStudents extends React.Component {
                 color="primary"
                 style={{ fontSize: "10px" }}
                 onClick={async () => {
-                  console.log("value", value);
+                  //console.log("value", value);
 
                   const response = await this.generateTestLink(value);
                   this.props.history.push({
@@ -105,8 +105,8 @@ export class DuplicateStudents extends React.Component {
                 color="primary"
                 style={{ fontSize: "10px" }}
                 onClick={() => {
-                  console.log(rowData.rowData[0]);
-                  console.log(rowData.rowData[1]);
+                  //console.log(rowData.rowData[0]);
+                  //console.log(rowData.rowData[1]);
                   this.setState({
                     slotBooking: true,
                     slotBookingData: {
@@ -198,15 +198,15 @@ export class DuplicateStudents extends React.Component {
       })
       .then(async (data) => {
         const response = data.data.data;
-        console.log("response", response);
+        //console.log("response", response);
         this.setState({
           response: response,
         });
         if (response.alreadyGivenTest) {
           this.setState({ data: response.data });
-          console.log("data", this.state.data);
+          //console.log("data", this.state.data);
         }
-        console.log("data", this.state.data);
+        //console.log("data", this.state.data);
 
         return response;
       });

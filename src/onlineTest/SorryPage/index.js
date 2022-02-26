@@ -53,7 +53,7 @@ function SorryPage(props) {
   const history = useHistory();
   const classes = useStyles();
   let marks = props.total_marks;
-  console.log(marks);
+  //console.log(marks);
   return (
     <Container maxWidth="lg" align="center" justifyContent="center">
       <div className={classes.root}>

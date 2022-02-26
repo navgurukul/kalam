@@ -52,7 +52,7 @@ export class AudiofileUpload extends React.Component {
       }
     } catch (e) {
       this.props.enqueueSnackbar("Internal Server Error", { variant: "error" });
-      console.log(e);
+      console.error(e);
     }
   }
 
@@ -67,7 +67,7 @@ export class AudiofileUpload extends React.Component {
           alert("It is enternal server error please refresh the page.");
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     });
   }

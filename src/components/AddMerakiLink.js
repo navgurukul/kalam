@@ -38,11 +38,11 @@ export class AddMerakiLink extends React.Component {
         this.props.enqueueSnackbar("Meraki link successfully created", {
           variant: "success",
         });
-        console.log(response, "response");
+        //console.log(response, "response");
         const data = response.data.data.meraki_link;
-        console.log(data, "data");
+        //console.log(data, "data");
         updateValue(data);
-        console.log(this.props.updateValue, "updateValue");
+        //console.log(this.props.updateValue, "updateValue");
       })
       .catch((e) => {
         this.props.enqueueSnackbar(`Something went wrong`, {

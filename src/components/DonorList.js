@@ -59,7 +59,7 @@ class DonorList extends Component {
         showLoader: false
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 

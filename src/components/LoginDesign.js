@@ -37,7 +37,7 @@ export class LoginDesign extends React.Component {
 
   componentDidMount() {
     axios.get(`${baseUrl}rolebaseaccess`).then((res) => {
-      console.log("res", res.data.specialLogin);
+      //console.log("res", res.data.specialLogin);
       this.setState({
         specialLogin: res.data.specialLogin,
       });
@@ -45,7 +45,7 @@ export class LoginDesign extends React.Component {
   }
 
   responseGoogle = (response) => {
-    console.log("response.profileObj", response.profileObj.email);
+    //console.log("response.profileObj", response.profileObj.email);
 
     if (
       response.profileObj.email.includes("@navgurukul.org") ||
@@ -61,7 +61,7 @@ export class LoginDesign extends React.Component {
           localStorage.setItem("user", JSON.stringify(user));
           if (user.mobile) {
             const { history } = this.props;
-            console.log(this.props, "hi");
+            //console.log(this.props, "hi");
             this.props.login();
             history.push("/students");
           } else {
@@ -82,7 +82,7 @@ export class LoginDesign extends React.Component {
   };
 
   errr = (error) => {
-    console.log(error);
+    console.error(error);
     alert("There was some issue with Google Login. Contact the admin.");
   };
 

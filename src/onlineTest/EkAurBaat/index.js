@@ -49,13 +49,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function EkAurBaat(props) {
-  console.log("Props in ek aur baat", props.location.enrolment_key);
+  //console.log("Props in ek aur baat", props.location.enrolment_key);
   const classes = useStyles();
 
   // //1. Where we'll get time 00:00:00
   const time = useRef(new Date().setSeconds(new Date().getSeconds() + 5400));
   localStorage.setItem("time", time.current);
-  console.log("time.current", time.current);
+  //console.log("time.current", time.current);
   // const Time = time.current;
   // console.log("Time before store in local storage", Time);
   // Time.setSeconds(Time.getSeconds() + 5400);
@@ -80,14 +80,14 @@ function EkAurBaat(props) {
   localStorage.setItem("index", 0);
 
   const enrolmentKey = location.pathname.split("/")[2];
-  console.log("enrolmentKey", enrolmentKey);
+  //console.log("enrolmentKey", enrolmentKey);
 
   const fetchQuestionsAndOptions = () => {
     localStorage.setItem("answerObj", JSON.stringify(""));
     axios
       .post(`${baseUrl}on_assessment/questions/${enrolmentKey}`)
       .then((res) => {
-        console.log("response", res.data.data);
+        //console.log("response", res.data.data);
         localStorage.setItem("questionsList", JSON.stringify(res.data.data));
         // localStorage.setItem("questionsList", res.data.data);
         history.push({
@@ -100,7 +100,7 @@ function EkAurBaat(props) {
         });
       })
       .catch((err) => {
-        console.log("error", err);
+        console.error(err);
       });
   };
 

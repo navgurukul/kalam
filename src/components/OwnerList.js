@@ -194,7 +194,7 @@ export class OwnerList extends React.Component {
             : null;
             //const update = !permissions.updateStage.includes(user);
             const canUpdate = permissions.updateStage.includes(user) || rowData[1] === user.split("@")[0];
-            console.log(value,rowData);
+            //console.log(value,rowData);
 
             return (
               <div
@@ -326,7 +326,7 @@ export class OwnerList extends React.Component {
       return newOwner;      
     }) 
     this.setState({ data: newData,interviewData:interviewResponse.data.data, showLoader: false });
-    console.log(interviewData);
+    //console.log(interviewData);
   }
 }
 

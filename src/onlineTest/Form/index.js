@@ -57,7 +57,7 @@ function Form(props) {
     // let key = localStorage.getItem("enrolmentKey")
     // setEnrolment_key(key)
     let enrkey = location.pathname.split("/")[2];
-    console.log("enrkey", enrkey);
+    //console.log("enrkey", enrkey);
     setEnrolment_key(enrkey);
   }, []);
 
@@ -117,10 +117,10 @@ function Form(props) {
     axios
       .post(`${baseUrl}on_assessment/details/photo/${enrolment_key}`, formdata)
       .then((res) => {
-        console.log("res", res);
+        //console.log("res", res);
       })
       .catch((err) => {
-        console.log("err", err);
+        console.err(err);
         enqueueSnackbar("Please fill all the fields properly", {
           variant: "error",
         });

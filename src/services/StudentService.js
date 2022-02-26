@@ -377,8 +377,8 @@ const ColumnTransitionForCampusDashboard = {
     filter: false,
     sort: false,
     customBodyRender: (value, rowMeta) => {
-      console.log(rowMeta.rowData, "rowData, meta");
-      console.log(value, "value");
+      //console.log(rowMeta.rowData, "rowData, meta");
+      //console.log(value, "value");
       return (
         <StageTransitions
           studentId={value}

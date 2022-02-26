@@ -119,7 +119,7 @@ const AddOwnerSchedule = ({isEdit, disabled, prevSchedule, ownerId, updateData})
       }
     })
   }
-  console.log(ownerId,isEdit);
+  //console.log(ownerId,isEdit);
   return (
     
     <div>

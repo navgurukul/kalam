@@ -96,7 +96,7 @@ function SlotBooking(props) {
     handleDateChange(date);
   }, []);
   const handleDateChange = (dater) => {
-    console.log(dater);
+    //console.log(dater);
     let DateArray = typeof dater;
     var d = (new Date(dater) + "").split(" ");
     d[2] = d[2] + ",";
@@ -116,7 +116,7 @@ function SlotBooking(props) {
           });
           setTimings(FilteredTimings);
         } else {
-          console.log(Timings);
+          //console.log(Timings);
           setTimings(DefaultTimings);
         }
       });
@@ -157,7 +157,7 @@ function SlotBooking(props) {
       }),
     }).then((res) => {
       res.json().then((data) => {
-        console.log(data);
+        //console.log(data);
         if (data.status === "successfully_scheduled") {
           enqueueSnackbar("Slot Booked", {
             variant: "success",
@@ -210,7 +210,7 @@ function SlotBooking(props) {
                   onChange={(dates) => {
                     setDate(dates);
                     handleDateChange(dates);
-                    console.log(dates);
+                    //console.log(dates);
                   }}
                   inputVariant="outlined"
                   fullWidth
@@ -222,8 +222,9 @@ function SlotBooking(props) {
             </MuiPickersUtilsProvider>
             <Grid container justify="space-evenly">
               {Timings.length > 0 ? (
-                Timings.map((item) => (
+                Timings.map((item,index) => (
                   <Grid
+                  key={index}
                     onClick={() => {
                       setStartTime(item.from);
                       setEndTime(item.to);

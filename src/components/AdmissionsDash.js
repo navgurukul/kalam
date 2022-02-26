@@ -121,7 +121,7 @@ export class AdmissionsDash extends React.Component {
     this.setState({
       selectedOption,
     });
-    console.log(selectedOption, "selectedOption");
+    //console.log(selectedOption, "selectedOption");
     const { filterValues } = this.state;
     if (selectedOption === null) {
       this.stage = null;
@@ -133,7 +133,7 @@ export class AdmissionsDash extends React.Component {
       let arr = selectedOption.map((option) => {
         return option.value;
       });
-      console.log(arr, " i am arr");
+      //console.log(arr, " i am arr");
       if (arr.includes("default")) {
         this.stage = null;
       } else {
@@ -352,14 +352,14 @@ export class AdmissionsDash extends React.Component {
                 studentDashboardCondition: conditions, //set the condition to state
               },
               () => {
-                console.log(this.state.studentDashboardCondition);
+                //console.log(this.state.studentDashboardCondition);
               }
             );
           }
         );
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
@@ -383,7 +383,7 @@ export class AdmissionsDash extends React.Component {
       localStorage.setItem("users", JSON.stringify(newData));
       this.props.fetchingFinish();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       this.props.fetchingFinish();
     }
   }

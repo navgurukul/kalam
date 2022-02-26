@@ -248,14 +248,14 @@ export class PartnerList extends React.Component {
                 partnerRouteConditon: conditions,
               },
               () => {
-                console.log(this.state.partnerRouteConditon);
+                //console.log(this.state.partnerRouteConditon);
               }
             );
           }
         );
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 

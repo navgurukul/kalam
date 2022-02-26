@@ -46,12 +46,12 @@ class GraphPage extends React.Component {
         this.setState({
           data: mappedData,
         });
-        console.log(this.state.data, "data console");
+        //console.log(this.state.data, "data console");
       });
   }
 
   customizeText(arg) {
-    console.log(arg, "arg");
+    //console.log(arg, "arg");
     return `${arg.valueText} ${arg.argument} (${(arg.percent * 100).toFixed(
       2
     )}%)`;
@@ -59,9 +59,9 @@ class GraphPage extends React.Component {
 
   customizeTooltip = (pointInfo) => {
     const graphData = this.state.data;
-    console.log(this.state.data, "state data");
-    console.log(pointInfo, "point info");
-    console.log(graphData, "graph data");
+    //console.log(this.state.data, "state data");
+    //console.log(pointInfo, "point info");
+    //console.log(graphData, "graph data");
     const studentNames = graphData.find(
       (element) => element.name === pointInfo.argument
     ).studentNames;

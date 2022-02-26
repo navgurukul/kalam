@@ -18,7 +18,7 @@ export class UpdateEmail extends React.Component {
     axios
       .put(`${baseUrl}students/updateEmail/${studentId}`, { email })
       .then(() => {
-        console.log("Success");
+        //console.log("Success");
         this.props.enqueueSnackbar("Email updated successfully!", {
           variant: "success",
         });
@@ -26,7 +26,7 @@ export class UpdateEmail extends React.Component {
         change(email);
       })
       .catch(() => {
-        console.log("Failed");
+        //console.log("Failed");
         this.props.enqueueSnackbar("Couldn't update email!", {
           variant: "error",
         });

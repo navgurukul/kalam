@@ -56,7 +56,7 @@ class CampusStudentsData extends React.Component {
         );
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
   async fetchUsers() {
@@ -66,7 +66,7 @@ class CampusStudentsData extends React.Component {
       this.props.usersSetup(response.data.data);
       this.props.fetchingFinish();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       this.props.fetchingFinish();
     }
   }
@@ -86,7 +86,7 @@ class CampusStudentsData extends React.Component {
   render() {
     const { campusName, isShow } = this.state;
     const { campusId } = this.props.match.params;
-    console.log(campusName, campusId);
+    //console.log(campusName, campusId);
     return (
       <div>
         {this.state.campusRouteCondition ? (

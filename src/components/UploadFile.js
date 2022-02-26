@@ -30,7 +30,7 @@ export class UploadFile extends React.Component {
       });
       this.props.fetchingFinish();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       this.props.fetchingFinish();
     }
   }

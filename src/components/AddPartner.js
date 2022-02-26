@@ -85,7 +85,7 @@ export class AddPartnerPage extends React.Component {
         this.props.history.push("/partners");
       }
     } catch (e) {
-      console.log(e);
+      //console.log(e);
       this.props.enqueueSnackbar(
         "All fields are mandatory Or Slug should be unique",
         { variant: "error" }
@@ -162,7 +162,7 @@ export class AddPartnerPage extends React.Component {
       const dataURL = `${baseUrl}partners/${this.props.value}`;
       axios.get(dataURL).then((response) => {
         const data = response.data.data;
-        console.log("data", data);
+        //console.log("data", data);
         this.setState({
           name: data.name ? data.name : "",
           email: data.email ? data.email : "",
@@ -262,7 +262,7 @@ export class AddPartnerPage extends React.Component {
   render = () => {
     const { classes, value } = this.props;
     const { states, state } = this.state;
-    console.log("this.state", this.state);
+    //console.log("this.state", this.state);
     return (
       <Card className={classes.root}>
         <form className={classes.container}>
@@ -326,7 +326,7 @@ export class AddPartnerPage extends React.Component {
           <FormControl>
             {this.state.partner_user.length > 0 ? (
               this.state.partner_user.map((user, index) => {
-                console.log("user", user);
+                //console.log("user", user);
                 return (
                   <div key={index}>
                     <TextField

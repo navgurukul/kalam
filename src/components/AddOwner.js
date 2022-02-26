@@ -1,9 +1,8 @@
 import React from "react";
 import Card from "@material-ui/core/Card";
 import { withStyles } from "@material-ui/core/styles";
-import { Button } from "@material-ui/core";
+import { Button, IconButton, Modal } from "@material-ui/core";
 import Select from "react-select";
-import { Modal } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import axios from "axios";
 import {
@@ -158,7 +157,7 @@ export class AddOwner extends React.Component {
           this.setState({
             dialogOpen: false,
           });
-          getUpdatedData(response.data.data[0], true);
+          //getUpdatedData(response.data.data[0], true);
         });
     } else {
       this.props.enqueueSnackbar(`Please fill all fields`, {
@@ -205,7 +204,7 @@ export class AddOwner extends React.Component {
   };
 
   render = () => {
-    const { classes, isEdit } = this.props;
+    const { classes, isEdit, disabled } = this.props;
     const { data, ownerName, gender, ownerId, availablity, stage, limit } =
       this.state;
     let ownerGender = "Na";
@@ -216,7 +215,9 @@ export class AddOwner extends React.Component {
     return (
       <div>
         {isEdit ? (
-          <EditIcon onClick={this.openModel} style={{ cursor: "pointer" }} />
+          <IconButton disabled={disabled} onClick={this.openModel}>
+            <EditIcon />
+          </IconButton>
         ) : (
           <Button
             variant="contained"

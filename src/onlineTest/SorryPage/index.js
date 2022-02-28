@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
+const baseUrl = process.env.API_URL;
 const tutorialSteps = {
   heading: "Oh Sorry!",
   hiContent1: "आप इस बारी इस टेस्ट में पास नहीं हो पाए। आपके ",
@@ -53,6 +54,18 @@ function SorryPage(props) {
   const history = useHistory();
   const classes = useStyles();
   let marks = props.total_marks;
+  const [totalMarks, setTotalMarks] = useState("");
+  useEffect(() => {
+    fetch(
+      `${baseUrl}/on_assessment/Show_testResult/${
+        location.pathname.split("/")[2]
+      }`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setTotalMarks(data.total_marks);
+      });
+  }, []);
   //console.log(marks);
   return (
     <Container maxWidth="lg" align="center" justifyContent="center">
@@ -70,7 +83,7 @@ function SorryPage(props) {
         <Paper square elevation={0} className={classes.content}>
           <Typography>
             {tutorialSteps.enContent1}
-            {marks}
+            {totalMarks}
             {tutorialSteps.enContent2}
           </Typography>
         </Paper>
@@ -84,7 +97,12 @@ function SorryPage(props) {
         <Paper square elevation={0} className={classes.content}>
           <Typography>
             {tutorialSteps.enContent3}
-            <a href="https://merakilearn.org/" color="primary">
+            <a
+              href="https://merakilearn.org/"
+              style={{
+                color: "blue",
+              }}
+            >
               {tutorialSteps.enLink}
             </a>
             {tutorialSteps.enContent4}

@@ -55,7 +55,7 @@ function Questions(props) {
   const [result, setResult] = useState({
     success: false,
     done: false,
-    total_marks: 0,
+    total_marks: "",
   });
   useEffect(() => {
     if (index !== null) {

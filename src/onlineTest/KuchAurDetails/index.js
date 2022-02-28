@@ -64,9 +64,11 @@ function KuchAurDetails(props) {
   let school_medium = ["", "en", "other"];
   let prevFilledData = props.prevFilledData;
   let lang = props.lang;
+  const [ApiCall, setApiCall] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (prevFilledData) {
+      setApiCall(false);
       setValues({
         district: prevFilledData.district,
         pin_code: prevFilledData.pin_code,
@@ -189,20 +191,24 @@ function KuchAurDetails(props) {
       });
       return;
     }
-    Axios.post(
-      `${baseUrl}on_assessment/details/${location.pathname.split("/")[2]}`,
-      data
-    )
-      .then((res) => {
-        //console.log("res", res);
-        history.push(`/EkAurBaat/${location.pathname.split("/")[2]}`);
-      })
-      .catch((err) => {
-        console.error(err);
-        enqueueSnackbar("Please fill all the fields properly", {
-          variant: "error",
+    if (ApiCall) {
+      Axios.post(
+        `${baseUrl}on_assessment/details/${location.pathname.split("/")[2]}`,
+        data
+      )
+        .then((res) => {
+          //console.log("res", res);
+          history.push(`/EkAurBaat/${location.pathname.split("/")[2]}`);
+        })
+        .catch((err) => {
+          console.error(err);
+          enqueueSnackbar("Please fill all the fields properly", {
+            variant: "error",
+          });
         });
-      });
+    } else {
+      history.push(`/EkAurBaat/${location.pathname.split("/")[2]}`);
+    }
     // if (isNotEmpty(values)) {
     //   history.push({
     //     pathname: "/ekAurBaat",

@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 function KuchAurDetails(props) {
   const classes = useStyles();
   let prevData = props.prevData;
+  let alreadyAUser = props.alreadyAUser;
   let caste = ["", "obc", "scSt", "general", "others"];
   let qualification = [
     "",
@@ -191,7 +192,9 @@ function KuchAurDetails(props) {
       });
       return;
     }
-    if (ApiCall) {
+    if (alreadyAUser) {
+      history.push(`/EkAurBaat/${location.pathname.split("/")[2]}`);
+    } else {
       Axios.post(
         `${baseUrl}on_assessment/details/${location.pathname.split("/")[2]}`,
         data
@@ -206,8 +209,6 @@ function KuchAurDetails(props) {
             variant: "error",
           });
         });
-    } else {
-      history.push(`/EkAurBaat/${location.pathname.split("/")[2]}`);
     }
     // if (isNotEmpty(values)) {
     //   history.push({

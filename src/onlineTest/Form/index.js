@@ -51,6 +51,7 @@ function Form(props) {
   const classes = useStyles();
   const [enrolment_key, setEnrolment_key] = useState("");
   const [prevData, setPrevData] = useState({});
+  const [alreadyAUser, setAlreadyAUser] = useState(false);
   let lang = props.lang;
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -78,6 +79,7 @@ function Form(props) {
             let PrevDatas = res.data.data[0];
 
             setPrevData(PrevDatas);
+            setAlreadyAUser(true);
             setValues({
               ...values,
               PrevImage: PrevDatas.image_url,
@@ -108,7 +110,6 @@ function Form(props) {
     gps_lat: "-1",
     gps_long: "-1",
     PrevImage: "",
-    
   });
 
   const savePhoto = (e) => {
@@ -446,7 +447,12 @@ function Form(props) {
           </div>
         </Container>
       ) : (
-        <KuchAurDetails prevData={data} lang={lang} prevFilledData={prevData} />
+        <KuchAurDetails
+          prevData={data}
+          lang={lang}
+          prevFilledData={prevData}
+          alreadyAUser={alreadyAUser}
+        />
       )}
     </>
   );

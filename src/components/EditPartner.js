@@ -172,5 +172,4 @@ const EditPartner = (props) => {
   );
 };
 
-// export default withSnackbar(withStyles(styles)(EditPartner));
 export default EditPartner;

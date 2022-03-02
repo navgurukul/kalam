@@ -1,10 +1,10 @@
-import { createMuiTheme } from "@material-ui/core";
+import { createTheme } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import AudioPlayer from "material-ui-audio-player";
 import React, { Fragment } from "react";
 
-const muiTheme = createMuiTheme({});
+const muiTheme = createTheme({});
 
 const useStyles = makeStyles((theme) => {
   return {

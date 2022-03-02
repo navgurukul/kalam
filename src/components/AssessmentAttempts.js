@@ -1,10 +1,11 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 
-export class AssessmentAttempts extends React.Component {
-  render() {
-    return "Hi" + this.props.partnerId + " " + this.props.assessmentId;
-  }
-}
+export const AssessmentAttempts = (props) => {
+  return (
+    <React.Fragment>
+      Hi {props.partnerId} {props.assessmentId}
+    </React.Fragment>
+  );
+};
 
-export default withRouter(AssessmentAttempts);
+export default AssessmentAttempts;

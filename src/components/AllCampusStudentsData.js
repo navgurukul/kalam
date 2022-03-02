@@ -1,5 +1,5 @@
-import React from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { changeFetching, setupUsers } from "../store/actions/auth";
 import axios from "axios";
 import StudentService from "../services/StudentService";
@@ -13,108 +13,90 @@ import NotHaveAccess from "./NotHaveAccess";
 //baseUrl
 const baseUrl = process.env.API_URL;
 
-class CampusStudentsData extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isShow: true,
-      access: null, //access object to store data who are allowed to access the page
-      userLoggedIn: user(), //user object to store data of logged in user
-      allCampusCondition: false, //condition to check if user is allowed to access the page
-    };
-  }
-  async fetchUsers() {
+const CampusStudentsData = () => {
+  const dispatch = useDispatch();
+  const [state, setState] = React.useState({
+    isShow: true,
+    access: null, //access object to store data who are allowed to access the page
+    userLoggedIn: user(), //user object to store data of logged in user
+    allCampusCondition: false, //condition to check if user is allowed to access the page
+  });
+  const fetchingFinish = () => dispatch(changeFetching(false));
+  const usersSetup = (users) => dispatch(setupUsers(users));
+  const fetchUsers = async () => {
     const usersURL = baseUrl + "users/getall";
     try {
       const response = await axios.get(usersURL, {});
-      this.props.usersSetup(response.data.data);
-      this.props.fetchingFinish();
+      usersSetup(response.data.data);
+      fetchingFinish();
     } catch (e) {
       console.error(e);
-      this.props.fetchingFinish();
+      fetchingFinish();
     }
-  }
-  async fetchAccess() {
+  };
+  const fetchAccess = async () => {
     try {
       const accessUrl = baseUrl + "rolebaseaccess"; //request url
-
       axios.get(accessUrl).then((response) => {
         const campusData = response.data.campus; //storing response data in campusData variable
+        const conditions = //variable to check if user is allowed to access the page
+          campusData &&
+          state.userLoggedIn &&
+          state.userLoggedIn.email &&
+          campusData.All &&
+          campusData.All.view &&
+          campusData.All.view.includes(state.userLoggedIn.email);
 
-        this.setState(
-          {
-            access: campusData ? campusData : null, //to set access object
-          },
-          () => {
-            const conditions = //variable to check if user is allowed to access the page
-              this.state.access &&
-              this.state.userLoggedIn &&
-              this.state.userLoggedIn.email &&
-              this.state.access.All &&
-              this.state.access.All.view &&
-              this.state.access.All.view.includes(
-                this.state.userLoggedIn.email
-              );
-
-            this.setState({
-              allCampusCondition: conditions, //set the state of allCampusCondition
-            });
-          }
-        );
+        setState({
+          ...state,
+          access: campusData ? campusData : null,
+          allCampusCondition: conditions, //to set access object
+        });
       });
     } catch (e) {
       console.error(e);
     }
-  }
-  componentDidMount() {
-    this.fetchUsers();
-    this.fetchAccess();
-  }
-  progressMade = (value) => {
-    this.setState({ isShow: value });
   };
-  tabularData = (value) => {
-    this.setState({ isShow: value });
+  useEffect(() => {
+    fetchUsers();
+    fetchAccess();
+  }, []);
+  const progressMade = (value) => {
+    setState({ ...state, isShow: value });
   };
-  showGraphData = (value) => {
-    this.setState({ isShow: value });
+  const tabularData = (value) => {
+    setState({ ...state, isShow: value });
   };
-  render() {
-    const { isShow } = this.state;
-    return (
-      <div>
-        {this.state.allCampusCondition ? ( //if user is allowed to access the page
-          <div>
-            <SelectUiByButtons
-              name={`All Campus`}
-              progressMade={this.progressMade}
-              tabularData={this.tabularData}
-              showGraphData={this.showGraphData}
+  const showGraphData = (value) => {
+    setState({ ...state, isShow: value });
+  };
+  const { isShow } = state;
+  return (
+    <div>
+      {state.allCampusCondition ? ( //if user is allowed to access the page
+        <div>
+          <SelectUiByButtons
+            name={`All Campus`}
+            progressMade={progressMade}
+            tabularData={tabularData}
+            showGraphData={showGraphData}
+          />
+          {isShow ? (
+            <DashboardPage
+              displayData={StudentService["CampusData"]}
+              url={`/allcampus/students`}
             />
-            {isShow ? (
-              <DashboardPage
-                displayData={StudentService["CampusData"]}
-                url={`/allcampus/students`}
-              />
-            ) : isShow === null ? (
-              <GraphingPresentationJob
-                url={`/allcampus/students/distribution`}
-              />
-            ) : (
-              <StudentsProgressCards url={`allcampus`} />
-            )}
-          </div>
-        ) : (
-          <NotHaveAccess />
-        )}
-      </div>
-    );
-  }
-}
+          ) : isShow === null ? (
+            <GraphingPresentationJob url={`/allcampus/students/distribution`} />
+          ) : (
+            <StudentsProgressCards url={`allcampus`} />
+          )}
+        </div>
+      ) : (
+        <NotHaveAccess />
+      )}
+    </div>
+  );
+};
 
-const mapDispatchToProps = (dispatch) => ({
-  fetchingFinish: () => dispatch(changeFetching(false)),
-  usersSetup: (users) => dispatch(setupUsers(users)),
-});
-
-export default connect(undefined, mapDispatchToProps)(CampusStudentsData);
+export default CampusStudentsData;

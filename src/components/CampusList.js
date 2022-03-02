@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import Container from "@material-ui/core/Container";
 import MainLayout from "./MainLayout";
 import axios from "axios";
@@ -43,87 +43,76 @@ const columns = [
   },
 ];
 
-class CampusList extends Component {
-  constructor() {
-    super();
-    this.state = {
-      data: [],
-      showLoader: true,
-      access: null,
-      userLoggedIn: user(),
-      campusCondition: false,
-    };
-  }
-  componentDidMount() {
-    this.fetchCampus();
-    this.fetchAccess();
-  }
+const CampusList = () => {
+  const [state, setState] = React.useState({
+    data: [],
+    showLoader: true,
+    access: null,
+    userLoggedIn: user(),
+    campusCondition: false,
+  });
 
-  async fetchAccess() {
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchCampus();
+      await fetchAccess();
+    };
+    fetchData();
+  }, []);
+
+  const fetchAccess = async () => {
     try {
       const accessUrl = baseUrl + "rolebaseaccess";
       axios.get(accessUrl).then((response) => {
-        const campusData = response.data.campus;
-        this.setState(
-          {
-            access: campusData ? campusData : null,
-          },
-          () => {
-            const conditions =
-              this.state.access &&
-              this.state.userLoggedIn &&
-              this.state.userLoggedIn.email &&
-              this.state.access.view &&
-              this.state.access.view.includes(this.state.userLoggedIn.email);
+        const campusData = response.data.campus; //storing response data in campusData variable
+        const conditions = //variable to check if user is allowed to access the page
+          campusData &&
+          state.userLoggedIn &&
+          state.userLoggedIn.email &&
+          campusData.view &&
+          campusData.view.includes(state.userLoggedIn.email);
 
-            this.setState(
-              {
-                campusCondition: conditions,
-              },
-              () => {
-                //console.log(this.state.campusCondition);
-              }
-            );
-          }
-        );
+        setState((prevState) => ({
+          ...prevState,
+          access: campusData ? campusData : null,
+          campusCondition: conditions, //to set access object
+        }));
       });
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 
-  async fetchCampus() {
+  const fetchCampus = async () => {
     try {
       const dataURL = baseUrl + "campus";
       const response = await axios.get(dataURL);
-      this.setState({
+      setState((prevState) => ({
+        ...prevState,
         data: [...response.data.data, { campus: "All" }],
         showLoader: false,
-      });
+      }));
     } catch (e) {
       console.error(e);
     }
-  }
-
-  render() {
-    const { data, showLoader } = this.state;
-    return (
-      <div>
-        {this.state.campusCondition ? (
-          <Container maxWidth="sm">
-            <MainLayout
-              title={"Campuses Name"}
-              columns={columns}
-              data={data}
-              showLoader={showLoader}
-            />
-          </Container>
-        ) : (
-          <NotHaveAccess />
-        )}
-      </div>
-    );
-  }
-}
+  };
+  const { data, showLoader } = state;
+  return (
+    <div>
+      {state.campusCondition ? (
+        <Container maxWidth="sm">
+          <MainLayout
+            title={"Campuses Name"}
+            columns={columns}
+            data={data}
+            showLoader={showLoader}
+          />
+        </Container>
+      ) : (
+        <NotHaveAccess />
+      )}
+    </div>
+  );
+};
 
 export default CampusList;

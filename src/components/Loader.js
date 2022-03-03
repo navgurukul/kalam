@@ -1,26 +1,22 @@
-import React from 'react';
-import { HalfCircleSpinner } from 'react-epic-spinners'
-import { withStyles } from "@material-ui/core/styles";
+import React from "react";
+import { HalfCircleSpinner } from "react-epic-spinners";
+import { makeStyles } from "@material-ui/core/styles";
 
-
-const styles = (theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
-});
+}));
 
-class Loader extends React.Component {
-  render() {
-    const { classes } = this.props;
-    return (
-      <div className={classes.root}>
-        <HalfCircleSpinner color="#f05f40" />
-      </div>
-    )
-  }
-}
+const Loader = () => {
+  const classes = useStyles();
+  return (
+    <div className={classes.root}>
+      <HalfCircleSpinner color="#f05f40" />
+    </div>
+  );
+};
 
-export default (withStyles(styles)(Loader));
+export default Loader;

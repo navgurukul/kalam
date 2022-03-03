@@ -7,7 +7,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import Avatar from "@material-ui/core/Avatar";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import Tooltip from "@material-ui/core/Tooltip";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/styles";
 
 const baseUrl = process.env.API_URL;
 import { Button } from "@material-ui/core";

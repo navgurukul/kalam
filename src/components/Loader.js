@@ -1,6 +1,6 @@
 import React from "react";
 import { HalfCircleSpinner } from "react-epic-spinners";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles(() => ({
   root: {

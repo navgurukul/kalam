@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Card from "@material-ui/core/Card";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/styles";
 import { Button, IconButton, Modal } from "@material-ui/core";
 import Select from "react-select";
 import EditIcon from "@material-ui/icons/Edit";

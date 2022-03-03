@@ -1,6 +1,6 @@
 import { createTheme } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/styles";
 import AudioPlayer from "material-ui-audio-player";
 import React, { Fragment } from "react";
 

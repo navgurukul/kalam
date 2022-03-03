@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PieChart, {
   Legend,
   Export,
@@ -16,32 +16,21 @@ import Loader from "./Loader";
 
 const baseUrl = process.env.API_URL;
 
-class PieRechartReport extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      data: null,
-    };
-  }
+const PieRechartReport = (props) => {
+  const [data, setData] = React.useState(null);
 
-  componentDidMount() {
-    axios.get(`${baseUrl}${this.props.url}`).then((response) => {
-      this.setState({
-        data: response.data.data,
-      });
-     // console.log(respnose.data.data, "data console");
+  useEffect(() => {
+    axios.get(`${baseUrl}${props.url}`).then((response) => {
+      setData(response.data.data);
     });
-  }
+  }, []);
 
-  customizeText(arg) {
+  const customizeText = (arg) => {
     return `${arg.valueText} Students (${arg.percentText})`;
-  }
+  };
 
-  customizeTooltip = (pointInfo) => {
-    const { graphData } = this.state.data;
-    //console.log(this.state.data, "state data");
-    //console.log(pointInfo, "point info");
-    //console.log(graphData, "graph data");
+  const customizeTooltip = (pointInfo) => {
+    const { graphData } = data;
     const studentNames = graphData.find(
       (element) => element.name === pointInfo.argument
     ).studentNames;
@@ -55,66 +44,61 @@ class PieRechartReport extends React.Component {
       }),
     };
   };
-  render() {
-    if (this.state.data) {
-      const {
-        graphData,
-        note,
-        noOfStudentsWithMilestone,
-        noOfStudentsWithOutMilestone,
-      } = this.state.data;
+  if (data) {
+    const {
+      graphData,
+      note,
+      noOfStudentsWithMilestone,
+      noOfStudentsWithOutMilestone,
+    } = data;
 
-      return (
-        <Container maxWidth="md">
-          <PieChart
-            resolveLabelOverlapping="shift"
-            id="pie"
-            type="doughnut"
-            palette="Bright"
-            dataSource={graphData}
-            title={note}
-          >
-            <Legend
-              orientation="horizontal"
-              itemTextPosition="right"
-              horizontalAlignment="center"
-              verticalAlignment="bottom"
-              columnCount={2}
-            >
-              <Font size={16} />
-            </Legend>
-            <Export enabled={true} />
-            <Series argumentField="name" valueField="value">
-              <Label
-                visible={true}
-                position="columns"
-                customizeText={this.customizeText}
-              >
-                <Font size={15} />
-                <Connector visible={true} width={0.5} />
-              </Label>
-            </Series>
-            <Tooltip
-              enabled={true}
-              customizeTooltip={this.customizeTooltip}
-            ></Tooltip>
-          </PieChart>
-          <Typography align="center">
-            Number of students with milestone :- {noOfStudentsWithMilestone}
-          </Typography>
-          <Typography align="center">
-            Number of students without milestone:-
-            {noOfStudentsWithOutMilestone}
-          </Typography>
-        </Container>
-      );
-    }
     return (
-      <Box m={2} pt={3}>
-        <Loader />
-      </Box>
+      <Container maxWidth="md">
+        <PieChart
+          resolveLabelOverlapping="shift"
+          id="pie"
+          type="doughnut"
+          palette="Bright"
+          dataSource={graphData}
+          title={note}
+        >
+          <Legend
+            orientation="horizontal"
+            itemTextPosition="right"
+            horizontalAlignment="center"
+            verticalAlignment="bottom"
+            columnCount={2}
+          >
+            <Font size={16} />
+          </Legend>
+          <Export enabled={true} />
+          <Series argumentField="name" valueField="value">
+            <Label
+              visible={true}
+              position="columns"
+              customizeText={customizeText}
+            >
+              <Font size={15} />
+              <Connector visible={true} width={0.5} />
+            </Label>
+          </Series>
+          <Tooltip enabled={true} customizeTooltip={customizeTooltip}></Tooltip>
+        </PieChart>
+        <Typography align="center">
+          Number of students with milestone :- {noOfStudentsWithMilestone}
+        </Typography>
+        <Typography align="center">
+          Number of students without milestone:-
+          {noOfStudentsWithOutMilestone}
+        </Typography>
+      </Container>
     );
   }
-}
+  return (
+    <Box m={2} pt={3}>
+      <Loader />
+    </Box>
+  );
+};
 
 export default PieRechartReport;

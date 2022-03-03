@@ -1,12 +1,9 @@
 import React, { Fragment } from "react";
-import { connect } from "react-redux";
-import { withStyles } from "@material-ui/core/styles";
-
+import { useDispatch } from "react-redux";
 import axios from "axios";
-import { Button } from "@material-ui/core";
-import { withSnackbar } from "notistack";
+import { Button, makeStyles } from "@material-ui/core";
+import { useSnackbar } from "notistack";
 import { changeFetching } from "../store/actions/auth";
-import { withRouter } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import { Dialog } from "@material-ui/core";
 import { Box } from "@material-ui/core";
@@ -14,7 +11,7 @@ import EditIcon from "@material-ui/icons/Edit";
 
 const baseUrl = process.env.API_URL;
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
     flexWrap: "wrap",
@@ -29,15 +26,24 @@ const styles = (theme) => ({
   btn: {
     marginTop: theme.spacing(4),
   },
-});
+}));
 
-export class StudentFeedback extends React.Component {
-  async addFeedbck() {
+const StudentFeedback = (props) => {
+  const classes = useStyles();
+  const snackbar = useSnackbar();
+  const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
+  const fetchingFinish = () => dispatch(changeFetching(false));
+  const [state, setState] = React.useState({
+    feedback: "",
+    dialogOpen: false,
+  });
+  const addFeedbck = async () => {
     try {
-      this.props.fetchingStart();
-      const { change, rowMetaTable } = this.props;
+      fetchingStart();
+      const { change, rowMetaTable } = props;
       const { rowData, columnIndex } = rowMetaTable;
-      var studentId;
+      let studentId;
 
       if (window.location.pathname.includes("/campus")) {
         studentId = rowData[7];
@@ -49,65 +55,61 @@ export class StudentFeedback extends React.Component {
       await axios
         .post(dataURL, {
           student_stage: rowData[0],
-          feedback: this.state.feedback,
+          feedback: state.feedback,
         })
-        .then((response) => {
+        .then(() => {
           //console.log(response.data);
-          this.setState({
+          setState({
+            ...state,
             dialogOpen: false,
           });
-          this.props.enqueueSnackbar("Feedback is successfully added!", {
+          snackbar.enqueueSnackbar("Feedback is successfully added!", {
             variant: "success",
           });
-          change(this.state.feedback, columnIndex);
+          change(state.feedback, columnIndex);
         });
 
-      this.props.fetchingFinish();
+      fetchingFinish();
     } catch (e) {
       console.error(e);
-      this.props.enqueueSnackbar("Please select student Status", {
+      snackbar.enqueueSnackbar("Please select student Status", {
         variant: "error",
       });
-      this.props.fetchingFinish();
+      fetchingFinish();
     }
-  }
-
-  onSubmit = () => {
-    this.setState({
-      loading: true,
-    });
-    this.addFeedbck();
   };
 
-  validate = () => {};
+  const onSubmit = () => {
+    setState({
+      ...state,
+      loading: true,
+    });
+    addFeedbck();
+  };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      feedback: "",
-      dialogOpen: false,
-    };
-  }
+  // const validate = () => {};
 
-  handleChange = (name) => (event) => {
+  const handleChange = (name) => (event) => {
     let valChange = {};
     valChange[name] = event.target.value;
 
-    this.setState(valChange);
+    setState({ ...state, [name]: event.target.value });
   };
 
-  handleClose = () => {
-    this.setState({
+  const handleClose = () => {
+    setState({
+      ...state,
       dialogOpen: false,
     });
   };
 
-  handleOpen = () => {
-    this.setState({
+  const handleOpen = () => {
+    setState({
+      ...state,
       dialogOpen: true,
     });
   };
-  addFeedbackDetails = (user, feedback) => {
+  const addFeedbackDetails = (user, feedback) => {
     const time = new Date();
     const month = time.getMonth() + 1;
     const feedbackTime = `Feedback date ${time.getDate()}/${month}/${time.getFullYear()}`;
@@ -115,68 +117,53 @@ export class StudentFeedback extends React.Component {
       ? user + ": " + feedbackTime + "\n\n" + feedback
       : user + ": " + feedbackTime + "\n\n";
   };
+  const { feedback } = props;
+  let user;
+  if (localStorage.getItem("user")) {
+    user =
+      "@" +
+      JSON.parse(localStorage.getItem("user"))
+        .user_name.toString()
+        .split(" ")
+        .join("")
+        .toLowerCase();
+  } else {
+    user = "@" + "guest";
+  }
+  return (
+    <Fragment>
+      <Box onClick={handleOpen}>
+        <EditIcon style={{ cursor: "pointer" }} />
+      </Box>
+      <Dialog open={state.dialogOpen} onClose={handleClose}>
+        <form className={classes.container}>
+          <h1 style={{ color: "#f05f40", textAlign: "center" }}>
+            Add Feedback
+          </h1>
+          <TextField
+            id="outlined-multiline-static"
+            label="Feedback"
+            multiline
+            rows="6"
+            name="feedback"
+            defaultValue={addFeedbackDetails(user, feedback)}
+            onChange={handleChange("feedback")}
+            className={classes.textField}
+            margin="normal"
+            variant="outlined"
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onSubmit}
+            className={classes.btn}
+          >
+            Submit Feedback
+          </Button>
+        </form>
+      </Dialog>
+    </Fragment>
+  );
+};
 
-  render = () => {
-    const { classes, feedback, rowMetaTable } = this.props;
-    const { rowData } = rowMetaTable;
-    //console.log(rowData, "I am rowData");
-    //console.log(rowData[6], "I am rowData[8]");
-    var user;
-    if (localStorage.getItem("user")) {
-      user =
-        "@" +
-        JSON.parse(localStorage.getItem("user"))
-          .user_name.toString()
-          .split(" ")
-          .join("")
-          .toLowerCase();
-    } else {
-      user = "@" + "guest";
-    }
-    return (
-      <Fragment>
-        <Box onClick={this.handleOpen}>
-          <EditIcon style={{ cursor: "pointer" }} />
-        </Box>
-        <Dialog open={this.state.dialogOpen} onClose={this.handleClose}>
-          <form className={classes.container}>
-            <h1 style={{ color: "#f05f40", textAlign: "center" }}>
-              Add Feedback
-            </h1>
-            <TextField
-              id="outlined-multiline-static"
-              label="Feedback"
-              multiline
-              rows="6"
-              name="feedback"
-              defaultValue={this.addFeedbackDetails(user, feedback)}
-              onChange={this.handleChange("feedback")}
-              className={classes.textField}
-              margin="normal"
-              variant="outlined"
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={this.onSubmit}
-              className={classes.btn}
-            >
-              Submit Feedback
-            </Button>
-          </form>
-        </Dialog>
-      </Fragment>
-    );
-  };
-}
-
-const mapDispatchToProps = (dispatch) => ({
-  fetchingStart: () => dispatch(changeFetching(true)),
-  fetchingFinish: () => dispatch(changeFetching(false)),
-});
-
-export default withSnackbar(
-  withRouter(
-    withStyles(styles)(connect(undefined, mapDispatchToProps)(StudentFeedback))
-  )
-);
+export default StudentFeedback;

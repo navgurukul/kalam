@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "rm -rf node_modules && rm -rf dist",
     "build": "mkdir dist; cp public/index.html dist/index.html && cp public/favicon.ico dist/favicon.ico && cp public/index.html dist/404.html && NODE_ENV=production ./node_modules/webpack/bin/webpack.js --config webpack.prod.js",
+    "dev-build": "mkdir dev-dist; cp public/index.html dev-dist/index.html && cp public/favicon.ico dev-dist/favicon.ico && cp public/index.html dev-dist/404.html && NODE_ENV=production ./node_modules/webpack/bin/webpack.js --config webpack.dev.js",
     "dev": "webpack serve --config webpack.dev.js",
     "predeploy": "npm run build && cd src/config && git pull origin master && cd ../..",
     "deploy": "gh-pages -d dist",

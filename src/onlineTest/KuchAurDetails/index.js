@@ -161,30 +161,58 @@ function KuchAurDetails(props) {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    let data = {
-      name: prevData.name,
-      email: prevData.email,
-      whatsapp: prevData.whatsapp,
-      dob: prevData.dob,
-      alt_mobile: prevData.alt_mobile,
-      gender: prevData.gender,
-      gps_lat: prevData.gps_lat,
-      gps_long: prevData.gps_long,
-      partner_refer: prevData.partner_refer,
-      qualification: values.qualification,
-      state: values.state,
-      district: values.district,
-      city: values.city,
-      current_status: values.current_status,
-      school_medium: values.school_medium,
-      pin_code: values.pin_code,
-      caste: values.caste,
-      religon: values.religion,
-      percentage_in10th: values.percentage_in10th,
-      math_marks_in10th: values.math_marks_in10th,
-      math_marks_in12th: values.math_marks_in12th,
-      percentage_in12th: values.percentage_in12th,
-    };
+    let data;
+
+    if (prevData.alt_mobile.length == 10) {
+      data = {
+        name: prevData.name,
+        email: prevData.email,
+        whatsapp: prevData.whatsapp,
+        dob: prevData.dob,
+        alt_mobile: prevData.alt_mobile,
+        gender: prevData.gender,
+        gps_lat: prevData.gps_lat,
+        gps_long: prevData.gps_long,
+        partner_refer: prevData.partner_refer,
+        qualification: values.qualification,
+        state: values.state,
+        district: values.district,
+        city: values.city,
+        current_status: values.current_status,
+        school_medium: values.school_medium,
+        pin_code: values.pin_code,
+        caste: values.caste,
+        religon: values.religion,
+        percentage_in10th: values.percentage_in10th,
+        math_marks_in10th: values.math_marks_in10th,
+        math_marks_in12th: values.math_marks_in12th,
+        percentage_in12th: values.percentage_in12th,
+      };
+    } else {
+      data = {
+        name: prevData.name,
+        email: prevData.email,
+        whatsapp: prevData.whatsapp,
+        dob: prevData.dob,
+        gender: prevData.gender,
+        gps_lat: prevData.gps_lat,
+        gps_long: prevData.gps_long,
+        partner_refer: prevData.partner_refer,
+        qualification: values.qualification,
+        state: values.state,
+        district: values.district,
+        city: values.city,
+        current_status: values.current_status,
+        school_medium: values.school_medium,
+        pin_code: values.pin_code,
+        caste: values.caste,
+        religon: values.religion,
+        percentage_in10th: values.percentage_in10th,
+        math_marks_in10th: values.math_marks_in10th,
+        math_marks_in12th: values.math_marks_in12th,
+        percentage_in12th: values.percentage_in12th,
+      };
+    }
 
     if (/^([a-zA-Z0-9]|\s)+$/i.test(data.city) === false) {
       enqueueSnackbar('City name cannot contain (.,!,#,@,") ', {

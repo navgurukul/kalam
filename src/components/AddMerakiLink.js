@@ -29,7 +29,7 @@ const AddMerakiLink = (props) => {
   const classes = useStyles();
   const snackbar = useSnackbar();
   const creatMerakiLink = async (studentId) => {
-    const { updateValue } = this.props;
+    const { updateValue } = props;
     axios({
       method: "put",
       url: `${baseUrl}partners/${studentId}/merakiLink`,

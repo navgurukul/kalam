@@ -1,12 +1,10 @@
-import React from "react";
-import { forwardRef } from "react";
+import React, { useEffect } from "react";
 
-import { connect } from "react-redux";
-import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
+import { useDispatch } from "react-redux";
+import { ThemeProvider } from "@material-ui/styles";
 
 import axios from "axios";
-import { Box, Link } from "@material-ui/core";
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import { Box } from "@material-ui/core";
 
 import { theme } from "../theme/theme";
 
@@ -18,14 +16,14 @@ import AddMerakiLink from "./AddMerakiLink";
 import EditPartnerDetails from "./EditIcon";
 
 import { changeFetching } from "../store/actions/auth";
-import { withRouter } from "react-router-dom";
 import MainLayout from "./MainLayout";
 import ReportSend from "./ReportSend";
 import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
+import { makeStyles } from "@material-ui/styles";
 const baseUrl = process.env.API_URL;
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   innerTable: {
     marginLeft: "3vw",
     marginRight: "3vw",
@@ -38,7 +36,7 @@ const styles = (theme) => ({
       marginBottom: 5,
     },
   },
-});
+}));
 
 const columns = [
   {
@@ -47,7 +45,7 @@ const columns = [
     options: {
       filter: true,
       sort: true,
-      customBodyRender: (value, rowMeta) => {
+      customBodyRender: (value) => {
         return <EditPartnerDetails value={value} />;
       },
     },
@@ -82,7 +80,7 @@ const columns = [
     options: {
       filter: false,
       sort: false,
-      customBodyRender: (rowData, rowMeta, updateValue) => {
+      customBodyRender: (rowData, rowMeta) => {
         return (
           <CreateAssessment
             partnerId={rowMeta.rowData[0]}
@@ -121,7 +119,12 @@ const columns = [
           const url = `/partnerLanding/${value}`;
           return (
             <div>
-              <a href={url} target="_blank" style={{ color: "#f05f40" }}>
+              <a
+                href={url}
+                target="_blank"
+                rel="noreferrer noopener"
+                style={{ color: "#f05f40" }}
+              >
                 Go for test
               </a>
             </div>
@@ -164,120 +167,100 @@ const columns = [
     options: {
       filter: false,
       sort: false,
-      customBodyRender: (value, rowMeta, updateValue) => {
+      customBodyRender: (value) => {
         return <ReportSend partnerId={value} />;
       },
     },
   },
 ];
 
-export class PartnerList extends React.Component {
-  constructor(props) {
-    super(props);
+const PartnerList = () => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
+  const fetchingFinish = () => dispatch(changeFetching(false));
+  // const history = useHistory();
+  const [state, setState] = React.useState({
+    data: [],
+    access: null, //access object to store access data
+    userLoggedIn: user(), //user object to store user data
+    partnerRouteConditon: false, //to check condition of partner route
+  });
 
-    this.state = {
-      data: [],
-      access: null, //access object to store access data
-      userLoggedIn: user(), //user object to store user data
-      partnerRouteConditon: false, //to check condition of partner route
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchPartners();
+      await fetchAccess();
     };
-  }
+    fetchData();
+  }, []);
 
-  onRowClick = (event, rowData) => {
-    this.props.history.push("/partner/" + rowData.id + "/students");
-  };
-
-  dataSetup = (data) => {
-    this.setState({ data: data }, function () {
-      this.props.fetchingFinish();
-    });
-  };
-
-  render = () => {
-    const { classes } = this.props;
-    if (!this.state.data.length) {
-      return <Box></Box>;
-    }
-    return (
-      <div>
-        {this.state.partnerRouteConditon ? (
-          <Box>
-            <MuiThemeProvider theme={theme}>
-              <div className={classes.innerTable}>
-                <MainLayout
-                  title={"Partners"}
-                  columns={columns}
-                  data={this.state.data}
-                />
-              </div>
-            </MuiThemeProvider>
-          </Box>
-        ) : (
-          <NotHaveAccess />
-        )}
-      </div>
-    );
-  };
-
-  componentDidMount() {
-    this.fetchPartners();
-    this.fetchAccess();
-  }
-  async fetchAccess() {
+  const fetchAccess = async () => {
     try {
       const accessUrl = baseUrl + "rolebaseaccess";
       axios.get(accessUrl).then((response) => {
         const partnerData = response.data; //variable to store response data
-        this.setState(
-          {
-            access: partnerData ? partnerData : null, //set access data to state
-          },
-          () => {
-            const conditions =
-              this.state.access &&
-              this.state.userLoggedIn &&
-              this.state.userLoggedIn.email &&
-              this.state.access.partners &&
-              this.state.access.partners.view &&
-              this.state.access.partners.view.includes(
-                this.state.userLoggedIn.email
-              );
-
-            this.setState(
-              {
-                partnerRouteConditon: conditions,
-              },
-              () => {
-                //console.log(this.state.partnerRouteConditon);
-              }
-            );
-          }
-        );
+        const conditions =
+          partnerData &&
+          state.userLoggedIn &&
+          state.userLoggedIn.email &&
+          partnerData.partners &&
+          partnerData.partners.view &&
+          partnerData.partners.view.includes(state.userLoggedIn.email);
+        setState((prevState) => ({
+          ...prevState,
+          access: partnerData ? partnerData : null, //set access data to state
+          partnerRouteConditon: conditions,
+        }));
       });
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 
-  async fetchPartners() {
+  const fetchPartners = async () => {
     try {
-      this.props.fetchingStart();
+      fetchingStart();
       const dataURL = baseUrl + "partners";
       const response = await axios.get(dataURL, {
         headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
       });
-      this.dataSetup(response.data.data);
+      dataSetup(response.data.data);
     } catch (e) {
-      this.props.fetchingFinish();
+      fetchingFinish();
     }
+  };
+
+  // const onRowClick = (event, rowData) => history.push("/partner/" + rowData.id + "/students");
+
+  const dataSetup = (data) => {
+    setState((prevState) => ({ ...prevState, data }));
+    fetchingFinish();
+  };
+
+  if (!state.data.length) {
+    return <Box></Box>;
   }
-}
+  console.log(state);
+  return (
+    <div>
+      {state.partnerRouteConditon ? (
+        <Box>
+          <ThemeProvider theme={theme}>
+            <div className={classes.innerTable}>
+              <MainLayout
+                title={"Partners"}
+                columns={columns}
+                data={state.data}
+              />
+            </div>
+          </ThemeProvider>
+        </Box>
+      ) : (
+        <NotHaveAccess />
+      )}
+    </div>
+  );
+};
 
-const mapDispatchToProps = (dispatch) => ({
-  fetchingStart: () => dispatch(changeFetching(true)),
-  fetchingFinish: () => dispatch(changeFetching(false)),
-});
-
-export default withRouter(
-  withStyles(styles)(connect(undefined, mapDispatchToProps)(PartnerList))
-);
+export default PartnerList;

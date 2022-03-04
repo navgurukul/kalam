@@ -1,40 +1,34 @@
 import React from "react";
 import Select from "react-select";
 
-export default class SelectReact extends React.Component {
-  constructor(props) {
-    super(props);
-    const { value } = this.props;
-    this.state = {
-      selectedOption: {
-        value: value,
-        label: value,
-      },
-    };
-  }
-  render() {
-    const { options, onChange, filterList, index, column } = this.props;
-    const { selectedOption } = this.state;
+const SelectReact = (props) => {
+  const { value } = props;
+  const [selectedOption, setSelectedOption] = React.useState({
+    value: value,
+    label: value,
+  });
+  const { options, onChange, filterList, index, column } = props;
 
-    return (
-      <Select
-        value={selectedOption}
-        onChange={(event) => {
-          filterList[index] = event.value;
-          this.setState({ selectedOption: event });
-          onChange(filterList[index], index, column);
-        }}
-        options={options}
-        styles={{
-          menuList: (base) => ({
-            ...base,
-            position: "fixed !important",
-            backgroundColor: "white",
-            border: "1px solid lightgray",
-            width: "18%",
-          }),
-        }}
-      />
-    );
-  }
-}
+  return (
+    <Select
+      value={selectedOption}
+      onChange={(event) => {
+        filterList[index] = event.value;
+        setSelectedOption(event);
+        onChange(filterList[index], index, column);
+      }}
+      options={options}
+      styles={{
+        menuList: (base) => ({
+          ...base,
+          position: "fixed !important",
+          backgroundColor: "white",
+          border: "1px solid lightgray",
+          width: "18%",
+        }),
+      }}
+    />
+  );
+};
+
+export default SelectReact;

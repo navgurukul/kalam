@@ -1,7 +1,5 @@
-import { EmailRule } from "devextreme-react/data-grid";
 import React from "react";
-import { Link } from "react-router-dom";
-var hash = require("object-hash");
+const hash = require("object-hash");
 
 const formColor = [
   {
@@ -20,49 +18,42 @@ const formColor = [
     link: "https://docs.google.com/forms/d/e/1FAIpQLSetOkINBkhw4DKDAW81HajHvSr4vAGKa6epcFKN-4CmvUhsyA/viewform?usp=pp_url&entry.1823157052=",
   },
 ];
-class SurveyForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      url: "",
-    };
-  }
-  check = (a) => {
-    const { data } = this.props;
+const SurveyForm = (props) => {
+  const [url, setUrl] = React.useState("");
+
+  const check = (a) => {
+    const { data } = props;
     let hashValue = hash(data);
-    this.setState({
-      url: `${a}${hashValue}`,
-    });
+    setUrl(`${a}${hashValue}`);
   };
-  render() {
-    const { url } = this.state;
-    return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {formColor.map((element) => {
-          return (
-            <a
-              href={url}
-              target="_blank"
-              style={{
-                backgroundColor: element.color,
-                textAlign: "center",
-                borderRadius: "75px",
-                margin: "10px",
-              }}
-              onClick={() => this.check(element.link)}
-            >
-              {element.name}
-            </a>
-          );
-        })}
-      </div>
-    );
-  }
-}
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {formColor.map((element, index) => {
+        return (
+          <a
+            href={url}
+            target="_blank"
+            rel="noreferrer noopener"
+            style={{
+              backgroundColor: element.color,
+              textAlign: "center",
+              borderRadius: "75px",
+              margin: "10px",
+            }}
+            onClick={() => check(element.link)}
+            key={index}
+          >
+            {element.name}
+          </a>
+        );
+      })}
+    </div>
+  );
+};
 
 export default SurveyForm;

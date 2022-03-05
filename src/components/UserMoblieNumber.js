@@ -4,7 +4,7 @@ import Box from "@material-ui/core/Box";
 import { login } from "../store/actions/auth";
 
 import Paper from "@material-ui/core/Paper";
-import { makeStyles, MuiThemeProvider } from "@material-ui/styles";
+import { makeStyles, ThemeProvider } from "@material-ui/styles";
 import {
   FormControl,
   InputLabel,
@@ -69,7 +69,7 @@ const UserMobileNumber = (props) => {
   };
 
   return (
-    <MuiThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <Box className={classes.container}>
         <Paper className={classes.userContact}>
           <Box>
@@ -101,17 +101,8 @@ const UserMobileNumber = (props) => {
           </div>
         </Paper>
       </Box>
-    </MuiThemeProvider>
+    </ThemeProvider>
   );
 };
 
-// const mapStateToProps = (state) => ({
-//     loggedInUser: state.auth.loggedInUser,
-// });
-
-// const mapDispatchToProps = (dispatch) => ({
-//     login: () => dispatch(login()),
-// });
-
-// export default withRouter(withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(UserMobileNumber)))
 export default UserMobileNumber;

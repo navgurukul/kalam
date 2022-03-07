@@ -2,25 +2,22 @@ import React from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
-import { withSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
+
 const baseUrl = process.env.API_URL;
 const animatedComponents = makeAnimated();
 
-export class Evaluation extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  handleChange = async (selectedValue) => {
+const Evaluation = (props) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const handleChange = async (selectedValue) => {
     const { value } = selectedValue;
-
     if (value) {
-      this.changeEvaluation(selectedValue);
+      changeEvaluation(selectedValue);
     }
   };
 
-  changeEvaluation = (selectedValue) => {
-    const { rowMetatable, change } = this.props;
+  const changeEvaluation = (selectedValue) => {
+    const { rowMetatable, change } = props;
     const studentId = rowMetatable.rowData[0];
     const columnIndex = rowMetatable.columnIndex;
     const { value, label } = selectedValue;
@@ -29,48 +26,45 @@ export class Evaluation extends React.Component {
         evaluation: value,
       })
       .then(() => {
-        this.props.enqueueSnackbar("evaluation is successfully added!", {
+        enqueueSnackbar("evaluation is successfully added!", {
           variant: "success",
         });
         change(label, columnIndex);
       })
       .catch(() => {
-        this.props.enqueueSnackbar("Something went wrong!", {
+        enqueueSnackbar("Something went wrong!", {
           variant: "error",
         });
       });
   };
+  const { evaluation } = props;
+  const evaluationList = ["Struggling", "Manageable", "Good", "Excellent"];
 
-  render = () => {
-    const { evaluation } = this.props;
-    const evaluationList = ["Struggling", "Manageable", "Good", "Excellent"];
-
-    const evaluationOptions = evaluationList.map((item) => {
-      return {
-        label: item,
-        value: item,
-      };
-    });
-
-    const selectedValue = {
-      value: evaluation,
-      label: evaluation,
+  const evaluationOptions = evaluationList.map((item) => {
+    return {
+      label: item,
+      value: item,
     };
+  });
 
-    return (
-      <div>
-        <Select
-          className={"filterSelectStage"}
-          value={selectedValue}
-          onChange={this.handleChange}
-          options={evaluationOptions}
-          isClearable={false}
-          components={animatedComponents}
-          closeMenuOnSelect={true}
-        />
-      </div>
-    );
+  const selectedValue = {
+    value: evaluation,
+    label: evaluation,
   };
-}
 
-export default withSnackbar(Evaluation);
+  return (
+    <div>
+      <Select
+        className={"filterSelectStage"}
+        value={selectedValue}
+        onChange={handleChange}
+        options={evaluationOptions}
+        isClearable={false}
+        components={animatedComponents}
+        closeMenuOnSelect={true}
+      />
+    </div>
+  );
+};
+
+export default Evaluation;

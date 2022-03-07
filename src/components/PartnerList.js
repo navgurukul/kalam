@@ -241,7 +241,6 @@ const PartnerList = () => {
   if (!state.data.length) {
     return <Box></Box>;
   }
-  console.log(state);
   return (
     <div>
       {state.partnerRouteConditon ? (

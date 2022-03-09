@@ -58,7 +58,7 @@ export class StudentStatus extends React.Component {
           horizontal: "center",
         },
       });
-      console.log(e);
+      console.error(e);
     }
   }
 

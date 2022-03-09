@@ -93,7 +93,7 @@ class ServerSidePagination extends React.Component {
       const newData = prevState.filterColumns.filter(
         (filterColumn) => this.getKeyByValue(keys, filterColumn.key) !== query
       );
-      console.log(newData);
+      //console.log(newData);
       return {
         filterColumns:
           value === ""
@@ -129,7 +129,7 @@ class ServerSidePagination extends React.Component {
       });
       this.getStudents(0, numberOfRows);
     }
-    console.log(filterColumns,url);
+    //console.log(filterColumns,url);
   }
 
   changePage = (page, rowsPerPage) => {
@@ -223,7 +223,7 @@ class ServerSidePagination extends React.Component {
         donor: student.studentDonor ? student.studentDonor : null,
       });
       let body = "";
-      console.log(student['donor']);
+      //console.log(student['donor']);
       this.state.newColumns.forEach((col,colInx) => {
         if(col.name === 'donor'){ body += `"${student['donor']?student['donor'].map((donor) => (donor.donor)).join(", "):""}",` }
         else if(colInx === this.state.newColumns.length-1) body += `"${!student[col.name] || student[col.name] === undefined ?" ":student[col.name]}"`

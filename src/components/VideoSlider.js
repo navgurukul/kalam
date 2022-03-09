@@ -140,7 +140,7 @@ export class VideoSlider extends React.Component {
 
   render = () => {
     const { language, classes } = this.props;
-    console.log(classes, this.props);
+    //console.log(classes, this.props);
 
     const width = Math.min(600, window.screen.width);
     // const width = window.screen.width;

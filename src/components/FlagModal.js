@@ -45,7 +45,7 @@ export class RedFlag extends React.Component {
           flag: this.state.flagComment,
         })
         .then((response) => {
-          console.log(response);
+          //console.log(response);
           this.setState({
             dialogOpen: false,
             flagColorToggle: this.state.flagComment,
@@ -64,7 +64,7 @@ export class RedFlag extends React.Component {
         });
       this.props.fetchingFinish();
     } catch (e) {
-      console.log(e);
+      //console.log(e);
       this.props.enqueueSnackbar("Please select student Status", {
         variant: "error",
       });

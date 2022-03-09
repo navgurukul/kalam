@@ -21,7 +21,7 @@ class ExpandNav extends React.Component {
   };
 
   handleClick = () => {
-    console.log("clicked");
+    //console.log("clicked");
     this.setState({ componentsmenuopen: !this.state.componentsmenuopen });
   };
 

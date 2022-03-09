@@ -81,14 +81,14 @@ class CampusList extends Component {
                 campusCondition: conditions,
               },
               () => {
-                console.log(this.state.campusCondition);
+                //console.log(this.state.campusCondition);
               }
             );
           }
         );
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
@@ -101,7 +101,7 @@ class CampusList extends Component {
         showLoader: false,
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 

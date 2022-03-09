@@ -30,7 +30,7 @@ class CampusStudentsData extends React.Component {
       this.props.usersSetup(response.data.data);
       this.props.fetchingFinish();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       this.props.fetchingFinish();
     }
   }
@@ -63,7 +63,7 @@ class CampusStudentsData extends React.Component {
         );
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
   componentDidMount() {

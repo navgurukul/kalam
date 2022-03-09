@@ -385,7 +385,7 @@ export class DashboardPage extends React.Component {
       this.props.usersSetup(response.data.data);
       this.props.fetchingFinish();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       this.props.fetchingFinish();
     }
   }
@@ -429,7 +429,7 @@ export class DashboardPage extends React.Component {
       }
       this.dataSetup(studentData);
     } catch (e) {
-      console.log(e);
+      console.error(e);
       this.props.fetchingFinish();
     }
   }

@@ -29,7 +29,7 @@ export default async function ngFetch(
     const resp = await axios(opts);
     return resp;
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     if (err.response.status === 401) {
       localStorage.removeItem("jwt");
       history.push("/");

@@ -17,14 +17,14 @@ export class UpdateStudentName extends React.Component {
     axios
       .put(`${baseUrl}students/${studentId}`, { name })
       .then(() => {
-        console.log("Success");
+        //console.log("Success");
         this.props.enqueueSnackbar("Name updated successfully!", {
           variant: "success",
         });
         change(name);
       })
       .catch(() => {
-        console.log("Failed");
+        //console.log("Failed");
         this.props.enqueueSnackbar("Couldn't update name !", {
           variant: "error",
         });

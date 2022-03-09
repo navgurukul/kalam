@@ -44,7 +44,7 @@ export class EditPartner extends React.Component {
           slug: slug,
         })
         .then((response) => {
-          console.log(response.data);
+          //console.log(response.data);
           this.setState({
             dialogOpen: false,
           });
@@ -54,7 +54,7 @@ export class EditPartner extends React.Component {
           change(slug, columnIndex);
         });
     } catch (e) {
-      console.log(e);
+      console.error(e);
       this.props.enqueueSnackbar(
         "All fields are mandatory Or Slug should be unique",
         { variant: "error" }

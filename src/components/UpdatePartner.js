@@ -27,7 +27,7 @@ class UpdatePartner extends Component {
     axios
       .put(`${baseURL}students/${studentId}`, { partner_id: value })
       .then((response) => {
-        console.log(response, "res");
+        //console.log(response, "res");
         this.props.enqueueSnackbar(`Partner successfully updated !`, {
           variant: "success",
         });

@@ -377,8 +377,8 @@ const ColumnTransitionForCampusDashboard = {
     filter: false,
     sort: false,
     customBodyRender: (value, rowMeta) => {
-      console.log(rowMeta.rowData, "rowData, meta");
-      console.log(value, "value");
+      //console.log(rowMeta.rowData, "rowData, meta");
+      //console.log(value, "value");
       return (
         <StageTransitions
           studentId={value}
@@ -1632,8 +1632,8 @@ const StudentService = {
     x.gender =
       x.gender == 1 ? "Female" : x.gender == 2 ? "Male" : "Transgender";
     x.stage = allStages[x.stage];
-    x.marks = x.enrolmentKey[0]
-      ? parseInt(x.enrolmentKey[0].total_marks, 10)
+    x.marks = x.enrolmentKey[x.enrolmentKey.length - 1]
+      ? parseInt(x.enrolmentKey[x.enrolmentKey.length - 1].total_marks, 10)
       : null;
     x.marks = isNaN(x.marks) ? null : x.marks;
     x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;

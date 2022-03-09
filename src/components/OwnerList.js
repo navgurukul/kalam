@@ -14,8 +14,6 @@ import MainLayout from "./MainLayout";
 import AddOwner from "./AddOwner";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { withSnackbar } from "notistack";
-import {permissions} from '../config'
-import AddOwnerSchedule from "./AddOwnerSchedule";
 
 const baseUrl = process.env.API_URL;
 
@@ -47,7 +45,6 @@ export class OwnerList extends React.Component {
 
     this.state = {
       data: [],
-      interviewData:[],
       showLoader: true,
       showModal: false,
       ownerId: null,
@@ -60,12 +57,6 @@ export class OwnerList extends React.Component {
           filter: true,
           sort: false,
           customBodyRender: (value, rowMeta) => {
-            const user = window.localStorage.user
-            ? JSON.parse(window.localStorage.user).email
-            : null;
-            //const update = !permissions.updateStage.includes(user);
-            const canUpdate = permissions.updateStage.includes(user) || rowMeta.rowData[1] === user.split("@")[0];
-            //console.log(rowMeta);
             return (
               <div
                 style={{
@@ -77,7 +68,6 @@ export class OwnerList extends React.Component {
                 <AddOwner
                   ownerId={value}
                   isEdit={true}
-                  disabled={!canUpdate}
                   getUpdatedData={this.getUpdatedData}
                 />
                 {rowMeta.rowData[3] ? null : (
@@ -108,7 +98,7 @@ export class OwnerList extends React.Component {
           filter: true,
           sort: true,
           customBodyRender: (value) => {
-            //console.log("value", value);
+            console.log("value", value);
             if (value === 1) return "Female";
             else if (value === 2) return "Male";
             else if (value === 3) return "Transgender";
@@ -142,7 +132,7 @@ export class OwnerList extends React.Component {
           filter: false,
           sort: false,
           customBodyRender: (value) => {
-            return value.map((v,inx) => {
+            return value.map((v) => {
               if (stagesColor[v]) {
                 return (
                   <p
@@ -159,7 +149,6 @@ export class OwnerList extends React.Component {
               }
               return (
                 <p
-                  key={inx} 
                   style={{
                     backgroundColor: stagesColor["defaultValue"],
                     textAlign: "center",
@@ -172,7 +161,7 @@ export class OwnerList extends React.Component {
               );
             });
           },
-        }
+        },
       },
       {
         name: "max_limit",
@@ -182,42 +171,7 @@ export class OwnerList extends React.Component {
           sort: true,
         },
       },
-      {
-        name: "schedule",
-        label: "Interview Schedule",
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (value, {rowData}) =>{
-            const user = window.localStorage.user
-            ? JSON.parse(window.localStorage.user).email
-            : null;
-            //const update = !permissions.updateStage.includes(user);
-            const canUpdate = permissions.updateStage.includes(user) || rowData[1] === user.split("@")[0];
-            //console.log(value,rowData);
-
-            return (
-              <div
-                style={{
-                  display: "flex",
-                  margin: "10px",
-                  justifyContent: "space-between",
-                }}
-              >
-                <AddOwnerSchedule updateData={this.updateData} ownerId={rowData[0]} prevSchedule={value} isEdit={value!==undefined} disabled={!canUpdate} />
-              {/* {value?value.from+" "+value.to:<button disabled={!canUpdate}>
-              Set Availibility
-              </button>} */}
-              </div>
-            );
-          }
-        },
-      }
     ];
-  }
-
-  updateData = () => {
-    this.fetchOwners();
   }
 
   getUpdatedData = (data, isEdit) => {
@@ -264,6 +218,7 @@ export class OwnerList extends React.Component {
   render = () => {
     const { classes } = this.props;
     const { showModal, ownerId, data, showLoader } = this.state;
+    console.log("data", data);
     return (
       <Box mt={2}>
         <MuiThemeProvider theme={theme}>
@@ -311,22 +266,7 @@ export class OwnerList extends React.Component {
   async fetchOwners() {
     const dataURL = baseUrl + "owner";
     const response = await axios.get(dataURL);
-    const {data} = response.data;
-
-    const interviewDataURL = baseUrl + "ownershedule";
-    const interviewResponse = await axios.get(interviewDataURL);
-    const {data: interviewData} = interviewResponse.data;
-
-    const newData = await data.map((owner) => {
-      let newOwner = {...owner};
-      let ownerInterview = interviewData.find((iData) => iData.owner_id === owner.id);
-      if (ownerInterview){
-        newOwner['schedule'] = ownerInterview;
-      }
-      return newOwner;      
-    }) 
-    this.setState({ data: newData,interviewData:interviewResponse.data.data, showLoader: false });
-    //console.log(interviewData);
+    this.setState({ data: response.data.data, showLoader: false });
   }
 }
 

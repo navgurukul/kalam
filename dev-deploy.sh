@@ -1,4 +1,3 @@
-
 # git checkout gh-pages
 
 # git reset --hard origin/main

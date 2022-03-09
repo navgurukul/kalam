@@ -312,7 +312,7 @@ const AdmissionsDash = (props) => {
   const { fetchPendingInterviewDetails } = props;
   const { sData, data, showLoader, totalData, numberOfRows, selectedOption } =
     state;
-  var concatinateStage = stage === null ? stage : stage.join(",");
+  let concatinateStage = stage === null ? stage : stage.join(",");
 
   const options = (
     <Box>

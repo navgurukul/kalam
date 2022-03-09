@@ -22,7 +22,7 @@ import StudentFeedback from "../components/FeedbackPage";
 import StageTransitions from "../components/StageTransitions";
 import StageTransitionsStudentStatus from "../components/StageTransitionsStudentStatus";
 import AudioRecorder from "../components/audioRecording";
-import AudiofileUpload from "../components/ulpoadAudioFile";
+import AudiofileUpload from "../components/uploadAudioFile";
 import TagsForOnlineClass from "../components/tagsForOnlineClass";
 
 import UpdateCampus from "../components/UpdateCampus";

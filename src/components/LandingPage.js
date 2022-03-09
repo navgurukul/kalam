@@ -20,7 +20,7 @@ import { allStages } from "../config";
 import { Link } from "react-router-dom";
 
 const baseUrl = process.env.API_URL;
-const testUrl = "https://join.navgurukul.org/api/";
+const testUrl = "https://join.navgurukul.org/k/";
 
 const styles = (theme) => ({
   loginContainer: {
@@ -108,7 +108,6 @@ export class LandingPage extends React.Component {
       modalOpen: false,
       data: [],
       pendingInterviewStage: "checking",
-      enrollmentKey: "",
     };
 
     this.lang = {
@@ -208,16 +207,12 @@ export class LandingPage extends React.Component {
             .filter((item) => item)
             .join("&");
           const url = `${testUrl}${response.data.key}?${queryString}`;
-          this.props.history.push({
-            pathname: `/test/${response.data.key}`,
-          });
-
+          window.open(url, "_blank");
           this.setState({
             mobileNumber: "",
             firstName: "",
             middleName: "",
             lastName: "",
-            enrollmentKey: response.data.key,
           });
           this.props.fetchingFinish();
         }
@@ -298,10 +293,14 @@ export class LandingPage extends React.Component {
 
   async partnerFetch(slug) {
     const { history } = this.props;
-    const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
-    this.setState({
-      partnerId: response.data.data["id"],
-    });
+    try {
+      const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
+      this.setState({
+        partnerId: response.data.data["id"],
+      });
+    } catch (e) {
+      history.push("/notFound");
+    }
   }
 
   render = () => {

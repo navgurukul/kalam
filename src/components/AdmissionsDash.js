@@ -66,9 +66,10 @@ const AdmissionsDash = (props) => {
     userLoggedIn: user(), //user object to store who is logged in
     studentDashboardCondition: false, //condition to show student dashboard
   });
-  let dataType = props.match.params.dataType
-    ? props.match.params.dataType
-    : "softwareCourse";
+  let dataType =
+    props.match && props.match.params.dataType
+      ? props.match.params.dataType
+      : "softwareCourse";
   const studentsURL = baseURL + "students";
   const usersURL = baseURL + "users/getall";
   let stage = null,

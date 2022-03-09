@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import Container from "@material-ui/core/Container";
 import MainLayout from "./MainLayout";
 import axios from "axios";
@@ -38,44 +38,41 @@ const columns = [
   },
 ];
 
-class DonorList extends Component {
-  constructor() {
-    super();
-    this.state = {
-      data: [],
-      showLoader: true
-    };
-  }
-  componentDidMount() {
-    this.fetchDonors();
-  }
+const DonorList = () => {
+  const [state, setState] = React.useState({
+    data: [],
+    showLoader: true,
+  });
 
-  async fetchDonors() {
+  useEffect(() => {
+    const fetchData = async () => await fetchDonors();
+    fetchData();
+  }, []);
+
+  const fetchDonors = async () => {
     try {
       const dataURL = baseUrl + "donors";
       const response = await axios.get(dataURL);
-      this.setState({
+      setState({
+        ...state,
         data: response.data,
-        showLoader: false
+        showLoader: false,
       });
     } catch (e) {
       console.error(e);
     }
-  }
-
-  render() {
-    const { data, showLoader } = this.state;
-    return (
-      <Container maxWidth="sm">
-        <MainLayout
-          title={"Donors Name"}
-          columns={columns}
-          data={data}
-          showLoader={showLoader}
-        />
-      </Container>
-    );
-  }
-}
+  };
+  const { data, showLoader } = state;
+  return (
+    <Container maxWidth="sm">
+      <MainLayout
+        title={"Donors Name"}
+        columns={columns}
+        data={data}
+        showLoader={showLoader}
+      />
+    </Container>
+  );
+};
 
 export default DonorList;

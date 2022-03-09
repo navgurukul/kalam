@@ -4,62 +4,49 @@ import UploadIcon from "@material-ui/icons/CloudUpload";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { changeFetching } from "../store/actions/auth";
 
 import axios from "axios";
 
-export class UploadFile extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+const UploadFile = () => {
+  const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
+  const fetchingFinish = () => dispatch(changeFetching(false));
+  const uploadInput = React.useRef();
 
-  triggerInputFile = () => {
-    this.uploadInput.click();
-    this.handleUpload();
+  const triggerInputFile = () => {
+    uploadInput.current?.click();
+    handleUpload();
   };
 
-  async handleUpload() {
+  const handleUpload = async () => {
     try {
-      this.props.fetchingStart();
+      fetchingStart();
       const dataURL =
         "https://admissions.navgurukul.org/api/general/upload_file/answerCSV";
-      const response = await axios.post(dataURL, {
-        file: this.uploadInput.files[0],
+      await axios.post(dataURL, {
+        file: uploadInput.files[0],
       });
-      this.props.fetchingFinish();
+      fetchingFinish();
     } catch (e) {
       console.error(e);
-      this.props.fetchingFinish();
+      fetchingFinish();
     }
-  }
-
-  render = () => {
-    return (
-      <form color="primary" align="right">
-        <UploadIcon color="primary" />
-        &nbsp;
-        <input
-          ref={(ref) => {
-            this.uploadInput = ref;
-          }}
-          type="file"
-          style={{ display: "hidden" }}
-        />
-        <button onClick={this.triggerInputFile}>
-          <Typography variant="subtitle1" color="primary">
-            Upload
-          </Typography>
-        </button>
-      </form>
-    );
   };
-}
 
-const mapDispatchToProps = (dispatch) => ({
-  fetchingStart: () => dispatch(changeFetching(true)),
-  fetchingFinish: () => dispatch(changeFetching(false)),
-});
+  return (
+    <form color="primary" align="right">
+      <UploadIcon color="primary" />
+      &nbsp;
+      <input ref={uploadInput} type="file" style={{ display: "hidden" }} />
+      <Button onClick={triggerInputFile}>
+        <Typography variant="subtitle1" color="primary">
+          Upload
+        </Typography>
+      </Button>
+    </form>
+  );
+};
 
-export default connect(undefined, mapDispatchToProps)(UploadFile);
+export default UploadFile;

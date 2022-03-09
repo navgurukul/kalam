@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Card from "@material-ui/core/Card";
-import { withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/styles";
 import { Button, IconButton, Modal } from "@material-ui/core";
 import Select from "react-select";
 import EditIcon from "@material-ui/icons/Edit";
@@ -11,8 +11,9 @@ import {
   Input,
   FormHelperText,
 } from "@material-ui/core";
-import { withSnackbar } from "notistack";
-import { withRouter } from "react-router-dom";
+import { useSnackbar } from "notistack";
+
+const baseUrl = process.env.API_URL;
 
 const stageOptions = [
   {
@@ -28,8 +29,8 @@ const stageOptions = [
     label: "Culture Fit Interview Pending (4th Round)",
   },
 ];
-const baseUrl = process.env.API_URL;
-const styles = (theme) => ({
+
+const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
     flexWrap: "wrap",
@@ -53,42 +54,45 @@ const styles = (theme) => ({
   btn: {
     marginTop: theme.spacing(4),
   },
-});
+}));
 
-export class AddOwner extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      dialogOpen: false,
-      data: [],
-      ownerName: null,
-      ownerId: null,
-      availablity: null,
-      stage: null,
-      limit: undefined,
-      gender: null,
-    };
-  }
+export const AddOwner = (props) => {
+  const classes = useStyles();
+  const snackbar = useSnackbar();
+  const [state, setState] = React.useState({
+    dialogOpen: false,
+    data: [],
+    ownerName: null,
+    ownerId: null,
+    availablity: null,
+    stage: null,
+    limit: undefined,
+    gender: null,
+  });
 
-  componentDidMount() {
-    this.getUsers();
-  }
+  // componentDidMount() {
+  //   this.getUsers();
+  // }
 
-  getUsers = () => {
+  const getUsers = () => {
     axios.get(`${baseUrl}users/getall`).then((response) => {
-      this.setState({
+      setState({
+        ...state,
         data: response.data.data,
       });
     });
   };
 
-  createOwner = () => {
-    const { ownerName, gender, ownerId, availablity, stage, limit } =
-      this.state;
-    const { ownerData, getUpdatedData } = this.props;
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  const createOwner = () => {
+    const { ownerName, gender, ownerId, availablity, stage, limit } = state;
+    const { ownerData, getUpdatedData } = props;
     const duplicateData = ownerData.filter((x) => x.user.mail_id === ownerName);
     if (duplicateData.length > 0) {
-      this.props.enqueueSnackbar(`${ownerName} exists in owner dashboard.`, {
+      snackbar.enqueueSnackbar(`${ownerName} exists in owner dashboard.`, {
         variant: "error",
       });
     } else if (ownerName && ownerId && availablity && stage) {
@@ -101,38 +105,39 @@ export class AddOwner extends React.Component {
           gender: gender,
         })
         .then((response) => {
-          this.props.enqueueSnackbar(`Owner Successfull created !`, {
+          snackbar.enqueueSnackbar(`Owner Successfull created !`, {
             variant: "success",
           });
-          this.setState({
+          setState({
+            ...state,
             dialogOpen: false,
           });
           getUpdatedData(response.data.data[0], false);
         });
     } else {
-      this.props.enqueueSnackbar(`Please fill all fields`, {
+      snackbar.enqueueSnackbar(`Please fill all fields`, {
         variant: "error",
       });
     }
   };
 
-  getOnwer = async (ownerId) => {
+  const getOwner = async (ownerId) => {
     const response = await axios.get(`${baseUrl}owner/${ownerId}`);
     const data = response.data.data[0];
-    this.setState({
+    await setState((prevState) => ({
+      ...prevState,
       ownerName: data.user.mail_id,
       gender: data.gender,
       availablity: data.available ? "Yes" : "No",
       stage: data.type,
       limit: data.max_limit,
       ownerId: data.id,
-    });
+    }));
   };
 
-  editOwner = () => {
-    const { ownerName, gender, ownerId, availablity, stage, limit } =
-      this.state;
-    const { getUpdatedData } = this.props;
+  const editOwner = () => {
+    const { ownerName, gender, ownerId, availablity, stage, limit } = state;
+    const { getUpdatedData } = props;
     if (ownerName && ownerId && availablity && stage) {
       axios
         .put(`${baseUrl}owner/${ownerId}`, {
@@ -142,225 +147,224 @@ export class AddOwner extends React.Component {
           gender: gender,
         })
         .then((response) => {
-          this.props.enqueueSnackbar(`Owner Successfull updated !`, {
+          snackbar.enqueueSnackbar(`Owner Successfull updated !`, {
             variant: "success",
           });
-          this.setState({
+          setState({
+            ...state,
             dialogOpen: false,
           });
           getUpdatedData(response.data.data[0], true);
         })
         .catch(() => {
-          this.props.enqueueSnackbar(`Interviews limit  should not be 0`, {
+          snackbar.enqueueSnackbar(`Interviews limit  should not be 0`, {
             variant: "error",
           });
-          this.setState({
+          setState({
+            ...state,
             dialogOpen: false,
           });
           //getUpdatedData(response.data.data[0], true);
         });
     } else {
-      this.props.enqueueSnackbar(`Please fill all fields`, {
+      snackbar.enqueueSnackbar(`Please fill all fields`, {
         variant: "error",
       });
     }
   };
 
-  openModel = () => {
-    this.setState({
+  const openDialog = async () => {
+    const { ownerId } = props;
+    setState({
+      ...state,
       dialogOpen: true,
     });
-    const { ownerId } = this.props;
-    this.getOnwer(ownerId);
+    if (isEdit) await getOwner(ownerId);
   };
-  openDialog = () => {
-    this.setState({
-      dialogOpen: true,
-    });
-  };
+  // const openDialog = () => {
+  //   setState({
+  //     ...state,
+  //     dialogOpen: true,
+  //   });
+  // };
 
-  handleClose = () => {
-    this.setState({
+  const handleClose = () => {
+    setState({
+      ...state,
       dialogOpen: false,
     });
   };
 
-  handleChange = (name) => (event) => {
+  const handleChange = (name) => (event) => {
     const { value, label } = event;
     if (name === "ownerName") {
-      this.setState({ ownerName: label, ownerId: value });
+      setState({ ...state, ownerName: label, ownerId: value });
     } else {
-      this.setState({
+      setState({
+        ...state,
         [name]: value ? value : event.target.value,
       });
     }
   };
 
-  getStage = (event) => {
+  const getStage = (event) => {
     const newStages = event && event.map((x) => x.value);
-    this.setState({
+    setState({
+      ...state,
       stage: newStages,
     });
   };
-
-  render = () => {
-    const { classes, isEdit, disabled } = this.props;
-    const { data, ownerName, gender, ownerId, availablity, stage, limit } =
-      this.state;
-    let ownerGender = "Na";
-    if (gender === 1) ownerGender = "Female";
-    else if (gender === 2) ownerGender = "Male";
-    else if (gender === 3) ownerGender = "Transgender";
-    else ownerGender = "NA";
-    return (
-      <div>
-        {isEdit ? (
-          <IconButton disabled={disabled} onClick={this.openModel}>
-            <EditIcon />
-          </IconButton>
-        ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={this.openDialog}
-            className={classes.btn}
-          >
-            Add Owner
-          </Button>
-        )}
-
-        <Modal
-          open={this.state.dialogOpen}
-          onClose={this.handleClose}
-          onOpen={this.openDialog}
+  const { isEdit, disabled } = props;
+  const { data, ownerName, gender, ownerId, availablity, stage, limit } = state;
+  let ownerGender = "Na";
+  if (gender === 1) ownerGender = "Female";
+  else if (gender === 2) ownerGender = "Male";
+  else if (gender === 3) ownerGender = "Transgender";
+  else ownerGender = "NA";
+  return (
+    <div>
+      {isEdit ? (
+        <IconButton disabled={disabled} onClick={openDialog}>
+          <EditIcon />
+        </IconButton>
+      ) : (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={openDialog}
+          className={classes.btn}
         >
-          <Card className={classes.root}>
-            <form className={classes.container}>
-              <FormControl>
-                <Select
-                  name="ownerName"
-                  value={ownerName && { value: ownerId, label: ownerName }}
-                  onChange={this.handleChange("ownerName")}
-                  options={data.map((x) => {
-                    return { value: x.id, label: x.user };
-                  })}
-                  placeholder={"Select Owner"}
-                  isClearable={false}
-                  closeMenuOnSelect={true}
-                  isSearchable={true}
-                  isDisabled={isEdit ? true : false}
-                />
-                <FormHelperText className={classes.text} id="my-helper-text">
-                  Please select owner
-                </FormHelperText>
-              </FormControl>
+          Add Owner
+        </Button>
+      )}
 
-              <FormControl>
-                <Select
-                  name="gender"
-                  value={
-                    gender && {
-                      value: ownerId,
-                      label: ownerGender,
-                    }
+      <Modal open={state.dialogOpen} onClose={handleClose} onOpen={openDialog}>
+        <Card className={classes.root}>
+          <form className={classes.container}>
+            <FormControl>
+              <Select
+                name="ownerName"
+                value={ownerName && { value: ownerId, label: ownerName }}
+                onChange={handleChange("ownerName")}
+                options={data.map((x) => {
+                  return { value: x.id, label: x.user };
+                })}
+                placeholder={"Select Owner"}
+                isClearable={false}
+                closeMenuOnSelect={true}
+                isSearchable={true}
+                isDisabled={isEdit ? true : false}
+              />
+              <FormHelperText className={classes.text} id="my-helper-text">
+                Please select owner
+              </FormHelperText>
+            </FormControl>
+
+            <FormControl>
+              <Select
+                name="gender"
+                value={
+                  gender && {
+                    value: ownerId,
+                    label: ownerGender,
                   }
-                  onChange={this.handleChange("gender")}
-                  options={[
-                    { value: 1, label: "Female" },
-                    { value: 2, label: "Male" },
-                    { value: 3, label: "Transgender" },
-                  ].map((x) => {
-                    return { value: x.value, label: x.label };
-                  })}
-                  placeholder={"Select Gender"}
-                  isClearable={false}
-                  closeMenuOnSelect={true}
-                  isSearchable={true}
-                  // isDisabled={isEdit ? true : false}
-                />
-                <FormHelperText className={classes.text} id="my-helper-text">
-                  Please select your gender
-                </FormHelperText>
-              </FormControl>
+                }
+                onChange={handleChange("gender")}
+                options={[
+                  { value: 1, label: "Female" },
+                  { value: 2, label: "Male" },
+                  { value: 3, label: "Transgender" },
+                ].map((x) => {
+                  return { value: x.value, label: x.label };
+                })}
+                placeholder={"Select Gender"}
+                isClearable={false}
+                closeMenuOnSelect={true}
+                isSearchable={true}
+                // isDisabled={isEdit ? true : false}
+              />
+              <FormHelperText className={classes.text} id="my-helper-text">
+                Please select your gender
+              </FormHelperText>
+            </FormControl>
 
-              <FormControl>
-                <Select
-                  name="availablity"
-                  value={
-                    availablity && { value: availablity, label: availablity }
-                  }
-                  onChange={this.handleChange("availablity")}
-                  options={[
-                    { value: "Yes", label: "Yes" },
-                    { value: "No", label: "No" },
-                  ].map((x) => {
-                    return { value: x.value, label: x.label };
-                  })}
-                  placeholder={"Select Availablity"}
-                  isClearable={false}
-                  closeMenuOnSelect={true}
-                  isSearchable={true}
-                />
-                <FormHelperText className={classes.text} id="my-helper-text">
-                  Select Yes/No
-                </FormHelperText>
-              </FormControl>
+            <FormControl>
+              <Select
+                name="availablity"
+                value={
+                  availablity && { value: availablity, label: availablity }
+                }
+                onChange={handleChange("availablity")}
+                options={[
+                  { value: "Yes", label: "Yes" },
+                  { value: "No", label: "No" },
+                ].map((x) => {
+                  return { value: x.value, label: x.label };
+                })}
+                placeholder={"Select Availablity"}
+                isClearable={false}
+                closeMenuOnSelect={true}
+                isSearchable={true}
+              />
+              <FormHelperText className={classes.text} id="my-helper-text">
+                Select Yes/No
+              </FormHelperText>
+            </FormControl>
 
-              <FormControl>
-                <Select
-                  name="stage"
-                  value={
-                    stage &&
-                    stageOptions.filter((x) => {
-                      return stage.indexOf(x.value) > -1
-                        ? { value: x.value, label: x.label }
-                        : null;
-                    })
-                  }
-                  isMulti
-                  onChange={this.getStage}
-                  options={stageOptions.map((x) => {
-                    return { value: x.value, label: x.label };
-                  })}
-                  placeholder={"Select Stage"}
-                  isClearable={false}
-                  isSearchable={true}
-                  closeMenuOnSelect={true}
-                />
-                <FormHelperText className={classes.text} id="my-helper-text">
-                  Stage select kariye jo aap owner ko assign karna chahate ho.
-                </FormHelperText>
-              </FormControl>
+            <FormControl>
+              <Select
+                name="stage"
+                value={
+                  stage &&
+                  stageOptions.filter((x) => {
+                    return stage.indexOf(x.value) > -1
+                      ? { value: x.value, label: x.label }
+                      : null;
+                  })
+                }
+                isMulti
+                onChange={getStage}
+                options={stageOptions.map((x) => {
+                  return { value: x.value, label: x.label };
+                })}
+                placeholder={"Select Stage"}
+                isClearable={false}
+                isSearchable={true}
+                closeMenuOnSelect={true}
+              />
+              <FormHelperText className={classes.text} id="my-helper-text">
+                Stage select kariye jo aap owner ko assign karna chahate ho.
+              </FormHelperText>
+            </FormControl>
 
-              <FormControl>
-                <InputLabel htmlFor="limit">Interview Limit</InputLabel>
-                <Input
-                  type="number"
-                  id="limit"
-                  aria-describedby="my-helper-text"
-                  name="limit"
-                  value={limit ? limit : ""}
-                  onChange={this.handleChange("limit")}
-                />
-                <FormHelperText className={classes.text} id="my-helper-text">
-                  Ek student kitne interviews le sakta hai.
-                </FormHelperText>
-              </FormControl>
+            <FormControl>
+              <InputLabel htmlFor="limit">Interview Limit</InputLabel>
+              <Input
+                type="number"
+                id="limit"
+                aria-describedby="my-helper-text"
+                name="limit"
+                value={limit ? limit : ""}
+                onChange={handleChange("limit")}
+              />
+              <FormHelperText className={classes.text} id="my-helper-text">
+                Ek student kitne interviews le sakta hai.
+              </FormHelperText>
+            </FormControl>
 
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={isEdit ? this.editOwner : this.createOwner}
-                className={classes.btn}
-              >
-                {isEdit ? "Edit Owner" : "Add Owner"}
-              </Button>
-            </form>
-          </Card>
-        </Modal>
-      </div>
-    );
-  };
-}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={isEdit ? editOwner : createOwner}
+              className={classes.btn}
+            >
+              {isEdit ? "Edit Owner" : "Add Owner"}
+            </Button>
+          </form>
+        </Card>
+      </Modal>
+    </div>
+  );
+};
 
-export default withSnackbar(withRouter(withStyles(styles)(AddOwner)));
+export default AddOwner;

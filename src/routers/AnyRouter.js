@@ -2,13 +2,8 @@ import React from "react";
 import { Route } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { connect } from "react-redux";
 
-export const AnyRoute = ({
-  isAuthenticated,
-  component: Component,
-  ...rest
-}) => (
+export const AnyRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     component={(props) => {
@@ -25,8 +20,4 @@ export const AnyRoute = ({
   />
 );
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-});
-
-export default connect(mapStateToProps, undefined)(AnyRoute);
+export default AnyRoute;

@@ -11,110 +11,107 @@ import {
   DialogContentText,
   DialogActions,
 } from "@material-ui/core";
-import { withSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
 import Spinner from "react-spinner-material";
 
 const baseUrl = process.env.API_URL;
 
-export class CreateAssessment extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      dialogOpen: false,
-      inputValue: "",
-      loading: false,
-    };
-  }
+export const CreateAssessment = (props) => {
+  const snackbar = useSnackbar();
+  const [state, setState] = React.useState({
+    dialogOpen: false,
+    inputValue: "",
+    loading: false,
+  });
 
-  createAssessment2 = async () => {
-    await this.handleClose();
-    await this.setState({
+  const createAssessment2 = async () => {
+    await handleClose();
+    await setState((prevState) => ({
+      ...prevState,
       loading: true,
-    });
-    this.createAssessment();
+    }));
+    createAssessment();
   };
 
-  async createAssessment() {
+  const createAssessment = async () => {
     try {
-      const dataURL =
-        baseUrl + "partners/" + this.props.partnerId + "/assessments";
+      const dataURL = baseUrl + "partners/" + props.partnerId + "/assessments";
       await axios
         .post(dataURL, {
-          name: this.state.inputValue,
+          name: state.inputValue,
         })
-        .then((response) => {
-          this.setState({
+        .then(() => {
+          setState({
+            ...state,
             loading: false,
           });
-          this.props.enqueueSnackbar("Assessment successfully created!", {
+          snackbar.enqueueSnackbar("Assessment successfully created!", {
             variant: "success",
           });
         });
     } catch (e) {
-      this.props.enqueueSnackbar(e, { variant: "error" });
+      snackbar.enqueueSnackbar(e, { variant: "error" });
     }
-  }
+  };
 
-  handleClose = () => {
-    this.setState({
+  const handleClose = () => {
+    setState({
+      ...state,
       dialogOpen: false,
     });
   };
 
-  handleOpen = () => {
-    this.setState({
+  const handleOpen = () => {
+    setState({
+      ...state,
       dialogOpen: true,
     });
   };
 
-  onChangeEvent = (e) => {
-    this.setState({
+  const onChangeEvent = (e) => {
+    setState({
+      ...state,
       inputValue: e.target.value,
     });
   };
-
-  render = () => {
-    const { loading } = this.state;
-    return (
-      <Fragment>
-        <Box onClick={this.handleOpen}>
-          <AddBox />
-          <Spinner
-            size={35}
-            spinnerColor={"#ed343d"}
-            spinnerWidth={5}
-            visible={loading}
+  const { loading } = state;
+  return (
+    <Fragment>
+      <Box onClick={handleOpen}>
+        <AddBox />
+        <Spinner
+          size={35}
+          spinnerColor={"#ed343d"}
+          spinnerWidth={5}
+          visible={loading}
+        />
+      </Box>
+      <Dialog open={state.dialogOpen} onClose={handleClose}>
+        <DialogTitle id="form-dialog-title">Create New Assessment</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please fill out the paper set name
+          </DialogContentText>
+          <TextField
+            label="Paper set name"
+            value={state.inputValue}
+            placeholder="Set A"
+            onChange={onChangeEvent}
+            margin="normal"
           />
-        </Box>
-        <Dialog open={this.state.dialogOpen} onClose={this.handleClose}>
-          <DialogTitle id="form-dialog-title">
-            Create New Assessment
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Please fill out the paper set name
-            </DialogContentText>
-            <TextField
-              label="Paper set name"
-              value={this.state.inputValue}
-              placeholder="Set A"
-              onChange={this.onChangeEvent}
-              margin="normal"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={this.createAssessment2}
-            >
-              CREATE
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Fragment>
-    );
-  };
-}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={createAssessment2}
+          >
+            CREATE
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Fragment>
+  );
+};
 
-export default withSnackbar(CreateAssessment);
+export default CreateAssessment;

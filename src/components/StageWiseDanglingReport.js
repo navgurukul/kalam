@@ -1,47 +1,47 @@
 // Todo
 // Logic of RQC Columns
 
-import 'date-fns';
-import React from 'react';
-import { connect } from 'react-redux';
-
+import "date-fns";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import MUIDataTable from "mui-datatables";
-import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
-
-import axios from 'axios';
-import Box from '@material-ui/core/Box';
-
-import { theme } from '../theme/theme';
-
-import { changeFetching } from '../store/actions/auth';
-import { allStages } from '../config';
-
-import GlobalService from '../services/GlobalService';
-import StudentService from '../services/StudentService';
-
+import { ThemeProvider } from "@material-ui/styles";
+import axios from "axios";
+import Box from "@material-ui/core/Box";
+import { theme } from "../theme/theme";
+import { changeFetching } from "../store/actions/auth";
+import { allStages } from "../config";
+import GlobalService from "../services/GlobalService";
+import StudentService from "../services/StudentService";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
 
-const styles = theme => ({
-  clear: {
-    clear: 'both'
-  }
-})
+const StageWiseDanglingReport = () => {
+  const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
+  const fetchingFinish = () => dispatch(changeFetching(false));
+  const [data, setData] = React.useState([]);
+  const stageWiseDanglingReportURL = baseURL + "students/report/dangling";
 
-export class StageWiseDanglingReport extends React.Component {
+  useEffect(() => {
+    const fetchData = async () => await fetchonwerReport();
+    fetchData();
+  }, []);
 
-  constructor(props) {
-
-    super(props);
-    this.stageWiseDanglingReportURL = baseURL + 'students/report/dangling';
-    
-    this.state = {
-      data: [],
+  const fetchonwerReport = async () => {
+    try {
+      fetchingStart();
+      const response = await axios.get(stageWiseDanglingReportURL, {});
+      dataConvert(response.data.data);
+      fetchingFinish();
+    } catch (e) {
+      console.error(e);
+      fetchingFinish();
     }
-  }
+  };
 
-  dataConvert = (data) => {
+  const dataConvert = (data) => {
     const newData = [];
     for (const [key, value] of Object.entries(data)) {
       const dic = {};
@@ -52,64 +52,35 @@ export class StageWiseDanglingReport extends React.Component {
       dic.total = dic.female + dic.male + dic.transgender + dic.unspecified;
       dic.stage = allStages[key];
       newData.push(dic);
-    } 
-    this.setState({
-      data: newData,
-    });
-  }
+    }
+    setData(newData);
+  };
 
-  render = () => {
-
-    return <Box>
-      <MuiThemeProvider theme={theme}>
+  return (
+    <Box>
+      <ThemeProvider theme={theme}>
         <MUIDataTable
           columns={StudentService.columnDanglingReports}
-          data={this.state.data}
+          data={data}
           icons={GlobalService.tableIcons}
           options={{
             headerStyle: {
-              color: theme.palette.primary.main
+              color: theme.palette.primary.main,
             },
             exportButton: true,
             pageSize: 100,
             showTitle: false,
-            selectableRows: 'none',
+            selectableRows: "none",
             toolbar: false,
             filtering: true,
             filter: true,
-            filterType: 'doprdown',
-            responsive: 'stacked',
+            filterType: "doprdown",
+            responsive: "stacked",
           }}
         />
-      </MuiThemeProvider>
+      </ThemeProvider>
     </Box>
-  }
-
-  componentDidMount() {
-    this.fetchonwerReport();
-  }
-
-  async fetchonwerReport() {
-    try {
-      this.props.fetchingStart()
-      const response = await axios.get(this.stageWiseDanglingReportURL, { });
-      this.dataConvert(response.data.data);
-      this.props.fetchingFinish();
-    } catch (e) {
-      console.error(e)
-      this.props.fetchingFinish()
-    }
-  };
+  );
 };
 
-const mapStateToProps = (state) => ({
-  loggedInUser: state.auth.loggedInUser
-  // "kya fark padta hai": ''
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  fetchingStart: () => dispatch(changeFetching(true)),
-  fetchingFinish: () => dispatch(changeFetching(false))
-});
-
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(StageWiseDanglingReport));
+export default StageWiseDanglingReport;

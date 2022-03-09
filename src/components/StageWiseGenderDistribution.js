@@ -2,8 +2,8 @@
 // Logic of RQC Columns
 
 import "date-fns";
-import React from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 
 import { changeFetching } from "../store/actions/auth";
@@ -14,17 +14,31 @@ import MainLayout from "./MainLayout";
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;
 
-export class StageWiseGenderDistribution extends React.Component {
-  constructor(props) {
-    super(props);
-    this.StageWiseGenderDistributionURL = baseURL + "students/report/all";
+const StageWiseGenderDistribution = () => {
+  const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
+  const fetchingFinish = () => dispatch(changeFetching(false));
+  const [data, setData] = React.useState([]);
 
-    this.state = {
-      data: [],
-    };
-  }
+  const StageWiseGenderDistributionURL = baseURL + "students/report/all";
 
-  dataConvert = (data) => {
+  useEffect(() => {
+    (async () => await fetchonwerReport())();
+  }, []);
+
+  const fetchonwerReport = async () => {
+    try {
+      fetchingStart();
+      const response = await axios.get(StageWiseGenderDistributionURL, {});
+      dataConvert(response.data.data);
+      fetchingFinish();
+    } catch (e) {
+      console.error(e);
+      fetchingFinish();
+    }
+  };
+
+  const dataConvert = (data) => {
     const newData = [];
     for (const [key, value] of Object.entries(data)) {
       if (!feedbackableStagesData[key]) {
@@ -38,47 +52,11 @@ export class StageWiseGenderDistribution extends React.Component {
         newData.push(dic);
       }
     }
-    this.setState({
-      data: newData,
-    });
+    setData(newData);
   };
+  return (
+    <MainLayout columns={StudentService.columnDanglingReports} data={data} />
+  );
+};
 
-  render = () => {
-    return (
-      <MainLayout
-        columns={StudentService.columnDanglingReports}
-        data={this.state.data}
-      />
-    );
-  };
-
-  componentDidMount() {
-    this.fetchonwerReport();
-  }
-
-  async fetchonwerReport() {
-    try {
-      this.props.fetchingStart();
-      const response = await axios.get(this.StageWiseGenderDistributionURL, {});
-      this.dataConvert(response.data.data);
-      this.props.fetchingFinish();
-    } catch (e) {
-      console.error(e);
-      this.props.fetchingFinish();
-    }
-  }
-}
-
-const mapStateToProps = (state) => ({
-  loggedInUser: state.auth.loggedInUser,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  fetchingStart: () => dispatch(changeFetching(true)),
-  fetchingFinish: () => dispatch(changeFetching(false)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(StageWiseGenderDistribution);
+export default StageWiseGenderDistribution;

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { MuiThemeProvider } from "@material-ui/core/styles";
+import { ThemeProvider } from "@material-ui/styles";
 import { SnackbarProvider } from "notistack";
 import { Provider } from "react-redux";
 import AppRouter from "./routers/AppRouter";
@@ -16,11 +16,11 @@ store.subscribe(() => {
 
 const App = () => (
   <Provider store={store}>
-    <MuiThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={1}>
         <AppRouter />
       </SnackbarProvider>
-    </MuiThemeProvider>
+    </ThemeProvider>
   </Provider>
 );
 

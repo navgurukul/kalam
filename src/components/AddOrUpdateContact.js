@@ -1,31 +1,23 @@
-import React, { Component } from "react";
+import React from "react";
 import { Button } from "@material-ui/core";
 import DialogActions from "@material-ui/core/DialogActions";
 import axios from "axios";
-import { withSnackbar } from "notistack";
-import { connect } from "react-redux";
+import { useSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 import { permissions } from "../config/index";
 
 const baseUrl = process.env.API_URL;
 
-class AddOrUpdateContact extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      updateOrAddType: "",
-    };
-  }
-
-  addOrUpdateMobile = async (event) => {
-    const { contact_type, mobile, studentId, handleClose, loggedInUser } =
-      this.props;
+const AddOrUpdateContact = (props) => {
+  const { loggedInUser } = useSelector((state) => state.auth);
+  const [updateOrAddType, setUpdateOrAddType] = React.useState("");
+  const snackbar = useSnackbar();
+  const addOrUpdateMobile = async (event) => {
+    const { contact_type, mobile, studentId, handleClose } = props;
     const type = event.target.innerText;
 
-    await this.setState({
-      updateOrAddType: type == "ADD" ? "addContact" : "updateContact",
-    });
+    await setUpdateOrAddType(type == "ADD" ? "addContact" : "updateContact");
 
-    const { updateOrAddType } = this.state;
     if (permissions.addOrUpdateContact.indexOf(loggedInUser.mail_id) >= 0) {
       try {
         if (mobile) {
@@ -37,62 +29,45 @@ class AddOrUpdateContact extends Component {
             })
             .then(() => {
               handleClose();
-              this.props.enqueueSnackbar(
+              snackbar.enqueueSnackbar(
                 "Contact is successfully Added/Updated!",
                 { variant: "success" }
               );
             })
             .catch(() => {
-              this.props.enqueueSnackbar("Mobile number should be 10 digit!", {
+              snackbar.enqueueSnackbar("Mobile number should be 10 digit!", {
                 variant: "error",
               });
             });
         } else {
-          this.props.enqueueSnackbar("New mobile number is required!", {
+          snackbar.enqueueSnackbar("New mobile number is required!", {
             variant: "error",
           });
         }
       } catch (e) {
         //console.log(e);
-        this.props.enqueueSnackbar("Something went wrong in server", {
+        snackbar.enqueueSnackbar("Something went wrong in server", {
           variant: "error",
         });
       }
     } else {
       handleClose();
-      this.props.enqueueSnackbar(
+      snackbar.enqueueSnackbar(
         "You are not Authenticated user to Add/Update contact!",
         { variant: "error" }
       );
     }
   };
+  return (
+    <DialogActions>
+      <Button variant="contained" color="primary" onClick={addOrUpdateMobile}>
+        Update
+      </Button>
+      <Button variant="contained" color="primary" onClick={addOrUpdateMobile}>
+        Add
+      </Button>
+    </DialogActions>
+  );
+};
 
-  render() {
-    return (
-      <DialogActions>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={this.addOrUpdateMobile}
-        >
-          Update
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={this.addOrUpdateMobile}
-        >
-          Add
-        </Button>
-      </DialogActions>
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  loggedInUser: state.auth.loggedInUser,
-});
-
-export default withSnackbar(
-  connect(mapStateToProps, undefined)(AddOrUpdateContact)
-);
+export default AddOrUpdateContact;

@@ -1,12 +1,10 @@
 import React, { Fragment } from "react";
-import { connect } from "react-redux";
-import { withStyles } from "@material-ui/core/styles";
+import { useDispatch } from "react-redux";
+import { makeStyles } from "@material-ui/styles";
 
 import axios from "axios";
-import { Button } from "@material-ui/core";
-import { withSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
 import { changeFetching } from "../store/actions/auth";
-import { withRouter } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import { Dialog } from "@material-ui/core";
 import { Box } from "@material-ui/core";
@@ -15,7 +13,7 @@ import FlagIcon from "@material-ui/icons/Flag";
 
 const baseUrl = process.env.API_URL;
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
     flexWrap: "wrap",
@@ -30,160 +28,149 @@ const styles = (theme) => ({
   btn: {
     marginTop: theme.spacing(4),
   },
-});
+}));
 
-export class RedFlag extends React.Component {
-  async addFlagComment() {
+const RedFlag = (props) => {
+  const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
+  const fetchingFinish = () => dispatch(changeFetching(false));
+  const { comment } = props;
+  const [state, setState] = React.useState({
+    redflag: "",
+    dialogOpen: false,
+    flagComment: comment,
+    flagColorToggle: comment,
+  });
+  const addFlagComment = async () => {
     try {
-      this.props.fetchingStart();
-      const { change, rowMetaTable } = this.props;
+      fetchingStart();
+      const { change, rowMetaTable } = props;
       const { columnIndex } = rowMetaTable;
-      const { studentId } = this.props;
+      const { studentId } = props;
 
       await axios
         .put(`${baseUrl}students/redflag/${studentId}`, {
-          flag: this.state.flagComment,
+          flag: state.flagComment,
         })
-        .then((response) => {
+        .then(() => {
           //console.log(response);
-          this.setState({
+          setState((prevState) => ({
+            ...prevState,
             dialogOpen: false,
-            flagColorToggle: this.state.flagComment,
-          });
-          if (this.state.flagComment === "") {
-            this.props.enqueueSnackbar("Cleared Flag!", {
+            flagColorToggle: state.flagComment,
+          }));
+          if (state.flagComment === "") {
+            enqueueSnackbar("Cleared Flag!", {
               variant: "success",
             });
           } else {
-            this.props.enqueueSnackbar("Flag Raised successfully!", {
+            enqueueSnackbar("Flag Raised successfully!", {
               variant: "success",
             });
           }
-
-          change(this.state.redflag, columnIndex);
+          change(state.redflag, columnIndex);
         });
-      this.props.fetchingFinish();
+      fetchingFinish();
     } catch (e) {
       //console.log(e);
-      this.props.enqueueSnackbar("Please select student Status", {
+      enqueueSnackbar("Please select student Status", {
         variant: "error",
       });
-      this.props.fetchingFinish();
+      fetchingFinish();
     }
-  }
-
-  onSubmit = () => {
-    this.setState({
-      loading: true,
-    });
-    this.addFlagComment();
   };
 
-  validate = () => {};
+  // const onSubmit = () => {
+  //   setState({
+  //     ...state,
+  //     loading: true,
+  //   });
+  //   addFlagComment();
+  // };
 
-  constructor(props) {
-    super(props);
-    const { comment } = this.props;
-    this.state = {
-      redflag: "",
-      dialogOpen: false,
-      flagComment: comment,
-      flagColorToggle: comment,
-    };
-  }
-
-  handleChange = () => (event) => {
+  const handleChange = () => (event) => {
     if (event.target.value.length === 0) {
-      this.setState({ flagComment: "" });
+      setState({ ...state, flagComment: "" });
     } else {
-      this.setState({ flagComment: event.target.value });
+      setState({ ...state, flagComment: event.target.value });
     }
   };
 
-  handleClose = () => {
-    this.setState({
+  const handleClose = () => {
+    setState({
+      ...state,
       dialogOpen: false,
     });
   };
 
-  handleOpen = () => {
-    this.setState({
+  const handleOpen = () => {
+    setState({
+      ...state,
       dialogOpen: true,
     });
   };
 
-  render = () => {
-    const { classes } = this.props;
+  return (
+    <Fragment>
+      <Box onClick={handleOpen}>
+        {state.flagColorToggle ? (
+          <FlagIcon
+            style={{
+              cursor: "pointer",
+              color: "red",
+            }}
+          />
+        ) : (
+          <FlagIcon
+            style={{
+              cursor: "pointer",
+              color: "green",
+            }}
+          />
+        )}
+      </Box>
+      <Dialog open={state.dialogOpen} onClose={handleClose}>
+        <form className={classes.container}>
+          <h1
+            style={{
+              color: "#f05f40",
+              textAlign: "center",
+              marginTop: "0px",
+              position: "relative",
+              bottom: "20px",
+            }}
+          >
+            Raised Flag
+          </h1>
+          <TextField
+            style={{
+              position: "relative",
+              bottom: "20px",
+            }}
+            id="outlined-multiline-static"
+            label="raised flag"
+            placeholder="no red flag raised"
+            multiline
+            readOnly="true"
+            rows="4"
+            name="redFlag"
+            defaultValue={
+              state.flagComment === null
+                ? "no red flag raised"
+                : state.flagComment
+            }
+            onChange={handleChange()}
+            className={classes.textField}
+            margin="normal"
+            variant="outlined"
+            inputProps={{ readOnly: true }}
+          />
+        </form>
+      </Dialog>
+    </Fragment>
+  );
+};
 
-    return (
-      <Fragment>
-        <Box onClick={this.handleOpen}>
-          {this.state.flagColorToggle ? (
-            <FlagIcon
-              style={{
-                cursor: "pointer",
-                color: "red",
-              }}
-            />
-          ) : (
-            <FlagIcon
-              style={{
-                cursor: "pointer",
-                color: "green",
-              }}
-            />
-          )}
-        </Box>
-        <Dialog open={this.state.dialogOpen} onClose={this.handleClose}>
-          <form className={classes.container}>
-            <h1
-              style={{
-                color: "#f05f40",
-                textAlign: "center",
-                marginTop: "0px",
-                position: "relative",
-                bottom: "20px",
-              }}
-            >
-              Raised Flag
-            </h1>
-            <TextField
-              style={{
-                position: "relative",
-                bottom: "20px",
-              }}
-              id="outlined-multiline-static"
-              label="raised flag"
-              placeholder="no red flag raised"
-              multiline
-              readOnly="true"
-              rows="4"
-              name="redFlag"
-              defaultValue={
-                this.state.flagComment === null
-                  ? "no red flag raised"
-                  : this.state.flagComment
-              }
-              onChange={this.handleChange()}
-              className={classes.textField}
-              margin="normal"
-              variant="outlined"
-              inputProps={{ readOnly: true }}
-            />
-          </form>
-        </Dialog>
-      </Fragment>
-    );
-  };
-}
-
-const mapDispatchToProps = (dispatch) => ({
-  fetchingStart: () => dispatch(changeFetching(true)),
-  fetchingFinish: () => dispatch(changeFetching(false)),
-});
-
-export default withSnackbar(
-  withRouter(
-    withStyles(styles)(connect(undefined, mapDispatchToProps)(RedFlag))
-  )
-);
+export default RedFlag;

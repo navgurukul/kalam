@@ -5,6 +5,10 @@ const webpack = require("webpack");
 
 module.exports = merge(common, {
   mode: "development",
+  output: {
+    path: path.join(__dirname, "dev-dist"),
+    filename: "bundle.js", // this is the compiled final javascript file which we will include in the index.html
+  },
   devtool: "inline-source-map",
   devServer: {
     contentBase: path.join(__dirname, "public"),

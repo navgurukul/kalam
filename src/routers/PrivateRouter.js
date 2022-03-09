@@ -1,34 +1,29 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { Route, Redirect } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-export const PrivateRoute = ({
-  isAuthenticated,
-  component: Component,
-  ...rest
-}) => (
-  <Route
-    {...rest}
-    component={(props) =>
-      isAuthenticated ? (
-        <div>
-          <Header />
-          <div className="bodyComponent">
-            <Component {...props} />
+export const PrivateRoute = ({ component: Component, ...rest }) => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        isAuthenticated ? (
+          <div>
+            <Header />
+            <div className="bodyComponent">
+              <Component {...props} />
+            </div>
+            <Footer />
           </div>
-          <Footer />
-        </div>
-      ) : (
-        <Redirect to="/login" />
-      )
-    }
-  />
-);
+        ) : (
+          <Redirect to="/login" />
+        )
+      }
+    />
+  );
+};
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-});
-
-export default connect(mapStateToProps, undefined)(PrivateRoute);
+export default PrivateRoute;

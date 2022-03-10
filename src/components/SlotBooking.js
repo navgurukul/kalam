@@ -101,26 +101,26 @@ function SlotBooking(props) {
     var d = (new Date(dater) + "").split(" ");
     d[2] = d[2] + ",";
     let DateToSend = [d[3], month[d[1]], d[2]].join("-").replace(",", "");
-    fetch(`${baseUrl}/slot/interview/ondate/${DateToSend}`).then((res) => {
-      res.json().then((data) => {
-        if (data.data.length > 0) {
-          let BookedSlots = data.data.map((slot) => {
-            return slot.start_time;
-          });
-          let FilteredTimings = Timings.filter((time) => {
-            if (BookedSlots.includes(time.from)) {
-              return false;
-            } else {
-              return true;
-            }
-          });
-          setTimings(FilteredTimings);
-        } else {
-          //console.log(Timings);
-          setTimings(DefaultTimings);
-        }
-      });
-    });
+    setDate(DateToSend);
+    fetch(`${baseUrl}/slot/interview/check/ondate/${DateToSend}/1`).then(
+      (res) => {
+        res.json().then((data) => {
+          if (data.data.length > 0) {
+            let FilteredTimings = data.data.filter((time) => {
+              if (time.availiblity) {
+                return true;
+              } else {
+                return false;
+              }
+            });
+            setTimings(FilteredTimings);
+          } else {
+            //console.log(Timings);
+            setTimings(DefaultTimings);
+          }
+        });
+      }
+    );
   };
   const handelDeleteSlot = () => {
     fetch(`${baseUrl}slot/interview/stundet/${slotBookingDetails.id}`, {
@@ -208,7 +208,7 @@ function SlotBooking(props) {
                   format="yyyy-MM-dd"
                   value={date}
                   onChange={(dates) => {
-                    setDate(dates);
+                    console.log(dates);
                     handleDateChange(dates);
                     //console.log(dates);
                   }}
@@ -222,9 +222,9 @@ function SlotBooking(props) {
             </MuiPickersUtilsProvider>
             <Grid container justify="space-evenly">
               {Timings.length > 0 ? (
-                Timings.map((item,index) => (
+                Timings.map((item, index) => (
                   <Grid
-                  key={index}
+                    key={index}
                     onClick={() => {
                       setStartTime(item.from);
                       setEndTime(item.to);

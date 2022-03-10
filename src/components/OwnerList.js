@@ -183,45 +183,47 @@ const OwnerList = () => {
         sort: true,
       },
     },
-    {
-      name: "schedule",
-      label: "Interview Schedule",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, { rowData }) => {
-          const user = window.localStorage.user
-            ? JSON.parse(window.localStorage.user).email
-            : null;
-          //const update = !permissions.updateStage.includes(user);
-          const canUpdate =
-            permissions.updateStage.includes(user) ||
-            rowData[1] === user.split("@")[0];
-          //console.log(value,rowData);
+    // {
+    //   name: "schedule",
+    //   label: "Interview Schedule",
+    //   options: {
+    //     filter: false,
+    //     display: false,
 
-          return (
-            <div
-              style={{
-                display: "flex",
-                margin: "10px",
-                justifyContent: "space-between",
-              }}
-            >
-              <AddOwnerSchedule
-                updateData={updateData}
-                ownerId={rowData[0]}
-                prevSchedule={value}
-                isEdit={value !== undefined}
-                disabled={!canUpdate}
-              />
-              {/* {value?value.from+" "+value.to:<button disabled={!canUpdate}>
-              Set Availibility
-              </button>} */}
-            </div>
-          );
-        },
-      },
-    },
+    //     sort: false,
+    //     customBodyRender: (value, { rowData }) => {
+    //       const user = window.localStorage.user
+    //         ? JSON.parse(window.localStorage.user).email
+    //         : null;
+    //       //const update = !permissions.updateStage.includes(user);
+    //       const canUpdate =
+    //         permissions.updateStage.includes(user) ||
+    //         rowData[1] === user.split("@")[0];
+    //       //console.log(value,rowData);
+
+    //       return (
+    //         <div
+    //           style={{
+    //             display: "flex",
+    //             margin: "10px",
+    //             justifyContent: "space-between",
+    //           }}
+    //         >
+    //           <AddOwnerSchedule
+    //             updateData={updateData}
+    //             ownerId={rowData[0]}
+    //             prevSchedule={value}
+    //             isEdit={value !== undefined}
+    //             disabled={!canUpdate}
+    //           />
+    //           {/* {value?value.from+" "+value.to:<button disabled={!canUpdate}>
+    //           Set Availibility
+    //           </button>} */}
+    //         </div>
+    //       );
+    //     },
+    //   },
+    // },
   ];
 
   useEffect(() => {

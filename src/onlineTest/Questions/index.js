@@ -236,39 +236,57 @@ function Questions(props) {
                   <Typography variant="subtitle1">
                     <div dangerouslySetInnerHTML={{ __html: common_text }} />
                   </Typography>
-                  {questionsList[index].options.length > 1
-                    ? questionsList[index].options.map((option, i) => {
-                        const options = DOMPurify.sanitize(option.text);
-                        return (
-                          <Paper
-                            square
-                            elevation={0}
-                            className={classes.options}
-                          >
-                            <Typography variant="subtitle1" key="i">
-                              {i + 1} {"."}{" "}
-                              <button
-                                className={classes.optionButton}
-                                dangerouslySetInnerHTML={{ __html: options }}
-                              />
-                            </Typography>
-                          </Paper>
-                        );
-                      })
-                    : null}
-                  <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id={question_id}
-                    className={classes.spacing}
-                    // label="Your name"
-                    placeholder="Write your answer here..."
-                    value={answerObj[question_id] ? answerObj[question_id] : ""}
-                    name={question_id}
-                    autoComplete="off"
-                    onChange={(e) => changeHandler(e, question_id)}
-                  />
+                  {questionsList[index].options.length > 2 ? (
+                    questionsList[index].options.map((option, i) => {
+                      const options = DOMPurify.sanitize(option.text);
+                      return (
+                        <Paper square elevation={0} className={classes.options}>
+                          <Typography variant="subtitle1" key="i">
+                            {i + 1} {"."}{" "}
+                            <button
+                              className={classes.optionButton}
+                              dangerouslySetInnerHTML={{ __html: options }}
+                              style={{
+                                background: `
+                                 ${
+                                   answerList[question_id] == option.id
+                                     ? "#f05f40"
+                                     : ""
+                                 }
+                                `,
+                              }}
+                              onClick={() => {
+                                setAnswerObj({
+                                  ...answerObj,
+                                  [question_id]: option.id,
+                                });
+                                setAnswerList({
+                                  ...answerList,
+                                  [question_id]: option.id,
+                                });
+                              }}
+                            />
+                          </Typography>
+                        </Paper>
+                      );
+                    })
+                  ) : (
+                    <TextField
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id={question_id}
+                      className={classes.spacing}
+                      // label="Your name"
+                      placeholder="Write your answer here..."
+                      value={
+                        answerObj[question_id] ? answerObj[question_id] : ""
+                      }
+                      name={question_id}
+                      autoComplete="off"
+                      onChange={(e) => changeHandler(e, question_id)}
+                    />
+                  )}
 
                   {index == 17 ? (
                     <Grid container spacing={3}>

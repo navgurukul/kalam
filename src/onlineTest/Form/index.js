@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Form(props) {
   const classes = useStyles();
+  const [inputDisabled, setInputDisabled] = useState(false);
   const [enrolment_key, setEnrolment_key] = useState("");
   const [prevData, setPrevData] = useState({});
   const [alreadyAUser, setAlreadyAUser] = useState(false);
@@ -80,6 +81,7 @@ function Form(props) {
 
             setPrevData(PrevDatas);
             setAlreadyAUser(true);
+            setInputDisabled(true);
             setValues({
               ...values,
               PrevImage: PrevDatas.image_url,
@@ -258,7 +260,7 @@ function Form(props) {
                   name="FirstName"
                   onChange={changeHandler}
                   autoComplete="off"
-                  onChange={changeHandler}
+                  disabled={inputDisabled}
                 />
                 <TextField
                   variant="outlined"
@@ -268,9 +270,9 @@ function Form(props) {
                   placeholder={lang == "En" ? "Middle Name " : "मध्यनाम "}
                   value={values.MiddleName}
                   name="MiddleName"
-                  onChange={changeHandler}
                   autoComplete="off"
                   onChange={changeHandler}
+                  disabled={inputDisabled}
                 />{" "}
                 <TextField
                   variant="outlined"
@@ -282,7 +284,7 @@ function Form(props) {
                   name="LastName"
                   onChange={changeHandler}
                   autoComplete="off"
-                  onChange={changeHandler}
+                  disabled={inputDisabled}
                 />
               </div>
               <TextField
@@ -300,6 +302,7 @@ function Form(props) {
                 name="whatsapp"
                 autoComplete="off"
                 onChange={HandelOnNumberChange}
+                disabled={inputDisabled}
               />
               <TextField
                 variant="outlined"
@@ -314,6 +317,7 @@ function Form(props) {
                 name="AlternateNumber"
                 autoComplete="off"
                 onChange={HandelOnNumberChange}
+                disabled={inputDisabled}
               />
               <TextField
                 variant="outlined"
@@ -325,8 +329,8 @@ function Form(props) {
                 name="email"
                 onChange={changeHandler}
                 autoComplete="off"
-                onChange={changeHandler}
                 fullWidth={true}
+                disabled={inputDisabled}
               />
 
               <div className={classes.date}>
@@ -334,6 +338,7 @@ function Form(props) {
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                   <Grid container justify="space-around">
                     <KeyboardDatePicker
+                      disabled={inputDisabled}
                       margin="normal"
                       id="date-picker-dialog"
                       format="dd/MM/yyyy"
@@ -351,6 +356,7 @@ function Form(props) {
                 </MuiPickersUtilsProvider>
               </div>
               <FormControl
+                disabled={inputDisabled}
                 fullWidth
                 variant="outlined"
                 align="left"
@@ -380,56 +386,6 @@ function Form(props) {
                 </Select>
               </FormControl>
 
-              {/* <FormControl
-                fullWidth
-                variant="outlined"
-                align="left"
-                className={classes.spacing}
-              >
-                <InputLabel id="demo-simple-select-outlined-label">
-                  {lang == "En" ? "Select State" : "राज्य चुनें"}
-                </InputLabel>
-                <Select
-                  value={values.state}
-                  onChange={changeHandler}
-                  label="Select State"
-                  name="state"
-                >
-                  <MenuItem value={"selectGender"}>
-                    {lang == "En" ? "Select Gender" : "लिंग चुनें"}
-                  </MenuItem>
-                  {states.map((item, index) => {
-                    return <MenuItem value={item}>{item}</MenuItem>;
-                  })}
-                </Select>
-              </FormControl> */}
-              {/* <TextField
-                variant="outlined"
-                required
-                className={classes.spacing}
-                // label="Your name"
-                placeholder={lang == "En" ? "District" : "जिला"}
-                value={values.district}
-                name="district"
-                onChange={changeHandler}
-                autoComplete="off"
-                onChange={changeHandler}
-                fullWidth={true}
-              /> */}
-              {/* <TextField
-                variant="outlined"
-                required
-                className={classes.spacing}
-                // label="Your name"
-                placeholder={lang == "En" ? "city" : "शहर"}
-                value={values.city}
-                name="city"
-                onChange={changeHandler}
-                autoComplete="off"
-                onChange={changeHandler}
-                fullWidth={true}
-              /> */}
-              {/* <Link exact to="ekAurBaat"> */}
               <Button
                 type="submit"
                 fullWidth
@@ -452,6 +408,8 @@ function Form(props) {
           lang={lang}
           prevFilledData={prevData}
           alreadyAUser={alreadyAUser}
+          inputDisabled={inputDisabled}
+          setInputDisabled={setInputDisabled}
         />
       )}
     </>

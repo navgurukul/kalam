@@ -63,6 +63,7 @@ function KuchAurDetails(props) {
 
   let CurrentStatus = ["", "nothing", "job", "study", "other"];
   let school_medium = ["", "en", "other"];
+  const { inputDisabled, setInputDisabled } = props;
   let prevFilledData = props.prevFilledData;
   let lang = props.lang;
   const [ApiCall, setApiCall] = useState(true);
@@ -245,6 +246,7 @@ function KuchAurDetails(props) {
             align="left"
           >
             <TextField
+              disabled={inputDisabled}
               variant="outlined"
               required
               fullWidth
@@ -256,9 +258,9 @@ function KuchAurDetails(props) {
               name="pin_code"
               autoComplete="off"
               onChange={changeHandler}
-              required={true}
             />
             <FormControl
+              disabled={inputDisabled}
               fullWidth
               variant="outlined"
               className={classes.spacing}
@@ -286,6 +288,7 @@ function KuchAurDetails(props) {
               </Select>
             </FormControl>
             <FormControl
+              disabled={inputDisabled}
               fullWidth
               variant="outlined"
               className={classes.spacing}
@@ -310,38 +313,8 @@ function KuchAurDetails(props) {
               </Select>
             </FormControl>
 
-            {/* <TextField
-              variant="outlined"
-              required
-              className={classes.spacing}
-              placeholder="District"
-              value={values.district}
-              name="district"
-              onChange={changeHandler}
-              autoComplete="off"
-              onChange={changeHandler}
-              fullWidth={true}
-            /> */}
-
-            {/* <FormControl
-              fullWidth
-              variant="outlined"
-              className={classes.spacing}
-            >
-              <InputLabel id="demo-simple-select-outlined-label">
-                Aapki City/Village ka naam
-              </InputLabel>
-              <Select
-                value={values.city}
-                onChange={changeHandler}
-                label="Aapki City/Village ka naam"
-                name="city"
-              >
-                <MenuItem value={"Other"}>Other</MenuItem>
-              </Select>
-            </FormControl> */}
-            {/* </Paper> */}
             <TextField
+              disabled={inputDisabled}
               variant="outlined"
               required
               fullWidth
@@ -351,12 +324,12 @@ function KuchAurDetails(props) {
               placeholder={lang == "En" ? "city" : "शहर"}
               value={values.city}
               name="city"
-              required={true}
               autoComplete="off"
               onChange={changeHandler}
             />
             <FormControl
               fullWidth
+              disabled={inputDisabled}
               variant="outlined"
               className={classes.spacing}
             >
@@ -378,6 +351,7 @@ function KuchAurDetails(props) {
               </Select>
             </FormControl>
             <FormControl
+              disabled={inputDisabled}
               fullWidth
               variant="outlined"
               className={classes.spacing}
@@ -404,34 +378,10 @@ function KuchAurDetails(props) {
             {values.qualification === "class10th" ? (
               <>
                 <TextField
-                  variant="outlined"
-                  required
-                  required={true}
-                  fullWidth
-                  // id="city"
-                  className={classes.spacing}
-                  label={
-                    lang == "En"
-                      ? "Marks in Maths in 10th class"
-                      : "10वीं कक्षा में गणित में अंक"
-                  }
-                  placeholder={
-                    lang == "En"
-                      ? "Marks in Maths in 10th class"
-                      : "10वीं कक्षा में गणित के अंक"
-                  }
-                  value={values.math_marks_in10th}
-                  name="math_marks_in10th"
-                  type="number"
-                  autoComplete="off"
-                  onChange={changeHandler}
-                />
-                <TextField
+                  disabled={inputDisabled}
                   variant="outlined"
                   required
                   fullWidth
-                  required={true}
-                  // id="city"
                   className={classes.spacing}
                   label={
                     lang == "En"
@@ -455,32 +405,9 @@ function KuchAurDetails(props) {
             values.qualification === "graduate" ? (
               <>
                 <TextField
+                  disabled={inputDisabled}
                   variant="outlined"
                   required
-                  required={true}
-                  fullWidth
-                  // id="city"
-                  className={classes.spacing}
-                  label={
-                    lang == "En"
-                      ? "Marks in Maths in 10th class"
-                      : "10वीं कक्षा में गणित में अंक"
-                  }
-                  placeholder={
-                    lang == "En"
-                      ? "Marks in Maths in 10th class"
-                      : "10वीं कक्षा में गणित के अंक"
-                  }
-                  value={values.math_marks_in10th}
-                  name="math_marks_in10th"
-                  type="number"
-                  autoComplete="off"
-                  onChange={changeHandler}
-                />
-                <TextField
-                  variant="outlined"
-                  required
-                  required={true}
                   fullWidth
                   // id="city"
                   className={classes.spacing}
@@ -500,44 +427,22 @@ function KuchAurDetails(props) {
                   autoComplete="off"
                   onChange={changeHandler}
                 />
+
                 <TextField
+                  disabled={inputDisabled}
                   variant="outlined"
                   required
-                  required={true}
                   fullWidth
                   // id="city"
                   className={classes.spacing}
                   label={
                     lang == "En"
-                      ? "Marks in Maths in 12th class"
-                      : "12वीं कक्षा में गणित में अंक"
-                  }
-                  placeholder={
-                    lang == "En"
-                      ? "Marks in Maths in 12th class"
-                      : "12वीं कक्षा में गणित के अंक"
-                  }
-                  value={values.math_marks_in12th}
-                  name="math_marks_in12th"
-                  type="number"
-                  autoComplete="off"
-                  onChange={changeHandler}
-                />
-                <TextField
-                  variant="outlined"
-                  required
-                  required={true}
-                  fullWidth
-                  // id="city"
-                  className={classes.spacing}
-                  label={
-                    lang == "En"
-                      ? "Percentage in 10th class"
+                      ? "Percentage in 12th class"
                       : "12वीं कक्षा के प्रतिशत अंक"
                   }
                   placeholder={
                     lang == "En"
-                      ? "Percentage in 10th class"
+                      ? "Percentage in 12th class"
                       : "12वीं कक्षा के प्रतिशत अंक"
                   }
                   value={values.percentage_in12th}
@@ -549,6 +454,7 @@ function KuchAurDetails(props) {
               </>
             ) : null}
             <FormControl
+              disabled={inputDisabled}
               fullWidth
               variant="outlined"
               className={classes.spacing}
@@ -575,6 +481,7 @@ function KuchAurDetails(props) {
               </Select>
             </FormControl>
             <FormControl
+              disabled={inputDisabled}
               fullWidth
               variant="outlined"
               className={classes.spacing}
@@ -599,6 +506,7 @@ function KuchAurDetails(props) {
               </Select>
             </FormControl>
             <FormControl
+              disabled={inputDisabled}
               required={true}
               fullWidth
               variant="outlined"

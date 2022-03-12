@@ -124,7 +124,7 @@ function SlideShow(props) {
     <>
       {shuruKarein ? (
         <React.Fragment>
-          <Container maxWidth="lg" align="center" justifyContent="center">
+          <Container maxWidth="lg" align="center">
             <div className={classes.root}>
               <Paper square elevation={0} className={classes.heading}>
                 <Typography variant="h4">

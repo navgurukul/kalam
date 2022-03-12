@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     maxWidth: 500,
-    marginTop: theme.spacing(4),
+    marginTop: theme.spacing(2),
     marginBottom: theme.spacing(4),
     backgroundColor: theme.palette.background.default,
   },
@@ -63,7 +63,7 @@ function KuchAurDetails(props) {
 
   let CurrentStatus = ["", "nothing", "job", "study", "other"];
   let school_medium = ["", "en", "other"];
-  const { inputDisabled, setInputDisabled } = props;
+  const { inputDisabled, setInputDisabled, formData, handleChange } = props;
   let prevFilledData = props.prevFilledData;
   let lang = props.lang;
   const [ApiCall, setApiCall] = useState(true);
@@ -71,21 +71,21 @@ function KuchAurDetails(props) {
   useEffect(() => {
     if (prevFilledData) {
       setApiCall(false);
-      setValues({
-        district: prevFilledData.district,
-        pin_code: prevFilledData.pin_code,
-        state: prevFilledData.state,
-        city: prevFilledData.city,
-        current_status: CurrentStatus[prevFilledData.current_status],
-        qualification: qualification[prevFilledData.qualification],
-        school_medium: school_medium[prevFilledData.school_medium],
-        caste: caste[prevFilledData.caste],
-        religion: religion[prevFilledData.religon],
-        math_marks_in10th: prevFilledData.math_marks_in10th,
-        percentage_in10th: prevFilledData.percentage_in10th,
-        math_marks_in12th: prevFilledData.math_marks_in12th,
-        percentage_in12th: prevFilledData.percentage_in12th,
-      });
+      // setValues({
+      //   district: prevFilledData.district,
+      //   pin_code: prevFilledData.pin_code,
+      //   state: prevFilledData.state,
+      //   city: prevFilledData.city,
+      //   current_status: CurrentStatus[prevFilledData.current_status],
+      //   qualification: qualification[prevFilledData.qualification],
+      //   school_medium: school_medium[prevFilledData.school_medium],
+      //   caste: caste[prevFilledData.caste],
+      //   religion: religion[prevFilledData.religon],
+      //   math_marks_in10th: prevFilledData.math_marks_in10th,
+      //   percentage_in10th: prevFilledData.percentage_in10th,
+      //   math_marks_in12th: prevFilledData.math_marks_in12th,
+      //   percentage_in12th: prevFilledData.percentage_in12th,
+      // });
     }
   }, [prevFilledData]);
 
@@ -107,52 +107,52 @@ function KuchAurDetails(props) {
       });
     });
   }
-  const [values, setValues] = useState({
-    district: "",
-    pin_code: "",
-    state: "",
-    city: "",
-    current_status: "",
-    qualification: "",
-    school_medium: "",
-    caste: "",
-    religion: "",
-    math_marks_in10th: "",
-    percentage_in10th: "",
-    math_marks_in12th: "",
-    percentage_in12th: "",
-  });
+  // const [values, setValues] = useState({
+  //   district: "",
+  //   pin_code: "",
+  //   state: "",
+  //   city: "",
+  //   current_status: "",
+  //   qualification: "",
+  //   school_medium: "",
+  //   caste: "",
+  //   religion: "",
+  //   math_marks_in10th: "",
+  //   percentage_in10th: "",
+  //   math_marks_in12th: "",
+  //   percentage_in12th: "",
+  // });
   useEffect(() => {
-    if (values.state != "") {
-      getCityFromState(values.state);
+    if (formData.state != "") {
+      getCityFromState(formData.state);
     }
-  }, [values.state]);
+  }, [formData.state]);
 
-  const changeHandler = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
-    //console.log("Values", values);
-  };
+  // const changeHandler = (e) => {
+  //   setValues({ ..., [e.target.name]: e.target.value });
+  //   //console.log("Values", values);
+  // };
 
-  const isNotEmpty = (values) => {
-    const valuesKey = Object.keys(values);
+  // const isNotEmpty = (values) => {
+  //   const valuesKey = Object.keys(values);
 
-    for (const key of valuesKey) {
-      if (values[key] === "10th pass") {
-        values.math_marks_in12th = "empty";
-        values.percentage_in12th = "empty";
-      }
-      if (values[key] === "Less than 10th pass") {
-        values.math_marks_in10th = "empty";
-        values.percentage_in10th = "empty";
-        values.math_marks_in12th = "empty";
-        values.percentage_in12th = "empty";
-      }
-      // if (values[key] === "") {
-      //   return false;
-      // }
-    }
-    return true;
-  };
+  //   for (const key of valuesKey) {
+  //     if (values[key] === "10th pass") {
+  //       values.math_marks_in12th = "empty";
+  //       values.percentage_in12th = "empty";
+  //     }
+  //     if (values[key] === "Less than 10th pass") {
+  //       values.math_marks_in10th = "empty";
+  //       values.percentage_in10th = "empty";
+  //       values.math_marks_in12th = "empty";
+  //       values.percentage_in12th = "empty";
+  //     }
+  //     // if (values[key] === "") {
+  //     //   return false;
+  //     // }
+  //   }
+  //   return true;
+  // };
 
   //console.log("isNotEmpty", isNotEmpty(values));
 
@@ -227,91 +227,205 @@ function KuchAurDetails(props) {
 
   return (
     <Container maxWidth="lg" align="center" className={classes.container}>
-      <div className={classes.root}>
-        <Paper
-          square
-          elevation={0}
-          className={classes.textField}
-          align="center"
-        >
-          <Typography variant="h4" className={classes.text}>
+      {/* <div className={classes.root}> */}
+      <Paper square elevation={0} className={classes.textField} align="center">
+        {/* <Typography variant="h4" className={classes.text}>
             {lang == "En" ? "Your Details" : "आपकी जानकारी"}
-          </Typography>
-        </Paper>
-        <form onSubmit={submitHandler}>
-          <Paper
-            square
-            elevation={0}
-            className={classes.textField}
-            align="left"
+          </Typography> */}
+      </Paper>
+      <Paper square elevation={0} className={classes.textField} align="left">
+        <TextField
+          disabled={inputDisabled}
+          variant="outlined"
+          required
+          fullWidth
+          // id="pin_code"
+          className={classes.spacing}
+          label={lang == "En" ? "Pin code" : "पिन कोड"}
+          placeholder={lang == "En" ? "Pin code" : "पिन कोड"}
+          value={formData.pin_code}
+          name="pin_code"
+          autoComplete="off"
+          onChange={handleChange}
+        />
+        <FormControl
+          disabled={inputDisabled}
+          fullWidth
+          variant="outlined"
+          className={classes.spacing}
+        >
+          <InputLabel id="demo-simple-select-outlined-label">
+            {lang == "En" ? "Select State" : "राज्य चुनें"}
+          </InputLabel>
+          <Select
+            required={true}
+            value={formData.state}
+            onChange={handleChange}
+            label={lang == "En" ? "Select State" : "राज्य चुनें"}
+            name="state"
+            MenuProps={{ classes: { paper: classes.menuPaper } }}
           >
+            <MenuItem value={""} disabled>
+              {lang == "En" ? "Select State" : "राज्य चुनें"}
+            </MenuItem>
+            {Object.keys(state).map((key, index) => {
+              return (
+                <MenuItem key={index} value={key}>
+                  {state[key]}
+                </MenuItem>
+              );
+            })}
+            {/* {state.map((state) => {
+                  return <MenuItem value={state}>{state}</MenuItem>;
+                })} */}
+          </Select>
+        </FormControl>
+        <FormControl
+          disabled={inputDisabled}
+          fullWidth
+          variant="outlined"
+          className={classes.spacing}
+        >
+          <InputLabel id="demo-simple-select-outlined-label">
+            {lang == "En" ? "Select District" : "जिला चुनें"}
+          </InputLabel>
+          <Select
+            required={true}
+            value={formData.district}
+            onChange={handleChange}
+            label={lang == "En" ? "Select District" : "जिला चुनें"}
+            name="district"
+            MenuProps={{ classes: { paper: classes.menuPaper } }}
+          >
+            {districts.map((key, index) => {
+              return (
+                <MenuItem key={index} value={key["name"]}>
+                  {key["name"]}
+                </MenuItem>
+              );
+            })}
+            {/* {state.map((state) => {
+                  return <MenuItem value={state}>{state}</MenuItem>;
+                })} */}
+          </Select>
+        </FormControl>
+
+        <TextField
+          disabled={inputDisabled}
+          variant="outlined"
+          required
+          fullWidth
+          id="city"
+          className={classes.spacing}
+          label={lang == "En" ? "City" : "शहर"}
+          placeholder={lang == "En" ? "City" : "शहर"}
+          value={formData.city}
+          name="city"
+          autoComplete="off"
+          onChange={handleChange}
+        />
+        <FormControl
+          fullWidth
+          disabled={inputDisabled}
+          variant="outlined"
+          className={classes.spacing}
+        >
+          <InputLabel id="demo-simple-select-outlined-label">
+            {lang == "En" ? "Current Status" : "वर्तमान स्थिति"}
+          </InputLabel>
+          <Select
+            value={formData.current_status}
+            onChange={handleChange}
+            label={lang == "En" ? "Current Status" : "वर्तमान स्थिति"}
+            required={true}
+            name="current_status"
+          >
+            <MenuItem value={"Select Option"} disabled>
+              Select Option
+            </MenuItem>
+            <MenuItem value={"nothing"}>Nothing</MenuItem>
+            <MenuItem value={"job"}>Job</MenuItem>
+            <MenuItem value={"study"}>Study</MenuItem>
+            <MenuItem value={"other"}>Other</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl
+          disabled={inputDisabled}
+          fullWidth
+          variant="outlined"
+          className={classes.spacing}
+        >
+          <InputLabel id="demo-simple-select-outlined-label">
+            {lang == "En" ? "Maximum Qualification" : "अधिकतम योग्यता"}
+          </InputLabel>
+          <Select
+            value={formData.qualification}
+            onChange={handleChange}
+            label={lang == "En" ? "Maximum Qualification" : "अधिकतम योग्यता"}
+            required={true}
+            name="qualification"
+          >
+            <MenuItem value={""} disabled>
+              Select Option
+            </MenuItem>
+            <MenuItem value={"lessThan10th"}>Less than 10th pass</MenuItem>
+            <MenuItem value={"class10th"}>10th pass</MenuItem>
+            <MenuItem value={"class12th"}>12th pass</MenuItem>
+            <MenuItem value={"graduate"}>Graduated</MenuItem>
+          </Select>
+        </FormControl>
+        {formData.qualification === "class10th" ? (
+          <>
             <TextField
               disabled={inputDisabled}
               variant="outlined"
               required
               fullWidth
-              // id="pin_code"
               className={classes.spacing}
-              label={lang == "En" ? "Pin code" : "पिन कोड"}
-              placeholder={lang == "En" ? "Pin code" : "पिन कोड"}
-              value={values.pin_code}
-              name="pin_code"
+              label={
+                lang == "En"
+                  ? "Percentage in 10th class"
+                  : "10वीं कक्षा के प्रतिशत अंक"
+              }
+              placeholder={
+                lang == "En"
+                  ? "Percentage in 10th class"
+                  : "10वीं कक्षा के प्रतिशत अंक"
+              }
+              value={formData.percentage_in10th}
+              name="percentage_in10th"
+              type="number"
               autoComplete="off"
-              onChange={changeHandler}
+              onChange={handleChange}
             />
-            <FormControl
+          </>
+        ) : null}
+        {formData.qualification === "class12th" ||
+        formData.qualification === "graduate" ? (
+          <>
+            <TextField
               disabled={inputDisabled}
-              fullWidth
               variant="outlined"
-              className={classes.spacing}
-            >
-              <InputLabel id="demo-simple-select-outlined-label">
-                {lang == "En" ? "Select State" : "राज्य चुनें"}
-              </InputLabel>
-              <Select
-                required={true}
-                value={values.state}
-                onChange={changeHandler}
-                label={lang == "En" ? "Select State" : "राज्य चुनें"}
-                name="state"
-                MenuProps={{ classes: { paper: classes.menuPaper } }}
-              >
-                <MenuItem value={""}>
-                  {lang == "En" ? "Select State" : "राज्य चुनें"}
-                </MenuItem>
-                {Object.keys(state).map((key, index) => {
-                  return <MenuItem value={key}>{state[key]}</MenuItem>;
-                })}
-                {/* {state.map((state) => {
-                  return <MenuItem value={state}>{state}</MenuItem>;
-                })} */}
-              </Select>
-            </FormControl>
-            <FormControl
-              disabled={inputDisabled}
+              required
               fullWidth
-              variant="outlined"
+              // id="city"
               className={classes.spacing}
-            >
-              <InputLabel id="demo-simple-select-outlined-label">
-                {lang == "En" ? "Select District" : "जिला चुनें"}
-              </InputLabel>
-              <Select
-                required={true}
-                value={values.district}
-                onChange={changeHandler}
-                label={lang == "En" ? "Select District" : "जिला चुनें"}
-                name="district"
-                MenuProps={{ classes: { paper: classes.menuPaper } }}
-              >
-                {districts.map((key, index) => {
-                  return <MenuItem value={key["name"]}>{key["name"]}</MenuItem>;
-                })}
-                {/* {state.map((state) => {
-                  return <MenuItem value={state}>{state}</MenuItem>;
-                })} */}
-              </Select>
-            </FormControl>
+              label={
+                lang == "En"
+                  ? "Percentage in 10th class"
+                  : "10वीं कक्षा के प्रतिशत अंक"
+              }
+              placeholder={
+                lang == "En"
+                  ? "Percentage in 10th class"
+                  : "10वीं कक्षा के प्रतिशत अंक"
+              }
+              value={formData.percentage_in10th}
+              name="percentage_in10th"
+              type="number"
+              autoComplete="off"
+              onChange={handleChange}
+            />
 
             <TextField
               disabled={inputDisabled}
@@ -320,218 +434,107 @@ function KuchAurDetails(props) {
               fullWidth
               // id="city"
               className={classes.spacing}
-              label={lang == "En" ? "city" : "शहर"}
-              placeholder={lang == "En" ? "city" : "शहर"}
-              value={values.city}
-              name="city"
+              label={
+                lang == "En"
+                  ? "Percentage in 12th class"
+                  : "12वीं कक्षा के प्रतिशत अंक"
+              }
+              placeholder={
+                lang == "En"
+                  ? "Percentage in 12th class"
+                  : "12वीं कक्षा के प्रतिशत अंक"
+              }
+              value={formData.percentage_in12th}
+              name="percentage_in12th"
+              type="number"
               autoComplete="off"
-              onChange={changeHandler}
+              onChange={handleChange}
             />
-            <FormControl
-              fullWidth
-              disabled={inputDisabled}
-              variant="outlined"
-              className={classes.spacing}
-            >
-              <InputLabel id="demo-simple-select-outlined-label">
-                {lang == "En" ? "Current Status" : "वर्तमान स्थिति"}
-              </InputLabel>
-              <Select
-                value={values.current_status}
-                onChange={changeHandler}
-                label={lang == "En" ? "Current Status" : "वर्तमान स्थिति"}
-                required={true}
-                name="current_status"
-              >
-                <MenuItem value={"Select Option"}>Select Option</MenuItem>
-                <MenuItem value={"nothing"}>Nothing</MenuItem>
-                <MenuItem value={"job"}>Job</MenuItem>
-                <MenuItem value={"study"}>Study</MenuItem>
-                <MenuItem value={"other"}>Other</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl
-              disabled={inputDisabled}
-              fullWidth
-              variant="outlined"
-              className={classes.spacing}
-            >
-              <InputLabel id="demo-simple-select-outlined-label">
-                {lang == "En" ? "Maximum Qualification" : "अधिकतम योग्यता"}
-              </InputLabel>
-              <Select
-                value={values.qualification}
-                onChange={changeHandler}
-                label={
-                  lang == "En" ? "Maximum Qualification" : "अधिकतम योग्यता"
-                }
-                required={true}
-                name="qualification"
-              >
-                <MenuItem value={""}>Select Option</MenuItem>
-                <MenuItem value={"lessThan10th"}>Less than 10th pass</MenuItem>
-                <MenuItem value={"class10th"}>10th pass</MenuItem>
-                <MenuItem value={"class12th"}>12th pass</MenuItem>
-                <MenuItem value={"graduate"}>Graduated</MenuItem>
-              </Select>
-            </FormControl>
-            {values.qualification === "class10th" ? (
-              <>
-                <TextField
-                  disabled={inputDisabled}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  className={classes.spacing}
-                  label={
-                    lang == "En"
-                      ? "Percentage in 10th class"
-                      : "10वीं कक्षा के प्रतिशत अंक"
-                  }
-                  placeholder={
-                    lang == "En"
-                      ? "Percentage in 10th class"
-                      : "10वीं कक्षा के प्रतिशत अंक"
-                  }
-                  value={values.percentage_in10th}
-                  name="percentage_in10th"
-                  type="number"
-                  autoComplete="off"
-                  onChange={changeHandler}
-                />
-              </>
-            ) : null}
-            {values.qualification === "class12th" ||
-            values.qualification === "graduate" ? (
-              <>
-                <TextField
-                  disabled={inputDisabled}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  // id="city"
-                  className={classes.spacing}
-                  label={
-                    lang == "En"
-                      ? "Percentage in 10th class"
-                      : "10वीं कक्षा के प्रतिशत अंक"
-                  }
-                  placeholder={
-                    lang == "En"
-                      ? "Percentage in 10th class"
-                      : "10वीं कक्षा के प्रतिशत अंक"
-                  }
-                  value={values.percentage_in10th}
-                  name="percentage_in10th"
-                  type="number"
-                  autoComplete="off"
-                  onChange={changeHandler}
-                />
-
-                <TextField
-                  disabled={inputDisabled}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  // id="city"
-                  className={classes.spacing}
-                  label={
-                    lang == "En"
-                      ? "Percentage in 12th class"
-                      : "12वीं कक्षा के प्रतिशत अंक"
-                  }
-                  placeholder={
-                    lang == "En"
-                      ? "Percentage in 12th class"
-                      : "12वीं कक्षा के प्रतिशत अंक"
-                  }
-                  value={values.percentage_in12th}
-                  name="percentage_in12th"
-                  type="number"
-                  autoComplete="off"
-                  onChange={changeHandler}
-                />
-              </>
-            ) : null}
-            <FormControl
-              disabled={inputDisabled}
-              fullWidth
-              variant="outlined"
-              className={classes.spacing}
-            >
-              <InputLabel id="demo-simple-select-outlined-label">
-                {lang == "En" ? "School Medium" : "स्कूल माध्यम"}
-              </InputLabel>
-              <Select
-                value={values.school_medium}
-                onChange={changeHandler}
-                label={lang == "En" ? "School Medium" : "स्कूल माध्यम"}
-                name="school_medium"
-                required={true}
-              >
-                <MenuItem value={""}>
-                  {lang == "En" ? "Select Langauge" : "भाषा चुने"}
-                </MenuItem>
-                <MenuItem value={"other"}>
-                  {lang == "En" ? "Hindi" : "हिन्दी"}
-                </MenuItem>
-                <MenuItem value={"en"}>
-                  {lang == "En" ? "English" : "अंग्रेज़ी"}
-                </MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl
-              disabled={inputDisabled}
-              fullWidth
-              variant="outlined"
-              className={classes.spacing}
-            >
-              <InputLabel id="demo-simple-select-outlined-label">
-                {lang == "En" ? " Caste/Tribe" : "जाति/जनजाति"}
-              </InputLabel>
-              <Select
-                value={values.caste}
-                onChange={changeHandler}
-                label={lang == "En" ? " Caste/Tribe" : "जाति/जनजाति"}
-                name="caste"
-                required={true}
-              >
-                <MenuItem value={"Select Option"}>Select Option</MenuItem>
-                <MenuItem value={"scSt"}>
-                  (SC) Scheduled Caste / (ST) Scheduled Tribe
-                </MenuItem>
-                <MenuItem value={"obc"}>(OBC) Other Backward Classes</MenuItem>
-                <MenuItem value={"general"}>General</MenuItem>
-                <MenuItem value={"others"}>Other</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl
-              disabled={inputDisabled}
-              required={true}
-              fullWidth
-              variant="outlined"
-              className={classes.spacing}
-            >
-              <InputLabel id="demo-simple-select-outlined-label">
-                {lang == "En" ? "Religion" : "धर्म"}
-              </InputLabel>
-              <Select
-                value={values.religion}
-                onChange={changeHandler}
-                label={lang == "En" ? "Religion" : "धर्म"}
-                name="religion"
-              >
-                <MenuItem value="">Select Option</MenuItem>
-                <MenuItem value="hindu">Hindu</MenuItem>
-                <MenuItem value="islam">Islam</MenuItem>
-                <MenuItem value="sikh">Sikh</MenuItem>
-                <MenuItem value="christian">Christian</MenuItem>
-                <MenuItem value="jain">Jain</MenuItem>
-                <MenuItem value="others">Others</MenuItem>
-              </Select>
-            </FormControl>
-          </Paper>
-          <Button
+          </>
+        ) : null}
+        <FormControl
+          disabled={inputDisabled}
+          fullWidth
+          variant="outlined"
+          className={classes.spacing}
+        >
+          <InputLabel id="demo-simple-select-outlined-label">
+            {lang == "En" ? "School Medium" : "स्कूल माध्यम"}
+          </InputLabel>
+          <Select
+            value={formData.school_medium}
+            onChange={handleChange}
+            label={lang == "En" ? "School Medium" : "स्कूल माध्यम"}
+            name="school_medium"
+            required={true}
+          >
+            <MenuItem value={""} disabled>
+              {lang == "En" ? "Select Langauge" : "भाषा चुने"}
+            </MenuItem>
+            <MenuItem value={"other"}>
+              {lang == "En" ? "Hindi" : "हिन्दी"}
+            </MenuItem>
+            <MenuItem value={"en"}>
+              {lang == "En" ? "English" : "अंग्रेज़ी"}
+            </MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl
+          disabled={inputDisabled}
+          fullWidth
+          variant="outlined"
+          className={classes.spacing}
+        >
+          <InputLabel id="demo-simple-select-outlined-label">
+            {lang == "En" ? " Caste/Tribe" : "जाति/जनजाति"}
+          </InputLabel>
+          <Select
+            value={formData.caste}
+            onChange={handleChange}
+            label={lang == "En" ? " Caste/Tribe" : "जाति/जनजाति"}
+            name="caste"
+            required
+          >
+            <MenuItem value={"Select Option"} disabled>
+              Select Option
+            </MenuItem>
+            <MenuItem value={"scSt"}>
+              (SC) Scheduled Caste / (ST) Scheduled Tribe
+            </MenuItem>
+            <MenuItem value={"obc"}>(OBC) Other Backward Classes</MenuItem>
+            <MenuItem value={"general"}>General</MenuItem>
+            <MenuItem value={"others"}>Other</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl
+          disabled={inputDisabled}
+          required={true}
+          fullWidth
+          variant="outlined"
+          className={classes.spacing}
+        >
+          <InputLabel id="religion-label">
+            {lang == "En" ? "Religion" : "धर्म"}
+          </InputLabel>
+          <Select
+            value={formData.religion}
+            onChange={handleChange}
+            label={lang == "En" ? "Religion" : "धर्म"}
+            name="religion"
+          >
+            <MenuItem value="" disabled>
+              Select Option
+            </MenuItem>
+            <MenuItem value="hindu">Hindu</MenuItem>
+            <MenuItem value="islam">Islam</MenuItem>
+            <MenuItem value="sikh">Sikh</MenuItem>
+            <MenuItem value="christian">Christian</MenuItem>
+            <MenuItem value="jain">Jain</MenuItem>
+            <MenuItem value="others">Others</MenuItem>
+          </Select>
+        </FormControl>
+      </Paper>
+      {/* <Button
             type="submit"
             fullWidth
             variant="contained"
@@ -540,9 +543,7 @@ function KuchAurDetails(props) {
             // onClick={submitHandler}
           >
             submit
-          </Button>
-        </form>
-      </div>
+          </Button> */}
     </Container>
   );
 }

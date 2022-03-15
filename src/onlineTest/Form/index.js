@@ -10,21 +10,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import CameraAltIcon from "@material-ui/icons/CameraAlt";
-import { Link } from "react-router-dom";
 import history from "../../utils/history";
 import { useSnackbar } from "notistack";
-import {
-  Avatar,
-  Badge,
-  FilledInput,
-  Grid,
-  Input,
-  MobileStepper,
-  Snackbar,
-} from "@material-ui/core";
-import { set } from "date-fns";
+import { Avatar, Badge, Grid, MobileStepper } from "@material-ui/core";
 import KuchAurDetails from "../KuchAurDetails";
-import transitions from "@material-ui/core/styles/transitions";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
@@ -35,6 +24,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import { useForm, Controller } from "react-hook-form";
 import moment from "moment";
+import { useLocation } from "react-router-dom";
 
 const baseUrl = process.env.API_URL;
 
@@ -65,10 +55,9 @@ const useStyles = makeStyles((theme) => ({
 const BasicDetails = ({
   lang,
   formData,
-  handleChange,
   setProfileImage,
   inputDisabled,
-  reactForm: { errors, register, control },
+  reactForm: { errors, control },
 }) => {
   const classes = useStyles();
   return (
@@ -119,7 +108,6 @@ const BasicDetails = ({
         type="file"
         name="ProfileImage"
         style={{ display: "none" }}
-        // {...register("ProfileImage", { required: true })}
         required
         disabled={inputDisabled}
         accept=".png,.jpg,.jpeg"
@@ -134,7 +122,6 @@ const BasicDetails = ({
             render={({ field: { ref, ...rest } }) => (
               <TextField
                 variant="outlined"
-                // {...register("FirstName", { required: true })}
                 fullWidth
                 id="FirstName"
                 // autoFocus
@@ -164,12 +151,10 @@ const BasicDetails = ({
           <Controller
             control={control}
             name="MiddleName"
-            rules={{ required: true }}
             defaultValue={formData.MiddleName}
             render={({ field: { ref, ...rest } }) => (
               <TextField
                 variant="outlined"
-                required
                 id="MiddleName"
                 inputRef={ref}
                 className={classes.spacing}
@@ -324,13 +309,11 @@ const BasicDetails = ({
             defaultValue={formData.AlternateNumber}
             name="AlternateNumber"
             rules={{
-              required: true,
               pattern: /(6|7|8|9)\d{9}/,
             }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
                 variant="outlined"
-                required
                 fullWidth
                 id="AlternateNumber"
                 type="tel"
@@ -367,7 +350,7 @@ const BasicDetails = ({
             rules={{
               required: true,
               pattern:
-                /^[a-zA-Z0-9.! #$%&'*+/=? ^_`{|}~-]+@[a-zA-Z0-9-]+\.([a-zA-Z0-9-])+$/,
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
@@ -403,19 +386,24 @@ const BasicDetails = ({
             control={control}
             rules={{
               required: true,
-              validate: (gender) => gender !== "Select Gender",
+              validate: (gender) => gender !== "select gender",
             }}
             name="gender"
             defaultValue={formData.gender ? formData.gender : "select gender"}
             render={({ field: { ref, ...rest } }) => (
-              <FormControl fullWidth>
+              <FormControl
+                disabled={inputDisabled}
+                variant="outlined"
+                fullWidth
+              >
+                <InputLabel id="gender-label">
+                  {lang === "En" ? "Select Gender" : "लिंग चुनें"}
+                </InputLabel>
                 <Select
-                  fullWidth
                   label={lang == "En" ? "Select Gender" : "लिंग चुनें"}
                   error={!!errors.gender}
                   id="gender"
                   inputRef={ref}
-                  name="gender"
                   placeholder={lang == "En" ? "Select Gender" : "लिंग चुनें"}
                   required
                   disabled={inputDisabled}
@@ -449,7 +437,9 @@ const BasicDetails = ({
               variant="caption"
               color="error"
             >
-              {lang === "En" ? "Required Field" : "आवश्यक क्षेत्र"}
+              {lang === "En"
+                ? "Please specify your gender"
+                : "अपना लिंग निर्दिष्ट करें"}
             </Typography>
           ) : (
             ""
@@ -463,16 +453,20 @@ const BasicDetails = ({
 function Form(props) {
   const classes = useStyles();
   const theme = useTheme();
+  const rLocation = useLocation();
+  console.log(rLocation.state);
+  const { firstName, middleName, lastName, mobileNumber } = rLocation.state
+    ? rLocation.state
+    : { firstName: null, middleName: null, lastName: null, mobileNumber: null };
   const {
     register,
     handleSubmit,
     formState: { errors },
     control,
     setValue,
-    getValues,
+    watch,
     reset,
   } = useForm();
-  const [inputDisabled, setInputDisabled] = useState(false);
   const [enrolmentKey, setEnrolmentKey] = useState("");
   // const [prevData, setPrevData] = useState({});
   const [alreadyAUser, setAlreadyAUser] = useState(false);
@@ -481,11 +475,11 @@ function Form(props) {
   const { enqueueSnackbar } = useSnackbar();
   const [formData, setFormData] = useState({
     ProfileImage: "",
-    FirstName: "",
-    MiddleName: "",
+    FirstName: firstName ? firstName : "",
+    MiddleName: middleName ? middleName : "",
     email: "",
-    LastName: "",
-    whatsapp: "",
+    LastName: lastName ? lastName : "",
+    whatsapp: mobileNumber ? mobileNumber : "",
     AlternateNumber: "",
     gender: "",
     dob: "",
@@ -514,9 +508,9 @@ function Form(props) {
   };
 
   const setProfileImage = (img) => {
-    console.log("XS");
+    console.log("XS", img);
     setFormData({ ...formData, ProfileImage: img });
-    //savePhoto(img)
+    savePhoto(img);
   };
 
   let gender = {
@@ -524,8 +518,8 @@ function Form(props) {
     2: "male",
     3: "other",
   };
-  let caste = ["", "obc", "scSt", "general", "others"];
-  let qualification = [
+  let casteOptions = ["", "obc", "scSt", "general", "others"];
+  let qualificationOptions = [
     "",
     "lessThan10th",
     "class10th",
@@ -539,10 +533,18 @@ function Form(props) {
     "bsc",
     "bba",
   ];
-  let religion = ["", "hindu", "islam", "sikh", "jain", "christian", "others"];
+  let religionOptions = [
+    "",
+    "hindu",
+    "islam",
+    "sikh",
+    "jain",
+    "christian",
+    "others",
+  ];
 
-  let CurrentStatus = ["", "nothing", "job", "study", "other"];
-  let school_medium = ["", "en", "other"];
+  let CurrentStatusOptions = ["", "nothing", "job", "study", "other"];
+  let schoolMediumOptions = ["", "en", "other"];
 
   const savePhoto = (imgFile) => {
     let tempFormdata = new FormData();
@@ -558,8 +560,8 @@ function Form(props) {
         });
       })
       .catch((err) => {
-        console.err(err);
-        enqueueSnackbar("Please fill all the fields properly", {
+        console.error(err);
+        enqueueSnackbar("Please Provide Valid Image File", {
           variant: "error",
         });
       });
@@ -584,7 +586,7 @@ function Form(props) {
 
             // setPrevData(PrevDatas);
             setAlreadyAUser(true);
-            setInputDisabled(true);
+            // setInputDisabled(true);
             setFormData({
               ...formData,
               PrevImage: PrevDatas.image_url,
@@ -601,19 +603,16 @@ function Form(props) {
               pin_code: PrevDatas.pin_code,
               state: PrevDatas.state,
               city: PrevDatas.city,
-              current_status: CurrentStatus[PrevDatas.current_status],
-              qualification: qualification[PrevDatas.qualification],
-              school_medium: school_medium[PrevDatas.school_medium],
-              caste: caste[PrevDatas.caste],
-              pin_code: PrevDatas.pin_code,
-              religion: religion[PrevDatas.religon],
+              current_status: CurrentStatusOptions[PrevDatas.current_status],
+              qualification: qualificationOptions[PrevDatas.qualification],
+              school_medium: schoolMediumOptions[PrevDatas.school_medium],
+              caste: casteOptions[PrevDatas.caste],
+              religion: religionOptions[PrevDatas.religon],
               math_marks_in10th: PrevDatas.math_marks_in10th,
               percentage_in10th: PrevDatas.percentage_in10th,
               math_marks_in12th: PrevDatas.math_marks_in12th,
               percentage_in12th: PrevDatas.percentage_in12th,
             });
-            console.log(alreadyAUser, PrevDatas, formData);
-            // console.log(getValues());
             reset({
               PrevImage: PrevDatas.image_url,
               FirstName: PrevDatas.name.split(" ")[0],
@@ -629,11 +628,11 @@ function Form(props) {
               pin_code: PrevDatas.pin_code,
               state: PrevDatas.state,
               city: PrevDatas.city,
-              current_status: CurrentStatus[PrevDatas.current_status],
-              qualification: qualification[PrevDatas.qualification],
-              school_medium: school_medium[PrevDatas.school_medium],
-              caste: caste[PrevDatas.caste],
-              religion: religion[PrevDatas.religon],
+              current_status: CurrentStatusOptions[PrevDatas.current_status],
+              qualification: qualificationOptions[PrevDatas.qualification],
+              school_medium: schoolMediumOptions[PrevDatas.school_medium],
+              caste: casteOptions[PrevDatas.caste],
+              religion: religionOptions[PrevDatas.religon],
               math_marks_in10th: PrevDatas.math_marks_in10th,
               percentage_in10th: PrevDatas.percentage_in10th,
               math_marks_in12th: PrevDatas.math_marks_in12th,
@@ -643,27 +642,6 @@ function Form(props) {
         });
     }
   }, []);
-  // const isNotEmpty = (values) => {
-  //   if (values.whatsapp.length !== 10) {
-  //     return false;
-  //   }
-  //   return true;
-  // };
-
-  // const changeHandler = (e) => {
-  //   setValues({ ...values, [e.target.name]: e.target.value });
-  // };
-  // const wantDate = (date) => {
-  //   // console.log("This is date from form", a)
-  //   setDate(date);
-  // };
-
-  // console.log("This is form props", props)
-  // const HandelOnNumberChange = (e) => {
-  //   if (e.target.value.length <= 10) {
-  //     setValues({ ...values, [e.target.name]: e.target.value });
-  //   }
-  // };
 
   const getSteps = () => [
     ["Basic Details", "बुनियादी जानकारी"],
@@ -676,7 +654,29 @@ function Form(props) {
     setFormData((prevFormData) => ({ ...prevFormData, ...data }));
     console.log(data);
 
-    if (activeStep >= steps.length - 1) return; //submit here
+    if (activeStep === 0 && !formData.PrevImage && !formData.ProfileImage) {
+      enqueueSnackbar("Please provide a Profile Picture", { variant: "error" });
+      return;
+    }
+
+    if (activeStep >= steps.length - 1) {
+      submitHandler({
+        name: `${data.FirstName} ${data.MiddleName} ${data.LastName}`,
+        alt_mobile: data.AlternateNumber ? data.AlternateNumber : "NULL",
+        partner_refer: "NONE",
+        image_url: formData.ProfileImage,
+        gps_lat: formData.gps_lat ? formData.gps_lat : "",
+        gps_long: formData.gps_long ? formData.gps_lat : "",
+        math_marks_in10th: formData.math_marks_in10th
+          ? formData.math_marks_in10th
+          : "",
+        math_marks_in12th: formData.math_marks_in12th
+          ? formData.math_marks_in12th
+          : "",
+        ...data,
+      });
+      return;
+    } //submit here
     setActiveStep((prevStep) => prevStep + 1);
   };
 
@@ -684,35 +684,56 @@ function Form(props) {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
-  // const submitHandler = () => {
-  //   if (
-  //     data.email !== "" &&
-  //     data.name !== "" &&
-  //     data.whatsapp.length == 10 &&
-  //     data.gender !== "" &&
-  //     data.dob !== ""
-  //   ) {
-  //     if (data.gender == "female") {
-  //       const isValidEmail =
-  //         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  //       if (data.email && isValidEmail.test(data.email) === false) {
-  //         enqueueSnackbar("Please enter valid email", {
-  //           variant: "error",
-  //         });
-  //       } else {
-  //         setActiveStep((prevStep) => prevStep + 1);
-  //       }
-  //     } else {
-  //       enqueueSnackbar("only Females Can Appear For The Test", {
-  //         variant: "info",
-  //       });
-  //     }
-  //   } else {
-  //     enqueueSnackbar("Please Fill All The fields", {
-  //       variant: "error",
-  //     });
-  //   }
-  // };
+  const submitHandler = (prevData) => {
+    let data = {
+      name: prevData.name,
+      email: prevData.email,
+      whatsapp: prevData.whatsapp,
+      dob: prevData.dob,
+      alt_mobile: prevData.alt_mobile,
+      gender: prevData.gender,
+      gps_lat: prevData.gps_lat,
+      gps_long: prevData.gps_long,
+      partner_refer: prevData.partner_refer,
+      qualification: prevData.qualification,
+      state: prevData.state,
+      district: prevData.district,
+      city: prevData.city,
+      current_status: prevData.current_status,
+      school_medium: prevData.school_medium,
+      pin_code: prevData.pin_code,
+      caste: prevData.caste,
+      religon: prevData.religion,
+      percentage_in10th: prevData.percentage_in10th
+        ? prevData.percentage_in10th
+        : "",
+      math_marks_in10th: prevData.math_marks_in10th,
+      math_marks_in12th: prevData.math_marks_in12th,
+      percentage_in12th: prevData.percentage_in12th
+        ? prevData.percentage_in12th
+        : "",
+    };
+
+    if (alreadyAUser) {
+      history.push(`/EkAurBaat/${location.pathname.split("/")[2]}`);
+    } else {
+      axios
+        .post(
+          `${baseUrl}on_assessment/details/${location.pathname.split("/")[2]}`,
+          data
+        )
+        .then(() => {
+          //console.log("res", res);
+          history.push(`/EkAurBaat/${location.pathname.split("/")[2]}`);
+        })
+        .catch((err) => {
+          console.error(err);
+          enqueueSnackbar("Please fill all the fields properly", {
+            variant: "error",
+          });
+        });
+    }
+  };
 
   const getStepContent = (step) => {
     switch (step) {
@@ -737,35 +758,16 @@ function Form(props) {
               image_url: formData.ProfileImage,
               ...formData,
             }}
-            reactForm={{ register, errors, control }}
+            reactForm={{ register, errors, control, watch, setValue }}
             handleChange={handleChange}
             lang={lang}
             // prevFilledData={prevData}
             alreadyAUser={alreadyAUser}
             inputDisabled={alreadyAUser}
-            setInputDisabled={setInputDisabled}
           />
         );
     }
   };
-
-  //   console.log("Date", selectedDate);
-  // let data = {
-  //   name: `${values.FirstName} ${values.MiddleName} ${values.LastName}`,
-  //   whatsapp: values.whatsapp,
-  //   gender: values.gender,
-  //   dob: values.dob,
-  //   // state: "MH",
-  //   // district: values.district,
-  //   // city: values.district,
-  //   // pin_code: "422101",
-  //   email: values.email,
-  //   alt_mobile: values.AlternateNumber,
-  //   gps_lat: "-1",
-  //   gps_long: "-1",
-  //   partner_refer: "NONE",
-  //   image_url: values.ProfileImage,
-  // };
 
   return (
     <Container className={classes.root} maxWidth="sm">

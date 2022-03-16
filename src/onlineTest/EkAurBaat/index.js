@@ -85,7 +85,7 @@ function EkAurBaat(props) {
   const fetchQuestionsAndOptions = () => {
     localStorage.setItem("answerObj", JSON.stringify(""));
     axios
-      .post(`${baseUrl}on_assessment/questions/${enrolmentKey}`)
+      .get(`${baseUrl}on_assessment/questions/${enrolmentKey}`)
       .then((res) => {
         //console.log("response", res.data.data);
         localStorage.setItem("questionsList", JSON.stringify(res.data.data));

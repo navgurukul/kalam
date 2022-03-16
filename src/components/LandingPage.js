@@ -215,6 +215,12 @@ const LandingPage = (props) => {
           // const url = `${testUrl}${response.data.key}?${queryString}`;
           props.history.push({
             pathname: `/test/${response.data.key}`,
+            state: {
+              firstName,
+              middleName,
+              lastName,
+              mobileNumber,
+            },
           });
 
           setState({

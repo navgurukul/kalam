@@ -80,7 +80,6 @@ function KuchAurDetails(props) {
     ).then((response) => {
       response.json().then((data) => {
         setDistricts(data);
-        //console.log(districts);
       });
     });
   }
@@ -111,6 +110,7 @@ function KuchAurDetails(props) {
                   disabled={inputDisabled}
                   fullWidth
                   variant="outlined"
+                  required
                 >
                   <InputLabel id="state-label">
                     {lang == "En" ? "Select State" : "राज्य चुनें"}
@@ -168,6 +168,7 @@ function KuchAurDetails(props) {
                   disabled={inputDisabled}
                   fullWidth
                   variant="outlined"
+                  required
                 >
                   <InputLabel id="district-label">
                     {lang == "En" ? "Select District" : "जिला चुनें"}
@@ -286,6 +287,7 @@ function KuchAurDetails(props) {
                   disabled={inputDisabled}
                   fullWidth
                   variant="outlined"
+                  required
                 >
                   <InputLabel id="current-status-label">
                     {lang == "En" ? "Current Status" : "वर्तमान स्थिति"}
@@ -339,6 +341,7 @@ function KuchAurDetails(props) {
                   disabled={inputDisabled}
                   variant="outlined"
                   fullWidth
+                  required
                 >
                   <InputLabel id="qualification-label">
                     {lang == "En" ? "Maximum Qualification" : "अधिकतम योग्यता"}
@@ -486,7 +489,6 @@ function KuchAurDetails(props) {
                       inputRef={ref}
                       {...rest}
                       fullWidth
-                      // id="city"
                       label={
                         lang == "En"
                           ? "Percentage in 12th class"
@@ -528,6 +530,7 @@ function KuchAurDetails(props) {
                   disabled={inputDisabled}
                   fullWidth
                   variant="outlined"
+                  required
                 >
                   <InputLabel id="school-medium-label">
                     {lang == "En" ? "School Medium" : "स्कूल माध्यम"}
@@ -636,7 +639,7 @@ function KuchAurDetails(props) {
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
                   disabled={inputDisabled}
-                  required={true}
+                  required
                   fullWidth
                   variant="outlined"
                 >

@@ -11,8 +11,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Container from "@material-ui/core/Container";
-import { Link } from "react-router-dom";
-import history from "../../utils/history";
+// import history from "../../utils/history";
 import Form from "../Form/index";
 const tutorialSteps = [
   {
@@ -106,15 +105,12 @@ function SlideShow(props) {
   localStorage.setItem("enrolmentKey", props.location.enrolmentKey);
   // const enrolmentKey = localStorage.getItem("enrolmentKey");
 
-  const goToForm = () => {
-    // console.log("Poonam")
-    history.push({
-      pathname: "/studentDetails",
-      // enrolment_key: enrolmentKey,
-    });
-  };
-
-  // console.log("This is props",props)
+  // const goToForm = () => {
+  //   history.push({
+  //     pathname: "/studentDetails",
+  //     // enrolment_key: enrolmentKey,
+  //   });
+  // };
 
   const changeHandler = (e) => {
     setValue(e.target.value);
@@ -230,7 +226,6 @@ function SlideShow(props) {
                 </Paper>
               ) : null}
               {tutorialSteps[activeStep].button3 ? (
-                // <Link exact to="studentDetails">
                 <Paper square elevation={0} className={classes.content}>
                   <Button
                     type="submit"
@@ -246,8 +241,7 @@ function SlideShow(props) {
                     {tutorialSteps[activeStep].button3}
                   </Button>
                 </Paper>
-              ) : // </Link>
-              null}
+              ) : null}
               <MobileStepper
                 steps={maxSteps}
                 position="static"

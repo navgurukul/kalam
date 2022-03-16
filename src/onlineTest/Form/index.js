@@ -60,6 +60,7 @@ const BasicDetails = ({
   reactForm: { errors, control },
 }) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
   return (
     <Container maxWidth="lg" align="center">
       <label
@@ -276,13 +277,17 @@ const BasicDetails = ({
                 id="whatsapp"
                 className={classes.spacing}
                 inputRef={ref}
+                onKeyPress={(e) => {
+                  if (e.key === "e" || e.key === "+" || e.key === "-")
+                    e.preventDefault();
+                }}
                 label={
                   lang == "En" ? "Your Whatsapp Number" : "आपका व्हाट्सएप नंबर"
                 }
                 placeholder={
                   lang == "En" ? "Your Whatsapp Number" : "आपका व्हाट्सएप नंबर"
                 }
-                type="tel"
+                type="number"
                 autoComplete="off"
                 error={!!errors.whatsapp}
                 helperText={
@@ -316,6 +321,10 @@ const BasicDetails = ({
                 variant="outlined"
                 fullWidth
                 id="AlternateNumber"
+                onKeyPress={(e) => {
+                  if (e.key === "e" || e.key === "+" || e.key === "-")
+                    e.preventDefault();
+                }}
                 type="tel"
                 inputRef={ref}
                 className={classes.spacing}
@@ -386,7 +395,14 @@ const BasicDetails = ({
             control={control}
             rules={{
               required: true,
-              validate: (gender) => gender !== "select gender",
+              validate: (gender) => {
+                if (gender === "select gender") return false;
+                if (gender === "female") return true;
+                enqueueSnackbar("Only Females can appear for the Test", {
+                  variant: "info",
+                });
+                return false;
+              },
             }}
             name="gender"
             defaultValue={formData.gender ? formData.gender : "select gender"}
@@ -454,7 +470,6 @@ function Form(props) {
   const classes = useStyles();
   const theme = useTheme();
   const rLocation = useLocation();
-  console.log(rLocation.state);
   const { firstName, middleName, lastName, mobileNumber } = rLocation.state
     ? rLocation.state
     : { firstName: null, middleName: null, lastName: null, mobileNumber: null };
@@ -501,14 +516,7 @@ function Form(props) {
     percentage_in12th: "",
   });
 
-  const handleChange = (e) => {
-    console.log(e);
-    // if (e.target.name == "ProfileImage") savePhoto(e);
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const setProfileImage = (img) => {
-    console.log("XS", img);
     setFormData({ ...formData, ProfileImage: img });
     savePhoto(img);
   };
@@ -652,7 +660,6 @@ function Form(props) {
   const handleNext = (data, e) => {
     e.preventDefault();
     setFormData((prevFormData) => ({ ...prevFormData, ...data }));
-    console.log(data);
 
     if (activeStep === 0 && !formData.PrevImage && !formData.ProfileImage) {
       enqueueSnackbar("Please provide a Profile Picture", { variant: "error" });
@@ -662,7 +669,7 @@ function Form(props) {
     if (activeStep >= steps.length - 1) {
       submitHandler({
         name: `${data.FirstName} ${data.MiddleName} ${data.LastName}`,
-        alt_mobile: data.AlternateNumber ? data.AlternateNumber : "NULL",
+        alt_mobile: data.AlternateNumber,
         partner_refer: "NONE",
         image_url: formData.ProfileImage,
         gps_lat: formData.gps_lat ? formData.gps_lat : "",
@@ -690,7 +697,6 @@ function Form(props) {
       email: prevData.email,
       whatsapp: prevData.whatsapp,
       dob: prevData.dob,
-      alt_mobile: prevData.alt_mobile,
       gender: prevData.gender,
       gps_lat: prevData.gps_lat,
       gps_long: prevData.gps_long,
@@ -713,6 +719,7 @@ function Form(props) {
         ? prevData.percentage_in12th
         : "",
     };
+    if (prevData.alt_mobile) data["alt_mobile"] = prevData.alt_mobile;
 
     if (alreadyAUser) {
       history.push(`/EkAurBaat/${location.pathname.split("/")[2]}`);
@@ -759,7 +766,6 @@ function Form(props) {
               ...formData,
             }}
             reactForm={{ register, errors, control, watch, setValue }}
-            handleChange={handleChange}
             lang={lang}
             // prevFilledData={prevData}
             alreadyAUser={alreadyAUser}

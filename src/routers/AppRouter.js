@@ -48,6 +48,7 @@ const AppRouter = () => {
           <PrivateRoute exact path="/partners" component={PartnerList} />
           <PrivateRoute path="/partner/add" component={AddPartner} />
           <AnyRoute
+            exact
             path="/partner/:partnerId"
             component={ProgressMadeForPartner}
           />
@@ -69,7 +70,7 @@ const AppRouter = () => {
             path="/donor/:donorId/students"
             component={DonorStudentsData}
           />
-          <PrivateRoute path="/campus" component={CampusList} />
+          <PrivateRoute path="/campus" exact component={CampusList} />
           <PrivateRoute
             path="/campus/allcampus/students"
             component={AllCampusStudentsData}

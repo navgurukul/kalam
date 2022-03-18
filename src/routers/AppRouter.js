@@ -36,6 +36,8 @@ import DuplicateStudents from "../components/DuplicateStudents";
 import SlideShow from "../onlineTest/SlideShow";
 import EkAurBaat from "../onlineTest/EkAurBaat";
 import Questions from "../onlineTest/Questions";
+import SlotBooking from "../components/SlotBooking";
+import SlotBooking2 from "../components/SlotBooking2";
 
 const AppRouter = () => {
   return (
@@ -96,6 +98,7 @@ const AppRouter = () => {
           />
 
           <AnyRoute path="/test/:enrollmentKey" component={SlideShow} />
+          <AnyRoute path="/bookSlot/:userId" component={SlotBooking2} />
           <AnyRoute path="/EkAurBaat/:enrollmentKey" component={EkAurBaat} />
           <AnyRoute path="/questions/:enrollmentKey" component={Questions} />
           <AnyRoute path="/status/:mobile" component={StudentStatus} />

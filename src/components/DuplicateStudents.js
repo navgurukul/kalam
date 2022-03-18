@@ -102,14 +102,18 @@ const DuplicateStudents = () => {
               onClick={() => {
                 //console.log(rowData.rowData[0]);
                 //console.log(rowData.rowData[1]);
-                setState({
-                  ...state,
-                  slotBooking: true,
-                  slotBookingData: {
-                    studentId: rowData.rowData[0],
-                    stage: allStages[rowData.rowData[1]],
-                  },
+                console.log("clicked");
+                history.push({
+                  pathname: `/bookSlot/${rowData.rowData[0]}`,
                 });
+
+                // this.setState({
+                //   slotBooking: true,
+                //   slotBookingData: {
+                //     studentId: rowData.rowData[0],
+                //     stage: allStages[rowData.rowData[1]],
+                //   },
+                // });
               }}
             >
               Book Slot

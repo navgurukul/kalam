@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { DialogTitle, DialogActions, Dialog, Button } from "@material-ui/core";
+import { getstudentMachine } from "../services/GlobalService";
+import { useMachine } from "@xstate/react";
 const _ = require("underscore");
 const baseUrl = process.env.API_URL;
 const animatedComponents = makeAnimated();
 
 const StageSelect = (props) => {
   const { enqueueSnackbar } = useSnackbar();
+  const getKeyByValue = (object, value) => {
+    return Object.keys(object).find((key) => object[key] === value);
+  };
+  const studentMachine = useMemo(
+    () => getstudentMachine(getKeyByValue(props.allStages, props.stage)),
+    []
+  );
+  const [xstate, send] = useMachine(studentMachine);
   const [state, setState] = React.useState({
     flag: false,
     payload: {
@@ -40,6 +50,7 @@ const StageSelect = (props) => {
       });
     } else if (value !== "offerLetterSent") {
       changeStage(selectedValue);
+      send(selectedValue.value);
     } else {
       enqueueSnackbar("Please update email or campus!", {
         variant: "error",
@@ -96,6 +107,7 @@ const StageSelect = (props) => {
           label: "Offer Letter Sent",
           value: "offerLetterSent",
         });
+        send("offerLetterSent");
       })
       .catch(() => {
         enqueueSnackbar(`Something went wrong`, {
@@ -113,7 +125,7 @@ const StageSelect = (props) => {
 
   const { allStages, stage } = props;
   const { flag } = state;
-  const allStagesOptions = Object.keys(allStages).map((x) => {
+  const allStagesOptions = xstate.nextEvents.map((x) => {
     return { value: x, label: allStages[x] };
   });
 

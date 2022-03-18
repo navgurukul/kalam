@@ -103,6 +103,7 @@ function SlotBooking2(props) {
         setStudentData({
           name: data.data[0].name,
           stage: allStages[data.data[0].stage],
+          transitionID: data.data[0].lastTransition.id,
         });
       });
     });
@@ -172,7 +173,7 @@ function SlotBooking2(props) {
     });
   };
   const handelSlotBooking = () => {
-    fetch(`${baseUrl}/slot/interview/student`, {
+    fetch(`${baseUrl}slot/interview/student`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -181,6 +182,7 @@ function SlotBooking2(props) {
         student_id: studentId,
         student_name: studentData.name,
         topic_name: studentData.stage,
+        transition_id: studentData.transitionID,
         start_time: StartTime,
         end_time_expected: EndTime,
         duration: "1hr",
@@ -200,7 +202,7 @@ function SlotBooking2(props) {
             });
           });
         } else {
-          enqueueSnackbar("Slot Already Booked", {
+          enqueueSnackbar("Cannot Book Slot", {
             variant: "error",
           });
         }

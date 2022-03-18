@@ -102,7 +102,8 @@ const DuplicateStudents = () => {
               onClick={() => {
                 //console.log(rowData.rowData[0]);
                 //console.log(rowData.rowData[1]);
-                this.props.history.push({
+                console.log("clicked");
+                history.push({
                   pathname: `/bookSlot/${rowData.rowData[0]}`,
                 });
 

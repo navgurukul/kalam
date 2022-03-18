@@ -722,16 +722,25 @@ function Form(props) {
     if (prevData.alt_mobile) data["alt_mobile"] = prevData.alt_mobile;
 
     if (alreadyAUser) {
-      history.push(`/EkAurBaat/${location.pathname.split("/")[2]}`);
+      history.push(
+        `/EkAurBaat/${location.pathname.split("/")[2]}/${
+          location.pathname.split("/")[3]
+        }`
+      );
     } else {
       axios
         .post(
           `${baseUrl}on_assessment/details/${location.pathname.split("/")[2]}`,
           data
         )
-        .then(() => {
+        .then((res) => {
+          history.push(
+            `/EkAurBaat/${location.pathname.split("/")[2]}/${
+              res.data.details.id
+            }`
+          );
+
           //console.log("res", res);
-          history.push(`/EkAurBaat/${location.pathname.split("/")[2]}`);
         })
         .catch((err) => {
           console.error(err);

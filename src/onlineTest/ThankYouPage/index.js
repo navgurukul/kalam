@@ -4,6 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Link from "@material-ui/core/Link";
 import Container from "@material-ui/core/Container";
+import { useHistory } from "react-router-dom";
 const baseUrl = process.env.API_URL;
 
 const useStyles = makeStyles((theme) => ({
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ThankYouPage(props) {
   const classes = useStyles();
+  const history = useHistory();
   const { total_marks } = props;
   const [totalMarks, setTotalMarks] = useState("");
   useEffect(() => {
@@ -46,7 +48,9 @@ function ThankYouPage(props) {
         </Typography>
         <Typography>NavGurukul ki One Year Fellowship mein</Typography>
         <Typography>apply karne ke liye shukriya.</Typography>
-        <Typography>Hum jald hi aapko contact karenge.</Typography>
+        <Typography>
+          Aap apna interview slot apne time ke hisab se book kar sakte hain.
+        </Typography>
         <Typography className={classes.link}>
           Aap humein{" "}
           <Link href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=hi@navgurukul.org">
@@ -54,6 +58,18 @@ function ThankYouPage(props) {
           </Link>{" "}
           par mail bhi kar sakte hai.
         </Typography>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          onClick={() => {
+            history.push(`/bookSlot/${props.userID}`);
+          }}
+        >
+          Book Slot
+        </Button>
         <Button
           type="submit"
           fullWidth

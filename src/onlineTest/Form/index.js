@@ -266,6 +266,7 @@ const BasicDetails = ({
             rules={{
               required: true,
               pattern: /(6|7|8|9)\d{9}/,
+              maxLength: 10,
             }}
             defaultValue={formData.whatsapp}
             name="whatsapp"
@@ -315,6 +316,7 @@ const BasicDetails = ({
             name="AlternateNumber"
             rules={{
               pattern: /(6|7|8|9)\d{9}/,
+              maxLength: 10,
             }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
@@ -336,7 +338,8 @@ const BasicDetails = ({
                 error={!!errors.AlternateNumber}
                 helperText={
                   errors.AlternateNumber
-                    ? errors.AlternateNumber.type === "pattern"
+                    ? errors.AlternateNumber.type === "pattern" ||
+                      errors.AlternateNumber.type === "maxLength"
                       ? lang === "En"
                         ? "No. should be of 10 digits"
                         : "नंबर 10 अंकों का होना चाहिए"

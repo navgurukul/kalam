@@ -36,6 +36,7 @@ import DuplicateStudents from "../components/DuplicateStudents";
 import SlideShow from "../onlineTest/SlideShow";
 import EkAurBaat from "../onlineTest/EkAurBaat";
 import Questions from "../onlineTest/Questions";
+import NewAdminPage from "../components/NewAdminPage";
 
 const AppRouter = () => {
   return (
@@ -47,6 +48,7 @@ const AppRouter = () => {
           <PrivateRoute path="/students/:dataType" component={AdmissionsDash} />
           <PrivateRoute exact path="/partners" component={PartnerList} />
           <PrivateRoute path="/partner/add" component={AddPartner} />
+          <PrivateRoute path="/admin" exact component={NewAdminPage} />
           <AnyRoute
             exact
             path="/partner/:partnerId"

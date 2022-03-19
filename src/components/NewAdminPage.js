@@ -8,7 +8,17 @@ import EditIcon from "@material-ui/icons/Edit";
 import Button from "@material-ui/core/Button";
 import { useSnackbar } from "notistack";
 import TextField from "@material-ui/core/TextField";
-import { Dialog } from "@material-ui/core";
+import {
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  Grid,
+  InputLabel,
+  Typography,
+} from "@material-ui/core";
 
 const baseUrl = process.env.API_URL;
 
@@ -351,21 +361,24 @@ const NewAdminPage = () => {
         options={options}
       />
       <Dialog open={dialogOpen} onClose={handleClose}>
-        <form>
-          <h1
-            style={{
-              color: "#f05f40",
-              textAlign: "center",
-              marginTop: "0px",
-              position: "relative",
-              bottom: "20px",
-            }}
+        <DialogTitle>
+          <Typography
+            variant="h4"
+            color="primary"
+            // style={{
+            //   // color: "#f05f40",
+            //   textAlign: "center",
+            //   marginTop: "0px",
+            //   position: "relative",
+            //   bottom: "20px",
+            // }}
           >
             Give Access To -
-          </h1>
-
-          <div>
-            <div
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            {/* <div
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -373,21 +386,31 @@ const NewAdminPage = () => {
                 marginTop: "20px",
                 marginBottom: "20px",
               }}
-            >
-              <label htmlFor="email">Email Id</label>
+            > */}
+            <Grid item xs={12}>
+              {/* <label htmlFor="email">Email Id</label> */}
               <TextField
+                fullWidth
+                label="Email Id"
+                placeholder="Email Id"
                 type="email"
                 value={mail}
                 onChange={(e) => setMail(e.target.value)}
-                style={{
-                  width: "50%",
-                  marginLeft: "20px",
-                  marginRight: "20px",
-                }}
+                // style={{
+                //   width: "50%",
+                //   marginLeft: "20px",
+                //   marginRight: "20px",
+                // }}
               />
-            </div>
-            <div>
-              <label htmlFor="role">Roles</label>
+            </Grid>
+            {/* </div> */}
+            <Grid item xs={12} style={{ padding: "0.1rem" }}>
+              <InputLabel
+                id="role-menu-label"
+                style={{ paddingBottom: "0.2rem" }}
+              >
+                Roles
+              </InputLabel>
               <Select
                 placeholder={"Role Menu"}
                 value={roleMenu}
@@ -396,78 +419,85 @@ const NewAdminPage = () => {
                 styles={{
                   menuList: (base) => ({
                     ...base,
-                    position: "fixed !important",
+                    // position: "fixed !important",
                     backgroundColor: "white",
                     border: "1px solid lightgray",
-                    width: "18%",
+                    // width: "100%",
                   }),
                 }}
               />
-            </div>
+            </Grid>
             {roleMenu.value === "partner" && (
-              <div>
-                <label
-                  htmlFor="role"
-                  style={{
-                    marginTop: "40px",
-                  }}
-                >
-                  Partners
-                </label>
-                <Select
-                  placeholder={"Select Particular Partners"}
-                  value={selectedRolePartners}
-                  onChange={handleRoleChangePartners}
-                  isMulti={true}
-                  options={dropDownOptions}
-                  styles={{
-                    menuList: (base) => ({
-                      ...base,
-                      position: "fixed !important",
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel
+                    htmlFor="role"
+                    style={{
+                      paddingBottom: "0.2rem",
+                    }}
+                  >
+                    Partners
+                  </InputLabel>
+                  <Select
+                    placeholder={"Select Particular Partners"}
+                    value={selectedRolePartners}
+                    onChange={handleRoleChangePartners}
+                    isMulti={true}
+                    options={dropDownOptions}
+                    styles={{
+                      menuList: (base) => ({
+                        ...base,
+                        position: "fixed !important",
 
-                      backgroundColor: "white",
-                      border: "1px solid lightgray",
-                      width: "18%",
-                    }),
-                  }}
-                />
-              </div>
+                        backgroundColor: "white",
+                        border: "1px solid lightgray",
+                        // width: "18%",
+                      }),
+                    }}
+                  />
+                </FormControl>
+              </Grid>
             )}
             {roleMenu.value === "t&p" && (
-              <div>
-                <label
-                  htmlFor="t&p"
-                  style={{
-                    marginTop: "40px",
-                  }}
-                >
-                  T & P
-                </label>
-                <Select
-                  placeholder={"Select Particular T&P"}
-                  value={selectedRoleTP}
-                  onChange={handleRoleChangeTP}
-                  isMulti={true}
-                  options={dropDownOptions}
-                  styles={{
-                    menuList: (base) => ({
-                      ...base,
-                      position: "fixed !important",
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel
+                    htmlFor="t&p"
+                    style={{
+                      paddingBottom: "0.2rem",
+                    }}
+                  >
+                    T&P
+                  </InputLabel>
+                  <Select
+                    placeholder={"Select Particular T&P"}
+                    value={selectedRoleTP}
+                    onChange={handleRoleChangeTP}
+                    isMulti={true}
+                    options={dropDownOptions}
+                    styles={{
+                      menuList: (base) => ({
+                        ...base,
+                        position: "fixed !important",
 
-                      backgroundColor: "white",
-                      border: "1px solid lightgray",
-                      width: "18%",
-                    }),
-                  }}
-                />
-              </div>
+                        backgroundColor: "white",
+                        border: "1px solid lightgray",
+                        width: "18%",
+                      }),
+                    }}
+                  />
+                </FormControl>
+              </Grid>
             )}
-            <div
-              style={{
-                marginTop: "20px",
-              }}
-            >
-              <label htmlFor="privilage">Privilage</label>
+            <Grid item xs={12}>
+              <InputLabel
+                style={{
+                  paddingBottom: "0.2rem",
+                }}
+                htmlFor="privilage"
+              >
+                Privilage
+              </InputLabel>
               <Select
                 placeholder={"Select Privilage"}
                 value={selectedPrivilages}
@@ -477,113 +507,118 @@ const NewAdminPage = () => {
                 styles={{
                   menuList: (base) => ({
                     ...base,
-                    position: "fixed !important",
+                    // position: "fixed !important",
                     backgroundColor: "white",
                     border: "1px solid lightgray",
-                    width: "18%",
+                    // width: "18%",
                   }),
                 }}
               />
-            </div>
-          </div>
+            </Grid>
+          </Grid>
+          <Box style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{
+                margin: "0.4rem",
+              }}
+              onClick={() => {
+                const PartnerRole =
+                  selectedRolePartners.length > 0 &&
+                  "partner:" +
+                    selectedRolePartners
+                      .map((role) => {
+                        return role.value;
+                      })
+                      .join(",");
+                const TPRole =
+                  selectedRoleTP.length > 0 &&
+                  "T&P:" +
+                    selectedRoleTP
+                      .map((role) => {
+                        return role.value;
+                      })
+                      .join(",");
+                const Role =
+                  PartnerRole === false
+                    ? [TPRole]
+                    : TPRole === false
+                    ? [PartnerRole]
+                    : [PartnerRole, TPRole];
 
-          <Button
-            variant="contained"
-            color="primary"
-            style={{
-              marginTop: "20px",
-              marginBottom: "20px",
-              marginLeft: "20px",
-              marginRight: "20px",
-            }}
-            onClick={() => {
-              const PartnerRole =
-                selectedRolePartners.length > 0 &&
-                "partner:" +
-                  selectedRolePartners
-                    .map((role) => {
-                      return role.value;
+                console.log(Role, "Roleee");
+
+                if (editing) {
+                  axios
+                    .put(`${baseUrl}rolebaseaccess/email/update/${editing}`, {
+                      email: mail,
+                      roles: Role,
                     })
-                    .join(",");
-              const TPRole =
-                selectedRoleTP.length > 0 &&
-                "T&P:" +
-                  selectedRoleTP
-                    .map((role) => {
-                      return role.value;
+                    .then((res) => {
+                      console.log(res);
+                      if (res.status === 200) {
+                        snackbar.enqueueSnackbar(
+                          "Role Updated Successfully for " + mail,
+                          {
+                            variant: "success",
+                          }
+                        );
+                        setDialogOpen(false);
+                        setMail("");
+                        setSelectedRolePartners([]);
+                        setSelectedRoleTP([]);
+                        setSelectedPrivilages([]);
+                        setEditing(null);
+                      } else {
+                        snackbar.enqueueSnackbar("Something Went Wrong", {
+                          variant: "error",
+                        });
+                      }
+                    });
+                } else {
+                  axios
+                    .post(`${baseUrl}rolebaseaccess/email/add`, {
+                      email: mail,
+                      roles: Role,
                     })
-                    .join(",");
-              const Role =
-                PartnerRole === false
-                  ? [TPRole]
-                  : TPRole === false
-                  ? [PartnerRole]
-                  : [PartnerRole, TPRole];
-
-              console.log(Role, "Roleee");
-
-              if (editing) {
-                axios
-                  .put(`${baseUrl}rolebaseaccess/email/update/${editing}`, {
-                    email: mail,
-                    roles: Role,
-                  })
-                  .then((res) => {
-                    console.log(res);
-                    if (res.status === 200) {
-                      snackbar.enqueueSnackbar(
-                        "Role Updated Successfully for " + mail,
-                        {
-                          variant: "success",
-                        }
-                      );
-                      setDialogOpen(false);
-                      setMail("");
-                      setSelectedRolePartners([]);
-                      setSelectedRoleTP([]);
-                      setSelectedPrivilages([]);
-                      setEditing(null);
-                    } else {
-                      snackbar.enqueueSnackbar("Something Went Wrong", {
-                        variant: "error",
-                      });
-                    }
-                  });
-              } else {
-                axios
-                  .post(`${baseUrl}rolebaseaccess/email/add`, {
-                    email: mail,
-                    roles: Role,
-                  })
-                  .then((res) => {
-                    console.log(res);
-                    if (res.status === 200) {
-                      snackbar.enqueueSnackbar(
-                        "Role Assigned Successfully to " + mail,
-                        {
-                          variant: "success",
-                        }
-                      );
-                      setDialogOpen(false);
-                      setMail("");
-                      setSelectedRolePartners([]);
-                      setSelectedRoleTP([]);
-                      setSelectedPrivilages([]);
-                    } else {
-                      snackbar.enqueueSnackbar("Something Went Wrong", {
-                        variant: "error",
-                      });
-                    }
-                  });
-              }
-            }}
-          >
-            {editing ? "Update" : "Submit"}
-          </Button>
-          <Button variant="outlined" color="primary" onClick={handleClose}>
-            Cancel
-          </Button>
-        </form>
+                    .then((res) => {
+                      console.log(res);
+                      if (res.status === 200) {
+                        snackbar.enqueueSnackbar(
+                          "Role Assigned Successfully to " + mail,
+                          {
+                            variant: "success",
+                          }
+                        );
+                        setDialogOpen(false);
+                        setMail("");
+                        setSelectedRolePartners([]);
+                        setSelectedRoleTP([]);
+                        setSelectedPrivilages([]);
+                      } else {
+                        snackbar.enqueueSnackbar("Something Went Wrong", {
+                          variant: "error",
+                        });
+                      }
+                    });
+                }
+              }}
+            >
+              {editing ? "Update" : "Submit"}
+            </Button>
+            <Button
+              style={{
+                margin: "0.4rem",
+              }}
+              variant="outlined"
+              color="primary"
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+          </Box>
+        </DialogContent>
       </Dialog>
     </>
   );

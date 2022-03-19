@@ -91,7 +91,9 @@ function EkAurBaat(props) {
         localStorage.setItem("questionsList", JSON.stringify(res.data.data));
         // localStorage.setItem("questionsList", res.data.data);
         history.push({
-          pathname: `/questions/${enrolmentKey}`,
+          pathname: `/questions/${enrolmentKey}/${
+            location.pathname.split("/")[3]
+          }`,
           // questions: res.data.data,
           // time: time.current, // 2nd point
           // time: TIME,   // 1st point and 3rd point

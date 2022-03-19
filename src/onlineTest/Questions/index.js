@@ -137,6 +137,7 @@ function Questions(props) {
           })
         : null;
     }
+    
     fetch(
       `${baseUrl}on_assessment/questions/${
         location.pathname.split("/")[2]
@@ -146,7 +147,7 @@ function Questions(props) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(localStorage.getItem("answerList")),
+        body: localStorage.getItem("answerList"),
       }
     )
       .then((res) => {
@@ -210,7 +211,10 @@ function Questions(props) {
       <>
         {result.done ? (
           result.success ? (
-            <ThankYouPage total_marks={result.total_marks} />
+            <ThankYouPage
+              total_marks={result.total_marks}
+              userID={location.pathname.split("/")[3]}
+            />
           ) : (
             <SorryPage total_marks={result.total_marks} />
           )

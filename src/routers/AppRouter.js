@@ -33,11 +33,12 @@ import AnyRoute from "./AnyRouter";
 import history from "../utils/history";
 import StudentStatus from "../components/StudentStatus";
 import DuplicateStudents from "../components/DuplicateStudents";
-import SlideShow from "../onlineTest/SlideShow";
+import SlideShow from "../onlineTest/SlideShow";  
 import EkAurBaat from "../onlineTest/EkAurBaat";
 import Questions from "../onlineTest/Questions";
 import NewAdminPage from "../components/NewAdminPage";
-
+import SlotBooking from "../components/SlotBooking";
+import SlotBooking2 from "../components/SlotBooking2";
 const AppRouter = () => {
   return (
     <Router history={history}>
@@ -98,6 +99,7 @@ const AppRouter = () => {
           />
 
           <AnyRoute path="/test/:enrollmentKey" component={SlideShow} />
+          <AnyRoute path="/bookSlot/:userId" component={SlotBooking2} />
           <AnyRoute path="/EkAurBaat/:enrollmentKey" component={EkAurBaat} />
           <AnyRoute path="/questions/:enrollmentKey" component={Questions} />
           <AnyRoute path="/status/:mobile" component={StudentStatus} />

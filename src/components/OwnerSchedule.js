@@ -65,6 +65,14 @@ function OwnerSchedule(props) {
         },
       },
     },
+    {
+      name: "owner",
+      label: "owner Name",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
   ];
   const [slotData, setSlotData] = useState([]);
   useEffect(() => {
@@ -90,6 +98,7 @@ function OwnerSchedule(props) {
             name: item.student.name,
             email: item.student.email,
             phone: item.contacts.mobile,
+            owner: item.user.user_name,
           };
         });
 

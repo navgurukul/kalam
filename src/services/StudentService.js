@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   allStages,
   feedbackableStages,
@@ -32,8 +32,16 @@ import RedFlag from "../components/FlagModal";
 import SurveyForm from "../components/SurveyForm";
 import EvaluationSelect from "../components/EvaluationSelect";
 import UpdatePartner from "../components/UpdatePartner";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import Axios from "axios";
+import DeadLineDateUpdate from "../components/DeadlineDateUpdate";
+import EndDateUpdate from "../components/EndDateUpdate";
 const _ = require("underscore");
-
+const baseURL = process.env.API_URL;
 const keysCampusStageOfLearning = Object.keys(campusStageOfLearning);
 // const allStagesOptions = Object.keys(allStages).map((x) => {
 //   return allStages[x];
@@ -316,37 +324,48 @@ const transitionIdColumn = {
   },
 };
 
+// const deadlineColumnTrnasition = {
+//   name: "deadline",
+//   label: "Deadline",
+//   options: {
+//     filter: false,
+//     sort: true,
+//     customBodyRender: (rowData, rowMeta) => {
+//       const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
+//       const ifExistingDeadlineDate =
+//         rowData && !rowMeta.rowData[7] && feedbackableStage;
+//       console.log(rowData);
+//       if (ifExistingDeadlineDate) {
+//         const deadline = feedbackableStagesData[rowMeta.rowData[0]].deadline;
+//         const diff = new Date().getTime() - new Date(rowData).getTime();
+//         const hours = Math.floor(diff / 1000 / 60 / 60);
+//         const remainingTime = deadline - hours;
+//         if (remainingTime < 0) {
+//           return "Your deadline is fineshed please do this work ASAP.";
+//         } else if (!rowMeta.rowData[2]) {
+//           return (
+//             <p>
+//               {" "}
+//               <b>{remainingTime}</b> Hours are remaining.
+//             </p>
+//           );
+//         }
+//         return <p>{remainingTime}</p>;
+//       }
+//     },
+//   },
+// };
 const deadlineColumnTrnasition = {
   name: "deadline",
   label: "Deadline",
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData, rowMeta) => {
-      const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
-      const ifExistingDeadlineDate =
-        rowData && !rowMeta.rowData[7] && feedbackableStage;
-      if (ifExistingDeadlineDate) {
-        const deadline = feedbackableStagesData[rowMeta.rowData[0]].deadline;
-        const diff = new Date().getTime() - new Date(rowData).getTime();
-        const hours = Math.floor(diff / 1000 / 60 / 60);
-        const remainingTime = deadline - hours;
-        if (remainingTime < 0 && !rowMeta.rowData[7]) {
-          return "Your deadline is fineshed please do this work ASAP.";
-        } else if (!rowMeta.rowData[2]) {
-          return (
-            <p>
-              {" "}
-              <b>{remainingTime}</b> Hours are remaining.
-            </p>
-          );
-        }
-        return null;
-      }
+    customBodyRender: (value, rowData) => {
+      return <DeadLineDateUpdate value={value} rowData={rowData} />;
     },
   },
 };
-
 const finishedColumnTransition = {
   name: "finished_at",
   label: "Finished",
@@ -1044,13 +1063,8 @@ const finishedColumnTransitionCampus = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData) => {
-      const ifExistingFinishedDate = rowData;
-      return ifExistingFinishedDate ? (
-        <Moment format="D MMM YYYY" withTitle>
-          {rowData}
-        </Moment>
-      ) : null;
+    customBodyRender: (value, rowData) => {
+      return <EndDateUpdate value={value} rowData={rowData} />;
     },
   },
 };

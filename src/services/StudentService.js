@@ -324,37 +324,37 @@ const transitionIdColumn = {
   },
 };
 
-// const deadlineColumnTrnasition = {
-//   name: "deadline",
-//   label: "Deadline",
-//   options: {
-//     filter: false,
-//     sort: true,
-//     customBodyRender: (rowData, rowMeta) => {
-//       const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
-//       const ifExistingDeadlineDate =
-//         rowData && !rowMeta.rowData[7] && feedbackableStage;
-//       console.log(rowData);
-//       if (ifExistingDeadlineDate) {
-//         const deadline = feedbackableStagesData[rowMeta.rowData[0]].deadline;
-//         const diff = new Date().getTime() - new Date(rowData).getTime();
-//         const hours = Math.floor(diff / 1000 / 60 / 60);
-//         const remainingTime = deadline - hours;
-//         if (remainingTime < 0) {
-//           return "Your deadline is fineshed please do this work ASAP.";
-//         } else if (!rowMeta.rowData[2]) {
-//           return (
-//             <p>
-//               {" "}
-//               <b>{remainingTime}</b> Hours are remaining.
-//             </p>
-//           );
-//         }
-//         return <p>{remainingTime}</p>;
-//       }
-//     },
-//   },
-// };
+const deadlineColumnTrnasition1 = {
+  name: "deadline",
+  label: "Deadline",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta) => {
+      const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
+      const ifExistingDeadlineDate =
+        rowData && !rowMeta.rowData[7] && feedbackableStage;
+      console.log(rowData);
+      if (ifExistingDeadlineDate) {
+        const deadline = feedbackableStagesData[rowMeta.rowData[0]].deadline;
+        const diff = new Date().getTime() - new Date(rowData).getTime();
+        const hours = Math.floor(diff / 1000 / 60 / 60);
+        const remainingTime = deadline - hours;
+        if (remainingTime < 0) {
+          return "Your deadline is fineshed please do this work ASAP.";
+        } else if (!rowMeta.rowData[2]) {
+          return (
+            <p>
+              {" "}
+              <b>{remainingTime}</b> Hours are remaining.
+            </p>
+          );
+        }
+        return <p>{remainingTime}</p>;
+      }
+    },
+  },
+};
 const deadlineColumnTrnasition = {
   name: "deadline",
   label: "Deadline",
@@ -1543,7 +1543,7 @@ const StudentService = {
       loggedInUser,
       AudioPlayer,
       transitionIdColumn,
-      deadlineColumnTrnasition,
+      deadlineColumnTrnasition1,
       finishedColumnTransition,
     ],
     columnStudentStatus: [

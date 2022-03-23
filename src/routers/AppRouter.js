@@ -33,12 +33,12 @@ import AnyRoute from "./AnyRouter";
 import history from "../utils/history";
 import StudentStatus from "../components/StudentStatus";
 import DuplicateStudents from "../components/DuplicateStudents";
-import SlideShow from "../onlineTest/SlideShow";
+import SlideShow from "../onlineTest/SlideShow";  
 import EkAurBaat from "../onlineTest/EkAurBaat";
 import Questions from "../onlineTest/Questions";
+import NewAdminPage from "../components/NewAdminPage";
 import SlotBooking from "../components/SlotBooking";
 import SlotBooking2 from "../components/SlotBooking2";
-
 const AppRouter = () => {
   return (
     <Router history={history}>
@@ -49,6 +49,7 @@ const AppRouter = () => {
           <PrivateRoute path="/students/:dataType" component={AdmissionsDash} />
           <PrivateRoute exact path="/partners" component={PartnerList} />
           <PrivateRoute path="/partner/add" component={AddPartner} />
+          <PrivateRoute path="/admin" exact component={NewAdminPage} />
           <AnyRoute
             exact
             path="/partner/:partnerId"

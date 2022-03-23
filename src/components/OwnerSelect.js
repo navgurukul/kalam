@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
@@ -9,6 +9,25 @@ const animatedComponents = makeAnimated();
 
 const OwnerSelect = (props) => {
   const snackbar = useSnackbar();
+  const [ownerData, setOwnerData] = React.useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const dataURL = baseUrl + "owner";
+      const response = await axios.get(dataURL);
+      const { data } = response.data;
+      let newData = data
+        .filter((el) => el.available)
+        .map((el) => ({
+          value: el.user.user_name,
+          label: el.user.user_name,
+          available: el.available,
+        }));
+      setOwnerData(newData);
+    };
+    fetchData();
+  }, []);
+  // console.log(ownerData);
 
   const handleChange = (selectedValue) => {
     try {
@@ -35,9 +54,9 @@ const OwnerSelect = (props) => {
     }
   };
   const { value } = props;
-  const allUserOptions = JSON.parse(localStorage.getItem("owners")).map((x) => {
-    return { label: x, value: x };
-  });
+  // const allUserOptions = JSON.parse(localStorage.getItem("owners")).map((x) => {
+  //   return { label: x, value: x };
+  // });
   let selectedValue = { value: null, label: null };
 
   if (value) {
@@ -49,7 +68,7 @@ const OwnerSelect = (props) => {
       className={"filterSelectStage"}
       value={selectedValue}
       onChange={handleChange}
-      options={allUserOptions}
+      options={ownerData}
       // placeholder={"Select "+ props.filter.name+" ..."}
       isClearable={false}
       components={animatedComponents}

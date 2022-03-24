@@ -16,10 +16,10 @@ import {
   FormHelperText,
 } from "@material-ui/core";
 
-import { changeFetching } from "../store/actions/auth";
 import { useSnackbar } from "notistack";
 
 import { useHistory } from "react-router-dom";
+import { changeFetching } from "../store/actions/auth";
 
 const baseUrl = process.env.API_URL;
 const useStyles = makeStyles((theme) => ({

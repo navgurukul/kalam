@@ -36,11 +36,12 @@
     "date-fns": "^2.28.0",
     "localStorage": "^1.0.4",
     "moment": "^2.29.1",
+    "notistack": "^2.0.3",
     "object-hash": "^3.0.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "react-copy-to-clipboard": "^5.0.4",
     "react-device-detect": "^2.1.2",
+    "react-dom": "^17.0.2",
     "react-easy-edit": "^1.15.0",
     "react-epic-spinners": "^0.5.0",
     "react-google-login": "^5.2.2",
@@ -65,8 +66,15 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^1.2.0",
-    "vite": "^2.8.6",
     "eslint": "^8.11.0",
-    "prettier": "^2.6.0"
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "prettier": "^2.6.0",
+    "vite": "^2.8.6"
   }
 }

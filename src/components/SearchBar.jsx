@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import TextField from "@material-ui/core/TextField";
+import TextField from "@mui/material/TextField";
 import { debounce } from "lodash";
 
 const SearchBar = (props) => {
@@ -8,32 +8,32 @@ const SearchBar = (props) => {
   const validInput = (value) => {
     if (value.match(/^[A-Za-z\s]+$/)) {
       return "letter";
-    } else if (value.match(/^[0-9]+$/)) {
+    }
+    if (value.match(/^[0-9]+$/)) {
       return "number";
     }
   };
 
   const onSearchText = (input) => {
     // setName(input);
-    let isValidInput = validInput(input);
+    const { searchByName } = props;
+    const isValidInput = validInput(input);
     if (input.length >= 2 && isValidInput === "letter") {
-      return props.searchByName("name", input);
-    } else if (input.length >= 5 && isValidInput === "number") {
-      return props.searchByName("number", input);
-    } else if (input.length === 0) {
-      props.searchByName("name", "");
-      return props.searchByName("number", "");
+      return searchByName("name", input);
+    }
+    if (input.length >= 5 && isValidInput === "number") {
+      return searchByName("number", input);
+    }
+    if (input.length === 0) {
+      searchByName("name", "");
+      return searchByName("number", "");
     }
   };
 
-  const onChange = useMemo(() => {
-    return debounce(onSearchText, 600);
-  }, []);
+  const onChange = useMemo(() => debounce(onSearchText, 600), []);
 
-  useEffect(() => {
-    return () => {
-      onChange.cancel();
-    };
+  useEffect(() => () => {
+    onChange.cancel();
   });
 
   return (

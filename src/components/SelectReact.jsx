@@ -4,7 +4,7 @@ import Select from "react-select";
 const SelectReact = (props) => {
   const { value } = props;
   const [selectedOption, setSelectedOption] = React.useState({
-    value: value,
+    value,
     label: value,
   });
   const { options, onChange, filterList, index, column } = props;

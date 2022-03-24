@@ -1,20 +1,21 @@
 import React from "react";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@mui/styles";
 import Select from "react-select";
-import SendIcon from "@material-ui/icons/Send";
-import AddIcon from "@material-ui/icons/Add";
+import SendIcon from "@mui/icons-material/Send";
+import AddIcon from "@mui/icons-material/Add";
 //mail icon from material icons
-import MailIcon from "@material-ui/icons/Mail";
+import MailIcon from "@mui/icons-material/Mail";
 import {
   Typography,
   Modal,
   Button,
+  IconButton,
   Card,
   FormControl,
   FormHelperText,
   Fab,
   TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
@@ -28,10 +29,10 @@ const weekDays = [
   "Saturday",
 ];
 
-let dates = [];
-for (let a = 1; a <= 31; a++) {
-  dates.push({ value: a, label: a });
-}
+const dates = [...Array(31)].map((el, inx) => ({
+  value: inx + 1,
+  label: inx + 1,
+}));
 
 const baseUrl = process.env.API_URL;
 const useStyles = makeStyles((theme) => ({
@@ -79,7 +80,7 @@ const AddOwner = (props) => {
     setState({ ...state, emails: [...state.emails, ""] });
   };
   const changeHandler = (index) => {
-    const emails = state.emails;
+    const { emails } = state;
     if (event.target.value) {
       emails[index] = event.target.value;
     } else {
@@ -91,7 +92,7 @@ const AddOwner = (props) => {
     const { value } = event;
     setState({
       ...state,
-      [name]: value ? value : event.target.value,
+      [name]: value || event.target.value,
     });
   };
 
@@ -103,22 +104,59 @@ const AddOwner = (props) => {
     }
   };
 
+  const validations = () => {
+    const { emails, repeat, date, status } = state;
+    if (emails[0].length < 1) {
+      enqueueSnackbar(`Please give email id`, {
+        variant: "error",
+      });
+      return true;
+    }
+    if (repeat !== "Daily") {
+      date.forEach((d) => {
+        if (repeat.indexOf("Monthly") > -1 && isNaN(d.value)) {
+          enqueueSnackbar("You have given week day to date field", {
+            variant: "error",
+          });
+          return true;
+        }
+        if (repeat.indexOf("Weekly") > -1 && parseInt(d.value, 10)) {
+          enqueueSnackbar("You have given date to week field", {
+            variant: "error",
+          });
+          return true;
+        }
+      });
+      if (!status) {
+        enqueueSnackbar(`Please give status to share report`, {
+          variant: "error",
+        });
+        return true;
+      }
+      return false;
+    }
+  };
+  const getRepeatValue = (_repeat, _date) => {
+    if (_repeat === "Daily") {
+      return _repeat;
+    }
+    const values = _date.map((e) => e.value);
+    return `${_repeat} ${values.join(" ")}`;
+  };
   const sendReport = () => {
     const { emails, repeat, date, status, report } = state;
     //console.log(emails, repeat, date, status, report);
     const { partnerId } = props;
 
-    if (validations()) {
+    if (!validations()) {
       //console.log("Callingg..");
-      return;
-    } else {
       axios
         .post(`${baseUrl}partners/emailreport`, {
           partner_id: partnerId,
-          emails: emails,
+          emails,
           repeat: getRepeatValue(repeat, date),
-          status: status === "Yes" ? true : false,
-          report: report,
+          status: status === "Yes",
+          report,
         })
         .then(() => {
           enqueueSnackbar(`Report ready to share  ${repeat} bases`, {
@@ -128,60 +166,17 @@ const AddOwner = (props) => {
     }
   };
 
-  const validations = () => {
-    const { emails, repeat, date, status } = state;
-    if (emails[0].length < 1) {
-      enqueueSnackbar(`Please give email id`, {
-        variant: "error",
-      });
-      return true;
-    }
-    if (repeat != "Daily") {
-      for (let d of date) {
-        if (repeat.indexOf("Monthly") > -1 && isNaN(d.value)) {
-          enqueueSnackbar("You have given week day to date field", {
-            variant: "error",
-          });
-          return true;
-        } else if (repeat.indexOf("Weekly") > -1 && parseInt(d.value)) {
-          enqueueSnackbar("You have given date to week field", {
-            variant: "error",
-          });
-          return true;
-        }
-      }
-    }
-    if (!status) {
-      enqueueSnackbar(`Please give status to share report`, {
-        variant: "error",
-      });
-      return true;
-    }
-    return false;
-  };
-
-  const getRepeatValue = (repeat, date) => {
-    if (repeat === "Daily") {
-      return repeat;
-    }
-    const values = date.map((e) => {
-      return e.value;
-    });
-    return `${repeat} ${values.join(" ")}`;
-  };
   const editSendReport = async () => {
-    const { emails, repeat, date, status, report, emailreportId } = state;
+    const { report, emailreportId, emails, repeat, date, status } = state;
     const { partnerId } = props;
-    if (validations()) {
-      return;
-    } else {
+    if (!validations()) {
       axios
         .put(`${baseUrl}partners/emailreport/${emailreportId}`, {
           partner_id: partnerId,
-          emails: emails,
+          emails,
           repeat: getRepeatValue(repeat, date),
-          status: status === "Yes" ? true : false,
-          report: report,
+          status: status === "Yes",
+          report,
         })
         .then(() => {
           enqueueSnackbar(`Report successfully updated`, {
@@ -208,18 +203,16 @@ const AddOwner = (props) => {
     axios.get(`${baseUrl}partners/emailreport/${partnerId}`).then((data) => {
       const resp = data.data.data[0];
       if (resp) {
-        let splitRepeat = resp.repeat.split(" ");
+        const splitRepeat = resp.repeat.split(" ");
         const dateData = splitRepeat.splice(1, splitRepeat.length);
         setState((prevState) => ({
           ...prevState,
           emails: resp.emails,
           repeat: splitRepeat[0],
-          date: dateData.map((e) => {
-            return {
-              value: e,
-              label: e,
-            };
-          }),
+          date: dateData.map((e) => ({
+            value: e,
+            label: e,
+          })),
           status: resp.status ? "Yes" : "No",
           report: resp.report,
           emailreportId: resp.id,
@@ -228,19 +221,19 @@ const AddOwner = (props) => {
     });
   };
 
-  const { emails, dialogOpen, repeat, date, status, emailreportId } = state;
+  const { dialogOpen, emailreportId, repeat, emails, date } = state;
   const isWeekly = repeat.indexOf("Weekly") > -1;
   return (
     <div>
-      <a target="_blank" title="Report Sending Option">
+      <IconButton>
         <SendIcon
           style={{
             cursor: "pointer",
           }}
           onClick={openModal}
         />
-      </a>
-      <a target="_blank" title="Send Instant Report">
+      </IconButton>
+      <IconButton>
         <MailIcon
           style={{
             cursor: "pointer",
@@ -248,7 +241,7 @@ const AddOwner = (props) => {
           }}
           onClick={instantReportSend}
         />
-      </a>
+      </IconButton>
       <Modal
         open={dialogOpen}
         style={{ overflow: "scroll" }}
@@ -269,19 +262,17 @@ const AddOwner = (props) => {
               </Typography>
             </div>
             <FormControl>
-              {emails.map((state, index) => {
-                return (
-                  <div key={index}>
-                    <TextField
-                      type={emails.length - 1 === index ? "search" : null}
-                      label="Give email"
-                      name="state"
-                      value={state}
-                      onChange={() => changeHandler(index)}
-                    />
-                  </div>
-                );
-              })}
+              {emails.map((email, index) => (
+                <div key={email}>
+                  <TextField
+                    type={emails.length - 1 === index ? "search" : null}
+                    label="Give email"
+                    name="state"
+                    value={email}
+                    onChange={() => changeHandler(index)}
+                  />
+                </div>
+              ))}
 
               <FormHelperText className={classes.text}>
                 Email Id&apos;s
@@ -307,13 +298,11 @@ const AddOwner = (props) => {
                   { value: "Bi-Weekly", label: "Bi-Weekly" },
                   { value: "Monthly", label: "Monthly" },
                   { value: "Bi-Monthly", label: "Bi-Monthly" },
-                ].map((x) => {
-                  return { value: x.value, label: x.label };
-                })}
-                placeholder={"Select Time Line"}
+                ].map((x) => ({ value: x.value, label: x.label }))}
+                placeholder="Select Time Line"
                 isClearable={false}
-                closeMenuOnSelect={true}
-                isSearchable={true}
+                closeMenuOnSelect
+                isSearchable
               />
               <FormHelperText className={classes.text}>
                 Time Lines
@@ -326,23 +315,19 @@ const AddOwner = (props) => {
                   name="date"
                   value={
                     date &&
-                    date.map((e) => {
-                      return { value: e.value, label: e.label };
-                    })
+                    date.map((e) => ({ value: e.value, label: e.label }))
                   }
                   onChange={handleChangeTimeLines("date")}
                   options={
                     isWeekly
-                      ? weekDays.map((x) => {
-                          return { value: x, label: x };
-                        })
+                      ? weekDays.map((x) => ({ value: x, label: x }))
                       : dates
                   }
                   placeholder={isWeekly ? "Select week day" : "Select date"}
                   isMulti
                   isClearable={false}
-                  closeMenuOnSelect={true}
-                  isSearchable={true}
+                  closeMenuOnSelect
+                  isSearchable
                 />
                 <FormHelperText className={classes.text}>
                   {isWeekly ? "Please select week day" : "Please select date"}
@@ -359,13 +344,11 @@ const AddOwner = (props) => {
                 options={[
                   { value: "Yes", label: "Yes" },
                   { value: "No", label: "No" },
-                ].map((x) => {
-                  return { value: x.value, label: x.label };
-                })}
-                placeholder={"Select Time Line"}
+                ].map((x) => ({ value: x.value, label: x.label }))}
+                placeholder="Select Time Line"
                 isClearable={false}
-                closeMenuOnSelect={true}
-                isSearchable={true}
+                closeMenuOnSelect
+                isSearchable
               />
               <FormHelperText className={classes.text}>
                 Do you want to share report ?
@@ -386,5 +369,4 @@ const AddOwner = (props) => {
     </div>
   );
 };
-
 export default AddOwner;

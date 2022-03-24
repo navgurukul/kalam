@@ -7,9 +7,9 @@ const commonConfig = {
   server: { port: 8080 },
 };
 
-export default defineConfig(({ command, mode }) => {
-  console.log(command, mode);
-  if (command === "serve") {
+export default defineConfig(({ mode }) => {
+  // console.log(command, mode);
+  if (mode === "development") {
     return {
       ...commonConfig,
       plugins: [react()],

@@ -19,6 +19,8 @@
     "spaced-comment": "off",
     "react/prop-types": "off",
     "camelcase": "warn",
-    "no-restricted-globals": "off"
+    "no-restricted-globals": "off",
+    "consistent-return": "off",
+    "import/no-extraneous-dependencies": "off"
   }
 }

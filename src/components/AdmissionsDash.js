@@ -9,7 +9,7 @@ import Select from "react-select";
 import axios from "axios";
 import Box from "@material-ui/core/Box";
 import makeAnimated from "react-select/animated";
-
+import { Container, Typography } from "@material-ui/core";
 import { theme } from "../theme/theme";
 import { changeFetching, setupUsers } from "../store/actions/auth";
 import StudentService from "../services/StudentService";
@@ -23,6 +23,7 @@ import ServerSidePagination from "./ServerSidePagination";
 import _ from "lodash";
 import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
+import Loader from "./Loader";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -65,6 +66,7 @@ const AdmissionsDash = (props) => {
     access: null, //access object to store who are having access data
     userLoggedIn: user(), //user object to store who is logged in
     studentDashboardCondition: false, //condition to show student dashboard
+    loading: true,
   });
   let dataType =
     props.match && props.match.params.dataType
@@ -102,6 +104,7 @@ const AdmissionsDash = (props) => {
           ...prevState,
           access: studentDashboardData ? studentDashboardData : null, //set access to state
           studentDashboardCondition: conditions,
+          loading: false,
         }));
       });
     } catch (e) {
@@ -424,6 +427,20 @@ const AdmissionsDash = (props) => {
             />
           </ThemeProvider>
         </Box>
+      ) : state.loading ? (
+        <Container
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginTop: "4rem",
+          }}
+        >
+          <Typography variant="h3" style={{ marginBottom: "2.4rem" }}>
+            Loading
+          </Typography>
+          <Loader />
+        </Container>
       ) : (
         <NotHaveAccess />
       )}

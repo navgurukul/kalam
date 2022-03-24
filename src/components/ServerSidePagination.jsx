@@ -7,9 +7,9 @@ import Loader from "./Loader";
 import SearchBar from "./SearchBar";
 import { permissions } from "../config";
 import StudentService from "../services/StudentService";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const ServerSidePagination = (props) => {
   const snackbar = useSnackbar();

@@ -1,17 +1,13 @@
-import { Box, Button, Grid, Modal } from "@material-ui/core";
+import { Box, Button, Grid, Modal, Typography } from "@mui/material";
 import React, { useEffect } from "react";
-import Typography from "@material-ui/core/Typography";
-import {
-  DatePicker,
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import DatePicker from "@mui/lab/DatePicker";
+import DateFnsUtils from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { useSnackbar } from "notistack";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 function SlotBooking(props) {
-  let { slotBookingData, name, closeModal } = props;
+  const { slotBookingData, name, closeModal } = props;
   const [slotCanceled, setSlotCancelled] = React.useState(true);
   const [CurrentTimeId, setCurrentTimeId] = React.useState(null);
   const [slotBookingDetails, setSlotBookingDetails] = React.useState({});
@@ -78,12 +74,38 @@ function SlotBooking(props) {
     },
   ];
   const [date, setDate] = React.useState(new Date());
+  const [Timings, setTimings] = React.useState(DefaultTimings);
   const [StartTime, setStartTime] = React.useState("");
   const [EndTime, setEndTime] = React.useState("");
-  const [open, setOpen] = React.useState(true);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const { enqueueSnackbar } = useSnackbar();
+
+  const handleDateChange = (dater) => {
+    //console.log(dater);
+    // const DateArray = typeof dater;
+    const d = `${new Date(dater)}`.split(" ");
+    d[2] += ",";
+    const DateToSend = [d[3], month[d[1]], d[2]].join("-").replace(",", "");
+    setDate(DateToSend);
+    fetch(`${baseUrl}/slot/interview/check/ondate/${DateToSend}/1`).then(
+      (res) => {
+        res.json().then((data) => {
+          if (data.data.length > 0) {
+            const FilteredTimings = data.data.filter((time) => {
+              if (time.availiblity) {
+                return true;
+              }
+              return false;
+            });
+            setTimings(FilteredTimings);
+          } else {
+            //console.log(Timings);
+            setTimings(DefaultTimings);
+          }
+        });
+      }
+    );
+  };
+
   useEffect(() => {
     fetch(`${baseUrl}/slot/interview/${slotBookingData.studentId}`).then(
       (res) => {
@@ -95,33 +117,7 @@ function SlotBooking(props) {
     );
     handleDateChange(date);
   }, []);
-  const handleDateChange = (dater) => {
-    //console.log(dater);
-    let DateArray = typeof dater;
-    var d = (new Date(dater) + "").split(" ");
-    d[2] = d[2] + ",";
-    let DateToSend = [d[3], month[d[1]], d[2]].join("-").replace(",", "");
-    setDate(DateToSend);
-    fetch(`${baseUrl}/slot/interview/check/ondate/${DateToSend}/1`).then(
-      (res) => {
-        res.json().then((data) => {
-          if (data.data.length > 0) {
-            let FilteredTimings = data.data.filter((time) => {
-              if (time.availiblity) {
-                return true;
-              } else {
-                return false;
-              }
-            });
-            setTimings(FilteredTimings);
-          } else {
-            //console.log(Timings);
-            setTimings(DefaultTimings);
-          }
-        });
-      }
-    );
-  };
+
   const handelDeleteSlot = () => {
     fetch(`${baseUrl}slot/interview/stundet/${slotBookingDetails.id}`, {
       method: "DELETE",
@@ -163,10 +159,10 @@ function SlotBooking(props) {
             variant: "success",
           });
           fetch(`${baseUrl}/slot/interview/${slotBookingData.studentId}`).then(
-            (res) => {
-              res.json().then((data) => {
-                setSlotBookingDetails(data.data[0]);
-                setSlotCancelled(data.data[0].is_cancelled);
+            (_res) => {
+              _res.json().then((_data) => {
+                setSlotBookingDetails(_data.data[0]);
+                setSlotCancelled(_data.data[0].is_cancelled);
               });
             }
           );
@@ -178,10 +174,9 @@ function SlotBooking(props) {
       });
     });
   };
-  const [Timings, setTimings] = React.useState(DefaultTimings);
   return (
     <Modal
-      open={open}
+      open
       onClose={() => {
         closeModal();
       }}
@@ -200,15 +195,15 @@ function SlotBooking(props) {
                 ? slotBookingData.stage.replace("pending", "")
                 : ""}
             </Typography>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <LocalizationProvider utils={DateFnsUtils}>
               <Grid container justify="space-around">
-                <KeyboardDatePicker
+                <DatePicker
                   margin="normal"
                   id="date-picker-dialog"
                   format="yyyy-MM-dd"
                   value={date}
                   onChange={(dates) => {
-                    console.log(dates);
+                    // console.log(dates);
                     handleDateChange(dates);
                     //console.log(dates);
                   }}
@@ -219,12 +214,12 @@ function SlotBooking(props) {
                   }}
                 />
               </Grid>
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
             <Grid container justify="space-evenly">
               {Timings.length > 0 ? (
-                Timings.map((item, index) => (
+                Timings.map((item) => (
                   <Grid
-                    key={index}
+                    key={item.id}
                     onClick={() => {
                       setStartTime(item.from);
                       setEndTime(item.to);
@@ -238,7 +233,7 @@ function SlotBooking(props) {
                     <Typography
                       style={{
                         backgroundColor: `${
-                          CurrentTimeId == item.id ? "#80b84d" : "#f06243"
+                          CurrentTimeId === item.id ? "#80b84d" : "#f06243"
                         }`,
                         margin: "5px",
                         padding: "8px",

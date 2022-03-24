@@ -19,6 +19,8 @@ import {
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
+const baseUrl = import.meta.env.VITE_API_URL;
+
 const weekDays = [
   "Sunday",
   "Monday",
@@ -33,8 +35,6 @@ const dates = [...Array(31)].map((el, inx) => ({
   value: inx + 1,
   label: inx + 1,
 }));
-
-const baseUrl = process.env.API_URL;
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",

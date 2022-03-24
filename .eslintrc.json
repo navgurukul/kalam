@@ -16,6 +16,9 @@
     "prettier/prettier": "warn",
     "no-unused-vars": "warn",
     "react/function-component-definition": "off",
-    "spaced-comment": "off"
+    "spaced-comment": "off",
+    "react/prop-types": "off",
+    "camelcase": "warn",
+    "no-restricted-globals": "off"
   }
 }

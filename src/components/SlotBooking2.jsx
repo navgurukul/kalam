@@ -1,19 +1,13 @@
-import { Box, Button, Grid, Modal } from "@material-ui/core";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import React, { useEffect } from "react";
-import Typography from "@material-ui/core/Typography";
-import {
-  DatePicker,
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import DatePicker from "@mui/lab/DatePicker";
+import DateFnsUtils from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { useSnackbar } from "notistack";
 import { allStages } from "../config";
-import { useHistory } from "react-router-dom";
 
-const baseUrl = process.env.API_URL;
-function SlotBooking2(props) {
-  let { slotBookingData, name, closeModal } = props;
+const baseUrl = import.meta.env.VITE_API_URL;
+const SlotBooking2 = () => {
   const [slotCanceled, setSlotCancelled] = React.useState(true);
   const [CurrentTimeId, setCurrentTimeId] = React.useState(null);
   const [slotBookingDetails, setSlotBookingDetails] = React.useState({});
@@ -82,39 +76,16 @@ function SlotBooking2(props) {
   const [date, setDate] = React.useState(new Date());
   const [StartTime, setStartTime] = React.useState("");
   const [EndTime, setEndTime] = React.useState("");
-  const [open, setOpen] = React.useState(true);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const { enqueueSnackbar } = useSnackbar();
   const studentId = location.pathname.split("/")[2];
   const [studentData, setStudentData] = React.useState({});
-  useEffect(() => {
-    console.log();
-    fetch(`${baseUrl}/slot/interview/${studentId}`).then((res) => {
-      res.json().then((data) => {
-        console.log(data.data[0]);
-        setSlotBookingDetails(data.data[0]);
-        setSlotCancelled(data.data[0].is_cancelled);
-      });
-    });
-    fetch(`${baseUrl}/students/${studentId}`).then((res) => {
-      res.json().then((data) => {
-        console.log(data.data[0]);
-        setStudentData({
-          name: data.data[0].name,
-          stage: allStages[data.data[0].stage],
-          transitionID: data.data[0].lastTransition.id,
-        });
-      });
-    });
-    handleDateChange(date);
-  }, []);
+  const [Timings, setTimings] = React.useState(DefaultTimings);
+
   const handleDateChange = (dater) => {
     //console.log(dater);
-    let DateArray = typeof dater;
-    var d = (new Date(dater) + "").split(" ");
-    d[2] = d[2] + ",";
-    let DateToSend = [d[3], month[d[1]], d[2]].join("-").replace(",", "");
+    const d = `${new Date(dater)}`.split(" ");
+    d[2] += ",";
+    const DateToSend = [d[3], month[d[1]], d[2]].join("-").replace(",", "");
     setDate(DateToSend);
     fetch(`${baseUrl}/slot/interview/check/ondate/${DateToSend}/1`).then(
       (res) => {
@@ -123,24 +94,22 @@ function SlotBooking2(props) {
           if (data.data.length > 0) {
             let FilteredTimings;
             if (new Date(dater).getDate() === new Date().getDate()) {
-              console.log(dater);
+              // console.log(dater);
               FilteredTimings = data.data.filter((time) => {
                 if (
                   time.availiblity &&
                   new Date().getHours() < time.from.split(":")[0]
                 ) {
                   return true;
-                } else {
-                  return false;
                 }
+                return false;
               });
             } else {
               FilteredTimings = data.data.filter((time) => {
                 if (time.availiblity) {
                   return true;
-                } else {
-                  return false;
                 }
+                return false;
               });
             }
 
@@ -153,6 +122,29 @@ function SlotBooking2(props) {
       }
     );
   };
+
+  useEffect(() => {
+    // console.log();
+    fetch(`${baseUrl}/slot/interview/${studentId}`).then((res) => {
+      res.json().then((data) => {
+        // console.log(data.data[0]);
+        setSlotBookingDetails(data.data[0]);
+        setSlotCancelled(data.data[0].is_cancelled);
+      });
+    });
+    fetch(`${baseUrl}/students/${studentId}`).then((res) => {
+      res.json().then((data) => {
+        // console.log(data.data[0]);
+        setStudentData({
+          name: data.data[0].name,
+          stage: allStages[data.data[0].stage],
+          transitionID: data.data[0].lastTransition.id,
+        });
+      });
+    });
+    handleDateChange(date);
+  }, []);
+
   const handelDeleteSlot = () => {
     fetch(`${baseUrl}slot/interview/stundet/${slotBookingDetails.id}`, {
       method: "DELETE",
@@ -195,10 +187,10 @@ function SlotBooking2(props) {
           enqueueSnackbar("Slot Booked", {
             variant: "success",
           });
-          fetch(`${baseUrl}/slot/interview/${studentId}`).then((res) => {
-            res.json().then((data) => {
-              setSlotBookingDetails(data.data[0]);
-              setSlotCancelled(data.data[0].is_cancelled);
+          fetch(`${baseUrl}/slot/interview/${studentId}`).then((_res) => {
+            _res.json().then((_data) => {
+              setSlotBookingDetails(_data.data[0]);
+              setSlotCancelled(_data.data[0].is_cancelled);
             });
           });
         } else {
@@ -209,15 +201,11 @@ function SlotBooking2(props) {
       });
     });
   };
-  const history = useHistory();
   function disablePrevDates() {
-    var yesterday = new Date(Date.now() - 86400000);
+    const yesterday = new Date(Date.now() - 86400000);
     const startSeconds = Date.parse(yesterday);
-    return (date) => {
-      return Date.parse(date) < startSeconds;
-    };
+    return (_date) => Date.parse(_date) < startSeconds;
   }
-  const [Timings, setTimings] = React.useState(DefaultTimings);
   return (
     <Box sx={style}>
       {slotCanceled ? (
@@ -228,9 +216,9 @@ function SlotBooking2(props) {
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Slot Booking for {studentData.name}
           </Typography>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <LocalizationProvider utils={DateFnsUtils}>
             <Grid container justify="space-around">
-              <KeyboardDatePicker
+              <DatePicker
                 margin="normal"
                 id="date-picker-dialog"
                 format="yyyy-MM-dd"
@@ -246,12 +234,12 @@ function SlotBooking2(props) {
                 }}
               />
             </Grid>
-          </MuiPickersUtilsProvider>
+          </LocalizationProvider>
           <Grid container justify="space-evenly">
             {Timings.length > 0 ? (
-              Timings.map((item, index) => (
+              Timings.map((item) => (
                 <Grid
-                  key={index}
+                  key={item.id}
                   onClick={() => {
                     setStartTime(item.from);
                     setEndTime(item.to);
@@ -265,7 +253,7 @@ function SlotBooking2(props) {
                   <Typography
                     style={{
                       backgroundColor: `${
-                        CurrentTimeId == item.id ? "#80b84d" : "#f06243"
+                        CurrentTimeId === item.id ? "#80b84d" : "#f06243"
                       }`,
                       margin: "5px",
                       padding: "8px",
@@ -277,9 +265,7 @@ function SlotBooking2(props) {
                 </Grid>
               ))
             ) : (
-              <>
-                <Typography>No Slots Available For Selected Date</Typography>
-              </>
+              <Typography>No Slots Available For Selected Date</Typography>
             )}
           </Grid>
           <Button
@@ -327,6 +313,6 @@ function SlotBooking2(props) {
       )}
     </Box>
   );
-}
+};
 
 export default SlotBooking2;

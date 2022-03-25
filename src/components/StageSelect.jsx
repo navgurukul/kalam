@@ -3,20 +3,22 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { DialogTitle, DialogActions, Dialog, Button } from "@material-ui/core";
-import { getstudentMachine } from "../services/GlobalService";
+import { DialogTitle, DialogActions, Dialog, Button } from "@mui/material";
 import { useMachine } from "@xstate/react";
+import { getstudentMachine } from "../services/GlobalService";
+
 const _ = require("underscore");
-const baseUrl = process.env.API_URL;
+
+const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
 const StageSelect = (props) => {
+  const { allStages, stage } = props;
   const { enqueueSnackbar } = useSnackbar();
-  const getKeyByValue = (object, value) => {
-    return Object.keys(object).find((key) => object[key] === value);
-  };
+  const getKeyByValue = (object, value) =>
+    Object.keys(object).find((key) => object[key] === value);
   const studentMachine = useMemo(
-    () => getstudentMachine(getKeyByValue(props.allStages, props.stage)),
+    () => getstudentMachine(getKeyByValue(allStages, stage)),
     []
   );
   const [xstate, send] = useMachine(studentMachine);
@@ -30,38 +32,19 @@ const StageSelect = (props) => {
     },
   });
 
-  const handleChange = async (selectedValue) => {
-    const { value } = selectedValue;
-    const { rowMetatable } = props;
-    const email = rowMetatable.rowData[9];
-    const name = rowMetatable.rowData[2];
-    const campus = rowMetatable.rowData[24];
-
-    if (value === "offerLetterSent" && campus && name && email) {
-      setState({
-        ...state,
-        flag: true,
-        payload: {
-          receiverEmail: email,
-          name: name,
-          campus: campus,
-          cc: await getPartnerEmail(rowMetatable.rowData[0]),
-        },
-      });
-    } else if (value !== "offerLetterSent") {
-      changeStage(selectedValue);
-      send(selectedValue.value);
-    } else {
-      enqueueSnackbar("Please update email or campus!", {
-        variant: "error",
-      });
-    }
+  const getPartnerEmail = async (studentId) => {
+    const response = await axios.get(
+      `${baseUrl}partners/studentId/${studentId}`
+    );
+    const { data } = response.data;
+    // eslint-disable-next-line no-nested-ternary
+    return data ? (data.email ? data.email : "") : "";
   };
 
   const changeStage = (selectedValue) => {
     const { rowMetatable, change } = props;
     const studentId = rowMetatable.rowData[0];
-    const columnIndex = rowMetatable.columnIndex;
+    const { columnIndex } = rowMetatable;
     const { value, label } = selectedValue;
     axios
       .post(`${baseUrl}students/chnageStage/${studentId}`, { stage: value })
@@ -78,12 +61,32 @@ const StageSelect = (props) => {
       });
   };
 
-  const getPartnerEmail = async (studentId) => {
-    const response = await axios.get(
-      `${baseUrl}partners/studentId/${studentId}`
-    );
-    const data = response.data.data;
-    return data ? (data.email ? data.email : "") : "";
+  const handleChange = async (selectedValue) => {
+    const { value } = selectedValue;
+    const { rowMetatable } = props;
+    const email = rowMetatable.rowData[9];
+    const name = rowMetatable.rowData[2];
+    const campus = rowMetatable.rowData[24];
+
+    if (value === "offerLetterSent" && campus && name && email) {
+      setState({
+        ...state,
+        flag: true,
+        payload: {
+          receiverEmail: email,
+          name,
+          campus,
+          cc: await getPartnerEmail(rowMetatable.rowData[0]),
+        },
+      });
+    } else if (value !== "offerLetterSent") {
+      changeStage(selectedValue);
+      send(selectedValue.value);
+    } else {
+      enqueueSnackbar("Please update email or campus!", {
+        variant: "error",
+      });
+    }
   };
 
   const sendOfferLetter = () => {
@@ -123,17 +126,17 @@ const StageSelect = (props) => {
     });
   };
 
-  const { allStages, stage } = props;
   const { flag } = state;
-  const allStagesOptions = xstate.nextEvents.map((x) => {
-    return { value: x, label: allStages[x] };
-  });
+  const allStagesOptions = xstate.nextEvents.map((x) => ({
+    value: x,
+    label: allStages[x],
+  }));
 
   const selectedValue = { value: _.invert(allStages)[stage], label: stage };
   return (
     <div>
       <Select
-        className={"filterSelectStage"}
+        className="filterSelectStage"
         // defaultValue={selectedValue}
         value={selectedValue}
         onChange={handleChange}
@@ -141,7 +144,7 @@ const StageSelect = (props) => {
         // placeholder={"Select "+props.filter.name+" ..."}
         isClearable={false}
         components={animatedComponents}
-        closeMenuOnSelect={true}
+        closeMenuOnSelect
       />
       <Dialog
         open={flag}

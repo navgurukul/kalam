@@ -1,16 +1,13 @@
 import "date-fns";
-import React from "react";
-import { Modal, Button } from "@material-ui/core";
-import Box from "@material-ui/core/Box";
+import React, { memo } from "react";
+import { Modal, Button, Typography, Box } from "@mui/material";
 import MUIDataTable from "mui-datatables";
 import Moment from "react-moment";
-import Typography from "@material-ui/core/Typography";
-import { theme } from "../theme/theme";
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import { createTheme, ThemeProvider, makeStyles } from "@mui/styles";
 
+import DetailsIcon from "@mui/icons-material/Details";
+import theme from "../theme";
 import GlobalService from "../services/GlobalService";
-import DetailsIcon from "@material-ui/icons/Details";
-import { makeStyles } from "@material-ui/styles";
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 
 const getModalStyle = () => {
@@ -27,19 +24,19 @@ const getModalStyle = () => {
   };
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((_theme) => ({
   paper: {
     position: "absolute",
     marginLeft: "3vw",
     marginRight: "3vw",
     width: "94vw",
-    [theme.breakpoints.up("md")]: {
+    [_theme.breakpoints.up("md")]: {
       margin: "auto",
       width: "50%",
     },
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(4),
+    backgroundColor: _theme.palette.background.paper,
+    boxShadow: _theme.shadows[5],
+    padding: _theme.spacing(4),
     outline: "none",
   },
   overrides: {
@@ -52,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StageTransitionsStudentStatus = (props) => {
+  const { allStages } = props;
   const classes = useStyles();
   const [state, setState] = React.useState({
     data: [],
@@ -62,27 +60,21 @@ const StageTransitionsStudentStatus = (props) => {
       label: "Stage",
       name: "to_stage",
       options: {
-        customBodyRender: (value) => {
-          return allStages[value];
-        },
+        customBodyRender: (value) => allStages[value],
       },
     },
     {
       label: "When?",
       name: "created_at",
       options: {
-        customBodyRender: (value) => {
-          return (
-            <Moment format="D MMM YYYY" withTitle>
-              {value}
-            </Moment>
-          );
-        },
+        customBodyRender: memo((value) => (
+          <Moment format="D MMM YYYY" withTitle>
+            {value}
+          </Moment>
+        )),
       },
     },
   ];
-
-  const { allStages } = props;
 
   const getMuiTheme = () =>
     createTheme({

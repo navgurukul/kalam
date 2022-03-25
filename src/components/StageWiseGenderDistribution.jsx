@@ -7,12 +7,12 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 
 import { changeFetching } from "../store/actions/auth";
-import { allStages, feedbackableStagesData } from "../config";
+import { allStages } from "../config";
 import StudentService from "../services/StudentService";
 import MainLayout from "./MainLayout";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.API_URL;
 
 const StageWiseGenderDistribution = () => {
   const dispatch = useDispatch();
@@ -20,11 +20,23 @@ const StageWiseGenderDistribution = () => {
   const fetchingFinish = () => dispatch(changeFetching(false));
   const [data, setData] = React.useState([]);
 
-  const StageWiseGenderDistributionURL = baseURL + "students/report/all";
+  const StageWiseGenderDistributionURL = `${baseURL}students/report/all`;
 
-  useEffect(() => {
-    (async () => await fetchonwerReport())();
-  }, []);
+  const dataConvert = (_data) => {
+    const newData = [];
+    Object.entries(_data).forEach(([key, value]) => {
+      const dic = {};
+      const [, female, male, trans] = value;
+      dic.female = female;
+      dic.male = male;
+      dic.transgender = trans;
+      dic.unspecified = value.null;
+      dic.total = dic.female + dic.male + dic.transgender + dic.unspecified;
+      dic.stage = allStages[key];
+      newData.push(dic);
+    });
+    setData(newData);
+  };
 
   const fetchonwerReport = async () => {
     try {
@@ -33,27 +45,14 @@ const StageWiseGenderDistribution = () => {
       dataConvert(response.data.data);
       fetchingFinish();
     } catch (e) {
-      console.error(e);
       fetchingFinish();
     }
   };
 
-  const dataConvert = (data) => {
-    const newData = [];
-    for (const [key, value] of Object.entries(data)) {
-      if (!feedbackableStagesData[key]) {
-        const dic = {};
-        dic.female = value[1];
-        dic.male = value[2];
-        dic.transgender = value[3];
-        dic.unspecified = value[null];
-        dic.total = dic.female + dic.male + dic.transgender + dic.unspecified;
-        dic.stage = allStages[key];
-        newData.push(dic);
-      }
-    }
-    setData(newData);
-  };
+  useEffect(() => {
+    (async () => fetchonwerReport())();
+  }, []);
+
   return (
     <MainLayout columns={StudentService.columnDanglingReports} data={data} />
   );

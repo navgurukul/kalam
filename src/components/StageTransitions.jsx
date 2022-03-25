@@ -1,21 +1,20 @@
 import "date-fns";
 import React from "react";
-import { Modal, Button, Grid } from "@material-ui/core";
+import { Modal, Button, Grid, Box, Typography } from "@mui/material";
+import { ThemeProvider, makeStyles } from "@mui/styles";
 
-import CancelIcon from "@material-ui/icons/Cancel";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import Box from "@material-ui/core/Box";
 import MUIDataTable from "mui-datatables";
-import Typography from "@material-ui/core/Typography";
-import { theme } from "../theme/theme";
+import DetailsIcon from "@mui/icons-material/Details";
+import { useLocation } from "react-router-dom";
+import theme from "../theme";
 import { changeFetching } from "../store/actions/auth";
-import { useHistory } from "react-router-dom";
-import { ThemeProvider, makeStyles } from "@material-ui/styles";
 import GlobalService from "../services/GlobalService";
+// eslint-disable-next-line import/no-cycle
 import StudentService from "../services/StudentService";
-import DetailsIcon from "@material-ui/icons/Details";
 import StudentContact from "./StudentContact";
 import Loader from "./Loader";
 import DeleteStudentDetails from "./DeleteStudentDetails";
@@ -39,19 +38,19 @@ const getModalStyle = () => {
   };
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((_theme) => ({
   paper: {
     position: "absolute",
     marginLeft: "3vw",
     marginRight: "3vw",
     width: "94vw",
-    [theme.breakpoints.up("md")]: {
+    [_theme.breakpoints.up("md")]: {
       margin: "auto",
       width: "50%",
     },
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(4),
+    backgroundColor: _theme.palette.background.paper,
+    boxShadow: _theme.shadows[5],
+    padding: _theme.spacing(4),
     outline: "none",
   },
   overrides: {
@@ -65,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const StageTransitions = (props) => {
   const classes = useStyles();
-  const { location } = useHistory();
+  const location = useLocation();
   const { loggedInUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
@@ -81,13 +80,14 @@ export const StageTransitions = (props) => {
   });
 
   const fetchtransition = async () => {
+    const { studentId } = props;
     try {
-      const transitionURL = `${baseURL}students/transitionsWithFeedback/${props.studentId}`;
+      const transitionURL = `${baseURL}students/transitionsWithFeedback/${studentId}`;
       fetchingStart();
       const response = await axios.get(transitionURL, {});
       let newData;
-      let joinedStudent = [];
-      let joinedOutreach = [];
+      const joinedStudent = [];
+      const joinedOutreach = [];
       const campusMilestoneKey = Object.keys(campusStageOfLearning);
 
       if (loggedInUser) {
@@ -115,7 +115,7 @@ export const StageTransitions = (props) => {
         });
       }
 
-      let locationCampus = location.pathname.split("/")[1];
+      const locationCampus = location.pathname.split("/")[1];
       if (locationCampus === "campus") {
         newData = joinedStudent;
       }
@@ -170,13 +170,15 @@ export const StageTransitions = (props) => {
     flexWrap: "wrap",
   };
   const { studentName, studentId, isShow } = props;
-  let campusPath = location.pathname.split("/")[1];
+  const campusPath = location.pathname.split("/")[1];
 
   const modalStyle = getModalStyle();
+  const { dataType } = props;
   return !state.modalOpen ? (
     <div>
       {isShow ? (
-        <p
+        <Typography
+          variant="body1"
           onClick={handleOpen}
           style={{
             fontSize: 17,
@@ -188,12 +190,18 @@ export const StageTransitions = (props) => {
           onMouseOver={(e) => {
             e.target.style.color = "red";
           }}
+          onFocus={(e) => {
+            e.target.style.color = "red";
+          }}
+          onBlur={(e) => {
+            e.target.style.color = "black";
+          }}
           onMouseOut={(e) => {
             e.target.style.color = "black";
           }}
         >
           {studentName}{" "}
-        </p>
+        </Typography>
       ) : (
         <Button color="primary" align="right" onClick={handleOpen}>
           <DetailsIcon color="primary" />
@@ -237,7 +245,7 @@ export const StageTransitions = (props) => {
             </Box>
           </Box>
           <MUIDataTable
-            columns={StudentService.columns[props.dataType]}
+            columns={StudentService.columns[dataType]}
             data={state.data}
             icons={GlobalService.tableIcons}
             options={{

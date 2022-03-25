@@ -4,7 +4,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 // const _ = require("underscore");
 
-const baseUrl = import.meta.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const UpdateEmail = (props) => {
   const { email } = props;

@@ -4,7 +4,7 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const baseURL = import.meta.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
 const UpdateDonorOrCampus = ({ change, rowMetatable, allOptions, value }) => {

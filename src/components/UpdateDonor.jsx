@@ -5,7 +5,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
 
-const baseURL = process.env.API_URL;
+const baseURL = process.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
 const UpdateDonor = (props) => {

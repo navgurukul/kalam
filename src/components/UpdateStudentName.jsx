@@ -3,7 +3,7 @@ import EasyEdit from "react-easy-edit";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const UpdateStudentName = (props) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -27,11 +27,12 @@ const UpdateStudentName = (props) => {
         });
       });
   };
+  const { name } = props;
   return (
     <EasyEdit
       type="text"
-      value={props.name}
-      onSave={(name) => handleUpdate(name)}
+      value={name}
+      onSave={(newName) => handleUpdate(newName)}
       saveButtonLabel="✔"
       cancelButtonLabel="✖"
     />

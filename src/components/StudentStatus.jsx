@@ -7,7 +7,7 @@ import { useSnackbar } from "notistack";
 import GlobalService from "../services/GlobalService";
 import StudentService from "../services/StudentService";
 
-const baseUrl = import.meta.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 // const useStyles = makeStyles((theme) => ({
 //   paper: {

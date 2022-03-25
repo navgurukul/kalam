@@ -18,7 +18,7 @@ import { allStages } from "../config";
 import CollapseStudentData from "./collapseData";
 import Loader from "./Loader";
 
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 const useStyles = makeStyles(() => ({
   root: {
     maxWidth: 400,

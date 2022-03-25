@@ -4,7 +4,7 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
 const UpdatePartner = (props) => {
@@ -33,22 +33,19 @@ const UpdatePartner = (props) => {
       });
   };
   const { value } = props;
-  const selectedValue = { value: value, label: value };
+  const selectedValue = { value, label: value };
 
   return (
     <Select
-      className={"filterSelectStage"}
+      className="filterSelectStage"
       value={selectedValue}
       onChange={handleChange}
       options={
-        data.length > 0 &&
-        data.map((x) => {
-          return { value: x.id, label: x.name };
-        })
+        data.length > 0 && data.map((x) => ({ value: x.id, label: x.name }))
       }
       isClearable={false}
       components={animatedComponents}
-      closeMenuOnSelect={true}
+      closeMenuOnSelect
     />
   );
 };

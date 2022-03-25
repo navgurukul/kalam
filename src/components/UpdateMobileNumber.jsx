@@ -1,38 +1,38 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 
-import { Button } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
-
-// import { Dialog } from '@material-ui/core';
-import { useSnackbar } from "notistack";
-import { Box } from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/styles";
 import {
+  Button,
+  Box,
+  Typography,
+  Paper,
   FormControl,
   InputLabel,
   Input,
   FormHelperText,
-} from "@material-ui/core";
-import { theme } from "../theme/theme";
+} from "@mui/material";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+// import { Dialog } from '@material-ui/core';
+import { useSnackbar } from "notistack";
+import { makeStyles } from "@mui/styles";
+import theme from "../theme";
 
 const baseUrl = process.env.API_URL;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((_theme) => ({
   container: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    margin: theme.spacing(4),
+    margin: _theme.spacing(4),
   },
   btn: {
-    marginTop: theme.spacing(4),
+    marginTop: _theme.spacing(4),
   },
   userContact: {
-    padding: theme.spacing(3, 2),
+    padding: _theme.spacing(3, 2),
     maxWidth: 400,
     display: "flex",
     flexDirection: "column",
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     "& > *": {
-      margin: theme.spacing(1),
+      margin: _theme.spacing(1),
     },
   },
 }));
@@ -48,14 +48,13 @@ const useStyles = makeStyles((theme) => ({
 const UpdateMobileNumber = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { loggedInUser } = useSelector((state) => state.auth);
   const [mobileNumber, setMobileNumber] = React.useState("");
 
   const handleChange = (name) => (event) => {
-    let valChange = {};
+    const valChange = {};
     valChange[name] = event.target.value;
-
     setMobileNumber(event.target.value);
   };
 
@@ -64,13 +63,13 @@ const UpdateMobileNumber = () => {
     try {
       axios
         .post(`${baseUrl}students/mobile/${loggedInUser.id}`, {
-          mobile: mobile,
+          mobile,
         })
         .then(() => {
           enqueueSnackbar("Mobile number is successfully changed!", {
             variant: "success",
           });
-          history.push("/students");
+          navigate("/students");
         });
     } catch (e) {
       enqueueSnackbar("Please enter valide mobile number!", {
@@ -80,7 +79,7 @@ const UpdateMobileNumber = () => {
   };
 
   return (
-    <Fragment>
+    <>
       <Box className={classes.container}>
         <Paper className={classes.userContact}>
           <Box>
@@ -113,7 +112,7 @@ const UpdateMobileNumber = () => {
         </Paper>
       </Box>
       {/* </Dialog>   */}
-    </Fragment>
+    </>
   );
 };
 

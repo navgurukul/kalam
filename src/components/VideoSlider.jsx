@@ -1,22 +1,23 @@
 import React from "react";
-import Box from "@material-ui/core/Box";
+import {
+  Box,
+  Slide,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Dialog,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 import Slider from "react-slick";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@mui/styles";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import Dialog from "@material-ui/core/Dialog";
 import YouTube from "react-youtube";
 import playIcon from "../assets/img/playicon.png";
-import Slide from "@material-ui/core/Slide";
-
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import CloseIcon from "@material-ui/icons/Close";
 
 const settings = {
   dots: true,
@@ -29,9 +30,10 @@ const settings = {
   slidesToScroll: 1,
 };
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const Transition = React.forwardRef((props, ref) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  <Slide direction="up" ref={ref} {...props} />
+));
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -96,9 +98,9 @@ const aboutNavgurukul = [
 //   }
 // })
 
-window.mobileAndTabletCheck = function () {
+window.mobileAndTabletCheck = function mobileAndTabletCheck() {
   let check = false;
-  (function (a) {
+  ((a) => {
     if (
       /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(
         a
@@ -123,8 +125,7 @@ const VideoSlider = (props) => {
   const handleClickOpen = (event) => {
     if (window.mobileAndTabletCheck()) {
       window.open(
-        "https://www.youtube.com/watch?v=" +
-          event.currentTarget.dataset.video_id
+        `https://www.youtube.com/watch?v=${event.currentTarget.dataset.video_id}`
       );
     } else {
       setState({
@@ -143,7 +144,7 @@ const VideoSlider = (props) => {
     });
   };
 
-  const _onReady = (event) => {
+  const onReady = (event) => {
     // access to player in all event handlers via event.target
     event.target.playVideo();
   };
@@ -154,8 +155,8 @@ const VideoSlider = (props) => {
   const width = Math.min(600, window.screen.width);
   // const width = window.screen.width;
 
-  var w = window.innerWidth;
-  var h = window.innerHeight;
+  let w = window.innerWidth;
+  let h = window.innerHeight;
   if (w < (16 / 9) * h) {
     h = Math.floor((9 / 16) * w);
   } else {
@@ -174,6 +175,7 @@ const VideoSlider = (props) => {
 
   return (
     <>
+      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <Slider {...settings} style={{ maxWidth: 780, margin: "0 auto" }}>
         {aboutNavgurukul.map((ele) => (
           <div key={ele.videoId}>
@@ -186,14 +188,11 @@ const VideoSlider = (props) => {
               data-video_headline={ele.label[language]}
             >
               <img
-                src={
-                  "https://img.youtube.com/vi/" +
-                  ele.videoId +
-                  "/maxresdefault.jpg"
-                }
+                alt={ele.label}
+                src={`https://img.youtube.com/vi/${ele.videoId}/maxresdefault.jpg`}
                 style={{ maxWidth: "100%" }}
               />
-              <img src={playIcon} className={classes.playIcon} />
+              <img alt="play" src={playIcon} className={classes.playIcon} />
               <Box py={2} style={{ fontSize: 18, textAlign: "center" }}>
                 <span align="center">{ele.label[language]}</span>
               </Box>
@@ -234,7 +233,6 @@ const VideoSlider = (props) => {
                 <Typography variant="h6" className={classes.title}>
                   {state.selectedHeadline}
                 </Typography>
-                <Typography variant="h6"></Typography>
               </Box>
             </Toolbar>
           </AppBar>
@@ -242,7 +240,7 @@ const VideoSlider = (props) => {
             <YouTube
               videoId={state.selectedVideoID}
               opts={opts}
-              onReady={_onReady}
+              onReady={onReady}
             />
           </Box>
         </>

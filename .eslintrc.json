@@ -21,6 +21,7 @@
     "camelcase": "warn",
     "no-restricted-globals": "off",
     "consistent-return": "off",
-    "import/no-extraneous-dependencies": "off"
+    "import/no-extraneous-dependencies": "off",
+    "no-alert": "off"
   }
 }

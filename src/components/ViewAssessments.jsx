@@ -1,16 +1,14 @@
-import React from "react";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/styles";
-import Button from "@material-ui/core/Button";
-import Modal from "@material-ui/core/Modal";
-import AssessmentIcon from "@material-ui/icons/Assessment";
+import React, { memo } from "react";
+import { Button, Typography, Modal } from "@mui/material";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import { makeStyles } from "@mui/styles";
 import MUIDataTable from "mui-datatables";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import CsvUpload from "./Uploadcsv";
 import GlobalService from "../services/GlobalService";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.API_URL;
 
 const getModalStyle = () => {
   const top = 54; // + rand()
@@ -44,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ModalStages = (props) => {
+  const { partnerId } = props;
   const classes = useStyles();
   const [state, setState] = React.useState({
     modalOpen: false,
@@ -70,13 +69,13 @@ const ModalStages = (props) => {
       name: "assessment_url",
       options: {
         filter: false,
-        customBodyRender: (rowData) => {
-          return rowData ? (
-            <a target="_blank" rel="noreferrer noopner" href={rowData}>
+        customBodyRender: memo((rowData) =>
+          rowData ? (
+            <a target="_blank" rel="noreferrer" href={rowData}>
               Link to Assessment
             </a>
-          ) : null;
-        },
+          ) : null
+        ),
       },
     },
     {
@@ -84,13 +83,13 @@ const ModalStages = (props) => {
       name: "answer_key_url",
       options: {
         filter: false,
-        customBodyRender: (rowData) => {
-          return rowData ? (
-            <a target="_blank" rel="noreferrer noopner" href={rowData}>
+        customBodyRender: memo((rowData) =>
+          rowData ? (
+            <a target="_blank" rel="noreferrer" href={rowData}>
               Link to Answer Key
             </a>
-          ) : null;
-        },
+          ) : null
+        ),
       },
     },
     {
@@ -98,11 +97,10 @@ const ModalStages = (props) => {
       name: "question_set_id",
       options: {
         filter: false,
-        customBodyRender: (rowData) => {
-          const url =
-            "/partners/" + props.partnerId + "/assessments/" + rowData;
+        customBodyRender: memo((rowData) => {
+          const url = `/partners/${partnerId}/assessments/${rowData}`;
           return <Link to={url}>{rowData}</Link>;
-        },
+        }),
       },
     },
     {
@@ -117,11 +115,9 @@ const ModalStages = (props) => {
       name: "partner_id",
       options: {
         filter: false,
-        customBodyRender: (rowData, rowMeta) => {
-          return (
-            <CsvUpload partnerId={rowData} assessmentId={rowMeta.rowData[0]} />
-          );
-        },
+        customBodyRender: memo((rowData, rowMeta) => (
+          <CsvUpload partnerId={rowData} assessmentId={rowMeta.rowData[0]} />
+        )),
       },
     },
   ];
@@ -132,6 +128,16 @@ const ModalStages = (props) => {
       modalOpen: false,
     }));
   };
+  const fetchAssessments = async () => {
+    try {
+      const dataURL = `${baseUrl}partners/${partnerId}/assessments`;
+      const response = await axios.get(dataURL);
+      setState((prevState) => ({ ...prevState, data: response.data.data }));
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+    }
+  };
 
   const handleOpen = () => {
     fetchAssessments();
@@ -140,16 +146,6 @@ const ModalStages = (props) => {
       modalOpen: true,
     }));
     // props.modalOpen = true
-  };
-
-  const fetchAssessments = async () => {
-    try {
-      const dataURL = baseUrl + "partners/" + props.partnerId + "/assessments";
-      const response = await axios.get(dataURL);
-      setState((prevState) => ({ ...prevState, data: response.data.data }));
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   const modalStyle = getModalStyle();

@@ -4,7 +4,7 @@ import axios, { post } from "axios";
 import Spinner from "react-spinner-material";
 import { useSnackbar } from "notistack";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const AudiofileUpload = (props) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -19,14 +19,15 @@ const AudiofileUpload = (props) => {
   // this.fileUpload = this.fileUpload.bind(this);
 
   const addAudioUrl = async (fileUrl) => {
+    // eslint-disable-next-line camelcase
     const { studentId, userId, student_stage, change, columnIndex } = props;
     try {
       if (fileUrl) {
-        const url =
-          baseUrl + "students/" + "audioRecording/" + studentId + "/" + userId;
+        const url = `${baseUrl}students/audioRecording/${studentId}/${userId}`;
         const response = await axios.post(url, {
           audio_url: fileUrl,
-          student_stage: student_stage,
+          // eslint-disable-next-line camelcase
+          student_stage,
         });
         if (response.data.sucess) {
           setState({
@@ -49,33 +50,11 @@ const AudiofileUpload = (props) => {
       }
     } catch (e) {
       enqueueSnackbar("Internal Server Error", { variant: "error" });
-      console.error(e);
     }
   };
 
-  const onFormSubmit = async (e) => {
-    e.preventDefault(); // Stop form submit
-
-    fileUpload(state.file).then((response) => {
-      try {
-        if (response.data.errors == undefined) {
-          addAudioUrl(response.data.fileUrl);
-        } else {
-          alert("It is enternal server error please refresh the page.");
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    });
-  };
-
-  const onChange = async (e) => {
-    await setState({ ...state, file: e.target.files[0], loading: true });
-    await onFormSubmit(e);
-  };
-
   const fileUpload = async (file) => {
-    const url = baseUrl + "general/upload_file/audioRecording";
+    const url = `${baseUrl}general/upload_file/audioRecording`;
     const formData = new FormData();
     formData.append("file", file);
     const config = {
@@ -83,7 +62,29 @@ const AudiofileUpload = (props) => {
         "content-type": "multipart/form-data",
       },
     };
-    return await post(url, formData, config);
+    return post(url, formData, config);
+  };
+
+  const onFormSubmit = async (e) => {
+    e.preventDefault(); // Stop form submit
+
+    fileUpload(state.file).then((response) => {
+      try {
+        if (response.data.errors === undefined) {
+          addAudioUrl(response.data.fileUrl);
+        } else {
+          alert("Internal Server Error occured. Please refresh the page.");
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
+      }
+    });
+  };
+
+  const onChange = async (e) => {
+    await setState({ ...state, file: e.target.files[0], loading: true });
+    await onFormSubmit(e);
   };
 
   const { loading } = state;
@@ -99,7 +100,7 @@ const AudiofileUpload = (props) => {
         />
         <Spinner
           size={35}
-          spinnerColor={"#ed343d"}
+          spinnerColor="#ed343d"
           spinnerWidth={5}
           visible={loading}
           style={{ padding: "10px" }}

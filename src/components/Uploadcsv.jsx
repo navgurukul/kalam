@@ -1,13 +1,13 @@
 import React from "react";
 
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@mui/styles";
 import axios, { post } from "axios";
 import ReactJson from "react-json-view";
-import { Modal } from "@material-ui/core";
+import { Modal } from "@mui/material";
 import Spinner from "react-spinner-material";
 import { useSnackbar } from "notistack";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.API_URL;
 
 const useStyles = makeStyles((theme) => ({
   innerTable: {
@@ -54,19 +54,14 @@ const CsvUpload = (props) => {
   // this.fileUpload = this.fileUpload.bind(this)
 
   const addAttempts = async (fileUrl) => {
+    const { partnerId, assessmentId } = props;
     try {
       if (fileUrl) {
-        const url =
-          baseUrl +
-          "partners/" +
-          props.partnerId +
-          "/assessments/" +
-          props.assessmentId +
-          "/attempts";
+        const url = `${baseUrl}partners/${partnerId}/assessments/${assessmentId}/attempts`;
         const response = await axios.post(url, {
           csvUrl: fileUrl,
         });
-        if (response.data.errors != undefined) {
+        if (response.data.errors !== undefined) {
           setState({
             ...state,
             errors: response.data,
@@ -85,12 +80,11 @@ const CsvUpload = (props) => {
       }
     } catch (e) {
       enqueueSnackbar("Internal Server Error", { variant: "error" });
-      console.error(e);
     }
   };
 
   const errorHandler = () => {
-    if (typeof state.errors == "object") {
+    if (typeof state.errors === "object") {
       return (
         <div>
           <h3 style={{ color: "green", textAlign: "center" }}>
@@ -100,36 +94,16 @@ const CsvUpload = (props) => {
           <ReactJson src={state.errors} />
         </div>
       );
-    } else if (state.errors == "sucess") {
+    }
+    if (state.errors === "sucess") {
       return enqueueSnackbar("successfully uploaded csv file!", {
         variant: "success",
       });
     }
   };
 
-  const onFormSubmit = async (e) => {
-    e.preventDefault(); // Stop form submit
-
-    fileUpload(state.file).then((response) => {
-      try {
-        if (response.data.errors == undefined) {
-          addAttempts(response.data.fileUrl);
-        } else {
-          alert("It is enternal server error please refresh the page.");
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    });
-  };
-
-  const onChange = async (e) => {
-    await setState({ ...state, file: e.target.files[0], loading: true });
-    await onFormSubmit(e);
-  };
-
   const fileUpload = async (file) => {
-    const url = baseUrl + "general/upload_file/answerCSV";
+    const url = `${baseUrl}general/upload_file/answerCSV`;
     const formData = new FormData();
     formData.append("file", file);
     const config = {
@@ -137,7 +111,29 @@ const CsvUpload = (props) => {
         "content-type": "multipart/form-data",
       },
     };
-    return await post(url, formData, config);
+    return post(url, formData, config);
+  };
+
+  const onFormSubmit = async (e) => {
+    e.preventDefault(); // Stop form submit
+
+    fileUpload(state.file).then((response) => {
+      try {
+        if (response.data.errors === undefined) {
+          addAttempts(response.data.fileUrl);
+        } else {
+          alert("It is enternal server error please refresh the page.");
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
+      }
+    });
+  };
+
+  const onChange = async (e) => {
+    await setState({ ...state, file: e.target.files[0], loading: true });
+    await onFormSubmit(e);
   };
 
   const handleClose = () => {
@@ -161,7 +157,7 @@ const CsvUpload = (props) => {
         />
         <Spinner
           size={35}
-          spinnerColor={"#ed343d"}
+          spinnerColor="#ed343d"
           spinnerWidth={5}
           visible={loading}
           style={{ padding: "10px" }}

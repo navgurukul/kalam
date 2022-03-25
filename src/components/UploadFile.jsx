@@ -1,24 +1,17 @@
 import React from "react";
-import UploadIcon from "@material-ui/icons/CloudUpload";
+import UploadIcon from "@mui/icons-material/CloudUpload";
 
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import { Typography, Button } from "@mui/material";
+import axios from "axios";
 
 import { useDispatch } from "react-redux";
 import { changeFetching } from "../store/actions/auth";
-
-import axios from "axios";
 
 const UploadFile = () => {
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const uploadInput = React.useRef();
-
-  const triggerInputFile = () => {
-    uploadInput.current?.click();
-    handleUpload();
-  };
 
   const handleUpload = async () => {
     try {
@@ -30,9 +23,13 @@ const UploadFile = () => {
       });
       fetchingFinish();
     } catch (e) {
-      console.error(e);
       fetchingFinish();
     }
+  };
+
+  const triggerInputFile = () => {
+    uploadInput.current?.click();
+    handleUpload();
   };
 
   return (

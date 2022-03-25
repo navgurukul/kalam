@@ -1,27 +1,27 @@
 import React from "react";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
-import { login } from "../store/actions/auth";
 
-import Paper from "@material-ui/core/Paper";
-import { makeStyles, ThemeProvider } from "@material-ui/styles";
+import { makeStyles, ThemeProvider } from "@mui/styles";
 import {
+  Box,
+  Typography,
+  Button,
+  Paper,
   FormControl,
   InputLabel,
   Input,
   FormHelperText,
-} from "@material-ui/core";
-import { Button } from "@material-ui/core";
-import { theme } from "../theme/theme";
-import axios from "axios";
+} from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import theme from "../theme";
+import { login } from "../store/actions/auth";
 
 const baseUrl = process.env.API_URL;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((_theme) => ({
   userContact: {
-    padding: theme.spacing(3, 2),
+    padding: _theme.spacing(3, 2),
     maxWidth: 400,
     display: "flex",
     flexDirection: "column",
@@ -31,11 +31,11 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    margin: theme.spacing(4),
+    margin: _theme.spacing(4),
   },
   root: {
     "& > *": {
-      margin: theme.spacing(1),
+      margin: _theme.spacing(1),
     },
   },
 }));
@@ -50,9 +50,9 @@ const UserMobileNumber = (props) => {
   const dashBoard = () => {
     const mobile = mobileNumber;
     axios
-      .post(`${baseUrl}students/mobile/${loggedInUser.id}`, { mobile: mobile })
+      .post(`${baseUrl}students/mobile/${loggedInUser.id}`, { mobile })
       .then((resp) => {
-        const user = resp.data.data.user;
+        const { user } = resp.data.data;
         if (user) {
           const { history } = props;
           localStorage.setItem("user", JSON.stringify(user));
@@ -63,7 +63,7 @@ const UserMobileNumber = (props) => {
   };
 
   const handleChange = (name) => (event) => {
-    let valChange = {};
+    const valChange = {};
     valChange[name] = event.target.value;
     setMobileNumber(event.target.value);
   };

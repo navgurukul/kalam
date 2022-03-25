@@ -1,18 +1,22 @@
 import React from "react";
-import Typography from "@material-ui/core/Typography";
-import { Button, Grid } from "@material-ui/core";
-import { Dialog } from "@material-ui/core";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import TextField from "@material-ui/core/TextField";
-import DialogActions from "@material-ui/core/DialogActions";
-import { makeStyles } from "@material-ui/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Avatar from "@material-ui/core/Avatar";
+import {
+  Button,
+  Grid,
+  Typography,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  TextField,
+  List,
+  ListItem,
+  ListItemText,
+  Avatar,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { deepOrange } from "@mui/material/colors";
 import pencil from "../assets/img/pencil.png";
-import { deepOrange } from "@material-ui/core/colors";
+// eslint-disable-next-line camelcase
 import { contact_type } from "../config/index";
 import AddOrUpdateContact from "./AddOrUpdateContact";
 
@@ -93,12 +97,6 @@ const StudentContact = (props) => {
         justify="flex-start"
         alignItems="flex-start"
       >
-        <Grid
-          container
-          direction="column"
-          justify="space-between"
-          alignItems="center"
-        ></Grid>
         <Typography variant="h6" id="modal-title">
           Edit Student Contact Number
         </Typography>
@@ -128,8 +126,8 @@ const StudentContact = (props) => {
           </DialogActions>
           <DialogContent>
             <List>
-              {contacts.map((item, index) => (
-                <ListItem key={index}>
+              {contacts.map((item) => (
+                <ListItem key={item.mobile}>
                   <ListItemText
                     primary={`(${item.contact_type.toUpperCase()}): ${
                       item.mobile
@@ -149,8 +147,9 @@ const StudentContact = (props) => {
           className={classes.dialogContainer}
         >
           <DialogTitle>Add Or Update Contact Number!</DialogTitle>
-          {contact_type.map((type, index) => (
-            <React.Fragment key={index}>
+          {/* eslint-disable-next-line camelcase */}
+          {contact_type.map((type) => (
+            <React.Fragment key={type}>
               <DialogContent>
                 <Grid
                   container
@@ -163,10 +162,11 @@ const StudentContact = (props) => {
                     variant="outlined"
                     onChange={handelChange}
                     defaultValue={
-                      contacts.filter((contact) => contact.contact_type == type)
-                        .length > 0
+                      contacts.filter(
+                        (contact) => contact.contact_type === type
+                      ).length > 0
                         ? contacts.filter(
-                            (contact) => contact.contact_type == type
+                            (contact) => contact.contact_type === type
                           )[0].mobile
                         : null
                     }

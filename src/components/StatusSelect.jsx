@@ -4,7 +4,7 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.API_URL;
 const animatedComponents = makeAnimated();
 
 const StatusSelect = (props) => {
@@ -13,17 +13,17 @@ const StatusSelect = (props) => {
   const handleChange = (selectedValue) => {
     try {
       const { change, rowMetaTable } = props;
-      var studentId;
-      if (window.location.pathname.includes("/campus")) {
+      let studentId;
+      if (window.location.pathname.includes("/campus"))
+        // eslint-disable-next-line prefer-destructuring
         studentId = rowMetaTable.rowData[7];
-      } else {
-        studentId = rowMetaTable.rowData[5];
-      }
+      // eslint-disable-next-line prefer-destructuring
+      else studentId = rowMetaTable.rowData[5];
 
-      const columnIndex = rowMetaTable.columnIndex;
+      const { columnIndex } = rowMetaTable;
       const stage = rowMetaTable.rowData[0];
       const { value } = selectedValue;
-      const dataURL = baseUrl + "students/feedback/" + studentId;
+      const dataURL = `${baseUrl}students/feedback/${studentId}`;
       axios
         .put(dataURL, { student_stage: stage, state: value })
         .then(() => {
@@ -47,14 +47,12 @@ const StatusSelect = (props) => {
   const stage = rowMetaTable.rowData[0];
 
   const allstatus = feedbackableStagesData[stage].status;
-  const allStatusOptions = allstatus.map((x) => {
-    return {
-      value: x,
-      label: x.charAt(0).toUpperCase() + x.slice(1),
-    };
-  });
+  const allStatusOptions = allstatus.map((x) => ({
+    value: x,
+    label: x.charAt(0).toUpperCase() + x.slice(1),
+  }));
 
-  let selectedValue = { value: null, label: null };
+  const selectedValue = { value: null, label: null };
   if (state) {
     const lable = state.charAt(0).toUpperCase() + state.slice(1);
     selectedValue.value = state;
@@ -63,7 +61,7 @@ const StatusSelect = (props) => {
 
   return (
     <Select
-      className={"filterSelectStage"}
+      className="filterSelectStage"
       // defaultValue={selectedValue}
       value={selectedValue}
       onChange={handleChange}
@@ -71,7 +69,7 @@ const StatusSelect = (props) => {
       // placeholder={"Select "+props.filter.name+" ..."}
       isClearable={false}
       components={animatedComponents}
-      closeMenuOnSelect={true}
+      closeMenuOnSelect
     />
   );
 };

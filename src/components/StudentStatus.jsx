@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import MUIDataTable from "mui-datatables";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import GlobalService from "../services/GlobalService";
 import StudentService from "../services/StudentService";
-import { useLocation } from "react-router-dom";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.API_URL;
 
 // const useStyles = makeStyles((theme) => ({
 //   paper: {
@@ -34,15 +34,10 @@ const StudentStatus = () => {
     data: [],
   });
 
-  useEffect(() => {
-    const fetchData = async () => await fetchStatus();
-    fetchData();
-  }, []);
-
   const fetchStatus = async () => {
     let mobile;
     if (location.pathname.includes("status")) {
-      mobile = location.pathname.split("status/")[1];
+      [, mobile] = location.pathname.split("status/");
     } else {
       mobile = location.state.mobile;
     }
@@ -57,9 +52,13 @@ const StudentStatus = () => {
           horizontal: "center",
         },
       });
-      console.error(e);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => fetchStatus();
+    fetchData();
+  }, []);
 
   const { data } = state;
   return (
@@ -69,7 +68,7 @@ const StudentStatus = () => {
         <br />
       </Typography>
       <MUIDataTable
-        columns={StudentService.columns["columnStudentStatus"]}
+        columns={StudentService.columns.columnStudentStatus}
         data={data}
         icons={GlobalService.tableIcons}
         options={{

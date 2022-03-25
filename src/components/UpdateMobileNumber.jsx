@@ -19,7 +19,7 @@ import { useSnackbar } from "notistack";
 import { makeStyles } from "@mui/styles";
 import theme from "../theme";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((_theme) => ({
   container: {

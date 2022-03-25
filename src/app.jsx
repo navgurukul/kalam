@@ -7,13 +7,7 @@ import { Provider } from "react-redux";
 import "./styles/styles.css";
 import { Typography } from "@mui/material";
 import theme from "./theme";
-import configureStore from "./store/config/configureStore";
-
-const store = configureStore();
-
-store.subscribe(() => {
-  // console.log(store.getState());
-});
+import store from "./store/store";
 
 const App = () => (
   <Provider store={store}>

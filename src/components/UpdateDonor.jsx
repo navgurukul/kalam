@@ -3,29 +3,31 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 
 const baseURL = process.env.API_URL;
 const animatedComponents = makeAnimated();
 
 const UpdateDonor = (props) => {
+  const { value } = props;
   const { enqueueSnackbar } = useSnackbar();
   const [state, setState] = React.useState({
     data: null,
-    defaultData: props.value,
+    defaultData: value,
   });
 
   const getDonorsId = (data) => {
-    let result;
-    result = data.map((item) => item.value);
+    const result = data.map((item) => item.value);
     return result;
   };
 
   const updateDonor = () => {
     const { rowMetatable } = props;
     const data = getDonorsId(state.data);
+    // eslint-disable-next-line camelcase
     const student_id = rowMetatable.rowData[0];
     axios
+      // eslint-disable-next-line camelcase
       .put(`${baseURL}students/${student_id}`, { donor: data })
       .then((res) => {
         enqueueSnackbar(res.data.data, {
@@ -40,12 +42,10 @@ const UpdateDonor = (props) => {
   };
 
   const handleChange = (event) => {
-    const { value, change } = props;
+    const { change } = props;
     let rename = [];
     if (event) {
-      rename = event.map((item) => {
-        return { id: item.value, donor: item.label };
-      });
+      rename = event.map((item) => ({ id: item.value, donor: item.label }));
     }
     if (value && event === null) {
       setState({ ...state, data: [] });
@@ -55,33 +55,23 @@ const UpdateDonor = (props) => {
     change(rename);
   };
 
-  const { allOptions, value } = props;
+  const { allOptions } = props;
   return (
     <div>
       <Select
-        className={"filterSelectStage"}
+        className="filterSelectStage"
         components={{ animatedComponents }}
         isMulti
         value={
-          value
-            ? value.map((x) => {
-                return { value: x.id, label: x.donor };
-              })
-            : value
+          value ? value.map((x) => ({ value: x.id, label: x.donor })) : value
         }
         onChange={handleChange}
-        options={allOptions.map((x) => {
-          return { value: x.id, label: x.name };
-        })}
+        options={allOptions.map((x) => ({ value: x.id, label: x.name }))}
         isClearable={false}
-      ></Select>
+      />
       <Button
         color="primary"
-        disabled={
-          JSON.stringify(state.defaultData) !== JSON.stringify(value)
-            ? false
-            : true
-        }
+        disabled={JSON.stringify(state.defaultData) === JSON.stringify(value)}
         onClick={updateDonor}
       >
         Update

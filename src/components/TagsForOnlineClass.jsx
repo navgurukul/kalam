@@ -1,15 +1,9 @@
 import React from "react";
-import { makeStyles } from "@material-ui/styles";
-import Chip from "@material-ui/core/Chip";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import { allTagsForOnlineClass } from "../config";
-
-import Menu from "@material-ui/core/Menu";
-import AddIcon from "@material-ui/icons/Add";
-import MenuItem from "@material-ui/core/MenuItem";
-import Fab from "@material-ui/core/Fab";
+import { makeStyles } from "@mui/styles";
+import { Chip, Paper, Grid, Menu, MenuItem, Fab } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
+import { allTagsForOnlineClass } from "../config";
 
 const baseUrl = process.env.API_URL;
 
@@ -37,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ChipsArray = (props) => {
+  const { allTags } = props;
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -44,27 +39,11 @@ const ChipsArray = (props) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = (value) => async () => {
-    if (value) {
-      const newData = props.allTags;
-      newData.push({ key: newData.length - 1, label: value });
-      addTags(newData);
-    }
-    setAnchorEl(null);
-  };
-
-  const handleDelete = (chipToDelete) => async () => {
-    const newData = props.allTags.filter(
-      (chip) => chip.key !== chipToDelete.key
-    );
-    addTags(newData);
-  };
-
   const addTags = (newData) => {
     const { studentId, rowMetatable, change } = props;
-    const columnIndex = rowMetatable.columnIndex;
+    const { columnIndex } = rowMetatable;
 
-    let tag = [];
+    const tag = [];
     newData.map((data) => tag.push(data.label));
     const tags = tag.join(", ");
 
@@ -73,30 +52,41 @@ const ChipsArray = (props) => {
     });
     change(tags, columnIndex);
   };
-  const { allTags } = props;
+
+  const handleClose = (value) => async () => {
+    if (value) {
+      const newData = allTags;
+      newData.push({ key: newData.length - 1, label: value });
+      addTags(newData);
+    }
+    setAnchorEl(null);
+  };
+
+  const handleDelete = (chipToDelete) => async () => {
+    const newData = allTags.filter((chip) => chip.key !== chipToDelete.key);
+    addTags(newData);
+  };
 
   return (
     <Grid container direction="row" justify="flex-start" alignItems="center">
       {allTags.length ? (
         <Paper component="ul" className={classes.root}>
-          {allTags.map((data) => {
-            return (
-              <li key={data.key}>
-                <Chip
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  label={(
-                    data.label.charAt(0).toUpperCase() + data.label.slice(1)
-                  )
-                    .match(/[A-Z][a-z]+/g)
-                    .join(" ")}
-                  onDelete={handleDelete(data)}
-                  className={classes.chip}
-                />
-              </li>
-            );
-          })}
+          {allTags.map((data) => (
+            <li key={data.key}>
+              <Chip
+                variant="outlined"
+                color="primary"
+                size="small"
+                label={(
+                  data.label.charAt(0).toUpperCase() + data.label.slice(1)
+                )
+                  .match(/[A-Z][a-z]+/g)
+                  .join(" ")}
+                onDelete={handleDelete(data)}
+                className={classes.chip}
+              />
+            </li>
+          ))}
         </Paper>
       ) : null}
       <Fab color="primary" className={classes.fab} onClick={handleClick}>
@@ -109,8 +99,8 @@ const ChipsArray = (props) => {
         open={Boolean(anchorEl)}
         onClose={handleClose(null)}
       >
-        {allTagsForOnlineClass.map((data, index) => (
-          <MenuItem value={data} onClick={handleClose(data)} key={index}>
+        {allTagsForOnlineClass.map((data) => (
+          <MenuItem value={data} onClick={handleClose(data)} key={data}>
             {(data.charAt(0).toUpperCase() + data.slice(1))
               .match(/[A-Z][a-z]+/g)
               .join(" ")}

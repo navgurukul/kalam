@@ -4,18 +4,20 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.API_URL;
 const animatedComponents = makeAnimated();
 
 const UpdateDonorOrCampus = ({ change, rowMetatable, allOptions, value }) => {
   const { enqueueSnackbar } = useSnackbar();
   const handleChange = (event) => {
+    // eslint-disable-next-line camelcase
     const student_id = rowMetatable.rowData[0];
     const field = rowMetatable.columnData.name;
-    const { value } = event;
+    const { value: evValue } = event;
     const data = {};
-    data[field] = value;
+    data[field] = evValue;
     axios
+      // eslint-disable-next-line camelcase
       .put(`${baseURL}students/${student_id}`, data)
       .then(() => {
         enqueueSnackbar(
@@ -36,19 +38,20 @@ const UpdateDonorOrCampus = ({ change, rowMetatable, allOptions, value }) => {
       });
   };
 
-  const selectedValue = { value: value, label: value };
+  const selectedValue = { value, label: value };
 
   return (
     <Select
-      className={"filterSelectStage"}
+      className="filterSelectStage"
       value={selectedValue}
       onChange={handleChange}
-      options={[...allOptions, { name: "No Campus Assigned" }].map((x) => {
-        return { value: x.name, label: x.name };
-      })}
+      options={[...allOptions, { name: "No Campus Assigned" }].map((x) => ({
+        value: x.name,
+        label: x.name,
+      }))}
       isClearable={false}
       components={animatedComponents}
-      closeMenuOnSelect={true}
+      closeMenuOnSelect
     />
   );
 };

@@ -1,4 +1,5 @@
 import React from "react";
+
 const hash = require("object-hash");
 
 const formColor = [
@@ -23,7 +24,7 @@ const SurveyForm = (props) => {
 
   const check = (a) => {
     const { data } = props;
-    let hashValue = hash(data);
+    const hashValue = hash(data);
     setUrl(`${a}${hashValue}`);
   };
   return (
@@ -33,25 +34,23 @@ const SurveyForm = (props) => {
         flexDirection: "column",
       }}
     >
-      {formColor.map((element, index) => {
-        return (
-          <a
-            href={url}
-            target="_blank"
-            rel="noreferrer noopener"
-            style={{
-              backgroundColor: element.color,
-              textAlign: "center",
-              borderRadius: "75px",
-              margin: "10px",
-            }}
-            onClick={() => check(element.link)}
-            key={index}
-          >
-            {element.name}
-          </a>
-        );
-      })}
+      {formColor.map((element) => (
+        <a
+          href={url}
+          target="_blank"
+          rel="noreferrer noopener"
+          style={{
+            backgroundColor: element.color,
+            textAlign: "center",
+            borderRadius: "75px",
+            margin: "10px",
+          }}
+          onClick={() => check(element.link)}
+          key={element.name}
+        >
+          {element.name}
+        </a>
+      ))}
     </div>
   );
 };

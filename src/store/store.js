@@ -8,6 +8,7 @@ import dataReducer from "./reducers/data";
 // import { configureStore } from "@reduxjs/toolkit";
 // import authReducer from "./slices/authSlice";
 // import dataReducer from "./slices/dataSlice";
+// import uiReducer from "./slices/uiSlice";
 
 //oldCOnfig
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -26,5 +27,6 @@ export default createStore(
 //   reducer: {
 //     auth: authReducer,
 //     data: dataReducer,
+//     ui: uiReducer,
 //   },
 // });

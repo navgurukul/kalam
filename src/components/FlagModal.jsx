@@ -1,17 +1,16 @@
 import React, { Fragment } from "react";
 import { useDispatch } from "react-redux";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@mui/styles";
 
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import TextField from "@mui/material/TextField";
+import { Dialog, Box } from "@mui/material";
+
+import FlagIcon from "@mui/icons-material/Flag";
 import { changeFetching } from "../store/actions/auth";
-import TextField from "@material-ui/core/TextField";
-import { Dialog } from "@material-ui/core";
-import { Box } from "@material-ui/core";
 
-import FlagIcon from "@material-ui/icons/Flag";
-
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -113,7 +112,7 @@ const RedFlag = (props) => {
   };
 
   return (
-    <Fragment>
+    <>
       <Box onClick={handleOpen}>
         {state.flagColorToggle ? (
           <FlagIcon
@@ -169,7 +168,7 @@ const RedFlag = (props) => {
           />
         </form>
       </Dialog>
-    </Fragment>
+    </>
   );
 };
 

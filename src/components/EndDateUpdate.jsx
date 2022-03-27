@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React from "react";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
+} from "@mui/lab/DatePicker";
 import DateFnsUtils from "@date-io/date-fns";
 import Axios from "axios";
 import { useSnackbar } from "notistack";
+
 const baseURL = process.env.API_URL;
-function DeadLineDateUpdate(props) {
+function EndDateUpdate(props) {
   console.log("hello");
-  const [value, setValue] = useState(props.value);
-  const rowData = props.rowData;
+  const [value, setValue] = React.useState(props.value);
+  const { rowData } = props;
   const [dateToSend, setDateToSend] = React.useState(value);
   const snackBar = useSnackbar();
   if (value) {
@@ -27,11 +30,11 @@ function DeadLineDateUpdate(props) {
             Axios.put(
               `${baseURL}students/updateDeadlineOrFinishedAt/${rowData.rowData[10]}`,
               {
-                deadline_at: date,
+                finished_at: date,
               }
             ).then((res) => {
               if (res.data) {
-                snackBar.enqueueSnackbar("Deadline Updated", {
+                snackBar.enqueueSnackbar("End Date Updated", {
                   variant: "success",
                 });
                 setDateToSend(date);
@@ -44,23 +47,20 @@ function DeadLineDateUpdate(props) {
         />
       </MuiPickersUtilsProvider>
     );
-  } else {
-    if (rowData.rowData[4]) {
-      return (
-        <>
-          <p
-            onClick={() => {
-              setValue(Date.now());
-            }}
-          >
-            Update Date
-          </p>
-        </>
-      );
-    } else {
-      return null;
-    }
   }
+  if (rowData.rowData[4]) {
+    return (
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+      <p
+        onClick={() => {
+          setValue(Date.now());
+        }}
+      >
+        Update Date
+      </p>
+    );
+  }
+  return null;
 }
 
-export default DeadLineDateUpdate;
+export default EndDateUpdate;

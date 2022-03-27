@@ -4,22 +4,16 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
 const Evaluation = (props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const handleChange = async (selectedValue) => {
-    const { value } = selectedValue;
-    if (value) {
-      changeEvaluation(selectedValue);
-    }
-  };
 
   const changeEvaluation = (selectedValue) => {
     const { rowMetatable, change } = props;
     const studentId = rowMetatable.rowData[0];
-    const columnIndex = rowMetatable.columnIndex;
+    const { columnIndex } = rowMetatable;
     const { value, label } = selectedValue;
     axios
       .put(`${baseUrl}students/${studentId}`, {
@@ -37,15 +31,20 @@ const Evaluation = (props) => {
         });
       });
   };
+  const handleChange = async (selectedValue) => {
+    const { value } = selectedValue;
+    if (value) {
+      changeEvaluation(selectedValue);
+    }
+  };
+
   const { evaluation } = props;
   const evaluationList = ["Struggling", "Manageable", "Good", "Excellent"];
 
-  const evaluationOptions = evaluationList.map((item) => {
-    return {
-      label: item,
-      value: item,
-    };
-  });
+  const evaluationOptions = evaluationList.map((item) => ({
+    label: item,
+    value: item,
+  }));
 
   const selectedValue = {
     value: evaluation,
@@ -55,13 +54,13 @@ const Evaluation = (props) => {
   return (
     <div>
       <Select
-        className={"filterSelectStage"}
+        className="filterSelectStage"
         value={selectedValue}
         onChange={handleChange}
         options={evaluationOptions}
         isClearable={false}
         components={animatedComponents}
-        closeMenuOnSelect={true}
+        closeMenuOnSelect
       />
     </div>
   );

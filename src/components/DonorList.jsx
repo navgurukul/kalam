@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import Container from "@material-ui/core/Container";
-import MainLayout from "./MainLayout";
+import Container from "@mui/material/Container";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import MainLayout from "./MainLayout";
 
 const baseUrl = process.env.API_URL;
 
@@ -27,7 +27,7 @@ const columns = [
       sort: true,
       customBodyRender: (value, rowMeta) => {
         const id = rowMeta.rowData[0];
-        let url = `donor/${id}/students`;
+        const url = `donor/${id}/students`;
         return (
           <Link to={url} style={{ color: "#f05f40" }}>
             {value}
@@ -43,15 +43,9 @@ const DonorList = () => {
     data: [],
     showLoader: true,
   });
-
-  useEffect(() => {
-    const fetchData = async () => await fetchDonors();
-    fetchData();
-  }, []);
-
   const fetchDonors = async () => {
     try {
-      const dataURL = baseUrl + "donors";
+      const dataURL = `${baseUrl}donors`;
       const response = await axios.get(dataURL);
       setState({
         ...state,
@@ -62,11 +56,16 @@ const DonorList = () => {
       console.error(e);
     }
   };
+  useEffect(() => {
+    const fetchData = async () => fetchDonors();
+    fetchData();
+  }, []);
+
   const { data, showLoader } = state;
   return (
     <Container maxWidth="sm">
       <MainLayout
-        title={"Donors Name"}
+        title="Donors Name"
         columns={columns}
         data={data}
         showLoader={showLoader}

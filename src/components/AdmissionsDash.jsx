@@ -1,33 +1,41 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable array-callback-return */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-shadow */
+/* eslint-disable object-shorthand */
+/* eslint-disable prefer-template */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable arrow-body-style */
 import "date-fns";
 import React, { useEffect } from "react";
 // import { allStages} from '../config';
 import { useDispatch, useSelector } from "react-redux";
 import DateFnsUtils from "@date-io/date-fns";
-import { makeStyles, ThemeProvider } from "@material-ui/styles";
+import { makeStyles, ThemeProvider } from "@mui/styles";
 import Select from "react-select";
 
 import axios from "axios";
-import Box from "@material-ui/core/Box";
+import Box from "@mui/material/Box";
 import makeAnimated from "react-select/animated";
-import { Container, Typography } from "@material-ui/core";
-import { theme } from "../theme/theme";
-import { changeFetching, setupUsers } from "../store/actions/auth";
-import StudentService from "../services/StudentService";
+import { Container, Typography } from "@mui/material";
+import _ from "lodash";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-} from "@material-ui/pickers";
-import { allStages } from "../config";
-import { qualificationKeys } from "../config";
+} from "@mui/lab/DatePicker";
+import { changeFetching, setupUsers } from "../store/actions/auth";
+import StudentService from "../services/StudentService";
+import { qualificationKeys, allStages } from "../config";
 import ServerSidePagination from "./ServerSidePagination";
-import _ from "lodash";
 import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
 import Loader from "./Loader";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 let allStagesOptions = Object.keys(allStages).map((x) => {
   return { value: x, label: allStages[x] };
@@ -68,29 +76,17 @@ const AdmissionsDash = (props) => {
     studentDashboardCondition: false, //condition to show student dashboard
     loading: true,
   });
-  let dataType =
-    props.match && props.match.params.dataType
-      ? props.match.params.dataType
-      : "softwareCourse";
-  const studentsURL = baseURL + "students";
-  const usersURL = baseURL + "users/getall";
-  let stage = null,
-    value = null;
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchStudents();
-      await fetchUsers();
-      await fetchOWner();
-      await fetchPartner();
-      await fetchAccess();
-    };
-    fetchData();
-  }, []);
+  const { match } = props;
+  const { dataTypes } = match.params;
+  let dataType = match && dataTypes ? dataTypes : "softwareCourse";
+  const studentsURL = `${baseURL}students`;
+  const usersURL = `${baseURL}users/getall`;
+  let stage = null;
+  let value = null;
 
   const fetchAccess = async () => {
     try {
-      const accessUrl = baseURL + "rolebaseaccess";
+      const accessUrl = `${baseURL}rolebaseaccess`;
       axios.get(accessUrl).then((response) => {
         const studentDashboardData = response.data; //variable to store the response
         const conditions = //variable to store the conditions
@@ -102,7 +98,7 @@ const AdmissionsDash = (props) => {
           studentDashboardData.students.view.includes(state.userLoggedIn.email);
         setState((prevState) => ({
           ...prevState,
-          access: studentDashboardData ? studentDashboardData : null, //set access to state
+          access: studentDashboardData || null, //set access to state
           studentDashboardCondition: conditions,
           loading: false,
         }));
@@ -114,13 +110,13 @@ const AdmissionsDash = (props) => {
 
   const fetchOWner = async () => {
     const response = await axios.get(`${baseURL}owner`);
-    let newData = response.data.data.map((e) => e.user.mail_id);
+    const newData = response.data.data.map((e) => e.user.mail_id);
     localStorage.setItem("owners", JSON.stringify(newData.sort()));
   };
 
   const fetchPartner = async () => {
     const response = await axios.get(`${baseURL}partners`);
-    let newData = response.data.data.map((e) => e.name);
+    const newData = response.data.data.map((e) => e.name);
     localStorage.setItem("partners", JSON.stringify(newData.sort()));
   };
   const fetchUsers = async () => {
@@ -128,7 +124,7 @@ const AdmissionsDash = (props) => {
       fetchingStart();
       const response = await axios.get(usersURL, {});
       usersSetup(response.data.data);
-      let newData = response.data.data.map((data) => data.user);
+      const newData = response.data.data.map((data) => data.user);
       localStorage.setItem("users", JSON.stringify(newData));
       fetchingFinish();
     } catch (e) {
@@ -136,11 +132,36 @@ const AdmissionsDash = (props) => {
       fetchingFinish();
     }
   };
-
+  const dataSetup = (data, totalData) => {
+    if (data.length > 0) {
+      for (let i = 0; i < data.length; i++) {
+        data[i] = StudentService.dConvert(data[i]);
+      }
+      const newData = data.map((v) => {
+        return {
+          ...v,
+          loggedInUser: loggedInUser.email.split("@")[0],
+        };
+      });
+      setState((prevState) => ({
+        ...prevState,
+        data: newData,
+        showLoader: true,
+        totalData: totalData || state.totalData,
+      }));
+      fetchingFinish();
+    } else {
+      setState((prevState) => ({
+        ...prevState,
+        data: data,
+        showLoader: false,
+      }));
+    }
+  };
   const fetchStudents = async (value) => {
     const { fetchPendingInterviewDetails, loggedInUser } = props;
     const { numberOfRows } = state;
-    var concatinateStage = stage === null ? stage : stage.join(",");
+    const concatinateStage = stage === null ? stage : stage.join(",");
     try {
       fetchingStart();
       let response;
@@ -155,8 +176,10 @@ const AdmissionsDash = (props) => {
         value &&
           value.map((filterColumn, index) => {
             if (index > 0) {
+              // eslint-disable-next-line operator-assignment
               url = url + `&${filterColumn.key}=${filterColumn.value}`;
             } else {
+              // eslint-disable-next-line operator-assignment
               url = url + `?${filterColumn.key}=${filterColumn.value}`;
             }
           });
@@ -181,7 +204,7 @@ const AdmissionsDash = (props) => {
       }
 
       const studentData = response.data.data.results.map((student) => {
-        let contacts = student.contacts[student.contacts.length - 1];
+        const contacts = student.contacts[student.contacts.length - 1];
         return {
           ...student,
           qualification: qualificationKeys[student.qualification],
@@ -244,7 +267,7 @@ const AdmissionsDash = (props) => {
       value = "Student Details";
     } else {
       // const arr = [];
-      let arr = selectedOption.map((option) => {
+      const arr = selectedOption.map((option) => {
         return option.value;
       });
       //console.log(arr, " i am arr");
@@ -277,36 +300,9 @@ const AdmissionsDash = (props) => {
     fetchStudents();
   };
 
-  const dataSetup = (data, totalData) => {
-    if (data.length > 0) {
-      for (let i = 0; i < data.length; i++) {
-        data[i] = StudentService.dConvert(data[i]);
-      }
-      const newData = data.map((v) => {
-        return {
-          ...v,
-          loggedInUser: loggedInUser.email.split("@")[0],
-        };
-      });
-      setState((prevState) => ({
-        ...prevState,
-        data: newData,
-        showLoader: true,
-        totalData: totalData ? totalData : state.totalData,
-      }));
-      fetchingFinish();
-    } else {
-      setState((prevState) => ({
-        ...prevState,
-        data: data,
-        showLoader: false,
-      }));
-    }
-  };
-
   const sortChange = (column, order) => {
     const { data } = state;
-    let sorted = _.orderBy(data, [column], [order]);
+    const sorted = _.orderBy(data, [column], [order]);
     setState((prevState) => ({
       ...prevState,
       data: sorted,
@@ -316,33 +312,42 @@ const AdmissionsDash = (props) => {
   const { fetchPendingInterviewDetails } = props;
   const { sData, data, showLoader, totalData, numberOfRows, selectedOption } =
     state;
-  let concatinateStage = stage === null ? stage : stage.join(",");
-
+  const concatinateStage = stage === null ? stage : stage.join(",");
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchStudents();
+      await fetchUsers();
+      await fetchOWner();
+      await fetchPartner();
+      await fetchAccess();
+    };
+    fetchData();
+  }, []);
   const options = (
     <Box>
       <Select
-        className={"filterSelectGlobal"}
+        className="filterSelectGlobal"
         value={dataType}
         onChange={changeDataType}
         options={[
           { value: "requestCallback", label: "Request Callback" },
           { value: "softwareCourse", label: "Other Data" },
         ]}
-        placeholder={"Select Data Type"}
+        placeholder="Select Data Type"
         isClearable={false}
         components={animatedComponents}
-        closeMenuOnSelect={true}
+        closeMenuOnSelect
       />
       <Select
-        className={"filterSelectGlobal"}
+        className="filterSelectGlobal"
         value={selectedOption}
-        isMulti={true}
+        isMulti
         onChange={changeStudentStage}
         options={allStagesOptions}
-        placeholder={"Get Student Details By Stage"}
+        placeholder="Get Student Details By Stage"
         isClearable={false}
         components={animatedComponents}
-        closeMenuOnSelect={true}
+        closeMenuOnSelect
       />
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
@@ -378,7 +383,7 @@ const AdmissionsDash = (props) => {
     return (
       <ServerSidePagination
         columns={StudentService.columns[dataType]}
-        data={sData ? sData : data}
+        data={sData || data}
         showLoader={showLoader}
         params={{
           params: {
@@ -401,12 +406,12 @@ const AdmissionsDash = (props) => {
     <div>
       {state.studentDashboardCondition ? (
         <Box>
-          <ThemeProvider theme={theme}>
+          <ThemeProvider>
             {props.fetchPendingInterviewDetails ? null : options}
-            <div className={classes.clear}></div>
+            <div className={classes.clear} />
             <ServerSidePagination
               columns={StudentService.columns[dataType]}
-              data={sData ? sData : data}
+              data={sData || data}
               showLoader={showLoader}
               fun={fetchStudents}
               params={{

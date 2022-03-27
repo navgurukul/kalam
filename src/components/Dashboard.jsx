@@ -11,7 +11,7 @@ import axios from "axios";
 
 import { changeFetching, setupUsers } from "../store/actions/auth";
 
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import StudentService from "../services/StudentService";
 import { EventEmitter } from "./events";
@@ -121,7 +121,7 @@ let columns = [
 
 const DashboardPage = (props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { location } = useHistory();
+  const { location } = useNavigate();
   const { getData: data } = useSelector((state) => state.data);
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));

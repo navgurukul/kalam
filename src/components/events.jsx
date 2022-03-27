@@ -1,14 +1,14 @@
 const EventEmitter = {
   events: {},
-  dispatch: function (event, data) {
+  dispatch(event, data) {
     if (!this.events[event]) return;
     this.events[event].forEach((callback) => callback(data));
   },
-  subscribe: function (event, callback) {
+  subscribe(event, callback) {
     if (!this.events[event]) this.events[event] = [];
     this.events[event].push(callback);
   },
-  unsubscribe: function (event) {
+  unsubscribe(event) {
     if (this.events[event]) this.events[event] = [];
   },
 };

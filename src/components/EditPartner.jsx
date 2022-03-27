@@ -1,20 +1,21 @@
 import React, { Fragment, useEffect } from "react";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@mui/styles";
 
 import axios from "axios";
-import { Button } from "@material-ui/core";
-import { useSnackbar } from "notistack";
-import { Dialog } from "@material-ui/core";
-import { Box } from "@material-ui/core";
 import {
+  Button,
+  Dialog,
+  Box,
   FormControl,
   InputLabel,
   Input,
   FormHelperText,
-} from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
+} from "@mui/material";
+import { useSnackbar } from "notistack";
 
-const baseUrl = process.env.API_URL;
+import EditIcon from "@mui/icons-material/Edit";
+
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -48,9 +49,9 @@ const EditPartner = (props) => {
       const dataURL = `${baseUrl}partners/${partnerId}`;
       await axios
         .put(dataURL, {
-          name: name,
-          notes: notes,
-          slug: slug,
+          name,
+          notes,
+          slug,
         })
         .then(() => {
           //console.log(response.data);
@@ -84,13 +85,13 @@ const EditPartner = (props) => {
     const { name, notes } = props;
     setState({
       ...state,
-      name: name,
-      notes: notes,
+      name,
+      notes,
     });
   }, []);
 
   const handleChange = (name) => (event) => {
-    let valChange = {};
+    const valChange = {};
     valChange[name] = event.target.value;
 
     setState({ ...state, [name]: event.target.value });
@@ -109,8 +110,9 @@ const EditPartner = (props) => {
       dialogOpen: true,
     });
   };
+  const { name, notes } = props;
   return (
-    <Fragment>
+    <>
       <Box onClick={handleOpen} style={{ cursor: "pointer" }}>
         <EditIcon /> Add Slug
       </Box>
@@ -122,7 +124,7 @@ const EditPartner = (props) => {
               id="partnerName"
               aria-describedby="my-helper-text"
               name="name"
-              defaultValue={props.name}
+              defaultValue={name}
               onChange={handleChange("name")}
             />
             <FormHelperText className={classes.text} id="my-helper-text">
@@ -136,7 +138,7 @@ const EditPartner = (props) => {
               id="partnerNotes"
               aria-describedby="my-helper-text"
               name="notes"
-              defaultValue={props.notes}
+              defaultValue={notes}
               onChange={handleChange("notes")}
             />
             <FormHelperText className={classes.text} id="my-helper-text">
@@ -168,7 +170,7 @@ const EditPartner = (props) => {
           </Button>
         </form>
       </Dialog>
-    </Fragment>
+    </>
   );
 };
 

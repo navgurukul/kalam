@@ -1,11 +1,11 @@
 import React from "react";
 import clsx from "clsx";
 
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import IconButton from "@material-ui/core/IconButton";
-import CardActions from "@material-ui/core/CardActions";
-import { Typography, CardContent } from "@material-ui/core";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import IconButton from "@mui/material/IconButton";
+import CardActions from "@mui/material/CardActions";
+import { Typography, CardContent } from "@mui/material";
 import { allStages } from "../config";
 import StageTransitions from "./StageTransitions";
 

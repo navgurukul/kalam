@@ -6,20 +6,20 @@ import {
   Modal,
   Card,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import React, { useState } from "react";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
-} from "@material-ui/pickers";
+} from "@mui/lab/DatePicker";
 import DateFnsUtils from "@date-io/date-fns";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,20 +79,19 @@ const AddOwnerSchedule = ({
   const addSchedule = () => {
     const { from, to } = schedule;
     const diff = parseInt(
-      moment.duration(moment(to).diff(moment(from))).asHours()
+      moment.duration(moment(to).diff(moment(from))).asHours(),
+      10
     );
     if (diff < 0) {
       snackbar.enqueueSnackbar("Start Time should be before End Time", {
         variant: "error",
       });
-      return;
     } else if (diff < 1) {
       snackbar.enqueueSnackbar("Please select at least 1hr long schedule", {
         variant: "error",
       });
-      return;
     }
-    const Url = baseUrl + "ownershedule";
+    const Url = `${baseUrl}ownershedule`;
     const fromStr = moment(from).format("HH:mm");
     const toStr = moment(to).format("HH:mm");
     if (isEdit) {
@@ -115,7 +114,7 @@ const AddOwnerSchedule = ({
           setModelOpen(false);
         })
         .catch((err) => {
-          snackbar.enqueueSnackbar("ERROR : " + err.message, {
+          snackbar.enqueueSnackbar(`ERROR : ${err.message}`, {
             variant: "error",
           });
         });
@@ -140,7 +139,7 @@ const AddOwnerSchedule = ({
           setModelOpen(false);
         })
         .catch((err) => {
-          snackbar.enqueueSnackbar("ERROR : " + err.message, {
+          snackbar.enqueueSnackbar(`ERROR : ${err.message}`, {
             variant: "error",
           });
         });
@@ -148,7 +147,7 @@ const AddOwnerSchedule = ({
   };
 
   const deleteSchedule = () => {
-    let toDelete = window.confirm("Are you sure?");
+    const toDelete = window.confirm("Are you sure?");
     if (!toDelete) return;
     const Url = `${baseUrl}ownershedule/${ownerId}`;
     axios.delete(Url).then((res) => {

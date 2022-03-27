@@ -1,16 +1,16 @@
 import React, { Fragment } from "react";
 import axios from "axios";
-import AddBox from "@material-ui/icons/AddBox";
-import { Box } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import AddBox from "@mui/icons-material/AddBox";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 import {
+  Box,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
-} from "@material-ui/core";
+} from "@mui/material";
 import { useSnackbar } from "notistack";
 import Spinner from "react-spinner-material";
 
@@ -23,19 +23,10 @@ export const CreateAssessment = (props) => {
     inputValue: "",
     loading: false,
   });
-
-  const createAssessment2 = async () => {
-    await handleClose();
-    await setState((prevState) => ({
-      ...prevState,
-      loading: true,
-    }));
-    createAssessment();
-  };
-
   const createAssessment = async () => {
+    const { partnerId } = props;
     try {
-      const dataURL = baseUrl + "partners/" + props.partnerId + "/assessments";
+      const dataURL = `${baseUrl}partners/${partnerId}/assessments`;
       await axios
         .post(dataURL, {
           name: state.inputValue,
@@ -53,12 +44,20 @@ export const CreateAssessment = (props) => {
       snackbar.enqueueSnackbar(e, { variant: "error" });
     }
   };
-
   const handleClose = () => {
     setState({
       ...state,
       dialogOpen: false,
     });
+  };
+
+  const createAssessment2 = async () => {
+    await handleClose();
+    await setState((prevState) => ({
+      ...prevState,
+      loading: true,
+    }));
+    createAssessment();
   };
 
   const handleOpen = () => {
@@ -76,12 +75,12 @@ export const CreateAssessment = (props) => {
   };
   const { loading } = state;
   return (
-    <Fragment>
+    <>
       <Box onClick={handleOpen}>
         <AddBox />
         <Spinner
           size={35}
-          spinnerColor={"#ed343d"}
+          spinnerColor="#ed343d"
           spinnerWidth={5}
           visible={loading}
         />
@@ -110,7 +109,7 @@ export const CreateAssessment = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Fragment>
+    </>
   );
 };
 

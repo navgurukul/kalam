@@ -1,6 +1,6 @@
 import React from "react";
-import DeleteIcon from "@material-ui/icons/Delete";
-import Box from "@material-ui/core/Box";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Box from "@mui/material/Box";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 

@@ -1,13 +1,13 @@
+/* eslint-disable prefer-destructuring */
 import React, { Fragment } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { Button, makeStyles } from "@material-ui/core";
+import { Button, makeStyles, Dialog, Box } from "@mui/material";
 import { useSnackbar } from "notistack";
+import TextField from "@mui/material/TextField";
+
+import EditIcon from "@mui/icons-material/Edit";
 import { changeFetching } from "../store/actions/auth";
-import TextField from "@material-ui/core/TextField";
-import { Dialog } from "@material-ui/core";
-import { Box } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
 
 const baseUrl = process.env.API_URL;
 
@@ -90,7 +90,7 @@ const StudentFeedback = (props) => {
   // const validate = () => {};
 
   const handleChange = (name) => (event) => {
-    let valChange = {};
+    const valChange = {};
     valChange[name] = event.target.value;
 
     setState({ ...state, [name]: event.target.value });
@@ -114,24 +114,22 @@ const StudentFeedback = (props) => {
     const month = time.getMonth() + 1;
     const feedbackTime = `Feedback date ${time.getDate()}/${month}/${time.getFullYear()}`;
     return feedback
-      ? user + ": " + feedbackTime + "\n\n" + feedback
-      : user + ": " + feedbackTime + "\n\n";
+      ? `${user}: ${feedbackTime}\n\n${feedback}`
+      : `${user}: ${feedbackTime}\n\n`;
   };
   const { feedback } = props;
   let user;
   if (localStorage.getItem("user")) {
-    user =
-      "@" +
-      JSON.parse(localStorage.getItem("user"))
-        .user_name.toString()
-        .split(" ")
-        .join("")
-        .toLowerCase();
+    user = `@${JSON.parse(localStorage.getItem("user"))
+      .user_name.toString()
+      .split(" ")
+      .join("")
+      .toLowerCase()}`;
   } else {
-    user = "@" + "guest";
+    user = "@guest";
   }
   return (
-    <Fragment>
+    <>
       <Box onClick={handleOpen}>
         <EditIcon style={{ cursor: "pointer" }} />
       </Box>
@@ -162,7 +160,7 @@ const StudentFeedback = (props) => {
           </Button>
         </form>
       </Dialog>
-    </Fragment>
+    </>
   );
 };
 

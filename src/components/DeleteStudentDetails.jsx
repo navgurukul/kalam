@@ -1,7 +1,7 @@
+/* eslint-disable no-shadow */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { permissions } from "../config";
-import DeleteIcon from "@material-ui/icons/Delete";
+import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import {
@@ -11,7 +11,8 @@ import {
   Button,
   Typography,
   Grid,
-} from "@material-ui/core";
+} from "@mui/material";
+import { permissions } from "../config";
 import { getData } from "../store/actions/data";
 
 const baseUrl = process.env.API_URL;

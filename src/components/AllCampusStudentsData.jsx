@@ -1,7 +1,9 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable import/extensions */
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { changeFetching, setupUsers } from "../store/actions/auth";
 import axios from "axios";
+import { changeFetching, setupUsers } from "../store/actions/auth";
 import StudentService from "../services/StudentService";
 import DashboardPage from "./Dashboard";
 import SelectUiByButtons from "./SelectUiByButtons";
@@ -24,7 +26,7 @@ const CampusStudentsData = () => {
   const fetchingFinish = () => dispatch(changeFetching(false));
   const usersSetup = (users) => dispatch(setupUsers(users));
   const fetchUsers = async () => {
-    const usersURL = baseUrl + "users/getall";
+    const usersURL = `${baseUrl}users/getall`;
     try {
       const response = await axios.get(usersURL, {});
       usersSetup(response.data.data);
@@ -36,7 +38,7 @@ const CampusStudentsData = () => {
   };
   const fetchAccess = async () => {
     try {
-      const accessUrl = baseUrl + "rolebaseaccess"; //request url
+      const accessUrl = `${baseUrl}rolebaseaccess`; //request url
       axios.get(accessUrl).then((response) => {
         const campusData = response.data.campus; //storing response data in campusData variable
         const conditions = //variable to check if user is allowed to access the page
@@ -49,7 +51,7 @@ const CampusStudentsData = () => {
 
         setState({
           ...state,
-          access: campusData ? campusData : null,
+          access: campusData || null,
           allCampusCondition: conditions, //to set access object
         });
       });
@@ -76,20 +78,20 @@ const CampusStudentsData = () => {
       {state.allCampusCondition ? ( //if user is allowed to access the page
         <div>
           <SelectUiByButtons
-            name={`All Campus`}
+            name="All Campus"
             progressMade={progressMade}
             tabularData={tabularData}
             showGraphData={showGraphData}
           />
           {isShow ? (
             <DashboardPage
-              displayData={StudentService["CampusData"]}
-              url={`/allcampus/students`}
+              displayData={StudentService.CampusData}
+              url="/allcampus/students"
             />
           ) : isShow === null ? (
-            <GraphingPresentationJob url={`/allcampus/students/distribution`} />
+            <GraphingPresentationJob url="/allcampus/students/distribution" />
           ) : (
-            <StudentsProgressCards url={`allcampus`} />
+            <StudentsProgressCards url="allcampus" />
           )}
         </div>
       ) : (

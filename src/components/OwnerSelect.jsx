@@ -4,7 +4,7 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
 const OwnerSelect = (props) => {
@@ -13,10 +13,10 @@ const OwnerSelect = (props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const dataURL = baseUrl + "owner";
+      const dataURL = `${baseUrl}owner`;
       const response = await axios.get(dataURL);
       const { data } = response.data;
-      let newData = data
+      const newData = data
         .filter((el) => el.available)
         .map((el) => ({
           value: el.user.user_name,
@@ -60,19 +60,19 @@ const OwnerSelect = (props) => {
   let selectedValue = { value: null, label: null };
 
   if (value) {
-    selectedValue = { value: value, label: value };
+    selectedValue = { value, label: value };
   }
 
   return (
     <Select
-      className={"filterSelectStage"}
+      className="filterSelectStage"
       value={selectedValue}
       onChange={handleChange}
       options={ownerData}
       // placeholder={"Select "+ props.filter.name+" ..."}
       isClearable={false}
       components={animatedComponents}
-      closeMenuOnSelect={true}
+      closeMenuOnSelect
     />
   );
 };

@@ -118,14 +118,6 @@ const AppRouter = () => (
             }
           />
         </Route>
-        <Route
-          path="/admin"
-          element={
-            <RequireAuth privateRoute>
-              <NewAdminPage />
-            </RequireAuth>
-          }
-        />
 
         <Route path="/partnerLanding/:slug" element={<LandingPage />} />
 

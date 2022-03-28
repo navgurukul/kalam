@@ -1,32 +1,31 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import { makeStyles } from "@material-ui/styles";
-import Container from "@material-ui/core/Container";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
-import { Button, Typography, CardContent } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import { Button, Typography, CardContent } from "@mui/material";
 import { allStages } from "../config";
-
-import Card from "@material-ui/core/Card";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
-import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
-import AnnouncementIcon from "@material-ui/icons/Announcement";
-import CancelIcon from "@material-ui/icons/Cancel";
-import HelpIcon from "@material-ui/icons/Help";
-import Avatar from "@material-ui/core/Avatar";
-import { deepOrange } from "@material-ui/core/colors";
+import Card from "@mui/material/Card";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import AnnouncementIcon from "@mui/icons-material/Announcement";
+import CancelIcon from "@mui/icons-material/Cancel";
+import HelpIcon from "@mui/icons-material/Help";
+import Avatar from "@mui/material/Avatar";
+import { deepOrange } from "@mui/material/colors";
 import { isMobile } from "react-device-detect";
 import { useSnackbar } from "notistack";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import FileCopyIcon from "@material-ui/icons/FileCopy";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 import WhatsAppIcon from "../assets/img/whatsapp.png";
 import DashboardPage from "./Dashboard";
 import CollapseStudentData from "./collapseData";
-import Tooltip from "@material-ui/core/Tooltip";
+import Tooltip from "@mui/material/Tooltip";
 import StudentService from "../services/StudentService";
 import GraphPage from "./GraphPage";
 
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((theme) => ({
   root: {

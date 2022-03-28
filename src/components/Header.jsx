@@ -1,36 +1,35 @@
 import React from "react";
-import AppBar from "@material-ui/core/AppBar";
-import Select from "@material-ui/core/Select";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
+import AppBar from "@mui/material/AppBar";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
 
 import { useSelector, useDispatch } from "react-redux";
-import Drawer from "@material-ui/core/Drawer";
-import Toolbar from "@material-ui/core/Toolbar";
-import Box from "@material-ui/core/Box";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-
+import Drawer from "@mui/material/Drawer";
+import Toolbar from "@mui/material/Toolbar";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Link, useNavigate } from "react-router-dom";
+import Image from "material-ui-image";
 import logo from "../assets/img/logo.png";
 
-import { Link } from "react-router-dom";
 import PublicNavList from "../navs/publicNav";
 import PrivateNavList from "../navs/privateNav";
 import ExpandNavList from "../navs/expandNavs";
 import { logout } from "../store/actions/auth";
-import { useHistory } from "react-router-dom";
 
-import Image from "material-ui-image";
 import ModalStages from "./ModalStages";
 
 const Header = (props) => {
   const { isAuthenticated, isFetching } = useSelector((state) => state.auth);
+  const { onChange, value } = props;
   const dispatch = useDispatch();
   const startLogout = () => dispatch(logout());
-  const { location } = useHistory();
+  const { location } = useNavigate();
   const [state, setState] = React.useState({
     check: "",
     value: 1,
@@ -47,7 +46,7 @@ const Header = (props) => {
   const toggleDrawer = (open) => () => {
     setState({
       ...state,
-      open: open,
+      open,
     });
   };
 
@@ -78,25 +77,23 @@ const Header = (props) => {
     if (location) {
       if (location.pathname.indexOf("partner") > -1) return <ModalStages />;
     }
-    return;
   };
 
-  const renderProgressBar = () =>
-    isFetching ? <LinearProgress /> : <span></span>;
+  const renderProgressBar = () => (isFetching ? <LinearProgress /> : <span />);
   return (
     <div>
       <Drawer open={state.open} onClose={toggleDrawer(false)}>
         <div tabIndex={0} role="button">
           <div className="sidelistwrapper">
             {!isAuthenticated && (
-              <React.Fragment>
+              <fragment>
                 <PublicNavList /> <ExpandNavList />
-              </React.Fragment>
+              </fragment>
             )}
             {isAuthenticated && (
-              <React.Fragment>
+              <fragment>
                 <PrivateNavList />
-              </React.Fragment>
+              </fragment>
             )}
           </div>
         </div>
@@ -134,9 +131,9 @@ const Header = (props) => {
                       Select Language
                     </InputLabel>
                     <Select
-                      onChange={props.onChange}
-                      defaultValue={"Select Language"}
-                      value={props.value}
+                      onChange={onChange}
+                      defaultValue="Select Language"
+                      value={value}
                       inputProps={{
                         id: "filled-age-native-simple",
                       }}

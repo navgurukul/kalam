@@ -1,7 +1,7 @@
 import React from "react";
 import FeedbackableStageWiseDangling from "./FeedbackableStageWiseDangling";
 import StageWiseGenderDistribution from "./StageWiseGenderDistribution";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 
 const ReportContainer = () => {
   return (

@@ -1,23 +1,23 @@
 import React, { useEffect } from "react";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
-import Paper from "@material-ui/core/Paper";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import { theme } from "../theme/theme";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useSnackbar } from "notistack";
+import { Link } from "react-router-dom";
+import Grid from "@mui/material/Grid";
+import { makeStyles, ThemeProvider } from "@mui/styles";
 import { changeFetching } from "../store/actions/auth";
 import VideoSlider from "./VideoSlider";
-import Grid from "@material-ui/core/Grid";
 import Header from "./Header";
-import { Link } from "react-router-dom";
-import { makeStyles, ThemeProvider } from "@material-ui/styles";
+import theme from "../theme";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   loginContainer: {
     padding: theme.spacing(3, 2),
     maxWidth: 400,
@@ -147,6 +147,41 @@ const LandingPage = (props) => {
     },
   };
 
+  const partnerFetch = async (slug) => {
+    const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
+    setState({
+      ...state,
+      partnerId: response.data.data[".id"],
+    });
+  };
+
+  const generateTestLink = async (studentId) => {
+    try {
+      const partnerId = state.partnerId ? state.partnerId : null;
+      const mobile = `0${state.mobileNumber}`;
+      fetchingStart();
+      const dataURL = `${baseUrl}helpline/register_exotel_call`;
+      const response = await axios.get(dataURL, {
+        params: {
+          ngCallType: "getEnrolmentKey",
+          From: mobile,
+          partner_id: partnerId,
+          student_id: studentId,
+        },
+      });
+      return response;
+    } catch (e) {
+      enqueueSnackbar("Something went wrong", {
+        variant: "error",
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "center",
+        },
+      });
+      fetchingFinish();
+    }
+  };
+
   useEffect(() => {
     const slug = window.location.href.split("partnerLanding/")[1];
     if (slug) {
@@ -170,6 +205,7 @@ const LandingPage = (props) => {
 
   const isDuplicate = () => {
     const { mobileNumber, firstName, middleName, lastName } = state;
+    const { history } = props;
     const first_name = firstName.replace(
       firstName[0],
       firstName[0].toUpperCase()
@@ -179,7 +215,7 @@ const LandingPage = (props) => {
       middleName.replace(middleName[0], middleName[0].toUpperCase());
     const last_name = lastName.replace(lastName[0], lastName[0].toUpperCase());
     axios
-      .get(baseUrl + "/check_duplicate", {
+      .get(`${baseUrl}check_duplicate`, {
         params: {
           Name: firstName.concat(" ", middleName, lastName),
           Number: mobileNumber,
@@ -188,15 +224,15 @@ const LandingPage = (props) => {
       .then(async (data) => {
         const response = data.data.data;
         if (response.alreadyGivenTest) {
-          props.history.push({
+          history.push({
             pathname: `/check_duplicate/Name=${first_name}${middle_name}${last_name}&Number=${mobileNumber}&Stage=${response.pendingInterviewStage}`,
             state: {
-              state: state,
+              state,
               data: response.data,
             },
           });
         } else {
-          const response = await generateTestLink();
+          const res = await generateTestLink();
           // const params = {
           //   firstName: firstName,
           //   middleName: middleName,
@@ -213,7 +249,7 @@ const LandingPage = (props) => {
           //   .filter((item) => item)
           //   .join("&");
           // const url = `${testUrl}${response.data.key}?${queryString}`;
-          props.history.push({
+          history.push({
             pathname: `/test/${response.data.key}`,
             state: {
               firstName,
@@ -229,7 +265,7 @@ const LandingPage = (props) => {
             firstName: "",
             middleName: "",
             lastName: "",
-            enrollmentKey: response.data.key,
+            enrollmentKey: res.data.key,
           });
           fetchingFinish();
         }
@@ -261,45 +297,10 @@ const LandingPage = (props) => {
     await isDuplicate();
   };
 
-  const generateTestLink = async (studentId) => {
-    try {
-      const partnerId = state.partnerId ? state.partnerId : null;
-      const mobile = "0" + state.mobileNumber;
-      fetchingStart();
-      const dataURL = baseUrl + "helpline/register_exotel_call";
-      const response = await axios.get(dataURL, {
-        params: {
-          ngCallType: "getEnrolmentKey",
-          From: mobile,
-          partner_id: partnerId,
-          student_id: studentId,
-        },
-      });
-      return response;
-    } catch (e) {
-      enqueueSnackbar("Something went wrong", {
-        variant: "error",
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
-      });
-      fetchingFinish();
-    }
-  };
-
   const handleChange = (e) => {
     setState({
       ...state,
       selectedLang: e.target.value,
-    });
-  };
-
-  const partnerFetch = async (slug) => {
-    const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
-    setState({
-      ...state,
-      partnerId: response.data.data["id"],
     });
   };
 
@@ -478,7 +479,7 @@ const LandingPage = (props) => {
                   <Link
                     to={{
                       pathname: `/status/${mobile}`,
-                      state: { mobile: mobile },
+                      state: { mobile },
                     }}
                   >
                     <Button variant="outlined" color="primary">
@@ -491,7 +492,7 @@ const LandingPage = (props) => {
           </Grid>
         </Grid>
       </ThemeProvider>
-      <Box style={{ height: theme.spacing(6) }}></Box>
+      <Box style={{ height: theme.spacing(6) }} />
       <Box>
         <Box
           className="footer-container-box"

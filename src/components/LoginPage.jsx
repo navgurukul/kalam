@@ -1,18 +1,18 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { login } from "../store/actions/auth";
-import { Box } from "@material-ui/core";
-// import Paper from '@material-ui/core/Paper';
-// import Input from '@material-ui/core/Input';
-// import InputLabel from '@material-ui/core/InputLabel';
-// import InputAdornment from '@material-ui/core/InputAdornment';
-// import FormControl from '@material-ui/core/FormControl';
-// import TextField from '@material-ui/core/TextField';
-// import Grid from '@material-ui/core/Grid';
+import { Box } from "@mui/material";
+// import Paper from '@mui/material/Paper';
+// import Input from '@mui/material/Input';
+// import InputLabel from '@mui/material/InputLabel';
+// import InputAdornment from '@mui/material/InputAdornment';
+// import FormControl from '@mui/material/FormControl';
+// import TextField from '@mui/material/TextField';
+// import Grid from '@mui/material/Grid';
 // import AccountCircle from '@material-ui/icons/AccountCircle';
 // import Key from '@material-ui/icons/VpnKey';
-// import Button from '@material-ui/core/Button';
+// import Button from '@mui/material/Button';
 import GoogleLogin from "react-google-login";
+import { login } from "../store/actions/auth";
 
 const LoginPage = () => {
   const dispatch = useDispatch();

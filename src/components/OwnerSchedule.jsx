@@ -1,12 +1,13 @@
-import { Card, Grid, Modal } from "@material-ui/core";
+import { Card, Grid, Modal } from "@mui/material";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
+} from "@mui/lab/DatePicker";
 import React, { useEffect, useState } from "react";
-import MainLayout from "./MainLayout";
 import DateFnsUtils from "@date-io/date-fns";
-const baseUrl = process.env.API_URL;
+import MainLayout from "./MainLayout";
+
+const baseUrl = import.meta.env.VITE_API_URL;
 function OwnerSchedule(props) {
   const { ScheduleOpen, setScheduleOpen } = props;
   const columns = [
@@ -16,10 +17,8 @@ function OwnerSchedule(props) {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, rowMeta) => {
-          console.log(value);
-          return <p>{value.split("T")[0]}</p>;
-        },
+        // eslint-disable-next-line react/no-unstable-nested-components
+        customBodyRender: (value) => <p>{value.split("T")[0]}</p>,
       },
     },
     {
@@ -60,9 +59,8 @@ function OwnerSchedule(props) {
       options: {
         filter: true,
         sort: true,
-        customBodyRender: (value, rowMeta) => {
-          return <p>{value.split("T")[0]}</p>;
-        },
+        // eslint-disable-next-line react/no-unstable-nested-components
+        customBodyRender: (value) => <p>{value.split("T")[0]}</p>,
       },
     },
     {
@@ -75,36 +73,35 @@ function OwnerSchedule(props) {
     },
   ];
   const [slotData, setSlotData] = useState([]);
-  useEffect(() => {
-    handleDateChange(date);
-  }, []);
   const [date, setDate] = useState(Date.now);
   const handleDateChange = (dater) => {
     //console.log(dater);
     setDate(dater);
-    let DateArray = typeof dater;
-    var d = (new Date(dater) + "").split(" ");
-    d[2] = d[2] + ",";
-    let DateToSend = [d[3], month[d[1]], d[2]].join("-").replace(",", "");
+    // let DateArray = typeof dater;
+    const d = new Date(dater).split(" ");
+    d[2] += ",";
+    // eslint-disable-next-line no-use-before-define
+    const DateToSend = [d[3], month[d[1]], d[2]].join("-").replace(",", "");
     fetch(`${baseUrl}/slot/interview/ondate/${DateToSend}`).then((res) => {
       res.json().then((data) => {
-        const dataAdd = data.data.map((item) => {
-          return {
-            ...item,
-            on_date: item.on_date.split("T")[0],
-            start_time: item.start_time,
-            end_time_expected: item.end_time_expected,
-            topic_name: item.topic_name,
-            name: item.student.name,
-            email: item.student.email,
-            phone: item.contacts.mobile,
-            owner: item.user.user_name,
-          };
-        });
+        const dataAdd = data.data.map((item) => ({
+          ...item,
+          on_date: item.on_date.split("T")[0],
+          start_time: item.start_time,
+          end_time_expected: item.end_time_expected,
+          topic_name: item.topic_name,
+          name: item.student.name,
+          email: item.student.email,
+          phone: item.contacts.mobile,
+          owner: item.user.user_name,
+        }));
 
         setSlotData(dataAdd);
       });
     });
+    useEffect(() => {
+      handleDateChange(date);
+    }, []);
   };
   const month = {
     Jan: `01`,
@@ -154,7 +151,7 @@ function OwnerSchedule(props) {
             />
           </Grid>
         </MuiPickersUtilsProvider>
-        <MainLayout title={"Schedule"} columns={columns} data={slotData} />
+        <MainLayout title="Schedule" columns={columns} data={slotData} />
       </Card>
     </Modal>
   );

@@ -10,7 +10,7 @@ import StudentService from "../services/StudentService";
 import MainLayout from "./MainLayout";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const MyAssignReport = () => {
   const { loggedInUser } = useSelector((state) => state.auth);
@@ -18,20 +18,25 @@ const MyAssignReport = () => {
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const [data, setData] = React.useState([]);
-  const ownerAssignDetailsURL = baseURL + "students/my_assigns";
+  const ownerAssignDetailsURL = `${baseURL}students/my_assigns`;
 
-  useEffect(() => {
-    const fetchData = async () => await fetchOwnerReport();
-    fetchData();
-  }, []);
-
+  const dataConvert = () => {
+    const newData = [];
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < data.length; i++) {
+      data[i].name = data[i].student.name;
+      delete data[i].student;
+      newData.push(data[i]);
+    }
+    setData(newData);
+  };
   const fetchOwnerReport = async () => {
     try {
       fetchingStart();
       const user = loggedInUser.email.split("@")[0];
       const response = await axios.get(ownerAssignDetailsURL, {
         params: {
-          user: user,
+          user,
         },
       });
       dataConvert(response.data.data);
@@ -42,15 +47,10 @@ const MyAssignReport = () => {
     }
   };
 
-  const dataConvert = (data) => {
-    const newData = [];
-    for (let i = 0; i < data.length; i++) {
-      data[i].name = data[i].student.name;
-      delete data[i].student;
-      newData.push(data[i]);
-    }
-    setData(newData);
-  };
+  useEffect(() => {
+    const fetchData = () => fetchOwnerReport();
+    fetchData();
+  }, []);
 
   return <MainLayout columns={StudentService.columnMyReports} data={data} />;
 };

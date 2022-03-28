@@ -1,7 +1,9 @@
+/* eslint-disable arrow-body-style */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react/jsx-boolean-value */
 import React, { useEffect, useState } from "react";
-import Card from "@material-ui/core/Card";
-import DateFnsUtils from "@date-io/date-fns";
-import { makeStyles } from "@material-ui/styles";
+import Card from "@mui/material/Card";
+import { makeStyles } from "@mui/styles";
 import {
   Button,
   Grid,
@@ -12,24 +14,16 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-} from "@material-ui/core";
-import Select from "react-select";
-import EditIcon from "@material-ui/icons/Edit";
-import axios from "axios";
-import {
   FormControl,
   InputLabel,
   Input,
   FormHelperText,
-} from "@material-ui/core";
+} from "@mui/material";
+import Select from "react-select";
+import EditIcon from "@mui/icons-material/Edit";
+import axios from "axios";
 import { useSnackbar } from "notistack";
-import { Center } from "devextreme-react/map";
-import { TableBody, TableHead } from "mui-datatables";
-import MainLayout from "./MainLayout";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
+
 import OwnerSchedule from "./OwnerSchedule";
 
 const baseUrl = process.env.API_URL;
@@ -76,6 +70,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const AddOwner = (props) => {
+  const { isEdit, disabled } = props;
+
   const classes = useStyles();
   const snackbar = useSnackbar();
   const [state, setState] = React.useState({
@@ -118,10 +114,10 @@ export const AddOwner = (props) => {
       axios
         .post(`${baseUrl}owner`, {
           user_id: ownerId,
-          available: availablity === "Yes" ? true : false,
-          max_limit: limit ? limit : undefined,
+          available: availablity === "Yes",
+          max_limit: limit || undefined,
           type: stage,
-          gender: gender,
+          gender,
         })
         .then((response) => {
           snackbar.enqueueSnackbar(`Owner Successfull created !`, {
@@ -160,10 +156,10 @@ export const AddOwner = (props) => {
     if (ownerName && ownerId && availablity && stage) {
       axios
         .put(`${baseUrl}owner/${ownerId}`, {
-          available: availablity === "Yes" ? true : false,
-          max_limit: limit ? limit : undefined,
+          available: availablity === "Yes",
+          max_limit: limit || undefined,
           type: stage,
-          gender: gender,
+          gender,
         })
         .then((response) => {
           snackbar.enqueueSnackbar(`Owner Successfull updated !`, {
@@ -221,7 +217,7 @@ export const AddOwner = (props) => {
     } else {
       setState({
         ...state,
-        [name]: value ? value : event.target.value,
+        [name]: value || event.target.value,
       });
     }
   };
@@ -233,7 +229,6 @@ export const AddOwner = (props) => {
       stage: newStages,
     });
   };
-  const { isEdit, disabled } = props;
   const { data, ownerName, gender, ownerId, availablity, stage, limit } = state;
   let ownerGender = "Na";
   if (gender === 1) ownerGender = "Female";
@@ -289,7 +284,8 @@ export const AddOwner = (props) => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, rowMeta) => {
+        // eslint-disable-next-line arrow-body-style
+        customBodyRender: (value) => {
           return <p>{value.split("T")[0]}</p>;
         },
       },
@@ -349,14 +345,12 @@ export const AddOwner = (props) => {
                 name="ownerName"
                 value={ownerName && { value: ownerId, label: ownerName }}
                 onChange={handleChange("ownerName")}
-                options={data.map((x) => {
-                  return { value: x.id, label: x.user };
-                })}
-                placeholder={"Select Owner"}
+                options={data.map((x) => ({ value: x.id, label: x.user }))}
+                placeholder="Select Owner"
                 isClearable={false}
                 closeMenuOnSelect={true}
                 isSearchable={true}
-                isDisabled={isEdit ? true : false}
+                isDisabled={!!isEdit}
               />
               <FormHelperText className={classes.text} id="my-helper-text">
                 Please select owner
@@ -380,7 +374,7 @@ export const AddOwner = (props) => {
                 ].map((x) => {
                   return { value: x.value, label: x.label };
                 })}
-                placeholder={"Select Gender"}
+                placeholder="Select Gender"
                 isClearable={false}
                 closeMenuOnSelect={true}
                 isSearchable={true}
@@ -404,7 +398,7 @@ export const AddOwner = (props) => {
                 ].map((x) => {
                   return { value: x.value, label: x.label };
                 })}
-                placeholder={"Select Availablity"}
+                placeholder="Select Availablity"
                 isClearable={false}
                 closeMenuOnSelect={true}
                 isSearchable={true}
@@ -419,6 +413,7 @@ export const AddOwner = (props) => {
                 name="stage"
                 value={
                   stage &&
+                  // eslint-disable-next-line arrow-body-style
                   stageOptions.filter((x) => {
                     return stage.indexOf(x.value) > -1
                       ? { value: x.value, label: x.label }
@@ -430,7 +425,7 @@ export const AddOwner = (props) => {
                 options={stageOptions.map((x) => {
                   return { value: x.value, label: x.label };
                 })}
-                placeholder={"Select Stage"}
+                placeholder="Select Stage"
                 isClearable={false}
                 isSearchable={true}
                 closeMenuOnSelect={true}
@@ -447,7 +442,7 @@ export const AddOwner = (props) => {
                 id="limit"
                 aria-describedby="my-helper-text"
                 name="limit"
-                value={limit ? limit : ""}
+                value={limit || ""}
                 onChange={handleChange("limit")}
               />
               <FormHelperText className={classes.text} id="my-helper-text">

@@ -1,12 +1,12 @@
 import React from "react";
-import { Button } from "@material-ui/core";
-import DialogActions from "@material-ui/core/DialogActions";
+import { Button } from "@mui/material";
+import DialogActions from "@mui/material/DialogActions";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useSelector } from "react-redux";
 import { permissions } from "../config/index";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const AddOrUpdateContact = (props) => {
   const { loggedInUser } = useSelector((state) => state.auth);
@@ -16,16 +16,16 @@ const AddOrUpdateContact = (props) => {
     const { contact_type, mobile, studentId, handleClose } = props;
     const type = event.target.innerText;
 
-    await setUpdateOrAddType(type == "ADD" ? "addContact" : "updateContact");
+    await setUpdateOrAddType(type === "ADD" ? "addContact" : "updateContact");
 
     if (permissions.addOrUpdateContact.indexOf(loggedInUser.mail_id) >= 0) {
       try {
         if (mobile) {
           axios
             .post(`${baseUrl}students/contactUpdateAdd/${studentId}`, {
-              mobile: mobile,
-              contact_type: contact_type,
-              updateOrAddType: updateOrAddType,
+              mobile,
+              contact_type,
+              updateOrAddType,
             })
             .then(() => {
               handleClose();

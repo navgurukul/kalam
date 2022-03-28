@@ -45,6 +45,7 @@
     "localStorage": "^1.0.4",
     "material-ui-image": "^3.3.2",
     "moment": "^2.29.1",
+    "mui-audio-player": "^1.0.1",
     "mui-datatables": "^4.1.2",
     "notistack": "^2.0.3",
     "object-hash": "^3.0.0",

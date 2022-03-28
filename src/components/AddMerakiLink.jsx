@@ -1,17 +1,15 @@
 import React from "react";
-
 import axios from "axios";
 import { useSnackbar } from "notistack";
-
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import Avatar from "@material-ui/core/Avatar";
-import FileCopyIcon from "@material-ui/icons/FileCopy";
-import Tooltip from "@material-ui/core/Tooltip";
-import { makeStyles } from "@material-ui/styles";
+import Avatar from "@mui/material/Avatar";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import Tooltip from "@mui/material/Tooltip";
+import { makeStyles } from "@mui/styles";
+import { Button } from "@mui/material";
 
-const baseUrl = process.env.API_URL;
-import { Button } from "@material-ui/core";
-
+const baseUrl = import.meta.env.VITE_API_URL;
+// done
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
@@ -28,7 +26,7 @@ const AddMerakiLink = (props) => {
   const { isValue, studentId } = props;
   const classes = useStyles();
   const snackbar = useSnackbar();
-  const creatMerakiLink = async (studentId) => {
+  const creatMerakiLink = async () => {
     const { updateValue } = props;
     axios({
       method: "put",

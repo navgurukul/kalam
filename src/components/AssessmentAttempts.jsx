@@ -1,10 +1,11 @@
 import React from "react";
 
 export const AssessmentAttempts = (props) => {
+  const { assessmentId, partnerId } = props;
   return (
-    <React.Fragment>
-      Hi {props.partnerId} {props.assessmentId}
-    </React.Fragment>
+    <>
+      Hi {partnerId} {assessmentId}
+    </>
   );
 };
 

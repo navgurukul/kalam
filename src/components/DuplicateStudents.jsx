@@ -1,10 +1,14 @@
+/* eslint-disable react/jsx-no-useless-fragment */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable no-use-before-define */
 import React, { useEffect } from "react";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import MUIDataTable from "mui-datatables";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { allStages } from "../config";
 import { changeFetching } from "../store/actions/auth";
@@ -32,7 +36,7 @@ const baseUrl = process.env.API_URL;
 const DuplicateStudents = () => {
   // const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const history = useHistory();
+  const history = useNavigate();
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
@@ -50,29 +54,25 @@ const DuplicateStudents = () => {
       label: "Re-Test",
       options: {
         filter: false,
-        customBodyRender: (value, rowData) => {
-          return (
-            <Button
-              disabled={
-                rowData.rowData[1] === "pendingEnglishInterview" ? true : false
-              }
-              variant="contained"
-              color="primary"
-              style={{ fontSize: "10px" }}
-              onClick={async () => {
-                //console.log("value", value);
+        customBodyRender: (value, rowData) => (
+          <Button
+            disabled={rowData.rowData[1] === "pendingEnglishInterview"}
+            variant="contained"
+            color="primary"
+            style={{ fontSize: "10px" }}
+            onClick={async () => {
+              //console.log("value", value);
 
-                const response = await generateTestLink(value);
-                history.push({
-                  pathname: `/test/${response.data.key}/${value}`,
-                });
-                fetchingFinish();
-              }}
-            >
-              Re-Test
-            </Button>
-          );
-        },
+              const response = await generateTestLink(value);
+              history.push({
+                pathname: `/test/${response.data.key}/${value}`,
+              });
+              fetchingFinish();
+            }}
+          >
+            Re-Test
+          </Button>
+        ),
       },
     },
     {
@@ -80,9 +80,7 @@ const DuplicateStudents = () => {
       label: "Stage",
       options: {
         filter: false,
-        customBodyRender: (value) => {
-          return allStages[value];
-        },
+        customBodyRender: (value) => allStages[value],
       },
     },
     {
@@ -90,36 +88,32 @@ const DuplicateStudents = () => {
       label: "Book Slot",
       options: {
         filter: false,
-        customBodyRender: (value, rowData) => {
-          return (
-            <Button
-              disabled={
-                rowData.rowData[1] === "pendingEnglishInterview" ? false : true
-              }
-              variant="contained"
-              color="primary"
-              style={{ fontSize: "10px" }}
-              onClick={() => {
-                //console.log(rowData.rowData[0]);
-                //console.log(rowData.rowData[1]);
-                console.log("clicked");
-                history.push({
-                  pathname: `/bookSlot/${rowData.rowData[0]}`,
-                });
+        customBodyRender: (value, rowData) => (
+          <Button
+            disabled={rowData.rowData[1] !== "pendingEnglishInterview"}
+            variant="contained"
+            color="primary"
+            style={{ fontSize: "10px" }}
+            onClick={() => {
+              //console.log(rowData.rowData[0]);
+              //console.log(rowData.rowData[1]);
+              console.log("clicked");
+              history.push({
+                pathname: `/bookSlot/${rowData.rowData[0]}`,
+              });
 
-                // this.setState({
-                //   slotBooking: true,
-                //   slotBookingData: {
-                //     studentId: rowData.rowData[0],
-                //     stage: allStages[rowData.rowData[1]],
-                //   },
-                // });
-              }}
-            >
-              Book Slot
-            </Button>
-          );
-        },
+              // this.setState({
+              //   slotBooking: true,
+              //   slotBookingData: {
+              //     studentId: rowData.rowData[0],
+              //     stage: allStages[rowData.rowData[1]],
+              //   },
+              // });
+            }}
+          >
+            Book Slot
+          </Button>
+        ),
       },
     },
     {
@@ -160,9 +154,9 @@ const DuplicateStudents = () => {
       const partnerId = state.partnerId ? state.partnerId : null;
       const details = window.location.href.split("Name=")[1];
       const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
-      const mobile = "0" + mobileNumber;
+      const mobile = `0${mobileNumber}`;
       fetchingStart();
-      const dataURL = baseUrl + "helpline/register_exotel_call";
+      const dataURL = `${baseUrl}helpline/register_exotel_call`;
       const response = await axios.get(dataURL, {
         params: {
           ngCallType: "getEnrolmentKey",
@@ -189,7 +183,7 @@ const DuplicateStudents = () => {
     const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
     const name = details.split("&Number=")[0];
     axios
-      .get(baseUrl + "/check_duplicate", {
+      .get(`${baseUrl}/check_duplicate`, {
         params: {
           Name: name,
           Number: mobileNumber,
@@ -205,7 +199,7 @@ const DuplicateStudents = () => {
         } else {
           setState({
             ...state,
-            response: response,
+            response,
           });
         }
         //console.log("data", state.data);
@@ -227,14 +221,14 @@ const DuplicateStudents = () => {
       const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
       setState({
         ...state,
-        partnerId: response.data.data["id"],
+        partnerId: response.data.data.id,
       });
     } catch (e) {
       history.push("/notFound");
     }
   };
   console.log(history);
-  const data = state.data;
+  const { data } = state;
   const selectedLang =
     history.state === null ? "en" : history.location.state.state.selectedLang;
   let firstName;
@@ -297,6 +291,7 @@ const DuplicateStudents = () => {
           closeModal={closeModal}
         />
       ) : (
+        // eslint-disable-next-line prettier/prettier
         <></>
       )}
     </>

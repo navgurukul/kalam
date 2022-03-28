@@ -1,27 +1,28 @@
+/* eslint-disable arrow-body-style */
+/* eslint-disable react/no-array-index-key */
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import Card from "@material-ui/core/Card";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
-import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/styles";
+import Card from "@mui/material/Card";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
+import TextField from "@mui/material/TextField";
+import { makeStyles } from "@mui/styles";
 
 import axios from "axios";
-import { Button } from "@material-ui/core";
-
 import {
   FormControl,
   InputLabel,
   Input,
   FormHelperText,
-} from "@material-ui/core";
+  Button,
+} from "@mui/material";
 
 import { useSnackbar } from "notistack";
 
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { changeFetching } from "../store/actions/auth";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 
 const AddPartnerPage = (props) => {
   const classes = useStyles();
-  const history = useHistory();
+  const history = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
@@ -68,10 +69,11 @@ const AddPartnerPage = (props) => {
   });
 
   useEffect(() => {
-    if (props.value) {
-      const dataURL = `${baseUrl}partners/${props.value}`;
+    const { value } = props;
+    if (value) {
+      const dataURL = `${baseUrl}partners/${value}`;
       axios.get(dataURL).then((response) => {
-        const data = response.data.data;
+        const { data } = response.data;
         //console.log("data", data);
         setState((prevState) => ({
           ...prevState,
@@ -85,6 +87,7 @@ const AddPartnerPage = (props) => {
         }));
       });
     }
+    // eslint-disable-next-line no-use-before-define
     getState();
   }, []);
 
@@ -98,13 +101,13 @@ const AddPartnerPage = (props) => {
       districts,
       state: _state,
     } = state;
-    let removeExtraDistricts = districts.filter(
+    const removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
 
     try {
       fetchingStart();
-      const dataURL = baseUrl + "partners";
+      const dataURL = ` ${baseUrl}partners`;
       const response = await axios.post(
         dataURL,
         {
@@ -147,17 +150,17 @@ const AddPartnerPage = (props) => {
       districts,
       state: _state,
     } = state;
-    let removeExtraDistricts = districts.filter(
+    const removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
 
     axios
       .put(`${baseUrl}partners/${value}`, {
         name,
-        email: email ? email : null,
+        email: email || null,
         notes,
-        state: _state ? _state : null,
-        partner_user: partner_user ? partner_user : null,
+        state: _state || null,
+        partner_user: partner_user || null,
         districts:
           removeExtraDistricts.length > 0 ? removeExtraDistricts : null,
       })
@@ -201,8 +204,8 @@ const AddPartnerPage = (props) => {
       }
     );
     const newData = response.data.sort((a, b) => {
-      let fa = a.name.toLowerCase(),
-        fb = b.name.toLowerCase();
+      const fa = a.name.toLowerCase();
+      const fb = b.name.toLowerCase();
 
       if (fa < fb) {
         return -1;
@@ -225,7 +228,7 @@ const AddPartnerPage = (props) => {
   };
 
   const handleChange = (name) => (event) => {
-    let valChange = {};
+    const valChange = {};
     valChange[name] = event.target.value;
     setState({ ...state, [name]: event.target.value });
   };
@@ -233,7 +236,7 @@ const AddPartnerPage = (props) => {
   const changeHandler = (index) => {
     const { value } = props;
     if (event.target.name === "state") {
-      const districts = state.districts;
+      const { districts } = state;
       if (event.target.value) {
         districts[index] = event.target.value;
       } else {
@@ -246,7 +249,7 @@ const AddPartnerPage = (props) => {
     }
     if (event.target.name === "user") {
       let newPEmail;
-      const partner_user = state.partner_user;
+      const { partner_user } = state;
       if (event.target.value) {
         if (partner_user.length < 1) {
           newPEmail = state.partnerEmail + event.target.value;
@@ -254,25 +257,23 @@ const AddPartnerPage = (props) => {
             email: newPEmail,
             partner_id: value,
           };
+        } else if (partner_user[index]) {
+          partner_user[index] = {
+            ...partner_user[index],
+            email: event.target.value,
+          };
         } else {
-          if (partner_user[index]) {
-            partner_user[index] = {
-              ...partner_user[index],
-              email: event.target.value,
-            };
-          } else {
-            partner_user[index] = {
-              email: event.target.value,
-              partner_id: value,
-            };
-          }
+          partner_user[index] = {
+            email: event.target.value,
+            partner_id: value,
+          };
         }
       } else {
         partner_user.splice(index, 1);
       }
       setState({
         ...state,
-        partnerEmail: newPEmail ? newPEmail : state.partnerEmail,
+        partnerEmail: newPEmail || state.partnerEmail,
         partner_user: partner_user.length < 1 ? [""] : partner_user,
       });
     }
@@ -331,7 +332,7 @@ const AddPartnerPage = (props) => {
             id="partnerNotes"
             aria-describedby="my-helper-text"
             name="notes"
-            disabled={value ? true : false}
+            disabled={!!value}
             value={state.slug}
             onChange={handleChange("slug")}
           />
@@ -342,6 +343,7 @@ const AddPartnerPage = (props) => {
 
         <FormControl>
           {state.partner_user.length > 0 ? (
+            // eslint-disable-next-line arrow-body-style
             state.partner_user.map((user, index) => {
               return (
                 <div key={index}>

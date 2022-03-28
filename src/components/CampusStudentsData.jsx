@@ -11,9 +11,9 @@ import SelectUiByButtons from "./SelectUiByButtons";
 import StudentsProgressCards from "./StudentsProgressCards";
 import GraphingPresentationJob from "./GraphingPresentationJob.js";
 import user from "../utils/user";
-import NotHaveAccess from "../components/NotHaveAccess";
+import NotHaveAccess from "./NotHaveAccess";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const CampusStudentsData = (props) => {
   const dispatch = useDispatch();

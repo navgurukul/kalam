@@ -3,11 +3,10 @@ import ReactDOM from "react-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import { SnackbarProvider } from "notistack";
 import { Provider } from "react-redux";
-// import AppRouter from "./routers/AppRouter";
 import "./styles/styles.css";
-import { Typography } from "@mui/material";
 import theme from "./theme";
 import store from "./store/store";
+import AppRouter from "./routers/AppRouter";
 // import AlertDialog from "./components/ui/AlertDialog";
 
 const App = () => (
@@ -15,8 +14,7 @@ const App = () => (
     <ThemeProvider theme={theme}>
       {/* <AlertDialog /> */}
       <SnackbarProvider maxSnack={1}>
-        {/* <AppRouter /> */}
-        <Typography color="primary">abc</Typography>
+        <AppRouter />
       </SnackbarProvider>
     </ThemeProvider>
   </Provider>

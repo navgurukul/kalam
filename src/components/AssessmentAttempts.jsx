@@ -1,6 +1,6 @@
 import React from "react";
 
-export const AssessmentAttempts = (props) => {
+const AssessmentAttempts = (props) => {
   const { assessmentId, partnerId } = props;
   return (
     <>

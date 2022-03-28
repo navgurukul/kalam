@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import HomeIcon from "@material-ui/icons/Home";
-import ExtensionIcon from "@material-ui/icons/Extension";
+import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
+import ExtensionIcon from "@mui/icons-material/Extension";
 import axios from "axios";
 
 /* import your desired icon from material-ui icons library */
@@ -12,7 +9,7 @@ import { NavLink } from "react-router-dom";
 import user from "../utils/user";
 
 export default () => {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = import.meta.env.VITE_API_URL;
   const [access, setAccess] = useState({});
   const userLoggedIn = user();
 
@@ -95,8 +92,8 @@ export default () => {
   //   return element !== undefined;
   // });
 
-  return publicNavs.map((navItem) => {
-    return (
+  return publicNavs.map(
+    (navItem) =>
       navItem && (
         <NavLink
           to={navItem.url}
@@ -120,6 +117,5 @@ export default () => {
           </List>{" "}
         </NavLink>
       )
-    );
-  });
+  );
 };

@@ -14,30 +14,30 @@ import NotFoundPage from "../components/NotFoundPage";
 import LoginDesign from "../components/LoginDesign";
 import UserMoblieNumber from "../components/UserMoblieNumber";
 import UpdateMobileNumber from "../components/UpdateMobileNumber";
-// import ReportContainer from "../components/ReportContainer";
-// import ProgressMadeForPartner from "../components/progressMade";
-// import DonorList from "../components/DonorList";
-// import DonorStudentsData from "../components/DonorStudentsData";
-// import CampusList from "../components/CampusList";
-// import CampusStudentsData from "../components/CampusStudentsData";
-// import PartnerStudentsProgressInCampus from "../components/PartnerStudentsProgressInCampus";
-// import OwnerList from "../components/OwnerList";
-// import AllCampusStudentsData from "../components/AllCampusStudentsData";
-// // if authenticated, redirect to /students else be there
-// import PublicRoute from "./PublicRouter";
-// // if authenticated be there, else redirect to /login
-// import PrivateRoute from "./PrivateRouter";
-// // default behavior
+import ReportContainer from "../components/ReportContainer";
+import ProgressMadeForPartner from "../components/progressMade";
+import DonorList from "../components/DonorList";
+import DonorStudentsData from "../components/DonorStudentsData";
+import CampusList from "../components/CampusList";
+import CampusStudentsData from "../components/CampusStudentsData";
+import PartnerStudentsProgressInCampus from "../components/PartnerStudentsProgressInCampus";
+import OwnerList from "../components/OwnerList";
+import AllCampusStudentsData from "../components/AllCampusStudentsData";
+// default behavior
 // import AnyRoute from "./AnyRouter";
-// import history from "../utils/history";
-// import StudentStatus from "../components/StudentStatus";
-// import DuplicateStudents from "../components/DuplicateStudents";
-// import SlideShow from "../onlineTest/SlideShow";
-// import EkAurBaat from "../onlineTest/EkAurBaat";
-// import Questions from "../onlineTest/Questions";
-// import NewAdminPage from "../components/NewAdminPage";
+import history from "../utils/history";
+import StudentStatus from "../components/StudentStatus";
+import DuplicateStudents from "../components/DuplicateStudents";
+import SlideShow from "../onlineTest/SlideShow";
+import EkAurBaat from "../onlineTest/EkAurBaat";
+import Questions from "../onlineTest/Questions";
+import NewAdminPage from "../components/NewAdminPage";
 // import SlotBooking from "../components/SlotBooking";
-// import SlotBooking2 from "../components/SlotBooking2";
+import SlotBooking2 from "../components/SlotBooking2";
+// if authenticated, redirect to /students else be there
+// import PublicRoute from "./PublicRouter";
+// if authenticated be there, else redirect to /login
+// import PrivateRoute from "./PrivateRouter";
 // import Header from "../components/Header";
 // import Footer from "../components/Footer";
 
@@ -48,14 +48,14 @@ const AppRouter = () => (
     <div>
       {/* <Header /> */}
       <Routes>
-        <Route
+        {/* <Route
           path="/"
           element={
             <RequireAuth privateRoute>
               <UpdateMobileNumber />
             </RequireAuth>
           }
-        />
+        /> */}
         <Route
           path="/"
           element={
@@ -65,6 +65,14 @@ const AppRouter = () => (
           }
         />
         {/* <PublicRoute path="/" component={LandingPage} exact={true} /> */}
+        <Route
+          path="/admin"
+          element={
+            <RequireAuth privateRoute>
+              <NewAdminPage />
+            </RequireAuth>
+          }
+        />
         <Route
           path="/students"
           element={
@@ -107,16 +115,21 @@ const AppRouter = () => (
                 <ProgressMadeForPartner />
               </RequireAuth>
             }
-          />
-          <Route path=":partnerId/assessments" element={<ViewAssessments />} />
-          <Route
-            path=":partnerId/assessments/:assessmentId"
-            element={
-              <RequireAuth>
-                <AssessmentAttempts />
-              </RequireAuth>
-            }
-          />
+          >
+            <Route
+              path="progress"
+              element={<PartnerStudentsProgressInCampus />}
+            />
+            <Route path="assessments" element={<ViewAssessments />} />
+            <Route
+              path="assessments/:assessmentId"
+              element={
+                <RequireAuth>
+                  <AssessmentAttempts />
+                </RequireAuth>
+              }
+            />
+          </Route>
         </Route>
 
         <Route path="/partnerLanding/:slug" element={<LandingPage />} />

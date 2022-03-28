@@ -1,8 +1,9 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
+import { makeStyles } from "@mui/material/styles";
 import {
   Grid,
+  Container,
   TextField,
   Paper,
   Typography,
@@ -10,9 +11,10 @@ import {
   MenuItem,
   FormControl,
   Select,
-} from "@material-ui/core";
+} from "@mui/material";
 import { Controller } from "react-hook-form";
 import { state } from "./Constant";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 400,
@@ -64,12 +66,12 @@ function KuchAurDetails(props) {
     formData,
     reactForm: { errors, control, watch, setValue },
   } = props;
-  let lang = props.lang;
+  const { lang } = props;
 
   const [districts, setDistricts] = useState([]);
-  async function getCityFromState(state) {
+  async function getCityFromState(_state) {
     fetch(
-      `https://api.countrystatecity.in/v1/countries/IN/states/${state}/cities`, //API URL
+      `https://api.countrystatecity.in/v1/countries/IN/states/${_state}/cities`, //API URL
       {
         headers: {
           accept: "application/json",
@@ -84,15 +86,15 @@ function KuchAurDetails(props) {
     });
   }
 
-  const addr_state = watch("state");
+  const addrState = watch("state");
   const qualification = watch("qualification");
 
   useEffect(() => {
-    if (addr_state !== "") {
+    if (addrState !== "") {
       if (!inputDisabled) setValue("district", "");
-      getCityFromState(addr_state);
+      getCityFromState(addrState);
     }
-  }, [addr_state]);
+  }, [addrState]);
 
   return (
     <Container maxWidth="lg" align="center" className={classes.container}>
@@ -113,26 +115,25 @@ function KuchAurDetails(props) {
                   required
                 >
                   <InputLabel id="state-label">
-                    {lang == "En" ? "Select State" : "राज्य चुनें"}
+                    {lang === "En" ? "Select State" : "राज्य चुनें"}
                   </InputLabel>
                   <Select
                     error={!!errors.state}
                     required
                     inputRef={ref}
-                    label={lang == "En" ? "Select State" : "राज्य चुनें"}
+                    label={lang === "En" ? "Select State" : "राज्य चुनें"}
                     MenuProps={{ classes: { paper: classes.menuPaper } }}
+                    // eslint-disable-next-line react/jsx-props-no-spreading
                     {...rest}
                   >
-                    <MenuItem value={""} disabled>
-                      {lang == "En" ? "Select State" : "राज्य चुनें"}
+                    <MenuItem value="" disabled>
+                      {lang === "En" ? "Select State" : "राज्य चुनें"}
                     </MenuItem>
-                    {Object.keys(state).map((key, index) => {
-                      return (
-                        <MenuItem key={index} value={key}>
-                          {state[key]}
-                        </MenuItem>
-                      );
-                    })}
+                    {Object.keys(state).map((key) => (
+                      <MenuItem key={key} value={key}>
+                        {state[key]}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               )}
@@ -171,26 +172,25 @@ function KuchAurDetails(props) {
                   required
                 >
                   <InputLabel id="district-label">
-                    {lang == "En" ? "Select District" : "जिला चुनें"}
+                    {lang === "En" ? "Select District" : "जिला चुनें"}
                   </InputLabel>
                   <Select
                     error={!!errors.district}
                     required
                     inputRef={ref}
+                    // eslint-disable-next-line react/jsx-props-no-spreading
                     {...rest}
-                    label={lang == "En" ? "Select District" : "जिला चुनें"}
+                    label={lang === "En" ? "Select District" : "जिला चुनें"}
                     MenuProps={{ classes: { paper: classes.menuPaper } }}
                   >
-                    <MenuItem value={""} disabled>
-                      {lang == "En" ? "Select District" : "जिला चुनें"}
+                    <MenuItem value="" disabled>
+                      {lang === "En" ? "Select District" : "जिला चुनें"}
                     </MenuItem>
-                    {districts.map((key, index) => {
-                      return (
-                        <MenuItem key={index} value={key["name"]}>
-                          {key["name"]}
-                        </MenuItem>
-                      );
-                    })}
+                    {districts.map((key) => (
+                      <MenuItem key={key.name} value={key.name}>
+                        {key.name}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               )}
@@ -226,8 +226,8 @@ function KuchAurDetails(props) {
                   {...rest}
                   fullWidth
                   id="city"
-                  label={lang == "En" ? "City" : "शहर"}
-                  placeholder={lang == "En" ? "City" : "शहर"}
+                  label={lang === "En" ? "City" : "शहर"}
+                  placeholder={lang === "En" ? "City" : "शहर"}
                   autoComplete="off"
                   error={!!errors.city}
                   helperText={
@@ -255,8 +255,8 @@ function KuchAurDetails(props) {
                   fullWidth
                   id="pin_code"
                   inputRef={ref}
-                  label={lang == "En" ? "Pin code" : "पिन कोड"}
-                  placeholder={lang == "En" ? "Pin code" : "पिन कोड"}
+                  label={lang === "En" ? "Pin code" : "पिन कोड"}
+                  placeholder={lang === "En" ? "Pin code" : "पिन कोड"}
                   autoComplete="off"
                   error={!!errors.pin_code}
                   helperText={
@@ -290,17 +290,17 @@ function KuchAurDetails(props) {
                   required
                 >
                   <InputLabel id="current-status-label">
-                    {lang == "En" ? "Current Status" : "वर्तमान स्थिति"}
+                    {lang === "En" ? "Current Status" : "वर्तमान स्थिति"}
                   </InputLabel>
                   <Select
                     disabled={inputDisabled}
                     error={!!errors.current_status}
-                    label={lang == "En" ? "Current Status" : "वर्तमान स्थिति"}
+                    label={lang === "En" ? "Current Status" : "वर्तमान स्थिति"}
                     required
                     inputRef={ref}
                     {...rest}
                   >
-                    <MenuItem value={"Select Option"} disabled>
+                    <MenuItem value="Select Option" disabled>
                       Select Option
                     </MenuItem>
                     {["Nothing", "Job", "Study", "Other"].map((el) => (
@@ -344,26 +344,26 @@ function KuchAurDetails(props) {
                   required
                 >
                   <InputLabel id="qualification-label">
-                    {lang == "En" ? "Maximum Qualification" : "अधिकतम योग्यता"}
+                    {lang === "En" ? "Maximum Qualification" : "अधिकतम योग्यता"}
                   </InputLabel>
                   <Select
                     label={
-                      lang == "En" ? "Maximum Qualification" : "अधिकतम योग्यता"
+                      lang === "En" ? "Maximum Qualification" : "अधिकतम योग्यता"
                     }
                     error={!!errors.qualification}
                     required
                     inputRef={ref}
                     {...rest}
                   >
-                    <MenuItem value={""} disabled>
+                    <MenuItem value="" disabled>
                       Select Option
                     </MenuItem>
-                    <MenuItem value={"lessThan10th"}>
+                    <MenuItem value="lessThan10th">
                       Less than 10th pass
                     </MenuItem>
-                    <MenuItem value={"class10th"}>10th pass</MenuItem>
-                    <MenuItem value={"class12th"}>12th pass</MenuItem>
-                    <MenuItem value={"graduate"}>Graduated</MenuItem>
+                    <MenuItem value="class10th">10th pass</MenuItem>
+                    <MenuItem value="class12th">12th pass</MenuItem>
+                    <MenuItem value="graduate">Graduated</MenuItem>
                   </Select>
                 </FormControl>
               )}
@@ -402,12 +402,12 @@ function KuchAurDetails(props) {
                     {...rest}
                     fullWidth
                     label={
-                      lang == "En"
+                      lang === "En"
                         ? "Percentage in 10th class"
                         : "10वीं कक्षा के प्रतिशत अंक"
                     }
                     placeholder={
-                      lang == "En"
+                      lang === "En"
                         ? "Percentage in 10th class"
                         : "10वीं कक्षा के प्रतिशत अंक"
                     }
@@ -447,12 +447,12 @@ function KuchAurDetails(props) {
                       {...rest}
                       fullWidth
                       label={
-                        lang == "En"
+                        lang === "En"
                           ? "Percentage in 10th class"
                           : "10वीं कक्षा के प्रतिशत अंक"
                       }
                       placeholder={
-                        lang == "En"
+                        lang === "En"
                           ? "Percentage in 10th class"
                           : "10वीं कक्षा के प्रतिशत अंक"
                       }
@@ -490,12 +490,12 @@ function KuchAurDetails(props) {
                       {...rest}
                       fullWidth
                       label={
-                        lang == "En"
+                        lang === "En"
                           ? "Percentage in 12th class"
                           : "12वीं कक्षा के प्रतिशत अंक"
                       }
                       placeholder={
-                        lang == "En"
+                        lang === "En"
                           ? "Percentage in 12th class"
                           : "12वीं कक्षा के प्रतिशत अंक"
                       }
@@ -533,24 +533,24 @@ function KuchAurDetails(props) {
                   required
                 >
                   <InputLabel id="school-medium-label">
-                    {lang == "En" ? "School Medium" : "स्कूल माध्यम"}
+                    {lang === "En" ? "School Medium" : "स्कूल माध्यम"}
                   </InputLabel>
                   <Select
-                    label={lang == "En" ? "School Medium" : "स्कूल माध्यम"}
+                    label={lang === "En" ? "School Medium" : "स्कूल माध्यम"}
                     error={!!errors.school_medium}
                     required
                     inputRef={ref}
                     {...rest}
                     disabled={inputDisabled}
                   >
-                    <MenuItem value={""} disabled>
-                      {lang == "En" ? "Select Langauge" : "भाषा चुने"}
+                    <MenuItem value="" disabled>
+                      {lang === "En" ? "Select Langauge" : "भाषा चुने"}
                     </MenuItem>
-                    <MenuItem value={"other"}>
-                      {lang == "En" ? "Hindi" : "हिन्दी"}
+                    <MenuItem value="other">
+                      {lang === "En" ? "Hindi" : "हिन्दी"}
                     </MenuItem>
-                    <MenuItem value={"en"}>
-                      {lang == "En" ? "English" : "अंग्रेज़ी"}
+                    <MenuItem value="en">
+                      {lang === "En" ? "English" : "अंग्रेज़ी"}
                     </MenuItem>
                   </Select>
                 </FormControl>
@@ -591,23 +591,23 @@ function KuchAurDetails(props) {
                     {lang === "En" ? " Caste/Tribe" : "जाति/जनजाति"}
                   </InputLabel>
                   <Select
-                    label={lang == "En" ? " Caste/Tribe" : "जाति/जनजाति"}
+                    label={lang === "En" ? " Caste/Tribe" : "जाति/जनजाति"}
                     error={!!errors.caste}
                     required
                     inputRef={ref}
                     {...rest}
                   >
-                    <MenuItem value={"Select Option"} disabled>
+                    <MenuItem value="Select Option" disabled>
                       Select Option
                     </MenuItem>
-                    <MenuItem value={"scSt"}>
+                    <MenuItem value="scSt">
                       (SC) Scheduled Caste / (ST) Scheduled Tribe
                     </MenuItem>
-                    <MenuItem value={"obc"}>
+                    <MenuItem value="obc">
                       (OBC) Other Backward Classes
                     </MenuItem>
-                    <MenuItem value={"general"}>General</MenuItem>
-                    <MenuItem value={"others"}>Other</MenuItem>
+                    <MenuItem value="general">General</MenuItem>
+                    <MenuItem value="others">Other</MenuItem>
                   </Select>
                 </FormControl>
               )}
@@ -644,10 +644,10 @@ function KuchAurDetails(props) {
                   variant="outlined"
                 >
                   <InputLabel id="religion-label">
-                    {lang == "En" ? "Religion" : "धर्म"}
+                    {lang === "En" ? "Religion" : "धर्म"}
                   </InputLabel>
                   <Select
-                    label={lang == "En" ? "Religion" : "धर्म"}
+                    label={lang === "En" ? "Religion" : "धर्म"}
                     required
                     inputRef={ref}
                     error={!!errors.religion}

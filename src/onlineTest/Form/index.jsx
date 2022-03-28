@@ -1,30 +1,31 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import TextField from "@material-ui/core/TextField";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
-import CameraAltIcon from "@material-ui/icons/CameraAlt";
-import history from "../../utils/history";
-import { useSnackbar } from "notistack";
-import { Avatar, Badge, Grid, MobileStepper } from "@material-ui/core";
-import KuchAurDetails from "../KuchAurDetails";
 import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import { useTheme } from "@material-ui/styles";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+  TextField,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+  Button,
+  Container,
+  Typography,
+  Avatar,
+  Grid,
+  Badge,
+  MobileStepper,
+} from "@mui/material";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import { useSnackbar } from "notistack";
+import { DatePicker, LocalizationProvider } from "@mui/lab";
+import DateFnsUtils from "@mui/lab/AdapterDateFns";
+import { makeStyles, useTheme } from "@mui/styles";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useForm, Controller } from "react-hook-form";
 import moment from "moment";
 import { useLocation } from "react-router-dom";
+import KuchAurDetails from "../KuchAurDetails";
 
 const baseUrl = process.env.API_URL;
 
@@ -129,8 +130,8 @@ const BasicDetails = ({
                 inputRef={ref}
                 onBlur={rest.onBlur}
                 className={classes.spacing}
-                label={lang == "En" ? "First Name" : "प्रथम नाम"}
-                placeholder={lang == "En" ? "First Name" : "प्रथम नाम"}
+                label={lang === "En" ? "First Name" : "प्रथम नाम"}
+                placeholder={lang === "En" ? "First Name" : "प्रथम नाम"}
                 // name="FirstName"
                 autoComplete="off"
                 type="text"
@@ -159,8 +160,8 @@ const BasicDetails = ({
                 id="MiddleName"
                 inputRef={ref}
                 className={classes.spacing}
-                label={lang == "En" ? "Middle Name " : "मध्यनाम"}
-                placeholder={lang == "En" ? "Middle Name " : "मध्यनाम"}
+                label={lang === "En" ? "Middle Name " : "मध्यनाम"}
+                placeholder={lang === "En" ? "Middle Name " : "मध्यनाम"}
                 autoComplete="off"
                 error={!!errors.MiddleName}
                 type="text"
@@ -191,8 +192,8 @@ const BasicDetails = ({
                 id="LastName"
                 inputRef={ref}
                 className={classes.spacing}
-                label={lang == "En" ? "Last Name" : "कुलनाम"}
-                placeholder={lang == "En" ? "Last Name" : "कुलनाम"}
+                label={lang === "En" ? "Last Name" : "कुलनाम"}
+                placeholder={lang === "En" ? "Last Name" : "कुलनाम"}
                 autoComplete="off"
                 error={!!errors.LastName}
                 helperText={
@@ -215,33 +216,31 @@ const BasicDetails = ({
             defaultValue={formData.dob ? formData.dob : null}
             rules={{
               required: true,
-              validate: (dob) => {
-                return (
-                  parseInt(
-                    moment
-                      .duration(moment(moment.now()).diff(moment(dob)))
-                      .asYears()
-                  ) >= 16
-                );
-              },
+              validate: (dob) =>
+                parseInt(
+                  moment
+                    .duration(moment(moment.now()).diff(moment(dob)))
+                    .asYears(),
+                  10
+                ) >= 16,
             }}
             render={({
               field: { ref, ...rest },
               fieldState: { isTouched },
             }) => (
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
+              <LocalizationProvider utils={DateFnsUtils}>
+                <DatePicker
                   disabled={inputDisabled}
                   // margin="normal"
                   id="dob"
-                  label={lang == "En" ? "Date of Birth" : "आपका जन्मदिन"}
+                  label={lang === "En" ? "Date of Birth" : "आपका जन्मदिन"}
                   required
                   inputRef={ref}
                   focused={isTouched}
                   format="dd/MM/yyyy"
                   inputVariant="outlined"
                   fullWidth
-                  placeholder={lang == "En" ? "Date of Birth" : "आपका जन्मदिन"}
+                  placeholder={lang === "En" ? "Date of Birth" : "आपका जन्मदिन"}
                   error={!!errors.dob}
                   helperText={
                     errors.dob
@@ -256,7 +255,7 @@ const BasicDetails = ({
                   }
                   {...rest}
                 />
-              </MuiPickersUtilsProvider>
+              </LocalizationProvider>
             )}
           />
         </Grid>
@@ -283,10 +282,10 @@ const BasicDetails = ({
                     e.preventDefault();
                 }}
                 label={
-                  lang == "En" ? "Your Whatsapp Number" : "आपका व्हाट्सएप नंबर"
+                  lang === "En" ? "Your Whatsapp Number" : "आपका व्हाट्सएप नंबर"
                 }
                 placeholder={
-                  lang == "En" ? "Your Whatsapp Number" : "आपका व्हाट्सएप नंबर"
+                  lang === "En" ? "Your Whatsapp Number" : "आपका व्हाट्सएप नंबर"
                 }
                 type="number"
                 autoComplete="off"
@@ -330,9 +329,9 @@ const BasicDetails = ({
                 type="tel"
                 inputRef={ref}
                 className={classes.spacing}
-                label={lang == "En" ? "Alternate Number" : "वैकल्पिक नंबर"}
+                label={lang === "En" ? "Alternate Number" : "वैकल्पिक नंबर"}
                 placeholder={
-                  lang == "En" ? "Alternate Number" : "वैकल्पिक नंबर"
+                  lang === "En" ? "Alternate Number" : "वैकल्पिक नंबर"
                 }
                 autoComplete="off"
                 error={!!errors.AlternateNumber}
@@ -371,8 +370,8 @@ const BasicDetails = ({
                 type="email"
                 required
                 className={classes.spacing}
-                label={lang == "En" ? "Email" : "ईमेल"}
-                placeholder={lang == "En" ? "Email" : "ईमेल"}
+                label={lang === "En" ? "Email" : "ईमेल"}
+                placeholder={lang === "En" ? "Email" : "ईमेल"}
                 error={!!errors.email}
                 helperText={
                   errors.email
@@ -419,11 +418,11 @@ const BasicDetails = ({
                   {lang === "En" ? "Select Gender" : "लिंग चुनें"}
                 </InputLabel>
                 <Select
-                  label={lang == "En" ? "Select Gender" : "लिंग चुनें"}
+                  label={lang === "En" ? "Select Gender" : "लिंग चुनें"}
                   error={!!errors.gender}
                   id="gender"
                   inputRef={ref}
-                  placeholder={lang == "En" ? "Select Gender" : "लिंग चुनें"}
+                  placeholder={lang === "En" ? "Select Gender" : "लिंग चुनें"}
                   required
                   disabled={inputDisabled}
                   {...rest}
@@ -439,7 +438,7 @@ const BasicDetails = ({
                       value={el[0].toLowerCase()}
                       disabled={el[0] === "Select Gender"}
                     >
-                      {lang == "En" ? el[0] : el[1]}
+                      {lang === "En" ? el[0] : el[1]}
                     </MenuItem>
                   ))}
                 </Select>
@@ -493,11 +492,11 @@ function Form(props) {
   const { enqueueSnackbar } = useSnackbar();
   const [formData, setFormData] = useState({
     ProfileImage: "",
-    FirstName: firstName ? firstName : "",
-    MiddleName: middleName ? middleName : "",
+    FirstName: firstName || "",
+    MiddleName: middleName || "",
     email: "",
-    LastName: lastName ? lastName : "",
-    whatsapp: mobileNumber ? mobileNumber : "",
+    LastName: lastName || "",
+    whatsapp: mobileNumber || "",
     AlternateNumber: "",
     gender: "",
     dob: "",
@@ -519,18 +518,38 @@ function Form(props) {
     percentage_in12th: "",
   });
 
+  const savePhoto = (imgFile) => {
+    const tempFormdata = new FormData();
+    tempFormdata.append("file", imgFile);
+    axios
+      .post(
+        `${baseUrl}on_assessment/details/photo/${enrolmentKey}`,
+        tempFormdata
+      )
+      .then(() => {
+        enqueueSnackbar("Photo Uploaded Successfully", {
+          variant: "success",
+        });
+      })
+      .catch(() => {
+        enqueueSnackbar("Please Provide Valid Image File", {
+          variant: "error",
+        });
+      });
+  };
+
   const setProfileImage = (img) => {
     setFormData({ ...formData, ProfileImage: img });
     savePhoto(img);
   };
 
-  let gender = {
+  const gender = {
     1: "female",
     2: "male",
     3: "other",
   };
-  let casteOptions = ["", "obc", "scSt", "general", "others"];
-  let qualificationOptions = [
+  const casteOptions = ["", "obc", "scSt", "general", "others"];
+  const qualificationOptions = [
     "",
     "lessThan10th",
     "class10th",
@@ -544,7 +563,7 @@ function Form(props) {
     "bsc",
     "bba",
   ];
-  let religionOptions = [
+  const religionOptions = [
     "",
     "hindu",
     "islam",
@@ -554,35 +573,14 @@ function Form(props) {
     "others",
   ];
 
-  let CurrentStatusOptions = ["", "nothing", "job", "study", "other"];
-  let schoolMediumOptions = ["", "en", "other"];
+  const CurrentStatusOptions = ["", "nothing", "job", "study", "other"];
+  const schoolMediumOptions = ["", "en", "other"];
 
-  const savePhoto = (imgFile) => {
-    let tempFormdata = new FormData();
-    tempFormdata.append("file", imgFile);
-    axios
-      .post(
-        `${baseUrl}on_assessment/details/photo/${enrolmentKey}`,
-        tempFormdata
-      )
-      .then(() => {
-        enqueueSnackbar("Photo Uploaded Successfully", {
-          variant: "success",
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        enqueueSnackbar("Please Provide Valid Image File", {
-          variant: "error",
-        });
-      });
-  };
-
-  let lang = props.lang;
+  const { lang } = props;
   useEffect(() => {
     // let key = localStorage.getItem("enrolmentKey")
     // setEnrolment_key(key)
-    let enrkey = location.pathname.split("/")[2];
+    const enrkey = location.pathname.split("/")[2];
     //console.log("enrkey", enrkey);
     setEnrolmentKey(enrkey);
   }, []);
@@ -593,7 +591,7 @@ function Form(props) {
         .get(`${baseUrl}/students/${location.pathname.split("/")[3]}`)
         .then((res) => {
           if (res.data.data.length > 0) {
-            let PrevDatas = res.data.data[0];
+            const PrevDatas = res.data.data[0];
 
             // setPrevData(PrevDatas);
             setAlreadyAUser(true);
@@ -660,6 +658,65 @@ function Form(props) {
   ];
   const steps = getSteps();
 
+  const submitHandler = (prevData) => {
+    const data = {
+      name: prevData.name,
+      email: prevData.email,
+      whatsapp: prevData.whatsapp,
+      dob: prevData.dob,
+      gender: prevData.gender,
+      gps_lat: prevData.gps_lat,
+      gps_long: prevData.gps_long,
+      partner_refer: prevData.partner_refer,
+      qualification: prevData.qualification,
+      state: prevData.state,
+      district: prevData.district,
+      city: prevData.city,
+      current_status: prevData.current_status,
+      school_medium: prevData.school_medium,
+      pin_code: prevData.pin_code,
+      caste: prevData.caste,
+      religon: prevData.religion,
+      percentage_in10th: prevData.percentage_in10th
+        ? prevData.percentage_in10th
+        : "",
+      math_marks_in10th: prevData.math_marks_in10th,
+      math_marks_in12th: prevData.math_marks_in12th,
+      percentage_in12th: prevData.percentage_in12th
+        ? prevData.percentage_in12th
+        : "",
+    };
+    if (prevData.alt_mobile) data.alt_mobile = prevData.alt_mobile;
+
+    if (alreadyAUser) {
+      history.push(
+        `/EkAurBaat/${location.pathname.split("/")[2]}/${
+          location.pathname.split("/")[3]
+        }`
+      );
+    } else {
+      axios
+        .post(
+          `${baseUrl}on_assessment/details/${location.pathname.split("/")[2]}`,
+          data
+        )
+        .then((res) => {
+          history.push(
+            `/EkAurBaat/${location.pathname.split("/")[2]}/${
+              res.data.details.id
+            }`
+          );
+
+          //console.log("res", res);
+        })
+        .catch(() => {
+          enqueueSnackbar("Please fill all the fields properly", {
+            variant: "error",
+          });
+        });
+    }
+  };
+
   const handleNext = (data, e) => {
     e.preventDefault();
     setFormData((prevFormData) => ({ ...prevFormData, ...data }));
@@ -694,66 +751,6 @@ function Form(props) {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
-  const submitHandler = (prevData) => {
-    let data = {
-      name: prevData.name,
-      email: prevData.email,
-      whatsapp: prevData.whatsapp,
-      dob: prevData.dob,
-      gender: prevData.gender,
-      gps_lat: prevData.gps_lat,
-      gps_long: prevData.gps_long,
-      partner_refer: prevData.partner_refer,
-      qualification: prevData.qualification,
-      state: prevData.state,
-      district: prevData.district,
-      city: prevData.city,
-      current_status: prevData.current_status,
-      school_medium: prevData.school_medium,
-      pin_code: prevData.pin_code,
-      caste: prevData.caste,
-      religon: prevData.religion,
-      percentage_in10th: prevData.percentage_in10th
-        ? prevData.percentage_in10th
-        : "",
-      math_marks_in10th: prevData.math_marks_in10th,
-      math_marks_in12th: prevData.math_marks_in12th,
-      percentage_in12th: prevData.percentage_in12th
-        ? prevData.percentage_in12th
-        : "",
-    };
-    if (prevData.alt_mobile) data["alt_mobile"] = prevData.alt_mobile;
-
-    if (alreadyAUser) {
-      history.push(
-        `/EkAurBaat/${location.pathname.split("/")[2]}/${
-          location.pathname.split("/")[3]
-        }`
-      );
-    } else {
-      axios
-        .post(
-          `${baseUrl}on_assessment/details/${location.pathname.split("/")[2]}`,
-          data
-        )
-        .then((res) => {
-          history.push(
-            `/EkAurBaat/${location.pathname.split("/")[2]}/${
-              res.data.details.id
-            }`
-          );
-
-          //console.log("res", res);
-        })
-        .catch((err) => {
-          console.error(err);
-          enqueueSnackbar("Please fill all the fields properly", {
-            variant: "error",
-          });
-        });
-    }
-  };
-
   const getStepContent = (step) => {
     switch (step) {
       case 0:
@@ -784,13 +781,15 @@ function Form(props) {
             inputDisabled={alreadyAUser}
           />
         );
+      default:
+        return <div />;
     }
   };
 
   return (
     <Container className={classes.root} maxWidth="sm">
       <Typography variant="h5" className={classes.text}>
-        {lang == "En" ? steps[activeStep][0] : steps[activeStep][1]}
+        {lang === "En" ? steps[activeStep][0] : steps[activeStep][1]}
       </Typography>
       <form
         style={{ paddingTop: "2.0rem" }}

@@ -1,13 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import axios from "axios";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Container from "@material-ui/core/Container";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import history from "../../utils/history";
+import { Paper, Typography, Button, Container } from "@mui/material";
+import { makeStyles } from "@mui/material/styles";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const tutorialSteps = {
   heading: "Ek aur baat:",
@@ -48,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function EkAurBaat(props) {
+function EkAurBaat() {
   //console.log("Props in ek aur baat", props.location.enrolment_key);
   const classes = useStyles();
 
@@ -74,7 +70,7 @@ function EkAurBaat(props) {
   // //We can't call getSecond function after set the time in localStorage.
 
   const answerList = [];
-  let correctAnswerObj = {};
+  const correctAnswerObj = {};
 
   localStorage.setItem("correctAnswerObj", JSON.stringify(correctAnswerObj));
   localStorage.setItem("index", 0);
@@ -97,12 +93,12 @@ function EkAurBaat(props) {
           // questions: res.data.data,
           // time: time.current, // 2nd point
           // time: TIME,   // 1st point and 3rd point
-          answerList: answerList,
+          answerList,
           // correctAnswerObj: correctAnswerObj,
         });
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(() => {
+        // console.error(err);
       });
   };
 

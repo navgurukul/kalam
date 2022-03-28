@@ -1,40 +1,37 @@
 import "date-fns";
 import React from "react";
-import Grid from "@material-ui/core/Grid";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-  DatePicker,
-} from "@material-ui/pickers";
+import Grid from "@mui/material/Grid";
+import DateFnsUtils from "@mui/lab/AdapterDateFns";
+import { LocalizationProvider, DatePicker } from "@mui/lab";
 
 export default function MaterialUIPickers(props) {
   const [selectedDate, setSelectedDate] = React.useState(null);
+  const { forDate, lang, filledDate } = props;
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    props.forDate(date);
+    forDate(date);
   };
   // console.log("dob", selectedDate)
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <LocalizationProvider utils={DateFnsUtils}>
       <Grid container justify="space-around">
-        <KeyboardDatePicker
+        <DatePicker
           margin="normal"
           id="date-picker-dialog"
           format="dd/MM/yyyy"
           inputVariant="outlined"
           fullWidth
-          label={props.lang == "En" ? "Your dob" : "आपका जन्मदिन"}
-          placeholder={props.lang == "En" ? "Your dob" : "आपका जन्मदिन"}
-          value={props.filledDate ? props.filledDate : selectedDate}
+          label={lang === "En" ? "Your dob" : "आपका जन्मदिन"}
+          placeholder={lang === "En" ? "Your dob" : "आपका जन्मदिन"}
+          value={filledDate || selectedDate}
           onChange={handleDateChange}
           KeyboardButtonProps={{
             "aria-label": "change date",
           }}
         />
       </Grid>
-    </MuiPickersUtilsProvider>
+    </LocalizationProvider>
   );
 }

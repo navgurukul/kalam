@@ -1,5 +1,6 @@
 // // modules.export = {
-let state = {
+// eslint-disable-next-line import/prefer-default-export
+export const state = {
   AN: "Andaman and Nicobar Islands",
   AP: "Andhra Pradesh",
   AR: "Arunachal Pradesh",
@@ -40,5 +41,3 @@ let state = {
 // // };
 
 // const state = "Poonam";
-
-export { state };

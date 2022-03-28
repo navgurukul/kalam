@@ -1,8 +1,8 @@
 import React from "react";
 import { useTimer } from "react-timer-hook";
 
-function Timer({ expiryTimestamp, isLoggedIn }) {
-  const { seconds, minutes, hours, days } = useTimer({
+function Timer({ expiryTimestamp }) {
+  const { seconds, minutes, hours } = useTimer({
     expiryTimestamp,
     autoStart: true,
     onExpire: () => alert("Time Over"),

@@ -10,12 +10,12 @@ import PieChart, {
 } from "devextreme-react/pie-chart";
 
 import axios from "axios";
-import Container from "@material-ui/core/Container";
-import { Box } from "@material-ui/core";
+import Container from "@mui/material/Container";
+import { Box } from "@mui/material";
 import Loader from "./Loader";
 import { allStages } from "../config/index";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const GraphPage = () => {
   const [state, setState] = React.useState({
@@ -27,14 +27,12 @@ const GraphPage = () => {
     axios
       .get(`${baseUrl}partners/graph/progress_made/${state.partnerId}`)
       .then((response) => {
-        const mappedData = response.data.map((item) => {
-          return {
-            name: allStages[item.name],
-            value: item.value,
-            studentNames: item.studentNames,
-            percentage: item.percentage,
-          };
-        });
+        const mappedData = response.data.map((item) => ({
+          name: allStages[item.name],
+          value: item.value,
+          studentNames: item.studentNames,
+          percentage: item.percentage,
+        }));
 
         setState({
           ...state,
@@ -43,23 +41,17 @@ const GraphPage = () => {
       });
   }, []);
 
-  const customizeText = (arg) => {
-    //console.log(arg, "arg");
-    return `${arg.valueText} ${arg.argument} (${(arg.percent * 100).toFixed(
-      2
-    )}%)`;
-  };
+  const customizeText = (arg) =>
+    `${arg.valueText} ${arg.argument} (${(arg.percent * 100).toFixed(2)}%)`;
 
   const customizeTooltip = (pointInfo) => {
     const graphData = state.data;
-    const studentNames = graphData.find(
+    const { studentNames } = graphData.find(
       (element) => element.name === pointInfo.argument
     ).studentNames;
 
     return {
-      text: studentNames.sort().map((studentName) => {
-        return ` ${studentName}`;
-      }),
+      text: studentNames.sort().map((studentName) => `${studentName}`),
     };
   };
 
@@ -100,18 +92,14 @@ const GraphPage = () => {
           >
             <Font size={16} />
           </Legend>
-          <Export enabled={true} />
+          <Export enabled />
           <Series argumentField="name" valueField="value">
-            <Label
-              visible={true}
-              position="columns"
-              customizeText={customizeText}
-            >
+            <Label visible position="columns" customizeText={customizeText}>
               <Font size={15} />
-              <Connector visible={true} width={0.5} />
+              <Connector visible width={0.5} />
             </Label>
           </Series>
-          <Tooltip enabled={true} customizeTooltip={customizeTooltip}></Tooltip>
+          <Tooltip enabled customizeTooltip={customizeTooltip} />
         </PieChart>
       </Container>
     );

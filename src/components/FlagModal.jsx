@@ -1,12 +1,10 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@mui/styles";
-
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import TextField from "@mui/material/TextField";
 import { Dialog, Box } from "@mui/material";
-
 import FlagIcon from "@mui/icons-material/Flag";
 import { changeFetching } from "../store/actions/auth";
 
@@ -42,6 +40,7 @@ const RedFlag = (props) => {
     flagComment: comment,
     flagColorToggle: comment,
   });
+
   const addFlagComment = async () => {
     try {
       fetchingStart();
@@ -112,7 +111,7 @@ const RedFlag = (props) => {
   };
 
   return (
-    <>
+    <fragment>
       <Box onClick={handleOpen}>
         {state.flagColorToggle ? (
           <FlagIcon
@@ -168,7 +167,7 @@ const RedFlag = (props) => {
           />
         </form>
       </Dialog>
-    </>
+    </fragment>
   );
 };
 

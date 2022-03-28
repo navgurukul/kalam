@@ -1,13 +1,13 @@
 import React from "react";
-import Box from "@material-ui/core/Box";
+import Box from "@mui/material/Box";
 import MUIDataTable from "mui-datatables";
-import { ThemeProvider } from "@material-ui/core/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 import GlobalService from "../services/GlobalService";
-import { theme } from "../theme/theme";
 import Loader from "./Loader";
-import { makeStyles } from "@material-ui/styles";
+import theme from "../theme";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   innerTable: {
     marginLeft: "3vw",
     marginRight: "3vw",
@@ -28,14 +28,15 @@ const useStyles = makeStyles((theme) => ({
 
 const MainLayout = (props) => {
   const classes = useStyles();
+  const { data, columns, title, showLoader } = props;
   return (
     <Box>
       <ThemeProvider theme={theme}>
-        <div className={classes.clear}></div>
+        <div className={classes.clear} />
         <MUIDataTable
-          title={props.title}
-          columns={props.columns}
-          data={props.data}
+          title={title}
+          columns={columns}
+          data={data}
           icons={GlobalService.tableIcons}
           options={{
             headerStyle: {
@@ -52,7 +53,7 @@ const MainLayout = (props) => {
             responsive: "stacked",
             textLabels: {
               body: {
-                noMatch: props.showLoader ? (
+                noMatch: showLoader ? (
                   <Loader />
                 ) : (
                   "Sorry, there is no matching data to display"

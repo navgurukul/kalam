@@ -1,19 +1,19 @@
 import React, { useEffect } from "react";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import { GoogleLogin } from "react-google-login";
-import { login } from "../store/actions/auth";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/styles";
-import { theme } from "../theme/theme";
+import Paper from "@mui/material/Paper";
+import { makeStyles } from "@mui/styles";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useSnackbar } from "notistack";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
+import theme from "../theme";
+import { login } from "../store/actions/auth";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   loginContainer: {
     padding: theme.spacing(3, 2),
     maxWidth: 400,
@@ -60,7 +60,6 @@ const LoginDesign = (props) => {
           localStorage.setItem("user", JSON.stringify(user));
           if (user.mobile) {
             const { history } = props;
-            console.log(history, "hi");
             handleLogin();
             history.push("/students");
           } else {
@@ -80,8 +79,7 @@ const LoginDesign = (props) => {
     }
   };
 
-  const errr = (error) => {
-    console.error(error);
+  const errr = () => {
     alert("There was some issue with Google Login. Contact the admin.");
   };
 

@@ -1,25 +1,19 @@
 import React, { useEffect } from "react";
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import { makeStyles } from "@material-ui/styles";
+import { MuiThemeProvider } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 import axios from "axios";
-import {
-  Box,
-  DialogTitle,
-  DialogActions,
-  Dialog,
-  Button,
-} from "@material-ui/core";
-import { theme } from "../theme/theme";
+import { Box, DialogTitle, DialogActions, Dialog, Button } from "@mui/material";
+import theme from "../theme";
 import MainLayout from "./MainLayout";
 import AddOwner from "./AddOwner";
-import DeleteIcon from "@material-ui/icons/Delete";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useSnackbar } from "notistack";
 import { permissions } from "../config";
 import AddOwnerSchedule from "./AddOwnerSchedule";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   innerTable: {
     marginLeft: "3vw",
     marginRight: "3vw",

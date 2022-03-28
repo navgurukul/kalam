@@ -2,19 +2,21 @@ import React from "react";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-} from "@material-ui/pickers";
+} from "@mui/lab/DatePicker";
 import DateFnsUtils from "@date-io/date-fns";
-import EditIcon from "@material-ui/icons/Edit";
+import EditIcon from "@mui/icons-material/Edit";
 import moment from "moment";
 import Moment from "react-moment";
 import { useSnackbar } from "notistack";
-const baseURL = process.env.API_URL;
 import axios from "axios";
 
+const baseURL = import.meta.env.VITE_API_URL;
+
 const JoinedDate = (props) => {
+  const { value } = props;
   const snackbar = useSnackbar();
   const [state, setState] = React.useState({
-    currentDate: props.value,
+    currentDate: value,
     isShowDatePicker: false,
   });
 
@@ -30,8 +32,7 @@ const JoinedDate = (props) => {
           variant: "success",
         });
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(() => {
         snackbar.enqueueSnackbar(`Something went wrong`, {
           variant: "unsuccess!",
         });

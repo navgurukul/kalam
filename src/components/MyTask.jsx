@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 // Todo
 // Logic of RQC Columns
 
@@ -5,14 +6,14 @@ import "date-fns";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import Typography from "@mui/material/Typography";
 import { changeFetching } from "../store/actions/auth";
 import StudentService from "../services/StudentService";
 import MainLayout from "./MainLayout";
 import PendingInterview from "./pendingInterview";
-import Typography from "@material-ui/core/Typography";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const MyTaskReport = () => {
   const { loggedInUser } = useSelector((state) => state.auth);
@@ -20,12 +21,17 @@ const MyTaskReport = () => {
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const [data, setData] = React.useState([]);
-  const onwerDetailsURL = baseURL + "students/my_tasks";
+  const onwerDetailsURL = `${baseURL}students/my_tasks`;
 
-  useEffect(() => {
-    const fetchData = async () => await fetchonwerReport();
-    fetchData();
-  }, []);
+  const dataConvert = () => {
+    const newData = [];
+    for (let i = 0; i < data.length; i++) {
+      data[i].name = data[i].student.name;
+      delete data[i].student;
+      newData.push(data[i]);
+    }
+    setData(newData);
+  };
 
   const fetchonwerReport = async () => {
     try {
@@ -40,7 +46,7 @@ const MyTaskReport = () => {
       const user = loggedInUser.email.split("@")[0];
       const response = await axios.get(onwerDetailsURL, {
         params: {
-          user: user,
+          user,
         },
       });
       dataConvert(response.data.data);
@@ -51,15 +57,10 @@ const MyTaskReport = () => {
     }
   };
 
-  const dataConvert = (data) => {
-    const newData = [];
-    for (let i = 0; i < data.length; i++) {
-      data[i].name = data[i].student.name;
-      delete data[i].student;
-      newData.push(data[i]);
-    }
-    setData(newData);
-  };
+  useEffect(() => {
+    const fetchData = () => fetchonwerReport();
+    fetchData();
+  }, []);
 
   return (
     <div>
@@ -72,7 +73,7 @@ const MyTaskReport = () => {
       >
         All tasks
       </Typography>
-      <br></br>
+      <br />
       <MainLayout columns={StudentService.columnMyReports} data={data} />
       <Typography
         variant="h5"
@@ -83,7 +84,7 @@ const MyTaskReport = () => {
       >
         Pending interview
       </Typography>
-      <br></br>
+      <br />
       <PendingInterview />
     </div>
   );

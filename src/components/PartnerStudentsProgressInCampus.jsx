@@ -4,9 +4,9 @@ import StudentService from "../services/StudentService";
 import DashboardPage from "./Dashboard";
 import StudentsProgressCards from "./StudentsProgressCards";
 import SelectUiByButtons from "./SelectUiByButtons";
-import GraphingPresentationJob from "./GraphingPresentationJob.js";
+import GraphingPresentationJob from "./GraphingPresentationJob.jsx";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const PartnerStudentsProgressInCampus = (props) => {
   const [state, setState] = React.useState({

@@ -8,10 +8,12 @@ import "./styles/styles.css";
 import { Typography } from "@mui/material";
 import theme from "./theme";
 import store from "./store/store";
+// import AlertDialog from "./components/ui/AlertDialog";
 
 const App = () => (
   <Provider store={store}>
     <ThemeProvider theme={theme}>
+      {/* <AlertDialog /> */}
       <SnackbarProvider maxSnack={1}>
         {/* <AppRouter /> */}
         <Typography color="primary">abc</Typography>

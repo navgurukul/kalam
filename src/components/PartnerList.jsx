@@ -1,29 +1,25 @@
 import React, { useEffect } from "react";
-
 import { useDispatch } from "react-redux";
-import { ThemeProvider } from "@material-ui/styles";
-
+import { ThemeProvider, makeStyles } from "@mui/styles";
 import axios from "axios";
-import { Box } from "@material-ui/core";
-
-import { theme } from "../theme/theme";
-
+import { Box } from "@mui/material";
+import theme from "../theme";
 import ViewAssessments from "./ViewAssessments";
 import PartnerLink from "./PartnerLink";
 import EditPartner from "./EditPartner";
+// eslint-disable-next-line import/no-named-as-default
 import CreateAssessment from "./CreateAssessment";
 import AddMerakiLink from "./AddMerakiLink";
 import EditPartnerDetails from "./EditIcon";
-
 import { changeFetching } from "../store/actions/auth";
 import MainLayout from "./MainLayout";
 import ReportSend from "./ReportSend";
 import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
-import { makeStyles } from "@material-ui/styles";
-const baseUrl = process.env.API_URL;
 
-const useStyles = makeStyles((theme) => ({
+const baseUrl = import.meta.env.VITE_API_URL;
+
+const useStyles = makeStyles(() => ({
   innerTable: {
     marginLeft: "3vw",
     marginRight: "3vw",
@@ -45,9 +41,7 @@ const columns = [
     options: {
       filter: true,
       sort: true,
-      customBodyRender: (value) => {
-        return <EditPartnerDetails value={value} />;
-      },
+      customBodyRender: (value) => <EditPartnerDetails value={value} />,
     },
   },
   {
@@ -57,7 +51,7 @@ const columns = [
       filter: true,
       sort: true,
       customBodyRender: (value, rowMeta) => {
-        let name = rowMeta.rowData[3];
+        const name = rowMeta.rowData[3];
         return <PartnerLink url={`partner/${value}`} text={name} name={name} />;
       },
     },
@@ -69,9 +63,9 @@ const columns = [
     options: {
       filter: false,
       sort: false,
-      customBodyRender: (value, rowMeta) => {
-        return <ViewAssessments partnerId={rowMeta.rowData[0]} />;
-      },
+      customBodyRender: (value, rowMeta) => (
+        <ViewAssessments partnerId={rowMeta.rowData[0]} />
+      ),
     },
   },
   {
@@ -80,14 +74,12 @@ const columns = [
     options: {
       filter: false,
       sort: false,
-      customBodyRender: (rowData, rowMeta) => {
-        return (
-          <CreateAssessment
-            partnerId={rowMeta.rowData[0]}
-            partnerName={rowData}
-          />
-        );
-      },
+      customBodyRender: (rowData, rowMeta) => (
+        <CreateAssessment
+          partnerId={rowMeta.rowData[0]}
+          partnerName={rowData}
+        />
+      ),
     },
   },
   {
@@ -97,11 +89,11 @@ const columns = [
       filter: false,
       sort: false,
       customBodyRender: (value, rowMeta) => {
-        let name = rowMeta.rowData[3];
+        const name = rowMeta.rowData[3];
         return (
           <PartnerLink
             url={`partner/${value}/progress`}
-            text={"Get Information"}
+            text="Get Information"
             name={name}
           />
         );
@@ -129,17 +121,16 @@ const columns = [
               </a>
             </div>
           );
-        } else {
-          return (
-            <EditPartner
-              columnIndex={rowMeta.columnIndex}
-              partnerId={rowMeta.rowData[0]}
-              name={rowMeta.rowData[3]}
-              notes={rowMeta.rowData[2]}
-              change={(event) => updateValue(event)}
-            />
-          );
         }
+        return (
+          <EditPartner
+            columnIndex={rowMeta.columnIndex}
+            partnerId={rowMeta.rowData[0]}
+            name={rowMeta.rowData[3]}
+            notes={rowMeta.rowData[2]}
+            change={(event) => updateValue(event)}
+          />
+        );
       },
     },
   },
@@ -150,15 +141,13 @@ const columns = [
     options: {
       filter: false,
       sort: false,
-      customBodyRender: (value, rowMeta, updateValue) => {
-        return (
-          <AddMerakiLink
-            isValue={value}
-            studentId={rowMeta.rowData[0]}
-            updateValue={updateValue}
-          />
-        );
-      },
+      customBodyRender: (value, rowMeta, updateValue) => (
+        <AddMerakiLink
+          isValue={value}
+          studentId={rowMeta.rowData[0]}
+          updateValue={updateValue}
+        />
+      ),
     },
   },
   {
@@ -167,9 +156,7 @@ const columns = [
     options: {
       filter: false,
       sort: false,
-      customBodyRender: (value) => {
-        return <ReportSend partnerId={value} />;
-      },
+      customBodyRender: (value) => <ReportSend partnerId={value} />,
     },
   },
 ];
@@ -187,17 +174,9 @@ const PartnerList = () => {
     partnerRouteConditon: false, //to check condition of partner route
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchPartners();
-      await fetchAccess();
-    };
-    fetchData();
-  }, []);
-
   const fetchAccess = async () => {
     try {
-      const accessUrl = baseUrl + "rolebaseaccess";
+      const accessUrl = `${baseUrl}rolebaseaccess`;
       axios.get(accessUrl).then((response) => {
         const partnerData = response.data; //variable to store response data
         const conditions =
@@ -209,7 +188,7 @@ const PartnerList = () => {
           partnerData.partners.view.includes(state.userLoggedIn.email);
         setState((prevState) => ({
           ...prevState,
-          access: partnerData ? partnerData : null, //set access data to state
+          access: partnerData || null, //set access data to state
           partnerRouteConditon: conditions,
         }));
       });
@@ -218,10 +197,15 @@ const PartnerList = () => {
     }
   };
 
+  const dataSetup = (data) => {
+    setState((prevState) => ({ ...prevState, data }));
+    fetchingFinish();
+  };
+
   const fetchPartners = async () => {
     try {
       fetchingStart();
-      const dataURL = baseUrl + "partners";
+      const dataURL = `${baseUrl}partners`;
       const response = await axios.get(dataURL, {
         headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
       });
@@ -231,15 +215,18 @@ const PartnerList = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchPartners();
+      await fetchAccess();
+    };
+    fetchData();
+  }, []);
+
   // const onRowClick = (event, rowData) => history.push("/partner/" + rowData.id + "/students");
 
-  const dataSetup = (data) => {
-    setState((prevState) => ({ ...prevState, data }));
-    fetchingFinish();
-  };
-
   if (!state.data.length) {
-    return <Box></Box>;
+    return <Box />;
   }
   return (
     <div>
@@ -248,7 +235,7 @@ const PartnerList = () => {
           <ThemeProvider theme={theme}>
             <div className={classes.innerTable}>
               <MainLayout
-                title={"Partners"}
+                title="Partners"
                 columns={columns}
                 data={state.data}
               />

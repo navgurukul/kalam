@@ -18,8 +18,9 @@ import StudentService from "../services/StudentService";
 import StudentContact from "./StudentContact";
 import Loader from "./Loader";
 import DeleteStudentDetails from "./DeleteStudentDetails";
-import { campusStageOfLearning } from "../config";
 import OutreachData from "./OutreachData";
+
+const { campusStageOfLearning } = require("../config");
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = process.env.API_URL;

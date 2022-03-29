@@ -3,7 +3,7 @@ import { makeStyles } from "@mui/styles";
 import { Chip, Paper, Grid, Menu, MenuItem, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
-import { allTagsForOnlineClass } from "../config";
+const { allTagsForOnlineClass } = require("../config");
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

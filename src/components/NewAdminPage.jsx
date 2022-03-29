@@ -1,26 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import Select from "react-select";
 import axios from "axios";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import Button from "@material-ui/core/Button";
-import { useSnackbar } from "notistack";
-import TextField from "@material-ui/core/TextField";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import {
+  Button,
+  TextField,
   Box,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
   Grid,
   InputLabel,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import { useSnackbar } from "notistack";
 import NewCustomToolbar from "./NewCustomToolbar";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.API_URL;
 
 const NewAdminPage = () => {
   const [roleByMailID, setRoleByMailID] = useState([]);
@@ -51,10 +50,10 @@ const NewAdminPage = () => {
     { value: "t&p", label: "T&P" },
   ];
 
-  const RoleOptions = [
-    { value: "partner", label: "Partners" },
-    { value: "t&p", label: "T&P" },
-  ];
+  // const RoleOptions = [
+  //   { value: "partner", label: "Partners" },
+  //   { value: "t&p", label: "T&P" },
+  // ];
 
   const handleClose = () => {
     setDialogOpen(false);
@@ -77,15 +76,14 @@ const NewAdminPage = () => {
   //event handlers
   const handleRoleChangePartners = (selectedRole) => {
     setSelectedRolePartners(selectedRole);
-    console.log(selectedRole);
   };
 
   const handleRoleChangeTP = (selectedRole) => {
     setSelectedRoleTP(selectedRole);
   };
 
-  const handlePrivilagesChange = (selectedPrivilages) => {
-    setSelectedPrivilages(selectedPrivilages);
+  const handlePrivilagesChange = (newSelectedPrivilages) => {
+    setSelectedPrivilages(newSelectedPrivilages);
   };
 
   const handleRoleMenuChange = (selectedRoleMenu) => {
@@ -95,14 +93,9 @@ const NewAdminPage = () => {
   const handleSubmit = async () => {
     const PartnerRole =
       selectedRolePartners.length > 0 &&
-      selectedRolePartners.map((role) => {
-        return role.value;
-      });
+      selectedRolePartners.map((role) => role.value);
     const TPRole =
-      selectedRoleTP.length > 0 &&
-      selectedRoleTP.map((role) => {
-        return role.value;
-      });
+      selectedRoleTP.length > 0 && selectedRoleTP.map((role) => role.value);
     const Role =
       PartnerRole === false
         ? [...TPRole]
@@ -110,17 +103,14 @@ const NewAdminPage = () => {
         ? [...PartnerRole]
         : [...PartnerRole, ...TPRole];
 
-    console.log(Role, "Roleee");
-
     await axios
       .post(`${baseUrl}rolebaseaccess/email/add`, {
         email: mail,
         roles: Role,
       })
       .then((res) => {
-        console.log(res);
         if (res.status === 200) {
-          snackbar.enqueueSnackbar("Role Assigned Successfully to " + mail, {
+          snackbar.enqueueSnackbar(`Role Assigned Successfully to ${mail}`, {
             variant: "success",
           });
           setDialogOpen(false);
@@ -154,11 +144,10 @@ const NewAdminPage = () => {
     axios
       .get(`${baseUrl}rolebaseaccess/email`)
       .then((response) => {
-        console.log(response, "response");
         setRoleByMailID(response.data);
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
+        // console.log(e);
       });
   };
 
@@ -184,54 +173,50 @@ const NewAdminPage = () => {
       options: {
         filter: true,
         sort: true,
-        customBodyRender: (value) => {
-          return (
-            // <Select
-            //   placeholder={"Select Role"}
-            //   value={
-            //     selectedOptionRole.length > 0
-            //       ? selectedOptionRole
-            //       : value.map((item) => {
-            //           return {
-            //             value: item,
-            //             label: item.split(":", 1),
-            //           };
-            //         })
-            //   }
-            //   isMulti={true}
-            //   onChange={handleRoleChange}
-            //   options={allPrivilagesOptions}
-            //   styles={{
-            //     menuList: (base) => ({
-            //       ...base,
-            //       position: "fixed !important",
-            //       backgroundColor: "white",
-            //       border: "1px solid lightgray",
-            //       width: "18%",
-            //     }),
-            //   }}
-            // />
+        customBodyRender: memo((value) => (
+          // <Select
+          //   placeholder={"Select Role"}
+          //   value={
+          //     selectedOptionRole.length > 0
+          //       ? selectedOptionRole
+          //       : value.map((item) => {
+          //           return {
+          //             value: item,
+          //             label: item.split(":", 1),
+          //           };
+          //         })
+          //   }
+          //   isMulti={true}
+          //   onChange={handleRoleChange}
+          //   options={allPrivilagesOptions}
+          //   styles={{
+          //     menuList: (base) => ({
+          //       ...base,
+          //       position: "fixed !important",
+          //       backgroundColor: "white",
+          //       border: "1px solid lightgray",
+          //       width: "18%",
+          //     }),
+          //   }}
+          // />
 
-            <div>
-              {value.map((item, inx) => {
-                return (
-                  <span
-                    key={inx}
-                    style={{
-                      display: "inline-block",
-                      marginRight: "10px",
-                      border: "1px solid lightgray",
-                      padding: "8px",
-                    }}
-                  >
-                    {item.split(":", 1)}
-                    <br />
-                  </span>
-                );
-              })}
-            </div>
-          );
-        },
+          <div>
+            {value.map((item) => (
+              <span
+                key={item.split(":", 1)}
+                style={{
+                  display: "inline-block",
+                  marginRight: "10px",
+                  border: "1px solid lightgray",
+                  padding: "8px",
+                }}
+              >
+                {item.split(":", 1)}
+                <br />
+              </span>
+            ))}
+          </div>
+        )),
       },
     },
     {
@@ -240,23 +225,21 @@ const NewAdminPage = () => {
       options: {
         filter: true,
         sort: true,
-        customBodyRender: (value) => {
-          return (
-            <div>
-              <span
-                style={{
-                  display: "inline-block",
-                  marginRight: "10px",
-                  border: "1px solid lightgray",
-                  padding: "8px",
-                }}
-              >
-                Privilege
-                <br />
-              </span>
-            </div>
-          );
-        },
+        customBodyRender: memo(() => (
+          <div>
+            <span
+              style={{
+                display: "inline-block",
+                marginRight: "10px",
+                border: "1px solid lightgray",
+                padding: "8px",
+              }}
+            >
+              Privilege
+              <br />
+            </span>
+          </div>
+        )),
       },
     },
     {
@@ -265,97 +248,91 @@ const NewAdminPage = () => {
       options: {
         filter: true,
         sort: true,
-        customBodyRender: (value, { rowData }) => {
-          return (
-            <div
+        customBodyRender: memo((value, { rowData }) => (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+              alignItems: "center",
+            }}
+          >
+            <EditIcon
               style={{
-                display: "flex",
-                justifyContent: "space-around",
-                alignItems: "center",
+                color: "green",
+                cursor: "pointer",
               }}
-            >
-              <EditIcon
-                style={{
-                  color: "green",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  console.log(rowData);
-                  setEditing(rowData[3]);
-                  setMail(rowData[0]);
-                  setSelectedPrivilages([
-                    { value: rowData[2], label: rowData[2] },
-                  ]);
-                  let roles = {};
-                  rowData[1].forEach((el) => {
-                    if (el.split(":")[0] === "partner") {
-                      let partners = el
-                        .split(":")[1]
-                        .split(",")
-                        .map((el) => ({ label: el, value: el }));
-                      console.log(partners);
-                      roles["partners"] = partners;
-                    }
-                    if (el.split(":")[0] === "T&P") {
-                      let campuses = el
-                        .split(":")[1]
-                        .split(",")
-                        .map((el) => ({ value: el, label: el }));
-                      roles["tnp"] = campuses;
-                    }
-                  });
-                  if (roles["partners"])
-                    setSelectedRolePartners(roles["partners"]);
-                  if (roles["tnp"]) setSelectedRoleTP(roles["tnp"]);
-                  handleOpen();
-                }}
-              />
-              <DeleteIcon
-                style={{
-                  color: "red",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
+              onClick={() => {
+                setEditing(rowData[3]);
+                setMail(rowData[0]);
+                setSelectedPrivilages([
+                  { value: rowData[2], label: rowData[2] },
+                ]);
+                const roles = {};
+                rowData[1].forEach((el) => {
+                  if (el.split(":")[0] === "partner") {
+                    const partners = el
+                      .split(":")[1]
+                      .split(",")
+                      .map((elm) => ({ label: elm, value: elm }));
+                    roles.partners = partners;
+                  }
+                  if (el.split(":")[0] === "T&P") {
+                    const campuses = el
+                      .split(":")[1]
+                      .split(",")
+                      .map((elm) => ({ value: elm, label: elm }));
+                    roles.tnp = campuses;
+                  }
+                });
+                if (roles.partners) setSelectedRolePartners(roles.partners);
+                if (roles.tnp) setSelectedRoleTP(roles.tnp);
+                handleOpen();
+              }}
+            />
+            <DeleteIcon
+              style={{
+                color: "red",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                if (
                   window.confirm(
                     `Do you want to delete roles of ${rowData[0]}?`
                   )
-                    ? axios
-                        .delete(
-                          `${baseUrl}rolebaseaccess/email/delete/${rowData[3]}`
-                        )
-                        .then((res) => {
-                          snackbar.enqueueSnackbar(
-                            "Role deleted successfully!",
-                            {
-                              variant: "success",
-                            }
-                          );
-                        })
-                    : "";
-                }}
-              />
-            </div>
-          );
-        },
+                )
+                  axios
+                    .delete(
+                      `${baseUrl}rolebaseaccess/email/delete/${rowData[3]}`
+                    )
+                    .then(() => {
+                      snackbar.enqueueSnackbar("Role deleted successfully!", {
+                        variant: "success",
+                      });
+                    });
+              }}
+            />
+          </div>
+        )),
       },
     },
   ];
 
   const options = {
     selectableRows: false,
-    customToolbar: () => {
-      return <NewCustomToolbar handleOpen={handleOpen} />;
-    },
+    customToolbar: memo(() => <NewCustomToolbar handleOpen={handleOpen} />),
   };
 
-  let data = roleByMailID.map((item) => {
-    return [item.email, item.roles, item.privilege, item.id];
-  });
+  const data = roleByMailID.map((item) => [
+    item.email,
+    item.roles,
+    item.privilege,
+    item.id,
+  ]);
 
   return (
     <>
       <MUIDataTable
-        title={"Role Based Accesses"}
+        title="Role Based Accesses"
         data={data}
         columns={columns}
         options={options}
@@ -412,7 +389,7 @@ const NewAdminPage = () => {
                 Roles
               </InputLabel>
               <Select
-                placeholder={"Role Menu"}
+                placeholder="Role Menu"
                 value={roleMenu}
                 onChange={handleRoleMenuChange}
                 options={RoleMenuOptions}
@@ -439,10 +416,10 @@ const NewAdminPage = () => {
                     Partners
                   </InputLabel>
                   <Select
-                    placeholder={"Select Particular Partners"}
+                    placeholder="Select Particular Partners"
                     value={selectedRolePartners}
                     onChange={handleRoleChangePartners}
-                    isMulti={true}
+                    isMulti
                     options={dropDownOptions}
                     styles={{
                       menuList: (base) => ({
@@ -470,10 +447,10 @@ const NewAdminPage = () => {
                     T&P
                   </InputLabel>
                   <Select
-                    placeholder={"Select Particular T&P"}
+                    placeholder="Select Particular T&P"
                     value={selectedRoleTP}
                     onChange={handleRoleChangeTP}
-                    isMulti={true}
+                    isMulti
                     options={dropDownOptions}
                     styles={{
                       menuList: (base) => ({
@@ -499,10 +476,10 @@ const NewAdminPage = () => {
                 Privilage
               </InputLabel>
               <Select
-                placeholder={"Select Privilage"}
+                placeholder="Select Privilage"
                 value={selectedPrivilages}
                 onChange={handlePrivilagesChange}
-                isMulti={true}
+                isMulti
                 // options={PrivilageOptions}
                 styles={{
                   menuList: (base) => ({
@@ -526,28 +503,18 @@ const NewAdminPage = () => {
               onClick={() => {
                 const PartnerRole =
                   selectedRolePartners.length > 0 &&
-                  "partner:" +
-                    selectedRolePartners
-                      .map((role) => {
-                        return role.value;
-                      })
-                      .join(",");
+                  `partner:${selectedRolePartners
+                    .map((role) => role.value)
+                    .join(",")}`;
                 const TPRole =
                   selectedRoleTP.length > 0 &&
-                  "T&P:" +
-                    selectedRoleTP
-                      .map((role) => {
-                        return role.value;
-                      })
-                      .join(",");
+                  `T&P:${selectedRoleTP.map((role) => role.value).join(",")}`;
                 const Role =
                   PartnerRole === false
                     ? [TPRole]
                     : TPRole === false
                     ? [PartnerRole]
                     : [PartnerRole, TPRole];
-
-                console.log(Role, "Roleee");
 
                 if (editing) {
                   axios
@@ -556,10 +523,9 @@ const NewAdminPage = () => {
                       roles: Role,
                     })
                     .then((res) => {
-                      console.log(res);
                       if (res.status === 200) {
                         snackbar.enqueueSnackbar(
-                          "Role Updated Successfully for " + mail,
+                          `Role Updated Successfully for ${mail}`,
                           {
                             variant: "success",
                           }
@@ -583,10 +549,9 @@ const NewAdminPage = () => {
                       roles: Role,
                     })
                     .then((res) => {
-                      console.log(res);
                       if (res.status === 200) {
                         snackbar.enqueueSnackbar(
-                          "Role Assigned Successfully to " + mail,
+                          `Role Assigned Successfully to ${mail}`,
                           {
                             variant: "success",
                           }

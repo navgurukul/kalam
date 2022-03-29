@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import { useHistory } from "react-router-dom";
-const baseUrl = process.env.API_URL;
+import { makeStyles } from "@mui/material/styles";
+import { Container, Paper, Typography, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+const baseUrl = import.meta.env.VITE_API_URL;
 const tutorialSteps = {
   heading: "Oh Sorry!",
   hiContent1: "आप इस बारी इस टेस्ट में पास नहीं हो पाए। आपके ",
@@ -50,10 +48,9 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
-function SorryPage(props) {
-  const history = useHistory();
+function SorryPage() {
+  const navigate = useNavigate();
   const classes = useStyles();
-  let marks = props.total_marks;
   const [totalMarks, setTotalMarks] = useState("");
   useEffect(() => {
     fetch(
@@ -114,7 +111,7 @@ function SorryPage(props) {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => history.push("/")}
+            onClick={() => navigate("/")}
           >
             Ok
           </Button>

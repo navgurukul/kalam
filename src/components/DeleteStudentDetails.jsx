@@ -12,8 +12,9 @@ import {
   Typography,
   Grid,
 } from "@mui/material";
-import { permissions } from "../config";
 import { getData } from "../store/actions/data";
+
+const { permissions } = require("../config");
 
 const baseUrl = process.env.API_URL;
 

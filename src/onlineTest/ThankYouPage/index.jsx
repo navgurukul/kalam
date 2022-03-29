@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
-import Container from "@material-ui/core/Container";
-import { useHistory } from "react-router-dom";
-const baseUrl = process.env.API_URL;
+import { makeStyles } from "@mui/material/styles";
+import { Typography, Button, Link, Container } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+const baseUrl = import.meta.env.API_URL;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,8 +24,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ThankYouPage(props) {
   const classes = useStyles();
-  const history = useHistory();
-  const { total_marks } = props;
+  const navigate = useNavigate();
   const [totalMarks, setTotalMarks] = useState("");
   useEffect(() => {
     fetch(
@@ -65,7 +62,8 @@ function ThankYouPage(props) {
           color="primary"
           className={classes.button}
           onClick={() => {
-            history.push(`/bookSlot/${props.userID}`);
+            const { userID } = props;
+            navigate(`/bookSlot/${userID}`);
           }}
         >
           Book Slot

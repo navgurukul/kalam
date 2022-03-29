@@ -9,7 +9,7 @@ import { campus } from "../config";
 import DashboardPage from "./Dashboard";
 import SelectUiByButtons from "./SelectUiByButtons";
 import StudentsProgressCards from "./StudentsProgressCards";
-import GraphingPresentationJob from "./GraphingPresentationJob.js";
+import GraphingPresentationJob from "./GraphingPresentationJob";
 import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
 

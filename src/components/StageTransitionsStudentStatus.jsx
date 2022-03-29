@@ -3,7 +3,7 @@ import React, { memo } from "react";
 import { Modal, Button, Typography, Box } from "@mui/material";
 import MUIDataTable from "mui-datatables";
 import Moment from "react-moment";
-import { createTheme, ThemeProvider, makeStyles } from "@mui/styles";
+import { createTheme, ThemeProvider, makeStyles } from "@mui/material/styles";
 
 import DetailsIcon from "@mui/icons-material/Details";
 import theme from "../theme";

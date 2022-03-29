@@ -4,7 +4,8 @@ import DialogActions from "@mui/material/DialogActions";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useSelector } from "react-redux";
-import { permissions } from "../config/index";
+
+const { permissions } = require("../config");
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

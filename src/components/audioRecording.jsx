@@ -1,7 +1,7 @@
 import { createTheme } from "@mui/material";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 
-import { AudioPlayer } from "mui-audio-player";
+import { AudioPlayer } from "material-ui-audio-player";
 import React, { Fragment } from "react";
 
 const muiTheme = createTheme({});

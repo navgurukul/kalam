@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import Moment from "react-moment";
+import { DatePicker, LocalizationProvider } from "@mui/lab";
+import DateFnsUtils from "@mui/lab/AdapterDateFns";
+import Axios from "axios";
 import {
   allStages,
   feedbackableStages,
@@ -9,17 +13,17 @@ import {
   campusStageOfLearning,
   caste,
 } from "../config";
-import Moment from "react-moment";
 import StageSelect from "../components/StageSelect";
 import UpdateEmail from "../components/UpdateEmail";
 import OwnerSelect from "../components/OwnerSelect";
 import StatusSelect from "../components/StatusSelect";
 import StudentFeedback from "../components/FeedbackPage";
+// eslint-disable-next-line import/no-cycle
 import StageTransitions from "../components/StageTransitions";
 import StageTransitionsStudentStatus from "../components/StageTransitionsStudentStatus";
 import AudioRecorder from "../components/audioRecording";
 import AudiofileUpload from "../components/uploadAudioFile";
-import TagsForOnlineClass from "../components/tagsForOnlineClass";
+import TagsForOnlineClass from "../components/TagsForOnlineClass";
 
 import UpdateCampus from "../components/UpdateCampus";
 import UpdateDonor from "../components/UpdateDonor";
@@ -32,16 +36,10 @@ import RedFlag from "../components/FlagModal";
 import SurveyForm from "../components/SurveyForm";
 import EvaluationSelect from "../components/EvaluationSelect";
 import UpdatePartner from "../components/UpdatePartner";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import Axios from "axios";
 import DeadLineDateUpdate from "../components/DeadlineDateUpdate";
 import EndDateUpdate from "../components/EndDateUpdate";
 const _ = require("underscore");
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 const keysCampusStageOfLearning = Object.keys(campusStageOfLearning);
 // const allStagesOptions = Object.keys(allStages).map((x) => {
 //   return allStages[x];

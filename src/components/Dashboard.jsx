@@ -1,40 +1,38 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import Box from "@material-ui/core/Box";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import Box from "@mui/material/Box";
+import { LocalizationProvider, DatePicker } from "@mui/lab";
+import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import axios from "axios";
 
-import { changeFetching, setupUsers } from "../store/actions/auth";
-
 import { useNavigate } from "react-router-dom";
+import Select from "react-select";
+import { useSnackbar } from "notistack";
+import { getData } from "../store/actions/data";
+import { qualificationKeys, campusStageOfLearning, allStages } from "../config";
+import MainLayout from "./MainLayout";
 
 import StudentService from "../services/StudentService";
 import { EventEmitter } from "./events";
-import MainLayout from "./MainLayout";
-import { qualificationKeys } from "../config";
-import Select from "react-select";
-import { useSnackbar } from "notistack";
-import { campusStageOfLearning, allStages } from "../config";
-import { getData } from "../store/actions/data";
 
-let allStagesOptions = Object.keys(campusStageOfLearning).map((x) => {
-  return { value: x, label: campusStageOfLearning[x] };
-});
+import { changeFetching, setupUsers } from "../store/actions/auth";
 
-let partnerStages = Object.keys(allStages).map((x) => {
-  return { value: x, label: allStages[x] };
-});
+const allStagesOptions = Object.keys(campusStageOfLearning).map((x) => ({
+  value: x,
+  label: campusStageOfLearning[x],
+}));
+
+const partnerStages = Object.keys(allStages).map((x) => ({
+  value: x,
+  label: allStages[x],
+}));
 
 const allStagesValue = Object.values(allStages);
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.API_URL;
 
-let columns = [
+const columns = [
   {
     label: "English Interview Pending (2nd Round)",
     name: "pendingEnglishInterview",
@@ -127,7 +125,7 @@ const DashboardPage = (props) => {
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const usersSetup = (users) => dispatch(setupUsers(users));
-  const getStudentsData = (data) => dispatch(getData(data));
+  const getStudentsData = (studentData) => dispatch(getData(studentData));
   const [state, setState] = React.useState({
     mainData: [],
     wholeData: [],
@@ -141,27 +139,76 @@ const DashboardPage = (props) => {
     inCampusCount: null,
   });
 
-  EventEmitter.subscribe("stageChange", stageChangeEvent);
+  const stageChangeEvent = (iData) => {
+    const rowIds = data.map((x) => x.id);
+    const rowIndex = rowIds.indexOf(iData.rowData.id);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchStudents();
-      await fetchUsers();
-    };
-    fetchData();
-  }, []);
+    const dataElem = data[rowIndex];
+    dataElem.stageTitle = iData.selectedValue.label;
+    dataElem.stage = iData.selectedValue.value;
+
+    const newData = data;
+    newData[rowIndex] = dataElem;
+    getStudentsData(newData);
+  };
+
+  EventEmitter.subscribe("stageChange", stageChangeEvent);
 
   const fetchUsers = async () => {
     try {
       fetchingStart();
-      const usersURL = baseUrl + "users/getall";
+      const usersURL = `${baseUrl}users/getall`;
       const response = await axios.get(usersURL, {});
       usersSetup(response.data.data);
       fetchingFinish();
     } catch (e) {
-      console.error(e);
       fetchingFinish();
     }
+  };
+
+  const dataSetup = (studentData) => {
+    const locationCampus = location.pathname.split("/")[1];
+
+    let countDropOut = 0;
+    let countOnLeave = 0;
+    let countInCampus = 0;
+    if (locationCampus === "campus") {
+      if (studentData.length > 0) {
+        studentData.forEach((e) => {
+          if (e.stage === "droppedOut") {
+            countDropOut += 1;
+          } else if (e.stage === "onLeave") {
+            countOnLeave += 1;
+          } else if (
+            e.stage !== "M22" ||
+            e.stage !== "M21" ||
+            e.stage !== "offerLetterSent" ||
+            e.stage !== "inJob" ||
+            e.stage !== "payingForward" ||
+            e.stage !== "paidForward"
+          ) {
+            countInCampus += 1;
+          }
+        });
+      }
+    }
+
+    for (let i = 0; i < studentData.length; i += 1) {
+      // eslint-disable-next-line no-param-reassign
+      studentData[i] = StudentService.dConvert(studentData[i]);
+    }
+    getStudentsData(studentData);
+
+    setState((prevState) => ({
+      ...prevState,
+      mainData: studentData,
+      wholeData: studentData,
+      showLoader: false,
+      dropoutCount: countDropOut,
+      onLeaveCount: countOnLeave,
+      inCampusCount: countInCampus,
+    }));
+    fetchingFinish();
   };
 
   const fetchStudents = async () => {
@@ -178,13 +225,13 @@ const DashboardPage = (props) => {
       });
       const obj = {};
       const studentData = response.data.data.map((student) => {
-        let value = student["lastTransition"]
-          ? student["lastTransition"]["to_stage"]
+        const value = student.lastTransition
+          ? student.lastTransition.to_stage
           : "other";
-        let contacts = student.contacts[student.contacts.length - 1];
+        const contacts = student.contacts[student.contacts.length - 1];
 
         if (obj[value]) {
-          obj[value] = obj[value] + 1;
+          obj[value] += 1;
         } else {
           obj[value] = 1;
         }
@@ -200,23 +247,17 @@ const DashboardPage = (props) => {
       }
       dataSetup(studentData);
     } catch (e) {
-      console.error(e);
       fetchingFinish();
     }
   };
 
-  const stageChangeEvent = (iData) => {
-    const rowIds = data.map((x) => x.id);
-    const rowIndex = rowIds.indexOf(iData.rowData.id);
-
-    let dataElem = data[rowIndex];
-    dataElem.stageTitle = iData.selectedValue.label;
-    dataElem.stage = iData.selectedValue.value;
-
-    let newData = data;
-    newData[rowIndex] = dataElem;
-    getStudentsData(newData);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchStudents();
+      await fetchUsers();
+    };
+    fetchData();
+  }, []);
 
   const changeFromDate = async (date) => {
     setState((prevState) => ({
@@ -234,50 +275,6 @@ const DashboardPage = (props) => {
     fetchStudents();
   };
 
-  const dataSetup = (studentData) => {
-    let locationCampus = location.pathname.split("/")[1];
-
-    let countDropOut = 0;
-    let countOnLeave = 0;
-    let countInCampus = 0;
-    if (locationCampus === "campus") {
-      if (studentData.length > 0) {
-        studentData.forEach((e) => {
-          if (e.stage === "droppedOut") {
-            countDropOut++;
-          } else if (e.stage === "onLeave") {
-            countOnLeave++;
-          } else if (
-            e.stage !== "M22" ||
-            e.stage !== "M21" ||
-            e.stage !== "offerLetterSent" ||
-            e.stage !== "inJob" ||
-            e.stage !== "payingForward" ||
-            e.stage !== "paidForward"
-          ) {
-            countInCampus++;
-          }
-        });
-      }
-    }
-
-    for (let i = 0; i < studentData.length; i++) {
-      studentData[i] = StudentService.dConvert(studentData[i]);
-    }
-    getStudentsData(studentData);
-
-    setState((prevState) => ({
-      ...prevState,
-      mainData: studentData,
-      wholeData: studentData,
-      showLoader: false,
-      dropoutCount: countDropOut,
-      onLeaveCount: countOnLeave,
-      inCampusCount: countInCampus,
-    }));
-    fetchingFinish();
-  };
-
   const filterData = () => {
     const { fromStage, toStage, mainData, wholeData } = state;
     getStudentsData(mainData);
@@ -286,9 +283,9 @@ const DashboardPage = (props) => {
         allStagesValue.indexOf(fromStage),
         allStagesValue.indexOf(toStage) + 1
       );
-      const newData = wholeData.filter((element) => {
-        return newAllStagesValue.indexOf(element.stage) > -1;
-      });
+      const newData = wholeData.filter(
+        (element) => newAllStagesValue.indexOf(element.stage) > -1
+      );
       getStudentsData(newData);
       setState({
         ...state,
@@ -324,35 +321,36 @@ const DashboardPage = (props) => {
 
   const { displayData, title } = props;
   const { dropoutCount, onLeaveCount, inCampusCount } = state;
-  let locationCampus = location.pathname.split("/")[1];
+  const locationCampus = location.pathname.split("/")[1];
 
   const showAllStage = parseInt(
-    location.pathname[location.pathname.length - 1]
+    location.pathname[location.pathname.length - 1],
+    10
   );
   const { fromStage, toStage, mainData, showLoader, wholeData } = state;
 
   const options = (
     <Box>
       <Select
-        className={"filterSelectGlobal"}
+        className="filterSelectGlobal"
         onChange={onChangeFromStage}
         options={showAllStage ? partnerStages : allStagesOptions}
-        placeholder={"from Stage"}
+        placeholder="from Stage"
         isClearable={false}
-        closeMenuOnSelect={true}
+        closeMenuOnSelect
         value={fromStage}
       />
       <Select
-        className={"filterSelectGlobal"}
+        className="filterSelectGlobal"
         onChange={onChangeToStage}
         options={showAllStage ? partnerStages : allStagesOptions}
-        placeholder={"to Stage"}
+        placeholder="to Stage"
         isClearable={false}
-        closeMenuOnSelect={true}
+        closeMenuOnSelect
         value={toStage}
       />
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
+      <LocalizationProvider utils={DateFnsUtils}>
+        <DatePicker
           margin="dense"
           style={{ marginLeft: 16, maxWidth: "40%" }}
           value={state.fromDate}
@@ -364,7 +362,7 @@ const DashboardPage = (props) => {
             "aria-label": "change date",
           }}
         />
-        <KeyboardDatePicker
+        <DatePicker
           margin="dense"
           style={{ marginLeft: 16, maxWidth: "40%" }}
           value={state.toDate}
@@ -376,7 +374,7 @@ const DashboardPage = (props) => {
             "aria-label": "change date",
           }}
         />
-      </MuiPickersUtilsProvider>
+      </LocalizationProvider>
     </Box>
   );
 
@@ -388,20 +386,20 @@ const DashboardPage = (props) => {
       }}
     >
       <Select
-        className={"filterSelectGlobal"}
+        className="filterSelectGlobal"
         onChange={onChangeFromStage}
         options={showAllStage ? partnerStages : allStagesOptions}
-        placeholder={"from Stage"}
+        placeholder="from Stage"
         isClearable={false}
-        closeMenuOnSelect={true}
+        closeMenuOnSelect
       />
       <Select
-        className={"filterSelectGlobal"}
+        className="filterSelectGlobal"
         onChange={onChangeToStage}
         options={showAllStage ? partnerStages : allStagesOptions}
-        placeholder={"to Stage"}
+        placeholder="to Stage"
         isClearable={false}
-        closeMenuOnSelect={true}
+        closeMenuOnSelect
       />
 
       {locationCampus === "campus" ? (

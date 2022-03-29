@@ -14,7 +14,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useNavigate } from "react-router-dom";
-import Image from "material-ui-image";
+import Image from "@jy95/material-ui-image";
 import logo from "../assets/img/logo.png";
 
 import PublicNavList from "../navs/publicNav";

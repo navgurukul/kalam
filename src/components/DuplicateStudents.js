@@ -234,7 +234,6 @@ const DuplicateStudents = () => {
       history.push("/notFound");
     }
   };
-  console.log(history);
   const data = state.data;
   const selectedLang =
     history.state === null ? "en" : history.location.state.state.selectedLang;

@@ -17,7 +17,6 @@ function OwnerSchedule(props) {
         filter: false,
         sort: false,
         customBodyRender: (value, rowMeta) => {
-          console.log(value);
           return <p>{value.split("T")[0]}</p>;
         },
       },

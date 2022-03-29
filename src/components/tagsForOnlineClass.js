@@ -1,10 +1,9 @@
-import React, { Component } from "react";
-import { withStyles } from "@material-ui/core/styles";
+import React from "react";
+import { makeStyles } from "@material-ui/styles";
 import Chip from "@material-ui/core/Chip";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import { allTagsForOnlineClass } from "../config";
-import { withSnackbar } from "notistack";
 
 import Menu from "@material-ui/core/Menu";
 import AddIcon from "@material-ui/icons/Add";
@@ -14,7 +13,7 @@ import axios from "axios";
 
 const baseUrl = process.env.API_URL;
 
-const useStyles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexWrap: "wrap",
@@ -35,42 +34,34 @@ const useStyles = (theme) => ({
     flexWrap: "wrap",
     justifyContent: "center",
   },
-});
+}));
 
-class ChipsArray extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      anchorEl: null,
-    };
-  }
+const ChipsArray = (props) => {
+  const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
-  handleClick = (event) => {
-    this.setState({
-      anchorEl: event.currentTarget,
-    });
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  handleClose = (value) => async () => {
+  const handleClose = (value) => async () => {
     if (value) {
-      const newData = this.props.allTags;
+      const newData = props.allTags;
       newData.push({ key: newData.length - 1, label: value });
-      this.addTags(newData);
+      addTags(newData);
     }
-    this.setState({
-      anchorEl: null,
-    });
+    setAnchorEl(null);
   };
 
-  handleDelete = (chipToDelete) => async () => {
-    const newData = this.props.allTags.filter(
+  const handleDelete = (chipToDelete) => async () => {
+    const newData = props.allTags.filter(
       (chip) => chip.key !== chipToDelete.key
     );
-    this.addTags(newData);
+    addTags(newData);
   };
 
-  addTags = (newData) => {
-    const { studentId, rowMetatable, change } = this.props;
+  const addTags = (newData) => {
+    const { studentId, rowMetatable, change } = props;
     const columnIndex = rowMetatable.columnIndex;
 
     let tag = [];
@@ -82,55 +73,52 @@ class ChipsArray extends Component {
     });
     change(tags, columnIndex);
   };
+  const { allTags } = props;
 
-  render() {
-    const { classes, allTags } = this.props;
+  return (
+    <Grid container direction="row" justify="flex-start" alignItems="center">
+      {allTags.length ? (
+        <Paper component="ul" className={classes.root}>
+          {allTags.map((data) => {
+            return (
+              <li key={data.key}>
+                <Chip
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  label={(
+                    data.label.charAt(0).toUpperCase() + data.label.slice(1)
+                  )
+                    .match(/[A-Z][a-z]+/g)
+                    .join(" ")}
+                  onDelete={handleDelete(data)}
+                  className={classes.chip}
+                />
+              </li>
+            );
+          })}
+        </Paper>
+      ) : null}
+      <Fab color="primary" className={classes.fab} onClick={handleClick}>
+        <AddIcon />
+      </Fab>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose(null)}
+      >
+        {allTagsForOnlineClass.map((data, index) => (
+          <MenuItem value={data} onClick={handleClose(data)} key={index}>
+            {(data.charAt(0).toUpperCase() + data.slice(1))
+              .match(/[A-Z][a-z]+/g)
+              .join(" ")}
+          </MenuItem>
+        ))}
+      </Menu>
+    </Grid>
+  );
+};
 
-    return (
-      <Grid container direction="row" justify="flex-start" alignItems="center">
-        {allTags.length ? (
-          <Paper component="ul" className={classes.root}>
-            {allTags.map((data) => {
-              return (
-                <li key={data.key}>
-                  <Chip
-                    variant="outlined"
-                    color="primary"
-                    size="small"
-                    label={(
-                      data.label.charAt(0).toUpperCase() + data.label.slice(1)
-                    )
-                      .match(/[A-Z][a-z]+/g)
-                      .join(" ")}
-                    onDelete={this.handleDelete(data)}
-                    className={classes.chip}
-                  />
-                </li>
-              );
-            })}
-          </Paper>
-        ) : null}
-        <Fab color="primary" className={classes.fab} onClick={this.handleClick}>
-          <AddIcon />
-        </Fab>
-        <Menu
-          id="simple-menu"
-          anchorEl={this.state.anchorEl}
-          keepMounted
-          open={Boolean(this.state.anchorEl)}
-          onClose={this.handleClose(null)}
-        >
-          {allTagsForOnlineClass.map((data) => (
-            <MenuItem value={data} onClick={this.handleClose(data)}>
-              {(data.charAt(0).toUpperCase() + data.slice(1))
-                .match(/[A-Z][a-z]+/g)
-                .join(" ")}
-            </MenuItem>
-          ))}
-        </Menu>
-      </Grid>
-    );
-  }
-}
-
-export default withStyles(useStyles)(withSnackbar(ChipsArray));
+export default ChipsArray;

@@ -1,18 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
-import { connect } from "react-redux";
-
-import { withSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
 
 const baseUrl = process.env.API_URL;
 const animatedComponents = makeAnimated();
 
-export class OwnerSelect extends React.Component {
-  handleChange = (selectedValue) => {
+const OwnerSelect = (props) => {
+  const snackbar = useSnackbar();
+  const [ownerData, setOwnerData] = React.useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const dataURL = baseUrl + "owner";
+      const response = await axios.get(dataURL);
+      const { data } = response.data;
+      let newData = data
+        .filter((el) => el.available)
+        .map((el) => ({
+          value: el.user.user_name,
+          label: el.user.user_name,
+          available: el.available,
+        }));
+      setOwnerData(newData);
+    };
+    fetchData();
+  }, []);
+  // console.log(ownerData);
+
+  const handleChange = (selectedValue) => {
     try {
-      const { change, rowMetaTable, studentId } = this.props;
+      const { change, rowMetaTable, studentId } = props;
       const { value } = selectedValue;
       const { columnIndex, rowData } = rowMetaTable;
       const whoAssign = JSON.parse(localStorage.getItem("user")).email;
@@ -25,47 +44,37 @@ export class OwnerSelect extends React.Component {
           student_id: studentId,
         })
         .then(() => {
-          this.props.enqueueSnackbar(
-            `successfully Assigned work for ${value}`,
-            { variant: "success" }
-          );
+          snackbar.enqueueSnackbar(`successfully Assigned work for ${value}`, {
+            variant: "success",
+          });
           change(value, columnIndex);
         });
     } catch (e) {
-      this.props.enqueueSnackbar(e, { variant: "error" });
+      snackbar.enqueueSnackbar(e, { variant: "error" });
     }
   };
+  const { value } = props;
+  // const allUserOptions = JSON.parse(localStorage.getItem("owners")).map((x) => {
+  //   return { label: x, value: x };
+  // });
+  let selectedValue = { value: null, label: null };
 
-  render = () => {
-    const { value, currentValue } = this.props;
-    const allUserOptions = JSON.parse(localStorage.getItem("owners")).map(
-      (x) => {
-        return { label: x, value: x };
-      }
-    );
-    let selectedValue = { value: null, label: null };
+  if (value) {
+    selectedValue = { value: value, label: value };
+  }
 
-    if (value) {
-      selectedValue = { value: value, label: value };
-    }
+  return (
+    <Select
+      className={"filterSelectStage"}
+      value={selectedValue}
+      onChange={handleChange}
+      options={ownerData}
+      // placeholder={"Select "+ props.filter.name+" ..."}
+      isClearable={false}
+      components={animatedComponents}
+      closeMenuOnSelect={true}
+    />
+  );
+};
 
-    return (
-      <Select
-        className={"filterSelectStage"}
-        value={selectedValue}
-        onChange={this.handleChange}
-        options={allUserOptions}
-        // placeholder={"Select "+this.props.filter.name+" ..."}
-        isClearable={false}
-        components={animatedComponents}
-        closeMenuOnSelect={true}
-      />
-    );
-  };
-}
-
-const mapStateToProps = (state) => ({
-  users: state.auth.users,
-});
-
-export default withSnackbar(connect(mapStateToProps, undefined)(OwnerSelect));
+export default OwnerSelect;

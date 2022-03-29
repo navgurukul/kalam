@@ -1,19 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   allStages,
   feedbackableStages,
   feedbackableStagesData,
   permissions,
-  allTagsForOnlineClass,
   donor,
   campus,
   campusStageOfLearning,
   caste,
 } from "../config";
-import EditableLabel from "react-inline-editing";
 import Moment from "react-moment";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
 import StageSelect from "../components/StageSelect";
 import UpdateEmail from "../components/UpdateEmail";
 import OwnerSelect from "../components/OwnerSelect";
@@ -22,7 +18,7 @@ import StudentFeedback from "../components/FeedbackPage";
 import StageTransitions from "../components/StageTransitions";
 import StageTransitionsStudentStatus from "../components/StageTransitionsStudentStatus";
 import AudioRecorder from "../components/audioRecording";
-import AudiofileUpload from "../components/ulpoadAudioFile";
+import AudiofileUpload from "../components/uploadAudioFile";
 import TagsForOnlineClass from "../components/tagsForOnlineClass";
 
 import UpdateCampus from "../components/UpdateCampus";
@@ -36,16 +32,23 @@ import RedFlag from "../components/FlagModal";
 import SurveyForm from "../components/SurveyForm";
 import EvaluationSelect from "../components/EvaluationSelect";
 import UpdatePartner from "../components/UpdatePartner";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import Axios from "axios";
+import DeadLineDateUpdate from "../components/DeadlineDateUpdate";
+import EndDateUpdate from "../components/EndDateUpdate";
 const _ = require("underscore");
-const animatedComponents = makeAnimated();
-
+const baseURL = process.env.API_URL;
 const keysCampusStageOfLearning = Object.keys(campusStageOfLearning);
-const allStagesOptions = Object.keys(allStages).map((x) => {
-  return allStages[x];
-});
-const allTagsOptions = Object.keys(allTagsForOnlineClass).map((x) => {
-  return allTagsForOnlineClass[x];
-});
+// const allStagesOptions = Object.keys(allStages).map((x) => {
+//   return allStages[x];
+// });
+// const allTagsOptions = Object.keys(allTagsForOnlineClass).map((x) => {
+//   return allTagsForOnlineClass[x];
+// });
 
 const user = window.localStorage.user
   ? JSON.parse(window.localStorage.user).email
@@ -321,22 +324,23 @@ const transitionIdColumn = {
   },
 };
 
-const deadlineColumnTrnasition = {
+const deadlineColumnTrnasition1 = {
   name: "deadline",
   label: "Deadline",
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => {
+    customBodyRender: (rowData, rowMeta) => {
       const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
       const ifExistingDeadlineDate =
         rowData && !rowMeta.rowData[7] && feedbackableStage;
+      console.log(rowData);
       if (ifExistingDeadlineDate) {
         const deadline = feedbackableStagesData[rowMeta.rowData[0]].deadline;
         const diff = new Date().getTime() - new Date(rowData).getTime();
         const hours = Math.floor(diff / 1000 / 60 / 60);
         const remainingTime = deadline - hours;
-        if (remainingTime < 0 && !rowMeta.rowData[7]) {
+        if (remainingTime < 0) {
           return "Your deadline is fineshed please do this work ASAP.";
         } else if (!rowMeta.rowData[2]) {
           return (
@@ -346,19 +350,29 @@ const deadlineColumnTrnasition = {
             </p>
           );
         }
-        return null;
+        return <p>{remainingTime}</p>;
       }
     },
   },
 };
-
+const deadlineColumnTrnasition = {
+  name: "deadline",
+  label: "Deadline",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (value, rowData) => {
+      return <DeadLineDateUpdate value={value} rowData={rowData} />;
+    },
+  },
+};
 const finishedColumnTransition = {
   name: "finished_at",
   label: "Finished",
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => {
+    customBodyRender: (rowData) => {
       const ifExistingFinishedDate = rowData;
       return ifExistingFinishedDate ? (
         <Moment format="D MMM YYYY" withTitle>
@@ -1049,13 +1063,8 @@ const finishedColumnTransitionCampus = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => {
-      const ifExistingFinishedDate = rowData;
-      return ifExistingFinishedDate ? (
-        <Moment format="D MMM YYYY" withTitle>
-          {rowData}
-        </Moment>
-      ) : null;
+    customBodyRender: (value, rowData) => {
+      return <EndDateUpdate value={value} rowData={rowData} />;
     },
   },
 };
@@ -1066,7 +1075,7 @@ const loggedInUser = {
   options: {
     filter: false,
     display: false,
-    customBodyRender: (rowData) => {
+    customBodyRender: () => {
       if (localStorage.getItem("user")) {
         const user = JSON.parse(localStorage.getItem("user"))
           ? JSON.parse(localStorage.getItem("user"))
@@ -1265,7 +1274,7 @@ const joinedDate = {
   name: "joinedDate",
   options: {
     filter: false,
-    customBodyRender: (value, rowMeta) => {
+    customBodyRender: (value) => {
       if (value) {
         return (
           <Moment format="D MMM YYYY" withTitle>
@@ -1300,7 +1309,7 @@ const linkForOnlineTestColumn = {
   options: {
     customBodyRender: (value) => {
       return value ? (
-        <a target="_blank" href={value}>
+        <a target="_blank" rel="noreferrer noopener" href={value}>
           Link to Test
         </a>
       ) : null;
@@ -1422,7 +1431,7 @@ const navGurukulSurveyForm = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (value, rowMeta, updateValue) => {
+    customBodyRender: (value, rowMeta) => {
       const { rowData } = rowMeta;
       return (
         <SurveyForm
@@ -1443,7 +1452,7 @@ const profileImage = {
   options: {
     filter: false,
     sort: false,
-    customBodyRender: (value, rowMeta, updateValue) => {
+    customBodyRender: (value) => {
       return value !== null ? (
         <img
           src={value}
@@ -1534,7 +1543,7 @@ const StudentService = {
       loggedInUser,
       AudioPlayer,
       transitionIdColumn,
-      deadlineColumnTrnasition,
+      deadlineColumnTrnasition1,
       finishedColumnTransition,
     ],
     columnStudentStatus: [

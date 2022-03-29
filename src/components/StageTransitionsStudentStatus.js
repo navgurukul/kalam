@@ -1,150 +1,155 @@
-import 'date-fns';
-import React from 'react';
-import { withStyles } from "@material-ui/core/styles";
-import { Modal, Button } from '@material-ui/core';
-import Box from '@material-ui/core/Box';
+import "date-fns";
+import React from "react";
+import { Modal, Button } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
 import MUIDataTable from "mui-datatables";
-import Moment from 'react-moment';
-import Typography from '@material-ui/core/Typography';
-import { theme } from '../theme/theme';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import Moment from "react-moment";
+import Typography from "@material-ui/core/Typography";
+import { theme } from "../theme/theme";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 
-import GlobalService from '../services/GlobalService';
-import DetailsIcon from '@material-ui/icons/Details';
+import GlobalService from "../services/GlobalService";
+import DetailsIcon from "@material-ui/icons/Details";
+import { makeStyles } from "@material-ui/styles";
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 
-function getModalStyle() {
-  const top = 50 // + rand()
-  const left = 50 //+ rand()
+const getModalStyle = () => {
+  const top = 50; // + rand()
+  const left = 50; //+ rand()
 
   return {
     top: `${top}%`,
     left: `${left}%`,
     transform: `translate(-${top}%, -${left}%)`,
-    overflowY: 'scroll',
-    maxHeight: '90vh',
-    width: "90%"
+    overflowY: "scroll",
+    maxHeight: "90vh",
+    width: "90%",
   };
-}
+};
 
-const styles = theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
-    position: 'absolute',
-    marginLeft: '3vw',
-    marginRight: '3vw',
-    width: '94vw',
-    [theme.breakpoints.up('md')]: {
-      margin: 'auto',
-      width: '50%'
+    position: "absolute",
+    marginLeft: "3vw",
+    marginRight: "3vw",
+    width: "94vw",
+    [theme.breakpoints.up("md")]: {
+      margin: "auto",
+      width: "50%",
     },
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(4),
-    outline: 'none',
+    outline: "none",
   },
   overrides: {
     MUIDataTableBodyCell: {
       root: {
-        minHeight: '22px'
-      }
-    }
-  }
-})
+        minHeight: "22px",
+      },
+    },
+  },
+}));
 
-export class StageTransitionsStudentStatus extends React.Component {
+const StageTransitionsStudentStatus = (props) => {
+  const classes = useStyles();
+  const [state, setState] = React.useState({
+    data: [],
+    modalOpen: false,
+  });
+  const columns = [
+    {
+      label: "Stage",
+      name: "to_stage",
+      options: {
+        customBodyRender: (value) => {
+          return allStages[value];
+        },
+      },
+    },
+    {
+      label: "When?",
+      name: "created_at",
+      options: {
+        customBodyRender: (value) => {
+          return (
+            <Moment format="D MMM YYYY" withTitle>
+              {value}
+            </Moment>
+          );
+        },
+      },
+    },
+  ];
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: [],
+  const { allStages } = props;
+
+  const getMuiTheme = () =>
+    createTheme({
+      overrides: {
+        MUIDataTableBodyCell: {
+          stackedCommon: {
+            height: "auto !important",
+            // width: 'calc(50% - 80px) !important'
+          },
+        },
+      },
+    });
+
+  const handleClose = () => {
+    setState({
+      ...state,
       modalOpen: false,
-    }
-    const { allStages } = this.props;
-    this.column = [
-      {
-        label: "Stage",
-        name: "to_stage",
-        options: {
-          customBodyRender: (value) => {
-            return allStages[value]
-          }
-        }
-      },
-      {
-        label: 'When?',
-        name: 'created_at',
-        options: {
-          customBodyRender: (value) => {
-            return <Moment format="D MMM YYYY" withTitle>{value}</Moment>
-          }
-        }
-      }
-    ]
-  }
-
-  getMuiTheme = () => createMuiTheme({
-    overrides: {
-      MUIDataTableBodyCell: {
-        stackedCommon: {
-          height: 'auto !important',
-          // width: 'calc(50% - 80px) !important'
-        }
-      },
-    }
-  })
-
-  handleClose = () => {
-    this.setState({
-      modalOpen: false
-    })
+    });
   };
 
-  handleOpen = () => {
-    this.setState({
-      modalOpen: true
-    })
+  const handleOpen = () => {
+    setState({
+      ...state,
+      modalOpen: true,
+    });
   };
 
-
-  render = () => {
-    const { classes, rowData } = this.props;
-    const modalStyle = getModalStyle()
-    return !this.state.modalOpen ? <div>
-      <Button color="primary" align="right" onClick={this.handleOpen}>
-        <DetailsIcon color="primary" />&nbsp;&nbsp;
+  const { rowData } = props;
+  const modalStyle = getModalStyle();
+  return !state.modalOpen ? (
+    <div>
+      <Button color="primary" align="right" onClick={handleOpen}>
+        <DetailsIcon color="primary" />
+        &nbsp;&nbsp;
       </Button>
-    </div> :
-      <Modal
-        open={this.state.modalOpen}
-        onClose={this.handleClose}
-      >
-        <Box style={modalStyle} className={classes.paper}>
-          <MuiThemeProvider theme={this.getMuiTheme()}>
-            <Typography variant="h5" id="modal-title">Transitions</Typography><br />
-            <MUIDataTable
-              columns={this.column}
-              data={rowData}
-              icons={GlobalService.tableIcons}
-              options={{
-                headerStyle: {
-                  color: theme.palette.primary.main
-                },
-                exportButton: true,
-                pageSize: 100,
-                showTitle: false,
-                selectableRows: 'none',
-                toolbar: false,
-                filtering: true,
-                filter: true,
-                filterType: 'doprdown',
-                responsive: 'stacked',
-              }}
+    </div>
+  ) : (
+    <Modal open={state.modalOpen} onClose={handleClose}>
+      <Box style={modalStyle} className={classes.paper}>
+        <ThemeProvider theme={getMuiTheme()}>
+          <Typography variant="h5" id="modal-title">
+            Transitions
+          </Typography>
+          <br />
+          <MUIDataTable
+            columns={columns}
+            data={rowData}
+            icons={GlobalService.tableIcons}
+            options={{
+              headerStyle: {
+                color: theme.palette.primary.main,
+              },
+              exportButton: true,
+              pageSize: 100,
+              showTitle: false,
+              selectableRows: "none",
+              toolbar: false,
+              filtering: true,
+              filter: true,
+              filterType: "doprdown",
+              responsive: "stacked",
+            }}
+          />
+        </ThemeProvider>
+      </Box>
+    </Modal>
+  );
+};
 
-            />
-          </MuiThemeProvider>
-        </Box>
-      </Modal>
-  }
-}
-
-export default withStyles(styles)(StageTransitionsStudentStatus)
+export default StageTransitionsStudentStatus;

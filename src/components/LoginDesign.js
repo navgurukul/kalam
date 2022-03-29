@@ -1,19 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { GoogleLogin } from "react-google-login";
 import { login } from "../store/actions/auth";
 import Paper from "@material-ui/core/Paper";
-import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/styles";
 import { theme } from "../theme/theme";
 import axios from "axios";
-import { connect } from "react-redux";
-import { withSnackbar } from "notistack";
+import { useDispatch } from "react-redux";
+import { useSnackbar } from "notistack";
 import Grid from "@material-ui/core/Grid";
 
 const baseUrl = process.env.API_URL;
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   loginContainer: {
     padding: theme.spacing(3, 2),
     maxWidth: 400,
@@ -27,29 +27,28 @@ const styles = (theme) => ({
     alignItems: "center",
     margin: theme.spacing(4),
   },
-});
+}));
 
-export class LoginDesign extends React.Component {
+const LoginDesign = (props) => {
+  const classes = useStyles();
+  const snackbar = useSnackbar();
+  const dispatch = useDispatch();
+  const handleLogin = () => dispatch(login());
+  const [specialLogin, setSpecialLogin] = React.useState([]);
   //maintaing a state for special login
-  state = {
-    specialLogin: [],
-  };
-
-  componentDidMount() {
+  // state = {
+  //   specialLogin: [],
+  // };
+  useEffect(() => {
     axios.get(`${baseUrl}rolebaseaccess`).then((res) => {
-      //console.log("res", res.data.specialLogin);
-      this.setState({
-        specialLogin: res.data.specialLogin,
-      });
+      setSpecialLogin(res.data.specialLogin);
     });
-  }
+  }, []);
 
-  responseGoogle = (response) => {
-    //console.log("response.profileObj", response.profileObj.email);
-
+  const responseGoogle = (response) => {
     if (
       response.profileObj.email.includes("@navgurukul.org") ||
-      this.state.specialLogin.includes(response.profileObj.email)
+      specialLogin.includes(response.profileObj.email)
     ) {
       axios
         .post(`${baseUrl}users/login/google`, {
@@ -60,18 +59,18 @@ export class LoginDesign extends React.Component {
           localStorage.setItem("jwt", userToken);
           localStorage.setItem("user", JSON.stringify(user));
           if (user.mobile) {
-            const { history } = this.props;
-            //console.log(this.props, "hi");
-            this.props.login();
+            const { history } = props;
+            console.log(history, "hi");
+            handleLogin();
             history.push("/students");
           } else {
-            const { history } = this.props;
-            this.props.login();
+            const { history } = props;
+            handleLogin();
             history.push("/user/mobile/number");
           }
         });
     } else {
-      this.props.enqueueSnackbar("Only Accessible by Navgurukul user ID", {
+      snackbar.enqueueSnackbar("Only Accessible by Navgurukul user ID", {
         variant: "message",
         anchorOrigin: {
           vertical: "bottom",
@@ -81,12 +80,12 @@ export class LoginDesign extends React.Component {
     }
   };
 
-  errr = (error) => {
+  const errr = (error) => {
     console.error(error);
     alert("There was some issue with Google Login. Contact the admin.");
   };
 
-  getQuote = () => {
+  const getQuote = () => {
     const QUOTES = [
       {
         quote:
@@ -116,67 +115,53 @@ export class LoginDesign extends React.Component {
     const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
     return quote;
   };
+  // console.log(classes);
+  const quote = getQuote();
 
-  render = () => {
-    const { classes } = this.props;
-    // console.log(classes);
-    const quote = this.getQuote();
-
-    return (
-      <Grid
-        container
-        spacing={0}
-        alignItems="center"
-        justify="center"
-        width="0%"
-        style={{ minHeight: "83vh" }}
-      >
-        <Box className={classes.container}>
-          <Paper className={classes.loginContainer}>
-            <Box>
-              <Typography variant="h5" component="h3">
-                NavGurukul Admissions
+  return (
+    <Grid
+      container
+      spacing={0}
+      alignItems="center"
+      justify="center"
+      width="0%"
+      style={{ minHeight: "83vh" }}
+    >
+      <Box className={classes.container}>
+        <Paper className={classes.loginContainer}>
+          <Box>
+            <Typography variant="h5" component="h3">
+              NavGurukul Admissions
+            </Typography>
+          </Box>
+          <Box style={{ height: theme.spacing(5) }} />
+          <Box>
+            <GoogleLogin
+              clientId="34917283366-b806koktimo2pod1cjas8kn2lcpn7bse.apps.googleusercontent.com"
+              buttonText="Login"
+              onSuccess={responseGoogle}
+              onFailure={errr}
+              scope="profile email"
+            />
+          </Box>
+          <Box style={{ height: theme.spacing(7) }} />
+          <Box className={classes.quoteContainer}>
+            <Box className={classes.quoteText}>
+              <Typography variant="body1">{quote.quote}</Typography>
+            </Box>
+            <Box className={classes.quoteAuthor}>
+              <Typography
+                variant="body2"
+                style={{ textAlign: "right", fontWeight: "bold" }}
+              >
+                {quote.author}
               </Typography>
             </Box>
-            <Box style={{ height: theme.spacing(5) }} />
-            <Box>
-              <GoogleLogin
-                clientId="34917283366-b806koktimo2pod1cjas8kn2lcpn7bse.apps.googleusercontent.com"
-                buttonText="Login"
-                onSuccess={this.responseGoogle}
-                onFailure={this.errr}
-                scope="profile email"
-              />
-            </Box>
-            <Box style={{ height: theme.spacing(7) }} />
-            <Box className={classes.quoteContainer}>
-              <Box className={classes.quoteText}>
-                <Typography variant="body1">{quote.quote}</Typography>
-              </Box>
-              <Box className={classes.quoteAuthor}>
-                <Typography
-                  variant="body2"
-                  style={{ textAlign: "right", fontWeight: "bold" }}
-                >
-                  {quote.author}
-                </Typography>
-              </Box>
-            </Box>
-          </Paper>
-        </Box>
-      </Grid>
-    );
-  };
-}
+          </Box>
+        </Paper>
+      </Box>
+    </Grid>
+  );
+};
 
-const mapDispatchToProps = (dispatch) => ({
-  login: () => dispatch(login()),
-});
-
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-});
-
-export default withSnackbar(
-  withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(LoginDesign))
-);
+export default LoginDesign;

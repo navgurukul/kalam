@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import MUIDataTable from "mui-datatables";
-import { qualificationKeys, allStages } from "../config";
-import { withSnackbar } from "notistack";
-import { withRouter } from "react-router-dom";
+import { qualificationKeys } from "../config";
+import { useSnackbar } from "notistack";
 import axios from "axios";
 import Loader from "./Loader";
 import SearchBar from "./SearchBar";
@@ -12,32 +11,31 @@ import { CircularProgress } from "@material-ui/core";
 
 const baseURL = process.env.API_URL;
 
-class ServerSidePagination extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      page: 0,
-      isData: false,
-      filterColumns: [],
-      mainUrl: `${baseURL}students?`,
-      query: "",
-      value: "",
-      newColumns: this.props.columns,
-    };
-  }
-
-  getKeyByValue = (object, value) => {
+const ServerSidePagination = (props) => {
+  const snackbar = useSnackbar();
+  const [state, setState] = React.useState({
+    page: 0,
+    isData: false,
+    filterColumns: [],
+    mainUrl: `${baseURL}students?`,
+    query: "",
+    value: "",
+    newColumns: props.columns,
+  });
+  const getKeyByValue = (object, value) => {
     return Object.keys(object).find((key) => object[key] === value);
   };
-  getStudents = async (page, rowsPerPage) => {
-    const { params, dataSetup } = this.props;
-    this.setState({
+  const getStudents = async (page, rowsPerPage) => {
+    const { params, dataSetup } = props;
+    setState((prevState) => ({
+      ...prevState,
       isData: true,
-    });
+    }));
+
     const url =
       typeof page === "string" && page.includes(baseURL)
         ? page
-        : `${this.state.mainUrl}limit=${rowsPerPage}&page=${page}`;
+        : `${state.mainUrl}limit=${rowsPerPage}&page=${page}`;
     const response = await axios.get(url, params);
     const studentData = response.data.data.results.map((student) => {
       return {
@@ -48,99 +46,66 @@ class ServerSidePagination extends React.Component {
         donor: student.studentDonor ? student.studentDonor : null,
       };
     });
-    this.setState({
+    setState((prevState) => ({
+      ...prevState,
       isData: false,
-    });
+    }));
     dataSetup(studentData, response.data.data.total);
   };
 
-  // getStudentsDetailBySearch =   async (url) => {
-  //   const { dataSetup } = this.props;
-  //   this.setState({
-  //     isData: true,
-  //   });
-  //   const response = await axios.get(url);
-  //   const studentData = response.data.data.results.map((student) => {
-  //     return {
-  //       ...student,
-  //       qualification: qualificationKeys[student.qualification],
-  //       studentOwner: "",
-  //       campus: student.campus ? student.campus : null,
-  //       donor: student.studentDonor ? student.studentDonor : null,
-  //     };
-  //   });
-  //   this.setState({
-  //     isData: false,
-  //   });
-  //   dataSetup(studentData, response.data.data.total);
-  // };
-
-  getStudentsDetailBySearch = async (query, value) => {
-    const {numberOfRows} = this.props;
-
+  const getStudentsDetailBySearch = async (query, value) => {
     const keys = {
-      // gender: "gender",
-      // donor: "searchDonorName",
-      // campus: "searchCampusName",
-      // studentOwner: "searchOwnerName",
-      // status: "searchStatus",
-      // partnerName: "searchPartnerName",
-      name:"searchName",
-      number:"searchNumber"
+      name: "searchName",
+      number: "searchNumber",
     };
-    
-    await this.setState((prevState) => {
+    setState((prevState) => {
       const newData = prevState.filterColumns.filter(
-        (filterColumn) => this.getKeyByValue(keys, filterColumn.key) !== query
+        (filterColumn) => getKeyByValue(keys, filterColumn.key) !== query
       );
-      //console.log(newData);
-      return {
+      let newState = {
         filterColumns:
           value === ""
             ? [...newData]
             : [...newData, { key: keys[query], value: value }],
       };
-    });
-    const { filterColumns } = this.state;
-    this.props.filterValues(filterColumns);
-    let url = `${baseURL}students?`;
-
-    filterColumns.map((filterColumn, index) => {
-      if (index > 0) {
-        url = url + `&${filterColumn.key}=${filterColumn.value}`;
-      } else {
-        if (this.state.query) {
-          url =
-            url +
-            `${this.state.query}=${this.state.value}&${filterColumn.key}=${filterColumn.value}`;
+      const { filterColumns } = newState;
+      props.filterValues(filterColumns);
+      let url = filterColumns.reduce((cUrl, filterColumn, index) => {
+        if (index > 0) {
+          return (cUrl += `&${filterColumn.key}=${filterColumn.value}`);
         } else {
-          url = url + `${filterColumn.key}=${filterColumn.value}`;
+          if (prevState.query) {
+            return (cUrl += `${state.query}=${state.value}&${filterColumn.key}=${filterColumn.value}`);
+          } else {
+            return (cUrl += `${filterColumn.key}=${filterColumn.value}`);
+          }
         }
+      }, `${baseURL}students?`);
+      if (filterColumns.length > 0) {
+        return {
+          ...prevState,
+          filterColumns: newState.filterColumns,
+          mainUrl: `${url}&`,
+        };
+      } else {
+        return {
+          ...prevState,
+          filterColumns: [],
+          mainUrl: `${url}`,
+        };
       }
-    });
-    if (filterColumns.length > 0) {
-      await this.setState({
-        mainUrl: `${url}&`,
-      });
-      this.getStudents(`${url}&limit=${numberOfRows}&page=0`);
-    } else {
-      await this.setState({
-        mainUrl: `${url}`,
-      });
-      this.getStudents(0, numberOfRows);
-    }
-    //console.log(filterColumns,url);
-  }
-
-  changePage = (page, rowsPerPage) => {
-    this.getStudents(page, rowsPerPage);
-    this.setState({
-      page: page,
     });
   };
 
-  getfilterApi = async (query, value) => {
-    const { numberOfRows } = this.props;
+  const changePage = async (page, rowsPerPage) => {
+    await getStudents(page, rowsPerPage);
+    setState((prevState) => ({
+      ...prevState,
+      page: page,
+    }));
+  };
+
+  const getfilterApi = async (query, value) => {
     if (query === "gender" && value !== "All") {
       value = value === "Female" ? 1 : value === "Male" ? 2 : 3;
     }
@@ -154,203 +119,221 @@ class ServerSidePagination extends React.Component {
       partnerName: "searchPartnerName",
     };
 
-    await this.setState((prevState) => {
-      const newData = prevState.filterColumns.filter(
-        (filterColumn) => this.getKeyByValue(keys, filterColumn.key) !== query
-      );
-      return {
-        filterColumns:
-          value === "All"
-            ? [...newData]
-            : [...newData, { key: keys[query], value: value }],
-      };
-    });
-    const { filterColumns } = this.state;
-    this.props.filterValues(filterColumns);
-    let url = `${baseURL}students?`;
-
-    filterColumns.map((filterColumn, index) => {
+    const newData = state.filterColumns.filter(
+      (filterColumn) => getKeyByValue(keys, filterColumn.key) !== query
+    );
+    let newState = {
+      filterColumns:
+        value === "All"
+          ? [...newData]
+          : [...newData, { key: keys[query], value: value }],
+    };
+    const { filterColumns } = newState;
+    props.filterValues(filterColumns);
+    let url = await filterColumns.reduce((cUrl, filterColumn, index) => {
       if (index > 0) {
-        url = url + `&${filterColumn.key}=${filterColumn.value}`;
+        return (cUrl += `&${filterColumn.key}=${filterColumn.value}`);
       } else {
-        if (this.state.query) {
-          url =
-            url +
-            `${this.state.query}=${this.state.value}&${filterColumn.key}=${filterColumn.value}`;
+        if (state.query) {
+          return (cUrl += `${state.query}=${state.value}&${filterColumn.key}=${filterColumn.value}`);
         } else {
-          url = url + `${filterColumn.key}=${filterColumn.value}`;
+          return (cUrl += `${filterColumn.key}=${filterColumn.value}`);
         }
       }
-    });
+    }, `${baseURL}students?`);
     if (filterColumns.length > 0) {
-      await this.setState({
+      //getStudents(`${url}&limit=${numberOfRows}&page=0`);
+      setState({
+        ...state,
+        filterColumns: newState.filterColumns,
         mainUrl: `${url}&`,
       });
-      this.getStudents(`${url}&limit=${numberOfRows}&page=0`);
     } else {
-      await this.setState({
+      //getStudents(0, numberOfRows);
+      setState({
+        ...state,
+        filterColumns: [],
         mainUrl: `${url}`,
       });
-      this.getStudents(0, numberOfRows);
     }
   };
 
-  getSearchApi = (query, value) => {
-    this.getStudentsDetailBySearch(query, value);
-    // if (query) {
-    //   this.getStudentsDetailBySearch(`${baseURL}students?${query}=${value}`);
-    // } else {
-    //   this.getStudents(this.state.page, 50);
-    // }
+  useEffect(() => {
+    const { mainUrl } = state;
+    const fetchData = async () =>
+      await getStudents(`${mainUrl}&limit=${numberOfRows}&page=0`);
+    fetchData();
+  }, [state.mainUrl]);
+
+  const getSearchApi = async (query, value) => {
+    await getStudentsDetailBySearch(query, value);
   };
 
-  
-
-  downloadCSV = async () => {
-    const CustomSnack = () => (<CircularProgress size='1.6rem' color="inherit" />)
-    const snackKey = this.props.enqueueSnackbar("Downloading CSV!", {
+  const downloadCSV = async () => {
+    const CustomSnack = () => (
+      <CircularProgress size="1.6rem" color="inherit" />
+    );
+    const snackKey = snackbar.enqueueSnackbar("Downloading CSV!", {
       variant: "info",
-      action:CustomSnack,
-      persist:true
+      action: CustomSnack,
+      persist: true,
     });
-    const response = await axios.get(this.state.mainUrl, this.props.params);
-    const studentData = await response.data.data.results.map((student) => {
-      student = StudentService.dConvert({
-        ...student,
-        qualification: qualificationKeys[student.qualification],
-        studentOwner: "",
-        campus: student.campus ? student.campus : null,
-        donor: student.studentDonor ? student.studentDonor : null,
-      });
-      let body = "";
-      //console.log(student['donor']);
-      this.state.newColumns.forEach((col,colInx) => {
-        if(col.name === 'donor'){ body += `"${student['donor']?student['donor'].map((donor) => (donor.donor)).join(", "):""}",` }
-        else if(colInx === this.state.newColumns.length-1) body += `"${!student[col.name] || student[col.name] === undefined ?" ":student[col.name]}"`
-        else body += `"${!student[col.name] || student[col.name] == undefined ?" ":student[col.name]}",`
+    const response = await axios.get(state.mainUrl, props.params);
+    const studentData = await response.data.data.results
+      .map((student) => {
+        student = StudentService.dConvert({
+          ...student,
+          qualification: qualificationKeys[student.qualification],
+          studentOwner: "",
+          campus: student.campus ? student.campus : null,
+          donor: student.studentDonor ? student.studentDonor : null,
+        });
+        let body = "";
+        state.newColumns.forEach((col, colInx) => {
+          if (col.name === "donor") {
+            body += `"${
+              student["donor"]
+                ? student["donor"].map((donor) => donor.donor).join(", ")
+                : ""
+            }",`;
+          } else if (colInx === state.newColumns.length - 1)
+            body += `"${
+              !student[col.name] || student[col.name] === undefined
+                ? " "
+                : student[col.name]
+            }"`;
+          else
+            body += `"${
+              !student[col.name] || student[col.name] == undefined
+                ? " "
+                : student[col.name]
+            }",`;
+        });
+        return body;
       })
-      return body;
-    }).join("\n");
-    let csvContent = `${await this.state.newColumns.map(col => (col.label)).join(",")}"\n"${studentData}`;
-    let encoded = new Blob([csvContent],{type:'text/csv:encoding=utf-8'})
-    if(navigator.msSaveBlob) navigator.msSaveBlob(encoded, "data.csv");
-    else{
+      .join("\n");
+    let csvContent = `${await state.newColumns
+      .map((col) => col.label)
+      .join(",")}"\n"${studentData}`;
+    let encoded = new Blob([csvContent], { type: "text/csv:encoding=utf-8" });
+    if (navigator.msSaveBlob) navigator.msSaveBlob(encoded, "data.csv");
+    else {
       let link = document.createElement("a");
-        if (link.download !== undefined) { // feature detection
-            // Browsers that support HTML5 download attribute
-            let url = URL.createObjectURL(encoded);
-            link.setAttribute("href", url);
-            link.setAttribute("download", "data.csv");
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
+      if (link.download !== undefined) {
+        // feature detection
+        // Browsers that support HTML5 download attribute
+        let url = URL.createObjectURL(encoded);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "data.csv");
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
     }
-    this.props.closeSnackbar(snackKey);
-    this.props.enqueueSnackbar("CSV File Downloaded", {
+    snackbar.closeSnackbar(snackKey);
+    snackbar.enqueueSnackbar("CSV File Downloaded", {
       variant: "success",
     });
+  };
+  const { page, isData, newColumns } = state;
+  const user = window.localStorage.user
+    ? JSON.parse(window.localStorage.user).email
+    : null;
+  if (permissions.permissionsView.indexOf(user) > -1) {
+    localStorage.setItem("permissions", JSON.stringify(permissions));
   }
-  
-  render() {
-    const { page, isData, filterColumns, newColumns } = this.state;
-    const user = window.localStorage.user
-      ? JSON.parse(window.localStorage.user).email
-      : null;
-    if (permissions.permissionsView.indexOf(user) > -1) {
-      localStorage.setItem("permissions", JSON.stringify(permissions));
-    }
 
-    const { data, totalData, setNumbersOfRows, sortChange, numberOfRows } =
-      this.props;
-    const options = {
-      selectableRows: false,
-      filter: true,
-      search: false,
-      serverSide: true,
-      filterType: "dropdown",
-      onDownload: () => {
-        this.downloadCSV();
-        return false;
-      },
-      onColumnSortChange: (changedColumn, direction) => {
-        let order = "desc";
-        if (direction === "ascending") {
-          order = "asc";
-        }
-        sortChange(changedColumn, order);
-      },
-      onFilterChange: async (columnChanged, filterList) => {
-        const indexObj = {
-          gender: 10,
-          campus: 24,
-          donor: 25,
-          studentOwner: 18,
-          status: 19,
-          partnerName: 21,
-        };
-        if (columnChanged) {
-          const filterValue = filterList[indexObj[columnChanged]];
-          return this.getfilterApi(columnChanged, filterValue);
-        } else {
-          await this.setState({
-            filterColumns: [],
-            mainUrl: `${`${baseURL}students?`}`,
+  const { data, totalData, setNumbersOfRows, sortChange, numberOfRows } = props;
+  const options = {
+    selectableRows: false,
+    filter: true,
+    search: false,
+    serverSide: true,
+    filterType: "dropdown",
+    onDownload: () => {
+      downloadCSV();
+      return false;
+    },
+    onColumnSortChange: (changedColumn, direction) => {
+      let order = "desc";
+      if (direction === "ascending") {
+        order = "asc";
+      }
+      sortChange(changedColumn, order);
+    },
+    onFilterChange: async (columnChanged, filterList) => {
+      const indexObj = {
+        gender: 10,
+        campus: 24,
+        donor: 25,
+        studentOwner: 18,
+        status: 19,
+        partnerName: 21,
+      };
+      if (columnChanged) {
+        const filterValue = filterList[indexObj[columnChanged]];
+        return getfilterApi(columnChanged, filterValue);
+      } else {
+        setState((prevState) => ({
+          ...prevState,
+          filterColumns: [],
+          mainUrl: `${`${baseURL}students?`}`,
+        }));
+        const { filterColumns } = state;
+        props.filterValues(filterColumns);
+        return getStudents(0, numberOfRows);
+      }
+    },
+    responsive: "stacked",
+    rowsPerPageOptions: [10, 50, 100],
+    count: totalData,
+    rowsPerPage: numberOfRows,
+    page: page,
+    onChangeRowsPerPage: (numberOfRows) => {
+      setNumbersOfRows(numberOfRows);
+      getStudents(state.page, numberOfRows);
+    },
+    onTableChange: (action, tableState) => {
+      const { rowsPerPage, page, columns } = tableState;
+      let updatedColumns;
+      switch (action) {
+        case "changePage":
+          changePage(page, rowsPerPage);
+          break;
+        case "columnViewChange":
+          updatedColumns = newColumns.map((newColumn, index) => {
+            if (columns[index].name === newColumn.name) {
+              newColumn.options.display = columns[index].display;
+            }
+            return newColumn;
           });
-          const { filterColumns } = this.state;
-          this.props.filterValues(filterColumns);
-          return this.getStudents(0, numberOfRows);
-        }
+          setState((prevState) => ({
+            ...prevState,
+            newColumns: updatedColumns,
+          }));
+          break;
+      }
+    },
+    textLabels: {
+      body: {
+        noMatch: props.showLoader ? (
+          <Loader />
+        ) : (
+          "Sorry, there is no matching data to display"
+        ),
       },
-      responsive: "stacked",
-      rowsPerPageOptions: [10, 50, 100],
-      count: totalData,
-      rowsPerPage: numberOfRows,
-      page: page,
-      onChangeRowsPerPage: (numberOfRows) => {
-        setNumbersOfRows(numberOfRows);
-        this.getStudents(this.state.page, numberOfRows);
-      },
-      onTableChange: (action, tableState) => {
-        const { rowsPerPage, page, columns } = tableState;
-        let updatedColumns;
-        switch (action) {
-          case "changePage":
-            this.changePage(page, rowsPerPage);
-            break;
-          case "columnViewChange":
-            updatedColumns = newColumns.map((newColumn, index) => {
-              if (columns[index].name === newColumn.name) {
-                newColumn.options.display = columns[index].display;
-              }
-              return newColumn;
-            });
-            this.setState({
-              newColumns: updatedColumns,
-            });
-            break;
-        }
-      },
-      textLabels: {
-        body: {
-          noMatch: this.props.showLoader ? (
-            <Loader />
-          ) : (
-            "Sorry, there is no matching data to display"
-          ),
-        },
-      },
-    };
-    return (
-      <MUIDataTable
-        title={<SearchBar searchByName={this.getSearchApi} />}
-        data={isData ? [] : data}
-        columns={newColumns}
-        options={options}
-      />
-    );
-  }
-}
+    },
+  };
+  return (
+    <MUIDataTable
+      title={<SearchBar searchByName={getSearchApi} />}
+      data={isData ? [] : data}
+      columns={newColumns}
+      options={options}
+    />
+  );
+};
 
-export default withSnackbar(withRouter(ServerSidePagination));
+// export default withSnackbar(withRouter(ServerSidePagination));
+export default ServerSidePagination;

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import clsx from "clsx";
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -49,86 +49,76 @@ const showContact = (student) => {
   );
 };
 
-class CollapseStudentData extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      expanded: false,
-    };
-  }
+const CollapseStudentData = (props) => {
+  const [expanded, setExpanded] = React.useState(false);
 
-  handleExpandClick = () => {
-    this.setState({
-      expanded: !this.state.expanded,
-    });
+  const handleExpandClick = () => {
+    setExpanded((prevExp) => !prevExp);
   };
 
-  render() {
-    const { classes, details, stage } = this.props;
-    const { expanded } = this.state;
+  const { classes, details, stage } = props;
 
-    if (!details.length) {
-      return (
-        <CardContent>
-          <center>
-            <Typography variant="h6">
-              {allStages[stage]}({details.length})
-            </Typography>
-          </center>
-          {details.length == 0 && (
-            <center>
-              <p style={{ fontSize: 15, color: "red" }}>No record Found</p>
-            </center>
-          )}
-        </CardContent>
-      );
-    }
+  if (!details.length) {
     return (
-      <div>
-        <CardContent>
+      <CardContent>
+        <center>
+          <Typography variant="h6">
+            {allStages[stage]}({details.length})
+          </Typography>
+        </center>
+        {details.length == 0 && (
           <center>
-            <Typography variant="h6">
-              {allStages[stage]}({details.length})
-            </Typography>
+            <p style={{ fontSize: 15, color: "red" }}>No record Found</p>
           </center>
-          {details.length > 0 &&
-            !expanded &&
-            details.slice(0, 10).map(showContact)}
-          {details.length > 0 && expanded && details.map(showContact)}
-        </CardContent>
-        <CardActions disableSpacing>
-          {details.length > 10 && (
-            <IconButton
-              className={clsx(classes.expand, {
-                [classes.expandOpen]: expanded,
-              })}
-              onClick={this.handleExpandClick}
-              aria-expanded={expanded}
-              aria-label="show more"
-            >
-              {expanded ? (
-                <div>
-                  <Typography>See Less</Typography>
-                  <ExpandLessIcon
-                    className={classes.expandOpen}
-                    color="primary"
-                  />
-                </div>
-              ) : (
-                <div>
-                  <Typography>See More</Typography>
-                  <ExpandMoreIcon
-                    className={classes.expandOpen}
-                    color="primary"
-                  />
-                </div>
-              )}
-            </IconButton>
-          )}
-        </CardActions>
-      </div>
+        )}
+      </CardContent>
     );
   }
-}
+  return (
+    <div>
+      <CardContent>
+        <center>
+          <Typography variant="h6">
+            {allStages[stage]}({details.length})
+          </Typography>
+        </center>
+        {details.length > 0 &&
+          !expanded &&
+          details.slice(0, 10).map(showContact)}
+        {details.length > 0 && expanded && details.map(showContact)}
+      </CardContent>
+      <CardActions disableSpacing>
+        {details.length > 10 && (
+          <IconButton
+            className={clsx(classes.expand, {
+              [classes.expandOpen]: expanded,
+            })}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            {expanded ? (
+              <div>
+                <Typography>See Less</Typography>
+                <ExpandLessIcon
+                  className={classes.expandOpen}
+                  color="primary"
+                />
+              </div>
+            ) : (
+              <div>
+                <Typography>See More</Typography>
+                <ExpandMoreIcon
+                  className={classes.expandOpen}
+                  color="primary"
+                />
+              </div>
+            )}
+          </IconButton>
+        )}
+      </CardActions>
+    </div>
+  );
+};
 
 export default CollapseStudentData;

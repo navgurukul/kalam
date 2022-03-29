@@ -1,60 +1,56 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
-import { withSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
 
 const baseURL = process.env.API_URL;
 const animatedComponents = makeAnimated();
 
-class UpdatePartner extends Component {
-  constructor() {
-    super();
-    this.state = {
-      data: [],
-    };
-  }
+const UpdatePartner = (props) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const [data, setData] = React.useState([]);
 
-  componentDidMount() {
+  useEffect(() => {
     axios.get(`${baseURL}partners`).then((response) => {
-      this.setState({ data: response.data.data });
+      setData(response.data.data);
     });
-  }
+  }, []);
 
-  handleChange = (event) => {
-    const { change, studentId } = this.props;
+  const handleChange = (event) => {
+    const { change, studentId } = props;
     const { label, value } = event;
     axios
       .put(`${baseURL}students/${studentId}`, { partner_id: value })
-      .then((response) => {
-        //console.log(response, "res");
-        this.props.enqueueSnackbar(`Partner successfully updated !`, {
+      .then(() => {
+        enqueueSnackbar(`Partner successfully updated !`, {
           variant: "success",
         });
         change(label);
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, { variant: "error" });
       });
   };
-  render() {
-    const { data } = this.state;
-    const { value } = this.props;
-    const selectedValue = { value: value, label: value };
+  const { value } = props;
+  const selectedValue = { value: value, label: value };
 
-    return (
-      <div>
-        <Select
-          className={"filterSelectStage"}
-          value={selectedValue}
-          onChange={this.handleChange}
-          options={data.length > 0 && data.map((x) => {
-            return { value: x.id, label: x.name };
-          })}
-          isClearable={false}
-          components={animatedComponents}
-          closeMenuOnSelect={true}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <Select
+      className={"filterSelectStage"}
+      value={selectedValue}
+      onChange={handleChange}
+      options={
+        data.length > 0 &&
+        data.map((x) => {
+          return { value: x.id, label: x.name };
+        })
+      }
+      isClearable={false}
+      components={animatedComponents}
+      closeMenuOnSelect={true}
+    />
+  );
+};
 
-export default withSnackbar(UpdatePartner);
+export default UpdatePartner;

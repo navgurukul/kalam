@@ -1,123 +1,168 @@
 import React, { useEffect } from "react";
 import Typography from "@material-ui/core/Typography";
-import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import Modal from "@material-ui/core/Modal";
 import MUIDataTable from "mui-datatables";
 import axios from "axios";
-import { withSnackbar } from "notistack";
-import { withRouter } from "react-router-dom";
-import GlobalService from "../services/GlobalService";
-import StudentService from "../services/StudentService";
-import { useLocation } from "react-router-dom";
-import { connect } from "react-redux";
+import { useSnackbar } from "notistack";
+import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { allStages } from "../config";
 import { changeFetching } from "../store/actions/auth";
+import SlotBooking from "./SlotBooking2";
 
 const baseUrl = process.env.API_URL;
 const testUrl = "https://join.navgurukul.org/k/";
 
-const useStyles = (theme) => ({
-  paper: {
-    position: "absolute",
-    marginLeft: "3vw",
-    marginRight: "3vw",
-    width: "94vw",
-    [theme.breakpoints.up("md")]: {
-      margin: "auto",
-      width: "50%",
+// const useStyles = makeStyles((theme) => ({
+//   paper: {
+//     position: "absolute",
+//     marginLeft: "3vw",
+//     marginRight: "3vw",
+//     width: "94vw",
+//     [theme.breakpoints.up("md")]: {
+//       margin: "auto",
+//       width: "50%",
+//     },
+//     backgroundColor: theme.palette.background.paper,
+//     boxShadow: theme.shadows[5],
+//     padding: theme.spacing(4),
+//     outline: "none",
+//   },
+// }));
+
+const DuplicateStudents = () => {
+  // const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
+  const fetchingFinish = () => dispatch(changeFetching(false));
+  const [state, setState] = React.useState({
+    partnerId: "",
+    data: [],
+    pendingInterviewStage: "checking",
+    response: {},
+    slotBooking: false,
+    slotBookingData: {},
+  });
+  const columns = [
+    {
+      name: "id",
+      label: "Re-Test",
+      options: {
+        filter: false,
+        customBodyRender: (value, rowData) => {
+          return (
+            <Button
+              disabled={
+                rowData.rowData[1] === "pendingEnglishInterview" ? true : false
+              }
+              variant="contained"
+              color="primary"
+              style={{ fontSize: "10px" }}
+              onClick={async () => {
+                //console.log("value", value);
+
+                const response = await generateTestLink(value);
+                history.push({
+                  pathname: `/test/${response.data.key}/${value}`,
+                });
+                fetchingFinish();
+              }}
+            >
+              Re-Test
+            </Button>
+          );
+        },
+      },
     },
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(4),
-    outline: "none",
-  },
-});
-
-export class DuplicateStudents extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      partnerId: "",
-      data: [],
-      pendingInterviewStage: "checking",
-    };
-
-    this.columns = [
-      {
-        name: "id",
-        label: "Re-Test",
-        options: {
-          filter: false,
-          customBodyRender: (value) => {
-            return (
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ fontSize: "10px" }}
-                onClick={async () => {
-                  const response = await this.generateTestLink(value);
-                  const url = `${testUrl}${response.data.key}?student_id=${value}`;
-                  window.open(url, "_blank");
-                }}
-              >
-                Re-Test
-              </Button>
-            );
-          },
+    {
+      name: "stage",
+      label: "Stage",
+      options: {
+        filter: false,
+        customBodyRender: (value) => {
+          return allStages[value];
         },
       },
-      {
-        name: "stage",
-        label: "Stage",
-        options: {
-          filter: false,
-          customBodyRender: (value) => {
-            return allStages[value];
-          },
-        },
-      },
-      {
-        name: "total_marks",
-        label: "Marks",
-        options: {
-          filter: false,
-        },
-      },
+    },
+    {
+      name: "stage",
+      label: "Book Slot",
+      options: {
+        filter: false,
+        customBodyRender: (value, rowData) => {
+          return (
+            <Button
+              disabled={
+                rowData.rowData[1] === "pendingEnglishInterview" ? false : true
+              }
+              variant="contained"
+              color="primary"
+              style={{ fontSize: "10px" }}
+              onClick={() => {
+                //console.log(rowData.rowData[0]);
+                //console.log(rowData.rowData[1]);
+                console.log("clicked");
+                history.push({
+                  pathname: `/bookSlot/${rowData.rowData[0]}`,
+                });
 
-      {
-        name: "key",
-        label: "Key",
-        options: {
-          filter: false,
-          display: false,
-          viewColumns: false,
+                // this.setState({
+                //   slotBooking: true,
+                //   slotBookingData: {
+                //     studentId: rowData.rowData[0],
+                //     stage: allStages[rowData.rowData[1]],
+                //   },
+                // });
+              }}
+            >
+              Book Slot
+            </Button>
+          );
         },
       },
-    ];
-    this.message = {
-      stageMessage: {
-        en: `Your  ${
-          allStages[this.state.pendingInterviewStage]
-        } is still pending. You’re not required to give the online test now. We will soon complete your admission process.`,
-        hi: `आपका  ${
-          allStages[this.state.pendingInterviewStage]
-        }  अभी भी चल रहा हैं। अभी आपको ऑनलाइन परीक्षा देने की आवश्यकता नहीं है। हम जल्द ही आपकी प्रवेश प्रक्रिया (एडमिशन प्रोसेस) पूरी कर देंगे।`,
+    },
+    {
+      name: "total_marks",
+      label: "Marks",
+      options: {
+        filter: false,
       },
-      testFailedMessage: {
-        en: ` , Your previous attempts were unsuccessful/test failed, please give the 1st stage of the online test again.`,
-        hi: ` , आपके पिछले टेस्ट असफल रहे या आप पास नहीं हो पाए, कृपया ऑनलाइन टेस्ट वापस से दे।`,
-      },
-    };
-  }
+    },
 
-  async generateTestLink(studentId) {
+    {
+      name: "key",
+      label: "Key",
+      options: {
+        filter: false,
+        display: false,
+        viewColumns: false,
+      },
+    },
+  ];
+  const message = {
+    stageMessage: {
+      en: `Your  ${
+        allStages[state.pendingInterviewStage]
+      } is still pending. You’re not required to give the online test now. We will soon complete your admission process.`,
+      hi: `आपका  ${
+        allStages[state.pendingInterviewStage]
+      }  अभी भी चल रहा हैं। अभी आपको ऑनलाइन परीक्षा देने की आवश्यकता नहीं है। हम जल्द ही आपकी प्रवेश प्रक्रिया (एडमिशन प्रोसेस) पूरी कर देंगे।`,
+    },
+    testFailedMessage: {
+      en: ` , Your previous attempts were unsuccessful/test failed, please give the 1st stage of the online test again.`,
+      hi: ` , आपके पिछले टेस्ट असफल रहे या आप पास नहीं हो पाए, कृपया ऑनलाइन टेस्ट वापस से दे।`,
+    },
+  };
+
+  const generateTestLink = async (studentId) => {
     try {
-      const partnerId = this.state.partnerId ? this.state.partnerId : null;
+      const partnerId = state.partnerId ? state.partnerId : null;
       const details = window.location.href.split("Name=")[1];
       const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
       const mobile = "0" + mobileNumber;
-      this.props.fetchingStart();
+      fetchingStart();
       const dataURL = baseUrl + "helpline/register_exotel_call";
       const response = await axios.get(dataURL, {
         params: {
@@ -129,18 +174,18 @@ export class DuplicateStudents extends React.Component {
       });
       return response;
     } catch (e) {
-      this.props.enqueueSnackbar("Something went wrong", {
+      enqueueSnackbar("Something went wrong", {
         variant: "error",
         anchorOrigin: {
           vertical: "top",
           horizontal: "center",
         },
       });
-      this.props.fetchingFinish();
+      fetchingFinish();
     }
-  }
+  };
 
-  isDuplicate = () => {
+  const isDuplicate = () => {
     const details = window.location.href.split("Name=")[1];
     const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
     const name = details.split("&Number=")[0];
@@ -153,56 +198,69 @@ export class DuplicateStudents extends React.Component {
       })
       .then(async (data) => {
         const response = data.data.data;
+        //console.log("response", response);
+
         if (response.alreadyGivenTest) {
-          this.setState({ data: response.data });
+          setState({ ...state, response, data: response.data });
+          //console.log("data", state.data);
+        } else {
+          setState({
+            ...state,
+            response: response,
+          });
         }
+        //console.log("data", state.data);
+
+        return response;
       });
   };
 
-  componentDidMount() {
+  useEffect(() => {
     const slug = window.location.href.split("partnerLanding/")[1];
     if (slug) {
-      this.partnerFetch(slug);
+      partnerFetch(slug);
     }
-    this.isDuplicate();
-  }
+    isDuplicate();
+  }, []);
 
-  async partnerFetch(slug) {
-    const { history } = this.props;
+  const partnerFetch = async (slug) => {
     try {
       const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
-      this.setState({
+      setState({
+        ...state,
         partnerId: response.data.data["id"],
       });
     } catch (e) {
       history.push("/notFound");
     }
+  };
+  console.log(history);
+  const data = state.data;
+  const selectedLang =
+    history.state === null ? "en" : history.location.state.state.selectedLang;
+  let firstName;
+  let middleName;
+  let lastName;
+  const details = window.location.href.split("Name=")[1];
+  const name = details.split("&Number=")[0];
+  const splitedName = name.match(/[A-Z][a-z]+/g);
+  const pendingInterviewStage = details
+    .split("&Number=")[1]
+    .split("&Stage=")[1];
+  if (splitedName.length === 3) {
+    firstName = splitedName[0];
+    middleName = splitedName[1];
+    lastName = splitedName[2];
+  } else {
+    firstName = splitedName[0];
+    middleName = "";
+    lastName = splitedName[1];
   }
-
-  render = () => {
-    const data = this.state.data;
-    const selectedLang =
-      history.state === null ? "en" : history.state.state.state.selectedLang;
-    let firstName;
-    let middleName;
-    let lastName;
-    const details = window.location.href.split("Name=")[1];
-    const name = details.split("&Number=")[0];
-    const splitedName = name.match(/[A-Z][a-z]+/g);
-    const pendingInterviewStage = details
-      .split("&Number=")[1]
-      .split("&Stage=")[1];
-    if (splitedName.length === 3) {
-      firstName = splitedName[0];
-      middleName = splitedName[1];
-      lastName = splitedName[2];
-    } else {
-      firstName = splitedName[0];
-      middleName = "";
-      lastName = splitedName[1];
-    }
-
-    return (
+  const closeModal = () => {
+    setState({ ...state, slotBooking: false });
+  };
+  return (
+    <>
       <div>
         <Typography variant="h5" id="modal-title">
           Student Status
@@ -212,11 +270,11 @@ export class DuplicateStudents extends React.Component {
           title={
             pendingInterviewStage
               ? `${firstName.concat(" ", middleName, " ", lastName)}
-            ${this.message.testFailedMessage[selectedLang]}`
+            ${message.testFailedMessage[selectedLang]}`
               : `${firstName.concat(" ", middleName, " ", lastName)}
-               ${this.message.stageMessage[selectedLang]}`
+               ${message.stageMessage[selectedLang]}`
           }
-          columns={this.columns}
+          columns={columns}
           data={data}
           options={{
             viewColumns: false,
@@ -233,19 +291,29 @@ export class DuplicateStudents extends React.Component {
           }}
         />
       </div>
-    );
-  };
-}
+      {state.slotBooking ? (
+        <SlotBooking
+          slotBookingData={state.slotBookingData}
+          name={firstName.concat(" ", middleName, " ", lastName)}
+          closeModal={closeModal}
+        />
+      ) : (
+        <></>
+      )}
+    </>
+  );
+};
 
-const mapDispatchToProps = (dispatch) => ({
-  fetchingStart: () => dispatch(changeFetching(true)),
-  fetchingFinish: () => dispatch(changeFetching(false)),
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   fetchingStart: () => dispatch(changeFetching(true)),
+//   fetchingFinish: () => dispatch(changeFetching(false)),
+// });
 
-export default withSnackbar(
-  withRouter(
-    withStyles(useStyles)(
-      connect(undefined, mapDispatchToProps)(DuplicateStudents)
-    )
-  )
-);
+// export default withSnackbar(
+//   withRouter(
+//     withStyles(useStyles)(
+//       connect(undefined, mapDispatchToProps)(DuplicateStudents)
+//     )
+//   )
+// );
+export default DuplicateStudents;

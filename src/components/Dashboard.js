@@ -1,5 +1,5 @@
-import React from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import Box from "@material-ui/core/Box";
 import {
@@ -11,14 +11,14 @@ import axios from "axios";
 
 import { changeFetching, setupUsers } from "../store/actions/auth";
 
-import { withRouter } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import StudentService from "../services/StudentService";
 import { EventEmitter } from "./events";
 import MainLayout from "./MainLayout";
 import { qualificationKeys } from "../config";
 import Select from "react-select";
-import { withSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
 import { campusStageOfLearning, allStages } from "../config";
 import { getData } from "../store/actions/data";
 
@@ -117,29 +117,95 @@ let columns = [
     },
   },
 ];
-let filterFns = [];
+// let filterFns = [];
 
-export class DashboardPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      mainData: [],
-      wholeData: [],
-      fromDate: null,
-      showLoader: true,
-      fromStage: null,
-      toStage: null,
-      dropoutCount: null,
-      onLeaveCount: null,
-      inCampusCount: null,
+const DashboardPage = (props) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const { location } = useHistory();
+  const { getData: data } = useSelector((state) => state.data);
+  const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
+  const fetchingFinish = () => dispatch(changeFetching(false));
+  const usersSetup = (users) => dispatch(setupUsers(users));
+  const getStudentsData = (data) => dispatch(getData(data));
+  const [state, setState] = React.useState({
+    mainData: [],
+    wholeData: [],
+    fromDate: null,
+    toDate: null,
+    showLoader: true,
+    fromStage: null,
+    toStage: null,
+    dropoutCount: null,
+    onLeaveCount: null,
+    inCampusCount: null,
+  });
+
+  EventEmitter.subscribe("stageChange", stageChangeEvent);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchStudents();
+      await fetchUsers();
     };
+    fetchData();
+  }, []);
 
-    EventEmitter.subscribe("stageChange", this.stageChangeEvent);
-  }
+  const fetchUsers = async () => {
+    try {
+      fetchingStart();
+      const usersURL = baseUrl + "users/getall";
+      const response = await axios.get(usersURL, {});
+      usersSetup(response.data.data);
+      fetchingFinish();
+    } catch (e) {
+      console.error(e);
+      fetchingFinish();
+    }
+  };
 
-  stageChangeEvent = (iData) => {
-    const { data, getStudentsData } = this.props;
+  const fetchStudents = async () => {
+    try {
+      fetchingStart();
 
+      const { url } = props;
+      const dataURL = baseUrl + url;
+      const response = await axios.get(dataURL, {
+        params: {
+          from: state.fromDate,
+          to: state.toDate,
+        },
+      });
+      const obj = {};
+      const studentData = response.data.data.map((student) => {
+        let value = student["lastTransition"]
+          ? student["lastTransition"]["to_stage"]
+          : "other";
+        let contacts = student.contacts[student.contacts.length - 1];
+
+        if (obj[value]) {
+          obj[value] = obj[value] + 1;
+        } else {
+          obj[value] = 1;
+        }
+        return {
+          ...student,
+          qualification: qualificationKeys[student.qualification],
+          altNumber: contacts ? contacts.alt_mobile : contacts,
+        };
+      });
+
+      if (studentData.length > 0) {
+        studentData[0] = { ...studentData[0], ...obj };
+      }
+      dataSetup(studentData);
+    } catch (e) {
+      console.error(e);
+      fetchingFinish();
+    }
+  };
+
+  const stageChangeEvent = (iData) => {
     const rowIds = data.map((x) => x.id);
     const rowIndex = rowIds.indexOf(iData.rowData.id);
 
@@ -152,20 +218,23 @@ export class DashboardPage extends React.Component {
     getStudentsData(newData);
   };
 
-  changeFromDate = async (date) => {
-    await this.setState({
+  const changeFromDate = async (date) => {
+    setState((prevState) => ({
+      ...prevState,
       fromDate: date,
-    });
-    this.fetchStudents();
+    }));
+    fetchStudents();
   };
 
-  changeToDate = (date) => {
-    this.toDate = date;
-    this.fetchStudents();
+  const changeToDate = (date) => {
+    setState((prevState) => ({
+      ...prevState,
+      toDate: date,
+    }));
+    fetchStudents();
   };
 
-  dataSetup = (studentData) => {
-    const { data, getStudentsData } = this.props;
+  const dataSetup = (studentData) => {
     let locationCampus = location.pathname.split("/")[1];
 
     let countDropOut = 0;
@@ -197,24 +266,20 @@ export class DashboardPage extends React.Component {
     }
     getStudentsData(studentData);
 
-    this.setState(
-      {
-        mainData: studentData,
-        wholeData: studentData,
-        showLoader: false,
-        dropoutCount: countDropOut,
-        onLeaveCount: countOnLeave,
-        inCampusCount: countInCampus,
-      },
-      function () {
-        this.props.fetchingFinish();
-      }
-    );
+    setState((prevState) => ({
+      ...prevState,
+      mainData: studentData,
+      wholeData: studentData,
+      showLoader: false,
+      dropoutCount: countDropOut,
+      onLeaveCount: countOnLeave,
+      inCampusCount: countInCampus,
+    }));
+    fetchingFinish();
   };
 
-  filterData = () => {
-    const { getStudentsData } = this.props;
-    const { fromStage, toStage, mainData, wholeData } = this.state;
+  const filterData = () => {
+    const { fromStage, toStage, mainData, wholeData } = state;
     getStudentsData(mainData);
     if (allStagesValue.indexOf(fromStage) <= allStagesValue.indexOf(toStage)) {
       const newAllStagesValue = allStagesValue.slice(
@@ -225,227 +290,166 @@ export class DashboardPage extends React.Component {
         return newAllStagesValue.indexOf(element.stage) > -1;
       });
       getStudentsData(newData);
-      this.setState({
+      setState({
+        ...state,
         mainData: newData,
       });
     } else {
       getStudentsData([]);
-      this.setState({
+      setState({
+        ...state,
         mainData: [],
       });
-      this.props.enqueueSnackbar(
-        `Stage inputs not correct. Please check once.`,
-        {
-          variant: "error",
-        }
-      );
-    }
-  };
-
-  onChangeFromStage = async (event) => {
-    await this.setState({ fromStage: event.label });
-    const { fromStage, toStage } = this.state;
-    if (fromStage && toStage) {
-      this.filterData();
-    }
-  };
-
-  onChangeToStage = async (event) => {
-    await this.setState({ toStage: event.label });
-    const { fromStage, toStage } = this.state;
-    if (fromStage && toStage) {
-      this.filterData();
-    }
-  };
-
-  render = () => {
-    const { displayData, title, location, data } = this.props;
-    const { dropoutCount, onLeaveCount, inCampusCount } = this.state;
-    let locationCampus = location.pathname.split("/")[1];
-
-    const showAllStage = parseInt(
-      location.pathname[location.pathname.length - 1]
-    );
-    const { fromStage, toStage, mainData, showLoader, wholeData } = this.state;
-
-    const options =  (
-      <Box>
-        <Select
-          className={"filterSelectGlobal"}
-          onChange={this.onChangeFromStage}
-          options={showAllStage ? partnerStages : allStagesOptions}
-          placeholder={"from Stage"}
-          isClearable={false}
-          closeMenuOnSelect={true}
-        />
-        <Select
-          className={"filterSelectGlobal"}
-          onChange={this.onChangeToStage}
-          options={showAllStage ? partnerStages : allStagesOptions}
-          placeholder={"to Stage"}
-          isClearable={false}
-          closeMenuOnSelect={true}
-        />
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            margin="dense"
-            style={{ marginLeft: 16, maxWidth: "40%" }}
-            value={this.state.fromDate}
-            id="date-picker-dialog"
-            label="From Date"
-            format="MM/dd/yyyy"
-            onChange={this.changeFromDate}
-            KeyboardButtonProps={{
-              "aria-label": "change date",
-            }}
-          />
-          <KeyboardDatePicker
-            margin="dense"
-            style={{ marginLeft: 16, maxWidth: "40%" }}
-            value={this.toDate}
-            id="date-picker-dialog"
-            label="To Date"
-            format="MM/dd/yyyy"
-            onChange={this.changeToDate}
-            KeyboardButtonProps={{
-              "aria-label": "change date",
-            }}
-          />
-        </MuiPickersUtilsProvider>
-      </Box>
-    );
-
-    const options2 = wholeData.length > 0 && (
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-        }}
-      >
-        <Select
-          className={"filterSelectGlobal"}
-          onChange={this.onChangeFromStage}
-          options={showAllStage ? partnerStages : allStagesOptions}
-          placeholder={"from Stage"}
-          isClearable={false}
-          closeMenuOnSelect={true}
-        />
-        <Select
-          className={"filterSelectGlobal"}
-          onChange={this.onChangeToStage}
-          options={showAllStage ? partnerStages : allStagesOptions}
-          placeholder={"to Stage"}
-          isClearable={false}
-          closeMenuOnSelect={true}
-        />
-
-        {locationCampus === "campus" ? (
-          <span
-            style={{
-              fontSize: "17px",
-              padding: "8px 10px",
-              border: "1px solid #B3B3B3",
-
-              fontFamily: "Times New Roman",
-              marginLeft: "15px",
-              borderRadius: "4px",
-              marginTop: "16px",
-            }}
-          >
-            <span style={{}}>InCampus : {inCampusCount}</span>
-            <span> OnLeave : {onLeaveCount}</span>
-            <span> DropOut : {dropoutCount} </span>
-          </span>
-        ) : null}
-      </div>
-    );
-    return (
-      <div>
-        {locationCampus === "campus" ? options2 : options}
-        <MainLayout
-          title={title}
-          columns={[...displayData, ...columns]}
-          data={mainData}
-          showLoader={showLoader}
-        />
-      </div>
-    );
-  };
-
-  componentDidMount() {
-    this.fetchStudents();
-    this.fetchUsers();
-  }
-
-  async fetchUsers() {
-    try {
-      this.props.fetchingStart();
-      const usersURL = baseUrl + "users/getall";
-      const response = await axios.get(usersURL, {});
-      this.props.usersSetup(response.data.data);
-      this.props.fetchingFinish();
-    } catch (e) {
-      console.error(e);
-      this.props.fetchingFinish();
-    }
-  }
-
-  async fetchStudents() {
-    try {
-      this.props.fetchingStart();
-      // const qualificationKeys = Object.assign(
-      //   {},
-      //   ...Object.entries(qualification).map(([k, v]) => ({ [v]: k }))
-      // );
-      const { url } = this.props;
-      const dataURL = baseUrl + url;
-      const response = await axios.get(dataURL, {
-        params: {
-          from: this.state.fromDate,
-          to: this.toDate,
-        },
+      enqueueSnackbar(`Stage inputs not correct. Please check once.`, {
+        variant: "error",
       });
-      const obj = {};
-      const studentData = response.data.data.map((student) => {
-        let value = student["lastTransition"]
-          ? student["lastTransition"]["to_stage"]
-          : "other";
-        let contacts = student.contacts[student.contacts.length - 1];
-
-        if (obj[value]) {
-          obj[value] = obj[value] + 1;
-        } else {
-          obj[value] = 1;
-        }
-        return {
-          ...student,
-          qualification: qualificationKeys[student.qualification],
-          altNumber: contacts ? contacts.alt_mobile : contacts,
-        };
-      });
-
-      if (studentData.length > 0) {
-        studentData[0] = { ...studentData[0], ...obj };
-      }
-      this.dataSetup(studentData);
-    } catch (e) {
-      console.error(e);
-      this.props.fetchingFinish();
     }
-  }
-}
+  };
 
-const mapStateToProps = (state) => ({
-  data: state.data.getData,
-});
+  const onChangeFromStage = async (event) => {
+    setState({ ...state, fromStage: event.label });
+    const { fromStage, toStage } = state;
+    if (fromStage && toStage) {
+      filterData();
+    }
+  };
 
-const mapDispatchToProps = (dispatch) => ({
-  fetchingStart: () => dispatch(changeFetching(true)),
-  fetchingFinish: () => dispatch(changeFetching(false)),
-  usersSetup: (users) => dispatch(setupUsers(users)),
-  getStudentsData: (data) => dispatch(getData(data)),
-});
+  const onChangeToStage = async (event) => {
+    setState({ ...state, toStage: event.label });
+    const { fromStage, toStage } = state;
+    if (fromStage && toStage) {
+      filterData();
+    }
+  };
 
-export default withRouter(
-  withSnackbar(connect(mapStateToProps, mapDispatchToProps)(DashboardPage))
-);
+  const { displayData, title } = props;
+  const { dropoutCount, onLeaveCount, inCampusCount } = state;
+  let locationCampus = location.pathname.split("/")[1];
+
+  const showAllStage = parseInt(
+    location.pathname[location.pathname.length - 1]
+  );
+  const { fromStage, toStage, mainData, showLoader, wholeData } = state;
+
+  const options = (
+    <Box>
+      <Select
+        className={"filterSelectGlobal"}
+        onChange={onChangeFromStage}
+        options={showAllStage ? partnerStages : allStagesOptions}
+        placeholder={"from Stage"}
+        isClearable={false}
+        closeMenuOnSelect={true}
+        value={fromStage}
+      />
+      <Select
+        className={"filterSelectGlobal"}
+        onChange={onChangeToStage}
+        options={showAllStage ? partnerStages : allStagesOptions}
+        placeholder={"to Stage"}
+        isClearable={false}
+        closeMenuOnSelect={true}
+        value={toStage}
+      />
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <KeyboardDatePicker
+          margin="dense"
+          style={{ marginLeft: 16, maxWidth: "40%" }}
+          value={state.fromDate}
+          id="date-picker-dialog"
+          label="From Date"
+          format="MM/dd/yyyy"
+          onChange={changeFromDate}
+          KeyboardButtonProps={{
+            "aria-label": "change date",
+          }}
+        />
+        <KeyboardDatePicker
+          margin="dense"
+          style={{ marginLeft: 16, maxWidth: "40%" }}
+          value={state.toDate}
+          id="date-picker-dialog"
+          label="To Date"
+          format="MM/dd/yyyy"
+          onChange={changeToDate}
+          KeyboardButtonProps={{
+            "aria-label": "change date",
+          }}
+        />
+      </MuiPickersUtilsProvider>
+    </Box>
+  );
+
+  const options2 = wholeData.length > 0 && (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+      }}
+    >
+      <Select
+        className={"filterSelectGlobal"}
+        onChange={onChangeFromStage}
+        options={showAllStage ? partnerStages : allStagesOptions}
+        placeholder={"from Stage"}
+        isClearable={false}
+        closeMenuOnSelect={true}
+      />
+      <Select
+        className={"filterSelectGlobal"}
+        onChange={onChangeToStage}
+        options={showAllStage ? partnerStages : allStagesOptions}
+        placeholder={"to Stage"}
+        isClearable={false}
+        closeMenuOnSelect={true}
+      />
+
+      {locationCampus === "campus" ? (
+        <span
+          style={{
+            fontSize: "17px",
+            padding: "8px 10px",
+            border: "1px solid #B3B3B3",
+
+            fontFamily: "Times New Roman",
+            marginLeft: "15px",
+            borderRadius: "4px",
+            marginTop: "16px",
+          }}
+        >
+          <span style={{}}>InCampus : {inCampusCount}</span>
+          <span> OnLeave : {onLeaveCount}</span>
+          <span> DropOut : {dropoutCount} </span>
+        </span>
+      ) : null}
+    </div>
+  );
+  return (
+    <div>
+      {locationCampus === "campus" ? options2 : options}
+      <MainLayout
+        title={title}
+        columns={[...displayData, ...columns]}
+        data={mainData}
+        showLoader={showLoader}
+      />
+    </div>
+  );
+};
+
+// const mapStateToProps = (state) => ({
+//   data: state.data.getData,
+// });
+
+// const mapDispatchToProps = (dispatch) => ({
+//   fetchingStart: () => dispatch(changeFetching(true)),
+//   fetchingFinish: () => dispatch(changeFetching(false)),
+//   usersSetup: (users) => dispatch(setupUsers(users)),
+//   getStudentsData: (data) => dispatch(getData(data)),
+// });
+
+// export default withRouter(
+//   withSnackbar(connect(mapStateToProps, mapDispatchToProps)(DashboardPage))
+// );
+
+export default DashboardPage;

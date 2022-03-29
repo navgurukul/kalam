@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { permissions } from "../config";
 import DeleteIcon from "@material-ui/icons/Delete";
 import axios from "axios";
-import { withSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
 import {
   DialogTitle,
   DialogActions,
@@ -16,98 +16,85 @@ import { getData } from "../store/actions/data";
 
 const baseUrl = process.env.API_URL;
 
-class DeleteStudentDetails extends Component {
-  constructor() {
-    super();
-    this.state = {
-      open: false,
-    };
-  }
-  deleteStudentDetails = async () => {
-    const { studentId, handleClose, getStudentsData, data } = this.props;
-    await axios
-      .delete(`${baseUrl}/campus/student/${studentId}`)
-      .then((response) => {
-        const newData = data.filter(element => element.id !== studentId);
-        getStudentsData(newData)
-        this.props.enqueueSnackbar("Details successfully deleted!", {
-          variant: "success",
-        });
+const DeleteStudentDetails = (props) => {
+  const snackbar = useSnackbar();
+  const data = useSelector((state) => state.data.getData);
+  const dispatch = useDispatch();
+  const getStudentsData = (data) => dispatch(getData(data));
+  const [open, setOpen] = React.useState(false);
+
+  const deleteStudentDetails = async () => {
+    const { studentId, handleClose } = props;
+    await axios.delete(`${baseUrl}/campus/student/${studentId}`).then(() => {
+      const newData = data.filter((element) => element.id !== studentId);
+      getStudentsData(newData);
+      snackbar.enqueueSnackbar("Details successfully deleted!", {
+        variant: "success",
       });
-    this.setState({ open: false });
+    });
+    setOpen(false);
     handleClose();
   };
 
-  handleClickOpen = () => {
-    this.setState({ open: true });
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
-  handleClose = () => {
-    this.setState({ open: false });
+  const handleClose = () => {
+    setOpen(false);
   };
-  render() {
-    const { open } = this.state;
-    const { pathname, studentName } = this.props;
-    const user = JSON.parse(window.localStorage.user);
-    if (
-      permissions.updateStudentName.indexOf(user.mail_id) > -1 &&
-      pathname.indexOf("campus") > -1
-    ) {
-      return (
-        <div>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
+
+  const { pathname, studentName } = props;
+  const user = JSON.parse(window.localStorage.user);
+  if (
+    permissions.updateStudentName.indexOf(user.mail_id) > -1 &&
+    pathname.indexOf("campus") > -1
+  ) {
+    return (
+      <div>
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="flex-start"
+        >
+          <Typography
+            variant="h6"
+            id="modal-title"
+            pl={9}
+            style={{ paddingRight: "12px" }}
           >
-            <Typography
-              variant="h6"
-              id="modal-title"
-              pl={9}
-              style={{ paddingRight: "12px" }}
-            >
-              Delete Student Details
-            </Typography>
-            <DeleteIcon
-              onClick={this.deleteTransition}
-              style={{ color: "#f05f40", cursor: "pointer", fontSize: "30px" }}
-              onClick={this.handleClickOpen}
-            />
-          </Grid>
-          <Dialog
-            open={open}
-            keepMounted
-            onClose={this.handleClose}
-            aria-labelledby="alert-dialog-slide-title"
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <DialogTitle id="alert-dialog-slide-title">
-              {" "}
-              Do you want to delete {studentName}'s details ??
-            </DialogTitle>
-            <DialogActions>
-              <Button onClick={this.handleClose} color="primary">
-                NO
-              </Button>
-              <Button onClick={this.deleteStudentDetails} color="primary">
-                YES
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      );
-    }
-    return null;
+            Delete Student Details
+          </Typography>
+          <DeleteIcon
+            style={{ color: "#f05f40", cursor: "pointer", fontSize: "30px" }}
+            onClick={handleClickOpen}
+          />
+        </Grid>
+        <Dialog
+          open={open}
+          keepMounted
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-slide-title"
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle id="alert-dialog-slide-title">
+            {" "}
+            Do you want to delete {studentName}&apos;s details ??
+          </DialogTitle>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              NO
+            </Button>
+            <Button onClick={deleteStudentDetails} color="primary">
+              YES
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
   }
-}
+  return null;
+};
 
-const mapStateToProps = (state) => ({
-  data: state.data.getData,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  getStudentsData: (data) => dispatch(getData(data)),
-});
-
-export default withSnackbar(connect(mapStateToProps, mapDispatchToProps)(DeleteStudentDetails));
+export default DeleteStudentDetails;

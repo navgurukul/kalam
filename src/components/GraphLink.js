@@ -1,9 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { Typography } from "@material-ui/core";
-import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
+import { makeStyles, Typography } from "@material-ui/core";
 
-const styles = (theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
     justifyContent: "space-between",
@@ -13,27 +12,25 @@ const styles = (theme) => ({
     color: "#f05f40",
     cursor: "pointer",
   },
-});
+}));
 
-class GraphLink extends Component {
-  render() {
-    const { classes } = this.props;
-    return (
-      <div className={classes.root}>
-        <Typography variant="h5">{this.props.titleName} </Typography>
-        <div>
-          <Link
-            className={classes.link}
-            to={`${this.props.id}/students/distribution`}
-            target="_blank"
-          >
-            <Typography variant="h6">Graph of job kab lagega</Typography>
-          </Link>
-        </div>
-        <Typography variant="h5">{this.props.titleName} </Typography>
+const GraphLink = (props) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.root}>
+      <Typography variant="h5">{props.titleName} </Typography>
+      <div>
+        <Link
+          className={classes.link}
+          to={`${props.id}/students/distribution`}
+          target="_blank"
+        >
+          <Typography variant="h6">Graph of job kab lagega</Typography>
+        </Link>
       </div>
-    );
-  }
-}
+      <Typography variant="h5">{props.titleName} </Typography>
+    </div>
+  );
+};
 
-export default withStyles(styles)(GraphLink);
+export default GraphLink;

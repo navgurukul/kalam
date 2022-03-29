@@ -1,50 +1,49 @@
-import React, { Component } from "react";
+import React, { useEffect, useMemo } from "react";
 import TextField from "@material-ui/core/TextField";
 import { debounce } from "lodash";
 
-export default class Text extends Component {
-  constructor() {
-    super();
-    this.state = {
-      name: "",
-    };
-    this.handleSearchText = debounce(this.onSearchText, 600);
-  }
-  onChange = async (event) => {
-    await this.setState({
-      name: event.target.value,
-    });
-    this.handleSearchText(this.state.name);
-  };
-  validInput = (value) => {
+const SearchBar = (props) => {
+  // const [name, setName] = React.useState("");
+
+  const validInput = (value) => {
     if (value.match(/^[A-Za-z\s]+$/)) {
       return "letter";
     } else if (value.match(/^[0-9]+$/)) {
       return "number";
     }
   };
-  onSearchText = (input) => {
-    let isValidInput = this.validInput(input);
+
+  const onSearchText = (input) => {
+    // setName(input);
+    let isValidInput = validInput(input);
     if (input.length >= 2 && isValidInput === "letter") {
-      return this.props.searchByName("name", input);
+      return props.searchByName("name", input);
     } else if (input.length >= 5 && isValidInput === "number") {
-      return this.props.searchByName("number", input);
+      return props.searchByName("number", input);
     } else if (input.length === 0) {
-      this.props.searchByName("name","");
-      return this.props.searchByName("number","");
+      props.searchByName("name", "");
+      return props.searchByName("number", "");
     }
   };
 
-  render() {
-    const { name } = this.state;
-    return (
-      <TextField
-        error={false}
-        id="standard-basic"
-        label="Search name or number"
-        value={name}
-        onChange={this.onChange}
-      />
-    );
-  }
-}
+  const onChange = useMemo(() => {
+    return debounce(onSearchText, 600);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      onChange.cancel();
+    };
+  });
+
+  return (
+    <TextField
+      error={false}
+      id="standard-basic"
+      label="Search name or number"
+      onChange={(event) => onChange(event.target.value)}
+    />
+  );
+};
+
+export default SearchBar;

@@ -134,7 +134,7 @@ const addedAtColumn = {
         (rowMeta.rowData[0].indexOf("Joined") > -1 ||
           keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
       ) {
-        return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
+        return <JoinedDate transitionId={rowMeta.rowData[8]} value={value} />;
       }
       return (
         <Moment format="D MMM YYYY" withTitle>

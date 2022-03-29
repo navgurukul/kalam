@@ -229,7 +229,6 @@ const LandingPage = (props) => {
             firstName: "",
             middleName: "",
             lastName: "",
-            enrollmentKey: response.data.key,
           });
           fetchingFinish();
         }

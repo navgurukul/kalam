@@ -33,7 +33,7 @@ import AnyRoute from "./AnyRouter";
 import history from "../utils/history";
 import StudentStatus from "../components/StudentStatus";
 import DuplicateStudents from "../components/DuplicateStudents";
-import SlideShow from "../onlineTest/SlideShow";  
+import SlideShow from "../onlineTest/SlideShow";
 import EkAurBaat from "../onlineTest/EkAurBaat";
 import Questions from "../onlineTest/Questions";
 import NewAdminPage from "../components/NewAdminPage";

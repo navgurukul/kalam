@@ -8,9 +8,10 @@ import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { allStages } from "../config";
 import { changeFetching } from "../store/actions/auth";
-import SlotBooking from "./SlotBooking";
+import SlotBooking from "./SlotBooking2";
 
 const baseUrl = process.env.API_URL;
+const testUrl = "https://join.navgurukul.org/k/";
 
 // const useStyles = makeStyles((theme) => ({
 //   paper: {

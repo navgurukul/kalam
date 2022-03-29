@@ -1,19 +1,10 @@
-/* eslint-disable arrow-body-style */
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable react/jsx-boolean-value */
 import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import { makeStyles } from "@mui/styles";
 import {
   Button,
-  Grid,
   IconButton,
   Modal,
-  Paper,
-  Table,
-  TableCell,
-  TableContainer,
-  TableRow,
   FormControl,
   InputLabel,
   Input,
@@ -69,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AddOwner = (props) => {
+const AddOwner = (props) => {
   const { isEdit, disabled } = props;
 
   const classes = useStyles();
@@ -236,75 +227,74 @@ export const AddOwner = (props) => {
   else if (gender === 3) ownerGender = "Transgender";
   else ownerGender = "NA";
   const [ScheduleOpen, setScheduleOpen] = useState(false);
-  const [date, setDate] = useState(Date.now);
-  const columns = [
-    {
-      name: "student_name",
-      label: "name",
-      options: {
-        filter: false,
-        sort: false,
-      },
-    },
-    {
-      name: "topic_name",
-      label: "topic name",
-      options: {
-        filter: false,
-        sort: false,
-      },
-    },
-    {
-      name: "name",
-      label: "Phone Number",
-      options: {
-        filter: false,
-        sort: false,
-      },
-    },
-    {
-      name: "start_time",
-      label: "start time",
-      options: {
-        filter: false,
-        sort: false,
-      },
-    },
-    {
-      name: "end_time_expected",
-      label: "end time",
-      options: {
-        filter: false,
-        sort: false,
-      },
-    },
-    {
-      name: "on_date",
-      label: "date",
-      options: {
-        filter: false,
-        sort: false,
-        // eslint-disable-next-line arrow-body-style
-        customBodyRender: (value) => {
-          return <p>{value.split("T")[0]}</p>;
-        },
-      },
-    },
-  ];
-  const month = {
-    Jan: `01`,
-    Feb: `02`,
-    Mar: `03`,
-    Apr: `04`,
-    May: `05`,
-    Jun: `06`,
-    Jul: `07`,
-    Aug: `08`,
-    Sep: `09`,
-    Oct: `10`,
-    Nov: `11`,
-    Dec: `12`,
-  };
+  // const columns = [
+  //   {
+  //     name: "student_name",
+  //     label: "name",
+  //     options: {
+  //       filter: false,
+  //       sort: false,
+  //     },
+  //   },
+  //   {
+  //     name: "topic_name",
+  //     label: "topic name",
+  //     options: {
+  //       filter: false,
+  //       sort: false,
+  //     },
+  //   },
+  //   {
+  //     name: "name",
+  //     label: "Phone Number",
+  //     options: {
+  //       filter: false,
+  //       sort: false,
+  //     },
+  //   },
+  //   {
+  //     name: "start_time",
+  //     label: "start time",
+  //     options: {
+  //       filter: false,
+  //       sort: false,
+  //     },
+  //   },
+  //   {
+  //     name: "end_time_expected",
+  //     label: "end time",
+  //     options: {
+  //       filter: false,
+  //       sort: false,
+  //     },
+  //   },
+  //   {
+  //     name: "on_date",
+  //     label: "date",
+  //     options: {
+  //       filter: false,
+  //       sort: false,
+  //       // eslint-disable-next-line arrow-body-style
+  //       customBodyRender: (value) => {
+  //         return <p>{value.split("T")[0]}</p>;
+  //       },
+  //     },
+  //   },
+  // ];
+  // const month = {
+  //   Jan: `01`,
+  //   Feb: `02`,
+  //   Mar: `03`,
+  //   Apr: `04`,
+  //   May: `05`,
+  //   Jun: `06`,
+  //   Jul: `07`,
+  //   Aug: `08`,
+  //   Sep: `09`,
+  //   Oct: `10`,
+  //   Nov: `11`,
+  //   Dec: `12`,
+  // };
 
   return (
     <div>
@@ -348,8 +338,8 @@ export const AddOwner = (props) => {
                 options={data.map((x) => ({ value: x.id, label: x.user }))}
                 placeholder="Select Owner"
                 isClearable={false}
-                closeMenuOnSelect={true}
-                isSearchable={true}
+                closeMenuOnSelect
+                isSearchable
                 isDisabled={!!isEdit}
               />
               <FormHelperText className={classes.text} id="my-helper-text">
@@ -371,13 +361,11 @@ export const AddOwner = (props) => {
                   { value: 1, label: "Female" },
                   { value: 2, label: "Male" },
                   { value: 3, label: "Transgender" },
-                ].map((x) => {
-                  return { value: x.value, label: x.label };
-                })}
+                ].map((x) => ({ value: x.value, label: x.label }))}
                 placeholder="Select Gender"
                 isClearable={false}
-                closeMenuOnSelect={true}
-                isSearchable={true}
+                closeMenuOnSelect
+                isSearchable
                 // isDisabled={isEdit ? true : false}
               />
               <FormHelperText className={classes.text} id="my-helper-text">
@@ -395,13 +383,11 @@ export const AddOwner = (props) => {
                 options={[
                   { value: "Yes", label: "Yes" },
                   { value: "No", label: "No" },
-                ].map((x) => {
-                  return { value: x.value, label: x.label };
-                })}
+                ].map((x) => ({ value: x.value, label: x.label }))}
                 placeholder="Select Availablity"
                 isClearable={false}
-                closeMenuOnSelect={true}
-                isSearchable={true}
+                closeMenuOnSelect
+                isSearchable
               />
               <FormHelperText className={classes.text} id="my-helper-text">
                 Select Yes/No
@@ -422,13 +408,14 @@ export const AddOwner = (props) => {
                 }
                 isMulti
                 onChange={getStage}
-                options={stageOptions.map((x) => {
-                  return { value: x.value, label: x.label };
-                })}
+                options={stageOptions.map((x) => ({
+                  value: x.value,
+                  label: x.label,
+                }))}
                 placeholder="Select Stage"
                 isClearable={false}
-                isSearchable={true}
-                closeMenuOnSelect={true}
+                isSearchable
+                closeMenuOnSelect
               />
               <FormHelperText className={classes.text} id="my-helper-text">
                 Stage select kariye jo aap owner ko assign karna chahate ho.

@@ -71,7 +71,6 @@ const StudentFeedback = (props) => {
 
       fetchingFinish();
     } catch (e) {
-      console.error(e);
       snackbar.enqueueSnackbar("Please select student Status", {
         variant: "error",
       });

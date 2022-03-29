@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { changeFetching, setupUsers } from "../store/actions/auth";
 
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 import StudentService from "../services/StudentService";
+import { changeFetching, setupUsers } from "../store/actions/auth";
 import { campus } from "../config";
 import DashboardPage from "./Dashboard";
 import SelectUiByButtons from "./SelectUiByButtons";
@@ -15,22 +16,21 @@ import NotHaveAccess from "./NotHaveAccess";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const CampusStudentsData = (props) => {
+const CampusStudentsData = () => {
+  const { campusId } = useParams();
   const dispatch = useDispatch();
   const fetchingFinish = () => dispatch(changeFetching(false));
   const usersSetup = (users) => dispatch(setupUsers(users));
   const [state, setState] = React.useState({
     isShow: true,
-    campusName: campus.find(
-      (x) => x.id === parseInt(props.match.params.campusId)
-    ).name,
+    campusName: campus.find((x) => x.id === parseInt(campusId, 10)).name,
     access: null,
     userLoggedIn: user(),
     campusRouteCondition: false,
   });
   const fetchAccess = async () => {
     try {
-      const accessUrl = baseUrl + "rolebaseaccess";
+      const accessUrl = `${baseUrl}rolebaseaccess`;
 
       axios.get(accessUrl).then((response) => {
         const campusData = response.data.campus;
@@ -44,23 +44,23 @@ const CampusStudentsData = (props) => {
 
         setState({
           ...state,
-          access: campusData ? campusData : null,
+          access: campusData || null,
           campusRouteCondition: conditions, //to set access object
         });
       });
     } catch (e) {
-      console.error(e);
+      // console.error(e);
     }
   };
 
   const fetchUsers = async () => {
-    const usersURL = baseUrl + "users/getall";
+    const usersURL = `${baseUrl}users/getall`;
     try {
       const response = await axios.get(usersURL, {});
       usersSetup(response.data.data);
       fetchingFinish();
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       fetchingFinish();
     }
   };
@@ -84,7 +84,6 @@ const CampusStudentsData = (props) => {
   };
 
   const { campusName, isShow } = state;
-  const { campusId } = props.match.params;
   //console.log(campusName, campusId);
   return (
     <div>
@@ -98,7 +97,7 @@ const CampusStudentsData = (props) => {
           />
           {isShow ? (
             <DashboardPage
-              displayData={StudentService["CampusData"]}
+              displayData={StudentService.CampusData}
               url={`campus/${campusId}/students`}
               campusID={campusId}
             />

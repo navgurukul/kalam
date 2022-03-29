@@ -1,5 +1,4 @@
-/* eslint-disable arrow-body-style */
-/* eslint-disable react/no-array-index-key */
+/* eslint-disable camelcase */
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Card from "@mui/material/Card";
@@ -346,7 +345,7 @@ const AddPartnerPage = (props) => {
             // eslint-disable-next-line arrow-body-style
             state.partner_user.map((user, index) => {
               return (
-                <div key={index}>
+                <div key={user.email}>
                   <TextField
                     type={
                       state.partner_user.length - 1 === index ? "search" : null
@@ -391,21 +390,19 @@ const AddPartnerPage = (props) => {
         </FormControl>
 
         <FormControl>
-          {state.districts.map((state_d, index) => {
-            return (
-              <div key={index}>
-                <TextField
-                  type={state.districts.length - 1 === index ? "search" : null}
-                  id="PartnerDistrictsCities"
-                  label=" Partner Districts/Cities"
-                  aria-describedby="my-helper-text"
-                  name="state"
-                  value={state_d}
-                  onChange={() => changeHandler(index)}
-                />
-              </div>
-            );
-          })}
+          {state.districts.map((state_d, index) => (
+            <div key={state_d}>
+              <TextField
+                type={state.districts.length - 1 === index ? "search" : null}
+                id="PartnerDistrictsCities"
+                label=" Partner Districts/Cities"
+                aria-describedby="my-helper-text"
+                name="state"
+                value={state_d}
+                onChange={() => changeHandler(index)}
+              />
+            </div>
+          ))}
 
           <FormHelperText className={classes.text} id="my-helper-text">
             Partner ka districts or city Enter karein.

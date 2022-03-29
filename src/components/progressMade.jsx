@@ -5,7 +5,7 @@ import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import { Button, Typography, CardContent } from "@mui/material";
-import { allStages } from "../config";
+import Tooltip from "@mui/material/Tooltip";
 import Card from "@mui/material/Card";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
@@ -13,15 +13,16 @@ import AnnouncementIcon from "@mui/icons-material/Announcement";
 import CancelIcon from "@mui/icons-material/Cancel";
 import HelpIcon from "@mui/icons-material/Help";
 import Avatar from "@mui/material/Avatar";
+import { useParams } from "react-router-dom";
 import { deepOrange } from "@mui/material/colors";
 import { isMobile } from "react-device-detect";
 import { useSnackbar } from "notistack";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import WhatsAppIcon from "../assets/img/whatsapp.png";
+import { allStages } from "../config";
 import DashboardPage from "./Dashboard";
 import CollapseStudentData from "./collapseData";
-import Tooltip from "@mui/material/Tooltip";
 import StudentService from "../services/StudentService";
 import GraphPage from "./GraphPage";
 
@@ -66,7 +67,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProgressMadeForPartner = (props) => {
+const ProgressMadeForPartner = () => {
+  const { partnerId } = useParams();
   const classes = useStyles();
   const snackbar = useSnackbar();
   const [state, setState] = React.useState({
@@ -95,49 +97,45 @@ const ProgressMadeForPartner = (props) => {
     },
   ];
 
-  useEffect(() => {
-    axios
-      .get(`${baseURL}partners/${props.match.params.partnerId}`)
-      .then((res) => {
-        setState((prevState) => ({
-          ...prevState,
-          partnerName: res.data.data["name"],
-        }));
-      });
-
-    axios
-      .get(`${baseURL}partners/progress_made/${props.match.params.partnerId}`)
-      .then((res) => {
-        setState((prevState) => ({
-          ...prevState,
-          data: res.data.data,
-          progress: false,
-          tabular: false,
-          graph: true,
-        }));
-        whatsAppMessage();
-      });
-  }, []);
-
   const whatsAppMessage = () => {
-    Object.entries(state.data).map(([key, detailsData]) => {
+    Object.entries(state.data).forEach(([key, detailsData]) => {
       let text = "";
       text = `${text}*${key}*\n\n`;
-      Object.entries(detailsData).map(([key1, studentDetails]) => {
+      Object.entries(detailsData).forEach(([key1, studentDetails]) => {
         if (studentDetails.length > 0) {
           text = `${text}\n_${allStages[key1]} (${studentDetails.length})_\n`;
-          studentDetails.map((item) => {
+          studentDetails.forEach((item) => {
             text = `${text}${item.name}: ${item.mobile}\n`;
           });
         }
       });
-      text = `${text}\nFor more information visit\nhttp://admissions.navgurukul.org/partner/${props.match.params.partnerId}`;
+      text = `${text}\nFor more information visit\nhttp://admissions.navgurukul.org/partner/${partnerId}`;
       setState({
         ...state,
         [key]: text,
       });
     });
   };
+
+  useEffect(() => {
+    axios.get(`${baseURL}partners/${partnerId}`).then((res) => {
+      setState((prevState) => ({
+        ...prevState,
+        partnerName: res.data.data.name,
+      }));
+    });
+
+    axios.get(`${baseURL}partners/progress_made/${partnerId}`).then((res) => {
+      setState((prevState) => ({
+        ...prevState,
+        data: res.data.data,
+        progress: false,
+        tabular: false,
+        graph: true,
+      }));
+      whatsAppMessage();
+    });
+  }, []);
 
   const progressMade = () => {
     setState({
@@ -166,24 +164,22 @@ const ProgressMadeForPartner = (props) => {
     });
   };
 
-  const copyClipBoard = (key) => {
-    return (
-      <Tooltip title="Copy Details" className={classes.large}>
-        <CopyToClipboard
-          text={key}
-          onCopy={() => {
-            snackbar.enqueueSnackbar("Message copied!", {
-              variant: "success",
-            });
-          }}
-        >
-          <Avatar alt="Remy Sharp">
-            <FileCopyIcon style={{ cursor: "pointer" }} />
-          </Avatar>
-        </CopyToClipboard>
-      </Tooltip>
-    );
-  };
+  const copyClipBoard = (key) => (
+    <Tooltip title="Copy Details" className={classes.large}>
+      <CopyToClipboard
+        text={key}
+        onCopy={() => {
+          snackbar.enqueueSnackbar("Message copied!", {
+            variant: "success",
+          });
+        }}
+      >
+        <Avatar alt="Remy Sharp">
+          <FileCopyIcon style={{ cursor: "pointer" }} />
+        </Avatar>
+      </CopyToClipboard>
+    </Tooltip>
+  );
   const { partnerName, progress, data, tabular } = state;
   return (
     <div>
@@ -226,7 +222,7 @@ const ProgressMadeForPartner = (props) => {
                             alignItems="center"
                           >
                             {copyClipBoard(state[key])}
-                            <br></br>
+                            <br />
                             <Tooltip title="Share Details on WhatsApp">
                               <a
                                 href={`https://api.whatsapp.com/send?text=${state[key]}`}
@@ -252,9 +248,9 @@ const ProgressMadeForPartner = (props) => {
                             {copyClipBoard(state[key])}
                           </Grid>
                         )}
-                        <br></br>
+                        <br />
                         <center>{icons[index].icon}</center>
-                        <br></br>
+                        <br />
                         <center>
                           <Typography variant="h5">{key}</Typography>
                         </center>
@@ -277,17 +273,15 @@ const ProgressMadeForPartner = (props) => {
             </Grid>
           </div>
         )}
-        <br></br>
+        <br />
       </Container>
       {tabular && (
         <DashboardPage
-          displayData={StudentService.columns["partnerData"]}
-          url={`partners/${props.match.params.partnerId}/students`}
+          displayData={StudentService.columns.partnerData}
+          url={`partners/${partnerId}/students`}
         />
       )}
-      {state.graph && (
-        <GraphPage url={`partners/${props.match.params.partnerId}/students`} />
-      )}
+      {state.graph && <GraphPage url={`partners/${partnerId}/students`} />}
     </div>
   );
 };

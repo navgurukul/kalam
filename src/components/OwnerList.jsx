@@ -1,15 +1,16 @@
-import React, { useEffect } from "react";
+/* eslint-disable no-use-before-define */
+import React, { memo, useEffect } from "react";
 import { MuiThemeProvider } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useSnackbar } from "notistack";
 import { Box, DialogTitle, DialogActions, Dialog, Button } from "@mui/material";
 import theme from "../theme";
 import MainLayout from "./MainLayout";
 import AddOwner from "./AddOwner";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useSnackbar } from "notistack";
 import { permissions } from "../config";
-import AddOwnerSchedule from "./AddOwnerSchedule";
+// import AddOwnerSchedule from "./AddOwnerSchedule";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -52,7 +53,7 @@ const OwnerList = () => {
       options: {
         filter: true,
         sort: false,
-        customBodyRender: (value, rowMeta) => {
+        customBodyRender: memo((value, rowMeta) => {
           const user = window.localStorage.user
             ? JSON.parse(window.localStorage.user).email
             : null;
@@ -71,7 +72,7 @@ const OwnerList = () => {
             >
               <AddOwner
                 ownerId={value}
-                isEdit={true}
+                isEdit
                 disabled={!canUpdate}
                 getUpdatedData={getUpdatedData}
               />
@@ -85,7 +86,7 @@ const OwnerList = () => {
               )}
             </div>
           );
-        },
+        }),
       },
     },
     {
@@ -105,9 +106,9 @@ const OwnerList = () => {
         customBodyRender: (value) => {
           //console.log("value", value);
           if (value === 1) return "Female";
-          else if (value === 2) return "Male";
-          else if (value === 3) return "Transgender";
-          else return "NA";
+          if (value === 2) return "Male";
+          if (value === 3) return "Transgender";
+          return "NA";
         },
       },
     },
@@ -117,9 +118,7 @@ const OwnerList = () => {
       options: {
         filter: true,
         sort: false,
-        customBodyRender: (value) => {
-          return value ? "Yes" : "No";
-        },
+        customBodyRender: (value) => (value ? "Yes" : "No"),
       },
     },
     {
@@ -136,8 +135,8 @@ const OwnerList = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value) => {
-          return value.map((v, inx) => {
+        customBodyRender: (value) =>
+          value.map((v) => {
             if (stagesColor[v]) {
               return (
                 <p
@@ -154,9 +153,9 @@ const OwnerList = () => {
             }
             return (
               <p
-                key={inx}
+                key={v}
                 style={{
-                  backgroundColor: stagesColor["defaultValue"],
+                  backgroundColor: stagesColor.defaultValue,
                   textAlign: "center",
                   borderRadius: "75px",
                 }}
@@ -165,8 +164,7 @@ const OwnerList = () => {
                 {v}{" "}
               </p>
             );
-          });
-        },
+          }),
       },
     },
     {
@@ -221,53 +219,54 @@ const OwnerList = () => {
   ];
 
   useEffect(() => {
-    const fetchData = async () => await fetchOwners();
+    const fetchData = async () => fetchOwners();
     fetchData();
   }, []);
 
   const fetchOwners = async () => {
-    const dataURL = baseUrl + "owner";
+    const dataURL = `${baseUrl}owner`;
     const response = await axios.get(dataURL);
     const { data } = response.data;
 
-    const interviewDataURL = baseUrl + "ownershedule";
-    const interviewResponse = await axios.get(interviewDataURL);
-    const { data: interviewData } = interviewResponse.data;
+    // const interviewDataURL = `${baseUrl  }ownershedule`;
+    // const interviewResponse = await axios.get(interviewDataURL);
+    // const { data: interviewData } = interviewResponse.data;
 
-    const newData = await data.map((owner) => {
-      let newOwner = { ...owner };
-      let ownerInterview = interviewData.find(
-        (iData) => iData.owner_id === owner.id
-      );
-      if (ownerInterview) {
-        newOwner["schedule"] = ownerInterview;
-      }
-      return newOwner;
-    });
+    // const newData = await data.map((owner) => {
+    //   let newOwner = { ...owner };
+    //   let ownerInterview = interviewData.find(
+    //     (iData) => iData.owner_id === owner.id
+    //   );
+    //   if (ownerInterview) {
+    //     newOwner["schedule"] = ownerInterview;
+    //   }
+    //   return newOwner;
+    // });
     setState({
       ...state,
-      data: newData,
-      interviewData: interviewResponse.data.data,
+      data,
+      // interviewData: interviewResponse.data.data,
       showLoader: false,
     });
     //console.log(interviewData);
   };
 
-  const updateData = () => {
-    fetchOwners();
-  };
+  // const updateData = () => {
+  //   fetchOwners();
+  // };
 
   const getUpdatedData = (data, isEdit) => {
     let newData = [...state.data];
     if (isEdit) {
       newData = newData.map((x) => {
+        const nUser = { ...x };
         if (x.user.mail_id === data.user.mail_id) {
-          x.available = data.available;
-          x.type = data.type;
-          x.max_limit = data.max_limit;
-          x.gender = data.gender;
+          nUser.available = data.available;
+          nUser.type = data.type;
+          nUser.max_limit = data.max_limit;
+          nUser.gender = data.gender;
         }
-        return x;
+        return nUser;
       });
       setState({
         ...state,
@@ -309,7 +308,7 @@ const OwnerList = () => {
         <div className={classes.innerTable}>
           <AddOwner getUpdatedData={getUpdatedData} ownerData={data} />
           <MainLayout
-            title={"Owners"}
+            title="Owners"
             columns={columns}
             data={data}
             showLoader={showLoader}

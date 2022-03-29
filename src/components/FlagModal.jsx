@@ -1,14 +1,14 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import { makeStyles } from "@mui/styles";
-import axios from "axios";
-import { useSnackbar } from "notistack";
+// import axios from "axios";
+// import { useSnackbar } from "notistack";
 import TextField from "@mui/material/TextField";
 import { Dialog, Box } from "@mui/material";
 import FlagIcon from "@mui/icons-material/Flag";
-import { changeFetching } from "../store/actions/auth";
+// import { changeFetching } from "../store/actions/auth";
 
-const baseUrl = import.meta.env.VITE_API_URL;
+// const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -29,10 +29,10 @@ const useStyles = makeStyles((theme) => ({
 
 const RedFlag = (props) => {
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch();
-  const fetchingStart = () => dispatch(changeFetching(true));
-  const fetchingFinish = () => dispatch(changeFetching(false));
+  // const { enqueueSnackbar } = useSnackbar();
+  // const dispatch = useDispatch();
+  // const fetchingStart = () => dispatch(changeFetching(true));
+  // const fetchingFinish = () => dispatch(changeFetching(false));
   const { comment } = props;
   const [state, setState] = React.useState({
     redflag: "",
@@ -41,44 +41,44 @@ const RedFlag = (props) => {
     flagColorToggle: comment,
   });
 
-  const addFlagComment = async () => {
-    try {
-      fetchingStart();
-      const { change, rowMetaTable } = props;
-      const { columnIndex } = rowMetaTable;
-      const { studentId } = props;
+  // const addFlagComment = async () => {
+  //   try {
+  //     fetchingStart();
+  //     const { change, rowMetaTable } = props;
+  //     const { columnIndex } = rowMetaTable;
+  //     const { studentId } = props;
 
-      await axios
-        .put(`${baseUrl}students/redflag/${studentId}`, {
-          flag: state.flagComment,
-        })
-        .then(() => {
-          //console.log(response);
-          setState((prevState) => ({
-            ...prevState,
-            dialogOpen: false,
-            flagColorToggle: state.flagComment,
-          }));
-          if (state.flagComment === "") {
-            enqueueSnackbar("Cleared Flag!", {
-              variant: "success",
-            });
-          } else {
-            enqueueSnackbar("Flag Raised successfully!", {
-              variant: "success",
-            });
-          }
-          change(state.redflag, columnIndex);
-        });
-      fetchingFinish();
-    } catch (e) {
-      //console.log(e);
-      enqueueSnackbar("Please select student Status", {
-        variant: "error",
-      });
-      fetchingFinish();
-    }
-  };
+  //     await axios
+  //       .put(`${baseUrl}students/redflag/${studentId}`, {
+  //         flag: state.flagComment,
+  //       })
+  //       .then(() => {
+  //         //console.log(response);
+  //         setState((prevState) => ({
+  //           ...prevState,
+  //           dialogOpen: false,
+  //           flagColorToggle: state.flagComment,
+  //         }));
+  //         if (state.flagComment === "") {
+  //           enqueueSnackbar("Cleared Flag!", {
+  //             variant: "success",
+  //           });
+  //         } else {
+  //           enqueueSnackbar("Flag Raised successfully!", {
+  //             variant: "success",
+  //           });
+  //         }
+  //         change(state.redflag, columnIndex);
+  //       });
+  //     fetchingFinish();
+  //   } catch (e) {
+  //     //console.log(e);
+  //     enqueueSnackbar("Please select student Status", {
+  //       variant: "error",
+  //     });
+  //     fetchingFinish();
+  //   }
+  // };
 
   // const onSubmit = () => {
   //   setState({

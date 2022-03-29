@@ -21,13 +21,25 @@ const FeedbackableStageWiseDangling = () => {
   const fetchingFinish = () => dispatch(changeFetching(false));
 
   const [data, setData] = React.useState([]);
-  const stageWiseDanglingReportURL = baseURL + "students/report/dangling";
+  const stageWiseDanglingReportURL = `${baseURL}students/report/dangling`;
 
-  useEffect(() => {
-    const fetchData = async () => await fetchOwnerReport();
-    fetchData();
-  }, []);
-
+  const dataConvert = (_data) => {
+    const newData = [];
+    Object.entries(_data).forEach(([key, value]) => {
+      const dic = {};
+      if (feedbackableStagesData[key]) {
+        const [, female, male, trans] = value;
+        dic.female = female;
+        dic.male = male;
+        dic.transgender = trans;
+        dic.unspecified = value.null;
+        dic.total = dic.female + dic.male + dic.transgender + dic.unspecified;
+        dic.stage = allStages[key];
+        newData.push(dic);
+      }
+    });
+    setData(newData);
+  };
   const fetchOwnerReport = async () => {
     try {
       fetchingStart();
@@ -35,27 +47,15 @@ const FeedbackableStageWiseDangling = () => {
       dataConvert(response.data.data);
       fetchingFinish();
     } catch (e) {
-      console.error(e);
       fetchingFinish();
     }
   };
 
-  const dataConvert = (data) => {
-    const newData = [];
-    for (const [key, value] of Object.entries(data)) {
-      const dic = {};
-      if (feedbackableStagesData[key]) {
-        dic.female = value[1];
-        dic.male = value[2];
-        dic.transgender = value[3];
-        dic.unspecified = value[null];
-        dic.total = dic.female + dic.male + dic.transgender + dic.unspecified;
-        dic.stage = allStages[key];
-        newData.push(dic);
-      }
-    }
-    setData(newData);
-  };
+  useEffect(() => {
+    const fetchData = async () => fetchOwnerReport();
+    fetchData();
+  }, []);
+
   return (
     <MainLayout data={data} columns={StudentService.columnDanglingReports} />
   );

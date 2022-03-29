@@ -1,13 +1,3 @@
-/* eslint-disable no-plusplus */
-/* eslint-disable array-callback-return */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-shadow */
-/* eslint-disable object-shorthand */
-/* eslint-disable prefer-template */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable arrow-body-style */
 import "date-fns";
 import React, { useEffect } from "react";
 // import { allStages} from '../config';
@@ -37,9 +27,10 @@ const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = import.meta.env.VITE_API_URL;
 
-let allStagesOptions = Object.keys(allStages).map((x) => {
-  return { value: x, label: allStages[x] };
-});
+let allStagesOptions = Object.keys(allStages).map((x) => ({
+  value: x,
+  label: allStages[x],
+}));
 allStagesOptions = [
   {
     value: "default",
@@ -104,7 +95,7 @@ const AdmissionsDash = (props) => {
         }));
       });
     } catch (e) {
-      console.error(e);
+      // console.error(e);
     }
   };
 
@@ -128,21 +119,20 @@ const AdmissionsDash = (props) => {
       localStorage.setItem("users", JSON.stringify(newData));
       fetchingFinish();
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       fetchingFinish();
     }
   };
   const dataSetup = (data, totalData) => {
     if (data.length > 0) {
-      for (let i = 0; i < data.length; i++) {
+      for (let i = 0; i < data.length; i += 1) {
+        // eslint-disable-next-line no-param-reassign
         data[i] = StudentService.dConvert(data[i]);
       }
-      const newData = data.map((v) => {
-        return {
-          ...v,
-          loggedInUser: loggedInUser.email.split("@")[0],
-        };
-      });
+      const newData = data.map((v) => ({
+        ...v,
+        loggedInUser: loggedInUser.email.split("@")[0],
+      }));
       setState((prevState) => ({
         ...prevState,
         data: newData,
@@ -153,13 +143,13 @@ const AdmissionsDash = (props) => {
     } else {
       setState((prevState) => ({
         ...prevState,
-        data: data,
+        data,
         showLoader: false,
       }));
     }
   };
-  const fetchStudents = async (value) => {
-    const { fetchPendingInterviewDetails, loggedInUser } = props;
+  const fetchStudents = async (_value) => {
+    const { fetchPendingInterviewDetails, loggedInUser: pLoggedInUser } = props;
     const { numberOfRows } = state;
     const concatinateStage = stage === null ? stage : stage.join(",");
     try {
@@ -168,26 +158,24 @@ const AdmissionsDash = (props) => {
       if (fetchPendingInterviewDetails) {
         response = await axios.get(`${baseURL}students/pending_interview`, {
           params: {
-            user: loggedInUser.mailId,
+            user: pLoggedInUser.mailId,
           },
         });
       } else {
         let url = studentsURL;
-        value &&
-          value.map((filterColumn, index) => {
+        if (_value)
+          _value.forEach((filterColumn, index) => {
             if (index > 0) {
-              // eslint-disable-next-line operator-assignment
-              url = url + `&${filterColumn.key}=${filterColumn.value}`;
+              url += `&${filterColumn.key}=${filterColumn.value}`;
             } else {
-              // eslint-disable-next-line operator-assignment
-              url = url + `?${filterColumn.key}=${filterColumn.value}`;
+              url += `?${filterColumn.key}=${filterColumn.value}`;
             }
           });
         response =
           value && value.length > 0
             ? await axios.get(`${url}&limit=${numberOfRows}&page=0`, {
                 params: {
-                  dataType: dataType,
+                  dataType,
                   stage: concatinateStage,
                   from: state.fromDate,
                   to: state.toDate,
@@ -195,7 +183,7 @@ const AdmissionsDash = (props) => {
               })
             : await axios.get(`${studentsURL}?limit=${numberOfRows}&page=0`, {
                 params: {
-                  dataType: dataType,
+                  dataType,
                   stage: concatinateStage,
                   from: state.fromDate,
                   to: state.toDate,
@@ -224,15 +212,15 @@ const AdmissionsDash = (props) => {
     }
   };
 
-  const setNumbersOfRows = (value) => {
+  const setNumbersOfRows = (_value) => {
     setState((prevState) => ({
       ...prevState,
-      numberOfRows: value,
+      numberOfRows: _value,
     }));
   };
 
-  const getFilterValues = (value) => {
-    setState((prevState) => ({ ...prevState, filterValues: value }));
+  const getFilterValues = (_value) => {
+    setState((prevState) => ({ ...prevState, filterValues: _value }));
   };
 
   // const stageChangeEvent = (iData) => {
@@ -267,16 +255,12 @@ const AdmissionsDash = (props) => {
       value = "Student Details";
     } else {
       // const arr = [];
-      const arr = selectedOption.map((option) => {
-        return option.value;
-      });
+      const arr = selectedOption.map((option) => option.value);
       //console.log(arr, " i am arr");
       if (arr.includes("default")) {
         stage = null;
       } else {
-        stage = selectedOption.map((option) => {
-          return option.value;
-        });
+        stage = selectedOption.map((option) => option.value);
       }
 
       fetchStudents(filterValues);
@@ -387,7 +371,7 @@ const AdmissionsDash = (props) => {
         showLoader={showLoader}
         params={{
           params: {
-            dataType: dataType,
+            dataType,
             stage: concatinateStage,
             from: state.fromDate,
             to: state.toDate,
@@ -407,7 +391,7 @@ const AdmissionsDash = (props) => {
       {state.studentDashboardCondition ? (
         <Box>
           <ThemeProvider>
-            {props.fetchPendingInterviewDetails ? null : options}
+            {fetchPendingInterviewDetails ? null : options}
             <div className={classes.clear} />
             <ServerSidePagination
               columns={StudentService.columns[dataType]}
@@ -416,7 +400,7 @@ const AdmissionsDash = (props) => {
               fun={fetchStudents}
               params={{
                 params: {
-                  dataType: dataType,
+                  dataType,
                   stage: concatinateStage,
                   from: state.fromDate,
                   to: state.toDate,

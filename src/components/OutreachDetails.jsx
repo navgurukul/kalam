@@ -47,12 +47,10 @@ const OutreachDetails = () => {
           }));
         }
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(() => {
+        // console.error(error);
       });
   }, []);
-
-  console.log(state);
 
   return (
     <Container>
@@ -74,11 +72,10 @@ const OutreachDetails = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {state.listOfOutreachTeam.map((item, index) => {
+            {state.listOfOutreachTeam.map((item) => {
               let countOfStudent = 0;
-              console.log(countOfStudent);
               return (
-                <TableRow>
+                <TableRow key={item}>
                   <TableCell className={classes.tableCell}>{item}</TableCell>
                   <TableCell className={classes.tableCell}>
                     {state.outreachDetails[item][".partners"].length}

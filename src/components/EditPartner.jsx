@@ -65,7 +65,6 @@ const EditPartner = (props) => {
           change(slug, columnIndex);
         });
     } catch (e) {
-      console.error(e);
       snackbar.enqueueSnackbar(
         "All fields are mandatory Or Slug should be unique",
         { variant: "error" }

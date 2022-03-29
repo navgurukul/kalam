@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React from "react";
 import clsx from "clsx";
 
@@ -17,7 +18,7 @@ const showContact = (student) => {
     const status = status_student.split(/(?=[A-Z])/);
     studentStatus = status.join(" ");
   }
-  let locationCampus = location.pathname.split("/")[1];
+  const locationCampus = location.pathname.split("/")[1];
   return (
     <center>
       <div
@@ -30,7 +31,7 @@ const showContact = (student) => {
       >
         {locationCampus === "campus" ? (
           <StageTransitions
-            isShow={true}
+            isShow
             studentName={student.name}
             studentId={student.id}
             dataType="columnTransition"
@@ -38,7 +39,7 @@ const showContact = (student) => {
         ) : (
           student.name
         )}{" "}
-        :{student.mobile ? student.mobile : student.contacts[0]["mobile"]}
+        :{student.mobile ? student.mobile : student.contacts[0].mobile}
       </div>
       {student.status != null ? (
         <span style={{ fontSize: 15, fontWeight: 500 }}>({studentStatus})</span>
@@ -66,7 +67,7 @@ const CollapseStudentData = (props) => {
             {allStages[stage]}({details.length})
           </Typography>
         </center>
-        {details.length == 0 && (
+        {details.length === 0 && (
           <center>
             <p style={{ fontSize: 15, color: "red" }}>No record Found</p>
           </center>

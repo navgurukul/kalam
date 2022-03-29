@@ -103,7 +103,6 @@ const AddOwnerSchedule = ({
         .then((res) => {
           const { data } = res.data;
           if (data.error) {
-            console.error(data.err);
             snackbar.enqueueSnackbar("Schedule Already Exists", {
               variant: "error",
             });
@@ -128,7 +127,6 @@ const AddOwnerSchedule = ({
         .then((res) => {
           const { data } = res.data;
           if (data.error) {
-            console.error(data.err);
             snackbar.enqueueSnackbar("Schedule Already Exists", {
               variant: "error",
             });

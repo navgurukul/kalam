@@ -1,14 +1,11 @@
-/* eslint-disable react/jsx-no-useless-fragment */
-/* eslint-disable prefer-destructuring */
-/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable no-use-before-define */
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import MUIDataTable from "mui-datatables";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { allStages } from "../config";
 import { changeFetching } from "../store/actions/auth";
@@ -36,7 +33,7 @@ const baseUrl = process.env.API_URL;
 const DuplicateStudents = () => {
   // const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const history = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
@@ -54,17 +51,15 @@ const DuplicateStudents = () => {
       label: "Re-Test",
       options: {
         filter: false,
-        customBodyRender: (value, rowData) => (
+        customBodyRender: memo((value, rowData) => (
           <Button
             disabled={rowData.rowData[1] === "pendingEnglishInterview"}
             variant="contained"
             color="primary"
             style={{ fontSize: "10px" }}
             onClick={async () => {
-              //console.log("value", value);
-
               const response = await generateTestLink(value);
-              history.push({
+              navigate({
                 pathname: `/test/${response.data.key}/${value}`,
               });
               fetchingFinish();
@@ -72,7 +67,7 @@ const DuplicateStudents = () => {
           >
             Re-Test
           </Button>
-        ),
+        )),
       },
     },
     {
@@ -88,32 +83,21 @@ const DuplicateStudents = () => {
       label: "Book Slot",
       options: {
         filter: false,
-        customBodyRender: (value, rowData) => (
+        customBodyRender: memo((_, rowData) => (
           <Button
             disabled={rowData.rowData[1] !== "pendingEnglishInterview"}
             variant="contained"
             color="primary"
             style={{ fontSize: "10px" }}
             onClick={() => {
-              //console.log(rowData.rowData[0]);
-              //console.log(rowData.rowData[1]);
-              console.log("clicked");
-              history.push({
+              navigate({
                 pathname: `/bookSlot/${rowData.rowData[0]}`,
               });
-
-              // this.setState({
-              //   slotBooking: true,
-              //   slotBookingData: {
-              //     studentId: rowData.rowData[0],
-              //     stage: allStages[rowData.rowData[1]],
-              //   },
-              // });
             }}
           >
             Book Slot
           </Button>
-        ),
+        )),
       },
     },
     {
@@ -191,18 +175,15 @@ const DuplicateStudents = () => {
       })
       .then(async (data) => {
         const response = data.data.data;
-        //console.log("response", response);
 
         if (response.alreadyGivenTest) {
           setState({ ...state, response, data: response.data });
-          //console.log("data", state.data);
         } else {
           setState({
             ...state,
             response,
           });
         }
-        //console.log("data", state.data);
 
         return response;
       });
@@ -224,13 +205,13 @@ const DuplicateStudents = () => {
         partnerId: response.data.data.id,
       });
     } catch (e) {
-      history.push("/notFound");
+      navigate("/notFound");
     }
   };
-  console.log(history);
+  const location = useLocation();
   const { data } = state;
   const selectedLang =
-    history.state === null ? "en" : history.location.state.state.selectedLang;
+    location.state === null ? "en" : location.state.state.selectedLang;
   let firstName;
   let middleName;
   let lastName;
@@ -241,13 +222,15 @@ const DuplicateStudents = () => {
     .split("&Number=")[1]
     .split("&Stage=")[1];
   if (splitedName.length === 3) {
-    firstName = splitedName[0];
-    middleName = splitedName[1];
-    lastName = splitedName[2];
+    [firstName, middleName, lastName] = splitedName;
+    // firstName = splitedName[0];
+    // middleName = splitedName[1];
+    // lastName = splitedName[2];
   } else {
-    firstName = splitedName[0];
-    middleName = "";
-    lastName = splitedName[1];
+    [firstName, lastName] = splitedName;
+    // firstName = splitedName[0];
+    // middleName = "";
+    // lastName = splitedName[1];
   }
   const closeModal = () => {
     setState({ ...state, slotBooking: false });
@@ -292,7 +275,7 @@ const DuplicateStudents = () => {
         />
       ) : (
         // eslint-disable-next-line prettier/prettier
-        <></>
+        <div />
       )}
     </>
   );

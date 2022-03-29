@@ -1,8 +1,6 @@
 import React from "react";
 import AdmissionsDash from "./AdmissionsDash";
 
-const PendingInterview = () => {
-  return <AdmissionsDash fetchPendingInterviewDetails={true} />;
-};
+const PendingInterview = () => <AdmissionsDash fetchPendingInterviewDetails />;
 
 export default PendingInterview;

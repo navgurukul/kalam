@@ -63,7 +63,7 @@ const useStyles = makeStyles((_theme) => ({
   },
 }));
 
-export const StageTransitions = (props) => {
+const StageTransitions = (props) => {
   const classes = useStyles();
   const location = useLocation();
   const { loggedInUser } = useSelector((state) => state.auth);

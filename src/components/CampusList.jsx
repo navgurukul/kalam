@@ -71,7 +71,7 @@ const CampusList = () => {
         }));
       });
     } catch (e) {
-      console.error(e);
+      // console.error(e);
     }
   };
 
@@ -85,7 +85,7 @@ const CampusList = () => {
         showLoader: false,
       }));
     } catch (e) {
-      console.error(e);
+      // console.error(e);
     }
   };
   const { data, showLoader } = state;

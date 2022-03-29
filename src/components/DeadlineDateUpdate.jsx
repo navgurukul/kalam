@@ -1,5 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState } from "react";
 import {
   KeyboardDatePicker,
@@ -11,8 +9,8 @@ import { useSnackbar } from "notistack";
 
 const baseURL = import.meta.env.VITE_API_URL;
 function DeadLineDateUpdate(props) {
-  console.log("hello");
-  const [value, setValue] = useState(props.value);
+  const { value: pValue } = props;
+  const [value, setValue] = useState(pValue);
   const { rowData } = props;
   const [dateToSend, setDateToSend] = React.useState(value);
   const snackBar = useSnackbar();
@@ -52,6 +50,9 @@ function DeadLineDateUpdate(props) {
     return (
       // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       <p
+        onKeyUp={(e) => {
+          if (e.key === "Enter") setValue(Date.now());
+        }}
         onClick={() => {
           setValue(Date.now());
         }}

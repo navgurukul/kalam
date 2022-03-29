@@ -1,5 +1,4 @@
 /* eslint-disable no-nested-ternary */
-/* eslint-disable import/extensions */
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
@@ -32,7 +31,6 @@ const CampusStudentsData = () => {
       usersSetup(response.data.data);
       fetchingFinish();
     } catch (e) {
-      console.error(e);
       fetchingFinish();
     }
   };
@@ -56,7 +54,7 @@ const CampusStudentsData = () => {
         });
       });
     } catch (e) {
-      console.error(e);
+      // console.error(e);
     }
   };
   useEffect(() => {

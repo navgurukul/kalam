@@ -53,7 +53,7 @@ const DonorList = () => {
         showLoader: false,
       });
     } catch (e) {
-      console.error(e);
+      // console.error(e);
     }
   };
   useEffect(() => {

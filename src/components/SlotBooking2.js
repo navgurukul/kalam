@@ -219,113 +219,133 @@ function SlotBooking2(props) {
   }
   const [Timings, setTimings] = React.useState(DefaultTimings);
   return (
-    <Box sx={style}>
-      {slotCanceled ? (
-        <>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Interview Slot Booking
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Slot Booking for {studentData.name}
-          </Typography>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Grid container justify="space-around">
-              <KeyboardDatePicker
-                margin="normal"
-                id="date-picker-dialog"
-                format="yyyy-MM-dd"
-                value={date}
-                onChange={(dates) => {
-                  handleDateChange(dates);
-                }}
-                shouldDisableDate={disablePrevDates()}
-                inputVariant="outlined"
-                fullWidth
-                KeyboardButtonProps={{
-                  "aria-label": "change date",
-                }}
-              />
-            </Grid>
-          </MuiPickersUtilsProvider>
-          <Grid container justify="space-evenly">
-            {Timings.length > 0 ? (
-              Timings.map((item, index) => (
-                <Grid
-                  key={index}
-                  onClick={() => {
-                    setStartTime(item.from);
-                    setEndTime(item.to);
-                    setCurrentTimeId(item.id);
-                  }}
-                  md={4}
-                  style={{
-                    cursor: "pointer",
-                  }}
-                >
-                  <Typography
-                    style={{
-                      backgroundColor: `${
-                        CurrentTimeId == item.id ? "#80b84d" : "#f06243"
-                      }`,
-                      margin: "5px",
-                      padding: "8px",
-                      fontSize: "14px",
+    <>
+      {[
+        "English Interview Pending (2nd Round)",
+        "Culture Fit Interview Pending (4th Round)",
+        "Pending Culture Fit Re-Interview",
+      ].includes(studentData.stage) ? (
+        <Box sx={style}>
+          {slotCanceled ? (
+            <>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Interview Slot Booking
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                Slot Booking for {studentData.name}
+              </Typography>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <Grid container justify="space-around">
+                  <KeyboardDatePicker
+                    margin="normal"
+                    id="date-picker-dialog"
+                    format="yyyy-MM-dd"
+                    value={date}
+                    onChange={(dates) => {
+                      handleDateChange(dates);
                     }}
-                  >
-                    {item.from} - {item.to}
-                  </Typography>
+                    shouldDisableDate={disablePrevDates()}
+                    inputVariant="outlined"
+                    fullWidth
+                    KeyboardButtonProps={{
+                      "aria-label": "change date",
+                    }}
+                  />
                 </Grid>
-              ))
-            ) : (
-              <>
-                <Typography>No Slots Available For Selected Date</Typography>
-              </>
-            )}
-          </Grid>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ fontSize: "10px" }}
-            onClick={() => {
-              handelSlotBooking();
-              setCurrentTimeId(null);
-            }}
-          >
-            Book Slot
-          </Button>
-        </>
+              </MuiPickersUtilsProvider>
+              <Grid container justify="space-evenly">
+                {Timings.length > 0 ? (
+                  Timings.map((item, index) => (
+                    <Grid
+                      key={index}
+                      onClick={() => {
+                        setStartTime(item.from);
+                        setEndTime(item.to);
+                        setCurrentTimeId(item.id);
+                      }}
+                      md={4}
+                      style={{
+                        cursor: "pointer",
+                      }}
+                    >
+                      <Typography
+                        style={{
+                          backgroundColor: `${
+                            CurrentTimeId == item.id ? "#80b84d" : "#f06243"
+                          }`,
+                          margin: "5px",
+                          padding: "8px",
+                          fontSize: "14px",
+                        }}
+                      >
+                        {item.from} - {item.to}
+                      </Typography>
+                    </Grid>
+                  ))
+                ) : (
+                  <>
+                    <Typography>
+                      No Slots Available For Selected Date
+                    </Typography>
+                  </>
+                )}
+              </Grid>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ fontSize: "10px" }}
+                onClick={() => {
+                  handelSlotBooking();
+                  setCurrentTimeId(null);
+                }}
+              >
+                Book Slot
+              </Button>
+            </>
+          ) : (
+            <>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Interview Slot Booked For {slotBookingDetails.student_name} For{" "}
+                {slotBookingDetails.topic_name}
+              </Typography>
+              <Typography
+                component="h3"
+                variant="h6"
+                id="modal-modal-description"
+                sx={{ mt: 2 }}
+              >
+                On {slotBookingDetails.on_date.split("T")[0]}
+              </Typography>
+              <Typography variant="h6" component="h3">
+                From {slotBookingDetails.start_time} To
+                {slotBookingDetails.end_time_expected}
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ fontSize: "10px" }}
+                onClick={() => {
+                  handelDeleteSlot();
+                  setCurrentTimeId(null);
+                }}
+              >
+                Delete Slot
+              </Button>
+            </>
+          )}
+        </Box>
       ) : (
-        <>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Interview Slot Booked For {slotBookingDetails.student_name} For{" "}
-            {slotBookingDetails.topic_name}
-          </Typography>
+        <Box style={{ display: "flex", justifyContent: "center" }}>
           <Typography
-            component="h3"
-            variant="h6"
-            id="modal-modal-description"
-            sx={{ mt: 2 }}
-          >
-            On {slotBookingDetails.on_date.split("T")[0]}
-          </Typography>
-          <Typography variant="h6" component="h3">
-            From {slotBookingDetails.start_time} To
-            {slotBookingDetails.end_time_expected}
-          </Typography>
-          <Button
-            variant="contained"
             color="primary"
-            style={{ fontSize: "10px" }}
-            onClick={() => {
-              handelDeleteSlot();
-              setCurrentTimeId(null);
-            }}
+            variant="h2"
+            style={{ marginTop: "0.4rem" }}
           >
-            Delete Slot
-          </Button>
-        </>
+            You cannot book slot
+          </Typography>
+        </Box>
       )}
-    </Box>
+    </>
   );
 }
 

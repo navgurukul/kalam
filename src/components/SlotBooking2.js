@@ -189,24 +189,29 @@ function SlotBooking2(props) {
         on_date: date,
       }),
     }).then((res) => {
-      res.json().then((data) => {
-        //console.log(data);
-        if (data.status === "successfully_scheduled") {
-          enqueueSnackbar("Slot Booked", {
-            variant: "success",
-          });
-          fetch(`${baseUrl}/slot/interview/${studentId}`).then((res) => {
-            res.json().then((data) => {
-              setSlotBookingDetails(data.data[0]);
-              setSlotCancelled(data.data[0].is_cancelled);
+      res
+        .json()
+        .then((data) => {
+          //console.log(data);
+          if (data.status === "successfully_scheduled") {
+            enqueueSnackbar("Slot Booked", {
+              variant: "success",
             });
-          });
-        } else {
-          enqueueSnackbar("Cannot Book Slot", {
-            variant: "error",
-          });
-        }
-      });
+            fetch(`${baseUrl}/slot/interview/${studentId}`).then((res) => {
+              res.json().then((data) => {
+                setSlotBookingDetails(data.data[0]);
+                setSlotCancelled(data.data[0].is_cancelled);
+              });
+            });
+          } else {
+            enqueueSnackbar("Cannot Book Slot", {
+              variant: "error",
+            });
+          }
+        })
+        .catch(() => {
+          enqueueSnackbar("Couldn't Book Slot!", { variant: "error" });
+        });
     });
   };
   const history = useHistory();

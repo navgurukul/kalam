@@ -23,6 +23,7 @@
     "consistent-return": "off",
     "import/no-extraneous-dependencies": "off",
     "no-alert": "off",
-    "no-nested-ternary": "off"
+    "no-nested-ternary": "off",
+    "react/jsx-props-no-spreading": "off"
   }
 }

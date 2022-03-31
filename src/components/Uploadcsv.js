@@ -107,10 +107,9 @@ const CsvUpload = (props) => {
     }
   };
 
-  const onFormSubmit = async (e) => {
-    e.preventDefault(); // Stop form submit
-
-    fileUpload(state.file).then((response) => {
+  console.log(state);
+  const onFormSubmit = async (file) => {
+    fileUpload(file).then((response) => {
       try {
         if (response.data.errors == undefined) {
           addAttempts(response.data.fileUrl);
@@ -124,8 +123,9 @@ const CsvUpload = (props) => {
   };
 
   const onChange = async (e) => {
-    await setState({ ...state, file: e.target.files[0], loading: true });
-    await onFormSubmit(e);
+    e.preventDefault();
+    setState({ ...state, file: e.target.files[0], loading: true });
+    await onFormSubmit(e.target.files[0]);
   };
 
   const fileUpload = async (file) => {

@@ -1,17 +1,28 @@
 import React, { useEffect } from "react";
 import MUIDataTable from "mui-datatables";
-import { qualificationKeys } from "../config";
 import { useSnackbar } from "notistack";
 import axios from "axios";
-import Loader from "./Loader";
-import SearchBar from "./SearchBar";
-import { permissions } from "../config";
-import StudentService from "../services/StudentService";
 import { CircularProgress } from "@mui/material";
+import SearchBar from "./SearchBar";
+import StudentService from "../services/StudentService";
+import Loader from "./Loader";
+
+const { permissions, qualificationKeys } = require("../config");
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-const ServerSidePagination = (props) => {
+const ServerSidePagination = ({
+  columns,
+  showLoader,
+  params,
+  dataSetup,
+  filterValues,
+  data,
+  totalData,
+  setNumbersOfRows,
+  sortChange,
+  numberOfRows,
+}) => {
   const snackbar = useSnackbar();
   const [state, setState] = React.useState({
     page: 0,
@@ -20,13 +31,11 @@ const ServerSidePagination = (props) => {
     mainUrl: `${baseURL}students?`,
     query: "",
     value: "",
-    newColumns: props.columns,
+    newColumns: columns,
   });
-  const getKeyByValue = (object, value) => {
-    return Object.keys(object).find((key) => object[key] === value);
-  };
+  const getKeyByValue = (object, value) =>
+    Object.keys(object).find((key) => object[key] === value);
   const getStudents = async (page, rowsPerPage) => {
-    const { params, dataSetup } = props;
     setState((prevState) => ({
       ...prevState,
       isData: true,
@@ -37,15 +46,13 @@ const ServerSidePagination = (props) => {
         ? page
         : `${state.mainUrl}limit=${rowsPerPage}&page=${page}`;
     const response = await axios.get(url, params);
-    const studentData = response.data.data.results.map((student) => {
-      return {
-        ...student,
-        qualification: qualificationKeys[student.qualification],
-        studentOwner: "",
-        campus: student.campus ? student.campus : null,
-        donor: student.studentDonor ? student.studentDonor : null,
-      };
-    });
+    const studentData = response.data.data.results.map((student) => ({
+      ...student,
+      qualification: qualificationKeys[student.qualification],
+      studentOwner: "",
+      campus: student.campus ? student.campus : null,
+      donor: student.studentDonor ? student.studentDonor : null,
+    }));
     setState((prevState) => ({
       ...prevState,
       isData: false,
@@ -62,24 +69,22 @@ const ServerSidePagination = (props) => {
       const newData = prevState.filterColumns.filter(
         (filterColumn) => getKeyByValue(keys, filterColumn.key) !== query
       );
-      let newState = {
+      const newState = {
         filterColumns:
           value === ""
             ? [...newData]
-            : [...newData, { key: keys[query], value: value }],
+            : [...newData, { key: keys[query], value }],
       };
       const { filterColumns } = newState;
-      props.filterValues(filterColumns);
-      let url = filterColumns.reduce((cUrl, filterColumn, index) => {
+      filterValues(filterColumns);
+      const url = filterColumns.reduce((cUrl, filterColumn, index) => {
         if (index > 0) {
-          return (cUrl += `&${filterColumn.key}=${filterColumn.value}`);
-        } else {
-          if (prevState.query) {
-            return (cUrl += `${state.query}=${state.value}&${filterColumn.key}=${filterColumn.value}`);
-          } else {
-            return (cUrl += `${filterColumn.key}=${filterColumn.value}`);
-          }
+          return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
         }
+        if (prevState.query) {
+          return `${cUrl}${state.query}=${state.value}&${filterColumn.key}=${filterColumn.value}`;
+        }
+        return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
       }, `${baseURL}students?`);
       if (filterColumns.length > 0) {
         return {
@@ -87,13 +92,12 @@ const ServerSidePagination = (props) => {
           filterColumns: newState.filterColumns,
           mainUrl: `${url}&`,
         };
-      } else {
-        return {
-          ...prevState,
-          filterColumns: [],
-          mainUrl: `${url}`,
-        };
       }
+      return {
+        ...prevState,
+        filterColumns: [],
+        mainUrl: `${url}`,
+      };
     });
   };
 
@@ -101,12 +105,13 @@ const ServerSidePagination = (props) => {
     await getStudents(page, rowsPerPage);
     setState((prevState) => ({
       ...prevState,
-      page: page,
+      page,
     }));
   };
 
   const getfilterApi = async (query, value) => {
     if (query === "gender" && value !== "All") {
+      // eslint-disable-next-line no-param-reassign
       value = value === "Female" ? 1 : value === "Male" ? 2 : 3;
     }
 
@@ -122,24 +127,22 @@ const ServerSidePagination = (props) => {
     const newData = state.filterColumns.filter(
       (filterColumn) => getKeyByValue(keys, filterColumn.key) !== query
     );
-    let newState = {
+    const newState = {
       filterColumns:
         value === "All"
           ? [...newData]
-          : [...newData, { key: keys[query], value: value }],
+          : [...newData, { key: keys[query], value }],
     };
     const { filterColumns } = newState;
-    props.filterValues(filterColumns);
-    let url = await filterColumns.reduce((cUrl, filterColumn, index) => {
+    filterValues(filterColumns);
+    const url = await filterColumns.reduce((cUrl, filterColumn, index) => {
       if (index > 0) {
-        return (cUrl += `&${filterColumn.key}=${filterColumn.value}`);
-      } else {
-        if (state.query) {
-          return (cUrl += `${state.query}=${state.value}&${filterColumn.key}=${filterColumn.value}`);
-        } else {
-          return (cUrl += `${filterColumn.key}=${filterColumn.value}`);
-        }
+        return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
       }
+      if (state.query) {
+        return `${cUrl}${state.query}=${state.value}&${filterColumn.key}=${filterColumn.value}`;
+      }
+      return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
     }, `${baseURL}students?`);
     if (filterColumns.length > 0) {
       //getStudents(`${url}&limit=${numberOfRows}&page=0`);
@@ -161,7 +164,7 @@ const ServerSidePagination = (props) => {
   useEffect(() => {
     const { mainUrl } = state;
     const fetchData = async () =>
-      await getStudents(`${mainUrl}&limit=${numberOfRows}&page=0`);
+      getStudents(`${mainUrl}&limit=${numberOfRows}&page=0`);
     fetchData();
   }, [state.mainUrl]);
 
@@ -169,19 +172,21 @@ const ServerSidePagination = (props) => {
     await getStudentsDetailBySearch(query, value);
   };
 
+  const CustomSnackSpinner = React.useCallback(
+    () => <CircularProgress size="1.6rem" color="inherit" />,
+    []
+  );
+
   const downloadCSV = async () => {
-    const CustomSnack = () => (
-      <CircularProgress size="1.6rem" color="inherit" />
-    );
     const snackKey = snackbar.enqueueSnackbar("Downloading CSV!", {
       variant: "info",
-      action: CustomSnack,
+      action: CustomSnackSpinner,
       persist: true,
     });
-    const response = await axios.get(state.mainUrl, props.params);
+    const response = await axios.get(state.mainUrl, params);
     const studentData = await response.data.data.results
       .map((student) => {
-        student = StudentService.dConvert({
+        const nStudent = StudentService.dConvert({
           ...student,
           qualification: qualificationKeys[student.qualification],
           studentOwner: "",
@@ -192,8 +197,8 @@ const ServerSidePagination = (props) => {
         state.newColumns.forEach((col, colInx) => {
           if (col.name === "donor") {
             body += `"${
-              student["donor"]
-                ? student["donor"].map((donor) => donor.donor).join(", ")
+              nStudent.donor
+                ? student.donor.map((donor) => donor.donor).join(", ")
                 : ""
             }",`;
           } else if (colInx === state.newColumns.length - 1)
@@ -204,7 +209,7 @@ const ServerSidePagination = (props) => {
             }"`;
           else
             body += `"${
-              !student[col.name] || student[col.name] == undefined
+              !student[col.name] || student[col.name] === undefined
                 ? " "
                 : student[col.name]
             }",`;
@@ -212,17 +217,17 @@ const ServerSidePagination = (props) => {
         return body;
       })
       .join("\n");
-    let csvContent = `${await state.newColumns
+    const csvContent = `${await state.newColumns
       .map((col) => col.label)
       .join(",")}"\n"${studentData}`;
-    let encoded = new Blob([csvContent], { type: "text/csv:encoding=utf-8" });
+    const encoded = new Blob([csvContent], { type: "text/csv:encoding=utf-8" });
     if (navigator.msSaveBlob) navigator.msSaveBlob(encoded, "data.csv");
     else {
-      let link = document.createElement("a");
+      const link = document.createElement("a");
       if (link.download !== undefined) {
         // feature detection
         // Browsers that support HTML5 download attribute
-        let url = URL.createObjectURL(encoded);
+        const url = URL.createObjectURL(encoded);
         link.setAttribute("href", url);
         link.setAttribute("download", "data.csv");
         link.style.visibility = "hidden";
@@ -243,10 +248,8 @@ const ServerSidePagination = (props) => {
   if (permissions.permissionsView.indexOf(user) > -1) {
     localStorage.setItem("permissions", JSON.stringify(permissions));
   }
-
-  const { data, totalData, setNumbersOfRows, sortChange, numberOfRows } = props;
   const options = {
-    selectableRows: false,
+    selectableRows: "none",
     filter: true,
     search: false,
     serverSide: true,
@@ -274,50 +277,56 @@ const ServerSidePagination = (props) => {
       if (columnChanged) {
         const filterValue = filterList[indexObj[columnChanged]];
         return getfilterApi(columnChanged, filterValue);
-      } else {
-        setState((prevState) => ({
-          ...prevState,
-          filterColumns: [],
-          mainUrl: `${`${baseURL}students?`}`,
-        }));
-        const { filterColumns } = state;
-        props.filterValues(filterColumns);
-        return getStudents(0, numberOfRows);
       }
+      setState((prevState) => ({
+        ...prevState,
+        filterColumns: [],
+        mainUrl: `${`${baseURL}students?`}`,
+      }));
+      const { filterColumns } = state;
+      filterValues(filterColumns);
+      return getStudents(0, numberOfRows);
     },
-    responsive: "stacked",
+    responsive: "vertical",
     rowsPerPageOptions: [10, 50, 100],
     count: totalData,
     rowsPerPage: numberOfRows,
-    page: page,
-    onChangeRowsPerPage: (numberOfRows) => {
-      setNumbersOfRows(numberOfRows);
-      getStudents(state.page, numberOfRows);
+    page,
+    onChangeRowsPerPage: (newNumberOfRows) => {
+      setNumbersOfRows(newNumberOfRows);
+      getStudents(state.page, newNumberOfRows);
     },
     onTableChange: (action, tableState) => {
-      const { rowsPerPage, page, columns } = tableState;
+      const {
+        rowsPerPage,
+        page: tablePage,
+        columns: tableColumns,
+      } = tableState;
       let updatedColumns;
       switch (action) {
         case "changePage":
-          changePage(page, rowsPerPage);
+          changePage(tablePage, rowsPerPage);
           break;
         case "columnViewChange":
           updatedColumns = newColumns.map((newColumn, index) => {
+            const nColumn = { ...newColumn };
             if (columns[index].name === newColumn.name) {
-              newColumn.options.display = columns[index].display;
+              nColumn.options.display = tableColumns[index].display;
             }
-            return newColumn;
+            return nColumn;
           });
           setState((prevState) => ({
             ...prevState,
             newColumns: updatedColumns,
           }));
           break;
+        default:
+          break;
       }
     },
     textLabels: {
       body: {
-        noMatch: props.showLoader ? (
+        noMatch: showLoader ? (
           <Loader />
         ) : (
           "Sorry, there is no matching data to display"

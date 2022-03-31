@@ -6,9 +6,7 @@ export default (
 ) => {
   switch (action.type) {
     case "GETDATA":
-      return Object.assign({}, state, {
-        getData: action.data,
-      });
+      return { ...state, getData: action.data };
     default:
       return state;
   }

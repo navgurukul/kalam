@@ -1,9 +1,6 @@
 import React from "react";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@mui/lab/DatePicker";
-import DateFnsUtils from "@date-io/date-fns";
+import { LocalizationProvider, DatePicker } from "@mui/lab";
+import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import EditIcon from "@mui/icons-material/Edit";
 import moment from "moment";
 import Moment from "react-moment";
@@ -49,8 +46,8 @@ const JoinedDate = (props) => {
   const { currentDate, isShowDatePicker } = state;
   if (isShowDatePicker) {
     return (
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
+      <LocalizationProvider utils={DateFnsUtils}>
+        <DatePicker
           margin="dense"
           style={{ marginLeft: 16 }}
           value={currentDate}
@@ -62,7 +59,7 @@ const JoinedDate = (props) => {
             "aria-label": "change date",
           }}
         />
-      </MuiPickersUtilsProvider>
+      </LocalizationProvider>
     );
   }
   return (

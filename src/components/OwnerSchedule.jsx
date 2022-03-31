@@ -1,10 +1,7 @@
-import { Card, Grid, Modal } from "@mui/material";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@mui/lab/DatePicker";
+import { Card, Grid, Modal, TextField } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/lab";
 import React, { useEffect, useState } from "react";
-import DateFnsUtils from "@date-io/date-fns";
+import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import MainLayout from "./MainLayout";
 
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -17,8 +14,10 @@ function OwnerSchedule(props) {
       options: {
         filter: false,
         sort: false,
-        // eslint-disable-next-line react/no-unstable-nested-components
-        customBodyRender: (value) => <p>{value.split("T")[0]}</p>,
+        customBodyRender: React.useCallback(
+          (value) => <p>{value.split("T")[0]}</p>,
+          []
+        ),
       },
     },
     {
@@ -133,9 +132,9 @@ function OwnerSchedule(props) {
         <h1>
           <center>Interview Schedule</center>
         </h1>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <LocalizationProvider dateAdapter={DateFnsUtils}>
           <Grid container justify="space-around">
-            <KeyboardDatePicker
+            <DatePicker
               margin="normal"
               id="date-picker-dialog"
               format="yyyy-MM-dd"
@@ -148,9 +147,10 @@ function OwnerSchedule(props) {
               KeyboardButtonProps={{
                 "aria-label": "change date",
               }}
+              renderInput={(params) => <TextField {...params} />}
             />
           </Grid>
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
         <MainLayout title="Schedule" columns={columns} data={slotData} />
       </Card>
     </Modal>

@@ -1,12 +1,13 @@
 import React from "react";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { CopyToClipboard } from "react-copy-to-clipboard";
+// import { CopyToClipboard } from "react-copy-to-clipboard";
 import Avatar from "@mui/material/Avatar";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import Tooltip from "@mui/material/Tooltip";
 import { makeStyles } from "@mui/styles";
-import { Button } from "@mui/material";
+import { Button, Box, IconButton } from "@mui/material";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 // done
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 const AddMerakiLink = (props) => {
   const { isValue, studentId } = props;
   const classes = useStyles();
-  const snackbar = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const creatMerakiLink = async () => {
     const { updateValue } = props;
     axios({
@@ -36,7 +37,7 @@ const AddMerakiLink = (props) => {
       },
     })
       .then((response) => {
-        snackbar.enqueueSnackbar("Meraki link successfully created", {
+        enqueueSnackbar("Meraki link successfully created", {
           variant: "success",
         });
         //console.log(response, "response");
@@ -46,7 +47,7 @@ const AddMerakiLink = (props) => {
         //console.log(this.props.updateValue, "updateValue");
       })
       .catch(() => {
-        snackbar.enqueueSnackbar(`Something went wrong`, {
+        enqueueSnackbar(`Something went wrong`, {
           variant: "error",
         });
       });
@@ -55,13 +56,18 @@ const AddMerakiLink = (props) => {
   if (isValue)
     return (
       <div className={classes.container}>
-        <Tooltip title="Copy Meraki Link" style={{ background: "#f05f40" }}>
-          <CopyToClipboard text={isValue}>
-            <Avatar alt="Remy Sharp">
-              <FileCopyIcon style={{ cursor: "pointer" }} />
-            </Avatar>
-          </CopyToClipboard>
-        </Tooltip>
+        <CopyToClipboard
+          text={isValue}
+          onCopy={(text, result) => {
+            if (result) enqueueSnackbar("Link Copied!", { variant: "success" });
+          }}
+        >
+          <Tooltip title="Copy Meraki Link" style={{ background: "#f05f40" }}>
+            <IconButton>
+              <FileCopyIcon sx={{ color: "white" }} />
+            </IconButton>
+          </Tooltip>
+        </CopyToClipboard>
 
         <a
           className={classes.link}

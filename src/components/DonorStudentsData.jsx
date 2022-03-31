@@ -1,11 +1,12 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import StudentService from "../services/StudentService";
-import { donor } from "../config";
 import DashboardPage from "./Dashboard";
 import SelectUiByButtons from "./SelectUiByButtons";
 import StudentsProgressCards from "./StudentsProgressCards";
 import GraphingPresentationJob from "./GraphingPresentationJob";
+
+const { donor } = require("../config");
 
 const DonorStudentsData = () => {
   const { donorId } = useParams();

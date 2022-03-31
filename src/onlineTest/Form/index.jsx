@@ -24,10 +24,10 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useForm, Controller } from "react-hook-form";
 import moment from "moment";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import KuchAurDetails from "../KuchAurDetails";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -472,6 +472,7 @@ function Form(props) {
   const classes = useStyles();
   const theme = useTheme();
   const rLocation = useLocation();
+  const navigate = useNavigate();
   const { firstName, middleName, lastName, mobileNumber } = rLocation.state
     ? rLocation.state
     : { firstName: null, middleName: null, lastName: null, mobileNumber: null };
@@ -689,7 +690,7 @@ function Form(props) {
     if (prevData.alt_mobile) data.alt_mobile = prevData.alt_mobile;
 
     if (alreadyAUser) {
-      history.push(
+      navigate(
         `/EkAurBaat/${location.pathname.split("/")[2]}/${
           location.pathname.split("/")[3]
         }`
@@ -701,7 +702,7 @@ function Form(props) {
           data
         )
         .then((res) => {
-          history.push(
+          navigate(
             `/EkAurBaat/${location.pathname.split("/")[2]}/${
               res.data.details.id
             }`

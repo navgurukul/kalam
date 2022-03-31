@@ -34,7 +34,7 @@ const PieRechartReport = (props) => {
 
     const { studentNames } = graphData.find(
       (element) => element.name === pointInfo.argument
-    ).studentNames;
+    );
 
     return {
       text: studentNames.sort().map((studentName, index) => {

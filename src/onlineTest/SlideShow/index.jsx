@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makeStyles, useTheme } from "@mui/material/styles";
+import { makeStyles, useTheme } from "@mui/styles";
 import {
   MobileStepper,
   Paper,
@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-// import history from "../../utils/history";
 import Form from "../Form/index";
 
 const tutorialSteps = [
@@ -112,7 +111,7 @@ function SlideShow(props) {
   // const enrolmentKey = localStorage.getItem("enrolmentKey");
 
   // const goToForm = () => {
-  //   history.push({
+  //   navigate({
   //     pathname: "/studentDetails",
   //     // enrolment_key: enrolmentKey,
   //   });

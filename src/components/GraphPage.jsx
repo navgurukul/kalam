@@ -13,9 +13,10 @@ import axios from "axios";
 import Container from "@mui/material/Container";
 import { Box } from "@mui/material";
 import Loader from "./Loader";
-import { allStages } from "../config/index";
 
 const baseUrl = import.meta.env.VITE_API_URL;
+
+const { allStages } = require("../config");
 
 const GraphPage = () => {
   const [state, setState] = React.useState({

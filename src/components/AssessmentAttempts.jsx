@@ -1,12 +1,9 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 
-const AssessmentAttempts = (props) => {
-  const { assessmentId, partnerId } = props;
-  return (
-    <>
-      Hi {partnerId} {assessmentId}
-    </>
-  );
+const AssessmentAttempts = () => {
+  const { assessmentId } = useParams();
+  return <>Hi {assessmentId}</>;
 };
 
 export default AssessmentAttempts;

@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import React, { memo, useEffect } from "react";
+import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import MUIDataTable from "mui-datatables";
@@ -7,11 +7,12 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { allStages } from "../config";
 import { changeFetching } from "../store/actions/auth";
 import SlotBooking from "./SlotBooking";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
+
+const { allStages } = require("../config");
 
 // const useStyles = makeStyles((theme) => ({
 //   paper: {
@@ -51,23 +52,26 @@ const DuplicateStudents = () => {
       label: "Re-Test",
       options: {
         filter: false,
-        customBodyRender: memo((value, rowData) => (
-          <Button
-            disabled={rowData.rowData[1] === "pendingEnglishInterview"}
-            variant="contained"
-            color="primary"
-            style={{ fontSize: "10px" }}
-            onClick={async () => {
-              const response = await generateTestLink(value);
-              navigate({
-                pathname: `/test/${response.data.key}/${value}`,
-              });
-              fetchingFinish();
-            }}
-          >
-            Re-Test
-          </Button>
-        )),
+        customBodyRender: React.useCallback(
+          (value, rowData) => (
+            <Button
+              disabled={rowData.rowData[1] === "pendingEnglishInterview"}
+              variant="contained"
+              color="primary"
+              style={{ fontSize: "10px" }}
+              onClick={async () => {
+                const response = await generateTestLink(value);
+                navigate({
+                  pathname: `/test/${response.data.key}/${value}`,
+                });
+                fetchingFinish();
+              }}
+            >
+              Re-Test
+            </Button>
+          ),
+          []
+        ),
       },
     },
     {
@@ -83,21 +87,24 @@ const DuplicateStudents = () => {
       label: "Book Slot",
       options: {
         filter: false,
-        customBodyRender: memo((_, rowData) => (
-          <Button
-            disabled={rowData.rowData[1] !== "pendingEnglishInterview"}
-            variant="contained"
-            color="primary"
-            style={{ fontSize: "10px" }}
-            onClick={() => {
-              navigate({
-                pathname: `/bookSlot/${rowData.rowData[0]}`,
-              });
-            }}
-          >
-            Book Slot
-          </Button>
-        )),
+        customBodyRender: React.useCallback(
+          (_, rowData) => (
+            <Button
+              disabled={rowData.rowData[1] !== "pendingEnglishInterview"}
+              variant="contained"
+              color="primary"
+              style={{ fontSize: "10px" }}
+              onClick={() => {
+                navigate({
+                  pathname: `/bookSlot/${rowData.rowData[0]}`,
+                });
+              }}
+            >
+              Book Slot
+            </Button>
+          ),
+          []
+        ),
       },
     },
     {
@@ -263,7 +270,7 @@ const DuplicateStudents = () => {
             rowsPerPageOptions: [20, 40, 60],
             toolbar: false,
             filter: false,
-            responsive: "stacked",
+            responsive: "vertical",
           }}
         />
       </div>

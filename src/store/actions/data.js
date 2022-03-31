@@ -1,7 +1,4 @@
-export const getData = (data) => {
-  return {
-    type: "GETDATA",
-    data,
-  };
-};
-
+export const getData = (data) => ({
+  type: "GETDATA",
+  data,
+});

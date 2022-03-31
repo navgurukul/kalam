@@ -4,7 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import MainLayout from "./MainLayout";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const columns = [
   {
@@ -27,7 +27,7 @@ const columns = [
       sort: true,
       customBodyRender: (value, rowMeta) => {
         const id = rowMeta.rowData[0];
-        const url = `donor/${id}/students`;
+        const url = `/donor/${id}/students`;
         return (
           <Link to={url} style={{ color: "#f05f40" }}>
             {value}

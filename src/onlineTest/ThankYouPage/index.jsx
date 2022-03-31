@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 import { Typography, Button, Link, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 

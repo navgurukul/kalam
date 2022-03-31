@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
-import React, { memo, useEffect } from "react";
-import { MuiThemeProvider } from "@mui/material/styles";
+import React, { useEffect } from "react";
+import { ThemeProvider } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -9,10 +9,10 @@ import { Box, DialogTitle, DialogActions, Dialog, Button } from "@mui/material";
 import theme from "../theme";
 import MainLayout from "./MainLayout";
 import AddOwner from "./AddOwner";
-import { permissions } from "../config";
 // import AddOwnerSchedule from "./AddOwnerSchedule";
 
 const baseUrl = import.meta.env.VITE_API_URL;
+const { permissions } = require("../config");
 
 const useStyles = makeStyles(() => ({
   innerTable: {
@@ -53,7 +53,7 @@ const OwnerList = () => {
       options: {
         filter: true,
         sort: false,
-        customBodyRender: memo((value, rowMeta) => {
+        customBodyRender: React.useCallback((value, rowMeta) => {
           const user = window.localStorage.user
             ? JSON.parse(window.localStorage.user).email
             : null;
@@ -86,7 +86,7 @@ const OwnerList = () => {
               )}
             </div>
           );
-        }),
+        }, []),
       },
     },
     {
@@ -140,6 +140,7 @@ const OwnerList = () => {
             if (stagesColor[v]) {
               return (
                 <p
+                  key={v}
                   style={{
                     backgroundColor: stagesColor[v],
                     textAlign: "center",
@@ -304,7 +305,7 @@ const OwnerList = () => {
   const { showModal, ownerId, data, showLoader } = state;
   return (
     <Box mt={2}>
-      <MuiThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
         <div className={classes.innerTable}>
           <AddOwner getUpdatedData={getUpdatedData} ownerData={data} />
           <MainLayout
@@ -334,7 +335,7 @@ const OwnerList = () => {
             </DialogActions>
           </Dialog>
         </div>
-      </MuiThemeProvider>
+      </ThemeProvider>
     </Box>
   );
 };

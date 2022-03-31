@@ -23,7 +23,7 @@ import OutreachData from "./OutreachData";
 const { campusStageOfLearning } = require("../config");
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const getModalStyle = () => {
   const top = 50; // + rand()
@@ -229,7 +229,6 @@ const StageTransitions = (props) => {
                   contacts={state.contacts}
                   closeTransition={handleClose}
                 />
-
                 {campusPath === "campus" ? (
                   <OutreachData onChange={handleChange} />
                 ) : null}
@@ -269,8 +268,8 @@ const StageTransitions = (props) => {
               toolbar: false,
               filtering: true,
               filter: true,
-              filterType: "doprdown",
-              responsive: "stacked",
+              filterType: "dropdown",
+              responsive: "vertical",
             }}
           />
         </ThemeProvider>

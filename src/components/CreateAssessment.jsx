@@ -10,11 +10,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  IconButton,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import Spinner from "react-spinner-material";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 export const CreateAssessment = (props) => {
   const snackbar = useSnackbar();
@@ -25,24 +26,23 @@ export const CreateAssessment = (props) => {
   });
   const createAssessment = async () => {
     const { partnerId } = props;
-    try {
-      const dataURL = `${baseUrl}partners/${partnerId}/assessments`;
-      await axios
-        .post(dataURL, {
-          name: state.inputValue,
-        })
-        .then(() => {
-          setState({
-            ...state,
-            loading: false,
-          });
-          snackbar.enqueueSnackbar("Assessment successfully created!", {
-            variant: "success",
-          });
+    const dataURL = `${baseUrl}partners/${partnerId}/assessments`;
+    await axios
+      .post(dataURL, {
+        name: state.inputValue,
+      })
+      .then(() => {
+        setState({
+          ...state,
+          loading: false,
         });
-    } catch (e) {
-      snackbar.enqueueSnackbar(e, { variant: "error" });
-    }
+        snackbar.enqueueSnackbar("Assessment successfully created!", {
+          variant: "success",
+        });
+      })
+      .catch((e) => {
+        snackbar.enqueueSnackbar(e, { variant: "error" });
+      });
   };
   const handleClose = () => {
     setState({
@@ -52,8 +52,8 @@ export const CreateAssessment = (props) => {
   };
 
   const createAssessment2 = async () => {
-    await handleClose();
-    await setState((prevState) => ({
+    handleClose();
+    setState((prevState) => ({
       ...prevState,
       loading: true,
     }));
@@ -76,14 +76,13 @@ export const CreateAssessment = (props) => {
   const { loading } = state;
   return (
     <>
-      <Box onClick={handleOpen}>
-        <AddBox />
-        <Spinner
-          size={35}
-          spinnerColor="#ed343d"
-          spinnerWidth={5}
-          visible={loading}
-        />
+      <Box>
+        {loading ? null : (
+          <IconButton onClick={handleOpen}>
+            <AddBox />
+          </IconButton>
+        )}
+        <Spinner size={35} color="#ed343d" width={5} visible={loading} />
       </Box>
       <Dialog open={state.dialogOpen} onClose={handleClose}>
         <DialogTitle id="form-dialog-title">Create New Assessment</DialogTitle>

@@ -6,7 +6,7 @@ import MainLayout from "./MainLayout";
 import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const columns = [
   {

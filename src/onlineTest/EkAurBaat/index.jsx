@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import axios from "axios";
 import { Paper, Typography, Button, Container } from "@mui/material";
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
+import { useNavigate } from "react-router-dom";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 function EkAurBaat() {
   //console.log("Props in ek aur baat", props.location.enrolment_key);
   const classes = useStyles();
+  const navigate = useNavigate();
 
   // //1. Where we'll get time 00:00:00
   const time = useRef(new Date().setSeconds(new Date().getSeconds() + 5400));
@@ -86,7 +88,7 @@ function EkAurBaat() {
         //console.log("response", res.data.data);
         localStorage.setItem("questionsList", JSON.stringify(res.data.data));
         // localStorage.setItem("questionsList", res.data.data);
-        history.push({
+        navigate({
           pathname: `/questions/${enrolmentKey}/${
             location.pathname.split("/")[3]
           }`,
@@ -142,9 +144,8 @@ export default EkAurBaat;
 // import Button from "@material-ui/core/Button";
 // import Container from "@material-ui/core/Container";
 // import { makeStyles, useTheme } from "@material-ui/core/styles";
-// import history from "../../utils/history";
 
-// const baseUrl = process.env.API_URL;
+// const baseUrl = import.meta.env.VITE_API_URL;
 
 // const tutorialSteps = {
 //   heading: "Ek aur baat:",
@@ -198,7 +199,7 @@ export default EkAurBaat;
 //   let correctAnswerObj = {};
 
 //   const fetchQuestionsAndOptions = () => {
-//     history.push({
+//     navigate({
 //       pathname: "/questions",
 //       time: parseInt(TIME), // 2nd point
 //       // time: time.current,
@@ -209,7 +210,7 @@ export default EkAurBaat;
 //     //   .post(`${baseUrl}on_assessment/questions/${props.location.enrolment_key}`)
 //     //   .then((res) => {
 //     //     console.log("response", res.data.data);
-//     //     history.push({
+//     //     navigate({
 //     //       pathname: "/questions",
 //     //       questions: res.data.data,
 //     //       time: time.current, // 2nd point

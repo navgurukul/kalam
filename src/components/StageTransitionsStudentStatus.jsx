@@ -2,8 +2,9 @@ import "date-fns";
 import React, { memo } from "react";
 import { Modal, Button, Typography, Box } from "@mui/material";
 import MUIDataTable from "mui-datatables";
-import Moment from "react-moment";
-import { createTheme, ThemeProvider, makeStyles } from "@mui/material/styles";
+// import Moment from "react-moment";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 
 import DetailsIcon from "@mui/icons-material/Details";
 import theme from "../theme";
@@ -68,9 +69,10 @@ const StageTransitionsStudentStatus = (props) => {
       name: "created_at",
       options: {
         customBodyRender: memo((value) => (
-          <Moment format="D MMM YYYY" withTitle>
-            {value}
-          </Moment>
+          // <Moment format="D MMM YYYY" withTitle>
+          //   {value}
+          // </Moment>
+          <div></div>
         )),
       },
     },

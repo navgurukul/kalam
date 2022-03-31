@@ -1,6 +1,13 @@
 import React, { useEffect } from "react";
 import { makeStyles } from "@mui/styles";
-import { Grid, Typography, Card, CardContent, Tooltip } from "@mui/material";
+import {
+  Grid,
+  Typography,
+  Card,
+  CardContent,
+  Tooltip,
+  IconButton,
+} from "@mui/material";
 import { useSnackbar } from "notistack";
 import axios from "axios";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -14,9 +21,10 @@ import onLeave from "../assets/img/onLeave.jpg";
 import Payitforward from "../assets/img/Payitforward.jpg";
 import Python from "../assets/img/Python.png";
 import ReactJS from "../assets/img/ReactJs.png";
-import { allStages } from "../config";
 import CollapseStudentData from "./collapseData";
 import Loader from "./Loader";
+
+const { allStages } = require("../config");
 
 const baseURL = import.meta.env.VITE_API_URL;
 const useStyles = makeStyles(() => ({
@@ -40,7 +48,7 @@ const StudentsProgressCards = (props) => {
   const classes = useStyles();
   const snackbar = useSnackbar();
   const [state, setState] = React.useState({
-    data: null,
+    data: {},
     Python: "",
     JS: "",
     "Node JS": "",
@@ -118,20 +126,20 @@ const StudentsProgressCards = (props) => {
   }, []);
 
   const copyClipBoard = (key) => (
-    <Tooltip title="Copy Details">
-      <CopyToClipboard
-        text={key}
-        onCopy={() => {
-          snackbar.enqueueSnackbar("Message copied!", {
-            variant: "success",
-          });
-        }}
-      >
-        <FileCopyIcon
-          style={{ cursor: "pointer", color: "#f05f40", fontSize: "30px" }}
-        />
-      </CopyToClipboard>
-    </Tooltip>
+    <CopyToClipboard
+      text={key}
+      onCopy={() => {
+        snackbar.enqueueSnackbar("Message copied!", {
+          variant: "success",
+        });
+      }}
+    >
+      <Tooltip title="Copy Details">
+        <IconButton>
+          <FileCopyIcon style={{ color: "#f05f40", fontSize: "30px" }} />
+        </IconButton>
+      </Tooltip>
+    </CopyToClipboard>
   );
   const { data } = state;
   return (
@@ -165,7 +173,7 @@ const StudentsProgressCards = (props) => {
                   </center>
                 </div>
                 {Object.entries(detailsData).map(([stage, studentDetails]) => (
-                  <div key={stage}>
+                  <div key={`${key}${stage}`}>
                     <div>
                       <CollapseStudentData
                         classes={classes}

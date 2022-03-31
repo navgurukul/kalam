@@ -4,15 +4,15 @@ import { createSlice } from "@reduxjs/toolkit";
 const DataSlice = createSlice({
   name: "data",
   initialState: {
-    getData: [],
+    studentData: [],
   },
   reducers: {
     // creating reducers
-    getData: (state, action) => {
-      state.getData = action.payload;
+    setStudentData: (state, action) => {
+      state.studentData = action.payload;
     },
   },
 });
 
-export const { getData } = DataSlice.actions; // actions auto generated from above reducers
+export const { setStudentData } = DataSlice.actions; // actions auto generated from above reducers
 export default DataSlice.reducer; // exporting the reducer

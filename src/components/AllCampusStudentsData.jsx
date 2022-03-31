@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { changeFetching, setupUsers } from "../store/actions/auth";
+import { changeFetching, setupUsers } from "../store/slices/authSlice";
 import StudentService from "../services/StudentService";
 import DashboardPage from "./Dashboard";
 import SelectUiByButtons from "./SelectUiByButtons";
@@ -12,7 +12,7 @@ import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
 
 //baseUrl
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const CampusStudentsData = () => {
   const dispatch = useDispatch();

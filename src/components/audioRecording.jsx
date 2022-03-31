@@ -1,7 +1,7 @@
 import { createTheme } from "@mui/material";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 
-import { AudioPlayer } from "material-ui-audio-player";
+// import { AudioPlayer } from "material-ui-audio-player";
 import React, { Fragment } from "react";
 
 const muiTheme = createTheme({});
@@ -57,7 +57,7 @@ export default (props) => {
   return (
     <>
       <ThemeProvider theme={muiTheme}>
-        <AudioPlayer width="400px" useStyles={useStyles} src={audioUrl} loop />
+        {/* <AudioPlayer width="400px" useStyles={useStyles} src={audioUrl} loop /> */}
       </ThemeProvider>
       ;
     </>

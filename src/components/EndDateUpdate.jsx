@@ -1,13 +1,11 @@
 import React from "react";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@mui/lab/DatePicker";
-import DateFnsUtils from "@date-io/date-fns";
+import { DatePicker, LocalizationProvider } from "@mui/lab";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import Axios from "axios";
 import { useSnackbar } from "notistack";
+import { TextField } from "@mui/material";
 
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 function EndDateUpdate(props) {
   const { value: pValue } = props;
   const [value, setValue] = React.useState(pValue);
@@ -16,8 +14,8 @@ function EndDateUpdate(props) {
   const snackBar = useSnackbar();
   if (value) {
     return (
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <DatePicker
           margin="dense"
           style={{ marginLeft: 16 }}
           value={dateToSend}
@@ -42,8 +40,9 @@ function EndDateUpdate(props) {
           KeyboardButtonProps={{
             "aria-label": "change date",
           }}
+          renderInput={(params) => <TextField {...params} />}
         />
-      </MuiPickersUtilsProvider>
+      </LocalizationProvider>
     );
   }
   if (rowData.rowData[4]) {

@@ -9,7 +9,7 @@ import {
   Container,
   Grid,
 } from "@mui/material";
-import { makeStyles } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 import Timer from "./Timer";
 import ThankYouPage from "../ThankYouPage";
 import SorryPage from "../SorryPage";

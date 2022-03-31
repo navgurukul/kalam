@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useSnackbar } from "notistack";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import { makeStyles, ThemeProvider } from "@mui/styles";
 import { changeFetching } from "../store/actions/auth";
@@ -90,10 +90,11 @@ const useStyles = makeStyles(() => ({
 //   };
 // };
 
-const LandingPage = (props) => {
+const LandingPage = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const [state, setState] = React.useState({
@@ -206,7 +207,6 @@ const LandingPage = (props) => {
 
   const isDuplicate = () => {
     const { mobileNumber, firstName, middleName, lastName } = state;
-    const { history } = props;
     const first_name = firstName.replace(
       firstName[0],
       firstName[0].toUpperCase()
@@ -225,7 +225,7 @@ const LandingPage = (props) => {
       .then(async (data) => {
         const response = data.data.data;
         if (response.alreadyGivenTest) {
-          history.push({
+          navigate({
             pathname: `/check_duplicate/Name=${first_name}${middle_name}${last_name}&Number=${mobileNumber}&Stage=${response.pendingInterviewStage}`,
             state: {
               state,
@@ -250,7 +250,7 @@ const LandingPage = (props) => {
           //   .filter((item) => item)
           //   .join("&");
           // const url = `${testUrl}${response.data.key}?${queryString}`;
-          history.push({
+          navigate({
             pathname: `/test/${response.data.key}`,
             state: {
               firstName,

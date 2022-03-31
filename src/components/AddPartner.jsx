@@ -19,7 +19,7 @@ import {
 import { useSnackbar } from "notistack";
 
 import { useNavigate } from "react-router-dom";
-import { changeFetching } from "../store/actions/auth";
+import { changeFetching } from "../store/slices/authSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const useStyles = makeStyles((theme) => ({
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 const AddPartnerPage = (props) => {
   const classes = useStyles();
-  const history = useNavigate();
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
@@ -63,7 +63,7 @@ const AddPartnerPage = (props) => {
     states: "",
     state: "",
     partnerEmail: "",
-    partner_user: [""],
+    partner_user: { email: "" },
     districts: [""],
   });
 
@@ -129,7 +129,7 @@ const AddPartnerPage = (props) => {
           variant: "success",
         });
         fetchingFinish();
-        history.push("/partners");
+        navigate("/partners");
       }
     } catch (e) {
       //console.log(e);
@@ -173,7 +173,7 @@ const AddPartnerPage = (props) => {
             variant: "success",
           });
           fetchingFinish();
-          history.push("/partners");
+          navigate("/partners");
         }
       })
       .catch((error) => {

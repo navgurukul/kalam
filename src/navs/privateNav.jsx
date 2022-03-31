@@ -97,9 +97,10 @@ export default () => {
       navItem && (
         <NavLink
           to={navItem.url}
-          className="NavLinkItem"
+          className={({ isActive }) =>
+            isActive ? "NavLinkItem-selected" : "NavLinkItem"
+          }
           key={navItem.url}
-          activeClassName="NavLinkItem-selected"
         >
           {" "}
           <List component="nav">

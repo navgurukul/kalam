@@ -13,7 +13,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Image from "@jy95/material-ui-image";
 import logo from "../assets/img/logo.png";
 
@@ -29,7 +29,7 @@ const Header = (props) => {
   const { onChange, value } = props;
   const dispatch = useDispatch();
   const startLogout = () => dispatch(logout());
-  const { location } = useNavigate();
+  const location = useLocation();
   const [state, setState] = React.useState({
     check: "",
     value: 1,
@@ -86,15 +86,11 @@ const Header = (props) => {
         <div tabIndex={0} role="button">
           <div className="sidelistwrapper">
             {!isAuthenticated && (
-              <fragment>
+              <>
                 <PublicNavList /> <ExpandNavList />
-              </fragment>
+              </>
             )}
-            {isAuthenticated && (
-              <fragment>
-                <PrivateNavList />
-              </fragment>
-            )}
+            {isAuthenticated && <PrivateNavList />}
           </div>
         </div>
       </Drawer>
@@ -132,7 +128,7 @@ const Header = (props) => {
                     </InputLabel>
                     <Select
                       onChange={onChange}
-                      defaultValue="Select Language"
+                      defaultValue=""
                       value={value}
                       inputProps={{
                         id: "filled-age-native-simple",

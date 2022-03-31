@@ -1,18 +1,8 @@
 import React, { useState } from "react";
-import Moment from "react-moment";
+// import Moment from "react-moment";
 import { DatePicker, LocalizationProvider } from "@mui/lab";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import Axios from "axios";
-import {
-  allStages,
-  feedbackableStages,
-  feedbackableStagesData,
-  permissions,
-  donor,
-  campus,
-  campusStageOfLearning,
-  caste,
-} from "../config";
 import StageSelect from "../components/StageSelect";
 import UpdateEmail from "../components/UpdateEmail";
 import OwnerSelect from "../components/OwnerSelect";
@@ -27,7 +17,7 @@ import TagsForOnlineClass from "../components/TagsForOnlineClass";
 
 import UpdateCampus from "../components/UpdateCampus";
 import UpdateDonor from "../components/UpdateDonor";
-import JoinedDate from "../components/JoinedDate";
+// import JoinedDate from "../components/JoinedDate";
 import DeleteRow from "../components/DeleteRow";
 import UpdateStudentName from "../components/UpdateStudentName";
 import SelectReact from "../components/SelectReact";
@@ -38,6 +28,18 @@ import EvaluationSelect from "../components/EvaluationSelect";
 import UpdatePartner from "../components/UpdatePartner";
 import DeadLineDateUpdate from "../components/DeadlineDateUpdate";
 import EndDateUpdate from "../components/EndDateUpdate";
+
+const {
+  allStages,
+  feedbackableStages,
+  feedbackableStagesData,
+  permissions,
+  donor,
+  campus,
+  campusStageOfLearning,
+  caste,
+} = require("../config");
+
 const _ = require("underscore");
 const baseURL = import.meta.env.VITE_API_URL;
 const keysCampusStageOfLearning = Object.keys(campusStageOfLearning);
@@ -123,21 +125,24 @@ const addedAtColumn = {
 
       if (typeof rowMeta.rowData[0] === "number") {
         return (
-          <Moment format="D MMM YYYY" withTitle>
-            {value}
-          </Moment>
+          // <Moment format="D MMM YYYY" withTitle>
+          //   {value}
+          // </Moment>
+          <div></div>
         );
       } else if (
         permissions.updateStage.indexOf(user) > -1 &&
         (rowMeta.rowData[0].indexOf("Joined") > -1 ||
           keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
       ) {
-        return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
+        // return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
+        return <div></div>;
       }
       return (
-        <Moment format="D MMM YYYY" withTitle>
-          {value}
-        </Moment>
+        // <Moment format="D MMM YYYY" withTitle>
+        //   {value}
+        // </Moment>
+        <div></div>
       );
     },
   },
@@ -292,6 +297,7 @@ const AudioPlayer = {
       const ifExistingFeedback =
         rowMeta.rowData[2] ||
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+      // console.log(value);
       return (
         <div>
           {ifExistingFeedback && value ? (
@@ -332,15 +338,16 @@ const deadlineColumnTrnasition1 = {
       const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
       const ifExistingDeadlineDate =
         rowData && !rowMeta.rowData[7] && feedbackableStage;
-      console.log(rowData);
+      // console.log(rowData)
       if (ifExistingDeadlineDate) {
-        const deadline = feedbackableStagesData[rowMeta.rowData[0]].deadline;
+        const { deadline } = feedbackableStagesData[rowMeta.rowData[0]];
         const diff = new Date().getTime() - new Date(rowData).getTime();
         const hours = Math.floor(diff / 1000 / 60 / 60);
         const remainingTime = deadline - hours;
         if (remainingTime < 0) {
-          return "Your deadline is fineshed please do this work ASAP.";
-        } else if (!rowMeta.rowData[2]) {
+          return "Your deadline is finished please do this work ASAP.";
+        }
+        if (!rowMeta.rowData[2]) {
           return (
             <p>
               {" "}
@@ -373,9 +380,10 @@ const finishedColumnTransition = {
     customBodyRender: (rowData) => {
       const ifExistingFinishedDate = rowData;
       return ifExistingFinishedDate ? (
-        <Moment format="D MMM YYYY" withTitle>
-          {rowData}
-        </Moment>
+        // <Moment format="D MMM YYYY" withTitle>
+        //   {rowData}
+        // </Moment>
+        <div></div>
       ) : null;
     },
   },
@@ -537,7 +545,7 @@ const genderColumn = {
     filter: true,
     sort: true,
     display: false,
-    filterOptions: ["Male", "Female"],
+    filterOptions: { names: ["Male", "Female"] },
   },
 };
 
@@ -596,7 +604,7 @@ const campusColumn = {
     filter: true,
     sort: true,
     display: false,
-    filterOptions: campus.map((campus) => campus.name),
+    filterOptions: { names: campus.map((camp) => camp.name) },
     customBodyRender: (value, rowMeta, updateValue) => {
       if (permissions.updateStage.indexOf(user) > -1) {
         return (
@@ -671,7 +679,7 @@ const donorColumn = {
     filter: true,
     sort: true,
     display: false,
-    filterOptions: donor.map((donor) => donor.name),
+    filterOptions: { names: donor.map((donor) => donor.name) },
     customBodyRender: (value, rowMeta, updateValue) => {
       if (permissions.updateStage.indexOf(user) > -1) {
         return (
@@ -787,21 +795,24 @@ const addedAtColumnCampus = {
 
       if (typeof rowMeta.rowData[0] === "number") {
         return (
-          <Moment format="D MMM YYYY" withTitle>
-            {value}
-          </Moment>
+          // <Moment format="D MMM YYYY" withTitle>
+          //   {value}
+          // </Moment>
+          <div></div>
         );
       } else if (
         permissions.updateStage.indexOf(user) > -1 &&
         (rowMeta.rowData[0].indexOf("Joined") > -1 ||
           keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
       ) {
-        return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
+        // return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
+        return <div></div>;
       }
       return (
-        <Moment format="D MMM YYYY" withTitle>
-          {value}
-        </Moment>
+        // <Moment format="D MMM YYYY" withTitle>
+        //   {value}
+        // </Moment>
+        <div></div>
       );
     },
   },
@@ -815,9 +826,10 @@ const lastUpdatedColumn = {
     sort: true,
     customBodyRender: (value) => {
       return value ? (
-        <Moment format="D MMM YYYY" withTitle>
-          {value}
-        </Moment>
+        // <Moment format="D MMM YYYY" withTitle>
+        //   {value}
+        // </Moment>
+        <div></div>
       ) : null;
     },
   },
@@ -832,9 +844,10 @@ const JobKabLagegiColumn = {
     customBodyRender: (value) => {
       if (value) {
         return (
-          <Moment format="D MMM YYYY" withTitle>
-            {value}
-          </Moment>
+          // <Moment format="D MMM YYYY" withTitle>
+          //   {value}
+          // </Moment>
+          <div></div>
         );
       }
       return value;
@@ -1013,12 +1026,14 @@ const statusColumn = {
     filter: true,
     sort: true,
     display: true,
-    filterOptions: [
-      "needBased",
-      "tutionGroup",
-      "perfectFit",
-      ...feedbackableStagesData.pendingEnglishInterview.status,
-    ].sort(),
+    filterOptions: {
+      names: [
+        "needBased",
+        "tutionGroup",
+        "perfectFit",
+        ...feedbackableStagesData.pendingEnglishInterview.status,
+      ].sort(),
+    },
     customBodyRender: (state) => {
       if (state) {
         return (state.charAt(0).toUpperCase() + state.slice(1))
@@ -1156,7 +1171,7 @@ const ownerColumnMyreport = {
   name: "studentOwner",
   options: {
     filter: true,
-    filterOptions: JSON.parse(localStorage.getItem("owners")),
+    filterOptions: { names: JSON.parse(localStorage.getItem("owners")) },
   },
 };
 
@@ -1167,9 +1182,10 @@ const assignDateColumnMyreport = {
     filter: false,
     customBodyRender: (rowData) => {
       return (
-        <Moment format="D MMM YYYY" withTitle>
-          {rowData}
-        </Moment>
+        // <Moment format="D MMM YYYY" withTitle>
+        //   {rowData}
+        // </Moment>
+        <div></div>
       );
     },
   },
@@ -1275,9 +1291,10 @@ const joinedDate = {
     customBodyRender: (value) => {
       if (value) {
         return (
-          <Moment format="D MMM YYYY" withTitle>
-            {value}
-          </Moment>
+          // <Moment format="D MMM YYYY" withTitle>
+          //   {value}
+          // </Moment>
+          <div></div>
         );
       }
       return value;
@@ -1402,7 +1419,7 @@ const partnerNameColumn = {
   name: "partner.name",
   options: {
     filter: true,
-    filterOptions: JSON.parse(localStorage.getItem("partners")),
+    filterOptions: { names: JSON.parse(localStorage.getItem("partners")) },
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
       const user = window.localStorage.user

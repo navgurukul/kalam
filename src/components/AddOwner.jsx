@@ -17,7 +17,7 @@ import { useSnackbar } from "notistack";
 
 import OwnerSchedule from "./OwnerSchedule";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const stageOptions = [
   {
@@ -80,8 +80,8 @@ const AddOwner = (props) => {
   //   this.getUsers();
   // }
 
-  const getUsers = () => {
-    axios.get(`${baseUrl}users/getall`).then((response) => {
+  const getUsers = (signal) => {
+    axios.get(`${baseUrl}users/getall`, { signal }).then((response) => {
       setState({
         ...state,
         data: response.data.data,
@@ -90,7 +90,9 @@ const AddOwner = (props) => {
   };
 
   useEffect(() => {
-    getUsers();
+    const controller = new AbortController();
+    getUsers(controller.signal);
+    return () => controller.abort();
   }, []);
 
   const createOwner = () => {

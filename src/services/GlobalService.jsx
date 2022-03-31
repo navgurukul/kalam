@@ -19,6 +19,9 @@ import Search from "@mui/icons-material/Search";
 import ViewColumn from "@mui/icons-material/ViewColumn";
 import { createMachine } from "xstate";
 
+// import { createRequire } from "module";
+// const require = createRequire(import.meta.url);
+// import * as config from "../config/index";
 const { allStages } = require("../config");
 
 const GlobalService = {

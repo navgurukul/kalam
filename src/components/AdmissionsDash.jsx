@@ -1,27 +1,26 @@
 import "date-fns";
 import React, { useEffect } from "react";
-// import { allStages} from '../config';
 import { useDispatch, useSelector } from "react-redux";
-import DateFnsUtils from "@date-io/date-fns";
+import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import { makeStyles, ThemeProvider } from "@mui/styles";
 import Select from "react-select";
+import { useParams } from "react-router-dom";
 
 import axios from "axios";
 import Box from "@mui/material/Box";
 import makeAnimated from "react-select/animated";
-import { Container, Typography } from "@mui/material";
+import { Container, TextField, Typography } from "@mui/material";
 import _ from "lodash";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@mui/lab/DatePicker";
-import { changeFetching, setupUsers } from "../store/actions/auth";
+import { LocalizationProvider, DatePicker } from "@mui/lab";
+import { changeFetching, setupUsers } from "../store/slices/authSlice";
 import StudentService from "../services/StudentService";
-import { qualificationKeys, allStages } from "../config";
 import ServerSidePagination from "./ServerSidePagination";
+import theme from "../theme";
 import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
 import Loader from "./Loader";
+
+const { qualificationKeys, allStages } = require("../config");
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -49,6 +48,7 @@ const AdmissionsDash = (props) => {
   const classes = useStyles();
   const { loggedInUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const { dataTypes } = useParams();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const usersSetup = (users) => dispatch(setupUsers(users));
@@ -67,18 +67,16 @@ const AdmissionsDash = (props) => {
     studentDashboardCondition: false, //condition to show student dashboard
     loading: true,
   });
-  const { match } = props;
-  const { dataTypes } = match.params;
-  let dataType = match && dataTypes ? dataTypes : "softwareCourse";
+  let dataType = dataTypes || "softwareCourse";
   const studentsURL = `${baseURL}students`;
   const usersURL = `${baseURL}users/getall`;
   let stage = null;
   let value = null;
 
-  const fetchAccess = async () => {
+  const fetchAccess = async (signal) => {
     try {
       const accessUrl = `${baseURL}rolebaseaccess`;
-      axios.get(accessUrl).then((response) => {
+      axios.get(accessUrl, { signal }).then((response) => {
         const studentDashboardData = response.data; //variable to store the response
         const conditions = //variable to store the conditions
           studentDashboardData &&
@@ -99,21 +97,21 @@ const AdmissionsDash = (props) => {
     }
   };
 
-  const fetchOWner = async () => {
-    const response = await axios.get(`${baseURL}owner`);
+  const fetchOWner = async (signal) => {
+    const response = await axios.get(`${baseURL}owner`, { signal });
     const newData = response.data.data.map((e) => e.user.mail_id);
     localStorage.setItem("owners", JSON.stringify(newData.sort()));
   };
 
-  const fetchPartner = async () => {
-    const response = await axios.get(`${baseURL}partners`);
+  const fetchPartner = async (signal) => {
+    const response = await axios.get(`${baseURL}partners`, { signal });
     const newData = response.data.data.map((e) => e.name);
     localStorage.setItem("partners", JSON.stringify(newData.sort()));
   };
-  const fetchUsers = async () => {
+  const fetchUsers = async (signal) => {
     try {
       fetchingStart();
-      const response = await axios.get(usersURL, {});
+      const response = await axios.get(usersURL, { signal });
       usersSetup(response.data.data);
       const newData = response.data.data.map((data) => data.user);
       localStorage.setItem("users", JSON.stringify(newData));
@@ -148,7 +146,7 @@ const AdmissionsDash = (props) => {
       }));
     }
   };
-  const fetchStudents = async (_value) => {
+  const fetchStudents = async (_value, signal) => {
     const { fetchPendingInterviewDetails, loggedInUser: pLoggedInUser } = props;
     const { numberOfRows } = state;
     const concatinateStage = stage === null ? stage : stage.join(",");
@@ -157,6 +155,7 @@ const AdmissionsDash = (props) => {
       let response;
       if (fetchPendingInterviewDetails) {
         response = await axios.get(`${baseURL}students/pending_interview`, {
+          signal,
           params: {
             user: pLoggedInUser.mailId,
           },
@@ -174,6 +173,7 @@ const AdmissionsDash = (props) => {
         response =
           value && value.length > 0
             ? await axios.get(`${url}&limit=${numberOfRows}&page=0`, {
+                signal,
                 params: {
                   dataType,
                   stage: concatinateStage,
@@ -182,6 +182,7 @@ const AdmissionsDash = (props) => {
                 },
               })
             : await axios.get(`${studentsURL}?limit=${numberOfRows}&page=0`, {
+                signal,
                 params: {
                   dataType,
                   stage: concatinateStage,
@@ -298,14 +299,16 @@ const AdmissionsDash = (props) => {
     state;
   const concatinateStage = stage === null ? stage : stage.join(",");
   useEffect(() => {
+    const controller = new AbortController();
     const fetchData = async () => {
-      await fetchStudents();
-      await fetchUsers();
-      await fetchOWner();
-      await fetchPartner();
-      await fetchAccess();
+      await fetchStudents(null, controller.signal);
+      await fetchUsers(controller.signal);
+      await fetchOWner(controller.signal);
+      await fetchPartner(controller.signal);
+      await fetchAccess(controller.signal);
     };
     fetchData();
+    return () => controller.abort();
   }, []);
   const options = (
     <Box>
@@ -333,8 +336,8 @@ const AdmissionsDash = (props) => {
         components={animatedComponents}
         closeMenuOnSelect
       />
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
+      <LocalizationProvider dateAdapter={DateFnsUtils}>
+        <DatePicker
           margin="dense"
           style={{ marginLeft: 16, maxWidth: "40%" }}
           value={state.fromDate}
@@ -345,9 +348,10 @@ const AdmissionsDash = (props) => {
           KeyboardButtonProps={{
             "aria-label": "change date",
           }}
+          renderInput={(params) => <TextField {...params} />}
         />
 
-        <KeyboardDatePicker
+        <DatePicker
           margin="dense"
           style={{ marginLeft: 16, maxWidth: "40%" }}
           value={state.toDate}
@@ -358,8 +362,9 @@ const AdmissionsDash = (props) => {
           KeyboardButtonProps={{
             "aria-label": "change date",
           }}
+          renderInput={(params) => <TextField {...params} />}
         />
-      </MuiPickersUtilsProvider>
+      </LocalizationProvider>
     </Box>
   );
 
@@ -390,7 +395,7 @@ const AdmissionsDash = (props) => {
     <div>
       {state.studentDashboardCondition ? (
         <Box>
-          <ThemeProvider>
+          <ThemeProvider theme={theme}>
             {fetchPendingInterviewDetails ? null : options}
             <div className={classes.clear} />
             <ServerSidePagination

@@ -7,6 +7,7 @@ import { makeStyles } from "@mui/styles";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import theme from "../theme";
 import { login } from "../store/actions/auth";
@@ -29,10 +30,11 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const LoginDesign = (props) => {
+const LoginDesign = () => {
   const classes = useStyles();
   const snackbar = useSnackbar();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleLogin = () => dispatch(login());
   const [specialLogin, setSpecialLogin] = React.useState([]);
   //maintaing a state for special login
@@ -59,13 +61,11 @@ const LoginDesign = (props) => {
           localStorage.setItem("jwt", userToken);
           localStorage.setItem("user", JSON.stringify(user));
           if (user.mobile) {
-            const { history } = props;
             handleLogin();
-            history.push("/students");
+            navigate("/students");
           } else {
-            const { history } = props;
             handleLogin();
-            history.push("/user/mobile/number");
+            navigate("/user/mobile/number");
           }
         });
     } else {

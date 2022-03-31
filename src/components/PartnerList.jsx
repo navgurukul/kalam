@@ -166,7 +166,6 @@ const PartnerList = () => {
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
-  // const history = useHistory();
   const [state, setState] = React.useState({
     data: [],
     access: null, //access object to store access data
@@ -223,7 +222,7 @@ const PartnerList = () => {
     fetchData();
   }, []);
 
-  // const onRowClick = (event, rowData) => history.push("/partner/" + rowData.id + "/students");
+  // const onRowClick = (event, rowData) => navigate("/partner/" + rowData.id + "/students");
 
   if (!state.data.length) {
     return <Box />;

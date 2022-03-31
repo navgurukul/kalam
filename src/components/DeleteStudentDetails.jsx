@@ -12,17 +12,17 @@ import {
   Typography,
   Grid,
 } from "@mui/material";
-import { getData } from "../store/actions/data";
+import { setStudentData } from "../store/slices/dataSlice";
 
 const { permissions } = require("../config");
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const DeleteStudentDetails = (props) => {
   const snackbar = useSnackbar();
-  const data = useSelector((state) => state.data.getData);
+  const data = useSelector((state) => state.data.studentData);
   const dispatch = useDispatch();
-  const getStudentsData = (data) => dispatch(getData(data));
+  const getStudentsData = (data) => dispatch(setStudentData(data));
   const [open, setOpen] = React.useState(false);
 
   const deleteStudentDetails = async () => {

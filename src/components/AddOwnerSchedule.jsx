@@ -2,11 +2,11 @@ import {
   Box,
   Button,
   IconButton,
-  makeStyles,
   Modal,
   Card,
   Typography,
 } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import React, { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";

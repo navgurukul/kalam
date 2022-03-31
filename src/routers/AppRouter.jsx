@@ -38,15 +38,15 @@ import SlotBooking2 from "../components/SlotBooking2";
 // import PublicRoute from "./PublicRouter";
 // if authenticated be there, else redirect to /login
 // import PrivateRoute from "./PrivateRouter";
-// import Header from "../components/Header";
-// import Footer from "../components/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 import RequireAuth from "./RequireAuth";
 
 const AppRouter = () => (
   <Router history={history}>
     <div>
-      {/* <Header /> */}
+      <Header />
       <Routes>
         {/* <Route
           path="/"
@@ -73,14 +73,15 @@ const AppRouter = () => (
             </RequireAuth>
           }
         />
-        <Route
-          path="/students"
-          element={
-            <RequireAuth privateRoute>
-              <AdmissionsDash />
-            </RequireAuth>
-          }
-        >
+        <Route path="/students">
+          <Route
+            index
+            element={
+              <RequireAuth privateRoute>
+                <AdmissionsDash />
+              </RequireAuth>
+            }
+          />
           <Route
             path=":dataType"
             component={
@@ -101,21 +102,22 @@ const AppRouter = () => (
         />
         <Route path="/partner">
           <Route
-            path="/add"
+            path="add"
             element={
               <RequireAuth privateRoute>
                 <AddPartner />
               </RequireAuth>
             }
           />
-          <Route
-            path=":partnerId"
-            element={
-              <RequireAuth privateRoute>
-                <ProgressMadeForPartner />
-              </RequireAuth>
-            }
-          >
+          <Route path=":partnerId">
+            <Route
+              index
+              element={
+                <RequireAuth privateRoute>
+                  <ProgressMadeForPartner />
+                </RequireAuth>
+              }
+            />
             <Route
               path="progress"
               element={<PartnerStudentsProgressInCampus />}
@@ -146,20 +148,12 @@ const AppRouter = () => (
           path="/donor/:donorId/students"
           element={<DonorStudentsData />}
         />
-        <Route
-          path="/campus"
-          exact
-          element={
-            <RequireAuth privateRoute>
-              <CampusList />
-            </RequireAuth>
-          }
-        >
+        <Route path="/campus">
           <Route
-            path="allcampus/students"
+            index
             element={
               <RequireAuth privateRoute>
-                <AllCampusStudentsData />
+                <CampusList />
               </RequireAuth>
             }
           />
@@ -168,6 +162,14 @@ const AppRouter = () => (
             element={
               <RequireAuth privateRoute>
                 <CampusStudentsData />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="allcampus/students"
+            element={
+              <RequireAuth privateRoute>
+                <AllCampusStudentsData />
               </RequireAuth>
             }
           />
@@ -261,7 +263,7 @@ const AppRouter = () => (
         />
         <Route element={<NotFoundPage />} />
       </Routes>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   </Router>
 );

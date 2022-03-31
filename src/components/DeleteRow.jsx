@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const DeleteRow = (props) => {
   const snackbar = useSnackbar();

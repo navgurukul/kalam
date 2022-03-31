@@ -2,9 +2,9 @@ import React from "react";
 import { Typography, Button, Modal } from "@mui/material";
 import DetailsIcon from "@mui/icons-material/Details";
 import { makeStyles } from "@mui/styles";
-import { caste, religon, currentStatus, qualification } from "../config";
 
 const _ = require("underscore");
+const { caste, religon, currentStatus, qualification } = require("../config");
 
 const getModalStyle = () => {
   const top = 54; // + rand()

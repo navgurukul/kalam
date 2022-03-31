@@ -33,7 +33,7 @@ const MyTaskReport = () => {
     setData(newData);
   };
 
-  const fetchonwerReport = async () => {
+  const fetchonwerReport = async (signal) => {
     try {
       fetchingStart();
       // response = ngFetch(this.studentsURL, 'GET', {
@@ -45,6 +45,7 @@ const MyTaskReport = () => {
       // }, true);
       const user = loggedInUser.email.split("@")[0];
       const response = await axios.get(onwerDetailsURL, {
+        signal,
         params: {
           user,
         },
@@ -52,14 +53,15 @@ const MyTaskReport = () => {
       dataConvert(response.data.data);
       fetchingFinish();
     } catch (e) {
-      console.error(e);
       fetchingFinish();
     }
   };
 
   useEffect(() => {
-    const fetchData = () => fetchonwerReport();
+    const controller = new AbortController();
+    const fetchData = () => fetchonwerReport(controller.signal);
     fetchData();
+    return () => controller.abort();
   }, []);
 
   return (

@@ -5,14 +5,15 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 import StudentService from "../services/StudentService";
-import { changeFetching, setupUsers } from "../store/actions/auth";
-import { campus } from "../config";
+import { changeFetching, setupUsers } from "../store/slices/authSlice";
 import DashboardPage from "./Dashboard";
 import SelectUiByButtons from "./SelectUiByButtons";
 import StudentsProgressCards from "./StudentsProgressCards";
 import GraphingPresentationJob from "./GraphingPresentationJob";
 import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
+
+const { campus } = require("../config");
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

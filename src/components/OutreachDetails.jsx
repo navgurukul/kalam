@@ -72,23 +72,20 @@ const OutreachDetails = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {state.listOfOutreachTeam.map((item) => {
-              let countOfStudent = 0;
-              return (
-                <TableRow key={item}>
-                  <TableCell className={classes.tableCell}>{item}</TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {state.outreachDetails[item][".partners"].length}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {state.outreachDetails[item][".partners"].forEach(() => {
-                      countOfStudent += Object.values(item)[0];
-                    })}
-                    {countOfStudent}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+            {state.listOfOutreachTeam.map((item) => (
+              <TableRow key={item}>
+                <TableCell className={classes.tableCell}>{item}</TableCell>
+                <TableCell className={classes.tableCell}>
+                  {state.outreachDetails[item].partners.length}
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  {state.outreachDetails[item].partners.reduce(
+                    (acc, curr) => acc + Object.values(curr)[0],
+                    0
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </Paper>

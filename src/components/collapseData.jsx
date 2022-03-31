@@ -7,8 +7,9 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import IconButton from "@mui/material/IconButton";
 import CardActions from "@mui/material/CardActions";
 import { Typography, CardContent } from "@mui/material";
-import { allStages } from "../config";
 import StageTransitions from "./StageTransitions";
+
+const { allStages } = require("../config");
 
 const showContact = (student) => {
   let studentStatus = "";
@@ -20,9 +21,8 @@ const showContact = (student) => {
   }
   const locationCampus = location.pathname.split("/")[1];
   return (
-    <center>
+    <center key={student.name}>
       <div
-        key={student.name}
         style={{
           fontSize: 15,
           fontFamily: ("Roboto", "Helvetica", "Arial"),

@@ -225,21 +225,14 @@ const AddOwner = (props) => {
   const isWeekly = repeat.indexOf("Weekly") > -1;
   return (
     <div>
-      <IconButton>
-        <SendIcon
-          style={{
-            cursor: "pointer",
-          }}
-          onClick={openModal}
-        />
+      <IconButton onClick={openModal}>
+        <SendIcon />
       </IconButton>
-      <IconButton>
+      <IconButton onClick={instantReportSend}>
         <MailIcon
           style={{
-            cursor: "pointer",
             marginLeft: "10px",
           }}
-          onClick={instantReportSend}
         />
       </IconButton>
       <Modal

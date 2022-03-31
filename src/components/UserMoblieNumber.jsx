@@ -14,10 +14,11 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import theme from "../theme";
 import { login } from "../store/actions/auth";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((_theme) => ({
   userContact: {
@@ -40,10 +41,11 @@ const useStyles = makeStyles((_theme) => ({
   },
 }));
 
-const UserMobileNumber = (props) => {
+const UserMobileNumber = () => {
   const classes = useStyles();
   const { loggedInUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleLogin = () => dispatch(login());
   const [mobileNumber, setMobileNumber] = React.useState("");
 
@@ -54,10 +56,9 @@ const UserMobileNumber = (props) => {
       .then((resp) => {
         const { user } = resp.data.data;
         if (user) {
-          const { history } = props;
           localStorage.setItem("user", JSON.stringify(user));
           handleLogin();
-          history.push("/students");
+          navigate("/students");
         }
       });
   };

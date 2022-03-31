@@ -10,10 +10,10 @@ import axios from "axios";
 import Box from "@mui/material/Box";
 import theme from "../theme";
 import { changeFetching } from "../store/actions/auth";
-import { allStages } from "../config";
 import GlobalService from "../services/GlobalService";
 import StudentService from "../services/StudentService";
 
+const { allStages } = require("../config");
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = import.meta.env.API_URL;
 

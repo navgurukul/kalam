@@ -12,9 +12,16 @@ const UpdatePartner = (props) => {
   const [data, setData] = React.useState([]);
 
   useEffect(() => {
-    axios.get(`${baseURL}partners`).then((response) => {
-      setData(response.data.data);
-    });
+    const controller = new AbortController();
+    axios
+      .get(`${baseURL}partners`, { signal: controller.signal })
+      .then((response) => {
+        setData(response.data.data);
+      })
+      .catch(() => {
+        // if (err.message === "canceled") return;
+      });
+    return () => controller.abort();
   }, []);
 
   const handleChange = (event) => {

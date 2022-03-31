@@ -2,14 +2,15 @@
 import React, { Fragment } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { Button, makeStyles, Dialog, Box } from "@mui/material";
+import { Button, Dialog, Box } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { useSnackbar } from "notistack";
 import TextField from "@mui/material/TextField";
 
 import EditIcon from "@mui/icons-material/Edit";
 import { changeFetching } from "../store/actions/auth";
 
-const baseUrl = process.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((theme) => ({
   container: {

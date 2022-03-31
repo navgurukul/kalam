@@ -12,20 +12,20 @@ import { Box } from "@mui/material";
 // import Key from '@material-ui/icons/VpnKey';
 // import Button from '@mui/material/Button';
 import GoogleLogin from "react-google-login";
+import { useSnackbar } from "notistack";
 import { login } from "../store/actions/auth";
 
 const LoginPage = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const startLogin = (userid) => dispatch(login(userid));
-  // this.props.history.push('/home');
 
   const onSuccess = () => {
-    //console.log(response);
     startLogin();
   };
 
   const onFailure = (error) => {
-    console.error(error);
+    enqueueSnackbar(`Login Failed! ${error.message}`, { variant: "error" });
   };
   return (
     <GoogleLogin

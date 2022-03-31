@@ -1,5 +1,4 @@
 import axios from "axios";
-// import { useHistory } from "react-router-dom";
 import history from "./history";
 
 const BASE_URL = import.meta.env.API_URL;

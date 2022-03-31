@@ -1,22 +1,28 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import Box from "@mui/material/Box";
+import { Box, TextField } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/lab";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import axios from "axios";
 
-import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Select from "react-select";
 import { useSnackbar } from "notistack";
-import { getData } from "../store/actions/data";
-import { qualificationKeys, campusStageOfLearning, allStages } from "../config";
+import { setStudentData } from "../store/slices/dataSlice";
 import MainLayout from "./MainLayout";
 
 import StudentService from "../services/StudentService";
-import { EventEmitter } from "./events";
 
 import { changeFetching, setupUsers } from "../store/actions/auth";
+
+const {
+  qualificationKeys,
+  campusStageOfLearning,
+  allStages,
+} = require("../config");
+
+const { EventEmitter } = require("./events");
 
 const allStagesOptions = Object.keys(campusStageOfLearning).map((x) => ({
   value: x,
@@ -30,7 +36,7 @@ const partnerStages = Object.keys(allStages).map((x) => ({
 
 const allStagesValue = Object.values(allStages);
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
-const baseUrl = import.meta.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const columns = [
   {
@@ -119,13 +125,14 @@ const columns = [
 
 const DashboardPage = (props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { location } = useNavigate();
-  const { getData: data } = useSelector((state) => state.data);
+  const location = useLocation();
+  const { studentData: data } = useSelector((state) => state.data);
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const usersSetup = (users) => dispatch(setupUsers(users));
-  const getStudentsData = (studentData) => dispatch(getData(studentData));
+  const getStudentsData = (studentData) =>
+    dispatch(setStudentData(studentData));
   const [state, setState] = React.useState({
     mainData: [],
     wholeData: [],
@@ -349,7 +356,7 @@ const DashboardPage = (props) => {
         closeMenuOnSelect
         value={toStage}
       />
-      <LocalizationProvider utils={DateFnsUtils}>
+      <LocalizationProvider dateAdapter={DateFnsUtils}>
         <DatePicker
           margin="dense"
           style={{ marginLeft: 16, maxWidth: "40%" }}
@@ -361,6 +368,7 @@ const DashboardPage = (props) => {
           KeyboardButtonProps={{
             "aria-label": "change date",
           }}
+          renderInput={(params) => <TextField {...params} />}
         />
         <DatePicker
           margin="dense"
@@ -373,6 +381,7 @@ const DashboardPage = (props) => {
           KeyboardButtonProps={{
             "aria-label": "change date",
           }}
+          renderInput={(params) => <TextField {...params} />}
         />
       </LocalizationProvider>
     </Box>
@@ -434,20 +443,5 @@ const DashboardPage = (props) => {
     </div>
   );
 };
-
-// const mapStateToProps = (state) => ({
-//   data: state.data.getData,
-// });
-
-// const mapDispatchToProps = (dispatch) => ({
-//   fetchingStart: () => dispatch(changeFetching(true)),
-//   fetchingFinish: () => dispatch(changeFetching(false)),
-//   usersSetup: (users) => dispatch(setupUsers(users)),
-//   getStudentsData: (data) => dispatch(getData(data)),
-// });
-
-// export default withRouter(
-//   withSnackbar(connect(mapStateToProps, mapDispatchToProps)(DashboardPage))
-// );
 
 export default DashboardPage;

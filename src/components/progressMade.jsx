@@ -20,13 +20,13 @@ import { useSnackbar } from "notistack";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import WhatsAppIcon from "../assets/img/whatsapp.png";
-import { allStages } from "../config";
 import DashboardPage from "./Dashboard";
 import CollapseStudentData from "./collapseData";
 import StudentService from "../services/StudentService";
 import GraphPage from "./GraphPage";
 
 const baseURL = import.meta.env.VITE_API_URL;
+const { allStages } = require("../config");
 
 const useStyles = makeStyles((theme) => ({
   root: {

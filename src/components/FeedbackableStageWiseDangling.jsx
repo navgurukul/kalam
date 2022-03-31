@@ -6,12 +6,13 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { changeFetching } from "../store/actions/auth";
-import { allStages, feedbackableStagesData } from "../config";
 import StudentService from "../services/StudentService";
 import MainLayout from "./MainLayout";
 
+const { allStages, feedbackableStagesData } = require("../config");
+
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
-const baseURL = process.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const FeedbackableStageWiseDangling = () => {
   // const { loggedInUser } = useSelector((state) => state.auth);

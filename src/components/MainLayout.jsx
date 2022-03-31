@@ -47,10 +47,10 @@ const MainLayout = (props) => {
             showTitle: false,
             selectableRows: "none",
             toolbar: false,
-            filtering: true,
-            filter: true,
-            filterType: "doprdown",
-            responsive: "stacked",
+            // filtering: true,
+            // filter: true,
+            // filterType: "dropdown",
+            responsive: "vertical",
             textLabels: {
               body: {
                 noMatch: showLoader ? (

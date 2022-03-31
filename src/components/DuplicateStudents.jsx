@@ -7,7 +7,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { changeFetching } from "../store/actions/auth";
+import { changeFetching } from "../store/slices/authSlice";
 import SlotBooking from "./SlotBooking";
 
 const baseUrl = import.meta.env.VITE_API_URL;

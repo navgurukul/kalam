@@ -14,7 +14,7 @@ import MainLayout from "./MainLayout";
 
 import StudentService from "../services/StudentService";
 
-import { changeFetching, setupUsers } from "../store/actions/auth";
+import { changeFetching, setupUsers } from "../store/slices/authSlice";
 
 const {
   qualificationKeys,

@@ -13,7 +13,7 @@ import { Box } from "@mui/material";
 // import Button from '@mui/material/Button';
 import GoogleLogin from "react-google-login";
 import { useSnackbar } from "notistack";
-import { login } from "../store/actions/auth";
+import { login } from "../store/slices/authSlice";
 
 const LoginPage = () => {
   const { enqueueSnackbar } = useSnackbar();

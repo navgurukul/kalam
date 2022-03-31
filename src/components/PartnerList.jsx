@@ -11,7 +11,7 @@ import EditPartner from "./EditPartner";
 import CreateAssessment from "./CreateAssessment";
 import AddMerakiLink from "./AddMerakiLink";
 import EditPartnerDetails from "./EditIcon";
-import { changeFetching } from "../store/actions/auth";
+import { changeFetching } from "../store/slices/authSlice";
 import MainLayout from "./MainLayout";
 import ReportSend from "./ReportSend";
 import user from "../utils/user";

@@ -11,7 +11,7 @@ import { useSnackbar } from "notistack";
 import { Link, useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import { makeStyles, ThemeProvider } from "@mui/styles";
-import { changeFetching } from "../store/actions/auth";
+import { changeFetching } from "../store/slices/authSlice";
 import VideoSlider from "./VideoSlider";
 import Header from "./Header";
 import theme from "../theme";

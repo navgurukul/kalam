@@ -20,7 +20,7 @@ import logo from "../assets/img/logo.png";
 import PublicNavList from "../navs/publicNav";
 import PrivateNavList from "../navs/privateNav";
 import ExpandNavList from "../navs/expandNavs";
-import { logout } from "../store/actions/auth";
+import { logout } from "../store/slices/authSlice";
 
 import ModalStages from "./ModalStages";
 

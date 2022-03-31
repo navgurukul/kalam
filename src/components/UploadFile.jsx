@@ -5,7 +5,7 @@ import { Typography, Button } from "@mui/material";
 import axios from "axios";
 
 import { useDispatch } from "react-redux";
-import { changeFetching } from "../store/actions/auth";
+import { changeFetching } from "../store/slices/authSlice";
 
 const UploadFile = () => {
   const dispatch = useDispatch();

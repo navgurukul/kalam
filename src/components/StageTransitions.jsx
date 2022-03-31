@@ -11,7 +11,7 @@ import MUIDataTable from "mui-datatables";
 import DetailsIcon from "@mui/icons-material/Details";
 import { useLocation } from "react-router-dom";
 import theme from "../theme";
-import { changeFetching } from "../store/actions/auth";
+import { changeFetching } from "../store/slices/authSlice";
 import GlobalService from "../services/GlobalService";
 // eslint-disable-next-line import/no-cycle
 import StudentService from "../services/StudentService";

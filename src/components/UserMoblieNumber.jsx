@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import theme from "../theme";
-import { login } from "../store/actions/auth";
+import { login } from "../store/slices/authSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

@@ -8,7 +8,7 @@ import { useSnackbar } from "notistack";
 import TextField from "@mui/material/TextField";
 
 import EditIcon from "@mui/icons-material/Edit";
-import { changeFetching } from "../store/actions/auth";
+import { changeFetching } from "../store/slices/authSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

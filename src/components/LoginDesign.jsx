@@ -10,7 +10,7 @@ import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import theme from "../theme";
-import { login } from "../store/actions/auth";
+import { login } from "../store/slices/authSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

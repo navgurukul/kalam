@@ -10,14 +10,14 @@ import { makeStyles } from "@mui/styles";
 import React, { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import moment from "moment";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-} from "@mui/lab/DatePicker";
-import DateFnsUtils from "@date-io/date-fns";
+import { LocalizationProvider, TimePicker } from "@mui/lab";
+import AdapterDatFns from "@mui/lab/AdapterDateFns";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import dayjs from "dayjs";
+
+dayjs.extend(customParseFormat);
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -61,27 +61,24 @@ const AddOwnerSchedule = ({
   const snackbar = useSnackbar();
   const [schedule, setSchedule] = useState({
     from: isEdit
-      ? moment(prevSchedule.from, "hh:mm").toDate().getTime()
-      : moment("08:00", "hh:mm").toDate().getTime(),
+      ? dayjs(prevSchedule.from, "HH:mm").toDate().getTime()
+      : dayjs("08:00", "HH:mm").toDate().getTime(),
     to: isEdit
-      ? moment(prevSchedule.to, "hh:mm").toDate().getTime()
-      : moment("16:00", "hh:mm").toDate().getTime(),
+      ? dayjs(prevSchedule.to, "HH:mm").toDate().getTime()
+      : dayjs("16:00", "HH:mm").toDate().getTime(),
   });
   const [modalOpen, setModelOpen] = useState(false);
 
   const handleTimeChange = (id, time) => {
     setSchedule({
       ...schedule,
-      [id]: moment(time, "hh:mm a").toDate().getTime(),
+      [id]: dayjs(time, "hh:mm a").toDate().getTime(),
     });
   };
 
   const addSchedule = () => {
     const { from, to } = schedule;
-    const diff = parseInt(
-      moment.duration(moment(to).diff(moment(from))).asHours(),
-      10
-    );
+    const diff = parseInt(dayjs(to).diff(dayjs(from), "hour"), 10);
     if (diff < 0) {
       snackbar.enqueueSnackbar("Start Time should be before End Time", {
         variant: "error",
@@ -92,8 +89,8 @@ const AddOwnerSchedule = ({
       });
     }
     const Url = `${baseUrl}ownershedule`;
-    const fromStr = moment(from).format("HH:mm");
-    const toStr = moment(to).format("HH:mm");
+    const fromStr = dayjs(from).format("HH:mm");
+    const toStr = dayjs(to).format("HH:mm");
     if (isEdit) {
       axios
         .put(`${Url}/${ownerId}`, {
@@ -162,8 +159,8 @@ const AddOwnerSchedule = ({
     <div>
       {isEdit ? (
         <Box>
-          {moment(schedule.from).format("hh:mm A")} -{" "}
-          {moment(schedule.to).format("hh:mm A")}
+          {dayjs(schedule.from).format("hh:mm A")} -{" "}
+          {dayjs(schedule.to).format("hh:mm A")}
           <div
             style={{
               display: "flex",
@@ -208,8 +205,8 @@ const AddOwnerSchedule = ({
             Select Schedule Timings
           </Typography>
           <form className={classes.container}>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardTimePicker
+            <LocalizationProvider dateAdapter={AdapterDatFns}>
+              <TimePicker
                 margin="dense"
                 value={schedule.from}
                 id="from"
@@ -220,9 +217,9 @@ const AddOwnerSchedule = ({
                   "aria-label": "change time",
                 }}
               />
-            </MuiPickersUtilsProvider>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardTimePicker
+            </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDatFns}>
+              <TimePicker
                 margin="dense"
                 value={schedule.to}
                 id="to"
@@ -233,7 +230,7 @@ const AddOwnerSchedule = ({
                   "aria-label": "change time",
                 }}
               />
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
             <Button
               variant="contained"
               color="primary"

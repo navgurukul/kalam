@@ -2,10 +2,12 @@ import React from "react";
 import { LocalizationProvider, DatePicker } from "@mui/lab";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import EditIcon from "@mui/icons-material/Edit";
-import moment from "moment";
-import Moment from "react-moment";
 import { useSnackbar } from "notistack";
 import axios from "axios";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import dayjs from "dayjs";
+
+dayjs.extend(customParseFormat);
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -19,7 +21,7 @@ const JoinedDate = (props) => {
 
   const changeDate = (date) => {
     const { transitionId } = props;
-    const formateddate = moment(date).format("YYYY-MM-DD");
+    const formateddate = dayjs(date).format("YYYY-MM-DD");
     axios
       .put(`${baseURL}students/transition/${transitionId}`, {
         when: formateddate,
@@ -64,9 +66,7 @@ const JoinedDate = (props) => {
   }
   return (
     <div>
-      <Moment format="D MMM YYYY" withTitle style={{ marginRight: 10 }}>
-        {currentDate}
-      </Moment>
+      <p style={{ marginRight: 10 }}>{dayjs(currentDate, "D MMM YYYY")}</p>
       <EditIcon onClick={showDatePicker} style={{ cursor: "pointer" }} />
     </div>
   );

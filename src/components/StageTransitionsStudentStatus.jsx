@@ -1,14 +1,17 @@
 import "date-fns";
-import React, { memo } from "react";
+import React from "react";
 import { Modal, Button, Typography, Box } from "@mui/material";
 import MUIDataTable from "mui-datatables";
-// import Moment from "react-moment";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 
 import DetailsIcon from "@mui/icons-material/Details";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import dayjs from "dayjs";
 import theme from "../theme";
 import GlobalService from "../services/GlobalService";
+
+dayjs.extend(customParseFormat);
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 
 const getModalStyle = () => {
@@ -68,12 +71,10 @@ const StageTransitionsStudentStatus = (props) => {
       label: "When?",
       name: "created_at",
       options: {
-        customBodyRender: memo((value) => (
-          // <Moment format="D MMM YYYY" withTitle>
-          //   {value}
-          // </Moment>
-          <div></div>
-        )),
+        customBodyRender: React.useCallback(
+          (value) => <p>{dayjs(value).format("D MMM YYYY")}</p>,
+          []
+        ),
       },
     },
   ];

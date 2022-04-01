@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-// import Moment from "react-moment";
-import { DatePicker, LocalizationProvider } from "@mui/lab";
-import DateFnsUtils from "@mui/lab/AdapterDateFns";
-import Axios from "axios";
+import React from "react";
+import { InputLabel } from "@mui/material";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
 import StageSelect from "../components/StageSelect";
 import UpdateEmail from "../components/UpdateEmail";
 import OwnerSelect from "../components/OwnerSelect";
@@ -17,7 +17,7 @@ import TagsForOnlineClass from "../components/TagsForOnlineClass";
 
 import UpdateCampus from "../components/UpdateCampus";
 import UpdateDonor from "../components/UpdateDonor";
-// import JoinedDate from "../components/JoinedDate";
+import JoinedDate from "../components/JoinedDate";
 import DeleteRow from "../components/DeleteRow";
 import UpdateStudentName from "../components/UpdateStudentName";
 import SelectReact from "../components/SelectReact";
@@ -29,6 +29,9 @@ import UpdatePartner from "../components/UpdatePartner";
 import DeadLineDateUpdate from "../components/DeadlineDateUpdate";
 import EndDateUpdate from "../components/EndDateUpdate";
 
+dayjs.extend(customParseFormat);
+
+const _ = require("underscore");
 const {
   allStages,
   feedbackableStages,
@@ -40,8 +43,8 @@ const {
   caste,
 } = require("../config");
 
-const _ = require("underscore");
-const baseURL = import.meta.env.VITE_API_URL;
+// const baseURL = import.meta.env.VITE_API_URL;
+
 const keysCampusStageOfLearning = Object.keys(campusStageOfLearning);
 // const allStagesOptions = Object.keys(allStages).map((x) => {
 //   return allStages[x];
@@ -54,6 +57,13 @@ const user = window.localStorage.user
   ? JSON.parse(window.localStorage.user).email
   : null;
 
+const Lables = {
+  fontSize: "15px",
+  fontWeight: "500",
+  color: "#808080",
+  marginBottom: "5px",
+};
+
 //column transitions for student dashboard
 const ColumnTransitions = {
   name: "id",
@@ -61,16 +71,13 @@ const ColumnTransitions = {
   options: {
     filter: false,
     sort: false,
-    customBodyRender: (value, rowMeta) => {
-      //console.log(value, "value");
-      return (
-        <StageTransitions
-          studentId={value}
-          studentName={rowMeta.rowData[2]}
-          dataType={"columnTransition"}
-        />
-      );
-    },
+    customBodyRender: (value, rowMeta) => (
+      <StageTransitions
+        studentId={value}
+        studentName={rowMeta.rowData[2]}
+        dataType="columnTransition"
+      />
+    ),
   },
 };
 
@@ -96,10 +103,10 @@ const stageColumnTransition = {
     filter: true,
     sort: true,
     customBodyRender: (rowData, rowMeta) => {
-      const user = window.localStorage.user
+      const currentUser = window.localStorage.user
         ? JSON.parse(window.localStorage.user).email
         : null;
-      return permissions.updateStage.indexOf(user) > -1 &&
+      return permissions.updateStage.indexOf(currentUser) > -1 &&
         keysCampusStageOfLearning.indexOf(rowData) > -1 ? (
         <div>
           <DeleteRow transitionId={rowMeta.rowData[10]} />
@@ -119,31 +126,21 @@ const addedAtColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value, rowMeta) => {
-      const user = window.localStorage.user
+      const currentUser = window.localStorage.user
         ? JSON.parse(window.localStorage.user).email
         : null;
 
       if (typeof rowMeta.rowData[0] === "number") {
-        return (
-          // <Moment format="D MMM YYYY" withTitle>
-          //   {value}
-          // </Moment>
-          <div></div>
-        );
-      } else if (
-        permissions.updateStage.indexOf(user) > -1 &&
+        return <p>{dayjs(value).format("D MMM YYYY")}</p>;
+      }
+      if (
+        permissions.updateStage.indexOf(currentUser) > -1 &&
         (rowMeta.rowData[0].indexOf("Joined") > -1 ||
           keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
       ) {
-        // return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
-        return <div></div>;
+        return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
       }
-      return (
-        // <Moment format="D MMM YYYY" withTitle>
-        //   {value}
-        // </Moment>
-        <div></div>
-      );
+      return <p>{dayjs(value).format("D MMM YYYY")}</p>;
     },
   },
 };
@@ -169,7 +166,7 @@ const feedbackColumnTransition = {
               {rowData
                 ? rowData
                     .split("\n\n")
-                    .map((item, i) => <p key={i}> {item} </p>)
+                    .map((item) => <p key={item}> {item} </p>)
                 : null}
             </div>
           ) : null}
@@ -196,7 +193,7 @@ const ownerColumnTransitionDashboard = {
         <div>
           {ifExistingFeedback && permissionForOwner ? (
             <OwnerSelect
-              currentValue={"Saquib"}
+              currentValue={rowData}
               rowMetaTable={rowMeta}
               value={rowData}
               studentId={rowMeta.rowData[5]}
@@ -226,7 +223,7 @@ const ownerColumnTransitionCampus = {
         <div>
           {ifExistingFeedback && permissionForOwner ? (
             <OwnerSelect
-              currentValue={"Saquib"}
+              currentValue={rowMeta}
               rowMetaTable={rowMeta}
               value={rowData}
               studentId={rowMeta.rowData[7]}
@@ -251,7 +248,8 @@ const statusColumnTransition = {
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       if (rowMeta.rowData[0] === "selectedButNotJoined") {
         return null;
-      } else if ((rowData || rowMeta.rowData[3]) && feedbackableStage) {
+      }
+      if ((rowData || rowMeta.rowData[3]) && feedbackableStage) {
         return (
           <div>
             <StatusSelect
@@ -366,9 +364,9 @@ const deadlineColumnTrnasition = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (value, rowData) => {
-      return <DeadLineDateUpdate value={value} rowData={rowData} />;
-    },
+    customBodyRender: (value, rowData) => (
+      <DeadLineDateUpdate value={value} rowData={rowData} />
+    ),
   },
 };
 const finishedColumnTransition = {
@@ -380,10 +378,7 @@ const finishedColumnTransition = {
     customBodyRender: (rowData) => {
       const ifExistingFinishedDate = rowData;
       return ifExistingFinishedDate ? (
-        // <Moment format="D MMM YYYY" withTitle>
-        //   {rowData}
-        // </Moment>
-        <div></div>
+        <p>{dayjs(rowData).format("D MMM YYYY")}</p>
       ) : null;
     },
   },
@@ -396,17 +391,13 @@ const ColumnTransitionForCampusDashboard = {
   options: {
     filter: false,
     sort: false,
-    customBodyRender: (value, rowMeta) => {
-      //console.log(rowMeta.rowData, "rowData, meta");
-      //console.log(value, "value");
-      return (
-        <StageTransitions
-          studentId={value}
-          studentName={rowMeta.rowData[1]}
-          dataType={"columnTransition2"}
-        />
-      );
-    },
+    customBodyRender: (value, rowMeta) => (
+      <StageTransitions
+        studentId={value}
+        studentName={rowMeta.rowData[1]}
+        dataType="columnTransition2"
+      />
+    ),
   },
 };
 
@@ -428,12 +419,12 @@ const nameColumn = {
     sort: true,
     filterType: "textField",
     customBodyRender: (rowData, rowMeta, updateValue) => {
-      const name = rowData ? rowData : "Update Name";
-      const user = window.localStorage.user
+      const name = rowData || "Update Name";
+      const currentUser = window.localStorage.user
         ? JSON.parse(window.localStorage.user).email
         : null;
 
-      if (permissions.updateStudentName.indexOf(user) > -1) {
+      if (permissions.updateStudentName.indexOf(currentUser) > -1) {
         return (
           <UpdateStudentName
             name={name}
@@ -514,26 +505,24 @@ const dashboardGenderColumn = {
     display: false,
     filterType: "custom",
     filterOptions: {
-      display: (filterlist, onChange, index, column) => {
-        return (
-          <div>
-            <label style={Lables}>Gender</label>
-            <SelectReact
-              options={[
-                { value: "All", label: "All" },
-                { value: "Male", label: "Male" },
-                { value: "Female", label: "Female" },
-                { value: "Transgender", label: "Transgender" },
-              ]}
-              filterList={filterlist}
-              onChange={onChange}
-              index={index}
-              column={column}
-              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
-            />
-          </div>
-        );
-      },
+      display: (filterlist, onChange, index, column) => (
+        <div>
+          <InputLabel style={Lables}>Gender</InputLabel>
+          <SelectReact
+            options={[
+              { value: "All", label: "All" },
+              { value: "Male", label: "Male" },
+              { value: "Female", label: "Female" },
+              { value: "Transgender", label: "Transgender" },
+            ]}
+            filterList={filterlist}
+            onChange={onChange}
+            index={index}
+            column={column}
+            value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+          />
+        </div>
+      ),
     },
   },
 };
@@ -557,42 +546,40 @@ const dashboardCampusColumn = {
     sort: true,
     display: false,
     customBodyRender: (value, rowMeta, updateValue) => {
-      const user = window.localStorage.user
+      const currentUser = window.localStorage.user
         ? JSON.parse(window.localStorage.user).email
         : null;
 
-      if (permissions.updateStage.indexOf(user) > -1) {
+      if (permissions.updateStage.indexOf(currentUser) > -1) {
         return (
           <UpdateCampus
             allOptions={campus}
-            value={value ? value : "No Campus Assigned"}
+            value={value || "No Campus Assigned"}
             rowMetatable={rowMeta}
             change={(event) => updateValue(event)}
           />
         );
-      } else {
-        return value;
       }
+      return value;
     },
     filterType: "custom",
     filterOptions: {
-      display: (filterlist, onChange, index, column) => {
-        return (
-          <div>
-            <label style={Lables}>Campus</label>
-            <SelectReact
-              options={[{ name: "All" }, ...campus].map((x) => {
-                return { value: x.name, label: x.name };
-              })}
-              filterList={filterlist}
-              onChange={onChange}
-              index={index}
-              column={column}
-              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
-            />
-          </div>
-        );
-      },
+      display: (filterlist, onChange, index, column) => (
+        <div>
+          <InputLabel style={Lables}>Campus</InputLabel>
+          <SelectReact
+            options={[{ name: "All" }, ...campus].map((x) => ({
+              value: x.name,
+              label: x.name,
+            }))}
+            filterList={filterlist}
+            onChange={onChange}
+            index={index}
+            column={column}
+            value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+          />
+        </div>
+      ),
     },
   },
 };
@@ -610,14 +597,13 @@ const campusColumn = {
         return (
           <UpdateCampus
             allOptions={campus}
-            value={value ? value : "No Campus Assigned"}
+            value={value || "No Campus Assigned"}
             rowMetatable={rowMeta}
             change={(event) => updateValue(event)}
           />
         );
-      } else {
-        return value;
       }
+      return value;
     },
   },
 };
@@ -630,23 +616,22 @@ const dashboardDonorColumn = {
     display: false,
     filterType: "custom",
     filterOptions: {
-      display: (filterlist, onChange, index, column) => {
-        return (
-          <div>
-            <label style={Lables}>Donor</label>
-            <SelectReact
-              options={[{ name: "All" }, ...donor].map((don) => {
-                return { value: don.name, label: don.name };
-              })}
-              filterList={filterlist}
-              onChange={onChange}
-              index={index}
-              column={column}
-              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
-            />
-          </div>
-        );
-      },
+      display: (filterlist, onChange, index, column) => (
+        <div>
+          <InputLabel style={Lables}>Donor</InputLabel>
+          <SelectReact
+            options={[{ name: "All" }, ...donor].map((don) => ({
+              value: don.name,
+              label: don.name,
+            }))}
+            filterList={filterlist}
+            onChange={onChange}
+            index={index}
+            column={column}
+            value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+          />
+        </div>
+      ),
     },
     customBodyRender: (value, rowMeta, updateValue) => {
       if (permissions.updateStage.indexOf(user) > -1) {
@@ -658,16 +643,15 @@ const dashboardDonorColumn = {
             change={(event) => updateValue(event)}
           />
         );
-      } else {
-        let newValue = "";
-        value
-          ? value.map((item) => {
-              newValue = `${newValue}   ${item.donor}`;
-            })
-          : (newValue = null);
-
-        return newValue;
       }
+      let newValue = "";
+      if (value)
+        value.forEach((item) => {
+          newValue = `${newValue}   ${item.donor}`;
+        });
+      else newValue = null;
+
+      return newValue;
     },
   },
 };
@@ -679,7 +663,7 @@ const donorColumn = {
     filter: true,
     sort: true,
     display: false,
-    filterOptions: { names: donor.map((donor) => donor.name) },
+    filterOptions: { names: donor.map((donorEl) => donorEl.name) },
     customBodyRender: (value, rowMeta, updateValue) => {
       if (permissions.updateStage.indexOf(user) > -1) {
         return (
@@ -690,16 +674,15 @@ const donorColumn = {
             change={(event) => updateValue(event)}
           />
         );
-      } else {
-        let newValue = "";
-        value
-          ? value.map((item) => {
-              newValue = `${newValue}   ${item.donor}`;
-            })
-          : (newValue = null);
-
-        return newValue;
       }
+      let newValue = "";
+      if (value)
+        value.forEach((item) => {
+          newValue = `${newValue}   ${item.donor}`;
+        });
+      else newValue = null;
+
+      return newValue;
     },
   },
 };
@@ -712,12 +695,12 @@ const stageColumn = {
     display: true,
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
-      const user = window.localStorage.user
+      const currentUser = window.localStorage.user
         ? JSON.parse(window.localStorage.user).email
         : null;
 
       const isCampusPathname = window.location.pathname.indexOf("campus");
-      if (permissions.updateStage.indexOf(user) > -1) {
+      if (permissions.updateStage.indexOf(currentUser) > -1) {
         return (
           <StageSelect
             rowMetatable={rowMeta}
@@ -728,9 +711,8 @@ const stageColumn = {
             change={(event) => updateValue(event)}
           />
         );
-      } else {
-        return value;
       }
+      return value;
     },
   },
 };
@@ -741,18 +723,15 @@ const EvaluationColumn = {
   options: {
     filter: false,
     sort: true,
-    display: permissions.updateStudentName.indexOf(user) > -1 ? true : false,
-    viewColumns:
-      permissions.updateStudentName.indexOf(user) > -1 ? true : false,
-    customBodyRender: (value, rowMeta, updateValue) => {
-      return (
-        <EvaluationSelect
-          rowMetatable={rowMeta}
-          evaluation={value}
-          change={(event) => updateValue(event)}
-        />
-      );
-    },
+    display: permissions.updateStudentName.indexOf(user) > -1,
+    viewColumns: permissions.updateStudentName.indexOf(user) > -1,
+    customBodyRender: (value, rowMeta, updateValue) => (
+      <EvaluationSelect
+        rowMetatable={rowMeta}
+        evaluation={value}
+        change={(event) => updateValue(event)}
+      />
+    ),
   },
 };
 
@@ -765,9 +744,10 @@ const onlineClassColumn = {
     display: false,
     customBodyRender: (value, rowMeta, updateValue) => {
       const tag = value ? value.split(", ") : [];
-      const allTagsOptions = Object.keys(tag).map((x) => {
-        return { key: x, label: tag[x] };
-      });
+      const allTagsOptions = Object.keys(tag).map((x) => ({
+        key: x,
+        label: tag[x],
+      }));
       return (
         <TagsForOnlineClass
           studentId={rowMeta.rowData[0]}
@@ -789,31 +769,21 @@ const addedAtColumnCampus = {
     filter: false,
     sort: true,
     customBodyRender: (value, rowMeta) => {
-      const user = window.localStorage.user
+      const currentUser = window.localStorage.user
         ? JSON.parse(window.localStorage.user).email
         : null;
 
       if (typeof rowMeta.rowData[0] === "number") {
-        return (
-          // <Moment format="D MMM YYYY" withTitle>
-          //   {value}
-          // </Moment>
-          <div></div>
-        );
-      } else if (
-        permissions.updateStage.indexOf(user) > -1 &&
+        return <p>{dayjs(value).format("D MMM YYYY")}</p>;
+      }
+      if (
+        permissions.updateStage.indexOf(currentUser) > -1 &&
         (rowMeta.rowData[0].indexOf("Joined") > -1 ||
           keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
       ) {
-        // return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
-        return <div></div>;
+        return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
       }
-      return (
-        // <Moment format="D MMM YYYY" withTitle>
-        //   {value}
-        // </Moment>
-        <div></div>
-      );
+      return <p>{dayjs(value).format("D MMM YYYY")}</p>;
     },
   },
 };
@@ -824,14 +794,8 @@ const lastUpdatedColumn = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (value) => {
-      return value ? (
-        // <Moment format="D MMM YYYY" withTitle>
-        //   {value}
-        // </Moment>
-        <div></div>
-      ) : null;
-    },
+    customBodyRender: (value) =>
+      value ? <p>{dayjs(value).format("D MMM YYYY")}</p> : null,
   },
 };
 
@@ -843,12 +807,7 @@ const JobKabLagegiColumn = {
     sort: true,
     customBodyRender: (value) => {
       if (value) {
-        return (
-          // <Moment format="D MMM YYYY" withTitle>
-          //   {value}
-          // </Moment>
-          <div></div>
-        );
+        return <p>{dayjs(value).format("D MMM YYYY")}</p>;
       }
       return value;
     },
@@ -863,7 +822,7 @@ const daysPassedColumn = {
     display: false,
     customBodyRender: (value) => {
       if (value) {
-        let parseValue = parseInt(value);
+        const parseValue = parseInt(value, 10);
         return <p>{parseValue} days</p>;
       }
       return value;
@@ -879,7 +838,7 @@ const kitneAurDin = {
     display: false,
     customBodyRender: (value) => {
       if (value) {
-        let parseValue = parseInt(value);
+        const parseValue = parseInt(value, 10);
         return <p>{parseValue} days</p>;
       }
       return value;
@@ -895,7 +854,7 @@ const kitneDinLagenge = {
     display: false,
     customBodyRender: (value) => {
       if (value) {
-        let parseValue = parseInt(value);
+        const parseValue = parseInt(value, 10);
         return <p>{parseValue} days</p>;
       }
       return value;
@@ -930,38 +889,39 @@ const deadlineColumn = {
               Your deadline is <b>finished</b> please do this work ASAP.
             </p>
           );
-        } else if (deadline === 60 && remainingTime < 20) {
+        }
+        if (deadline === 60 && remainingTime < 20) {
           return (
             <p style={{ color: "#f9a800", letterSpacing: "1px" }}>
               {" "}
               <b>{remainingTime}</b> Hours remaining.
-            </p>
-          );
-        } else if (deadline === 48 && remainingTime < 15) {
-          return (
-            <p style={{ color: "#f9a800", letterSpacing: "1px" }}>
-              {" "}
-              <b>{remainingTime}</b> Hours remaining.
-            </p>
-          );
-        } else if (deadline === 24 && remainingTime < 6) {
-          return (
-            <p style={{ color: "#f9a800", letterSpacing: "1px" }}>
-              {" "}
-              <b>{remainingTime}</b> Hours remaining.
-            </p>
-          );
-        } else {
-          return (
-            <p style={{ color: "green", letterSpacing: "1px" }}>
-              {" "}
-              <b>{remainingTime}</b> Hours remaining.{" "}
             </p>
           );
         }
-      } else {
-        return null;
+        if (deadline === 48 && remainingTime < 15) {
+          return (
+            <p style={{ color: "#f9a800", letterSpacing: "1px" }}>
+              {" "}
+              <b>{remainingTime}</b> Hours remaining.
+            </p>
+          );
+        }
+        if (deadline === 24 && remainingTime < 6) {
+          return (
+            <p style={{ color: "#f9a800", letterSpacing: "1px" }}>
+              {" "}
+              <b>{remainingTime}</b> Hours remaining.
+            </p>
+          );
+        }
+        return (
+          <p style={{ color: "green", letterSpacing: "1px" }}>
+            {" "}
+            <b>{remainingTime}</b> Hours remaining.{" "}
+          </p>
+        );
       }
+      return null;
     },
   },
 };
@@ -974,13 +934,6 @@ const statusFilterList = [
   ...feedbackableStagesData.pendingEnglishInterview.status,
 ].sort();
 
-const Lables = {
-  fontSize: "15px",
-  fontWeight: "500",
-  color: "#808080",
-  marginBottom: "5px",
-};
-
 const dashboardStatusColumn = {
   name: "status",
   label: "Status",
@@ -990,26 +943,22 @@ const dashboardStatusColumn = {
     // display: true,
     filterType: "custom",
     filterOptions: {
-      display: (filterlist, onChange, index, column) => {
-        return (
-          <div>
-            <label style={Lables}>Status</label>
-            <SelectReact
-              options={statusFilterList.map((status) => {
-                return {
-                  value: status,
-                  label: status,
-                };
-              })}
-              filterList={filterlist}
-              onChange={onChange}
-              index={index}
-              column={column}
-              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
-            />
-          </div>
-        );
-      },
+      display: (filterlist, onChange, index, column) => (
+        <div>
+          <InputLabel style={Lables}>Status</InputLabel>
+          <SelectReact
+            options={statusFilterList.map((status) => ({
+              value: status,
+              label: status,
+            }))}
+            filterList={filterlist}
+            onChange={onChange}
+            index={index}
+            column={column}
+            value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+          />
+        </div>
+      ),
     },
     customBodyRender: (state) => {
       if (state) {
@@ -1049,23 +998,20 @@ const redFlagColumn = {
   name: "redflag",
   options: {
     filter: true,
-    display: permissions.updateStudentName.indexOf(user) > -1 ? true : false,
+    display: permissions.updateStudentName.indexOf(user) > -1,
     filterType: "dropdown",
-    viewColumns:
-      permissions.updateStudentName.indexOf(user) > -1 ? true : false,
+    viewColumns: permissions.updateStudentName.indexOf(user) > -1,
 
-    customBodyRender: (value, rowMeta, updateValue) => {
-      return (
-        <div>
-          <RedFlag
-            rowMetaTable={rowMeta}
-            studentId={rowMeta.rowData[0]}
-            comment={value}
-            change={(event) => updateValue(event)}
-          />
-        </div>
-      );
-    },
+    customBodyRender: (value, rowMeta, updateValue) => (
+      <div>
+        <RedFlag
+          rowMetaTable={rowMeta}
+          studentId={rowMeta.rowData[0]}
+          comment={value}
+          change={(event) => updateValue(event)}
+        />
+      </div>
+    ),
   },
 };
 
@@ -1076,9 +1022,9 @@ const finishedColumnTransitionCampus = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (value, rowData) => {
-      return <EndDateUpdate value={value} rowData={rowData} />;
-    },
+    customBodyRender: (value, rowData) => (
+      <EndDateUpdate value={value} rowData={rowData} />
+    ),
   },
 };
 
@@ -1090,11 +1036,11 @@ const loggedInUser = {
     display: false,
     customBodyRender: () => {
       if (localStorage.getItem("user")) {
-        const user = JSON.parse(localStorage.getItem("user"))
+        const currentUser = JSON.parse(localStorage.getItem("user"))
           ? JSON.parse(localStorage.getItem("user"))
           : {};
 
-        return user.user_name;
+        return currentUser.user_name;
       }
 
       return "guest_username";
@@ -1117,11 +1063,10 @@ const feedbackColumnMyreport = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData) => {
-      return rowData
-        ? rowData.split("\n\n").map((item, i) => <p key={i}> {item} </p>)
-        : null;
-    },
+    customBodyRender: (rowData) =>
+      rowData
+        ? rowData.split("\n\n").map((item) => <p key={item}> {item} </p>)
+        : null,
   },
 };
 
@@ -1140,29 +1085,24 @@ const dashboardOwnerColumnMyreport = {
     filter: true,
     filterType: "custom",
     filterOptions: {
-      display: (filterlist, onChange, index, column) => {
-        return (
-          <div>
-            <label style={Lables}>Owner</label>
-            <SelectReact
-              options={[
-                "All",
-                ...JSON.parse(localStorage.getItem("owners")),
-              ].map((item) => {
-                return {
-                  value: item,
-                  label: item,
-                };
-              })}
-              filterList={filterlist}
-              onChange={onChange}
-              index={index}
-              column={column}
-              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
-            />
-          </div>
-        );
-      },
+      display: (filterlist, onChange, index, column) => (
+        <div>
+          <InputLabel style={Lables}>Owner</InputLabel>
+          <SelectReact
+            options={["All", ...JSON.parse(localStorage.getItem("owners"))].map(
+              (item) => ({
+                value: item,
+                label: item,
+              })
+            )}
+            filterList={filterlist}
+            onChange={onChange}
+            index={index}
+            column={column}
+            value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+          />
+        </div>
+      ),
     },
   },
 };
@@ -1180,14 +1120,11 @@ const assignDateColumnMyreport = {
   name: "created_at",
   options: {
     filter: false,
-    customBodyRender: (rowData) => {
-      return (
-        // <Moment format="D MMM YYYY" withTitle>
-        //   {rowData}
-        // </Moment>
-        <div></div>
-      );
-    },
+    customBodyRender: (rowData) => (
+      <p format="D MMM YYYY" withTitle>
+        {dayjs(rowData).format("D MMM YYYY")}
+      </p>
+    ),
   },
 };
 
@@ -1243,7 +1180,7 @@ const EmailColumn = {
     filter: false,
     display: true,
     customBodyRender: (rowData, rowMeta, updateValue) => {
-      const emailAddress = rowData ? rowData : "Update Email";
+      const emailAddress = rowData || "Update Email";
       return (
         <UpdateEmail
           prevEmail={emailAddress}
@@ -1290,12 +1227,7 @@ const joinedDate = {
     filter: false,
     customBodyRender: (value) => {
       if (value) {
-        return (
-          // <Moment format="D MMM YYYY" withTitle>
-          //   {value}
-          // </Moment>
-          <div></div>
-        );
+        return <p>{dayjs(value).format("D MMM YYYY")}</p>;
       }
       return value;
     },
@@ -1307,9 +1239,7 @@ const lastStageColumn = {
   name: "from_stage",
   options: {
     filter: false,
-    customBodyRender: (rowData) => {
-      return allStages[rowData];
-    },
+    customBodyRender: (rowData) => allStages[rowData],
   },
 };
 
@@ -1322,13 +1252,12 @@ const linkForOnlineTestColumn = {
   label: "Online Test Link",
   name: "linkForOnlineTest",
   options: {
-    customBodyRender: (value) => {
-      return value ? (
+    customBodyRender: (value) =>
+      value ? (
         <a target="_blank" rel="noreferrer noopener" href={value}>
           Link to Test
         </a>
-      ) : null;
-    },
+      ) : null,
   },
 };
 
@@ -1337,9 +1266,7 @@ const stageColumnStatus = {
   name: "to_stage",
   options: {
     filter: false,
-    customBodyRender: (rowData) => {
-      return allStages[rowData];
-    },
+    customBodyRender: (rowData) => allStages[rowData],
   },
 };
 const cityColumnStatus = {
@@ -1358,11 +1285,9 @@ const ColumnTransitionsStatus = {
   options: {
     filter: false,
     sort: false,
-    customBodyRender: (value) => {
-      return (
-        <StageTransitionsStudentStatus rowData={value} allStages={allStages} />
-      );
-    },
+    customBodyRender: (value) => (
+      <StageTransitionsStudentStatus rowData={value} allStages={allStages} />
+    ),
   },
 };
 
@@ -1374,29 +1299,25 @@ const dashboardPartnerNameColumn = {
     sort: true,
     filterType: "custom",
     filterOptions: {
-      display: (filterlist, onChange, index, column) => {
-        return (
-          <div>
-            <label style={Lables}>Partner</label>
-            <SelectReact
-              options={[
-                "All",
-                ...JSON.parse(localStorage.getItem("partners")),
-              ].map((partner) => {
-                return {
-                  value: partner,
-                  label: partner,
-                };
-              })}
-              filterList={filterlist}
-              onChange={onChange}
-              index={index}
-              column={column}
-              value={filterlist[index].length == 0 ? "All" : filterlist[index]}
-            />
-          </div>
-        );
-      },
+      display: (filterlist, onChange, index, column) => (
+        <div>
+          <InputLabel style={Lables}>Partner</InputLabel>
+          <SelectReact
+            options={[
+              "All",
+              ...JSON.parse(localStorage.getItem("partners")),
+            ].map((partner) => ({
+              value: partner,
+              label: partner,
+            }))}
+            filterList={filterlist}
+            onChange={onChange}
+            index={index}
+            column={column}
+            value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+          />
+        </div>
+      ),
     },
     customBodyRender: (value, rowMeta, updateValue) => {
       if (!value && permissions.updateStage.indexOf(user) > -1) {
@@ -1407,9 +1328,8 @@ const dashboardPartnerNameColumn = {
             change={(event) => updateValue(event)}
           />
         );
-      } else {
-        return value;
       }
+      return value;
     },
   },
 };
@@ -1422,10 +1342,10 @@ const partnerNameColumn = {
     filterOptions: { names: JSON.parse(localStorage.getItem("partners")) },
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
-      const user = window.localStorage.user
+      const currentUser = window.localStorage.user
         ? JSON.parse(window.localStorage.user).email
         : null;
-      if (!value && permissions.updateStage.indexOf(user) > -1) {
+      if (!value && permissions.updateStage.indexOf(currentUser) > -1) {
         return (
           <UpdatePartner
             studentId={rowMeta.rowData[0]}
@@ -1433,9 +1353,8 @@ const partnerNameColumn = {
             change={(event) => updateValue(event)}
           />
         );
-      } else {
-        return value;
       }
+      return value;
     },
   },
 };
@@ -1467,8 +1386,8 @@ const profileImage = {
   options: {
     filter: false,
     sort: false,
-    customBodyRender: (value) => {
-      return value !== null ? (
+    customBodyRender: (value) =>
+      value !== null ? (
         <img
           src={value}
           alt="profile"
@@ -1481,8 +1400,7 @@ const profileImage = {
         />
       ) : (
         <p> </p>
-      );
-    },
+      ),
   },
 };
 
@@ -1643,18 +1561,18 @@ const StudentService = {
     navGurukulSurveyForm,
   ],
 
-  dConvert: (x) => {
-    const getKeyByValue = (object, value) => {
-      return Object.keys(object).find((key) => object[key] === value);
-    };
+  dConvert: (data) => {
+    const x = { ...data };
+    const getKeyByValue = (object, value) =>
+      Object.keys(object).find((key) => object[key] === value);
     try {
-      x.number = x["contacts"][0]["mobile"];
+      x.number = x.contacts[0].mobile;
     } catch (e) {
       x.number = null;
     }
 
     x.gender =
-      x.gender == 1 ? "Female" : x.gender == 2 ? "Male" : "Transgender";
+      x.gender === 1 ? "Female" : x.gender === 2 ? "Male" : "Transgender";
     x.stage = allStages[x.stage];
     x.marks = x.enrolmentKey[x.enrolmentKey.length - 1]
       ? parseInt(x.enrolmentKey[x.enrolmentKey.length - 1].total_marks, 10)
@@ -1667,16 +1585,15 @@ const StudentService = {
     return x;
   },
 
-  addOptions: (columns, dataRow) => {
-    return columns.map((column) => {
+  addOptions: (columns, dataRow) =>
+    columns.map((column) => {
       if ("selectFilter" in column) {
-        if (column.options.indexOf(dataRow[column.field]) == -1) {
+        if (column.options.indexOf(dataRow[column.field]) === -1) {
           column.options.push(dataRow[column.field]);
         }
       }
       return column;
-    });
-  },
+    }),
 };
 
 export default StudentService;

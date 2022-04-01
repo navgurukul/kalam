@@ -23,7 +23,7 @@ import { makeStyles, useTheme } from "@mui/styles";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useForm, Controller } from "react-hook-form";
-import moment from "moment";
+import dayjs from "dayjs";
 import { useLocation, useNavigate } from "react-router-dom";
 import KuchAurDetails from "../KuchAurDetails";
 
@@ -217,12 +217,7 @@ const BasicDetails = ({
             rules={{
               required: true,
               validate: (dob) =>
-                parseInt(
-                  moment
-                    .duration(moment(moment.now()).diff(moment(dob)))
-                    .asYears(),
-                  10
-                ) >= 16,
+                parseInt(dayjs(dayjs.now()).diff(dayjs(dob), "hour"), 10) >= 16,
             }}
             render={({
               field: { ref, ...rest },

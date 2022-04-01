@@ -52,7 +52,9 @@ const columns = [
       sort: true,
       customBodyRender: (value, rowMeta) => {
         const name = rowMeta.rowData[3];
-        return <PartnerLink url={`partner/${value}`} text={name} name={name} />;
+        return (
+          <PartnerLink url={`/partner/${value}`} text={name} name={name} />
+        );
       },
     },
   },

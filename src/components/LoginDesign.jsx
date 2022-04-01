@@ -58,15 +58,29 @@ const LoginDesign = () => {
         })
         .then((resp) => {
           const { userToken, user } = resp.data;
-          localStorage.setItem("jwt", userToken);
-          localStorage.setItem("user", JSON.stringify(user));
-          if (user.mobile) {
-            handleLogin();
-            navigate("/students");
-          } else {
-            handleLogin();
-            navigate("/user/mobile/number");
-          }
+          axios.get(`${baseUrl}rolebaseaccess/email`).then((res) => {
+            const { data } = res;
+            const userRoles = data.find((role) => role.email === user.email);
+            if (userRoles) {
+              localStorage.setItem("roles", JSON.stringify(userRoles.roles));
+              localStorage.setItem(
+                "privileges",
+                JSON.stringify(userRoles.privilege)
+              );
+            } else {
+              localStorage.setItem("roles", JSON.stringify([]));
+              localStorage.setItem("privileges", JSON.stringify([]));
+            }
+            localStorage.setItem("jwt", userToken);
+            localStorage.setItem("user", JSON.stringify(user));
+            if (user.mobile) {
+              handleLogin();
+              navigate("/students");
+            } else {
+              handleLogin();
+              navigate("/user/mobile/number");
+            }
+          });
         });
     } else {
       snackbar.enqueueSnackbar("Only Accessible by Navgurukul user ID", {
@@ -121,8 +135,8 @@ const LoginDesign = () => {
       container
       spacing={0}
       alignItems="center"
-      justify="center"
-      width="0%"
+      justifyContent="center"
+      // width="0%"
       style={{ minHeight: "83vh" }}
     >
       <Box className={classes.container}>

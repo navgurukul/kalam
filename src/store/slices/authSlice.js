@@ -8,6 +8,8 @@ const AuthSlice = createSlice({
     isAuthenticated: !!localStorage.getItem("jwt"),
     loggedInUser: JSON.parse(localStorage.getItem("user")),
     users: null,
+    roles: JSON.parse(localStorage.getItem("roles")) || [],
+    privileges: JSON.parse(localStorage.getItem("privileges")) || [],
   },
   reducers: {
     // creating reducers
@@ -25,8 +27,12 @@ const AuthSlice = createSlice({
       localStorage.removeItem("jwt");
       localStorage.removeItem("user");
       localStorage.removeItem("permissions");
+      localStorage.removeItem("roles");
+      localStorage.removeItem("privileges");
       state.isAuthenticated = false;
       state.loggedInUser = null;
+      state.roles = [];
+      state.privileges = [];
     },
   },
 });

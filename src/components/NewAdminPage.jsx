@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import Select from "react-select";
 import axios from "axios";
@@ -19,7 +19,7 @@ import {
 import { useSnackbar } from "notistack";
 import NewCustomToolbar from "./NewCustomToolbar";
 
-const baseUrl = import.meta.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const NewAdminPage = () => {
   const [roleByMailID, setRoleByMailID] = useState([]);
@@ -90,55 +90,57 @@ const NewAdminPage = () => {
     setRoleMenu(selectedRoleMenu);
   };
 
-  const handleSubmit = async () => {
-    const PartnerRole =
-      selectedRolePartners.length > 0 &&
-      selectedRolePartners.map((role) => role.value);
-    const TPRole =
-      selectedRoleTP.length > 0 && selectedRoleTP.map((role) => role.value);
-    const Role =
-      PartnerRole === false
-        ? [...TPRole]
-        : TPRole === false
-        ? [...PartnerRole]
-        : [...PartnerRole, ...TPRole];
+  // const handleSubmit = async () => {
+  //   const PartnerRole =
+  //     selectedRolePartners.length > 0 &&
+  //     selectedRolePartners.map((role) => role.value);
+  //   const TPRole =
+  //     selectedRoleTP.length > 0 && selectedRoleTP.map((role) => role.value);
+  //   const Role =
+  //     PartnerRole === false
+  //       ? [...TPRole]
+  //       : TPRole === false
+  //       ? [...PartnerRole]
+  //       : [...PartnerRole, ...TPRole];
 
-    await axios
-      .post(`${baseUrl}rolebaseaccess/email/add`, {
-        email: mail,
-        roles: Role,
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          snackbar.enqueueSnackbar(`Role Assigned Successfully to ${mail}`, {
-            variant: "success",
-          });
-          setDialogOpen(false);
-          setMail("");
-          setRoleMenu("");
-          setSelectedRolePartners([]);
-          setSelectedRoleTP([]);
-          setSelectedPrivilages([]);
-        } else {
-          snackbar.enqueueSnackbar("Something Went Wrong", {
-            variant: "error",
-          });
-        }
-      });
-  };
+  //   await axios
+  //     .post(`${baseUrl}rolebaseaccess/email/add`, {
+  //       email: mail,
+  //       roles: Role,
+  //     })
+  //     .then((res) => {
+  //       if (res.status === 200) {
+  //         snackbar.enqueueSnackbar(`Role Assigned Successfully to ${mail}`, {
+  //           variant: "success",
+  //         });
+  //         setDialogOpen(false);
+  //         setMail("");
+  //         setRoleMenu("");
+  //         setSelectedRolePartners([]);
+  //         setSelectedRoleTP([]);
+  //         setSelectedPrivilages([]);
+  //       } else {
+  //         snackbar.enqueueSnackbar("Something Went Wrong", {
+  //           variant: "error",
+  //         });
+  //       }
+  //     });
+  // };
 
-  useEffect(() => {
-    handleSubmit();
-    return () => {
-      //cleanup
-      setDialogOpen(false);
-      setMail("");
-      setRoleMenu("");
-      setSelectedRolePartners([]);
-      setSelectedRoleTP([]);
-      setSelectedPrivilages([]);
-    };
-  }, []);
+  useEffect(
+    () =>
+      //handleSubmit();
+      () => {
+        //cleanup
+        setDialogOpen(false);
+        setMail("");
+        setRoleMenu("");
+        setSelectedRolePartners([]);
+        setSelectedRoleTP([]);
+        setSelectedPrivilages([]);
+      },
+    []
+  );
 
   const fetchByMailId = () => {
     axios
@@ -173,50 +175,53 @@ const NewAdminPage = () => {
       options: {
         filter: true,
         sort: true,
-        customBodyRender: memo((value) => (
-          // <Select
-          //   placeholder={"Select Role"}
-          //   value={
-          //     selectedOptionRole.length > 0
-          //       ? selectedOptionRole
-          //       : value.map((item) => {
-          //           return {
-          //             value: item,
-          //             label: item.split(":", 1),
-          //           };
-          //         })
-          //   }
-          //   isMulti={true}
-          //   onChange={handleRoleChange}
-          //   options={allPrivilagesOptions}
-          //   styles={{
-          //     menuList: (base) => ({
-          //       ...base,
-          //       position: "fixed !important",
-          //       backgroundColor: "white",
-          //       border: "1px solid lightgray",
-          //       width: "18%",
-          //     }),
-          //   }}
-          // />
+        customBodyRender: React.useCallback(
+          (value) => (
+            // <Select
+            //   placeholder={"Select Role"}
+            //   value={
+            //     selectedOptionRole.length > 0
+            //       ? selectedOptionRole
+            //       : value.map((item) => {
+            //           return {
+            //             value: item,
+            //             label: item.split(":", 1),
+            //           };
+            //         })
+            //   }
+            //   isMulti={true}
+            //   onChange={handleRoleChange}
+            //   options={allPrivilagesOptions}
+            //   styles={{
+            //     menuList: (base) => ({
+            //       ...base,
+            //       position: "fixed !important",
+            //       backgroundColor: "white",
+            //       border: "1px solid lightgray",
+            //       width: "18%",
+            //     }),
+            //   }}
+            // />
 
-          <div>
-            {value.map((item) => (
-              <span
-                key={item.split(":", 1)}
-                style={{
-                  display: "inline-block",
-                  marginRight: "10px",
-                  border: "1px solid lightgray",
-                  padding: "8px",
-                }}
-              >
-                {item.split(":", 1)}
-                <br />
-              </span>
-            ))}
-          </div>
-        )),
+            <div>
+              {value.map((item) => (
+                <span
+                  key={`${item.split(":", 1)} ${Math.random() * 10}`}
+                  style={{
+                    display: "inline-block",
+                    marginRight: "10px",
+                    border: "1px solid lightgray",
+                    padding: "8px",
+                  }}
+                >
+                  {item.split(":", 1)}
+                  <br />
+                </span>
+              ))}
+            </div>
+          ),
+          []
+        ),
       },
     },
     {
@@ -225,21 +230,24 @@ const NewAdminPage = () => {
       options: {
         filter: true,
         sort: true,
-        customBodyRender: memo(() => (
-          <div>
-            <span
-              style={{
-                display: "inline-block",
-                marginRight: "10px",
-                border: "1px solid lightgray",
-                padding: "8px",
-              }}
-            >
-              Privilege
-              <br />
-            </span>
-          </div>
-        )),
+        customBodyRender: React.useCallback(
+          () => (
+            <div>
+              <span
+                style={{
+                  display: "inline-block",
+                  marginRight: "10px",
+                  border: "1px solid lightgray",
+                  padding: "8px",
+                }}
+              >
+                Privilege
+                <br />
+              </span>
+            </div>
+          ),
+          []
+        ),
       },
     },
     {
@@ -248,78 +256,84 @@ const NewAdminPage = () => {
       options: {
         filter: true,
         sort: true,
-        customBodyRender: memo((value, { rowData }) => (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-around",
-              alignItems: "center",
-            }}
-          >
-            <EditIcon
+        customBodyRender: React.useCallback(
+          (value, { rowData }) => (
+            <div
               style={{
-                color: "green",
-                cursor: "pointer",
+                display: "flex",
+                justifyContent: "space-around",
+                alignItems: "center",
               }}
-              onClick={() => {
-                setEditing(rowData[3]);
-                setMail(rowData[0]);
-                setSelectedPrivilages([
-                  { value: rowData[2], label: rowData[2] },
-                ]);
-                const roles = {};
-                rowData[1].forEach((el) => {
-                  if (el.split(":")[0] === "partner") {
-                    const partners = el
-                      .split(":")[1]
-                      .split(",")
-                      .map((elm) => ({ label: elm, value: elm }));
-                    roles.partners = partners;
-                  }
-                  if (el.split(":")[0] === "T&P") {
-                    const campuses = el
-                      .split(":")[1]
-                      .split(",")
-                      .map((elm) => ({ value: elm, label: elm }));
-                    roles.tnp = campuses;
-                  }
-                });
-                if (roles.partners) setSelectedRolePartners(roles.partners);
-                if (roles.tnp) setSelectedRoleTP(roles.tnp);
-                handleOpen();
-              }}
-            />
-            <DeleteIcon
-              style={{
-                color: "red",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                if (
-                  window.confirm(
-                    `Do you want to delete roles of ${rowData[0]}?`
-                  )
-                )
-                  axios
-                    .delete(
-                      `${baseUrl}rolebaseaccess/email/delete/${rowData[3]}`
+            >
+              <EditIcon
+                style={{
+                  color: "green",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setEditing(rowData[3]);
+                  setMail(rowData[0]);
+                  setSelectedPrivilages([
+                    { value: rowData[2], label: rowData[2] },
+                  ]);
+                  const roles = {};
+                  rowData[1].forEach((el) => {
+                    if (el.split(":")[0] === "partner") {
+                      const partners = el
+                        .split(":")[1]
+                        .split(",")
+                        .map((elm) => ({ label: elm, value: elm }));
+                      roles.partners = partners;
+                    }
+                    if (el.split(":")[0] === "T&P") {
+                      const campuses = el
+                        .split(":")[1]
+                        .split(",")
+                        .map((elm) => ({ value: elm, label: elm }));
+                      roles.tnp = campuses;
+                    }
+                  });
+                  if (roles.partners) setSelectedRolePartners(roles.partners);
+                  if (roles.tnp) setSelectedRoleTP(roles.tnp);
+                  handleOpen();
+                }}
+              />
+              <DeleteIcon
+                style={{
+                  color: "red",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      `Do you want to delete roles of ${rowData[0]}?`
                     )
-                    .then(() => {
-                      snackbar.enqueueSnackbar("Role deleted successfully!", {
-                        variant: "success",
+                  )
+                    axios
+                      .delete(
+                        `${baseUrl}rolebaseaccess/email/delete/${rowData[3]}`
+                      )
+                      .then(() => {
+                        snackbar.enqueueSnackbar("Role deleted successfully!", {
+                          variant: "success",
+                        });
                       });
-                    });
-              }}
-            />
-          </div>
-        )),
+                }}
+              />
+            </div>
+          ),
+          []
+        ),
       },
     },
   ];
 
   const options = {
     selectableRows: false,
-    customToolbar: memo(() => <NewCustomToolbar handleOpen={handleOpen} />),
+    customToolbar: React.useCallback(
+      () => <NewCustomToolbar handleOpen={handleOpen} />,
+      []
+    ),
   };
 
   const data = roleByMailID.map((item) => [

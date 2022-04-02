@@ -82,7 +82,7 @@ export const getstudentMachine = (initState = "enrolmentKeyGenerated") => {
           on: {
             englishInterviewFail: "englishInterviewFail",
             pendingAlgebraInterview: "pendingAlgebraInterview",
-            notReachable: "Unreachable",
+            notReachable: "notReachable",
             becameDisIntersested: "becameDisIntersested",
           },
         },
@@ -95,7 +95,7 @@ export const getstudentMachine = (initState = "enrolmentKeyGenerated") => {
           on: {
             algebraInterviewFail: "algebraInterviewFail",
             pendingCultureFitInterview: "pendingCultureFitInterview",
-            notReachable: "Unreachable",
+            notReachable: "notReachable",
             becameDisIntersested: "becameDisIntersested",
           },
         },
@@ -108,7 +108,7 @@ export const getstudentMachine = (initState = "enrolmentKeyGenerated") => {
           on: {
             selectedAndJoiningAwaited: "selectedAndJoiningAwaited",
             cultureFitInterviewFail: "cultureFitInterviewFail",
-            notReachable: "Unreachable",
+            notReachable: "notReachable",
             becameDisIntersested: "becameDisIntersested",
           },
         },
@@ -117,7 +117,7 @@ export const getstudentMachine = (initState = "enrolmentKeyGenerated") => {
             pendingCultureFitInterview: "pendingCultureFitInterview",
           },
         },
-        Unreachable: {
+        notReachable: {
           on: {
             pendingEnglishInterview: "pendingEnglishInterview",
             pendingAlgebraInterview: "pendingAlgebraInterview",

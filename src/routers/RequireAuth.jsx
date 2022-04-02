@@ -18,8 +18,7 @@ const RequireAuth = ({ children, privateRoute }) => {
         roles.some(
           (role) =>
             role.split(":")[0] === "Partner" &&
-            parseInt(role.split(":")[1], 10) === parseInt(params.partnerId, 10),
-          10
+            parseInt(role.split(":")[1], 10) === parseInt(params.partnerId, 10)
         ) ? (
         <div className="bodyComponent">{children}</div>
       ) : (
@@ -32,8 +31,7 @@ const RequireAuth = ({ children, privateRoute }) => {
         roles.some(
           (role) =>
             role.split(":")[0] === "T&P" &&
-            parseInt(role.split(":")[1], 10) === parseInt(params.campusId, 10),
-          10
+            parseInt(role.split(":")[1], 10) === parseInt(params.campusId, 10)
         ) ? (
         <div className="bodyComponent">{children}</div>
       ) : (

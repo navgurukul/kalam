@@ -507,7 +507,6 @@ const dashboardGenderColumn = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          <InputLabel style={Lables}>Gender</InputLabel>
           <SelectReact
             options={[
               { value: "All", label: "All" },
@@ -519,7 +518,9 @@ const dashboardGenderColumn = {
             onChange={onChange}
             index={index}
             column={column}
-            value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+            value={
+              filterlist[index].length === 0 ? "All" : filterlist[index][0]
+            }
           />
         </div>
       ),

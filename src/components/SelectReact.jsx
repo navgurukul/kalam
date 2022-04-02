@@ -13,7 +13,7 @@ const SelectReact = (props) => {
     <Select
       value={selectedOption}
       onChange={(event) => {
-        filterList[index] = event.value;
+        filterList[index] = [event.value];
         setSelectedOption(event);
         onChange(filterList[index], index, column);
       }}

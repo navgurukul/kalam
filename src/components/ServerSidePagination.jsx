@@ -253,7 +253,7 @@ const ServerSidePagination = ({
     filter: true,
     search: false,
     serverSide: true,
-    filterType: "dropdown",
+    // filterType: "dropdown",
     onDownload: () => {
       downloadCSV();
       return false;
@@ -275,7 +275,7 @@ const ServerSidePagination = ({
         partnerName: 21,
       };
       if (columnChanged) {
-        const filterValue = filterList[indexObj[columnChanged]];
+        const filterValue = filterList[indexObj[columnChanged]][0];
         return getfilterApi(columnChanged, filterValue);
       }
       setState((prevState) => ({

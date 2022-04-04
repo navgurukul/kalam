@@ -71,43 +71,65 @@ const ServerSidePagination = (props) => {
       name: "searchName",
       number: "searchNumber",
     };
-    setState((prevState) => {
-      const newData = prevState.filterColumns.filter(
-        (filterColumn) => getKeyByValue(keys, filterColumn.key) !== query
-      );
-      let newState = {
-        filterColumns:
-          value === ""
-            ? [...newData]
-            : [...newData, { key: keys[query], value: value }],
-      };
-      const { filterColumns } = newState;
-      props.filterValues(filterColumns);
-      let url = filterColumns.reduce((cUrl, filterColumn, index) => {
-        if (index > 0) {
-          return (cUrl += `&${filterColumn.key}=${filterColumn.value}`);
-        } else {
-          if (prevState.query) {
-            return (cUrl += `${state.query}=${state.value}&${filterColumn.key}=${filterColumn.value}`);
-          } else {
-            return (cUrl += `${filterColumn.key}=${filterColumn.value}`);
-          }
-        }
-      }, `${baseURL}students?`);
-      if (filterColumns.length > 0) {
-        return {
-          ...prevState,
-          filterColumns: newState.filterColumns,
-          mainUrl: `${url}&`,
-        };
+
+    const newData = filterColumns.filter(
+      (filterColumn) => getKeyByValue(keys, filterColumn.key) !== query
+    );
+    console.log(filterColumns, newData);
+    let newState = {
+      filterColumns:
+        value === ""
+          ? [...newData]
+          : [...newData, { key: keys[query], value: value }],
+    };
+    const { filterColumns: newColumns } = newState;
+    // props.filterValues(filterColumns);
+    let url = newColumns.reduce((cUrl, filterColumn, index) => {
+      if (index > 0) {
+        return (cUrl += `&${filterColumn.key}=${filterColumn.value}`);
       } else {
-        return {
-          ...prevState,
-          filterColumns: [],
-          mainUrl: `${url}`,
-        };
+        if (state.query) {
+          return (cUrl += `${state.query}=${state.value}&${filterColumn.key}=${filterColumn.value}`);
+        } else {
+          return (cUrl += `${filterColumn.key}=${filterColumn.value}`);
+        }
       }
-    });
+    }, `${baseURL}students?`);
+
+    if (newColumns.length > 0) {
+      //getStudents(`${url}&limit=${numberOfRows}&page=0`);
+      setFilters({ filterColumns: newState.filterColumns, url: `${url}&` });
+      // setState({
+      //   ...state,
+      //   filterColumns: newState.filterColumns,
+      //   mainUrl: `${url}&`,
+      // });
+    } else {
+      setFilters({ filterColumns: [], url: `${url}` });
+      //getStudents(0, numberOfRows);
+      setState({
+        ...state,
+        filterColumns: [],
+        mainUrl: `${url}`,
+      });
+    }
+
+    // setState((prevState) => {
+
+    //   if (filterColumns.length > 0) {
+    //     return {
+    //       ...prevState,
+    //       filterColumns: newState.filterColumns,
+    //       mainUrl: `${url}&`,
+    //     };
+    //   } else {
+    //     return {
+    //       ...prevState,
+    //       filterColumns: [],
+    //       mainUrl: `${url}`,
+    //     };
+    //   }
+    // });
   };
 
   const changePage = async (page) => {
@@ -165,6 +187,7 @@ const ServerSidePagination = (props) => {
       });
     } else {
       //getStudents(0, numberOfRows);
+      setFilters({ filterColumns: [], url: `${url}` });
       setState({
         ...state,
         filterColumns: [],
@@ -263,6 +286,7 @@ const ServerSidePagination = (props) => {
   const options = {
     selectableRows: false,
     filter: true,
+    sort: false,
     search: false,
     serverSide: true,
     filterType: "dropdown",

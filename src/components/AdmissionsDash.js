@@ -343,14 +343,15 @@ const AdmissionsDash = (props) => {
         showLoader: true,
         totalData: totalData ? totalData : state.totalData,
       }));
-      fetchingFinish();
     } else {
+      setStudents({ data: [], totalData: 0 });
       setState((prevState) => ({
         ...prevState,
         data: data,
         showLoader: false,
       }));
     }
+    fetchingFinish();
   };
 
   const sortChange = (column, order) => {

@@ -154,6 +154,7 @@ export const getstudentMachine = (initState = "enrolmentKeyGenerated") => {
             becameDisIntersested: "becameDisIntersested",
           },
         },
+        possibleDuplicate: {},
         finalisedTravelPlans: {
           on: {
             finallyJoined: "finallyJoined",

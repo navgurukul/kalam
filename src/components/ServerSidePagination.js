@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import MUIDataTable from "mui-datatables";
 import { qualificationKeys } from "../config";
 import { useSnackbar } from "notistack";
@@ -8,16 +8,29 @@ import SearchBar from "./SearchBar";
 import { permissions } from "../config";
 import StudentService from "../services/StudentService";
 import { CircularProgress } from "@material-ui/core";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setFilterColumns,
+  setNoOfRows,
+  setPageNo,
+} from "../store/actions/data";
 
 const baseURL = process.env.API_URL;
 
 const ServerSidePagination = (props) => {
   const snackbar = useSnackbar();
+  const { filterColumns, studentData, totalData, numberOfRows } = useSelector(
+    (state) => state.data
+  );
+  const dispatch = useDispatch();
+  const setFilters = (data) => dispatch(setFilterColumns(data));
+  const setRows = (data) => dispatch(setNoOfRows(data));
+  const setPage = (data) => dispatch(setPageNo(data));
   const [state, setState] = React.useState({
-    page: 0,
+    // page: 0,
     isData: false,
-    filterColumns: [],
-    mainUrl: `${baseURL}students?`,
+    // filterColumns: [],
+    // mainUrl: `${baseURL}students?`,
     query: "",
     value: "",
     newColumns: props.columns,
@@ -25,80 +38,103 @@ const ServerSidePagination = (props) => {
   const getKeyByValue = (object, value) => {
     return Object.keys(object).find((key) => object[key] === value);
   };
-  const getStudents = async (page, rowsPerPage) => {
-    const { params, dataSetup } = props;
-    setState((prevState) => ({
-      ...prevState,
-      isData: true,
-    }));
+  // const getStudents = async (page, rowsPerPage) => {
+  //   const { params, dataSetup } = props;
+  //   setState((prevState) => ({
+  //     ...prevState,
+  //     isData: true,
+  //   }));
 
-    const url =
-      typeof page === "string" && page.includes(baseURL)
-        ? page
-        : `${state.mainUrl}limit=${rowsPerPage}&page=${page}`;
-    const response = await axios.get(url, params);
-    const studentData = response.data.data.results.map((student) => {
-      return {
-        ...student,
-        qualification: qualificationKeys[student.qualification],
-        studentOwner: "",
-        campus: student.campus ? student.campus : null,
-        donor: student.studentDonor ? student.studentDonor : null,
-      };
-    });
-    setState((prevState) => ({
-      ...prevState,
-      isData: false,
-    }));
-    dataSetup(studentData, response.data.data.total);
-  };
+  //   const url =
+  //     typeof page === "string" && page.includes(baseURL)
+  //       ? page
+  //       : `${state.mainUrl}limit=${rowsPerPage}&page=${page}`;
+  //   const response = await axios.get(url, params);
+  //   const studentData = response.data.data.results.map((student) => {
+  //     return {
+  //       ...student,
+  //       qualification: qualificationKeys[student.qualification],
+  //       studentOwner: "",
+  //       campus: student.campus ? student.campus : null,
+  //       donor: student.studentDonor ? student.studentDonor : null,
+  //     };
+  //   });
+  //   setState((prevState) => ({
+  //     ...prevState,
+  //     isData: false,
+  //   }));
+  //   // dataSetup(studentData, response.data.data.total);
+  // };
 
   const getStudentsDetailBySearch = async (query, value) => {
     const keys = {
       name: "searchName",
       number: "searchNumber",
     };
-    setState((prevState) => {
-      const newData = prevState.filterColumns.filter(
-        (filterColumn) => getKeyByValue(keys, filterColumn.key) !== query
-      );
-      let newState = {
-        filterColumns:
-          value === ""
-            ? [...newData]
-            : [...newData, { key: keys[query], value: value }],
-      };
-      const { filterColumns } = newState;
-      props.filterValues(filterColumns);
-      let url = filterColumns.reduce((cUrl, filterColumn, index) => {
-        if (index > 0) {
-          return (cUrl += `&${filterColumn.key}=${filterColumn.value}`);
-        } else {
-          if (prevState.query) {
-            return (cUrl += `${state.query}=${state.value}&${filterColumn.key}=${filterColumn.value}`);
-          } else {
-            return (cUrl += `${filterColumn.key}=${filterColumn.value}`);
-          }
-        }
-      }, `${baseURL}students?`);
-      if (filterColumns.length > 0) {
-        return {
-          ...prevState,
-          filterColumns: newState.filterColumns,
-          mainUrl: `${url}&`,
-        };
+
+    const newData = filterColumns.filter(
+      (filterColumn) => getKeyByValue(keys, filterColumn.key) !== query
+    );
+    console.log(filterColumns, newData);
+    let newState = {
+      filterColumns:
+        value === ""
+          ? [...newData]
+          : [...newData, { key: keys[query], value: value }],
+    };
+    const { filterColumns: newColumns } = newState;
+    // props.filterValues(filterColumns);
+    let url = newColumns.reduce((cUrl, filterColumn, index) => {
+      if (index > 0) {
+        return (cUrl += `&${filterColumn.key}=${filterColumn.value}`);
       } else {
-        return {
-          ...prevState,
-          filterColumns: [],
-          mainUrl: `${url}`,
-        };
+        if (state.query) {
+          return (cUrl += `${state.query}=${state.value}&${filterColumn.key}=${filterColumn.value}`);
+        } else {
+          return (cUrl += `${filterColumn.key}=${filterColumn.value}`);
+        }
       }
-    });
+    }, `${baseURL}students?`);
+
+    if (newColumns.length > 0) {
+      //getStudents(`${url}&limit=${numberOfRows}&page=0`);
+      setFilters({ filterColumns: newState.filterColumns, url: `${url}&` });
+      // setState({
+      //   ...state,
+      //   filterColumns: newState.filterColumns,
+      //   mainUrl: `${url}&`,
+      // });
+    } else {
+      setFilters({ filterColumns: [], url: `${url}` });
+      //getStudents(0, numberOfRows);
+      setState({
+        ...state,
+        filterColumns: [],
+        mainUrl: `${url}`,
+      });
+    }
+
+    // setState((prevState) => {
+
+    //   if (filterColumns.length > 0) {
+    //     return {
+    //       ...prevState,
+    //       filterColumns: newState.filterColumns,
+    //       mainUrl: `${url}&`,
+    //     };
+    //   } else {
+    //     return {
+    //       ...prevState,
+    //       filterColumns: [],
+    //       mainUrl: `${url}`,
+    //     };
+    //   }
+    // });
   };
 
-  const changePage = async (page, rowsPerPage) => {
-    await getStudents(page, rowsPerPage);
+  const changePage = async (page) => {
+    // await getStudents(page, rowsPerPage);
+    setPage(page);
     setState((prevState) => ({
       ...prevState,
       page: page,
@@ -119,7 +155,7 @@ const ServerSidePagination = (props) => {
       partnerName: "searchPartnerName",
     };
 
-    const newData = state.filterColumns.filter(
+    const newData = filterColumns.filter(
       (filterColumn) => getKeyByValue(keys, filterColumn.key) !== query
     );
     let newState = {
@@ -128,9 +164,9 @@ const ServerSidePagination = (props) => {
           ? [...newData]
           : [...newData, { key: keys[query], value: value }],
     };
-    const { filterColumns } = newState;
-    props.filterValues(filterColumns);
-    let url = await filterColumns.reduce((cUrl, filterColumn, index) => {
+    const { filterColumns: newColumns } = newState;
+    // props.filterValues(filterColumns);
+    let url = await newColumns.reduce((cUrl, filterColumn, index) => {
       if (index > 0) {
         return (cUrl += `&${filterColumn.key}=${filterColumn.value}`);
       } else {
@@ -141,8 +177,9 @@ const ServerSidePagination = (props) => {
         }
       }
     }, `${baseURL}students?`);
-    if (filterColumns.length > 0) {
+    if (newColumns.length > 0) {
       //getStudents(`${url}&limit=${numberOfRows}&page=0`);
+      setFilters({ filterColumns: newState.filterColumns, url: `${url}&` });
       setState({
         ...state,
         filterColumns: newState.filterColumns,
@@ -150,6 +187,7 @@ const ServerSidePagination = (props) => {
       });
     } else {
       //getStudents(0, numberOfRows);
+      setFilters({ filterColumns: [], url: `${url}` });
       setState({
         ...state,
         filterColumns: [],
@@ -158,12 +196,12 @@ const ServerSidePagination = (props) => {
     }
   };
 
-  useEffect(() => {
-    const { mainUrl } = state;
-    const fetchData = async () =>
-      await getStudents(`${mainUrl}&limit=${numberOfRows}&page=0`);
-    fetchData();
-  }, [state.mainUrl]);
+  // useEffect(() => {
+  //   const { mainUrl } = state;
+  //   const fetchData = async () =>
+  //     await getStudents(`${mainUrl}&limit=${numberOfRows}&page=0`);
+  //   fetchData();
+  // }, [state.mainUrl]);
 
   const getSearchApi = async (query, value) => {
     await getStudentsDetailBySearch(query, value);
@@ -244,10 +282,11 @@ const ServerSidePagination = (props) => {
     localStorage.setItem("permissions", JSON.stringify(permissions));
   }
 
-  const { data, totalData, setNumbersOfRows, sortChange, numberOfRows } = props;
+  const { sortChange } = props;
   const options = {
     selectableRows: false,
     filter: true,
+    sort: false,
     search: false,
     serverSide: true,
     filterType: "dropdown",
@@ -273,6 +312,7 @@ const ServerSidePagination = (props) => {
       };
       if (columnChanged) {
         const filterValue = filterList[indexObj[columnChanged]];
+
         return getfilterApi(columnChanged, filterValue);
       } else {
         setState((prevState) => ({
@@ -280,9 +320,10 @@ const ServerSidePagination = (props) => {
           filterColumns: [],
           mainUrl: `${`${baseURL}students?`}`,
         }));
-        const { filterColumns } = state;
-        props.filterValues(filterColumns);
-        return getStudents(0, numberOfRows);
+        // const { filterColumns } = state;
+        setFilters({ filterColumns: [], url: `${baseURL}students?` });
+        // props.filterValues(filterColumns);
+        // return getStudents(0, numberOfRows);
       }
     },
     responsive: "stacked",
@@ -291,8 +332,8 @@ const ServerSidePagination = (props) => {
     rowsPerPage: numberOfRows,
     page: page,
     onChangeRowsPerPage: (numberOfRows) => {
-      setNumbersOfRows(numberOfRows);
-      getStudents(state.page, numberOfRows);
+      setRows(numberOfRows);
+      // getStudents(state.page, numberOfRows);
     },
     onTableChange: (action, tableState) => {
       const { rowsPerPage, page, columns } = tableState;
@@ -328,7 +369,7 @@ const ServerSidePagination = (props) => {
   return (
     <MUIDataTable
       title={<SearchBar searchByName={getSearchApi} />}
-      data={isData ? [] : data}
+      data={isData ? [] : studentData}
       columns={newColumns}
       options={options}
     />

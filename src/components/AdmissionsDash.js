@@ -24,6 +24,13 @@ import _ from "lodash";
 import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
 import Loader from "./Loader";
+import {
+  setFromDate,
+  setNoOfRows,
+  setStage,
+  setStudentData,
+  setToDate,
+} from "../store/actions/data";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -49,19 +56,45 @@ const useStyles = makeStyles(() => ({
 const AdmissionsDash = (props) => {
   const classes = useStyles();
   const { loggedInUser } = useSelector((state) => state.auth);
+  const {
+    filterColumns,
+    url,
+    studentData,
+    fromDate,
+    toDate,
+    stage,
+    totalData,
+    numberOfRows,
+    page,
+  } = useSelector((state) => state.data);
+  // console.log(
+  //   filterColumns,
+  //   url,
+  //   studentData,
+  //   fromDate,
+  //   toDate,
+  //   totalData,
+  //   stage,
+  //   page
+  // );
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const usersSetup = (users) => dispatch(setupUsers(users));
+  const setStudents = (data) => dispatch(setStudentData(data));
+  const setFrom = (data) => dispatch(setFromDate(data));
+  const setTo = (data) => dispatch(setToDate(data));
+  const setRows = (data) => dispatch(setNoOfRows(data));
+  const updateStage = (data) => dispatch(setStage(data));
   const [state, setState] = React.useState({
-    totalData: 0,
-    data: [],
+    // totalData: 0,
+    // data: [],
     sData: undefined, //subsetData,
-    fromDate: null,
-    toDate: null,
+    // fromDate: null,
+    // toDate: null,
     showLoader: true,
-    filterValues: [],
-    numberOfRows: 10,
+    // filterValues: [],
+    // numberOfRows: 10,
     selectedOption: [],
     access: null, //access object to store who are having access data
     userLoggedIn: user(), //user object to store who is logged in
@@ -74,12 +107,12 @@ const AdmissionsDash = (props) => {
       : "softwareCourse";
   const studentsURL = baseURL + "students";
   const usersURL = baseURL + "users/getall";
-  let stage = null,
+  let // stage = null,
     value = null;
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetchStudents();
+      // await fetchStudents();
       await fetchUsers();
       await fetchOWner();
       await fetchPartner();
@@ -87,6 +120,11 @@ const AdmissionsDash = (props) => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    // console.log("Updating changes");
+    fetchStudents();
+  }, [url, fromDate, toDate, stage, page]);
 
   const fetchAccess = async () => {
     try {
@@ -137,10 +175,10 @@ const AdmissionsDash = (props) => {
     }
   };
 
-  const fetchStudents = async (value) => {
+  const fetchStudents = async () => {
     const { fetchPendingInterviewDetails, loggedInUser } = props;
-    const { numberOfRows } = state;
-    var concatinateStage = stage === null ? stage : stage.join(",");
+    // const { numberOfRows } = state;
+    var concatinateStage = stage.length === 0 ? null : stage.join(",");
     try {
       fetchingStart();
       let response;
@@ -152,8 +190,8 @@ const AdmissionsDash = (props) => {
         });
       } else {
         let url = studentsURL;
-        value &&
-          value.map((filterColumn, index) => {
+        filterColumns &&
+          filterColumns.map((filterColumn, index) => {
             if (index > 0) {
               url = url + `&${filterColumn.key}=${filterColumn.value}`;
             } else {
@@ -161,23 +199,26 @@ const AdmissionsDash = (props) => {
             }
           });
         response =
-          value && value.length > 0
-            ? await axios.get(`${url}&limit=${numberOfRows}&page=0`, {
+          filterColumns && filterColumns.length > 0
+            ? await axios.get(`${url}&limit=${numberOfRows}&page=${page}`, {
                 params: {
                   dataType: dataType,
-                  stage: concatinateStage,
-                  from: state.fromDate,
-                  to: state.toDate,
+                  stage: stage.length === 0 ? null : stage.join(","),
+                  from: fromDate,
+                  to: toDate,
                 },
               })
-            : await axios.get(`${studentsURL}?limit=${numberOfRows}&page=0`, {
-                params: {
-                  dataType: dataType,
-                  stage: concatinateStage,
-                  from: state.fromDate,
-                  to: state.toDate,
-                },
-              });
+            : await axios.get(
+                `${studentsURL}?limit=${numberOfRows}&page=${page}`,
+                {
+                  params: {
+                    dataType: dataType,
+                    stage: concatinateStage,
+                    from: fromDate,
+                    to: toDate,
+                  },
+                }
+              );
       }
 
       const studentData = response.data.data.results.map((student) => {
@@ -191,17 +232,19 @@ const AdmissionsDash = (props) => {
           altNumber: contacts ? contacts.alt_mobile : contacts,
         };
       });
+
       setState((prevState) => ({
         ...prevState,
         totalData: response.data.data.total,
       }));
-      dataSetup(studentData);
+      dataSetup(studentData, response.data.data.total);
     } catch (e) {
       fetchingFinish();
     }
   };
 
   const setNumbersOfRows = (value) => {
+    setRows(value);
     setState((prevState) => ({
       ...prevState,
       numberOfRows: value,
@@ -225,7 +268,7 @@ const AdmissionsDash = (props) => {
 
   const changeDataType = (option) => {
     dataType = option.value;
-    stage = null;
+    // stage = null;
     value = null;
     fetchStudents();
   };
@@ -236,45 +279,50 @@ const AdmissionsDash = (props) => {
       selectedOption,
     }));
     //console.log(selectedOption, "selectedOption");
-    const { filterValues } = state;
+    // const { filterValues } = state;
     if (selectedOption === null) {
-      stage = null;
+      // stage = null;
+      updateStage([]);
       dataType = "softwareCourse";
-      fetchStudents(filterValues);
+      // fetchStudents(filterValues);
       value = "Student Details";
     } else {
       // const arr = [];
       let arr = selectedOption.map((option) => {
         return option.value;
       });
-      //console.log(arr, " i am arr");
+      // console.log(arr, " i am arr");
       if (arr.includes("default")) {
-        stage = null;
+        // stage = null;
       } else {
-        stage = selectedOption.map((option) => {
-          return option.value;
-        });
+        // stage = selectedOption.map((option) => {
+        //   return option.value;
+        // });
       }
 
-      fetchStudents(filterValues);
+      updateStage(selectedOption.map((opt) => opt.value));
+
+      // fetchStudents(filterValues);
       dataType = "softwareCourse";
     }
   };
 
   const changeFromDate = async (date) => {
+    setFrom(date);
     setState((prevState) => ({
       ...prevState,
       fromDate: date,
     }));
-    fetchStudents();
+    // fetchStudents();
   };
 
   const changeToDate = (date) => {
+    setTo(date);
     setState((prevState) => ({
       ...prevState,
       toDate: date,
     }));
-    fetchStudents();
+    // fetchStudents();
   };
 
   const dataSetup = (data, totalData) => {
@@ -288,25 +336,28 @@ const AdmissionsDash = (props) => {
           loggedInUser: loggedInUser.email.split("@")[0],
         };
       });
+      setStudents({ data: newData, totalData });
       setState((prevState) => ({
         ...prevState,
         data: newData,
         showLoader: true,
         totalData: totalData ? totalData : state.totalData,
       }));
-      fetchingFinish();
     } else {
+      setStudents({ data: [], totalData: 0 });
       setState((prevState) => ({
         ...prevState,
         data: data,
         showLoader: false,
       }));
     }
+    fetchingFinish();
   };
 
   const sortChange = (column, order) => {
-    const { data } = state;
-    let sorted = _.orderBy(data, [column], [order]);
+    // const { data } = state;
+    let sorted = _.orderBy(studentData, [column], [order]);
+    setStudents(sorted);
     setState((prevState) => ({
       ...prevState,
       data: sorted,
@@ -314,9 +365,7 @@ const AdmissionsDash = (props) => {
   };
 
   const { fetchPendingInterviewDetails } = props;
-  const { sData, data, showLoader, totalData, numberOfRows, selectedOption } =
-    state;
-  let concatinateStage = stage === null ? stage : stage.join(",");
+  const { sData, showLoader, selectedOption } = state;
 
   const options = (
     <Box>
@@ -348,7 +397,7 @@ const AdmissionsDash = (props) => {
         <KeyboardDatePicker
           margin="dense"
           style={{ marginLeft: 16, maxWidth: "40%" }}
-          value={state.fromDate}
+          value={fromDate}
           id="date-picker-dialog"
           label="From Date"
           format="MM/dd/yyyy"
@@ -361,7 +410,7 @@ const AdmissionsDash = (props) => {
         <KeyboardDatePicker
           margin="dense"
           style={{ marginLeft: 16, maxWidth: "40%" }}
-          value={state.toDate}
+          value={toDate}
           id="date-picker-dialog"
           label="To Date"
           format="MM/dd/yyyy"
@@ -378,14 +427,14 @@ const AdmissionsDash = (props) => {
     return (
       <ServerSidePagination
         columns={StudentService.columns[dataType]}
-        data={sData ? sData : data}
+        data={sData ? sData : studentData}
         showLoader={showLoader}
         params={{
           params: {
             dataType: dataType,
-            stage: concatinateStage,
-            from: state.fromDate,
-            to: state.toDate,
+            stage: stage.length === 0 ? null : stage.join(","),
+            from: fromDate,
+            to: toDate,
           },
         }}
         dataSetup={dataSetup}
@@ -406,24 +455,20 @@ const AdmissionsDash = (props) => {
             <div className={classes.clear}></div>
             <ServerSidePagination
               columns={StudentService.columns[dataType]}
-              data={sData ? sData : data}
+              data={sData ? sData : studentData}
               showLoader={showLoader}
               fun={fetchStudents}
               params={{
                 params: {
                   dataType: dataType,
-                  stage: concatinateStage,
-                  from: state.fromDate,
-                  to: state.toDate,
+                  stage: stage.length === 0 ? null : stage.join(","),
+                  from: fromDate,
+                  to: toDate,
                 },
               }}
               stages={value}
               dataSetup={dataSetup}
-              totalData={totalData}
-              filterValues={getFilterValues}
               sortChange={sortChange}
-              numberOfRows={numberOfRows}
-              setNumbersOfRows={setNumbersOfRows}
             />
           </ThemeProvider>
         </Box>

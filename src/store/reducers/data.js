@@ -28,7 +28,6 @@ export default (
         totalData: action.payload.totalData,
       };
     case "SET_FILTER_COLUMNS":
-      console.log(action.payload);
       return {
         ...state,
         filterColumns: action.payload.filterColumns,

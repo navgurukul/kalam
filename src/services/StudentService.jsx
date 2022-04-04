@@ -11,7 +11,7 @@ import StudentFeedback from "../components/FeedbackPage";
 // eslint-disable-next-line import/no-cycle
 import StageTransitions from "../components/StageTransitions";
 import StageTransitionsStudentStatus from "../components/StageTransitionsStudentStatus";
-import AudioRecorder from "../components/audioRecording";
+import AudioRecorder from "../components/AudioRecording";
 import AudiofileUpload from "../components/uploadAudioFile";
 import TagsForOnlineClass from "../components/TagsForOnlineClass";
 
@@ -297,8 +297,8 @@ const AudioPlayer = {
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       // console.log(value);
       return (
-        <div>
-          {ifExistingFeedback && value ? (
+        <div style={{ width: "100%", border: "1px solid black" }}>
+          {!ifExistingFeedback && !value ? (
             <AudioRecorder audioUrl={value} />
           ) : null}
           {ifExistingFeedback && !value ? (

@@ -57,6 +57,7 @@ export const nextStage = {
     "pendingAlgebraInterview",
     "notReachable",
     "becameDisIntersested",
+    "possibleDuplicate",
   ],
   englishInterviewFail: ["pendingEnglishInterview"],
   pendingAlgebraInterview: [
@@ -64,6 +65,7 @@ export const nextStage = {
     "pendingCultureFitInterview",
     "notReachable",
     "becameDisIntersested",
+    "possibleDuplicate",
   ],
   algebraInterviewFail: ["pendingAlgebraInterview"],
   pendingCultureFitInterview: [
@@ -71,6 +73,7 @@ export const nextStage = {
     "cultureFitInterviewFail",
     "notReachable",
     "becameDisIntersested",
+    "possibleDuplicate",
   ],
   cultureFitInterviewFail: ["pendingCultureFitInterview"],
   notReachable: [
@@ -94,7 +97,11 @@ export const nextStage = {
     "becameDisIntersested",
   ],
   pendingTravelPlanning: ["finalisedTravelPlans", "becameDisIntersested"],
-  possibleDuplicate: [],
+  possibleDuplicate: [
+    "pendingEnglishInterview",
+    "pendingAlgebraInterview",
+    "pendingCultureFitInterview",
+  ],
   finalisedTravelPlans: ["finallyJoined", "becameDisIntersested"],
   becameDisIntersested: [],
   finallyJoined: ["M1"],

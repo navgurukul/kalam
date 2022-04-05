@@ -30,6 +30,7 @@ import {
   setStage,
   setStudentData,
   setToDate,
+  setPageNo,
 } from "../store/actions/data";
 
 const animatedComponents = makeAnimated();
@@ -85,6 +86,7 @@ const AdmissionsDash = (props) => {
   const setFrom = (data) => dispatch(setFromDate(data));
   const setTo = (data) => dispatch(setToDate(data));
   const setRows = (data) => dispatch(setNoOfRows(data));
+  const setPage = (data) => dispatch(setPageNo(data));
   const updateStage = (data) => dispatch(setStage(data));
   const [state, setState] = React.useState({
     // totalData: 0,
@@ -124,7 +126,7 @@ const AdmissionsDash = (props) => {
   useEffect(() => {
     // console.log("Updating changes");
     fetchStudents();
-  }, [url, fromDate, toDate, stage, page]);
+  }, [url, fromDate, toDate, stage, page, numberOfRows]);
 
   const fetchAccess = async () => {
     try {
@@ -282,6 +284,7 @@ const AdmissionsDash = (props) => {
     // const { filterValues } = state;
     if (selectedOption === null) {
       // stage = null;
+      setPage(0);
       updateStage([]);
       dataType = "softwareCourse";
       // fetchStudents(filterValues);
@@ -300,6 +303,7 @@ const AdmissionsDash = (props) => {
         // });
       }
 
+      setPage(0);
       updateStage(selectedOption.map((opt) => opt.value));
 
       // fetchStudents(filterValues);
@@ -357,7 +361,8 @@ const AdmissionsDash = (props) => {
   const sortChange = (column, order) => {
     // const { data } = state;
     let sorted = _.orderBy(studentData, [column], [order]);
-    setStudents(sorted);
+    console.log(column, order, sorted);
+    setStudents({ data: sorted, totalData });
     setState((prevState) => ({
       ...prevState,
       data: sorted,

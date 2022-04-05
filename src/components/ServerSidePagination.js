@@ -19,9 +19,8 @@ const baseURL = process.env.API_URL;
 
 const ServerSidePagination = (props) => {
   const snackbar = useSnackbar();
-  const { filterColumns, studentData, totalData, numberOfRows } = useSelector(
-    (state) => state.data
-  );
+  const { filterColumns, studentData, totalData, numberOfRows, page } =
+    useSelector((state) => state.data);
   const dispatch = useDispatch();
   const setFilters = (data) => dispatch(setFilterColumns(data));
   const setRows = (data) => dispatch(setNoOfRows(data));
@@ -274,7 +273,7 @@ const ServerSidePagination = (props) => {
       variant: "success",
     });
   };
-  const { page, isData, newColumns } = state;
+  const { isData, newColumns } = state;
   const user = window.localStorage.user
     ? JSON.parse(window.localStorage.user).email
     : null;
@@ -286,7 +285,7 @@ const ServerSidePagination = (props) => {
   const options = {
     selectableRows: false,
     filter: true,
-    sort: false,
+    jumpToPage: true,
     search: false,
     serverSide: true,
     filterType: "dropdown",

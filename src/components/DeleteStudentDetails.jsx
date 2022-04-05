@@ -12,7 +12,7 @@ import {
   Typography,
   Grid,
 } from "@mui/material";
-import { setStudentData } from "../store/slices/dataSlice";
+import { setStudentData } from "../store/slices/studentSlice";
 
 const { permissions } = require("../config");
 

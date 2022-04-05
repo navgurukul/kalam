@@ -7,7 +7,7 @@
 // newImports
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
-import dataReducer from "./slices/dataSlice";
+import studentsReducer from "./slices/studentSlice";
 import uiReducer from "./slices/uiSlice";
 
 //oldCOnfig
@@ -26,7 +26,7 @@ import uiReducer from "./slices/uiSlice";
 export default configureStore({
   reducer: {
     auth: authReducer,
-    data: dataReducer,
+    students: studentsReducer,
     ui: uiReducer,
   },
 });

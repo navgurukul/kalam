@@ -1405,6 +1405,30 @@ const profileImage = {
   },
 };
 
+export const dConvert = (data) => {
+  const x = { ...data };
+  const getKeyByValue = (object, value) =>
+    Object.keys(object).find((key) => object[key] === value);
+  try {
+    x.number = x.contacts[0].mobile;
+  } catch (e) {
+    x.number = null;
+  }
+
+  x.gender =
+    x.gender === 1 ? "Female" : x.gender === 2 ? "Male" : "Transgender";
+  x.stage = allStages[x.stage];
+  x.marks = x.enrolmentKey[x.enrolmentKey.length - 1]
+    ? parseInt(x.enrolmentKey[x.enrolmentKey.length - 1].total_marks, 10)
+    : null;
+  x.marks = isNaN(x.marks) ? null : x.marks;
+  x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;
+  x.age = x.dob ? new Date().getFullYear() - +x.dob.slice(0, 4) : "NA";
+  x.studentOwner = x.feedbacks ? x.feedbacks.to_assign : x.to_assign;
+  x.caste = caste ? getKeyByValue(caste, x.caste) : caste;
+  return x;
+};
+
 const StudentService = {
   columns: {
     requestCallback: [
@@ -1561,31 +1585,7 @@ const StudentService = {
     redFlagColumn,
     navGurukulSurveyForm,
   ],
-
-  dConvert: (data) => {
-    const x = { ...data };
-    const getKeyByValue = (object, value) =>
-      Object.keys(object).find((key) => object[key] === value);
-    try {
-      x.number = x.contacts[0].mobile;
-    } catch (e) {
-      x.number = null;
-    }
-
-    x.gender =
-      x.gender === 1 ? "Female" : x.gender === 2 ? "Male" : "Transgender";
-    x.stage = allStages[x.stage];
-    x.marks = x.enrolmentKey[x.enrolmentKey.length - 1]
-      ? parseInt(x.enrolmentKey[x.enrolmentKey.length - 1].total_marks, 10)
-      : null;
-    x.marks = isNaN(x.marks) ? null : x.marks;
-    x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;
-    x.age = x.dob ? new Date().getFullYear() - +x.dob.slice(0, 4) : "NA";
-    x.studentOwner = x.feedbacks ? x.feedbacks.to_assign : x.to_assign;
-    x.caste = caste ? getKeyByValue(caste, x.caste) : caste;
-    return x;
-  },
-
+  dConvert,
   addOptions: (columns, dataRow) =>
     columns.map((column) => {
       if ("selectFilter" in column) {

@@ -9,7 +9,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import Select from "react-select";
 import { useSnackbar } from "notistack";
-import { setStudentData } from "../store/slices/dataSlice";
+import { setStudentData } from "../store/slices/studentSlice";
 import MainLayout from "./MainLayout";
 
 import StudentService from "../services/StudentService";
@@ -126,7 +126,7 @@ const columns = [
 const DashboardPage = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
-  const { studentData: data } = useSelector((state) => state.data);
+  const { studentData: data } = useSelector((state) => state.students);
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));

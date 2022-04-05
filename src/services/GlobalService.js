@@ -66,7 +66,9 @@ export const nextStage = {
     "notReachable",
     "becameDisIntersested",
     "possibleDuplicate",
+    "tuitionGroup",
   ],
+  tuitionGroup: ["pendingAlgebraInterview"],
   algebraInterviewFail: ["pendingAlgebraInterview"],
   pendingCultureFitInterview: [
     "selectedAndJoiningAwaited",

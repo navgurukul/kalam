@@ -4,7 +4,7 @@ import { makeStyles } from "@mui/styles";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import { Button, Typography, CardContent } from "@mui/material";
+import { Button, Typography, CardContent, IconButton } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import Card from "@mui/material/Card";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -165,20 +165,24 @@ const ProgressMadeForPartner = () => {
   };
 
   const copyClipBoard = (key) => (
-    <Tooltip title="Copy Details" className={classes.large}>
-      <CopyToClipboard
-        text={key}
-        onCopy={() => {
-          snackbar.enqueueSnackbar("Message copied!", {
-            variant: "success",
-          });
-        }}
+    <CopyToClipboard
+      text={key}
+      onCopy={() => {
+        snackbar.enqueueSnackbar("Message copied!", {
+          variant: "success",
+        });
+      }}
+    >
+      <Tooltip
+        title="Copy Details"
+        style={{ background: "#f05f40" }}
+        className={classes.large}
       >
-        <Avatar alt="Remy Sharp">
-          <FileCopyIcon style={{ cursor: "pointer" }} />
-        </Avatar>
-      </CopyToClipboard>
-    </Tooltip>
+        <IconButton>
+          <FileCopyIcon sx={{ color: "white" }} />
+        </IconButton>
+      </Tooltip>
+    </CopyToClipboard>
   );
   const { partnerName, progress, data, tabular } = state;
   return (

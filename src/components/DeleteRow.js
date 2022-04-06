@@ -9,12 +9,14 @@ const baseUrl = process.env.API_URL;
 const DeleteRow = (props) => {
   const snackbar = useSnackbar();
   const deleteTransition = () => {
-    const { transitionId } = props;
-    axios.delete(`${baseUrl}students/transition/${transitionId}`).then(() => {
-      snackbar.enqueueSnackbar("Transition is successfully Added/Updated!", {
-        variant: "success",
+    if (window.confirm("Are you sure you want to delete this transition?")) {
+      const { transitionId } = props;
+      axios.delete(`${baseUrl}students/transition/${transitionId}`).then(() => {
+        snackbar.enqueueSnackbar("Transition is successfully Deleted!", {
+          variant: "success",
+        });
       });
-    });
+    }
   };
   return (
     <Box textAlign="left" m={1}>

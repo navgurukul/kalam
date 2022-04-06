@@ -8,7 +8,6 @@ import Axios from "axios";
 import { useSnackbar } from "notistack";
 const baseURL = process.env.API_URL;
 function DeadLineDateUpdate(props) {
-  console.log("hello");
   const [value, setValue] = useState(props.value);
   const rowData = props.rowData;
   const [dateToSend, setDateToSend] = React.useState(value);

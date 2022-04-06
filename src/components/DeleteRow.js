@@ -11,7 +11,7 @@ const DeleteRow = (props) => {
   const deleteTransition = () => {
     const { transitionId } = props;
     axios.delete(`${baseUrl}students/transition/${transitionId}`).then(() => {
-      snackbar.enqueueSnackbar("Transition is successfully Added/Updated!", {
+      snackbar.enqueueSnackbar("Transition is successfully Deleted!", {
         variant: "success",
       });
     });

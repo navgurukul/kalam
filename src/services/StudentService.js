@@ -99,6 +99,7 @@ const stageColumnTransition = {
       const user = window.localStorage.user
         ? JSON.parse(window.localStorage.user).email
         : null;
+
       return permissions.updateStage.indexOf(user) > -1 &&
         keysCampusStageOfLearning.indexOf(rowData) > -1 ? (
         <div>
@@ -106,7 +107,10 @@ const stageColumnTransition = {
           {allStages[rowData]}
         </div>
       ) : (
-        allStages[rowData]
+        <>
+          <DeleteRow transitionId={rowMeta.rowData[8]} />
+          <p>{allStages[rowData]}</p>
+        </>
       );
     },
   },
@@ -334,7 +338,6 @@ const deadlineColumnTrnasition1 = {
       const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
       const ifExistingDeadlineDate =
         rowData && !rowMeta.rowData[7] && feedbackableStage;
-      console.log(rowData);
       if (ifExistingDeadlineDate) {
         const deadline = feedbackableStagesData[rowMeta.rowData[0]].deadline;
         const diff = new Date().getTime() - new Date(rowData).getTime();

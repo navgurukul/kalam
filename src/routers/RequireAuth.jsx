@@ -6,9 +6,13 @@ import NotHaveAccess from "../components/NotHaveAccess";
 const RequireAuth = ({ children, privateRoute }) => {
   const location = useLocation();
   const params = useParams();
-  const { isAuthenticated, roles } = useSelector((state) => state.auth);
+  const { isAuthenticated, roles, loggedInUser } = useSelector(
+    (state) => state.auth
+  );
   if (!isAuthenticated && privateRoute)
     return <Navigate to="/login" state={{ from: location }} replace />;
+  if (isAuthenticated && loggedInUser && !loggedInUser.mobile)
+    return <Navigate to="/user/mobile/number" replace />;
   if (isAuthenticated && !privateRoute)
     return <Navigate to="/students" replace />;
   const currentPath = location.pathname.split("/")[1];

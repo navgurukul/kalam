@@ -80,11 +80,11 @@ const AdmissionsDash = (props) => {
         const studentDashboardData = response.data; //variable to store the response
         const conditions = //variable to store the conditions
           studentDashboardData &&
-          state.userLoggedIn &&
-          state.userLoggedIn.email &&
+          loggedInUser &&
+          loggedInUser.email &&
           studentDashboardData.students &&
           studentDashboardData.students.view &&
-          studentDashboardData.students.view.includes(state.userLoggedIn.email);
+          studentDashboardData.students.view.includes(loggedInUser.email);
         setState((prevState) => ({
           ...prevState,
           access: studentDashboardData || null, //set access to state
@@ -124,7 +124,7 @@ const AdmissionsDash = (props) => {
   const dataSetup = (data, totalData) => {
     if (data.length > 0) {
       for (let i = 0; i < data.length; i += 1) {
-        // eslint-disable-next-line no-param-reassign
+        // eslint-disable-next-line import/no-named-as-default-member, no-param-reassign
         data[i] = StudentService.dConvert(data[i]);
       }
       const newData = data.map((v) => ({
@@ -298,8 +298,10 @@ const AdmissionsDash = (props) => {
   const { sData, data, showLoader, totalData, numberOfRows, selectedOption } =
     state;
   const concatinateStage = stage === null ? stage : stage.join(",");
+
   useEffect(() => {
     const controller = new AbortController();
+    // dispatch(rFStudents({ dataType, fetchPendingInterviewDetails }));
     const fetchData = async () => {
       await fetchStudents(null, controller.signal);
       await fetchUsers(controller.signal);
@@ -310,6 +312,7 @@ const AdmissionsDash = (props) => {
     fetchData();
     return () => controller.abort();
   }, []);
+
   const options = (
     <Box>
       <Select

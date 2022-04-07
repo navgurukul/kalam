@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -10,7 +10,7 @@ import DashboardPage from "./Dashboard";
 import SelectUiByButtons from "./SelectUiByButtons";
 import StudentsProgressCards from "./StudentsProgressCards";
 import GraphingPresentationJob from "./GraphingPresentationJob";
-import user from "../utils/user";
+// import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
 
 const { campus } = require("../config");
@@ -19,6 +19,7 @@ const baseUrl = import.meta.env.VITE_API_URL;
 
 const CampusStudentsData = () => {
   const { campusId } = useParams();
+  const { loggedInUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const fetchingFinish = () => dispatch(changeFetching(false));
   const usersSetup = (users) => dispatch(setupUsers(users));
@@ -26,7 +27,7 @@ const CampusStudentsData = () => {
     isShow: true,
     campusName: campus.find((x) => x.id === parseInt(campusId, 10)).name,
     access: null,
-    userLoggedIn: user(),
+    // userLoggedIn: user(),
     campusRouteCondition: false,
   });
   const fetchAccess = async () => {
@@ -37,11 +38,11 @@ const CampusStudentsData = () => {
         const campusData = response.data.campus;
         const conditions = //variable to check if user is allowed to access the page
           campusData &&
-          state.userLoggedIn &&
-          state.userLoggedIn.email &&
+          loggedInUser &&
+          loggedInUser.email &&
           campusData[state.campusName] &&
           campusData[state.campusName].view &&
-          campusData[state.campusName].view.includes(state.userLoggedIn.email);
+          campusData[state.campusName].view.includes(loggedInUser.email);
 
         setState({
           ...state,

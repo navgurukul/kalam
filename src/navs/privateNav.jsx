@@ -6,10 +6,12 @@ import axios from "axios";
 
 /* import your desired icon from material-ui icons library */
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 import user from "../utils/user";
 
 export default () => {
   const baseUrl = import.meta.env.VITE_API_URL;
+  const { loggedInUser } = useSelector((state) => state.auth);
   const [access, setAccess] = useState({});
   const userLoggedIn = user();
 
@@ -20,21 +22,21 @@ export default () => {
   }, []);
   const publicNavs = [
     access &&
-      userLoggedIn &&
-      userLoggedIn.email &&
+      loggedInUser &&
+      loggedInUser.email &&
       access.students &&
       access.students.view &&
-      access.students.view.includes(userLoggedIn.email) && {
+      access.students.view.includes(loggedInUser.email) && {
         url: "/students",
         name: "Students",
         icon: <HomeIcon />,
       },
     access &&
-      userLoggedIn &&
-      userLoggedIn.email &&
+      loggedInUser &&
+      loggedInUser.email &&
       access.partners &&
       access.partners.view &&
-      access.partners.view.includes(userLoggedIn.email) && {
+      access.partners.view.includes(loggedInUser.email) && {
         url: "/partners",
         name: "Partners",
         icon: <ExtensionIcon />,
@@ -45,11 +47,11 @@ export default () => {
       icon: <ExtensionIcon />,
     },
     access &&
-      userLoggedIn &&
-      userLoggedIn.email &&
+      loggedInUser &&
+      loggedInUser.email &&
       access.campus &&
       access.campus.view &&
-      access.campus.view.includes(userLoggedIn.email) && {
+      access.campus.view.includes(loggedInUser.email) && {
         url: "/campus",
         name: "Campuses",
         icon: <ExtensionIcon />,

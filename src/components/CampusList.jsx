@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import MainLayout from "./MainLayout";
-import user from "../utils/user";
+// import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
 
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -44,11 +44,12 @@ const columns = [
 ];
 
 const CampusList = () => {
+  const { loggedInUser } = useSelector((state) => state.auth);
   const [state, setState] = React.useState({
     data: [],
     showLoader: true,
     access: null,
-    userLoggedIn: user(),
+    // userLoggedIn: user(),
     campusCondition: false,
   });
 
@@ -59,10 +60,10 @@ const CampusList = () => {
         const campusData = response.data.campus; //storing response data in campusData variable
         const conditions = //variable to check if user is allowed to access the page
           campusData &&
-          state.userLoggedIn &&
-          state.userLoggedIn.email &&
+          loggedInUser &&
+          loggedInUser.email &&
           campusData.view &&
-          campusData.view.includes(state.userLoggedIn.email);
+          campusData.view.includes(loggedInUser.email);
 
         setState((prevState) => ({
           ...prevState,

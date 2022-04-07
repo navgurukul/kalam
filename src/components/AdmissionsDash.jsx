@@ -16,7 +16,7 @@ import { changeFetching, setupUsers } from "../store/slices/authSlice";
 import StudentService from "../services/StudentService";
 import ServerSidePagination from "./ServerSidePagination";
 import theme from "../theme";
-import user from "../utils/user";
+// import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
 import Loader from "./Loader";
 
@@ -63,7 +63,7 @@ const AdmissionsDash = (props) => {
     numberOfRows: 10,
     selectedOption: [],
     access: null, //access object to store who are having access data
-    userLoggedIn: user(), //user object to store who is logged in
+    // userLoggedIn: user(), //user object to store who is logged in
     studentDashboardCondition: false, //condition to show student dashboard
     loading: true,
   });
@@ -74,6 +74,7 @@ const AdmissionsDash = (props) => {
   let value = null;
 
   const fetchAccess = async (signal) => {
+    setState({ ...state, loading: true });
     try {
       const accessUrl = `${baseURL}rolebaseaccess`;
       axios.get(accessUrl, { signal }).then((response) => {
@@ -94,6 +95,7 @@ const AdmissionsDash = (props) => {
       });
     } catch (e) {
       // console.error(e);
+      setState({ ...state, loading: false });
     }
   };
 
@@ -307,11 +309,16 @@ const AdmissionsDash = (props) => {
       await fetchUsers(controller.signal);
       await fetchOWner(controller.signal);
       await fetchPartner(controller.signal);
-      await fetchAccess(controller.signal);
+      // await fetchAccess(controller.signal);
     };
     fetchData();
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchAccess(controller.signal);
+  }, [loggedInUser]);
 
   const options = (
     <Box>

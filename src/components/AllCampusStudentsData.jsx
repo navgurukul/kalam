@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { changeFetching, setupUsers } from "../store/slices/authSlice";
 import StudentService from "../services/StudentService";
@@ -8,7 +8,7 @@ import DashboardPage from "./Dashboard";
 import SelectUiByButtons from "./SelectUiByButtons";
 import StudentsProgressCards from "./StudentsProgressCards";
 import GraphingPresentationJob from "./GraphingPresentationJob";
-import user from "../utils/user";
+// import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
 
 //baseUrl
@@ -16,10 +16,11 @@ const baseUrl = import.meta.env.VITE_API_URL;
 
 const CampusStudentsData = () => {
   const dispatch = useDispatch();
+  const { loggedInUser } = useSelector((state) => state.auth);
   const [state, setState] = React.useState({
     isShow: true,
     access: null, //access object to store data who are allowed to access the page
-    userLoggedIn: user(), //user object to store data of logged in user
+    // userLoggedIn: user(), //user object to store data of logged in user
     allCampusCondition: false, //condition to check if user is allowed to access the page
   });
   const fetchingFinish = () => dispatch(changeFetching(false));
@@ -41,11 +42,11 @@ const CampusStudentsData = () => {
         const campusData = response.data.campus; //storing response data in campusData variable
         const conditions = //variable to check if user is allowed to access the page
           campusData &&
-          state.userLoggedIn &&
-          state.userLoggedIn.email &&
+          loggedInUser &&
+          loggedInUser.email &&
           campusData.All &&
           campusData.All.view &&
-          campusData.All.view.includes(state.userLoggedIn.email);
+          campusData.All.view.includes(loggedInUser.email);
 
         setState({
           ...state,

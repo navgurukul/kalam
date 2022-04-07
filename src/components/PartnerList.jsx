@@ -14,7 +14,7 @@ import EditPartnerDetails from "./EditIcon";
 import { changeFetching } from "../store/slices/authSlice";
 import MainLayout from "./MainLayout";
 import ReportSend from "./ReportSend";
-import user from "../utils/user";
+// import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
 
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -166,12 +166,13 @@ const columns = [
 const PartnerList = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { loggedInUser } = useSelector((state) => state.auth);
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const [state, setState] = React.useState({
     data: [],
     access: null, //access object to store access data
-    userLoggedIn: user(), //user object to store user data
+    // userLoggedIn: user(), //user object to store user data
     partnerRouteConditon: false, //to check condition of partner route
   });
 
@@ -182,11 +183,11 @@ const PartnerList = () => {
         const partnerData = response.data; //variable to store response data
         const conditions =
           partnerData &&
-          state.userLoggedIn &&
-          state.userLoggedIn.email &&
+          loggedInUser &&
+          loggedInUser.email &&
           partnerData.partners &&
           partnerData.partners.view &&
-          partnerData.partners.view.includes(state.userLoggedIn.email);
+          partnerData.partners.view.includes(loggedInUser.email);
         setState((prevState) => ({
           ...prevState,
           access: partnerData || null, //set access data to state

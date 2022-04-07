@@ -89,6 +89,7 @@ const AuthSlice = createSlice({
     logout: (state) => {
       localStorage.removeItem("jwt");
       localStorage.removeItem("user");
+      localStorage.removeItem("userId");
       localStorage.removeItem("permissions");
       localStorage.removeItem("roles");
       localStorage.removeItem("privileges");

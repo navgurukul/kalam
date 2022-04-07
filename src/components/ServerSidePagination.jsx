@@ -186,6 +186,7 @@ const ServerSidePagination = ({
     const response = await axios.get(state.mainUrl, params);
     const studentData = await response.data.data.results
       .map((student) => {
+        // eslint-disable-next-line import/no-named-as-default-member
         const nStudent = StudentService.dConvert({
           ...student,
           qualification: qualificationKeys[student.qualification],

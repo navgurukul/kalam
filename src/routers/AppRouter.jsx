@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import useCustomNotifier from "../utils/useCustomNotifier";
 import LandingPage from "../components/LandingPage";
 import PartnerList from "../components/PartnerList";
 import OutreachDetails from "../components/OutreachDetails";
@@ -46,6 +47,7 @@ import RequireAuth from "./RequireAuth";
 import { fetchCurrentUser } from "../store/slices/authSlice";
 
 const AppRouter = () => {
+  useCustomNotifier();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
   useEffect(() => {

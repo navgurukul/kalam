@@ -9,6 +9,7 @@ const UISlice = createSlice({
     dialogTitle: null,
     dialogContent: null,
     dialogActions: null,
+    snackbars: [],
   },
   reducers: {
     // creating reducers
@@ -27,8 +28,32 @@ const UISlice = createSlice({
       state.dialogContent = null;
       state.dialogActions = null;
     },
+    enqueueSnackbar: (state, action) => {
+      const { key, notification } = action.payload;
+      state.snackbars = [
+        ...state.snackbars,
+        { key: key || Date.now() + Math.random(), notification },
+      ];
+    },
+    closeSnackbar: (state, action) => {
+      const { dismisAll, key } = action.payload;
+      state.snackbars = state.snackbars.map((not) =>
+        dismisAll || key === not.key ? { ...not, dismissed: true } : not
+      );
+    },
+    removeSnackbar: (state, action) => {
+      state.snackbars = state.snackbars.filter(
+        (noti) => noti.key !== action.payload
+      );
+    },
   },
 });
 
-export const { showDialog, closeDialog } = UISlice.actions; // actions auto generated from above reducers
+export const {
+  showDialog,
+  closeDialog,
+  enqueueSnackbar,
+  closeSnackbar,
+  removeSnackbar,
+} = UISlice.actions; // actions auto generated from above reducers
 export default UISlice.reducer; // exporting the reducer

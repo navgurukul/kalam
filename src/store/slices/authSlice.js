@@ -2,6 +2,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { baseUrl } from "../../utils/constants";
+import { enqueueSnackbar } from "./uiSlice";
 
 export const loginWithGoogle = createAsyncThunk(
   "auth/login",
@@ -26,9 +27,20 @@ export const loginWithGoogle = createAsyncThunk(
         localStorage.setItem("jwt", userToken);
         localStorage.setItem("userId", user.id);
         callSnack(`Logged In Successful`, "success");
+        thunkAPI.dispatch(
+          enqueueSnackbar({
+            message: "Logged In Successfully",
+            options: { variant: "success" },
+          })
+        );
         return { isAuthenticated: true, user, roles, privilege };
       } catch (err) {
-        callSnack(`Error : ${err.message}`, "error");
+        thunkAPI.dispatch(
+          enqueueSnackbar({
+            message: `Error : ${err.message}`,
+            options: { variant: "error" },
+          })
+        );
         throw Error(err.message);
       }
     }

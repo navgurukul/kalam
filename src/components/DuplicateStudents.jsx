@@ -1,11 +1,10 @@
-/* eslint-disable no-use-before-define */
 import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import MUIDataTable from "mui-datatables";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { changeFetching } from "../store/slices/authSlice";
 import SlotBooking from "./SlotBooking";
@@ -35,6 +34,8 @@ const DuplicateStudents = () => {
   // const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { name, number, stage } = useParams();
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
@@ -46,6 +47,37 @@ const DuplicateStudents = () => {
     slotBooking: false,
     slotBookingData: {},
   });
+
+  const generateTestLink = async (studentId) => {
+    try {
+      const partnerId = state.partnerId ? state.partnerId : null;
+      // const details = window.location.href.split("Name=")[1];
+      // const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
+      const mobile = `0${number}`;
+      fetchingStart();
+      const dataURL = `${baseUrl}helpline/register_exotel_call`;
+      const response = await axios.get(dataURL, {
+        params: {
+          ngCallType: "getEnrolmentKey",
+          From: mobile,
+          partner_id: partnerId,
+          student_id: studentId,
+        },
+      });
+      fetchingFinish();
+      return response;
+    } catch (e) {
+      enqueueSnackbar("Something went wrong", {
+        variant: "error",
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "center",
+        },
+      });
+      fetchingFinish();
+      throw Error(e.message);
+    }
+  };
   const columns = [
     {
       name: "id",
@@ -61,12 +93,22 @@ const DuplicateStudents = () => {
               style={{ fontSize: "10px" }}
               onClick={async () => {
                 const response = await generateTestLink(value);
-                navigate({
-                  pathname: `/test/${response.data.key}/${value}`,
+                const [firstName, middleName, lastName] = name.split("_");
+                navigate(`/test/instructions`, {
+                  state: {
+                    enrollmentKey: response.data.key,
+                    studentId: value,
+                    number,
+                    firstName,
+                    middleName,
+                    lastName,
+                    mobileNumber: number,
+                  },
                 });
                 fetchingFinish();
               }}
             >
+              {/* {console.log(value)} */}
               Re-Test
             </Button>
           ),
@@ -140,43 +182,15 @@ const DuplicateStudents = () => {
     },
   };
 
-  const generateTestLink = async (studentId) => {
-    try {
-      const partnerId = state.partnerId ? state.partnerId : null;
-      const details = window.location.href.split("Name=")[1];
-      const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
-      const mobile = `0${mobileNumber}`;
-      fetchingStart();
-      const dataURL = `${baseUrl}helpline/register_exotel_call`;
-      const response = await axios.get(dataURL, {
-        params: {
-          ngCallType: "getEnrolmentKey",
-          From: mobile,
-          partner_id: partnerId,
-          student_id: studentId,
-        },
-      });
-      return response;
-    } catch (e) {
-      enqueueSnackbar("Something went wrong", {
-        variant: "error",
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
-      });
-      fetchingFinish();
-    }
-  };
-
   const isDuplicate = () => {
-    const details = window.location.href.split("Name=")[1];
-    const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
-    const name = details.split("&Number=")[0];
+    // const details = window.location.href.split("Name=")[1];
+    // const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
+    const mobileNumber = number;
+    // const name = details.split("&Number=")[0];
     axios
-      .get(`${baseUrl}/check_duplicate`, {
+      .get(`${baseUrl}check_duplicate`, {
         params: {
-          Name: name,
+          Name: name.split("_").join(""),
           Number: mobileNumber,
         },
       })
@@ -195,15 +209,6 @@ const DuplicateStudents = () => {
         return response;
       });
   };
-
-  useEffect(() => {
-    const slug = window.location.href.split("partnerLanding/")[1];
-    if (slug) {
-      partnerFetch(slug);
-    }
-    isDuplicate();
-  }, []);
-
   const partnerFetch = async (slug) => {
     try {
       const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
@@ -215,29 +220,28 @@ const DuplicateStudents = () => {
       navigate("/notFound");
     }
   };
-  const location = useLocation();
+
+  useEffect(() => {
+    const slug = window.location.href.split("partnerLanding/")[1];
+    if (slug) {
+      partnerFetch(slug);
+    }
+    isDuplicate();
+  }, []);
+
   const { data } = state;
   const selectedLang =
-    location.state === null ? "en" : location.state.state.selectedLang;
+    location.state === null ? "en" : location.state.selectedLang;
   let firstName;
-  let middleName;
+  let middleName = "";
   let lastName;
-  const details = window.location.href.split("Name=")[1];
-  const name = details.split("&Number=")[0];
-  const splitedName = name.match(/[A-Z][a-z]+/g);
-  const pendingInterviewStage = details
-    .split("&Number=")[1]
-    .split("&Stage=")[1];
-  if (splitedName.length === 3) {
-    [firstName, middleName, lastName] = splitedName;
-    // firstName = splitedName[0];
-    // middleName = splitedName[1];
-    // lastName = splitedName[2];
+  // const splitedName = name.match(/[A-Z][a-z]+/g);
+  const splittedName = name.split("_");
+  const pendingInterviewStage = stage;
+  if (splittedName.length === 3) {
+    [firstName, middleName, lastName] = splittedName;
   } else {
-    [firstName, lastName] = splitedName;
-    // firstName = splitedName[0];
-    // middleName = "";
-    // lastName = splitedName[1];
+    [firstName, lastName] = splittedName;
   }
   const closeModal = () => {
     setState({ ...state, slotBooking: false });
@@ -254,8 +258,9 @@ const DuplicateStudents = () => {
             pendingInterviewStage
               ? `${firstName.concat(" ", middleName, " ", lastName)}
             ${message.testFailedMessage[selectedLang]}`
-              : `${firstName.concat(" ", middleName, " ", lastName)}
-               ${message.stageMessage[selectedLang]}`
+              : `${firstName.concat(" ", middleName, "", lastName)}${
+                  message.stageMessage[selectedLang]
+                }`
           }
           columns={columns}
           data={data}

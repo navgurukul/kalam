@@ -1,33 +1,24 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import {
   TextField,
   InputLabel,
   MenuItem,
   FormControl,
   Select,
-  Button,
   Container,
   Typography,
   Avatar,
   Grid,
   Badge,
-  MobileStepper,
 } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useSnackbar } from "notistack";
 import { DatePicker, LocalizationProvider } from "@mui/lab";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
-import { makeStyles, useTheme } from "@mui/styles";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import { useForm, Controller } from "react-hook-form";
+import { makeStyles } from "@mui/styles";
+import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
-import { useLocation, useNavigate } from "react-router-dom";
-import KuchAurDetails from "../KuchAurDetails";
-
-const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -217,14 +208,15 @@ const BasicDetails = ({
             rules={{
               required: true,
               validate: (dob) =>
-                parseInt(dayjs(dayjs.now()).diff(dayjs(dob), "hour"), 10) >= 16,
+                parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 16,
             }}
             render={({
               field: { ref, ...rest },
               fieldState: { isTouched },
             }) => (
-              <LocalizationProvider utils={DateFnsUtils}>
+              <LocalizationProvider dateAdapter={DateFnsUtils}>
                 <DatePicker
+                  disableFuture
                   disabled={inputDisabled}
                   // margin="normal"
                   id="dob"
@@ -232,22 +224,28 @@ const BasicDetails = ({
                   required
                   inputRef={ref}
                   focused={isTouched}
-                  format="dd/MM/yyyy"
+                  inputFormat="dd/MM/yyyy"
                   inputVariant="outlined"
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      error={!!errors.dob}
+                      helperText={
+                        errors.dob
+                          ? errors.dob.type === "validate"
+                            ? lang === "En"
+                              ? "Age must be 16 or higher"
+                              : "आयु 16 या अधिक होनी चाहिए"
+                            : lang === "En"
+                            ? "Enter Date of Birth"
+                            : "जन्मदिन दर्ज करें"
+                          : "Ex. 19/11/2005"
+                      }
+                    />
+                  )}
                   fullWidth
                   placeholder={lang === "En" ? "Date of Birth" : "आपका जन्मदिन"}
                   error={!!errors.dob}
-                  helperText={
-                    errors.dob
-                      ? errors.dob.type === "validate"
-                        ? lang === "En"
-                          ? "Age must be 16 or higher"
-                          : "आयु 16 या अधिक होनी चाहिए"
-                        : lang === "En"
-                        ? "Enter Date of Birth"
-                        : "जन्मदिन दर्ज करें"
-                      : "Ex. 19/11/2005"
-                  }
                   {...rest}
                 />
               </LocalizationProvider>
@@ -463,376 +461,4 @@ const BasicDetails = ({
   );
 };
 
-function Form(props) {
-  const classes = useStyles();
-  const theme = useTheme();
-  const rLocation = useLocation();
-  const navigate = useNavigate();
-  const { firstName, middleName, lastName, mobileNumber } = rLocation.state
-    ? rLocation.state
-    : { firstName: null, middleName: null, lastName: null, mobileNumber: null };
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    control,
-    setValue,
-    watch,
-    reset,
-  } = useForm();
-  const [enrolmentKey, setEnrolmentKey] = useState("");
-  // const [prevData, setPrevData] = useState({});
-  const [alreadyAUser, setAlreadyAUser] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-  // const [date, setDate] = useState();
-  const { enqueueSnackbar } = useSnackbar();
-  const [formData, setFormData] = useState({
-    ProfileImage: "",
-    FirstName: firstName || "",
-    MiddleName: middleName || "",
-    email: "",
-    LastName: lastName || "",
-    whatsapp: mobileNumber || "",
-    AlternateNumber: "",
-    gender: "",
-    dob: "",
-    gps_lat: "-1",
-    gps_long: "-1",
-    PrevImage: "",
-    district: "",
-    pin_code: "",
-    state: "",
-    city: "",
-    current_status: "",
-    qualification: "",
-    school_medium: "",
-    caste: "",
-    religion: "",
-    math_marks_in10th: "",
-    percentage_in10th: "",
-    math_marks_in12th: "",
-    percentage_in12th: "",
-  });
-
-  const savePhoto = (imgFile) => {
-    const tempFormdata = new FormData();
-    tempFormdata.append("file", imgFile);
-    axios
-      .post(
-        `${baseUrl}on_assessment/details/photo/${enrolmentKey}`,
-        tempFormdata
-      )
-      .then(() => {
-        enqueueSnackbar("Photo Uploaded Successfully", {
-          variant: "success",
-        });
-      })
-      .catch(() => {
-        enqueueSnackbar("Please Provide Valid Image File", {
-          variant: "error",
-        });
-      });
-  };
-
-  const setProfileImage = (img) => {
-    setFormData({ ...formData, ProfileImage: img });
-    savePhoto(img);
-  };
-
-  const gender = {
-    1: "female",
-    2: "male",
-    3: "other",
-  };
-  const casteOptions = ["", "obc", "scSt", "general", "others"];
-  const qualificationOptions = [
-    "",
-    "lessThan10th",
-    "class10th",
-    "class12th",
-    "graduate",
-    "ba",
-    "bcom",
-    "mcom",
-    "msc",
-    "bca",
-    "bsc",
-    "bba",
-  ];
-  const religionOptions = [
-    "",
-    "hindu",
-    "islam",
-    "sikh",
-    "jain",
-    "christian",
-    "others",
-  ];
-
-  const CurrentStatusOptions = ["", "nothing", "job", "study", "other"];
-  const schoolMediumOptions = ["", "en", "other"];
-
-  const { lang } = props;
-  useEffect(() => {
-    // let key = localStorage.getItem("enrolmentKey")
-    // setEnrolment_key(key)
-    const enrkey = location.pathname.split("/")[2];
-    //console.log("enrkey", enrkey);
-    setEnrolmentKey(enrkey);
-  }, []);
-
-  useEffect(() => {
-    if (location.pathname.split("/")[3]) {
-      axios
-        .get(`${baseUrl}/students/${location.pathname.split("/")[3]}`)
-        .then((res) => {
-          if (res.data.data.length > 0) {
-            const PrevDatas = res.data.data[0];
-
-            // setPrevData(PrevDatas);
-            setAlreadyAUser(true);
-            // setInputDisabled(true);
-            setFormData({
-              ...formData,
-              PrevImage: PrevDatas.image_url,
-              FirstName: PrevDatas.name.split(" ")[0],
-              MiddleName: PrevDatas.name.split(" ")[1],
-              LastName: PrevDatas.name.split(" ")[2],
-              email: PrevDatas.email,
-              whatsapp: PrevDatas.contacts[0].mobile,
-              AlternateNumber:
-                PrevDatas.contacts[1] && PrevDatas.contacts[1].alt_mobile,
-              dob: PrevDatas.dob,
-              gender: gender[PrevDatas.gender],
-              district: PrevDatas.district,
-              pin_code: PrevDatas.pin_code,
-              state: PrevDatas.state,
-              city: PrevDatas.city,
-              current_status: CurrentStatusOptions[PrevDatas.current_status],
-              qualification: qualificationOptions[PrevDatas.qualification],
-              school_medium: schoolMediumOptions[PrevDatas.school_medium],
-              caste: casteOptions[PrevDatas.caste],
-              religion: religionOptions[PrevDatas.religon],
-              math_marks_in10th: PrevDatas.math_marks_in10th,
-              percentage_in10th: PrevDatas.percentage_in10th,
-              math_marks_in12th: PrevDatas.math_marks_in12th,
-              percentage_in12th: PrevDatas.percentage_in12th,
-            });
-            reset({
-              PrevImage: PrevDatas.image_url,
-              FirstName: PrevDatas.name.split(" ")[0],
-              MiddleName: PrevDatas.name.split(" ")[1],
-              LastName: PrevDatas.name.split(" ")[2],
-              email: PrevDatas.email,
-              whatsapp: PrevDatas.contacts[0].mobile,
-              AlternateNumber:
-                PrevDatas.contacts[1] && PrevDatas.contacts[1].alt_mobile,
-              dob: PrevDatas.dob,
-              gender: gender[PrevDatas.gender],
-              district: PrevDatas.district,
-              pin_code: PrevDatas.pin_code,
-              state: PrevDatas.state,
-              city: PrevDatas.city,
-              current_status: CurrentStatusOptions[PrevDatas.current_status],
-              qualification: qualificationOptions[PrevDatas.qualification],
-              school_medium: schoolMediumOptions[PrevDatas.school_medium],
-              caste: casteOptions[PrevDatas.caste],
-              religion: religionOptions[PrevDatas.religon],
-              math_marks_in10th: PrevDatas.math_marks_in10th,
-              percentage_in10th: PrevDatas.percentage_in10th,
-              math_marks_in12th: PrevDatas.math_marks_in12th,
-              percentage_in12th: PrevDatas.percentage_in12th,
-            });
-          }
-        });
-    }
-  }, []);
-
-  const getSteps = () => [
-    ["Basic Details", "बुनियादी जानकारी"],
-    ["Other Details", "अन्य जानकारी"],
-  ];
-  const steps = getSteps();
-
-  const submitHandler = (prevData) => {
-    const data = {
-      name: prevData.name,
-      email: prevData.email,
-      whatsapp: prevData.whatsapp,
-      dob: prevData.dob,
-      gender: prevData.gender,
-      gps_lat: prevData.gps_lat,
-      gps_long: prevData.gps_long,
-      partner_refer: prevData.partner_refer,
-      qualification: prevData.qualification,
-      state: prevData.state,
-      district: prevData.district,
-      city: prevData.city,
-      current_status: prevData.current_status,
-      school_medium: prevData.school_medium,
-      pin_code: prevData.pin_code,
-      caste: prevData.caste,
-      religon: prevData.religion,
-      percentage_in10th: prevData.percentage_in10th
-        ? prevData.percentage_in10th
-        : "",
-      math_marks_in10th: prevData.math_marks_in10th,
-      math_marks_in12th: prevData.math_marks_in12th,
-      percentage_in12th: prevData.percentage_in12th
-        ? prevData.percentage_in12th
-        : "",
-    };
-    if (prevData.alt_mobile) data.alt_mobile = prevData.alt_mobile;
-
-    if (alreadyAUser) {
-      navigate(
-        `/EkAurBaat/${location.pathname.split("/")[2]}/${
-          location.pathname.split("/")[3]
-        }`
-      );
-    } else {
-      axios
-        .post(
-          `${baseUrl}on_assessment/details/${location.pathname.split("/")[2]}`,
-          data
-        )
-        .then((res) => {
-          navigate(
-            `/EkAurBaat/${location.pathname.split("/")[2]}/${
-              res.data.details.id
-            }`
-          );
-
-          //console.log("res", res);
-        })
-        .catch(() => {
-          enqueueSnackbar("Please fill all the fields properly", {
-            variant: "error",
-          });
-        });
-    }
-  };
-
-  const handleNext = (data, e) => {
-    e.preventDefault();
-    setFormData((prevFormData) => ({ ...prevFormData, ...data }));
-
-    if (activeStep === 0 && !formData.PrevImage && !formData.ProfileImage) {
-      enqueueSnackbar("Please provide a Profile Picture", { variant: "error" });
-      return;
-    }
-
-    if (activeStep >= steps.length - 1) {
-      submitHandler({
-        name: `${data.FirstName} ${data.MiddleName} ${data.LastName}`,
-        alt_mobile: data.AlternateNumber,
-        partner_refer: "NONE",
-        image_url: formData.ProfileImage,
-        gps_lat: formData.gps_lat ? formData.gps_lat : "",
-        gps_long: formData.gps_long ? formData.gps_lat : "",
-        math_marks_in10th: formData.math_marks_in10th
-          ? formData.math_marks_in10th
-          : "",
-        math_marks_in12th: formData.math_marks_in12th
-          ? formData.math_marks_in12th
-          : "",
-        ...data,
-      });
-      return;
-    } //submit here
-    setActiveStep((prevStep) => prevStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
-  };
-
-  const getStepContent = (step) => {
-    switch (step) {
-      case 0:
-        return (
-          <BasicDetails
-            lang={lang}
-            formData={formData}
-            // handleChange={handleChange}
-            reactForm={{ register, errors, control }}
-            inputDisabled={alreadyAUser}
-            setProfileImage={setProfileImage}
-          />
-        );
-      case 1:
-        return (
-          <KuchAurDetails
-            formData={{
-              name: `${formData.FirstName} ${formData.MiddleName} ${formData.LastName}`,
-              alt_mobile: formData.AlternateNumber,
-              partner_refer: "NONE",
-              image_url: formData.ProfileImage,
-              ...formData,
-            }}
-            reactForm={{ register, errors, control, watch, setValue }}
-            lang={lang}
-            // prevFilledData={prevData}
-            alreadyAUser={alreadyAUser}
-            inputDisabled={alreadyAUser}
-          />
-        );
-      default:
-        return <div />;
-    }
-  };
-
-  return (
-    <Container className={classes.root} maxWidth="sm">
-      <Typography variant="h5" className={classes.text}>
-        {lang === "En" ? steps[activeStep][0] : steps[activeStep][1]}
-      </Typography>
-      <form
-        style={{ paddingTop: "2.0rem" }}
-        noValidate
-        onSubmit={handleSubmit(handleNext)}
-      >
-        {getStepContent(activeStep)}
-        <MobileStepper
-          style={{ marginTop: "1.6rem" }}
-          variant="dots"
-          position="static"
-          steps={steps.length}
-          activeStep={activeStep}
-          nextButton={
-            <Button
-              size="medium"
-              type="submit"
-              variant={activeStep === steps.length - 1 ? "contained" : "text"}
-              // disabled={activeStep === steps.length - 1}
-              color="primary"
-            >
-              {activeStep === steps.length - 1 ? "Submit Data" : "Next"}
-              {theme.direction === "rtl" ? (
-                <KeyboardArrowLeft />
-              ) : (
-                <KeyboardArrowRight />
-              )}
-            </Button>
-          }
-          backButton={
-            <Button
-              size="medium"
-              onClick={handleBack}
-              disabled={activeStep === 0}
-            >
-              {theme.direction === "rtl" ? (
-                <KeyboardArrowRight />
-              ) : (
-                <KeyboardArrowLeft />
-              )}
-              Back
-            </Button>
-          }
-        />
-      </form>
-    </Container>
-  );
-}
-
-export default Form;
+export default BasicDetails;

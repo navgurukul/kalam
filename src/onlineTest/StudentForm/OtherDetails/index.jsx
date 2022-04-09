@@ -13,7 +13,7 @@ import {
   Select,
 } from "@mui/material";
 import { Controller } from "react-hook-form";
-import { state } from "./Constant";
+import { states } from "../../../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -129,9 +129,9 @@ function KuchAurDetails(props) {
                     <MenuItem value="" disabled>
                       {lang === "En" ? "Select State" : "राज्य चुनें"}
                     </MenuItem>
-                    {Object.keys(state).map((key) => (
+                    {Object.keys(states).map((key) => (
                       <MenuItem key={key} value={key}>
-                        {state[key]}
+                        {states[key]}
                       </MenuItem>
                     ))}
                   </Select>

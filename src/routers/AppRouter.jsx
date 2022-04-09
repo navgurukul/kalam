@@ -30,8 +30,9 @@ import AllCampusStudentsData from "../components/AllCampusStudentsData";
 import history from "../utils/history";
 import StudentStatus from "../components/StudentStatus";
 import DuplicateStudents from "../components/DuplicateStudents";
-import SlideShow from "../onlineTest/SlideShow";
-import EkAurBaat from "../onlineTest/EkAurBaat";
+import TestInstructions from "../onlineTest/Instructions";
+import StudentForm from "../onlineTest/StudentForm";
+import FinalInstruction from "../onlineTest/FinalInstruction";
 import Questions from "../onlineTest/Questions";
 import NewAdminPage from "../components/NewAdminPage";
 // import SlotBooking from "../components/SlotBooking";
@@ -247,14 +248,19 @@ const AppRouter = () => {
             }
           />
 
-          <Route path="/test/:enrollmentKey" element={<SlideShow />} />
           <Route path="/bookSlot/:userId" element={<SlotBooking2 />} />
-          <Route path="/EkAurBaat/:enrollmentKey" element={<EkAurBaat />} />
-          <Route path="/questions/:enrollmentKey" element={<Questions />} />
+          {/* <Route path="/test/:enrollmentKey/:testId" element={<SlideShow />} /> */}
+          <Route path="/test/">
+            <Route index path="instructions" element={<TestInstructions />} />
+            <Route path="studentdetails" element={<StudentForm />} />
+            <Route path="finalinstruction" element={<FinalInstruction />} />
+            <Route path=":enrollmentKey/:studentId" element={<Questions />} />
+          </Route>
+          {/* <Route path="/questions/:enrollmentKey" element={<Questions />} /> */}
           <Route path="/status/:mobile" element={<StudentStatus />} />
           {/* <AnyRoute path="/check_duplicate" component={<DuplicateStudents/>} /> */}
           <Route
-            path="/check_duplicate/Name=:fnamemnamelname&Number=:number&Stage=:stage"
+            path="/check_duplicate/name=:name&number=:number&stage=:stage"
             element={<DuplicateStudents />}
           />
 

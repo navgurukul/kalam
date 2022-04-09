@@ -11,9 +11,10 @@ import {
   FormControl,
   Container,
 } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import Form from "../Form/index";
+// import Form from "../Form/index";
 
 const tutorialSteps = [
   {
@@ -85,43 +86,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SlideShow(props) {
+const TestInstructions = () => {
   const classes = useStyles();
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
   const maxSteps = tutorialSteps.length;
-  const [value, setValue] = useState("En");
-  const [shuruKarein, SetShuruKarein] = useState(true);
-  const {
-    location: { enrolmentKey },
-  } = props;
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
+  const [lang, setLang] = useState("En");
+  // const [shuruKarein, SetShuruKarein] = useState(true);
+  // const { enrolmentKey } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { enrollmentKey, ...rest } = location.state;
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const clickHandler = () => {
+  const handleNext = () => {
+    if (activeStep === maxSteps - 1) {
+      // console.log(enrollmentKey, rest);
+      navigate("/test/studentdetails", {
+        state: { enrollmentKey, lang, ...rest },
+      });
+      return;
+    }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  localStorage.setItem("enrolmentKey", enrolmentKey);
-  // const enrolmentKey = localStorage.getItem("enrolmentKey");
-
-  // const goToForm = () => {
-  //   navigate({
-  //     pathname: "/studentDetails",
-  //     // enrolment_key: enrolmentKey,
-  //   });
-  // };
-
-  const changeHandler = (e) => {
-    setValue(e.target.value);
+  const clickHandler = () => {
+    if (activeStep === maxSteps - 1) {
+      // console.log(enrollmentKey);
+      return;
+    }
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  return shuruKarein ? (
+  localStorage.setItem("enrollmentKey", enrollmentKey);
+
+  const changeHandler = (e) => {
+    setLang(e.target.value);
+  };
+
+  return (
     <Container maxWidth="lg" align="center">
       <div className={classes.root}>
         <Paper square elevation={0} className={classes.heading}>
@@ -173,7 +178,7 @@ function SlideShow(props) {
                 Choose your language
               </InputLabel>
               <Select
-                value={value}
+                value={lang}
                 onChange={changeHandler}
                 label="Choose your language"
                 name="Language"
@@ -205,9 +210,9 @@ function SlideShow(props) {
               variant="contained"
               color="primary"
               onClick={() => {
-                SetShuruKarein(false);
-                const query = new URLSearchParams(window.location.search);
-                query.append("enabled", "true");
+                // const query = new URLSearchParams(window.location.search);
+                // query.append("enabled", "true");
+                handleNext();
               }}
             >
               {tutorialSteps[activeStep].button3}
@@ -250,9 +255,10 @@ function SlideShow(props) {
         />
       </div>
     </Container>
-  ) : (
-    <Form lang={value} />
   );
-}
+  // : (
+  //   <Form lang={value} />
+  // );
+};
 
-export default SlideShow;
+export default TestInstructions;

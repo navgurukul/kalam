@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import axios from "axios";
 import { Paper, Typography, Button, Container } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -49,6 +49,9 @@ function EkAurBaat() {
   //console.log("Props in ek aur baat", props.location.enrolment_key);
   const classes = useStyles();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { enrollmentKey, studentId } = location.state;
 
   // //1. Where we'll get time 00:00:00
   const time = useRef(new Date().setSeconds(new Date().getSeconds() + 5400));
@@ -77,21 +80,17 @@ function EkAurBaat() {
   localStorage.setItem("correctAnswerObj", JSON.stringify(correctAnswerObj));
   localStorage.setItem("index", 0);
 
-  const enrolmentKey = location.pathname.split("/")[2];
   //console.log("enrolmentKey", enrolmentKey);
 
   const fetchQuestionsAndOptions = () => {
     localStorage.setItem("answerObj", JSON.stringify(""));
     axios
-      .get(`${baseUrl}on_assessment/questions/${enrolmentKey}`)
+      .get(`${baseUrl}on_assessment/questions/${enrollmentKey}`)
       .then((res) => {
         //console.log("response", res.data.data);
         localStorage.setItem("questionsList", JSON.stringify(res.data.data));
         // localStorage.setItem("questionsList", res.data.data);
-        navigate({
-          pathname: `/questions/${enrolmentKey}/${
-            location.pathname.split("/")[3]
-          }`,
+        navigate(`/test/${enrollmentKey}/${studentId}`, {
           // questions: res.data.data,
           // time: time.current, // 2nd point
           // time: TIME,   // 1st point and 3rd point

@@ -225,13 +225,15 @@ const LandingPage = () => {
       .then(async (data) => {
         const response = data.data.data;
         if (response.alreadyGivenTest) {
-          navigate({
-            pathname: `/check_duplicate/Name=${first_name}${middle_name}${last_name}&Number=${mobileNumber}&Stage=${response.pendingInterviewStage}`,
-            state: {
-              state,
-              data: response.data,
-            },
-          });
+          navigate(
+            `/check_duplicate/name=${first_name}_${middle_name}_${last_name}&number=${mobileNumber}&stage=${response.pendingInterviewStage}`,
+            {
+              state: {
+                ...state,
+                data: response.data,
+              },
+            }
+          );
         } else {
           const res = await generateTestLink();
           // const params = {
@@ -250,15 +252,6 @@ const LandingPage = () => {
           //   .filter((item) => item)
           //   .join("&");
           // const url = `${testUrl}${response.data.key}?${queryString}`;
-          navigate({
-            pathname: `/test/${response.data.key}`,
-            state: {
-              firstName,
-              middleName,
-              lastName,
-              mobileNumber,
-            },
-          });
 
           setState({
             ...state,
@@ -269,6 +262,16 @@ const LandingPage = () => {
             enrollmentKey: res.data.key,
           });
           fetchingFinish();
+
+          navigate(`/test/instructions`, {
+            state: {
+              firstName,
+              middleName,
+              lastName,
+              mobileNumber,
+              enrollmentKey: res.data.key,
+            },
+          });
         }
       });
   };

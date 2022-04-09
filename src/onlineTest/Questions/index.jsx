@@ -9,6 +9,7 @@ import {
   Container,
   Grid,
 } from "@mui/material";
+import { useParams } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import Timer from "./Timer";
 import ThankYouPage from "../ThankYouPage";
@@ -46,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Questions() {
   const classes = useStyles();
+  const { enrollmentKey, studentId } = useParams();
   const [index, setIndex] = useState(null);
   const [answerObj, setAnswerObj] = useState({});
   // const [questionId, setQuestionId] = useState("");
@@ -135,27 +137,17 @@ function Questions() {
         );
       });
 
-    fetch(
-      `${baseUrl}on_assessment/questions/${
-        location.pathname.split("/")[2]
-      }/answers`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: localStorage.getItem("answerList"),
-      }
-    )
+    fetch(`${baseUrl}on_assessment/questions/${enrollmentKey}/answers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: localStorage.getItem("answerList"),
+    })
       .then(() => {
-        fetch(
-          `${baseUrl}on_assessment/Show_testResult/${
-            location.pathname.split("/")[2]
-          }`,
-          {
-            method: "GET",
-          }
-        ).then((res) => {
+        fetch(`${baseUrl}on_assessment/Show_testResult/${enrollmentKey}`, {
+          method: "GET",
+        }).then((res) => {
           res.json().then((data) => {
             //console.log("data", data);
             setResult({
@@ -212,10 +204,7 @@ function Questions() {
 
     return result.done ? (
       result.success ? (
-        <ThankYouPage
-          total_marks={result.total_marks}
-          userID={location.pathname.split("/")[3]}
-        />
+        <ThankYouPage total_marks={result.total_marks} userID={studentId} />
       ) : (
         <SorryPage total_marks={result.total_marks} />
       )
@@ -242,22 +231,29 @@ function Questions() {
             </Typography>
             {questionsList[index].options.length > 2 ? (
               questionsList[index].options.map((option, i) => {
-                const options = DOMPurify.sanitize(option.text);
+                const purifiedOptions = DOMPurify.sanitize(option.text);
                 return (
                   <Paper square elevation={0} className={classes.options}>
                     <Typography variant="subtitle1" key="i">
                       {i + 1} {"."}{" "}
                       <Button
                         className={classes.optionButton}
-                        dangerouslySetInnerHTML={{ __html: options }}
+                        // dangerouslySetInnerHTML={{ __html: purifiedOptions }}
                         style={{
-                          background: `
+                          backgroundColor: `
                                  ${
                                    answerList[questionID] === option.id
                                      ? "#f05f40"
                                      : ""
                                  }
                                 `,
+                          color: `
+                                ${
+                                  answerList[questionID] === option.id
+                                    ? "#000000"
+                                    : ""
+                                }
+                               `,
                         }}
                         onClick={() => {
                           setAnswerObj({
@@ -269,7 +265,9 @@ function Questions() {
                             [questionID]: option.id,
                           });
                         }}
-                      />
+                      >
+                        {purifiedOptions}
+                      </Button>
                     </Typography>
                   </Paper>
                 );

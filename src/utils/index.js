@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import { dConvert } from "../services/StudentService";
 
 export const dataSetup = (data, totalData, loggedInUser) => {
@@ -15,3 +16,20 @@ export const dataSetup = (data, totalData, loggedInUser) => {
 };
 
 export const dummy = () => {};
+
+export const encryptText = (
+  plainText //convert to hex
+) =>
+  plainText
+    .split("")
+    .map((el, inx) => Number(plainText.charCodeAt(inx)).toString(16))
+    .join("");
+
+export const decryptText = (
+  cipherText // convert back to ascii
+) =>
+  cipherText
+    .toString("")
+    .match(/.{1,2}/g)
+    .map((el) => String.fromCharCode(parseInt(el, 16)))
+    .join("");

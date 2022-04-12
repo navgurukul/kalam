@@ -6,8 +6,8 @@ function Timer({ expiryTimestamp, callback }) {
     expiryTimestamp,
     autoStart: true,
     onExpire: () => {
-      alert("Time Over");
       callback();
+      alert("Time Over");
     },
   });
 

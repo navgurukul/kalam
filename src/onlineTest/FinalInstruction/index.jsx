@@ -3,6 +3,7 @@ import axios from "axios";
 import { Paper, Typography, Button, Container } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useLocation, useNavigate } from "react-router-dom";
+import { encryptText } from "../../utils";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -57,44 +58,28 @@ function EkAurBaat() {
   const time = useRef(new Date().setSeconds(new Date().getSeconds() + 5400));
   localStorage.setItem("time", time.current);
   //console.log("time.current", time.current);
-  // const Time = time.current;
-  // console.log("Time before store in local storage", Time);
-  // Time.setSeconds(Time.getSeconds() + 5400);
-  // localStorage.setItem("Time", time.current);
-  // const TIME = localStorage.getItem("Time");
-
-  //2. Where we won't able to set localStorage in this component
-  // const time = useRef(new Date());
-
-  // //3. Where can set the localStorage but we can't add 90 min with Time.setSeconds(Time.getSeconds() + 5400);
-  // const time = useRef(new Date());
-  // const Time = time.current;
-  // localStorage.setItem("Time", Time);
-  // const TIME = localStorage.getItem("Time");
-
-  // //We can't call getSecond function after set the time in localStorage.
 
   const answerList = [];
-  const correctAnswerObj = {};
+  // const correctAnswerObj = {};
 
-  localStorage.setItem("correctAnswerObj", JSON.stringify(correctAnswerObj));
-  localStorage.setItem("index", 0);
+  // localStorage.setItem("correctAnswerObj", JSON.stringify(correctAnswerObj));
+  localStorage.setItem("index", encryptText(`0`));
 
   //console.log("enrolmentKey", enrolmentKey);
 
   const fetchQuestionsAndOptions = () => {
-    localStorage.setItem("answerObj", JSON.stringify(""));
+    // localStorage.setItem("answerObj", JSON.stringify(""));
     axios
       .get(`${baseUrl}on_assessment/questions/${enrollmentKey}`)
       .then((res) => {
         //console.log("response", res.data.data);
-        localStorage.setItem("questionsList", JSON.stringify(res.data.data));
+        // localStorage.setItem("questionsList", JSON.stringify(res.data.data));
         // localStorage.setItem("questionsList", res.data.data);
         navigate(`/test/${enrollmentKey}/${studentId}`, {
           // questions: res.data.data,
           // time: time.current, // 2nd point
           // time: TIME,   // 1st point and 3rd point
-          answerList,
+          state: { answerList, questionsList: res.data.data },
           // correctAnswerObj: correctAnswerObj,
         });
       })
@@ -104,7 +89,7 @@ function EkAurBaat() {
   };
 
   return (
-    <Container maxWidth="lg" align="center" justifyContent="center">
+    <Container maxWidth="lg" align="center">
       <div className={classes.root}>
         <Paper square elevation={0} className={classes.heading}>
           <Typography variant="h4">{tutorialSteps.heading}</Typography>

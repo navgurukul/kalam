@@ -35,7 +35,7 @@ const DuplicateStudents = () => {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const location = useLocation();
-  const { name, number, stage } = useParams();
+  const { name, number } = useParams();
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
@@ -181,8 +181,8 @@ const DuplicateStudents = () => {
       }  अभी भी चल रहा हैं। अभी आपको ऑनलाइन परीक्षा देने की आवश्यकता नहीं है। हम जल्द ही आपकी प्रवेश प्रक्रिया (एडमिशन प्रोसेस) पूरी कर देंगे।`,
     },
     testFailedMessage: {
-      en: ` , Your previous attempts were unsuccessful/test failed, please give the 1st stage of the online test again.`,
-      hi: ` , आपके पिछले टेस्ट असफल रहे या आप पास नहीं हो पाए, कृपया ऑनलाइन टेस्ट वापस से दे।`,
+      en: `, Your previous attempts were unsuccessful/test failed, please give the 1st stage of the online test again.`,
+      hi: `, आपके पिछले टेस्ट असफल रहे या आप पास नहीं हो पाए, कृपया ऑनलाइन टेस्ट वापस से दे।`,
     },
   };
 
@@ -202,7 +202,12 @@ const DuplicateStudents = () => {
         const response = data.data.data;
 
         if (response.alreadyGivenTest) {
-          setState({ ...state, response, data: response.data });
+          setState({
+            ...state,
+            response,
+            data: response.data,
+            pendingInterviewStage: response.data[0].stage,
+          });
         } else {
           setState({
             ...state,
@@ -241,7 +246,7 @@ const DuplicateStudents = () => {
   let lastName;
   // const splitedName = name.match(/[A-Z][a-z]+/g);
   const splittedName = name.split("_");
-  const pendingInterviewStage = stage;
+  const { pendingInterviewStage } = state;
   if (splittedName.length === 3) {
     [firstName, middleName, lastName] = splittedName;
   } else {
@@ -259,10 +264,11 @@ const DuplicateStudents = () => {
         </Typography>
         <MUIDataTable
           title={
-            pendingInterviewStage
+            pendingInterviewStage === "enrolmentKeyGenerated" ||
+            pendingInterviewStage === "testFailed"
               ? `${firstName.concat(" ", middleName, " ", lastName)}
             ${message.testFailedMessage[selectedLang]}`
-              : `${firstName.concat(" ", middleName, "", lastName)}${
+              : `${firstName.concat(" ", middleName, " ", lastName)}${
                   message.stageMessage[selectedLang]
                 }`
           }

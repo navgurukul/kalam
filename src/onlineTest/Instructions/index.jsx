@@ -14,6 +14,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import { encryptText } from "../../utils";
 // import Form from "../Form/index";
 
 const tutorialSteps = [
@@ -120,7 +121,7 @@ const TestInstructions = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  localStorage.setItem("enrollmentKey", enrollmentKey);
+  localStorage.setItem("enrollmentKey", encryptText(`${enrollmentKey}`));
 
   const changeHandler = (e) => {
     setLang(e.target.value);

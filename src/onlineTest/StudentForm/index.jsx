@@ -160,7 +160,6 @@ const StudentForm = () => {
   const schoolMediumOptions = ["", "en", "other"];
 
   useEffect(() => {
-    // let key = localStorage.getItem("enrolmentKey")
     // setEnrolment_key(key)
     // const enrkey = location.pathname.split("/")[2];
     //console.log("enrkey", enrkey);

@@ -9,11 +9,12 @@ import {
   Container,
   Grid,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import Timer from "./Timer";
 import ThankYouPage from "../ThankYouPage";
 import SorryPage from "../SorryPage";
+import { decryptText, encryptText } from "../../utils";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const tutorialSteps = {
@@ -49,11 +50,10 @@ function Questions() {
   const classes = useStyles();
   const { enrollmentKey, studentId } = useParams();
   const [index, setIndex] = useState(null);
-  const [answerObj, setAnswerObj] = useState({});
-  // const [questionId, setQuestionId] = useState("");
   const Time = localStorage.getItem("time");
   const time = new Date(JSON.parse(Time));
-  const questionsList = JSON.parse(localStorage.getItem("questionsList"));
+  const location = useLocation();
+  const { questionsList } = location.state;
   const [answerList, setAnswerList] = useState({});
   const [result, setResult] = useState({
     success: false,
@@ -62,17 +62,12 @@ function Questions() {
   });
   useEffect(() => {
     if (index !== null) {
-      localStorage.setItem("index", JSON.stringify(index));
+      localStorage.setItem("index", encryptText(`${index}`));
     }
   }, [index]);
-  useEffect(() => {
-    //console.log("Answer List", answerList);
-  }, [answerList]);
 
   useEffect(() => {
-    setIndex(JSON.parse(localStorage.getItem("index")));
-    setAnswerObj(JSON.parse(localStorage.getItem("answerObj")));
-    // console.log(JSON.parse(localStorage.getItem("index")));
+    setIndex(parseInt(decryptText(localStorage.getItem("index")), 10));
     const questionNumbers = [];
     questionsList.forEach((question) => {
       questionNumbers.push(question.id);
@@ -82,17 +77,13 @@ function Questions() {
       return acc;
     }, {});
     setAnswerList(data);
-    //console.log("answerList", data);
   }, []);
 
-  const correctAnswerObj = JSON.parse(localStorage.getItem("correctAnswerObj"));
-
-  // const answerList = props.location.answerList;
-
   const changeHandler = (e, upQuestionId) => {
-    setAnswerObj({ ...answerObj, [upQuestionId]: e.target.value });
-    // setQuestionId(e.target.name);
-    setAnswerList({ ...answerList, [upQuestionId]: e.target.value });
+    setAnswerList({
+      ...answerList,
+      [upQuestionId]: encryptText(e.target.value),
+    });
   };
 
   const previousClickHandler = () => {
@@ -101,55 +92,36 @@ function Questions() {
 
   const nextClickHandler = () => {
     setIndex(index + 1);
-    localStorage.setItem("answerObj", JSON.stringify({ ...answerObj }));
-    //console.log("answerObj", answerObj);
-
-    //console.log("correctAnswerObj in nextClickHandler ", correctAnswerObj);
-
-    let correctAnswer;
-    if (questionsList[index].options.length > 0)
-      questionsList[index].options.forEach((option) => {
-        const options = DOMPurify.sanitize(option.text);
-        if (option.correct) correctAnswer = options;
-        correctAnswerObj[questionsList[index].id] = correctAnswer;
-        localStorage.setItem(
-          "correctAnswerObj",
-          JSON.stringify({ ...correctAnswerObj })
-        );
-      });
 
     localStorage.setItem("answerList", JSON.stringify({ ...answerList }));
   };
 
-  //console.log("answerObj", answerObj);
-  //console.log("correctAnswerObj", correctAnswerObj);
-
   const submitHandler = () => {
-    let correctAnswer;
-    if (questionsList[index].options.length > 0)
-      questionsList[index].options.forEach((option) => {
-        const options = DOMPurify.sanitize(option.text);
-        if (option.correct) correctAnswer = options;
-        correctAnswerObj[questionsList[index].id] = correctAnswer;
-        localStorage.setItem(
-          "correctAnswerObj",
-          JSON.stringify({ ...correctAnswerObj })
-        );
-      });
+    const finalAnswerList = JSON.parse(localStorage.getItem("answerList"));
+    const decryptedAnsList = Object.entries(finalAnswerList).reduce(
+      (acc, [key, value]) => {
+        acc[key] = decryptText(value);
+        return acc;
+      },
+      {}
+    );
 
     fetch(`${baseUrl}on_assessment/questions/${enrollmentKey}/answers`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: localStorage.getItem("answerList"),
+      body: JSON.stringify(decryptedAnsList),
     })
       .then(() => {
         fetch(`${baseUrl}on_assessment/Show_testResult/${enrollmentKey}`, {
           method: "GET",
         }).then((res) => {
           res.json().then((data) => {
-            //console.log("data", data);
+            localStorage.removeItem("answerList");
+            localStorage.removeItem("enrollmentKey");
+            localStorage.removeItem("index");
+            localStorage.removeItem("time");
             setResult({
               ...result,
               total_marks: data.total_marks,
@@ -175,26 +147,6 @@ function Questions() {
       });
   };
 
-  // const isEqual = (_answerObj, _correctAnswerObj) => {
-  //   //console.log("_answerObj in isEqual", _answerObj);
-  //   const userAnswerKey = Object.keys(_answerObj);
-  //   // const correctAnswerKey = Object.keys(_correctAnswerObj);
-
-  //   const correctAnswerCount = userAnswerKey.reduce((acc, curr) => {
-  //     if (_answerObj[curr] === _correctAnswerObj[curr]) {
-  //       return acc + 1;
-  //     }
-  //     return acc;
-  //   }, 0);
-
-  //   // userAnswerKey.forEach((key) => {
-  //   //   if (_answerObj[key] === _correctAnswerObj[key]) {
-  //   //     correctAnswerCount++;
-  //   //   }
-  //   // });
-  //   return correctAnswerCount;
-  // };
-
   if (index !== null) {
     //console.log("questionsList inside the condition", questionsList);
     const enText = DOMPurify.sanitize(questionsList[index].en_text);
@@ -209,13 +161,14 @@ function Questions() {
         <SorryPage total_marks={result.total_marks} />
       )
     ) : (
-      <Container maxWidth="lg" align="center" justifyContent="center">
+      <Container maxWidth="lg" align="center">
         <div className={classes.root}>
           <Paper square elevation={0} className={classes.content}>
             <Typography variant="subtitle1">
-              {tutorialSteps.content1}
-              {index + 1} {tutorialSteps.content2} {index}{" "}
-              {tutorialSteps.content3}
+              <b>
+                {tutorialSteps.content1} {index + 1}
+              </b>{" "}
+              {tutorialSteps.content2} <b>{index}</b> {tutorialSteps.content3}
             </Typography>
             <Typography variant="subtitle1">
               <Timer callback={submitHandler} expiryTimestamp={time} />
@@ -233,41 +186,50 @@ function Questions() {
               questionsList[index].options.map((option, i) => {
                 const purifiedOptions = DOMPurify.sanitize(option.text);
                 return (
-                  <Paper square elevation={0} className={classes.options}>
+                  <Paper
+                    key={`${option.id}`}
+                    square
+                    elevation={0}
+                    className={classes.options}
+                  >
                     <Typography variant="subtitle1" key="i">
                       {i + 1} {"."}{" "}
-                      <Button
+                      {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                      <button
+                        type="button"
                         className={classes.optionButton}
-                        // dangerouslySetInnerHTML={{ __html: purifiedOptions }}
                         style={{
+                          border: "none",
+                          borderRadius: ".2rem",
                           backgroundColor: `
                                  ${
-                                   answerList[questionID] === option.id
+                                   parseInt(
+                                     decryptText(answerList[questionID]),
+                                     10
+                                   ) === option.id
                                      ? "#f05f40"
                                      : ""
                                  }
                                 `,
                           color: `
                                 ${
-                                  answerList[questionID] === option.id
+                                  parseInt(
+                                    decryptText(answerList[questionID]),
+                                    10
+                                  ) === option.id
                                     ? "#000000"
                                     : ""
                                 }
                                `,
                         }}
                         onClick={() => {
-                          setAnswerObj({
-                            ...answerObj,
-                            [questionID]: option.id,
-                          });
                           setAnswerList({
                             ...answerList,
-                            [questionID]: option.id,
+                            [questionID]: encryptText(`${option.id}`),
                           });
                         }}
-                      >
-                        {purifiedOptions}
-                      </Button>
+                        dangerouslySetInnerHTML={{ __html: purifiedOptions }}
+                      />
                     </Typography>
                   </Paper>
                 );
@@ -277,30 +239,31 @@ function Questions() {
                 variant="outlined"
                 required
                 fullWidth
-                id={questionID}
+                id={`${questionID}`}
                 className={classes.spacing}
                 // label="Your name"
                 placeholder="Write your answer here..."
-                value={answerObj[questionID] ? answerObj[questionID] : ""}
-                name={questionID}
+                value={decryptText(answerList[questionID]) || ""}
+                name={`${questionID}`}
                 autoComplete="off"
                 onChange={(e) => changeHandler(e, questionID)}
               />
             )}
 
-            {index === 17 ? (
-              <Grid container spacing={3}>
-                <Grid item xs={6}>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    onClick={previousClickHandler}
-                  >
-                    Previous
-                  </Button>
-                </Grid>
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={previousClickHandler}
+                  disabled={index === 0}
+                >
+                  Previous
+                </Button>
+              </Grid>
+              {index === 17 ? (
                 <Grid item xs={6}>
                   <Button
                     type="submit"
@@ -312,22 +275,7 @@ function Questions() {
                     Submit
                   </Button>
                 </Grid>
-              </Grid>
-            ) : (
-              <Grid container spacing={3}>
-                {index > 0 && (
-                  <Grid item xs={6}>
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                      onClick={previousClickHandler}
-                    >
-                      Previous
-                    </Button>
-                  </Grid>
-                )}
+              ) : (
                 <Grid item xs={6}>
                   <Button
                     type="submit"
@@ -339,8 +287,8 @@ function Questions() {
                     Next
                   </Button>
                 </Grid>
-              </Grid>
-            )}
+              )}
+            </Grid>
           </Paper>
         </div>
       </Container>

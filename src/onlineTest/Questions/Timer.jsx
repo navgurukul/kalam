@@ -1,11 +1,14 @@
 import React from "react";
 import { useTimer } from "react-timer-hook";
 
-const Timer = ({ expiryTimestamp }) => {
+const Timer = ({ expiryTimestamp, callback }) => {
   const { seconds, minutes, hours } = useTimer({
     expiryTimestamp,
     autoStart: true,
-    onExpire: () => alert("Time Over"),
+    onExpire: () => {
+      callback();
+      alert("Time Over");
+    },
   });
 
   // const time = expiryTimestamp.toISOString().substr(11, 8);
@@ -26,3 +29,7 @@ const Timer = ({ expiryTimestamp }) => {
 };
 
 export default Timer;
+
+Timer.defaultProps = {
+  callback: () => {},
+};

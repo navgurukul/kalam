@@ -218,7 +218,7 @@ function Questions() {
               {tutorialSteps.content3}
             </Typography>
             <Typography variant="subtitle1">
-              <Timer expiryTimestamp={time} />
+              <Timer callback={submitHandler} expiryTimestamp={time} />
             </Typography>
             <Typography variant="subtitle1">
               <div dangerouslySetInnerHTML={{ __html: enText }} />

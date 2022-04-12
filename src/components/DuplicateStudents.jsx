@@ -154,6 +154,10 @@ const DuplicateStudents = () => {
       label: "Marks",
       options: {
         filter: false,
+        customBodyRender: (rowData, rowMeta) =>
+          rowMeta.rowData[1] === "enrolmentKeyGenerated" && rowData === null
+            ? "Last Test Not Submitted"
+            : rowData,
       },
     },
 

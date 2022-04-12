@@ -137,7 +137,7 @@ function Questions(props) {
           })
         : null;
     }
-    
+
     fetch(
       `${baseUrl}on_assessment/questions/${
         location.pathname.split("/")[2]
@@ -229,7 +229,7 @@ function Questions(props) {
                     {tutorialSteps.content3}
                   </Typography>
                   <Typography variant="subtitle1">
-                    <Timer expiryTimestamp={time} />
+                    <Timer callback={submitHandler} expiryTimestamp={time} />
                   </Typography>
                   <Typography variant="subtitle1">
                     <div dangerouslySetInnerHTML={{ __html: en_text }} />

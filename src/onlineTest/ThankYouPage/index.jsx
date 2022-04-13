@@ -39,7 +39,7 @@ function ThankYouPage(props) {
   }, []);
   return (
     <Container maxWidth="lg" align="center">
-      <div className={classes.root} align="center" justifyContent="center">
+      <div className={classes.root} align="center">
         <Typography variant="h4" className={classes.thanks}>
           Thank you! you have passed the test. You have scored {totalMarks}
         </Typography>
@@ -62,6 +62,10 @@ function ThankYouPage(props) {
           color="primary"
           className={classes.button}
           onClick={() => {
+            localStorage.removeItem("answerList");
+            localStorage.removeItem("enrollmentKey");
+            localStorage.removeItem("index");
+            localStorage.removeItem("time");
             const { userID } = props;
             navigate(`/bookSlot/${userID}`);
           }}
@@ -76,7 +80,13 @@ function ThankYouPage(props) {
           className={classes.button}
           //   onClick={clickHandler}
         >
-          Visit NavGurukul Website
+          <a
+            href="http://navgurukul.org/"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Visit NavGurukul Website
+          </a>
         </Button>
         <Button
           type="submit"
@@ -86,7 +96,13 @@ function ThankYouPage(props) {
           className={classes.button}
           //   onClick={clickHandler}
         >
-          Start Learning Coding Now
+          <a
+            href="https://www.merakilearn.org/"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Start Learning Coding Now
+          </a>
         </Button>
       </div>
     </Container>

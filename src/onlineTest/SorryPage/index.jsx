@@ -65,7 +65,7 @@ function SorryPage() {
   }, []);
   //console.log(marks);
   return (
-    <Container maxWidth="lg" align="center" justifyContent="center">
+    <Container maxWidth="lg" align="center">
       <div className={classes.root}>
         <Paper square elevation={0} className={classes.content}>
           <Typography variant="h4">{tutorialSteps.heading}</Typography>
@@ -111,7 +111,13 @@ function SorryPage() {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => navigate("/")}
+            onClick={() => {
+              localStorage.removeItem("answerList");
+              localStorage.removeItem("enrollmentKey");
+              localStorage.removeItem("index");
+              localStorage.removeItem("time");
+              navigate("/");
+            }}
           >
             Ok
           </Button>

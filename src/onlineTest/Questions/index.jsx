@@ -50,7 +50,7 @@ function Questions() {
   const classes = useStyles();
   const { enrollmentKey, studentId } = useParams();
   const [index, setIndex] = useState(null);
-  const Time = localStorage.getItem("time");
+  const Time = parseInt(decryptText(localStorage.getItem("time")), 10);
   const time = new Date(JSON.parse(Time));
   const location = useLocation();
   const { questionsList } = location.state;
@@ -76,7 +76,16 @@ function Questions() {
       acc[curr] = "";
       return acc;
     }, {});
-    setAnswerList(data);
+    const prevAnsList = JSON.parse(localStorage.getItem("answerList"));
+    setAnswerList(prevAnsList || data);
+    return () => {
+      if (result.done) {
+        localStorage.removeItem("answerList");
+        localStorage.removeItem("enrollmentKey");
+        localStorage.removeItem("index");
+        localStorage.removeItem("time");
+      }
+    };
   }, []);
 
   const changeHandler = (e, upQuestionId) => {
@@ -118,10 +127,6 @@ function Questions() {
           method: "GET",
         }).then((res) => {
           res.json().then((data) => {
-            localStorage.removeItem("answerList");
-            localStorage.removeItem("enrollmentKey");
-            localStorage.removeItem("index");
-            localStorage.removeItem("time");
             setResult({
               ...result,
               total_marks: data.total_marks,

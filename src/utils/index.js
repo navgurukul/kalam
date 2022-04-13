@@ -28,8 +28,10 @@ export const encryptText = (
 export const decryptText = (
   cipherText // convert back to ascii
 ) =>
-  cipherText
-    .toString("")
-    .match(/.{1,2}/g)
-    .map((el) => String.fromCharCode(parseInt(el, 16)))
-    .join("");
+  cipherText.length === 0
+    ? ""
+    : cipherText
+        .toString("")
+        .match(/.{1,2}/g)
+        .map((el) => String.fromCharCode(parseInt(el, 16)))
+        .join("");

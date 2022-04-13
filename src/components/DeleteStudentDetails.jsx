@@ -12,6 +12,7 @@ import {
   Typography,
   Grid,
 } from "@mui/material";
+// eslint-disable-next-line import/no-cycle
 import { setStudentData } from "../store/slices/studentSlice";
 
 const { permissions } = require("../config");
@@ -20,7 +21,8 @@ const baseUrl = import.meta.env.VITE_API_URL;
 
 const DeleteStudentDetails = (props) => {
   const snackbar = useSnackbar();
-  const data = useSelector((state) => state.data.studentData);
+  const data = useSelector((state) => state.students.studentData);
+  const { loggedInUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const getStudentsData = (data) => dispatch(setStudentData(data));
   const [open, setOpen] = React.useState(false);
@@ -47,9 +49,8 @@ const DeleteStudentDetails = (props) => {
   };
 
   const { pathname, studentName } = props;
-  const user = JSON.parse(window.localStorage.user);
   if (
-    permissions.updateStudentName.indexOf(user.mail_id) > -1 &&
+    permissions.updateStudentName.indexOf(loggedInUser.mail_id) > -1 &&
     pathname.indexOf("campus") > -1
   ) {
     return (

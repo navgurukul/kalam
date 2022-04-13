@@ -8,7 +8,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import MUIDataTable from "mui-datatables";
-import DetailsIcon from "@mui/icons-material/Details";
+import ChangeHistoryIcon from "@mui/icons-material/ChangeHistory";
 import { useLocation } from "react-router-dom";
 import theme from "../theme";
 import { changeFetching } from "../store/slices/authSlice";
@@ -17,6 +17,7 @@ import GlobalService from "../services/GlobalService";
 import StudentService from "../services/StudentService";
 import StudentContact from "./StudentContact";
 import Loader from "./Loader";
+// eslint-disable-next-line import/no-cycle
 import DeleteStudentDetails from "./DeleteStudentDetails";
 import OutreachData from "./OutreachData";
 
@@ -60,6 +61,9 @@ const useStyles = makeStyles((_theme) => ({
         minHeight: "22px",
       },
     },
+  },
+  transitionIcon: {
+    transform: "rotate(-180deg)",
   },
 }));
 
@@ -205,7 +209,10 @@ const StageTransitions = (props) => {
         </Typography>
       ) : (
         <Button color="primary" align="right" onClick={handleOpen}>
-          <DetailsIcon color="primary" />
+          <ChangeHistoryIcon
+            className={classes.transitionIcon}
+            color="primary"
+          />
         </Button>
       )}
     </div>

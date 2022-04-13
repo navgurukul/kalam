@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles, useTheme } from "@mui/styles";
 import {
   MobileStepper,
@@ -14,6 +14,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import { encryptText } from "../../utils";
 // import Form from "../Form/index";
 
 const tutorialSteps = [
@@ -104,6 +105,7 @@ const TestInstructions = () => {
   const handleNext = () => {
     if (activeStep === maxSteps - 1) {
       // console.log(enrollmentKey, rest);
+      localStorage.setItem("enrollmentKey", encryptText(`${enrollmentKey}`));
       navigate("/test/studentdetails", {
         state: { enrollmentKey, lang, ...rest },
       });
@@ -120,7 +122,13 @@ const TestInstructions = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  localStorage.setItem("enrollmentKey", enrollmentKey);
+  useEffect(() => {
+    localStorage.removeItem("answerList");
+    localStorage.removeItem("enrollmentKey");
+    localStorage.removeItem("index");
+    localStorage.removeItem("time");
+    localStorage.removeItem("testStarted");
+  }, []);
 
   const changeHandler = (e) => {
     setLang(e.target.value);

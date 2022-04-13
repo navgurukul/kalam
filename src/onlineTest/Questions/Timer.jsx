@@ -1,12 +1,21 @@
+import { Typography } from "@mui/material";
 import React from "react";
 import { useTimer } from "react-timer-hook";
 
-const Timer = ({ expiryTimestamp }) => {
+const Timer = ({ expiryTimestamp, callback }) => {
   const { seconds, minutes, hours } = useTimer({
     expiryTimestamp,
     autoStart: true,
-    onExpire: () => alert("Time Over"),
+    onExpire: () => {
+      callback();
+      alert("Time Over");
+    },
   });
+
+  const formatUnit = (unit) => {
+    if (parseInt(unit, 10) < 10) return `0${unit}`;
+    return unit;
+  };
 
   // const time = expiryTimestamp.toISOString().substr(11, 8);
   // console.log("expiryTimestamp", expiryTimestamp)
@@ -17,12 +26,16 @@ const Timer = ({ expiryTimestamp }) => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <div>
-        Time Remaining: <span>{hours}</span>:<span>{minutes}</span>:
-        <span>{seconds}</span>
-      </div>
+      <Typography variant="h4">
+        Time Remaining: <span>{formatUnit(hours)}</span>:
+        <span>{formatUnit(minutes)}</span>:<span>{formatUnit(seconds)}</span>
+      </Typography>
     </div>
   );
 };
 
 export default Timer;
+
+Timer.defaultProps = {
+  callback: () => {},
+};

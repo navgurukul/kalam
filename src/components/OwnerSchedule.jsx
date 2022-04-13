@@ -92,7 +92,7 @@ function OwnerSchedule(props) {
           name: item.student.name,
           email: item.student.email,
           phone: item.contacts.mobile,
-          owner: item.user.user_name,
+          owner: item.user?.user_name,
         }));
 
         setSlotData(dataAdd);

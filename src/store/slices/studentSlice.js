@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 // eslint-disable-next-line import/no-cycle
 import { dataSetup } from "../../utils";
-import { changeFetching } from "./authSlice";
+import { changeFetching } from "./uiSlice";
 
 const { qualificationKeys } = require("../../config");
 
@@ -81,7 +81,7 @@ export const fetchStudents = createAsyncThunk(
 );
 
 const StudentSlice = createSlice({
-  name: "data",
+  name: "students",
   initialState: {
     studentData: [],
     filterColumns: [],

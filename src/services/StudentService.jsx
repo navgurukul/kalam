@@ -113,7 +113,10 @@ const stageColumnTransition = {
           {allStages[rowData]}
         </div>
       ) : (
-        allStages[rowData]
+        <>
+          <DeleteRow transitionId={rowMeta.rowData[8]} />
+          <p>{allStages[rowData]}</p>
+        </>
       );
     },
   },

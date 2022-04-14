@@ -25,7 +25,8 @@ import { logout } from "../store/slices/authSlice";
 import ModalStages from "./ModalStages";
 
 const Header = (props) => {
-  const { isAuthenticated, isFetching } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isFetching } = useSelector((state) => state.ui);
   const { onChange, value } = props;
   const dispatch = useDispatch();
   const startLogout = () => dispatch(logout());

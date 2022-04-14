@@ -5,7 +5,7 @@ import "date-fns";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { changeFetching } from "../store/slices/authSlice";
+import { changeFetching } from "../store/slices/uiSlice";
 import StudentService from "../services/StudentService";
 import MainLayout from "./MainLayout";
 

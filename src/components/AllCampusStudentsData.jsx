@@ -2,7 +2,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { changeFetching, setupUsers } from "../store/slices/authSlice";
+import { setupUsers } from "../store/slices/authSlice";
+import { changeFetching } from "../store/slices/uiSlice";
 import StudentService from "../services/StudentService";
 import DashboardPage from "./Dashboard";
 import SelectUiByButtons from "./SelectUiByButtons";

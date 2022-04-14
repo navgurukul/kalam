@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const UISlice = createSlice({
   name: "ui",
   initialState: {
+    isFetching: false,
     dialogOpen: false,
     dialogProps: {},
     dialogTitle: null,
@@ -13,6 +14,9 @@ const UISlice = createSlice({
   },
   reducers: {
     // creating reducers
+    changeFetching: (state, action) => {
+      state.isFetching = action.payload;
+    },
     showDialog: (state, action) => {
       const { title, props, content, actions } = action.payload;
       state.dialogOpen = true;
@@ -50,6 +54,7 @@ const UISlice = createSlice({
 });
 
 export const {
+  changeFetching,
   showDialog,
   closeDialog,
   enqueueSnackbar,

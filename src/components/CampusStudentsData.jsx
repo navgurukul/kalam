@@ -5,7 +5,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 import StudentService from "../services/StudentService";
-import { changeFetching, setupUsers } from "../store/slices/authSlice";
+import { setupUsers } from "../store/slices/authSlice";
+import { changeFetching } from "../store/slices/uiSlice";
 import DashboardPage from "./Dashboard";
 import SelectUiByButtons from "./SelectUiByButtons";
 import StudentsProgressCards from "./StudentsProgressCards";

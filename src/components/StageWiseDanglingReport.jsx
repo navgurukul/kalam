@@ -9,7 +9,7 @@ import { ThemeProvider } from "@mui/styles";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import theme from "../theme";
-import { changeFetching } from "../store/slices/authSlice";
+import { changeFetching } from "../store/slices/uiSlice";
 import GlobalService from "../services/GlobalService";
 import StudentService from "../services/StudentService";
 

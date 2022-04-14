@@ -7,7 +7,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Typography from "@mui/material/Typography";
-import { changeFetching } from "../store/slices/authSlice";
+import { changeFetching } from "../store/slices/uiSlice";
 import StudentService from "../services/StudentService";
 import MainLayout from "./MainLayout";
 import PendingInterview from "./pendingInterview";

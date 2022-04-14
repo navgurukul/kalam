@@ -14,7 +14,8 @@ import MainLayout from "./MainLayout";
 
 import StudentService from "../services/StudentService";
 
-import { changeFetching, setupUsers } from "../store/slices/authSlice";
+import { setupUsers } from "../store/slices/authSlice";
+import { changeFetching } from "../store/slices/uiSlice";
 
 const {
   qualificationKeys,
@@ -201,7 +202,7 @@ const DashboardPage = (props) => {
     }
 
     for (let i = 0; i < studentData.length; i += 1) {
-      // eslint-disable-next-line no-param-reassign
+      // eslint-disable-next-line no-param-reassign, import/no-named-as-default-member
       studentData[i] = StudentService.dConvert(studentData[i]);
     }
     getStudentsData(studentData);

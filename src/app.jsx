@@ -7,12 +7,12 @@ import "./styles/styles.css";
 import theme from "./theme";
 import store from "./store/store";
 import AppRouter from "./routers/AppRouter";
-// import AlertDialog from "./components/ui/AlertDialog";
+import AlertDialog from "./components/ui/AlertDialog";
 
 const App = () => (
   <Provider store={store}>
     <ThemeProvider theme={theme}>
-      {/* <AlertDialog /> */}
+      <AlertDialog />
       <SnackbarProvider maxSnack={1}>
         <AppRouter />
       </SnackbarProvider>

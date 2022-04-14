@@ -7,6 +7,7 @@
 // newImports
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
+import ownerReducer from "./slices/ownerSlice";
 import studentsReducer from "./slices/studentSlice";
 import uiReducer from "./slices/uiSlice";
 
@@ -26,7 +27,15 @@ import uiReducer from "./slices/uiSlice";
 export default configureStore({
   reducer: {
     auth: authReducer,
+    owners: ownerReducer,
     students: studentsReducer,
     ui: uiReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredPaths: ["ui.dialogContent", "ui.dialogActions"],
+        ignoreActions: ["ui/showDialog"],
+      },
+    }),
 });

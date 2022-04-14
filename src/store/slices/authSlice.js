@@ -26,7 +26,6 @@ export const loginWithGoogle = createAsyncThunk(
             : { roles: [], privilege: [] };
         localStorage.setItem("jwt", userToken);
         localStorage.setItem("userId", user.id);
-        callSnack(`Logged In Successful`, "success");
         thunkAPI.dispatch(
           enqueueSnackbar({
             message: "Logged In Successfully",

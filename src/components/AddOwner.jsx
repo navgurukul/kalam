@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Card from "@mui/material/Card";
 import { makeStyles } from "@mui/styles";
 import {
@@ -14,8 +14,6 @@ import Select from "react-select";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-
-import OwnerSchedule from "./OwnerSchedule";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -56,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
   btn: {
-    marginTop: theme.spacing(4),
+    // marginTop: theme.spacing(4),
   },
 }));
 
@@ -228,7 +226,6 @@ const AddOwner = (props) => {
   else if (gender === 2) ownerGender = "Male";
   else if (gender === 3) ownerGender = "Transgender";
   else ownerGender = "NA";
-  const [ScheduleOpen, setScheduleOpen] = useState(false);
   // const columns = [
   //   {
   //     name: "student_name",
@@ -305,30 +302,15 @@ const AddOwner = (props) => {
           <EditIcon />
         </IconButton>
       ) : (
-        <>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={openDialog}
-            className={classes.btn}
-          >
-            Add Owner
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setScheduleOpen(true)}
-            className={classes.btn}
-            style={{ marginLeft: "10px" }}
-          >
-            Interview Schedule
-          </Button>
-        </>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={openDialog}
+          className={classes.btn}
+        >
+          Add Owner
+        </Button>
       )}
-      <OwnerSchedule
-        setScheduleOpen={setScheduleOpen}
-        ScheduleOpen={ScheduleOpen}
-      />
       <Modal open={state.dialogOpen} onClose={handleClose} onOpen={openDialog}>
         <Card className={classes.root}>
           <form className={classes.container}>

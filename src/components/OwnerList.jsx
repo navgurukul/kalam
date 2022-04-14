@@ -2,16 +2,22 @@
 import React, { useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useSnackbar } from "notistack";
-import { Box, DialogTitle, DialogActions, Dialog, Button } from "@mui/material";
+import { Box, Button, IconButton } from "@mui/material";
 import theme from "../theme";
+import {
+  fetchOwners as fetchOwnersAction,
+  setOwnerData,
+  deleteOwner as deleteOwnerAction,
+} from "../store/slices/ownerSlice";
 import MainLayout from "./MainLayout";
 import AddOwner from "./AddOwner";
+import OwnerSchedule from "./OwnerSchedule";
+import { closeDialog, showDialog } from "../store/slices/uiSlice";
 // import AddOwnerSchedule from "./AddOwnerSchedule";
 
-const baseUrl = import.meta.env.VITE_API_URL;
+// const baseUrl = import.meta.env.VITE_API_URL;
 const { permissions } = require("../config");
 
 const useStyles = makeStyles(() => ({
@@ -27,6 +33,11 @@ const useStyles = makeStyles(() => ({
       marginBottom: 5,
     },
   },
+  buttons: {
+    display: "flex",
+    gap: theme.spacing(2),
+    margin: theme.spacing(2),
+  },
 }));
 
 const stagesColor = {
@@ -38,30 +49,24 @@ const stagesColor = {
 
 const OwnerList = () => {
   const classes = useStyles();
-  const snackbar = useSnackbar();
-  const [state, setState] = React.useState({
-    data: [],
-    interviewData: [],
-    showLoader: true,
-    showModal: false,
-    ownerId: null,
-  });
+  const dispatch = useDispatch();
+  const { loggedInUser } = useSelector((state) => state.auth);
+  const { ownerData } = useSelector((state) => state.owners);
+  const { isFetching } = useSelector((state) => state.ui);
+  const [scheduleOpen, setScheduleOpen] = React.useState(false);
   const columns = [
     {
       name: "id",
       label: "Edit",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender: React.useCallback((value, rowMeta) => {
-          const user = window.localStorage.user
-            ? JSON.parse(window.localStorage.user).email
-            : null;
+          const user = (loggedInUser && loggedInUser.mail_id) || null;
           //const update = !permissions.updateStage.includes(user);
           const canUpdate =
             permissions.updateStage.includes(user) ||
-            rowMeta.rowData[1] === user.split("@")[0];
-          //console.log(rowMeta);
+            rowMeta.rowData[1] === user;
           return (
             <div
               style={{
@@ -76,25 +81,46 @@ const OwnerList = () => {
                 disabled={!canUpdate}
                 getUpdatedData={getUpdatedData}
               />
-              {rowMeta.rowData[3] ? null : (
+
+              <IconButton
+                disabled={rowMeta.rowData[3]}
+                onClick={() =>
+                  dispatch(
+                    showDialog({
+                      title: `Do you want to delete owner ${rowMeta.rowData[1].mail_id} ??`,
+                      actions: (
+                        <Button
+                          onClick={() => {
+                            deleteOwner(value);
+                            dispatch(closeDialog());
+                          }}
+                          color="primary"
+                          variant="contained"
+                        >
+                          Confirm
+                        </Button>
+                      ),
+                    })
+                  )
+                }
+              >
                 <DeleteIcon
+                  color={rowMeta.rowData[3] ? "" : "error"}
                   style={{ cursor: "pointer" }}
-                  onClick={() =>
-                    setState({ ...state, showModal: true, ownerId: value })
-                  }
                 />
-              )}
+              </IconButton>
             </div>
           );
         }, []),
       },
     },
     {
-      name: "user.mail_id",
+      name: "user",
       label: "Name",
       options: {
         filter: true,
         sort: true,
+        customBodyRender: (rowData) => rowData.mail_id,
       },
     },
     {
@@ -220,44 +246,12 @@ const OwnerList = () => {
   ];
 
   useEffect(() => {
-    const fetchData = async () => fetchOwners();
+    const fetchData = async () => dispatch(fetchOwnersAction());
     fetchData();
   }, []);
 
-  const fetchOwners = async () => {
-    const dataURL = `${baseUrl}owner`;
-    const response = await axios.get(dataURL);
-    const { data } = response.data;
-
-    // const interviewDataURL = `${baseUrl  }ownershedule`;
-    // const interviewResponse = await axios.get(interviewDataURL);
-    // const { data: interviewData } = interviewResponse.data;
-
-    // const newData = await data.map((owner) => {
-    //   let newOwner = { ...owner };
-    //   let ownerInterview = interviewData.find(
-    //     (iData) => iData.owner_id === owner.id
-    //   );
-    //   if (ownerInterview) {
-    //     newOwner["schedule"] = ownerInterview;
-    //   }
-    //   return newOwner;
-    // });
-    setState({
-      ...state,
-      data,
-      // interviewData: interviewResponse.data.data,
-      showLoader: false,
-    });
-    //console.log(interviewData);
-  };
-
-  // const updateData = () => {
-  //   fetchOwners();
-  // };
-
   const getUpdatedData = (data, isEdit) => {
-    let newData = [...state.data];
+    let newData = [...ownerData];
     if (isEdit) {
       newData = newData.map((x) => {
         const nUser = { ...x };
@@ -269,71 +263,61 @@ const OwnerList = () => {
         }
         return nUser;
       });
-      setState({
-        ...state,
-        data: newData,
-      });
+      // setState({
+      //   ...state,
+      //   data: newData,
+      // });
+      dispatch(setOwnerData(newData));
     } else {
-      setState({
-        ...state,
-        data: [data, ...state.data],
-      });
+      // setState({
+      //   ...state,
+      //   data: [data, ...state.data],
+      // });
+      dispatch(setOwnerData([data, ownerData]));
     }
   };
 
   const deleteOwner = (ownerId) => {
-    const { data } = state;
-    axios.delete(`${baseUrl}owner/${ownerId}`).then(() => {
-      snackbar.enqueueSnackbar("Owner  successfully deleted", {
-        variant: "success",
-      });
-      const newData = data.filter((x) => x.id !== ownerId);
-      setState({
-        ...state,
-        data: newData,
-        showModal: false,
-      });
-    });
+    // const { data } = state;
+    // axios.delete(`${baseUrl}owner/${ownerId}`).then(() => {
+    //   snackbar.enqueueSnackbar("Owner  successfully deleted", {
+    //     variant: "success",
+    //   });
+    //   const newData = data.filter((x) => x.id !== ownerId);
+    //   setState({
+    //     ...state,
+    //     data: newData,
+    //     showModal: false,
+    //   });
+    // });
+    dispatch(deleteOwnerAction({ ownerId }));
   };
 
-  const handleClose = () => {
-    setState({
-      ...state,
-      showModal: false,
-    });
-  };
-  const { showModal, ownerId, data, showLoader } = state;
   return (
     <Box mt={2}>
       <ThemeProvider theme={theme}>
         <div className={classes.innerTable}>
-          <AddOwner getUpdatedData={getUpdatedData} ownerData={data} />
+          <div className={classes.buttons}>
+            <AddOwner getUpdatedData={getUpdatedData} ownerData={ownerData} />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setScheduleOpen(true)}
+              className={classes.btn}
+            >
+              Interview Schedule
+            </Button>
+          </div>
+          <OwnerSchedule
+            setScheduleOpen={setScheduleOpen}
+            ScheduleOpen={scheduleOpen}
+          />
           <MainLayout
             title="Owners"
             columns={columns}
-            data={data}
-            showLoader={showLoader}
+            data={ownerData}
+            showLoader={isFetching}
           />
-          <Dialog
-            open={showModal}
-            keepMounted
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-slide-title"
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <DialogTitle id="alert-dialog-slide-title">
-              {" "}
-              Do you want to delete owner ??
-            </DialogTitle>
-            <DialogActions>
-              <Button onClick={() => deleteOwner(ownerId)} color="primary">
-                YES
-              </Button>
-              <Button onClick={handleClose} color="primary">
-                NO
-              </Button>
-            </DialogActions>
-          </Dialog>
         </div>
       </ThemeProvider>
     </Box>

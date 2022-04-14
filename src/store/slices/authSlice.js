@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { encryptText } from "../../utils";
 import { baseUrl } from "../../utils/constants";
 import { enqueueSnackbar } from "./uiSlice";
 
@@ -25,7 +26,7 @@ export const loginWithGoogle = createAsyncThunk(
             ? rolesData.data[0]
             : { roles: [], privilege: [] };
         localStorage.setItem("jwt", userToken);
-        localStorage.setItem("userId", user.id);
+        localStorage.setItem("userId", encryptText(`${user.id}`));
         thunkAPI.dispatch(
           enqueueSnackbar({
             message: "Logged In Successfully",

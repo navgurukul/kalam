@@ -46,6 +46,7 @@ import Footer from "../components/Footer";
 
 import RequireAuth from "./RequireAuth";
 import { fetchCurrentUser } from "../store/slices/authSlice";
+import { decryptText } from "../utils";
 
 const AppRouter = () => {
   useCustomNotifier();
@@ -53,7 +54,7 @@ const AppRouter = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
   useEffect(() => {
     if (isAuthenticated) {
-      const userId = localStorage.getItem("userId");
+      const userId = parseInt(decryptText(localStorage.getItem("userId")), 10);
       dispatch(fetchCurrentUser({ userId }));
     }
   }, []);

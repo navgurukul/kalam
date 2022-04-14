@@ -98,12 +98,6 @@ const AddPartnerPage = (props) => {
       districts,
       state: _state,
     } = state;
-    if(name.length > 45){
-      enqueueSnackbar("Partner Name should be less than 45 characters", {
-        variant: "error",
-      });
-      return;
-    };
     let removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
@@ -153,12 +147,6 @@ const AddPartnerPage = (props) => {
       districts,
       state: _state,
     } = state;
-    if(name.length > 45){
-      enqueueSnackbar("Partner Name should be less than 45 characters", {
-        variant: "error",
-      });
-      return;
-    };
     let removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );

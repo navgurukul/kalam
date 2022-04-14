@@ -32,10 +32,8 @@ export const deleteOwner = createAsyncThunk(
       const newOwnerData = ownerData.filter((item) => item.id !== ownerId);
       thunkAPI.dispatch(
         enqueueSnackbar({
-          notification: {
-            message: "Owner successfully deleted",
-            options: { variant: "success" },
-          },
+          message: "Owner successfully deleted",
+          options: { variant: "success" },
         })
       );
       thunkAPI.dispatch(changeFetching(false));

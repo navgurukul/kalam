@@ -33,7 +33,7 @@ const UISlice = createSlice({
       state.dialogActions = null;
     },
     enqueueSnackbar: (state, action) => {
-      const { key, notification } = action.payload;
+      const { key, ...notification } = action.payload;
       state.snackbars = [
         ...state.snackbars,
         { key: key || Date.now() + Math.random(), ...notification },

@@ -20,14 +20,14 @@ const UISlice = createSlice({
     showDialog: (state, action) => {
       const { title, props, content, actions } = action.payload;
       state.dialogOpen = true;
-      state.dialogProps = props;
+      state.dialogProps = props || null;
       state.dialogTitle = title;
       state.dialogContent = content;
       state.dialogActions = actions;
     },
     closeDialog: (state) => {
       state.dialogOpen = false;
-      state.dialogProps = [];
+      state.dialogProps = {};
       state.dialogTitle = null;
       state.dialogContent = null;
       state.dialogActions = null;
@@ -36,7 +36,7 @@ const UISlice = createSlice({
       const { key, notification } = action.payload;
       state.snackbars = [
         ...state.snackbars,
-        { key: key || Date.now() + Math.random(), notification },
+        { key: key || Date.now() + Math.random(), ...notification },
       ];
     },
     closeSnackbar: (state, action) => {

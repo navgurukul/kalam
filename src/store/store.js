@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 // oldImports
 // import thunk from "redux-thunk";
 // import { createStore, combineReducers, applyMiddleware, compose } from "redux";
@@ -7,6 +8,7 @@
 // newImports
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
+import dataReducer from "./slices/dataSlice";
 import ownerReducer from "./slices/ownerSlice";
 import studentsReducer from "./slices/studentSlice";
 import uiReducer from "./slices/uiSlice";
@@ -27,6 +29,7 @@ import uiReducer from "./slices/uiSlice";
 export default configureStore({
   reducer: {
     auth: authReducer,
+    data: dataReducer,
     owners: ownerReducer,
     students: studentsReducer,
     ui: uiReducer,

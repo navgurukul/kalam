@@ -14,7 +14,7 @@ import MainLayout from "./MainLayout";
 
 import StudentService from "../services/StudentService";
 
-import { setupUsers } from "../store/slices/authSlice";
+// import { setupUsers } from "../store/slices/authSlice";
 import { changeFetching } from "../store/slices/uiSlice";
 
 const {
@@ -131,7 +131,7 @@ const DashboardPage = (props) => {
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const usersSetup = (users) => dispatch(setupUsers(users));
+  // const usersSetup = (users) => dispatch(setupUsers(users));
   const getStudentsData = (studentData) =>
     dispatch(setStudentData(studentData));
   const [state, setState] = React.useState({
@@ -167,7 +167,7 @@ const DashboardPage = (props) => {
       fetchingStart();
       const usersURL = `${baseUrl}users/getall`;
       const response = await axios.get(usersURL, {});
-      usersSetup(response.data.data);
+      // usersSetup(response.data.data);
       fetchingFinish();
     } catch (e) {
       fetchingFinish();

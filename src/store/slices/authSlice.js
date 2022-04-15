@@ -81,15 +81,15 @@ const AuthSlice = createSlice({
   initialState: {
     isAuthenticated: !!localStorage.getItem("jwt"),
     loggedInUser: JSON.parse(localStorage.getItem("user")),
-    users: null,
+    // users: null,
     roles: JSON.parse(localStorage.getItem("roles")) || [],
     privileges: JSON.parse(localStorage.getItem("privileges")) || [],
   },
   reducers: {
-    // creating reducers
-    setupUsers: (state, action) => {
-      state.users = action.payload;
-    },
+    // // creating reducers
+    // setupUsers: (state, action) => {
+    //   state.users = action.payload;
+    // },
     login: (state) => {
       state.isAuthenticated = !!localStorage.getItem("jwt");
       state.loggedInUser = JSON.parse(localStorage.getItem("user"));
@@ -130,5 +130,5 @@ const AuthSlice = createSlice({
   },
 });
 
-export const { login, logout, setupUsers } = AuthSlice.actions; // actions auto generated from above reducers
+export const { login, logout } = AuthSlice.actions; // actions auto generated from above reducers
 export default AuthSlice.reducer; // exporting the reducer

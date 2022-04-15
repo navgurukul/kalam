@@ -5,7 +5,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 import StudentService from "../services/StudentService";
-import { setupUsers } from "../store/slices/authSlice";
+// import { setupUsers } from "../store/slices/authSlice";
 import { changeFetching } from "../store/slices/uiSlice";
 import DashboardPage from "./Dashboard";
 import SelectUiByButtons from "./SelectUiByButtons";
@@ -23,7 +23,7 @@ const CampusStudentsData = () => {
   const { loggedInUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const usersSetup = (users) => dispatch(setupUsers(users));
+  // const usersSetup = (users) => dispatch(setupUsers(users));
   const [state, setState] = React.useState({
     isShow: true,
     campusName: campus.find((x) => x.id === parseInt(campusId, 10)).name,
@@ -60,7 +60,7 @@ const CampusStudentsData = () => {
     const usersURL = `${baseUrl}users/getall`;
     try {
       const response = await axios.get(usersURL, {});
-      usersSetup(response.data.data);
+      // usersSetup(response.data.data);
       fetchingFinish();
     } catch (e) {
       // console.error(e);

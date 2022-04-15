@@ -12,7 +12,7 @@ import makeAnimated from "react-select/animated";
 import { Container, TextField, Typography } from "@mui/material";
 import _ from "lodash";
 import { LocalizationProvider, DatePicker } from "@mui/lab";
-import { setupUsers } from "../store/slices/authSlice";
+// import { setupUsers } from "../store/slices/authSlice";
 import { changeFetching } from "../store/slices/uiSlice";
 import StudentService from "../services/StudentService";
 import ServerSidePagination from "./ServerSidePagination";
@@ -20,6 +20,7 @@ import theme from "../theme";
 // import user from "../utils/user";
 import NotHaveAccess from "./NotHaveAccess";
 import Loader from "./Loader";
+import { fetchOwners as fetchOwnersAction } from "../store/slices/dataSlice";
 
 const { qualificationKeys, allStages } = require("../config");
 
@@ -52,7 +53,7 @@ const AdmissionsDash = (props) => {
   const { dataTypes } = useParams();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const usersSetup = (users) => dispatch(setupUsers(users));
+  // const usersSetup = (users) => dispatch(setupUsers(users));
   const [state, setState] = React.useState({
     totalData: 0,
     data: [],
@@ -115,7 +116,7 @@ const AdmissionsDash = (props) => {
     try {
       fetchingStart();
       const response = await axios.get(usersURL, { signal });
-      usersSetup(response.data.data);
+      // usersSetup(response.data.data);
       const newData = response.data.data.map((data) => data.user);
       localStorage.setItem("users", JSON.stringify(newData));
       fetchingFinish();
@@ -311,6 +312,7 @@ const AdmissionsDash = (props) => {
       await fetchOWner(controller.signal);
       await fetchPartner(controller.signal);
       // await fetchAccess(controller.signal);
+      dispatch(fetchOwnersAction());
     };
     fetchData();
     return () => controller.abort();

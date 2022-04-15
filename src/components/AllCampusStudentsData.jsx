@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { setupUsers } from "../store/slices/authSlice";
+// import { setupUsers } from "../store/slices/authSlice";
 import { changeFetching } from "../store/slices/uiSlice";
 import StudentService from "../services/StudentService";
 import DashboardPage from "./Dashboard";
@@ -25,12 +25,12 @@ const CampusStudentsData = () => {
     allCampusCondition: false, //condition to check if user is allowed to access the page
   });
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const usersSetup = (users) => dispatch(setupUsers(users));
+  // const usersSetup = (users) => dispatch(setupUsers(users));
   const fetchUsers = async () => {
     const usersURL = `${baseUrl}users/getall`;
     try {
       const response = await axios.get(usersURL, {});
-      usersSetup(response.data.data);
+      // usersSetup(response.data.data);
       fetchingFinish();
     } catch (e) {
       fetchingFinish();

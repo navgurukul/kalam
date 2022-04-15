@@ -196,6 +196,7 @@ const VideoSlider = (props) => {
             >
               <img
                 alt={ele.label}
+                loading="lazy"
                 src={`https://img.youtube.com/vi/${ele.videoId}/maxresdefault.jpg`}
                 style={{ maxWidth: "100%" }}
               />

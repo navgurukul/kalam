@@ -120,6 +120,7 @@ const Header = () => {
             >
               <Link to="/">
                 <Image
+                  alt="ngLogo"
                   src={logo}
                   color="inherit"
                   style={{ height: 40, width: 165, paddingTop: 0, flex: 1 }}

@@ -41,6 +41,7 @@ import SlotBooking2 from "../components/SlotBooking2";
 // import PublicRoute from "./PublicRouter";
 // if authenticated be there, else redirect to /login
 // import PrivateRoute from "./PrivateRouter";
+import theme from "../theme";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -60,10 +61,17 @@ const AppRouter = () => {
   }, []);
   return (
     <Router history={history}>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
+        }}
+      >
         <Header />
-        <Routes>
-          {/* <Route
+        <div style={{ marginTop: "2.4rem", flexGrow: 1 }}>
+          <Routes>
+            {/* <Route
           path="/"
           element={
             <RequireAuth privateRoute>
@@ -71,218 +79,219 @@ const AppRouter = () => {
             </RequireAuth>
           }
         /> */}
-          <Route
-            path="/"
-            element={
-              <RequireAuth>
-                <LandingPage />
-              </RequireAuth>
-            }
-          />
-          {/* <PublicRoute path="/" component={LandingPage} exact={true} /> */}
-          <Route
-            path="/admin"
-            element={
-              <RequireAuth privateRoute>
-                <NewAdminPage />
-              </RequireAuth>
-            }
-          />
-          <Route path="/students">
             <Route
-              index
+              path="/"
+              element={
+                <RequireAuth>
+                  <LandingPage />
+                </RequireAuth>
+              }
+            />
+            {/* <PublicRoute path="/" component={LandingPage} exact={true} /> */}
+            <Route
+              path="/admin"
               element={
                 <RequireAuth privateRoute>
-                  <AdmissionsDash />
+                  <NewAdminPage />
                 </RequireAuth>
               }
             />
-            <Route
-              path=":dataType"
-              component={
-                <RequireAuth privateRoute>
-                  <AdmissionsDash />
-                </RequireAuth>
-              }
-            />
-          </Route>
-          {/* <PrivateRoute path="/students" component={AdmissionsDash} /> */}
-          <Route
-            path="/partners"
-            element={
-              <RequireAuth privateRoute>
-                <PartnerList />
-              </RequireAuth>
-            }
-          />
-          <Route path="/partner">
-            <Route
-              path="add"
-              element={
-                <RequireAuth privateRoute>
-                  <AddPartner />
-                </RequireAuth>
-              }
-            />
-            <Route path=":partnerId">
+            <Route path="/students">
               <Route
                 index
                 element={
                   <RequireAuth privateRoute>
-                    <ProgressMadeForPartner />
+                    <AdmissionsDash />
                   </RequireAuth>
                 }
               />
               <Route
-                path="progress"
-                element={<PartnerStudentsProgressInCampus />}
-              />
-              <Route path="assessments" element={<ViewAssessments />} />
-              <Route
-                path="assessments/:assessmentId"
-                element={
-                  <RequireAuth>
-                    <AssessmentAttempts />
+                path=":dataType"
+                component={
+                  <RequireAuth privateRoute>
+                    <AdmissionsDash />
                   </RequireAuth>
                 }
               />
             </Route>
-          </Route>
-
-          <Route path="/partnerLanding/:slug" element={<LandingPage />} />
-
-          <Route
-            path="/donors"
-            element={
-              <RequireAuth privateRoute>
-                <DonorList />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/donor/:donorId/students"
-            element={<DonorStudentsData />}
-          />
-          <Route path="/campus">
+            {/* <PrivateRoute path="/students" component={AdmissionsDash} /> */}
             <Route
-              index
+              path="/partners"
               element={
                 <RequireAuth privateRoute>
-                  <CampusList />
+                  <PartnerList />
                 </RequireAuth>
               }
             />
+            <Route path="/partner">
+              <Route
+                path="add"
+                element={
+                  <RequireAuth privateRoute>
+                    <AddPartner />
+                  </RequireAuth>
+                }
+              />
+              <Route path=":partnerId">
+                <Route
+                  index
+                  element={
+                    <RequireAuth privateRoute>
+                      <ProgressMadeForPartner />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="progress"
+                  element={<PartnerStudentsProgressInCampus />}
+                />
+                <Route path="assessments" element={<ViewAssessments />} />
+                <Route
+                  path="assessments/:assessmentId"
+                  element={
+                    <RequireAuth>
+                      <AssessmentAttempts />
+                    </RequireAuth>
+                  }
+                />
+              </Route>
+            </Route>
+
+            <Route path="/partnerLanding/:slug" element={<LandingPage />} />
+
             <Route
-              path=":campusId/students"
+              path="/donors"
               element={
                 <RequireAuth privateRoute>
-                  <CampusStudentsData />
+                  <DonorList />
                 </RequireAuth>
               }
             />
             <Route
-              path="allcampus/students"
+              path="/donor/:donorId/students"
+              element={<DonorStudentsData />}
+            />
+            <Route path="/campus">
+              <Route
+                index
+                element={
+                  <RequireAuth privateRoute>
+                    <CampusList />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path=":campusId/students"
+                element={
+                  <RequireAuth privateRoute>
+                    <CampusStudentsData />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="allcampus/students"
+                element={
+                  <RequireAuth privateRoute>
+                    <AllCampusStudentsData />
+                  </RequireAuth>
+                }
+              />
+            </Route>
+
+            <Route
+              path="/owner"
               element={
                 <RequireAuth privateRoute>
-                  <AllCampusStudentsData />
-                </RequireAuth>
-              }
-            />
-          </Route>
-
-          <Route
-            path="/owner"
-            element={
-              <RequireAuth privateRoute>
-                <OwnerList />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/outreachDetails"
-            element={
-              <RequireAuth privateRoute>
-                <OutreachDetails />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/tasks"
-            element={
-              <RequireAuth privateRoute>
-                <MyTaskReport />
-              </RequireAuth>
-            }
-          />
-          <Route path="/report">
-            <Route
-              path="dangling" // report/dangling
-              component={
-                <RequireAuth privateRoute>
-                  <StageWiseDanglingReport />
+                  <OwnerList />
                 </RequireAuth>
               }
             />
             <Route
-              path="all" // report/all
+              path="/outreachDetails"
               element={
                 <RequireAuth privateRoute>
-                  <ReportContainer />
+                  <OutreachDetails />
                 </RequireAuth>
               }
             />
-          </Route>
-          <Route
-            path="/assign/user"
-            element={
-              <RequireAuth privateRoute>
-                <MyAssignReport />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/user/mobile/number"
-            element={
-              <RequireAuth>
-                <UserMoblieNumber />
-              </RequireAuth>
-            }
-          />
+            <Route
+              path="/tasks"
+              element={
+                <RequireAuth privateRoute>
+                  <MyTaskReport />
+                </RequireAuth>
+              }
+            />
+            <Route path="/report">
+              <Route
+                path="dangling" // report/dangling
+                component={
+                  <RequireAuth privateRoute>
+                    <StageWiseDanglingReport />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="all" // report/all
+                element={
+                  <RequireAuth privateRoute>
+                    <ReportContainer />
+                  </RequireAuth>
+                }
+              />
+            </Route>
+            <Route
+              path="/assign/user"
+              element={
+                <RequireAuth privateRoute>
+                  <MyAssignReport />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/user/mobile/number"
+              element={
+                <RequireAuth>
+                  <UserMoblieNumber />
+                </RequireAuth>
+              }
+            />
 
-          <Route path="/bookSlot/:userId" element={<SlotBooking2 />} />
-          {/* <Route path="/test/:enrollmentKey/:testId" element={<SlideShow />} /> */}
-          <Route path="/test/">
-            <Route index path="instructions" element={<TestInstructions />} />
-            <Route path="studentdetails" element={<StudentForm />} />
-            <Route path="finalinstruction" element={<FinalInstruction />} />
-            <Route path=":enrollmentKey/:studentId" element={<Questions />} />
-          </Route>
-          {/* <Route path="/questions/:enrollmentKey" element={<Questions />} /> */}
-          <Route path="/status/:mobile" element={<StudentStatus />} />
-          {/* <AnyRoute path="/check_duplicate" component={<DuplicateStudents/>} /> */}
-          <Route
-            path="/check_duplicate/name=:name&number=:number&stage=:stage"
-            element={<DuplicateStudents />}
-          />
+            <Route path="/bookSlot/:userId" element={<SlotBooking2 />} />
+            {/* <Route path="/test/:enrollmentKey/:testId" element={<SlideShow />} /> */}
+            <Route path="/test/">
+              <Route index path="instructions" element={<TestInstructions />} />
+              <Route path="studentdetails" element={<StudentForm />} />
+              <Route path="finalinstruction" element={<FinalInstruction />} />
+              <Route path=":enrollmentKey/:studentId" element={<Questions />} />
+            </Route>
+            {/* <Route path="/questions/:enrollmentKey" element={<Questions />} /> */}
+            <Route path="/status/:mobile" element={<StudentStatus />} />
+            {/* <AnyRoute path="/check_duplicate" component={<DuplicateStudents/>} /> */}
+            <Route
+              path="/check_duplicate/name=:name&number=:number&stage=:stage"
+              element={<DuplicateStudents />}
+            />
 
-          <Route
-            path="/login"
-            element={
-              <RequireAuth>
-                <LoginDesign />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/update/mobile/number"
-            element={
-              <RequireAuth privateRoute>
-                <UpdateMobileNumber />
-              </RequireAuth>
-            }
-          />
-          <Route element={<NotFoundPage />} />
-        </Routes>
+            <Route
+              path="/login"
+              element={
+                <RequireAuth>
+                  <LoginDesign />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/update/mobile/number"
+              element={
+                <RequireAuth privateRoute>
+                  <UpdateMobileNumber />
+                </RequireAuth>
+              }
+            />
+            <Route element={<NotFoundPage />} />
+          </Routes>
+        </div>
         <Footer />
       </div>
     </Router>

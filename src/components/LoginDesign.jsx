@@ -146,7 +146,7 @@ const LoginDesign = () => {
       alignItems="center"
       justifyContent="center"
       // width="0%"
-      style={{ minHeight: "83vh" }}
+      style={{ margin: "" }}
     >
       <Box className={classes.container}>
         <Paper className={classes.loginContainer}>

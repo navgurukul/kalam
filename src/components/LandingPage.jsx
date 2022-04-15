@@ -13,7 +13,6 @@ import Grid from "@mui/material/Grid";
 import { makeStyles, ThemeProvider } from "@mui/styles";
 import { changeFetching } from "../store/slices/uiSlice";
 import VideoSlider from "./VideoSlider";
-import Header from "./Header";
 import theme from "../theme";
 
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -42,6 +41,7 @@ const useStyles = makeStyles(() => ({
     flexGrow: 1,
   },
   paper: {
+    marginTop: theme.spacing(2),
     padding: theme.spacing(1),
     textAlign: "center",
     fontSize: 32,
@@ -301,13 +301,6 @@ const LandingPage = () => {
     await isDuplicate();
   };
 
-  const handleChange = (e) => {
-    setState({
-      ...state,
-      selectedLang: e.target.value,
-    });
-  };
-
   const {
     mobileNumber,
     firstName,
@@ -322,11 +315,10 @@ const LandingPage = () => {
         flexDirection: "column",
         justifyContent: "space-between",
         alignItems: "center",
-        minHeight: "calc(100vh - 48px)",
+        minHeight: "calc(100vh - 8rem)",
         display: "flex",
       }}
     >
-      <Header onChange={handleChange} value={selectedLang} />
       <ThemeProvider theme={theme}>
         <Typography className={classes.paper}>
           {lang.Heading[selectedLang]}
@@ -497,7 +489,7 @@ const LandingPage = () => {
         </Grid>
       </ThemeProvider>
       <Box style={{ height: theme.spacing(6) }} />
-      <Box>
+      {/* <Box>
         <Box
           className="footer-container-box"
           style={{ width: "100vw", paddingLeft: 0, paddingRight: 0 }}
@@ -506,7 +498,7 @@ const LandingPage = () => {
         >
           <Typography variant="body1">{lang.Footer[selectedLang]}</Typography>
         </Box>
-      </Box>
+      </Box> */}
     </div>
   );
 };

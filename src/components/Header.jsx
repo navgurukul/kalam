@@ -12,7 +12,10 @@ import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+
 import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+
 import { Link, useLocation } from "react-router-dom";
 import Image from "@jy95/material-ui-image";
 import logo from "../assets/img/logo.png";
@@ -23,55 +26,36 @@ import ExpandNavList from "../navs/expandNavs";
 import { logout } from "../store/slices/authSlice";
 
 import ModalStages from "./ModalStages";
+import {
+  changeLanguage,
+  toggleDrawer as toggleDrawerAction,
+} from "../store/slices/uiSlice";
 
-const Header = (props) => {
+const Header = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const { isFetching } = useSelector((state) => state.ui);
-  const { onChange, value } = props;
+  const { isFetching, drawerOpen, lang } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
   const startLogout = () => dispatch(logout());
+  const toggleDrawer = () => dispatch(toggleDrawerAction());
+  const onLangChange = (e) => dispatch(changeLanguage(e.target.value));
   const location = useLocation();
-  const [state, setState] = React.useState({
-    check: "",
-    value: 1,
-    open: false,
-    componentsmenuopen: false,
-    modalOpen: false,
-  });
-
-  // const handleChange = (event, index, value) => setState({ ...state, value });
-  const onLeftIconButtonClick = () => {
-    setState((prevState) => ({ ...prevState, open: !prevState.open }));
-  };
-
-  const toggleDrawer = (open) => () => {
-    setState({
-      ...state,
-      open,
-    });
-  };
-
-  // const handleClick = () => {
-  //   setState((prevState) => ({
-  //     ...prevState,
-  //     componentsmenuopen: !prevState.componentsmenuopen,
-  //   }));
-  // };
-
-  // const handleClose = (event) => {
-  //   if (target1.contains(event.target) || target2.contains(event.target)) return;
-  //   setState({ ...state, componentsmenuopen: false });
-  // };
 
   const conditRenderEssential = () =>
     isAuthenticated ? (
-      <Button color="inherit" align="right" onClick={startLogout}>
+      <Button
+        color="primary"
+        variant="text"
+        align="right"
+        onClick={startLogout}
+      >
         Logout
       </Button>
     ) : (
-      <Button color="inherit" align="right">
-        <Link to="/login">Login</Link>
-      </Button>
+      <Link to="/login">
+        <Button color="primary" variant="contained" align="right">
+          Login
+        </Button>
+      </Link>
     );
 
   const dashboardModal = () => {
@@ -80,69 +64,94 @@ const Header = (props) => {
     }
   };
 
-  const renderProgressBar = () => (isFetching ? <LinearProgress /> : <span />);
+  const renderProgressBar = () =>
+    isFetching ? <LinearProgress color="primary" /> : <span />;
   return (
     <div>
-      <Drawer open={state.open} onClose={toggleDrawer(false)}>
+      <Drawer
+        open={drawerOpen}
+        onClose={toggleDrawer}
+        style={{ display: "flex", flexDirection: "column" }}
+      >
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            paddingRight: "0.8rem",
+            // border: "1px solid black",
+          }}
+        >
+          <IconButton edge="end" size="large" onClick={toggleDrawer}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
         <div tabIndex={0} role="button">
           <div className="sidelistwrapper">
-            {!isAuthenticated && (
+            {isAuthenticated ? (
+              <PrivateNavList toggleDrawer={toggleDrawer} />
+            ) : (
               <>
                 <PublicNavList /> <ExpandNavList />
               </>
             )}
-            {isAuthenticated && <PrivateNavList />}
           </div>
         </div>
       </Drawer>
       <div className="appbarwrapper">
         <AppBar position="fixed" color="default">
           {renderProgressBar()}
-          <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
-            <Box style={{ display: "flex" }}>
-              {!isAuthenticated ? null : (
-                <IconButton
-                  className="iconbuttonsyle"
+          <Toolbar style={{ display: "flex" }}>
+            {/* <Box style={{ display: "flex" }}> */}
+            {!isAuthenticated ? null : (
+              <IconButton
+                className="iconbuttonsyle"
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="Menu"
+                onClick={toggleDrawer}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
+            <Box
+              // pt={0.5}
+              style={{ flexGrow: 1, display: "flex", alignItems: "center" }}
+            >
+              <Link to="/">
+                <Image
+                  src={logo}
                   color="inherit"
-                  aria-label="Menu"
-                  onClick={onLeftIconButtonClick}
-                >
-                  <MenuIcon />
-                </IconButton>
-              )}
-              <Box pt={0.5}>
-                <Link to="/">
-                  <Image
-                    src={logo}
-                    color="inherit"
-                    style={{ height: 40, width: 165, paddingTop: 0, flex: 1 }}
-                    imageStyle={{ height: 40, width: 165 }}
-                  />
-                </Link>
-              </Box>
+                  style={{ height: 40, width: 165, paddingTop: 0, flex: 1 }}
+                  imageStyle={{ height: 40, width: 165 }}
+                />
+              </Link>
+              {/* </Box> */}
               {(location.pathname === "/" ||
                 location.pathname.indexOf("partnerLanding") > -1) && (
-                <Box pt={0.5} pl={2}>
-                  <FormControl style={{ margin: 0, minWidth: 121 }}>
-                    <InputLabel id="demo-controlled-open-select-label">
-                      Select Language
-                    </InputLabel>
-                    <Select
-                      onChange={onChange}
-                      defaultValue=""
-                      value={value}
-                      inputProps={{
-                        id: "filled-age-native-simple",
-                      }}
-                    >
-                      <MenuItem value="">
-                        <em>Selected Language</em>
-                      </MenuItem>
-                      <MenuItem value="en">English</MenuItem>
-                      <MenuItem value="hi">Hindi</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
+                <FormControl
+                  style={{
+                    marginLeft: "0.8rem",
+                    marginTop: "0.8rem",
+                    marginBottom: "0.4rem",
+                    minWidth: 121,
+                  }}
+                >
+                  <InputLabel id="lang-input">Select Language</InputLabel>
+                  <Select
+                    label="Select Language"
+                    onChange={onLangChange}
+                    value={lang}
+                    variant="outlined"
+                    size="small"
+                  >
+                    <MenuItem disabled value="">
+                      Select a Language
+                    </MenuItem>
+                    <MenuItem value="en">English</MenuItem>
+                    <MenuItem value="hi">Hindi</MenuItem>
+                  </Select>
+                </FormControl>
               )}
             </Box>
             <Box style={{ display: "flex" }}>

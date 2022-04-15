@@ -17,6 +17,14 @@ export const dataSetup = (data, totalData, loggedInUser) => {
 
 export const dummy = () => {};
 
+export const parseJwt = (token) => {
+  try {
+    return JSON.parse(window.atob(token.split(".")[1]));
+  } catch (e) {
+    return null;
+  }
+};
+
 export const encryptText = (
   plainText //convert to hex
 ) =>

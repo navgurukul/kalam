@@ -1,14 +1,22 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Navigate, useLocation, useParams } from "react-router-dom";
 import NotHaveAccess from "../components/NotHaveAccess";
+import { parseJwt } from "../utils";
+import { logout } from "../store/slices/authSlice";
 
 const RequireAuth = ({ children, privateRoute }) => {
+  const decodedJwt = parseJwt(localStorage.getItem("jwt"));
   const location = useLocation();
   const params = useParams();
+  const dispatch = useDispatch();
   const { isAuthenticated, roles, loggedInUser } = useSelector(
     (state) => state.auth
   );
+  if (decodedJwt && decodedJwt.exp * 1000 < Date.now()) {
+    dispatch(logout());
+    return <Navigate to="/" replace />;
+  }
   if (!isAuthenticated && privateRoute)
     return <Navigate to="/login" state={{ from: location }} replace />;
   if (isAuthenticated && loggedInUser && !loggedInUser.mobile)

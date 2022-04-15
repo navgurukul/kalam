@@ -39,6 +39,13 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     position: "relative",
   },
+  slider: {
+    maxWidth: 400,
+    margin: "0 auto",
+    [theme.breakpoints.up("sm")]: {
+      maxWidth: 780,
+    },
+  },
   title: {
     marginLeft: theme.spacing(2),
   },
@@ -174,9 +181,9 @@ const VideoSlider = (props) => {
   };
 
   return (
-    <>
+    <div style={{ width: "100%" }}>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-      <Slider {...settings} style={{ maxWidth: 780, margin: "0 auto" }}>
+      <Slider {...settings} className={classes.slider}>
         {aboutNavgurukul.map((ele) => (
           <div key={ele.videoId}>
             <Box
@@ -245,7 +252,7 @@ const VideoSlider = (props) => {
           </Box>
         </>
       </Dialog>
-    </>
+    </div>
   );
 };
 

@@ -222,6 +222,7 @@ const StageTransitions = (props) => {
         <ThemeProvider theme={theme}>
           <Box display="flex" justifyContent="space-between" pt={4}>
             <Grid
+              container
               direction="column"
               justifyContent="center"
               alignItems="flex-start"

@@ -19,7 +19,7 @@ import {
 import { useSnackbar } from "notistack";
 
 import { useNavigate } from "react-router-dom";
-import { changeFetching } from "../store/slices/uiSlice";
+import { changeFetching } from "../../store/slices/uiSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const useStyles = makeStyles((theme) => ({

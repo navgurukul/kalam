@@ -5,20 +5,20 @@ import { makeStyles } from "@mui/styles";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, IconButton } from "@mui/material";
-import theme from "../theme";
+import theme from "../../theme";
 import {
   fetchOwners as fetchOwnersAction,
   setOwnerData,
   deleteOwner as deleteOwnerAction,
-} from "../store/slices/ownerSlice";
-import MainLayout from "./MainLayout";
+} from "../../store/slices/ownerSlice";
+import MainLayout from "../MainLayout";
 import AddOwner from "./AddOwner";
 import OwnerSchedule from "./OwnerSchedule";
-import { closeDialog, showDialog } from "../store/slices/uiSlice";
+import { closeDialog, showDialog } from "../../store/slices/uiSlice";
 // import AddOwnerSchedule from "./AddOwnerSchedule";
 
 // const baseUrl = import.meta.env.VITE_API_URL;
-const { permissions } = require("../config");
+const { permissions } = require("../../config");
 
 const useStyles = makeStyles(() => ({
   innerTable: {

@@ -4,17 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
-import StudentService from "../services/StudentService";
+import StudentService from "../../services/StudentService";
 // import { setupUsers } from "../store/slices/authSlice";
-import { changeFetching } from "../store/slices/uiSlice";
-import DashboardPage from "./Dashboard";
-import SelectUiByButtons from "./SelectUiByButtons";
-import StudentsProgressCards from "./StudentsProgressCards";
-import GraphingPresentationJob from "./GraphingPresentationJob";
+import { changeFetching } from "../../store/slices/uiSlice";
+import DashboardPage from "../Dashboard";
+import SelectUiByButtons from "../SelectUiByButtons";
+import StudentsProgressCards from "../StudentsProgressCards";
+import GraphingPresentationJob from "../GraphingPresentationJob";
 // import user from "../utils/user";
-import NotHaveAccess from "./NotHaveAccess";
+import NotHaveAccess from "../NotHaveAccess";
 
-const { campus } = require("../config");
+const { campus } = require("../../config");
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

@@ -6,7 +6,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useSelector } from "react-redux";
 
-const { permissions } = require("../config");
+const { permissions } = require("../../config");
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

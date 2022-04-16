@@ -3,19 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 import axios from "axios";
 import { Box } from "@mui/material";
-import theme from "../theme";
-import ViewAssessments from "./ViewAssessments";
+import theme from "../../theme";
+import ViewAssessments from "../ViewAssessments";
 import PartnerLink from "./PartnerLink";
 import EditPartner from "./EditPartner";
 // eslint-disable-next-line import/no-named-as-default
-import CreateAssessment from "./CreateAssessment";
-import AddMerakiLink from "./AddMerakiLink";
-import EditPartnerDetails from "./EditIcon";
-import { changeFetching } from "../store/slices/uiSlice";
-import MainLayout from "./MainLayout";
-import ReportSend from "./ReportSend";
+import CreateAssessment from "../CreateAssessment";
+import AddMerakiLink from "../AddMerakiLink";
+import EditPartnerDetails from "../EditIcon";
+import { changeFetching } from "../../store/slices/uiSlice";
+import MainLayout from "../MainLayout";
+import ReportSend from "../ReportSend";
 // import user from "../utils/user";
-import NotHaveAccess from "./NotHaveAccess";
+import NotHaveAccess from "../NotHaveAccess";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

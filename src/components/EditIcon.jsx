@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import { Dialog } from "@mui/material";
 import DialogContent from "@mui/material/DialogContent";
-import AddPartner from "./AddPartner";
+import AddPartner from "./partner/AddPartner";
 
 const EditPartnerDetails = (props) => {
   const [dialogOpen, setDialogOpen] = React.useState(false);

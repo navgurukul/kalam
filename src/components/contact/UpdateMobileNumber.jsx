@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 // import { Dialog } from '@material-ui/core';
 import { useSnackbar } from "notistack";
 import { makeStyles } from "@mui/styles";
-import theme from "../theme";
+import theme from "../../theme";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

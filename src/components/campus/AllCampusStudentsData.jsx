@@ -3,14 +3,14 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 // import { setupUsers } from "../store/slices/authSlice";
-import { changeFetching } from "../store/slices/uiSlice";
-import StudentService from "../services/StudentService";
-import DashboardPage from "./Dashboard";
-import SelectUiByButtons from "./SelectUiByButtons";
-import StudentsProgressCards from "./StudentsProgressCards";
-import GraphingPresentationJob from "./GraphingPresentationJob";
+import { changeFetching } from "../../store/slices/uiSlice";
+import StudentService from "../../services/StudentService";
+import DashboardPage from "../Dashboard";
+import SelectUiByButtons from "../SelectUiByButtons";
+import StudentsProgressCards from "../StudentsProgressCards";
+import GraphingPresentationJob from "../GraphingPresentationJob";
 // import user from "../utils/user";
-import NotHaveAccess from "./NotHaveAccess";
+import NotHaveAccess from "../NotHaveAccess";
 
 //baseUrl
 const baseUrl = import.meta.env.VITE_API_URL;

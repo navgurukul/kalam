@@ -5,7 +5,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 
 import StageSelect from "../components/StageSelect";
 import UpdateEmail from "../components/UpdateEmail";
-import OwnerSelect from "../components/OwnerSelect";
+import OwnerSelect from "../components/owner/OwnerSelect";
 import StatusSelect from "../components/StatusSelect";
 import StudentFeedback from "../components/FeedbackPage";
 // eslint-disable-next-line import/no-cycle
@@ -15,7 +15,7 @@ import AudioRecorder from "../components/AudioRecording";
 import AudiofileUpload from "../components/uploadAudioFile";
 import TagsForOnlineClass from "../components/TagsForOnlineClass";
 
-import UpdateCampus from "../components/UpdateCampus";
+import UpdateCampus from "../components/campus/UpdateCampus";
 import UpdateDonor from "../components/UpdateDonor";
 import JoinedDate from "../components/JoinedDate";
 import DeleteRow from "../components/DeleteRow";
@@ -25,7 +25,7 @@ import RedFlag from "../components/FlagModal";
 
 import SurveyForm from "../components/SurveyForm";
 import EvaluationSelect from "../components/EvaluationSelect";
-import UpdatePartner from "../components/UpdatePartner";
+import UpdatePartner from "../components/partner/UpdatePartner";
 import DeadLineDateUpdate from "../components/DeadlineDateUpdate";
 import EndDateUpdate from "../components/EndDateUpdate";
 

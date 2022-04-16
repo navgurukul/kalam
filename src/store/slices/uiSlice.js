@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const UISlice = createSlice({
   name: "ui",
   initialState: {
-    lang: "en",
+    lang: localStorage.getItem("lang") || "en",
     drawerOpen: false,
     isFetching: false,
     dialogOpen: false,
@@ -20,6 +20,7 @@ const UISlice = createSlice({
       state.drawerOpen = !state.drawerOpen;
     },
     changeLanguage: (state, action) => {
+      localStorage.setItem("lang", action.payload);
       state.lang = action.payload;
     },
     changeFetching: (state, action) => {

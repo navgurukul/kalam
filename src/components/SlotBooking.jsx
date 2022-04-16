@@ -1,13 +1,14 @@
-import { Box, Button, Grid, Modal, Typography } from "@mui/material";
+import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import DatePicker from "@mui/lab/DatePicker";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { useSnackbar } from "notistack";
 
+const { allStages } = require("../config");
+
 const baseUrl = import.meta.env.VITE_API_URL;
-function SlotBooking(props) {
-  const { slotBookingData, name, closeModal } = props;
+const SlotBooking = () => {
   const [slotCanceled, setSlotCancelled] = React.useState(true);
   const [CurrentTimeId, setCurrentTimeId] = React.useState(null);
   const [slotBookingDetails, setSlotBookingDetails] = React.useState({});
@@ -74,28 +75,45 @@ function SlotBooking(props) {
     },
   ];
   const [date, setDate] = React.useState(new Date());
-  const [Timings, setTimings] = React.useState(DefaultTimings);
   const [StartTime, setStartTime] = React.useState("");
   const [EndTime, setEndTime] = React.useState("");
   const { enqueueSnackbar } = useSnackbar();
+  const studentId = location.pathname.split("/")[2];
+  const [studentData, setStudentData] = React.useState({});
+  const [Timings, setTimings] = React.useState(DefaultTimings);
 
   const handleDateChange = (dater) => {
     //console.log(dater);
-    // const DateArray = typeof dater;
     const d = `${new Date(dater)}`.split(" ");
     d[2] += ",";
     const DateToSend = [d[3], month[d[1]], d[2]].join("-").replace(",", "");
     setDate(DateToSend);
     fetch(`${baseUrl}/slot/interview/check/ondate/${DateToSend}/1`).then(
       (res) => {
+        //
         res.json().then((data) => {
           if (data.data.length > 0) {
-            const FilteredTimings = data.data.filter((time) => {
-              if (time.availiblity) {
-                return true;
-              }
-              return false;
-            });
+            let FilteredTimings;
+            if (new Date(dater).getDate() === new Date().getDate()) {
+              // console.log(dater);
+              FilteredTimings = data.data.filter((time) => {
+                if (
+                  time.availiblity &&
+                  new Date().getHours() < time.from.split(":")[0]
+                ) {
+                  return true;
+                }
+                return false;
+              });
+            } else {
+              FilteredTimings = data.data.filter((time) => {
+                if (time.availiblity) {
+                  return true;
+                }
+                return false;
+              });
+            }
+
             setTimings(FilteredTimings);
           } else {
             //console.log(Timings);
@@ -107,14 +125,24 @@ function SlotBooking(props) {
   };
 
   useEffect(() => {
-    fetch(`${baseUrl}/slot/interview/${slotBookingData.studentId}`).then(
-      (res) => {
-        res.json().then((data) => {
-          setSlotBookingDetails(data.data[0]);
-          setSlotCancelled(data.data[0].is_cancelled);
+    // console.log();
+    fetch(`${baseUrl}/slot/interview/${studentId}`).then((res) => {
+      res.json().then((data) => {
+        // console.log(data.data[0]);
+        setSlotBookingDetails(data.data[0]);
+        setSlotCancelled(data.data[0].is_cancelled);
+      });
+    });
+    fetch(`${baseUrl}/students/${studentId}`).then((res) => {
+      res.json().then((data) => {
+        // console.log(data.data[0]);
+        setStudentData({
+          name: data.data[0].name,
+          stage: allStages[data.data[0].stage],
+          transitionID: data.data[0].lastTransition.id,
         });
-      }
-    );
+      });
+    });
     handleDateChange(date);
   }, []);
 
@@ -125,8 +153,9 @@ function SlotBooking(props) {
       res.json().then((data) => {
         if (data.message === "Successfully inserted slot deleted") {
           enqueueSnackbar("Slot Cancelled", {
-            variant: "success",
+            variant: "info",
           });
+          handleDateChange(date);
           setSlotCancelled(true);
         } else {
           enqueueSnackbar("Slot Not Cancelled", {
@@ -137,15 +166,16 @@ function SlotBooking(props) {
     });
   };
   const handelSlotBooking = () => {
-    fetch(`${baseUrl}/slot/interview/student`, {
+    fetch(`${baseUrl}slot/interview/student`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        student_id: slotBookingData.studentId,
-        student_name: name,
-        topic_name: slotBookingData.stage,
+        student_id: studentId,
+        student_name: studentData.name,
+        topic_name: studentData.stage,
+        transition_id: studentData.transitionID,
         start_time: StartTime,
         end_time_expected: EndTime,
         duration: "1hr",
@@ -158,145 +188,134 @@ function SlotBooking(props) {
           enqueueSnackbar("Slot Booked", {
             variant: "success",
           });
-          fetch(`${baseUrl}/slot/interview/${slotBookingData.studentId}`).then(
-            (_res) => {
-              _res.json().then((_data) => {
-                setSlotBookingDetails(_data.data[0]);
-                setSlotCancelled(_data.data[0].is_cancelled);
-              });
-            }
-          );
+          fetch(`${baseUrl}/slot/interview/${studentId}`).then((_res) => {
+            _res.json().then((_data) => {
+              setSlotBookingDetails(_data.data[0]);
+              setSlotCancelled(_data.data[0].is_cancelled);
+            });
+          });
         } else {
-          enqueueSnackbar("Slot Already Booked", {
+          enqueueSnackbar("Cannot Book Slot", {
             variant: "error",
           });
         }
       });
     });
   };
+  function disablePrevDates() {
+    const yesterday = new Date(Date.now() - 86400000);
+    const startSeconds = Date.parse(yesterday);
+    return (_date) => Date.parse(_date) < startSeconds;
+  }
   return (
-    <Modal
-      open
-      onClose={() => {
-        closeModal();
-      }}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={style}>
-        {slotCanceled ? (
-          <>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              {name.split(" ")[0]} Interview Slot Booking
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              Slot Booking for{" "}
-              {slotBookingData.stage
-                ? slotBookingData.stage.replace("pending", "")
-                : ""}
-            </Typography>
-            <LocalizationProvider utils={DateFnsUtils}>
-              <Grid container justify="space-around">
-                <DatePicker
-                  margin="normal"
-                  id="date-picker-dialog"
-                  format="yyyy-MM-dd"
-                  value={date}
-                  onChange={(dates) => {
-                    // console.log(dates);
-                    handleDateChange(dates);
-                    //console.log(dates);
+    <Box sx={style}>
+      {slotCanceled ? (
+        <>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Interview Slot Booking
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Slot Booking for {studentData.name}
+          </Typography>
+          <LocalizationProvider dateAdapter={DateFnsUtils}>
+            <Grid container justify="space-around">
+              <DatePicker
+                margin="normal"
+                id="date-picker-dialog"
+                format="yyyy-MM-dd"
+                value={date}
+                onChange={(dates) => {
+                  handleDateChange(dates);
+                }}
+                shouldDisableDate={disablePrevDates()}
+                inputVariant="outlined"
+                fullWidth
+                KeyboardButtonProps={{
+                  "aria-label": "change date",
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </Grid>
+          </LocalizationProvider>
+          <Grid container justify="space-evenly">
+            {Timings.length > 0 ? (
+              Timings.map((item) => (
+                <Grid
+                  item
+                  key={item.id}
+                  onClick={() => {
+                    setStartTime(item.from);
+                    setEndTime(item.to);
+                    setCurrentTimeId(item.id);
                   }}
-                  inputVariant="outlined"
-                  fullWidth
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
+                  md={4}
+                  style={{
+                    cursor: "pointer",
                   }}
-                />
-              </Grid>
-            </LocalizationProvider>
-            <Grid container justify="space-evenly">
-              {Timings.length > 0 ? (
-                Timings.map((item) => (
-                  <Grid
-                    key={item.id}
-                    onClick={() => {
-                      setStartTime(item.from);
-                      setEndTime(item.to);
-                      setCurrentTimeId(item.id);
-                    }}
-                    md={4}
+                >
+                  <Typography
                     style={{
-                      cursor: "pointer",
+                      backgroundColor: `${
+                        CurrentTimeId === item.id ? "#80b84d" : "#f06243"
+                      }`,
+                      margin: "5px",
+                      padding: "8px",
+                      fontSize: "14px",
                     }}
                   >
-                    <Typography
-                      style={{
-                        backgroundColor: `${
-                          CurrentTimeId === item.id ? "#80b84d" : "#f06243"
-                        }`,
-                        margin: "5px",
-                        padding: "8px",
-                        fontSize: "14px",
-                      }}
-                    >
-                      {item.from} - {item.to}
-                    </Typography>
-                  </Grid>
-                ))
-              ) : (
-                <>
-                  <Typography>No Slots Available</Typography>
-                  <Typography>Please select another date</Typography>
-                </>
-              )}
-            </Grid>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ fontSize: "10px" }}
-              onClick={() => {
-                handelSlotBooking();
-                setCurrentTimeId(null);
-              }}
-            >
-              Book Slot
-            </Button>
-          </>
-        ) : (
-          <>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              {name.split(" ")[0]} Interview Slot Booked For{" "}
-              {slotBookingDetails.topic_name}
-            </Typography>
-            <Typography
-              component="h3"
-              variant="h6"
-              id="modal-modal-description"
-              sx={{ mt: 2 }}
-            >
-              On {slotBookingDetails.on_date.split("T")[0]}
-            </Typography>
-            <Typography variant="h6" component="h3">
-              From {slotBookingDetails.start_time} To
-              {slotBookingDetails.end_time_expected}
-            </Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ fontSize: "10px" }}
-              onClick={() => {
-                handelDeleteSlot();
-                setCurrentTimeId(null);
-              }}
-            >
-              Delete Slot
-            </Button>
-          </>
-        )}
-      </Box>
-    </Modal>
+                    {item.from} - {item.to}
+                  </Typography>
+                </Grid>
+              ))
+            ) : (
+              <Typography>No Slots Available For Selected Date</Typography>
+            )}
+          </Grid>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ fontSize: "10px" }}
+            onClick={() => {
+              handelSlotBooking();
+              setCurrentTimeId(null);
+            }}
+          >
+            Book Slot
+          </Button>
+        </>
+      ) : (
+        <>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Interview Slot Booked For {slotBookingDetails.student_name} For{" "}
+            {slotBookingDetails.topic_name}
+          </Typography>
+          <Typography
+            component="h3"
+            variant="h6"
+            id="modal-modal-description"
+            sx={{ mt: 2 }}
+          >
+            On {slotBookingDetails.on_date.split("T")[0]}
+          </Typography>
+          <Typography variant="h6" component="h3">
+            From {slotBookingDetails.start_time} To
+            {slotBookingDetails.end_time_expected}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ fontSize: "10px" }}
+            onClick={() => {
+              handelDeleteSlot();
+              setCurrentTimeId(null);
+            }}
+          >
+            Delete Slot
+          </Button>
+        </>
+      )}
+    </Box>
   );
-}
+};
 
 export default SlotBooking;

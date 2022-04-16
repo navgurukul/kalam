@@ -6,7 +6,7 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { Link, useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
@@ -97,6 +97,7 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
+  const { lang: selectedLang } = useSelector((state) => state.ui);
   const [state, setState] = React.useState({
     mobileNumber: "",
     firstName: "",
@@ -236,22 +237,6 @@ const LandingPage = () => {
           );
         } else {
           const res = await generateTestLink();
-          // const params = {
-          //   firstName: firstName,
-          //   middleName: middleName,
-          //   lastName: lastName,
-          //   mobileNumber: mobileNumber,
-          // };
-          // const queryString = Object.keys(params)
-          //   .map((filter) => {
-          //     if (params[filter]) {
-          //       return `${filter}=${params[filter]}`;
-          //     }
-          //     return null;
-          //   })
-          //   .filter((item) => item)
-          //   .join("&");
-          // const url = `${testUrl}${response.data.key}?${queryString}`;
 
           setState({
             ...state,
@@ -277,7 +262,7 @@ const LandingPage = () => {
   };
 
   const giveTest = async () => {
-    const { mobileNumber, firstName, lastName, selectedLang } = state;
+    const { mobileNumber, firstName, lastName } = state;
     if (!mobileNumber || !firstName || !lastName) {
       enqueueSnackbar(<strong>{lang.mandatoryField[selectedLang]}</strong>, {
         variant: "error",
@@ -301,21 +286,14 @@ const LandingPage = () => {
     await isDuplicate();
   };
 
-  const {
-    mobileNumber,
-    firstName,
-    middleName,
-    lastName,
-    mobile,
-    selectedLang,
-  } = state;
+  const { mobileNumber, firstName, middleName, lastName, mobile } = state;
   return (
     <div
       style={{
         flexDirection: "column",
         justifyContent: "space-between",
         alignItems: "center",
-        minHeight: "calc(100vh - 8rem)",
+        // minHeight: "calc(100vh - 8rem)",
         display: "flex",
       }}
     >
@@ -335,9 +313,7 @@ const LandingPage = () => {
               display: "flex",
             }}
           >
-            <Grid item>
-              <VideoSlider language={selectedLang} />
-            </Grid>
+            <VideoSlider language={selectedLang} />
           </Grid>
           <Grid item xs={12} sm={6}>
             <Grid item xs={12}>
@@ -488,17 +464,7 @@ const LandingPage = () => {
           </Grid>
         </Grid>
       </ThemeProvider>
-      <Box style={{ height: theme.spacing(6) }} />
-      {/* <Box>
-        <Box
-          className="footer-container-box"
-          style={{ width: "100vw", paddingLeft: 0, paddingRight: 0 }}
-          p={1}
-          mt={2}
-        >
-          <Typography variant="body1">{lang.Footer[selectedLang]}</Typography>
-        </Box>
-      </Box> */}
+      {/* <Box style={{ height: theme.spacing(6) }} /> */}
     </div>
   );
 };

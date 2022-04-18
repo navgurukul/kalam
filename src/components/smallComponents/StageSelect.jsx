@@ -4,8 +4,7 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { DialogTitle, DialogActions, Dialog, Button } from "@mui/material";
-import { useMachine } from "@xstate/react";
-import { getstudentMachine } from "../../services/GlobalService";
+import { nextStage } from "../../services/GlobalService";
 
 const _ = require("underscore");
 
@@ -17,11 +16,8 @@ const StageSelect = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
-  const studentMachine = useMemo(
-    () => getstudentMachine(getKeyByValue(allStages, stage)),
-    []
-  );
-  const [xstate, send] = useMachine(studentMachine);
+  
+
   const [state, setState] = React.useState({
     flag: false,
     payload: {
@@ -127,11 +123,11 @@ const StageSelect = (props) => {
   };
 
   const { flag } = state;
-  const allStagesOptions = xstate.nextEvents.map((x) => ({
-    value: x,
-    label: allStages[x],
-  }));
-
+  const allStagesOptions = nextStage[getKeyByValue(allStages, stage)].map(
+    (x) => {
+      return { value: x, label: allStages[x] };
+    }
+  );
   const selectedValue = { value: _.invert(allStages)[stage], label: stage };
   return (
     <div>

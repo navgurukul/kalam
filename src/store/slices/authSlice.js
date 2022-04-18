@@ -27,6 +27,7 @@ export const loginWithGoogle = createAsyncThunk(
             : { roles: [], privilege: [] };
         localStorage.setItem("jwt", userToken);
         localStorage.setItem("userId", encryptText(`${user.id}`));
+        localStorage.setItem("email", encryptText(user.email));
         thunkAPI.dispatch(
           enqueueSnackbar({
             message: "Logged In Successfully",
@@ -101,6 +102,7 @@ const AuthSlice = createSlice({
       localStorage.removeItem("permissions");
       localStorage.removeItem("roles");
       localStorage.removeItem("privileges");
+      localStorage.removeItem("email");
       state.isAuthenticated = false;
       state.loggedInUser = null;
       state.roles = [];

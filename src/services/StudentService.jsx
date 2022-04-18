@@ -2,6 +2,7 @@ import React from "react";
 import { InputLabel } from "@mui/material";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { useSelector } from "react-redux";
 
 import StageSelect from "../components/smallComponents/StageSelect";
 import UpdateEmail from "../components/smallComponents/UpdateEmail";
@@ -28,6 +29,8 @@ import EvaluationSelect from "../components/smallComponents/EvaluationSelect";
 import UpdatePartner from "../components/partner/UpdatePartner";
 import DeadLineDateUpdate from "../components/smallComponents/DeadlineDateUpdate";
 import EndDateUpdate from "../components/smallComponents/EndDateUpdate";
+// eslint-disable-next-line import/no-cycle
+import { decryptText } from "../utils";
 
 dayjs.extend(customParseFormat);
 
@@ -53,9 +56,7 @@ const keysCampusStageOfLearning = Object.keys(campusStageOfLearning);
 //   return allTagsForOnlineClass[x];
 // });
 
-const user = window.localStorage.user
-  ? JSON.parse(window.localStorage.user).email
-  : null;
+const user = decryptText(localStorage.getItem("email") || "");
 
 const Lables = {
   fontSize: "15px",
@@ -96,30 +97,48 @@ const ColumnTransitions = {
       finishedColumnTransition,
 */
 
+const StageColumnTransitionWrapper = ({ rowData, rowMeta }) => {
+  const { loggedInUser } = useSelector((state) => state.auth);
+  return permissions.updateStage.indexOf(loggedInUser.email) > -1 &&
+    keysCampusStageOfLearning.indexOf(rowData) > -1 ? (
+    <div>
+      <DeleteRow transitionId={rowMeta.rowData[10]} />
+      {allStages[rowData]}
+    </div>
+  ) : (
+    <>
+      <DeleteRow transitionId={rowMeta.rowData[8]} />
+      <p>{allStages[rowData]}</p>
+    </>
+  );
+};
+
 const stageColumnTransition = {
   name: "to_stage",
   label: "Stage",
   options: {
     filter: true,
     sort: true,
-    customBodyRender: (rowData, rowMeta) => {
-      const currentUser = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).email
-        : null;
-      return permissions.updateStage.indexOf(currentUser) > -1 &&
-        keysCampusStageOfLearning.indexOf(rowData) > -1 ? (
-        <div>
-          <DeleteRow transitionId={rowMeta.rowData[10]} />
-          {allStages[rowData]}
-        </div>
-      ) : (
-        <>
-          <DeleteRow transitionId={rowMeta.rowData[8]} />
-          <p>{allStages[rowData]}</p>
-        </>
-      );
-    },
+    customBodyRender: (rowData, rowMeta) => (
+      <StageColumnTransitionWrapper rowData={rowData} rowMeta={rowMeta} />
+    ),
   },
+};
+
+const AddedAtColumnWrapper = ({ value, rowMeta }) => {
+  const { loggedInUser } = useSelector((state) => state.auth);
+
+  if (typeof rowMeta.rowData[0] === "number") {
+    return <p>{dayjs(value).format("D MMM YYYY")}</p>;
+  }
+  if (
+    permissions.updateStage.indexOf(loggedInUser.email) > -1 &&
+    (rowMeta.rowData[0].indexOf("Joined") > -1 ||
+      keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
+  ) {
+    return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
+  }
+  return <p>{dayjs(value).format("D MMM YYYY")}</p>;
 };
 
 const addedAtColumn = {
@@ -128,23 +147,9 @@ const addedAtColumn = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (value, rowMeta) => {
-      const currentUser = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).email
-        : null;
-
-      if (typeof rowMeta.rowData[0] === "number") {
-        return <p>{dayjs(value).format("D MMM YYYY")}</p>;
-      }
-      if (
-        permissions.updateStage.indexOf(currentUser) > -1 &&
-        (rowMeta.rowData[0].indexOf("Joined") > -1 ||
-          keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
-      ) {
-        return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
-      }
-      return <p>{dayjs(value).format("D MMM YYYY")}</p>;
-    },
+    customBodyRender: (value, rowMeta) => (
+      <AddedAtColumnWrapper value={value} rowMeta={rowMeta} />
+    ),
   },
 };
 
@@ -414,6 +419,21 @@ const setColumn = {
   },
 };
 
+const NameColumnWrapper = ({ rowData, rowMeta, updateValue }) => {
+  const { loggedInUser } = useSelector((state) => state.auth);
+  const name = rowData || "Update Name";
+  if (permissions.updateStudentName.indexOf(loggedInUser.email) > -1) {
+    return (
+      <UpdateStudentName
+        name={name}
+        rowMetatable={rowMeta}
+        change={(event) => updateValue(event)}
+      />
+    );
+  }
+  return rowData;
+};
+
 const nameColumn = {
   name: "name",
   label: "Name",
@@ -421,23 +441,13 @@ const nameColumn = {
     filter: false,
     sort: true,
     filterType: "textField",
-    customBodyRender: (rowData, rowMeta, updateValue) => {
-      const name = rowData || "Update Name";
-      const currentUser = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).email
-        : null;
-
-      if (permissions.updateStudentName.indexOf(currentUser) > -1) {
-        return (
-          <UpdateStudentName
-            name={name}
-            rowMetatable={rowMeta}
-            change={(event) => updateValue(event)}
-          />
-        );
-      }
-      return rowData;
-    },
+    customBodyRender: (rowData, rowMeta, updateValue) => (
+      <NameColumnWrapper
+        rowData={rowData}
+        rowMeta={rowMeta}
+        updateValue={updateValue}
+      />
+    ),
   },
 };
 
@@ -542,6 +552,22 @@ const genderColumn = {
   },
 };
 
+const DashboardCampusColumnWrapper = ({ value, rowMeta, updateValue }) => {
+  const { loggedInUser } = useSelector((state) => state.auth);
+
+  if (permissions.updateStage.indexOf(loggedInUser.email) > -1) {
+    return (
+      <UpdateCampus
+        allOptions={campus}
+        value={value || "No Campus Assigned"}
+        rowMetatable={rowMeta}
+        change={(event) => updateValue(event)}
+      />
+    );
+  }
+  return value;
+};
+
 const dashboardCampusColumn = {
   name: "campus",
   label: "Campus",
@@ -549,23 +575,13 @@ const dashboardCampusColumn = {
     filter: true,
     sort: true,
     display: false,
-    customBodyRender: (value, rowMeta, updateValue) => {
-      const currentUser = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).email
-        : null;
-
-      if (permissions.updateStage.indexOf(currentUser) > -1) {
-        return (
-          <UpdateCampus
-            allOptions={campus}
-            value={value || "No Campus Assigned"}
-            rowMetatable={rowMeta}
-            change={(event) => updateValue(event)}
-          />
-        );
-      }
-      return value;
-    },
+    customBodyRender: (value, rowMeta, updateValue) => (
+      <DashboardCampusColumnWrapper
+        value={value}
+        rowMeta={rowMeta}
+        updateValue={updateValue}
+      />
+    ),
     filterType: "custom",
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
@@ -691,6 +707,23 @@ const donorColumn = {
   },
 };
 
+const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
+  const { loggedInUser } = useSelector((state) => state.auth);
+
+  const isCampusPathname = window.location.pathname.indexOf("campus");
+  if (permissions.updateStage.indexOf(loggedInUser.email) > -1) {
+    return (
+      <StageSelect
+        rowMetatable={rowMeta}
+        stage={value}
+        allStages={isCampusPathname > -1 ? campusStageOfLearning : allStages}
+        change={(event) => updateValue(event)}
+      />
+    );
+  }
+  return value;
+};
+
 const stageColumn = {
   name: "stage",
   label: "Stage",
@@ -698,26 +731,13 @@ const stageColumn = {
     filter: false,
     display: true,
     sort: true,
-    customBodyRender: (value, rowMeta, updateValue) => {
-      const currentUser = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).email
-        : null;
-
-      const isCampusPathname = window.location.pathname.indexOf("campus");
-      if (permissions.updateStage.indexOf(currentUser) > -1) {
-        return (
-          <StageSelect
-            rowMetatable={rowMeta}
-            stage={value}
-            allStages={
-              isCampusPathname > -1 ? campusStageOfLearning : allStages
-            }
-            change={(event) => updateValue(event)}
-          />
-        );
-      }
-      return value;
-    },
+    customBodyRender: (value, rowMeta, updateValue) => (
+      <StageSelectWrapper
+        value={value}
+        rowMeta={rowMeta}
+        updateValue={updateValue}
+      />
+    ),
   },
 };
 
@@ -765,6 +785,22 @@ const onlineClassColumn = {
   },
 };
 
+const AddedAtColumnCampusWrapper = ({ value, rowMeta }) => {
+  const { loggedInUser } = useSelector((state) => state.auth);
+
+  if (typeof rowMeta.rowData[0] === "number") {
+    return <p>{dayjs(value).format("D MMM YYYY")}</p>;
+  }
+  if (
+    permissions.updateStage.indexOf(loggedInUser.email) > -1 &&
+    (rowMeta.rowData[0].indexOf("Joined") > -1 ||
+      keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
+  ) {
+    return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
+  }
+  return <p>{dayjs(value).format("D MMM YYYY")}</p>;
+};
+
 //addedAtColumnCampus
 const addedAtColumnCampus = {
   name: "created_at",
@@ -772,23 +808,9 @@ const addedAtColumnCampus = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (value, rowMeta) => {
-      const currentUser = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).email
-        : null;
-
-      if (typeof rowMeta.rowData[0] === "number") {
-        return <p>{dayjs(value).format("D MMM YYYY")}</p>;
-      }
-      if (
-        permissions.updateStage.indexOf(currentUser) > -1 &&
-        (rowMeta.rowData[0].indexOf("Joined") > -1 ||
-          keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
-      ) {
-        return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
-      }
-      return <p>{dayjs(value).format("D MMM YYYY")}</p>;
-    },
+    customBodyRender: (value, rowMeta) => (
+      <AddedAtColumnCampusWrapper value={value} rowMeta={rowMeta} />
+    ),
   },
 };
 
@@ -1032,7 +1054,7 @@ const finishedColumnTransitionCampus = {
   },
 };
 
-const loggedInUser = {
+const loggedInUserColumn2 = {
   name: "loggedInUser",
   label: "LoggedIn User",
   options: {
@@ -1338,6 +1360,20 @@ const dashboardPartnerNameColumn = {
   },
 };
 
+const PartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
+  const { loggedInUser } = useSelector((state) => state.auth);
+  if (!value && permissions.updateStage.indexOf(loggedInUser.email) > -1) {
+    return (
+      <UpdatePartner
+        studentId={rowMeta.rowData[0]}
+        value={value}
+        change={(event) => updateValue(event)}
+      />
+    );
+  }
+  return value;
+};
+
 const partnerNameColumn = {
   label: "Partner Name",
   name: "partner.name",
@@ -1345,21 +1381,13 @@ const partnerNameColumn = {
     filter: true,
     filterOptions: { names: JSON.parse(localStorage.getItem("partners")) },
     sort: true,
-    customBodyRender: (value, rowMeta, updateValue) => {
-      const currentUser = window.localStorage.user
-        ? JSON.parse(window.localStorage.user).email
-        : null;
-      if (!value && permissions.updateStage.indexOf(currentUser) > -1) {
-        return (
-          <UpdatePartner
-            studentId={rowMeta.rowData[0]}
-            value={value}
-            change={(event) => updateValue(event)}
-          />
-        );
-      }
-      return value;
-    },
+    customBodyRender: (value, rowMeta, updateValue) => (
+      <PartnerNameColumnWrapper
+        value={value}
+        rowMeta={rowMeta}
+        updateValue={updateValue}
+      />
+    ),
   },
 };
 
@@ -1408,7 +1436,7 @@ const profileImage = {
   },
 };
 
-export const dConvert = (data) => {
+const dConvert = (data) => {
   const x = { ...data };
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
@@ -1501,7 +1529,7 @@ const StudentService = {
       ownerColumnTransitionDashboard,
       statusColumnTransition,
       timeColumnTransition,
-      loggedInUser,
+      loggedInUserColumn2,
       AudioPlayer,
       transitionIdColumn,
       deadlineColumnTrnasition1,
@@ -1530,7 +1558,7 @@ const StudentService = {
       ownerColumnTransitionCampus,
       statusColumnTransition,
       timeColumnTransition,
-      loggedInUser,
+      loggedInUserColumn2,
       AudioPlayer,
       transitionIdColumn,
     ],

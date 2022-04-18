@@ -2,7 +2,7 @@ import { Card, Grid, Modal, TextField } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/lab";
 import React, { useEffect, useState } from "react";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
-import MainLayout from "../MainLayout";
+import MainLayout from "../muiTables/MainLayout";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 function OwnerSchedule(props) {

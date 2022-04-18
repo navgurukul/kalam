@@ -4,18 +4,18 @@ import { ThemeProvider, makeStyles } from "@mui/styles";
 import axios from "axios";
 import { Box } from "@mui/material";
 import theme from "../../theme";
-import ViewAssessments from "../ViewAssessments";
+import ViewAssessments from "../assessment/ViewAssessments";
 import PartnerLink from "./PartnerLink";
 import EditPartner from "./EditPartner";
 // eslint-disable-next-line import/no-named-as-default
-import CreateAssessment from "../CreateAssessment";
-import AddMerakiLink from "../AddMerakiLink";
-import EditPartnerDetails from "../EditIcon";
+import CreateAssessment from "../assessment/CreateAssessment";
+import AddMerakiLink from "../smallComponents/AddMerakiLink";
+import EditPartnerDetails from "../smallComponents/EditIcon";
 import { changeFetching } from "../../store/slices/uiSlice";
-import MainLayout from "../MainLayout";
-import ReportSend from "../ReportSend";
+import MainLayout from "../muiTables/MainLayout";
+import ReportSend from "../report/ReportSend";
 // import user from "../utils/user";
-import NotHaveAccess from "../NotHaveAccess";
+import NotHaveAccess from "../layout/NotHaveAccess";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

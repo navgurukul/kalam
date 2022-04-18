@@ -5,12 +5,12 @@ import axios from "axios";
 // import { setupUsers } from "../store/slices/authSlice";
 import { changeFetching } from "../../store/slices/uiSlice";
 import StudentService from "../../services/StudentService";
-import DashboardPage from "../Dashboard";
-import SelectUiByButtons from "../SelectUiByButtons";
-import StudentsProgressCards from "../StudentsProgressCards";
-import GraphingPresentationJob from "../GraphingPresentationJob";
+import DashboardPage from "../dashboard/Dashboard";
+import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
+import StudentsProgressCards from "../student/StudentsProgressCards";
+import GraphingPresentationJob from "../partner/GraphingPresentationJob";
 // import user from "../utils/user";
-import NotHaveAccess from "../NotHaveAccess";
+import NotHaveAccess from "../layout/NotHaveAccess";
 
 //baseUrl
 const baseUrl = import.meta.env.VITE_API_URL;

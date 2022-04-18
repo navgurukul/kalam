@@ -2,48 +2,48 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import useCustomNotifier from "../utils/useCustomNotifier";
-import LandingPage from "../components/LandingPage";
-import PartnerList from "../components/PartnerList";
-import OutreachDetails from "../components/OutreachDetails";
-import AddPartner from "../components/AddPartner";
-import AdmissionsDash from "../components/AdmissionsDash";
-import AssessmentAttempts from "../components/AssessmentAttempts";
-import ViewAssessments from "../components/ViewAssessments";
-import MyTaskReport from "../components/MyTask";
-import StageWiseDanglingReport from "../components/StageWiseDanglingReport";
-import MyAssignReport from "../components/MyAssign";
-import NotFoundPage from "../components/NotFoundPage";
-import LoginDesign from "../components/LoginDesign";
-import UserMoblieNumber from "../components/UserMoblieNumber";
-import UpdateMobileNumber from "../components/UpdateMobileNumber";
-import ReportContainer from "../components/ReportContainer";
-import ProgressMadeForPartner from "../components/progressMade";
-import DonorList from "../components/DonorList";
-import DonorStudentsData from "../components/DonorStudentsData";
-import CampusList from "../components/CampusList";
-import CampusStudentsData from "../components/CampusStudentsData";
-import PartnerStudentsProgressInCampus from "../components/PartnerStudentsProgressInCampus";
-import OwnerList from "../components/OwnerList";
-import AllCampusStudentsData from "../components/AllCampusStudentsData";
-// default behavior
-// import AnyRoute from "./AnyRouter";
+
+import LandingPage from "../components/pages/LandingPage";
+import AdmissionsDash from "../components/dashboard/AdmissionsDash";
+import NotFoundPage from "../components/layout/NotFoundPage";
+
+import PartnerList from "../components/partner/PartnerList";
+import OutreachDetails from "../components/outreach/OutreachDetails";
+import AddPartner from "../components/partner/AddPartner";
+import AssessmentAttempts from "../components/assessment/AssessmentAttempts";
+import ViewAssessments from "../components/assessment/ViewAssessments";
+import MyTaskReport from "../components/pages/MyTask";
+import StageWiseDanglingReport from "../components/report/StageWiseDanglingReport";
+import MyAssignReport from "../components/pages/MyAssign";
+import LoginDesign from "../components/pages/LoginDesign";
+import UserMoblieNumber from "../components/contact/UserMoblieNumber";
+import UpdateMobileNumber from "../components/contact/UpdateMobileNumber";
+import ReportContainer from "../components/report/ReportContainer";
+import ProgressMadeForPartner from "../components/partner/progressMade";
+import DonorList from "../components/donor/DonorList";
+import DonorStudentsData from "../components/donor/DonorStudentsData";
+import CampusList from "../components/campus/CampusList";
+import CampusStudentsData from "../components/campus/CampusStudentsData";
+import PartnerStudentsProgressInCampus from "../components/partner/PartnerStudentsProgressInCampus";
+import OwnerList from "../components/owner/OwnerList";
+import AllCampusStudentsData from "../components/campus/AllCampusStudentsData";
+
 import history from "../utils/history";
-import StudentStatus from "../components/StudentStatus";
-import DuplicateStudents from "../components/DuplicateStudents";
-import TestInstructions from "../onlineTest/Instructions";
-import StudentForm from "../onlineTest/StudentForm";
-import FinalInstruction from "../onlineTest/FinalInstruction";
-import Questions from "../onlineTest/Questions";
-import NewAdminPage from "../components/NewAdminPage";
-// import SlotBooking from "../components/SlotBooking";
-import SlotBooking2 from "../components/SlotBooking2";
+import StudentStatus from "../components/student/StudentStatus";
+import DuplicateStudents from "../components/pages/DuplicateStudents";
+import TestInstructions from "../components/onlineTest/Instructions";
+import StudentForm from "../components/onlineTest/StudentForm";
+import FinalInstruction from "../components/onlineTest/FinalInstruction";
+import Questions from "../components/onlineTest/Questions";
+import NewAdminPage from "../components/pages/NewAdminPage";
+import SlotBooking from "../components/pages/SlotBooking";
 // if authenticated, redirect to /students else be there
 // import PublicRoute from "./PublicRouter";
 // if authenticated be there, else redirect to /login
 // import PrivateRoute from "./PrivateRouter";
 import theme from "../theme";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "../components/layout/Header";
+import Footer from "../components/layout/Footer";
 
 import RequireAuth from "./RequireAuth";
 import { fetchCurrentUser } from "../store/slices/authSlice";
@@ -257,7 +257,7 @@ const AppRouter = () => {
               }
             />
 
-            <Route path="/bookSlot/:userId" element={<SlotBooking2 />} />
+            <Route path="/bookslot/:userId" element={<SlotBooking />} />
             {/* <Route path="/test/:enrollmentKey/:testId" element={<SlideShow />} /> */}
             <Route path="/test/">
               <Route index path="instructions" element={<TestInstructions />} />
@@ -289,7 +289,7 @@ const AppRouter = () => {
                 </RequireAuth>
               }
             />
-            <Route element={<NotFoundPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
         <Footer />

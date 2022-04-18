@@ -3,9 +3,9 @@ import Container from "@mui/material/Container";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import MainLayout from "../MainLayout";
+import MainLayout from "../muiTables/MainLayout";
 // import user from "../utils/user";
-import NotHaveAccess from "../NotHaveAccess";
+import NotHaveAccess from "../layout/NotHaveAccess";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

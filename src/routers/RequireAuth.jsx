@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Navigate, useLocation, useParams } from "react-router-dom";
-import NotHaveAccess from "../components/NotHaveAccess";
+import NotHaveAccess from "../components/layout/NotHaveAccess";
 import { parseJwt } from "../utils";
 import { logout } from "../store/slices/authSlice";
 

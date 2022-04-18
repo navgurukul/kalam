@@ -3,31 +3,31 @@ import { InputLabel } from "@mui/material";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
-import StageSelect from "../components/StageSelect";
-import UpdateEmail from "../components/UpdateEmail";
+import StageSelect from "../components/smallComponents/StageSelect";
+import UpdateEmail from "../components/smallComponents/UpdateEmail";
 import OwnerSelect from "../components/owner/OwnerSelect";
-import StatusSelect from "../components/StatusSelect";
-import StudentFeedback from "../components/FeedbackPage";
+import StatusSelect from "../components/smallComponents/StatusSelect";
+import StudentFeedback from "../components/feedback/FeedbackPage";
 // eslint-disable-next-line import/no-cycle
-import StageTransitions from "../components/StageTransitions";
-import StageTransitionsStudentStatus from "../components/StageTransitionsStudentStatus";
-import AudioRecorder from "../components/AudioRecording";
-import AudiofileUpload from "../components/uploadAudioFile";
-import TagsForOnlineClass from "../components/TagsForOnlineClass";
+import StageTransitions from "../components/smallComponents/StageTransitions";
+import StageTransitionsStudentStatus from "../components/student/StageTransitionsStudentStatus";
+import AudioRecorder from "../components/smallComponents/AudioRecording";
+import AudiofileUpload from "../components/smallComponents/uploadAudioFile";
+import TagsForOnlineClass from "../components/smallComponents/TagsForOnlineClass";
 
 import UpdateCampus from "../components/campus/UpdateCampus";
-import UpdateDonor from "../components/UpdateDonor";
-import JoinedDate from "../components/JoinedDate";
-import DeleteRow from "../components/DeleteRow";
-import UpdateStudentName from "../components/UpdateStudentName";
-import SelectReact from "../components/SelectReact";
-import RedFlag from "../components/FlagModal";
+import UpdateDonor from "../components/donor/UpdateDonor";
+import JoinedDate from "../components/smallComponents/JoinedDate";
+import DeleteRow from "../components/smallComponents/DeleteRow";
+import UpdateStudentName from "../components/smallComponents/UpdateStudentName";
+import SelectReact from "../components/smallComponents/SelectReact";
+import RedFlag from "../components/campus/FlagModal";
 
-import SurveyForm from "../components/SurveyForm";
-import EvaluationSelect from "../components/EvaluationSelect";
+import SurveyForm from "../components/smallComponents/SurveyForm";
+import EvaluationSelect from "../components/smallComponents/EvaluationSelect";
 import UpdatePartner from "../components/partner/UpdatePartner";
-import DeadLineDateUpdate from "../components/DeadlineDateUpdate";
-import EndDateUpdate from "../components/EndDateUpdate";
+import DeadLineDateUpdate from "../components/smallComponents/DeadlineDateUpdate";
+import EndDateUpdate from "../components/smallComponents/EndDateUpdate";
 
 dayjs.extend(customParseFormat);
 

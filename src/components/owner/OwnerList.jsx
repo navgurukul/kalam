@@ -11,7 +11,7 @@ import {
   setOwnerData,
   deleteOwner as deleteOwnerAction,
 } from "../../store/slices/ownerSlice";
-import MainLayout from "../MainLayout";
+import MainLayout from "../muiTables/MainLayout";
 import AddOwner from "./AddOwner";
 import OwnerSchedule from "./OwnerSchedule";
 import { closeDialog, showDialog } from "../../store/slices/uiSlice";

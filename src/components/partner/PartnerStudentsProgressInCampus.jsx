@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import StudentService from "../../services/StudentService";
-import DashboardPage from "../Dashboard";
-import StudentsProgressCards from "../StudentsProgressCards";
-import SelectUiByButtons from "../SelectUiByButtons";
-import GraphingPresentationJob from "../GraphingPresentationJob";
+import DashboardPage from "../dashboard/Dashboard";
+import StudentsProgressCards from "../student/StudentsProgressCards";
+import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
+import GraphingPresentationJob from "./GraphingPresentationJob";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

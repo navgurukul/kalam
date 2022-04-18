@@ -7,12 +7,12 @@ import { useParams } from "react-router-dom";
 import StudentService from "../../services/StudentService";
 // import { setupUsers } from "../store/slices/authSlice";
 import { changeFetching } from "../../store/slices/uiSlice";
-import DashboardPage from "../Dashboard";
-import SelectUiByButtons from "../SelectUiByButtons";
-import StudentsProgressCards from "../StudentsProgressCards";
-import GraphingPresentationJob from "../GraphingPresentationJob";
+import DashboardPage from "../dashboard/Dashboard";
+import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
+import StudentsProgressCards from "../student/StudentsProgressCards";
+import GraphingPresentationJob from "../partner/GraphingPresentationJob";
 // import user from "../utils/user";
-import NotHaveAccess from "../NotHaveAccess";
+import NotHaveAccess from "../layout/NotHaveAccess";
 
 const { campus } = require("../../config");
 

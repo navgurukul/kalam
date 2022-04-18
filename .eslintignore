@@ -5,4 +5,4 @@
 /.next
 /node_modules
 /build
-/src/config
+# /src/config

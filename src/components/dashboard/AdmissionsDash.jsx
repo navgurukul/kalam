@@ -21,8 +21,17 @@ import theme from "../../theme";
 import NotHaveAccess from "../layout/NotHaveAccess";
 import Loader from "../ui/Loader";
 import { fetchOwners as fetchOwnersAction } from "../../store/slices/dataSlice";
+import {
+  setFromDate,
+  setNoOfRows,
+  setStage,
+  setStudentData,
+  setToDate,
+  setPageNo,
+  fetchStudents,
+} from "../../store/slices/studentSlice";
 
-const { qualificationKeys, allStages } = require("../../config");
+const { allStages } = require("../../config");
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -48,31 +57,57 @@ const useStyles = makeStyles(() => ({
 
 const AdmissionsDash = (props) => {
   const classes = useStyles();
+  const { dataType: paramDataType } = useParams();
   const { loggedInUser } = useSelector((state) => state.auth);
+  const { isFetching } = useSelector((state) => state.ui);
+  const {
+    url,
+    studentData,
+    fromDate,
+    toDate,
+    stage,
+    totalData,
+    numberOfRows,
+    page,
+  } = useSelector((state) => state.students);
+  // console.log(
+  // filterColumns,
+  //   url,
+  //   studentData,
+  //   fromDate,
+  //   toDate,
+  //   totalData,
+  //   stage,
+  //   page
+  // );
   const dispatch = useDispatch();
-  const { dataTypes } = useParams();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
-  // const usersSetup = (users) => dispatch(setupUsers(users));
+  const setStudents = (data) => dispatch(setStudentData(data));
+  const setFrom = (data) => dispatch(setFromDate(data));
+  const setTo = (data) => dispatch(setToDate(data));
+  const setRows = (data) => dispatch(setNoOfRows(data));
+  const setPage = (data) => dispatch(setPageNo(data));
+  const updateStage = (data) => dispatch(setStage(data));
   const [state, setState] = React.useState({
-    totalData: 0,
-    data: [],
+    // totalData: 0,
+    // data: [],
     sData: undefined, //subsetData,
-    fromDate: null,
-    toDate: null,
+    // fromDate: null,
+    // toDate: null,
     showLoader: true,
-    filterValues: [],
-    numberOfRows: 10,
+    // filterValues: [],
+    // numberOfRows: 10,
     selectedOption: [],
     access: null, //access object to store who are having access data
     // userLoggedIn: user(), //user object to store who is logged in
     studentDashboardCondition: false, //condition to show student dashboard
     loading: true,
   });
-  let dataType = dataTypes || "softwareCourse";
-  const studentsURL = `${baseURL}students`;
+  let dataType = paramDataType || "softwareCourse";
+  // const studentsURL = `${baseURL}students`;
   const usersURL = `${baseURL}users/getall`;
-  let stage = null;
+  // let stage = null;
   let value = null;
 
   const fetchAccess = async (signal) => {
@@ -125,7 +160,7 @@ const AdmissionsDash = (props) => {
       fetchingFinish();
     }
   };
-  const dataSetup = (data, totalData) => {
+  const dataSetup = (data, _totalData) => {
     if (data.length > 0) {
       for (let i = 0; i < data.length; i += 1) {
         // eslint-disable-next-line import/no-named-as-default-member, no-param-reassign
@@ -135,6 +170,7 @@ const AdmissionsDash = (props) => {
         ...v,
         loggedInUser: loggedInUser.email.split("@")[0],
       }));
+      setStudents({ data: newData, _totalData });
       setState((prevState) => ({
         ...prevState,
         data: newData,
@@ -143,6 +179,7 @@ const AdmissionsDash = (props) => {
       }));
       fetchingFinish();
     } else {
+      setStudents({ data: [], totalData: 0 });
       setState((prevState) => ({
         ...prevState,
         data,
@@ -150,74 +187,73 @@ const AdmissionsDash = (props) => {
       }));
     }
   };
-  const fetchStudents = async (_value, signal) => {
-    const { fetchPendingInterviewDetails, loggedInUser: pLoggedInUser } = props;
-    const { numberOfRows } = state;
-    const concatinateStage = stage === null ? stage : stage.join(",");
-    try {
-      fetchingStart();
-      let response;
-      if (fetchPendingInterviewDetails) {
-        response = await axios.get(`${baseURL}students/pending_interview`, {
-          signal,
-          params: {
-            user: pLoggedInUser.mailId,
-          },
-        });
-      } else {
-        let url = studentsURL;
-        if (_value)
-          _value.forEach((filterColumn, index) => {
-            if (index > 0) {
-              url += `&${filterColumn.key}=${filterColumn.value}`;
-            } else {
-              url += `?${filterColumn.key}=${filterColumn.value}`;
-            }
-          });
-        response =
-          value && value.length > 0
-            ? await axios.get(`${url}&limit=${numberOfRows}&page=0`, {
-                signal,
-                params: {
-                  dataType,
-                  stage: concatinateStage,
-                  from: state.fromDate,
-                  to: state.toDate,
-                },
-              })
-            : await axios.get(`${studentsURL}?limit=${numberOfRows}&page=0`, {
-                signal,
-                params: {
-                  dataType,
-                  stage: concatinateStage,
-                  from: state.fromDate,
-                  to: state.toDate,
-                },
-              });
-      }
+  // const fetchStudents = async () => {
+  //   const { fetchPendingInterviewDetails, loggedInUser: pLoggedInUser } = props;
+  //   // const { numberOfRows } = state;
+  //   const concatinateStage = stage.length === 0 ? null : stage.join(",");
+  //   try {
+  //     fetchingStart();
+  //     let response;
+  //     if (fetchPendingInterviewDetails) {
+  //       response = await axios.get(`${baseURL}students/pending_interview`, {
+  //         params: {
+  //           user: pLoggedInUser.mailId,
+  //         },
+  //       });
+  //     } else {
+  //       let newUrl = studentsURL;
+  //       if (_value)
+  //         _value.forEach((filterColumn, index) => {
+  //           if (index > 0) {
+  //             newUrl += `&${filterColumn.key}=${filterColumn.value}`;
+  //           } else {
+  //             newUrl += `?${filterColumn.key}=${filterColumn.value}`;
+  //           }
+  //         });
+  //       response =
+  //         value && value.length > 0
+  //           ? await axios.get(`${url}&limit=${numberOfRows}&page=0`, {
+  //               params: {
+  //                 dataType: dataType || "softwareCourse",
+  //                 stage: concatinateStage,
+  //                 from: state.fromDate,
+  //                 to: state.toDate,
+  //               },
+  //             })
+  //           : await axios.get(`${studentsURL}?limit=${numberOfRows}&page=0`, {
+  //               signal,
+  //               params: {
+  //                 dataType,
+  //                 stage: concatinateStage,
+  //                 from: state.fromDate,
+  //                 to: state.toDate,
+  //               },
+  //             });
+  //     }
 
-      const studentData = response.data.data.results.map((student) => {
-        const contacts = student.contacts[student.contacts.length - 1];
-        return {
-          ...student,
-          qualification: qualificationKeys[student.qualification],
-          studentOwner: "",
-          campus: student.campus ? student.campus : null,
-          donor: student.studentDonor ? student.studentDonor : null,
-          altNumber: contacts ? contacts.alt_mobile : contacts,
-        };
-      });
-      setState((prevState) => ({
-        ...prevState,
-        totalData: response.data.data.total,
-      }));
-      dataSetup(studentData);
-    } catch (e) {
-      fetchingFinish();
-    }
-  };
+  //     const studentData = response.data.data.results.map((student) => {
+  //       const contacts = student.contacts[student.contacts.length - 1];
+  //       return {
+  //         ...student,
+  //         qualification: qualificationKeys[student.qualification],
+  //         studentOwner: "",
+  //         campus: student.campus ? student.campus : null,
+  //         donor: student.studentDonor ? student.studentDonor : null,
+  //         altNumber: contacts ? contacts.alt_mobile : contacts,
+  //       };
+  //     });
+  //     setState((prevState) => ({
+  //       ...prevState,
+  //       totalData: response.data.data.total,
+  //     }));
+  //     dataSetup(studentData);
+  //   } catch (e) {
+  //     fetchingFinish();
+  //   }
+  // };
 
   const setNumbersOfRows = (_value) => {
+    setRows(value);
     setState((prevState) => ({
       ...prevState,
       numberOfRows: _value,
@@ -241,9 +277,9 @@ const AdmissionsDash = (props) => {
 
   const changeDataType = (option) => {
     dataType = option.value;
-    stage = null;
+    // stage = null;
     value = null;
-    fetchStudents();
+    // fetchStudents();
   };
 
   const changeStudentStage = (selectedOption) => {
@@ -252,62 +288,66 @@ const AdmissionsDash = (props) => {
       selectedOption,
     }));
     //console.log(selectedOption, "selectedOption");
-    const { filterValues } = state;
     if (selectedOption === null) {
-      stage = null;
+      setPage(0);
+      updateStage([]);
       dataType = "softwareCourse";
-      fetchStudents(filterValues);
+      // fetchStudents(filterValues);
       value = "Student Details";
     } else {
       // const arr = [];
       const arr = selectedOption.map((option) => option.value);
       //console.log(arr, " i am arr");
       if (arr.includes("default")) {
-        stage = null;
+        // stage = null;
       } else {
-        stage = selectedOption.map((option) => option.value);
+        // stage = selectedOption.map((option) => option.value);
       }
 
-      fetchStudents(filterValues);
+      setPage(0);
+      updateStage(selectedOption.map((opt) => opt.value));
+
+      // fetchStudents(filterValues);
       dataType = "softwareCourse";
     }
   };
 
   const changeFromDate = async (date) => {
-    setState((prevState) => ({
-      ...prevState,
-      fromDate: date,
-    }));
-    fetchStudents();
+    setFrom(date);
+    // setState((prevState) => ({
+    //   ...prevState,
+    //   fromDate: date,
+    // }));
+    // fetchStudents();
   };
 
   const changeToDate = (date) => {
-    setState((prevState) => ({
-      ...prevState,
-      toDate: date,
-    }));
-    fetchStudents();
+    setTo(date);
+    // setState((prevState) => ({
+    //   ...prevState,
+    //   toDate: date,
+    // }));
+    // fetchStudents();
   };
 
   const sortChange = (column, order) => {
-    const { data } = state;
-    const sorted = _.orderBy(data, [column], [order]);
-    setState((prevState) => ({
-      ...prevState,
-      data: sorted,
-    }));
+    // const { data } = state;
+    const sorted = _.orderBy(studentData, [column], [order]);
+    setStudents({ data: sorted, totalData });
+    // setState((prevState) => ({
+    //   ...prevState,
+    //   data: sorted,
+    // }));
   };
 
   const { fetchPendingInterviewDetails } = props;
-  const { sData, data, showLoader, totalData, numberOfRows, selectedOption } =
-    state;
-  const concatinateStage = stage === null ? stage : stage.join(",");
+  const { sData, selectedOption } = state;
 
   useEffect(() => {
     const controller = new AbortController();
     // dispatch(rFStudents({ dataType, fetchPendingInterviewDetails }));
     const fetchData = async () => {
-      await fetchStudents(null, controller.signal);
+      // await fetchStudents(null, controller.signal);
       await fetchUsers(controller.signal);
       await fetchOWner(controller.signal);
       await fetchPartner(controller.signal);
@@ -317,6 +357,12 @@ const AdmissionsDash = (props) => {
     fetchData();
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    // console.log("Updating changes");
+    if (loggedInUser)
+      dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType }));
+  }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -385,22 +431,18 @@ const AdmissionsDash = (props) => {
     return (
       <ServerSidePagination
         columns={StudentService.columns[dataType]}
-        data={sData || data}
-        showLoader={showLoader}
+        data={sData || studentData}
+        showLoader={isFetching}
         params={{
           params: {
             dataType,
-            stage: concatinateStage,
-            from: state.fromDate,
-            to: state.toDate,
+            stage: stage.length === 0 ? null : stage.join(","),
+            from: fromDate,
+            to: toDate,
           },
         }}
         dataSetup={dataSetup}
-        totalData={totalData}
-        filterValues={getFilterValues}
         sortChange={sortChange}
-        numberOfRows={numberOfRows}
-        setNumbersOfRows={setNumbersOfRows}
       />
     );
   }
@@ -413,19 +455,19 @@ const AdmissionsDash = (props) => {
             <div className={classes.clear} />
             <ServerSidePagination
               columns={StudentService.columns[dataType]}
-              data={sData || data}
-              showLoader={showLoader}
-              fun={fetchStudents}
+              data={sData || studentData}
+              showLoader={isFetching}
+              // fun={fetchStudents}
               params={{
                 params: {
                   dataType,
-                  stage: concatinateStage,
-                  from: state.fromDate,
-                  to: state.toDate,
+                  stage: stage.length === 0 ? null : stage.join(","),
+                  from: fromDate,
+                  to: toDate,
                 },
               }}
               stages={value}
-              dataSetup={dataSetup}
+              // dataSetup={dataSetup}
               totalData={totalData}
               filterValues={getFilterValues}
               sortChange={sortChange}

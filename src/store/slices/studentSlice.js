@@ -56,24 +56,26 @@ export const fetchStudents = createAsyncThunk(
                 }
               );
       }
-
-      const studentData = response.data.data.results.map((student) => {
-        const contacts = student.contacts[student.contacts.length - 1];
-        return {
-          ...student,
-          qualification: qualificationKeys[student.qualification],
-          studentOwner: "",
-          campus: student.campus ? student.campus : null,
-          donor: student.studentDonor ? student.studentDonor : null,
-          altNumber: contacts ? contacts.alt_mobile : contacts,
-        };
-      });
-      // setState((prevState) => ({
-      //   ...prevState,
-      //   totalData: response.data.data.total,
-      // }));
+      const studentData =
+        // response.data &&
+        // response.data.data &&
+        response.data.data.results.map((student) => {
+          const contacts = student.contacts[student.contacts.length - 1];
+          return {
+            ...student,
+            qualification: qualificationKeys[student.qualification],
+            studentOwner: "",
+            campus: student.campus ? student.campus : null,
+            donor: student.studentDonor ? student.studentDonor : null,
+            altNumber: contacts ? contacts.alt_mobile : contacts,
+          };
+        });
       thunkAPI.dispatch(changeFetching(false));
-      return dataSetup(studentData, response.data.data.total, loggedInUser);
+      return dataSetup(
+        studentData,
+        response.data.data.total,
+        loggedInUser.mail_id
+      );
     } catch (e) {
       thunkAPI.dispatch(changeFetching(false));
     }

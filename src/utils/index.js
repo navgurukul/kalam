@@ -8,7 +8,7 @@ export const dataSetup = (data, totalData, loggedInUser) => {
     // }
     const newData = data.map((v) => ({
       ...dConvert(v),
-      loggedInUser: loggedInUser.email.split("@")[0],
+      loggedInUser,
     }));
     return { data: newData, totalData };
   }

@@ -7,9 +7,11 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import BasicDetails from "./BasicDetails";
-import OtherDetails from "./OtherDetails";
 import { baseUrl } from "../../../utils/constants";
+import Loader from "../../ui/Loader";
+
+const BasicDetails = React.lazy(() => import("./BasicDetails"));
+const OtherDetails = React.lazy(() => import("./OtherDetails"));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -327,31 +329,35 @@ const StudentForm = () => {
     switch (step) {
       case 0:
         return (
-          <BasicDetails
-            lang={lang}
-            formData={formData}
-            // handleChange={handleChange}
-            reactForm={{ register, errors, control }}
-            inputDisabled={alreadyAUser}
-            setProfileImage={setProfileImage}
-          />
+          <React.Suspense fallback={<Loader />}>
+            <BasicDetails
+              lang={lang}
+              formData={formData}
+              // handleChange={handleChange}
+              reactForm={{ register, errors, control }}
+              inputDisabled={alreadyAUser}
+              setProfileImage={setProfileImage}
+            />
+          </React.Suspense>
         );
       case 1:
         return (
-          <OtherDetails
-            formData={{
-              name: `${formData.FirstName} ${formData.MiddleName} ${formData.LastName}`,
-              alt_mobile: formData.AlternateNumber,
-              partner_refer: "NONE",
-              image_url: formData.ProfileImage,
-              ...formData,
-            }}
-            reactForm={{ register, errors, control, watch, setValue }}
-            lang={lang}
-            // prevFilledData={prevData}
-            alreadyAUser={alreadyAUser}
-            inputDisabled={alreadyAUser}
-          />
+          <React.Suspense fallback={<Loader />}>
+            <OtherDetails
+              formData={{
+                name: `${formData.FirstName} ${formData.MiddleName} ${formData.LastName}`,
+                alt_mobile: formData.AlternateNumber,
+                partner_refer: "NONE",
+                image_url: formData.ProfileImage,
+                ...formData,
+              }}
+              reactForm={{ register, errors, control, watch, setValue }}
+              lang={lang}
+              // prevFilledData={prevData}
+              alreadyAUser={alreadyAUser}
+              inputDisabled={alreadyAUser}
+            />
+          </React.Suspense>
         );
       default:
         return <div />;

@@ -3,51 +3,97 @@ import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import useCustomNotifier from "../utils/useCustomNotifier";
 
+import theme from "../theme";
+import RequireAuth from "./RequireAuth";
+
+import { fetchCurrentUser } from "../store/slices/authSlice";
+import { decryptText } from "../utils";
+
+import Header from "../components/layout/Header";
+import Footer from "../components/layout/Footer";
 import LandingPage from "../components/pages/LandingPage";
 import AdmissionsDash from "../components/dashboard/AdmissionsDash";
 import NotFoundPage from "../components/layout/NotFoundPage";
+import Loader from "../components/ui/Loader";
 
-import PartnerList from "../components/partner/PartnerList";
-import OutreachDetails from "../components/outreach/OutreachDetails";
-import AddPartner from "../components/partner/AddPartner";
-import AssessmentAttempts from "../components/assessment/AssessmentAttempts";
-import ViewAssessments from "../components/assessment/ViewAssessments";
-import MyTaskReport from "../components/pages/MyTask";
-import StageWiseDanglingReport from "../components/report/StageWiseDanglingReport";
-import MyAssignReport from "../components/pages/MyAssign";
-import LoginDesign from "../components/pages/LoginDesign";
-import UserMoblieNumber from "../components/contact/UserMoblieNumber";
-import UpdateMobileNumber from "../components/contact/UpdateMobileNumber";
-import ReportContainer from "../components/report/ReportContainer";
-import ProgressMadeForPartner from "../components/partner/progressMade";
-import DonorList from "../components/donor/DonorList";
-import DonorStudentsData from "../components/donor/DonorStudentsData";
-import CampusList from "../components/campus/CampusList";
-import CampusStudentsData from "../components/campus/CampusStudentsData";
-import PartnerStudentsProgressInCampus from "../components/partner/PartnerStudentsProgressInCampus";
-import OwnerList from "../components/owner/OwnerList";
-import AllCampusStudentsData from "../components/campus/AllCampusStudentsData";
+const AssessmentAttempts = React.lazy(() =>
+  import("../components/assessment/AssessmentAttempts")
+);
+const ViewAssessments = React.lazy(() =>
+  import("../components/assessment/ViewAssessments")
+);
 
-import history from "../utils/history";
-import StudentStatus from "../components/student/StudentStatus";
-import DuplicateStudents from "../components/pages/DuplicateStudents";
-import TestInstructions from "../components/onlineTest/Instructions";
-import StudentForm from "../components/onlineTest/StudentForm";
-import FinalInstruction from "../components/onlineTest/FinalInstruction";
-import Questions from "../components/onlineTest/Questions";
-import NewAdminPage from "../components/pages/NewAdminPage";
-import SlotBooking from "../components/pages/SlotBooking";
-// if authenticated, redirect to /students else be there
-// import PublicRoute from "./PublicRouter";
-// if authenticated be there, else redirect to /login
-// import PrivateRoute from "./PrivateRouter";
-import theme from "../theme";
-import Header from "../components/layout/Header";
-import Footer from "../components/layout/Footer";
+const CampusList = React.lazy(() => import("../components/campus/CampusList"));
+const AllCampusStudentsData = React.lazy(() =>
+  import("../components/campus/AllCampusStudentsData")
+);
+const CampusStudentsData = React.lazy(() =>
+  import("../components/campus/CampusStudentsData")
+);
 
-import RequireAuth from "./RequireAuth";
-import { fetchCurrentUser } from "../store/slices/authSlice";
-import { decryptText } from "../utils";
+const DonorList = React.lazy(() => import("../components/donor/DonorList"));
+const DonorStudentsData = React.lazy(() =>
+  import("../components/donor/DonorStudentsData")
+);
+
+const OwnerList = React.lazy(() => import("../components/owner/OwnerList"));
+
+const AddPartner = React.lazy(() => import("../components/partner/AddPartner"));
+const PartnerList = React.lazy(() =>
+  import("../components/partner/PartnerList")
+);
+const PartnerStudentsProgressInCampus = React.lazy(() =>
+  import("../components/partner/PartnerStudentsProgressInCampus")
+);
+const ProgressMadeForPartner = React.lazy(() =>
+  import("../components/partner/progressMade")
+);
+
+const UserMoblieNumber = React.lazy(() =>
+  import("../components/contact/UserMoblieNumber")
+);
+const UpdateMobileNumber = React.lazy(() =>
+  import("../components/contact/UpdateMobileNumber")
+);
+
+const StageWiseDanglingReport = React.lazy(() =>
+  import("../components/report/StageWiseDanglingReport")
+);
+const ReportContainer = React.lazy(() =>
+  import("../components/report/ReportContainer")
+);
+
+const OutreachDetails = React.lazy(() =>
+  import("../components/outreach/OutreachDetails")
+);
+
+const StudentStatus = React.lazy(() =>
+  import("../components/student/StudentStatus")
+);
+
+const MyTaskReport = React.lazy(() => import("../components/pages/MyTask"));
+const MyAssignReport = React.lazy(() => import("../components/pages/MyAssign"));
+const LoginDesign = React.lazy(() => import("../components/pages/LoginDesign"));
+const NewAdminPage = React.lazy(() =>
+  import("../components/pages/NewAdminPage")
+);
+const SlotBooking = React.lazy(() => import("../components/pages/SlotBooking"));
+const DuplicateStudents = React.lazy(() =>
+  import("../components/pages/DuplicateStudents")
+);
+
+const TestInstructions = React.lazy(() =>
+  import("../components/onlineTest/Instructions")
+);
+const StudentForm = React.lazy(() =>
+  import("../components/onlineTest/StudentForm")
+);
+const FinalInstruction = React.lazy(() =>
+  import("../components/onlineTest/FinalInstruction")
+);
+const Questions = React.lazy(() =>
+  import("../components/onlineTest/Questions")
+);
 
 const AppRouter = () => {
   useCustomNotifier();
@@ -60,7 +106,7 @@ const AppRouter = () => {
     }
   }, []);
   return (
-    <Router history={history}>
+    <Router>
       <div
         style={{
           display: "flex",
@@ -91,9 +137,11 @@ const AppRouter = () => {
             <Route
               path="/admin"
               element={
-                <RequireAuth privateRoute>
-                  <NewAdminPage />
-                </RequireAuth>
+                <React.Suspense fallback={<Loader />}>
+                  <RequireAuth privateRoute>
+                    <NewAdminPage />
+                  </RequireAuth>
+                </React.Suspense>
               }
             />
             <Route path="/students">
@@ -118,40 +166,52 @@ const AppRouter = () => {
             <Route
               path="/partners"
               element={
-                <RequireAuth privateRoute>
-                  <PartnerList />
-                </RequireAuth>
+                <React.Suspense fallback={<Loader />}>
+                  <RequireAuth privateRoute>
+                    <PartnerList />
+                  </RequireAuth>
+                </React.Suspense>
               }
             />
             <Route path="/partner">
               <Route
                 path="add"
                 element={
-                  <RequireAuth privateRoute>
-                    <AddPartner />
-                  </RequireAuth>
+                  <React.Suspense fallback={<Loader />}>
+                    <RequireAuth privateRoute>
+                      <AddPartner />
+                    </RequireAuth>
+                  </React.Suspense>
                 }
               />
               <Route path=":partnerId">
                 <Route
                   index
                   element={
-                    <RequireAuth privateRoute>
-                      <ProgressMadeForPartner />
-                    </RequireAuth>
+                    <React.Suspense fallback={<Loader />}>
+                      <RequireAuth privateRoute>
+                        <ProgressMadeForPartner />
+                      </RequireAuth>
+                    </React.Suspense>
                   }
                 />
                 <Route
                   path="progress"
-                  element={<PartnerStudentsProgressInCampus />}
+                  element={
+                    <React.Suspense fallback={<Loader />}>
+                      <PartnerStudentsProgressInCampus />
+                    </React.Suspense>
+                  }
                 />
                 <Route path="assessments" element={<ViewAssessments />} />
                 <Route
                   path="assessments/:assessmentId"
                   element={
-                    <RequireAuth>
-                      <AssessmentAttempts />
-                    </RequireAuth>
+                    <React.Suspense fallback={<Loader />}>
+                      <RequireAuth>
+                        <AssessmentAttempts />
+                      </RequireAuth>
+                    </React.Suspense>
                   }
                 />
               </Route>
@@ -162,38 +222,50 @@ const AppRouter = () => {
             <Route
               path="/donors"
               element={
-                <RequireAuth privateRoute>
-                  <DonorList />
-                </RequireAuth>
+                <React.Suspense fallback={<Loader />}>
+                  <RequireAuth privateRoute>
+                    <DonorList />
+                  </RequireAuth>
+                </React.Suspense>
               }
             />
             <Route
               path="/donor/:donorId/students"
-              element={<DonorStudentsData />}
+              element={
+                <React.Suspense fallback={<Loader />}>
+                  <DonorStudentsData />
+                </React.Suspense>
+              }
             />
             <Route path="/campus">
               <Route
                 index
                 element={
-                  <RequireAuth privateRoute>
-                    <CampusList />
-                  </RequireAuth>
+                  <React.Suspense fallback={<Loader />}>
+                    <RequireAuth privateRoute>
+                      <CampusList />
+                    </RequireAuth>
+                  </React.Suspense>
                 }
               />
               <Route
                 path=":campusId/students"
                 element={
-                  <RequireAuth privateRoute>
-                    <CampusStudentsData />
-                  </RequireAuth>
+                  <React.Suspense fallback={<Loader />}>
+                    <RequireAuth privateRoute>
+                      <CampusStudentsData />
+                    </RequireAuth>
+                  </React.Suspense>
                 }
               />
               <Route
                 path="allcampus/students"
                 element={
-                  <RequireAuth privateRoute>
-                    <AllCampusStudentsData />
-                  </RequireAuth>
+                  <React.Suspense fallback={<Loader />}>
+                    <RequireAuth privateRoute>
+                      <AllCampusStudentsData />
+                    </RequireAuth>
+                  </React.Suspense>
                 }
               />
             </Route>
@@ -201,76 +273,137 @@ const AppRouter = () => {
             <Route
               path="/owner"
               element={
-                <RequireAuth privateRoute>
-                  <OwnerList />
-                </RequireAuth>
+                <React.Suspense fallback={<Loader />}>
+                  <RequireAuth privateRoute>
+                    <OwnerList />
+                  </RequireAuth>{" "}
+                </React.Suspense>
               }
             />
             <Route
               path="/outreachDetails"
               element={
-                <RequireAuth privateRoute>
-                  <OutreachDetails />
-                </RequireAuth>
+                <React.Suspense fallback={<Loader />}>
+                  <RequireAuth privateRoute>
+                    <OutreachDetails />
+                  </RequireAuth>
+                </React.Suspense>
               }
             />
             <Route
               path="/tasks"
               element={
-                <RequireAuth privateRoute>
-                  <MyTaskReport />
-                </RequireAuth>
+                <React.Suspense fallback={<Loader />}>
+                  <RequireAuth privateRoute>
+                    <MyTaskReport />
+                  </RequireAuth>
+                </React.Suspense>
               }
             />
             <Route path="/report">
               <Route
                 path="dangling" // report/dangling
                 component={
-                  <RequireAuth privateRoute>
-                    <StageWiseDanglingReport />
-                  </RequireAuth>
+                  <React.Suspense fallback={<Loader />}>
+                    <RequireAuth privateRoute>
+                      <StageWiseDanglingReport />
+                    </RequireAuth>
+                  </React.Suspense>
                 }
               />
               <Route
                 path="all" // report/all
                 element={
-                  <RequireAuth privateRoute>
-                    <ReportContainer />
-                  </RequireAuth>
+                  <React.Suspense fallback={<Loader />}>
+                    <RequireAuth privateRoute>
+                      <ReportContainer />
+                    </RequireAuth>
+                  </React.Suspense>
                 }
               />
             </Route>
             <Route
               path="/assign/user"
               element={
-                <RequireAuth privateRoute>
-                  <MyAssignReport />
-                </RequireAuth>
+                <React.Suspense fallback={<Loader />}>
+                  <RequireAuth privateRoute>
+                    <MyAssignReport />
+                  </RequireAuth>
+                </React.Suspense>
               }
             />
             <Route
               path="/user/mobile/number"
               element={
-                <RequireAuth>
-                  <UserMoblieNumber />
-                </RequireAuth>
+                <React.Suspense fallback={<Loader />}>
+                  <RequireAuth>
+                    <UserMoblieNumber />
+                  </RequireAuth>
+                </React.Suspense>
               }
             />
 
-            <Route path="/bookslot/:userId" element={<SlotBooking />} />
+            <Route
+              path="/bookslot/:userId"
+              element={
+                <React.Suspense fallback={<Loader />}>
+                  <SlotBooking />
+                </React.Suspense>
+              }
+            />
             {/* <Route path="/test/:enrollmentKey/:testId" element={<SlideShow />} /> */}
             <Route path="/test/">
-              <Route index path="instructions" element={<TestInstructions />} />
-              <Route path="studentdetails" element={<StudentForm />} />
-              <Route path="finalinstruction" element={<FinalInstruction />} />
-              <Route path=":enrollmentKey/:studentId" element={<Questions />} />
+              <Route
+                index
+                path="instructions"
+                element={
+                  <React.Suspense fallback={<Loader />}>
+                    <TestInstructions />
+                  </React.Suspense>
+                }
+              />
+              <Route
+                path="studentdetails"
+                element={
+                  <React.Suspense fallback={<Loader />}>
+                    <StudentForm />
+                  </React.Suspense>
+                }
+              />
+              <Route
+                path="finalinstruction"
+                element={
+                  <React.Suspense fallback={<Loader />}>
+                    <FinalInstruction />
+                  </React.Suspense>
+                }
+              />
+              <Route
+                path=":enrollmentKey/:studentId"
+                element={
+                  <React.Suspense fallback={<Loader />}>
+                    <Questions />
+                  </React.Suspense>
+                }
+              />
             </Route>
             {/* <Route path="/questions/:enrollmentKey" element={<Questions />} /> */}
-            <Route path="/status/:mobile" element={<StudentStatus />} />
+            <Route
+              path="/status/:mobile"
+              element={
+                <React.Suspense fallback={<Loader />}>
+                  <StudentStatus />
+                </React.Suspense>
+              }
+            />
             {/* <AnyRoute path="/check_duplicate" component={<DuplicateStudents/>} /> */}
             <Route
               path="/check_duplicate/name=:name&number=:number&stage=:stage"
-              element={<DuplicateStudents />}
+              element={
+                <React.Suspense fallback={<Loader />}>
+                  <DuplicateStudents />
+                </React.Suspense>
+              }
             />
 
             <Route
@@ -284,9 +417,11 @@ const AppRouter = () => {
             <Route
               path="/update/mobile/number"
               element={
-                <RequireAuth privateRoute>
-                  <UpdateMobileNumber />
-                </RequireAuth>
+                <React.Suspense fallback={<Loader />}>
+                  <RequireAuth privateRoute>
+                    <UpdateMobileNumber />
+                  </RequireAuth>
+                </React.Suspense>
               }
             />
             <Route path="*" element={<NotFoundPage />} />

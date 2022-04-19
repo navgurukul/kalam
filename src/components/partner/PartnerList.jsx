@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 import axios from "axios";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
+import { Link } from "react-router-dom";
 import theme from "../../theme";
 import ViewAssessments from "../assessment/ViewAssessments";
 import PartnerLink from "./PartnerLink";
@@ -31,6 +32,11 @@ const useStyles = makeStyles(() => ({
       marginTop: 5,
       marginBottom: 5,
     },
+  },
+  buttons: {
+    display: "flex",
+    gap: theme.spacing(2),
+    margin: theme.spacing(2),
   },
 }));
 
@@ -236,6 +242,13 @@ const PartnerList = () => {
         <Box>
           <ThemeProvider theme={theme}>
             <div className={classes.innerTable}>
+              <div className={classes.buttons}>
+                <Link to="/partner/add">
+                  <Button color="primary" variant="contained">
+                    Add Partner
+                  </Button>
+                </Link>
+              </div>
               <MainLayout
                 title="Partners"
                 columns={columns}

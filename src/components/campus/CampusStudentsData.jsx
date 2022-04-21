@@ -14,7 +14,9 @@ import GraphingPresentationJob from "../partner/GraphingPresentationJob";
 // import user from "../utils/user";
 import NotHaveAccess from "../layout/NotHaveAccess";
 
-const { campus } = require("../../config");
+import * as config from "../../config";
+
+const { campus } = config.default;
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

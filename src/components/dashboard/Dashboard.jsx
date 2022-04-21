@@ -17,13 +17,10 @@ import StudentService from "../../services/StudentService";
 // import { setupUsers } from "../store/slices/authSlice";
 import { changeFetching } from "../../store/slices/uiSlice";
 
-const {
-  qualificationKeys,
-  campusStageOfLearning,
-  allStages,
-} = require("../../config");
+import * as config from "../../config";
+import EventEmitter from "../../utils/eventEmitter";
 
-const { EventEmitter } = require("../../utils/eventEmitter");
+const { qualificationKeys, campusStageOfLearning, allStages } = config.default;
 
 const allStagesOptions = Object.keys(campusStageOfLearning).map((x) => ({
   value: x,

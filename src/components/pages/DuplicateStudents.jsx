@@ -8,10 +8,11 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { changeFetching } from "../../store/slices/uiSlice";
 import SlotBooking from "./SlotBooking";
+import * as config from "../../config";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const { allStages } = require("../../config");
+const { allStages } = config.default;
 
 // const useStyles = makeStyles((theme) => ({
 //   paper: {

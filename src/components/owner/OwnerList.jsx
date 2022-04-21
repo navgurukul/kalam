@@ -17,8 +17,10 @@ import OwnerSchedule from "./OwnerSchedule";
 import { closeDialog, showDialog } from "../../store/slices/uiSlice";
 // import AddOwnerSchedule from "./AddOwnerSchedule";
 
+import * as config from "../../config";
+
 // const baseUrl = import.meta.env.VITE_API_URL;
-const { permissions } = require("../../config");
+const { permissions } = config.default;
 
 const useStyles = makeStyles(() => ({
   innerTable: {

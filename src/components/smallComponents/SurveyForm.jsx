@@ -1,6 +1,6 @@
 import React from "react";
 
-const hash = require("object-hash");
+import hash from "object-hash";
 
 const formColor = [
   {

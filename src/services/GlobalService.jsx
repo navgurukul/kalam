@@ -17,12 +17,6 @@ import SaveAlt from "@mui/icons-material/SaveAlt";
 import Search from "@mui/icons-material/Search";
 import ViewColumn from "@mui/icons-material/ViewColumn";
 
-
-// import { createRequire } from "module";
-// const require = createRequire(import.meta.url);
-// import * as config from "../config/index";
-// const { allStages } = require("../config");
-
 const GlobalService = {
   tableIcons: {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),

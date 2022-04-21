@@ -4,8 +4,9 @@ import DatePicker from "@mui/lab/DatePicker";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { useSnackbar } from "notistack";
+import * as config from "../../config";
 
-const { allStages } = require("../../config");
+const { allStages } = config.default;
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const SlotBooking = () => {

@@ -3,13 +3,10 @@ import { Typography, Button, Modal } from "@mui/material";
 import DetailsIcon from "@mui/icons-material/Details";
 import { makeStyles } from "@mui/styles";
 
-const _ = require("underscore");
-const {
-  caste,
-  religon,
-  currentStatus,
-  qualification,
-} = require("../../config");
+import * as _ from "underscore";
+import * as config from "../../config";
+
+const { caste, religon, currentStatus, qualification } = config.default;
 
 const getModalStyle = () => {
   const top = 54; // + rand()

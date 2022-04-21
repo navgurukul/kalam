@@ -14,8 +14,9 @@ import {
 } from "@mui/material";
 // eslint-disable-next-line import/no-cycle
 import { setStudentData } from "../../store/slices/studentSlice";
+import * as config from "../../config";
 
-const { permissions } = require("../../config");
+const { permissions } = config.default;
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

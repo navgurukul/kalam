@@ -4,9 +4,8 @@ import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { DialogTitle, DialogActions, Dialog, Button } from "@mui/material";
+import * as _ from "underscore";
 import { nextStage } from "../../services/GlobalService";
-
-const _ = require("underscore");
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
@@ -16,7 +15,6 @@ const StageSelect = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
-  
 
   const [state, setState] = React.useState({
     flag: false,

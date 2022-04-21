@@ -409,9 +409,11 @@ const AppRouter = () => {
             <Route
               path="/login"
               element={
-                <RequireAuth>
-                  <LoginDesign />
-                </RequireAuth>
+                <React.Suspense fallback={<Loader />}>
+                  <RequireAuth>
+                    <LoginDesign />
+                  </RequireAuth>
+                </React.Suspense>
               }
             />
             <Route

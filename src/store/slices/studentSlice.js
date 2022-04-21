@@ -4,8 +4,9 @@ import axios from "axios";
 // eslint-disable-next-line import/no-cycle
 import { dataSetup } from "../../utils";
 import { changeFetching } from "./uiSlice";
+import * as config from "../../config";
 
-const { qualificationKeys } = require("../../config");
+const { qualificationKeys } = config.default;
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

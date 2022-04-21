@@ -31,7 +31,9 @@ import {
   fetchStudents,
 } from "../../store/slices/studentSlice";
 
-const { allStages } = require("../../config");
+import * as config from "../../config";
+
+const { allStages } = config.default;
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/

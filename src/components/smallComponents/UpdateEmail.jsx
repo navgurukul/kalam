@@ -2,7 +2,6 @@ import React from "react";
 import EasyEdit from "react-easy-edit";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-// const _ = require("underscore");
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

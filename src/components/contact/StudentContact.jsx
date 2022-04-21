@@ -18,8 +18,10 @@ import { deepOrange } from "@mui/material/colors";
 import pencil from "../../assets/img/pencil.png";
 import AddOrUpdateContact from "./AddOrUpdateContact";
 
+import * as config from "../../config";
+
 // eslint-disable-next-line camelcase
-const { contact_type } = require("../../config");
+const { contact_type } = config.default;
 
 const useStyles = makeStyles(() => ({
   dialogContainer: {

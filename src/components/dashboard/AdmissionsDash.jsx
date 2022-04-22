@@ -111,7 +111,6 @@ const AdmissionsDash = (props) => {
   const usersURL = `${baseURL}users/getall`;
   // let stage = null;
   let value = null;
-
   const fetchAccess = async (signal) => {
     setState({ ...state, loading: true });
     try {

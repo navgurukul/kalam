@@ -1,9 +1,10 @@
-import React, { useMemo } from "react";
+import React from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { DialogTitle, DialogActions, Dialog, Button } from "@mui/material";
+import { useSelector } from "react-redux";
 import * as _ from "underscore";
 import { nextStage } from "../../services/GlobalService";
 
@@ -13,6 +14,7 @@ const animatedComponents = makeAnimated();
 const StageSelect = (props) => {
   const { allStages, stage } = props;
   const { enqueueSnackbar } = useSnackbar();
+  const { loggedInUser } = useSelector((state) => state.auth);
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
 
@@ -41,7 +43,10 @@ const StageSelect = (props) => {
     const { columnIndex } = rowMetatable;
     const { value, label } = selectedValue;
     axios
-      .post(`${baseUrl}students/chnageStage/${studentId}`, { stage: value })
+      .post(`${baseUrl}students/chnageStage/${studentId}`, {
+        stage: value,
+        transition_done_by: loggedInUser.user_name,
+      })
       .then(() => {
         enqueueSnackbar("stage is successfully changed!", {
           variant: "success",
@@ -75,7 +80,6 @@ const StageSelect = (props) => {
       });
     } else if (value !== "offerLetterSent") {
       changeStage(selectedValue);
-      send(selectedValue.value);
     } else {
       enqueueSnackbar("Please update email or campus!", {
         variant: "error",
@@ -104,7 +108,6 @@ const StageSelect = (props) => {
           label: "Offer Letter Sent",
           value: "offerLetterSent",
         });
-        send("offerLetterSent");
       })
       .catch(() => {
         enqueueSnackbar(`Something went wrong`, {
@@ -122,9 +125,7 @@ const StageSelect = (props) => {
 
   const { flag } = state;
   const allStagesOptions = nextStage[getKeyByValue(allStages, stage)].map(
-    (x) => {
-      return { value: x, label: allStages[x] };
-    }
+    (x) => ({ value: x, label: allStages[x] })
   );
   const selectedValue = { value: _.invert(allStages)[stage], label: stage };
   return (

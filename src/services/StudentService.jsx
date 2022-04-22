@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useSelector } from "react-redux";
 
+import * as _ from "underscore";
 import StageSelect from "../components/smallComponents/StageSelect";
 import UpdateEmail from "../components/smallComponents/UpdateEmail";
 import OwnerSelect from "../components/owner/OwnerSelect";
@@ -31,10 +32,10 @@ import DeadLineDateUpdate from "../components/smallComponents/DeadlineDateUpdate
 import EndDateUpdate from "../components/smallComponents/EndDateUpdate";
 // eslint-disable-next-line import/no-cycle
 import { decryptText } from "../utils";
+import * as config from "../config";
 
 dayjs.extend(customParseFormat);
 
-const _ = require("underscore");
 const {
   allStages,
   feedbackableStages,
@@ -44,7 +45,7 @@ const {
   campus,
   campusStageOfLearning,
   caste,
-} = require("../config");
+} = config.default;
 
 // const baseURL = import.meta.env.VITE_API_URL;
 
@@ -1054,23 +1055,28 @@ const finishedColumnTransitionCampus = {
   },
 };
 
+const LoggedInUserColumn2Wrapper = () => {
+  const { loggedInUser } = useSelector((state) => state.auth);
+  return loggedInUser ? loggedInUser.user_name : "guest_username";
+};
+
 const loggedInUserColumn2 = {
   name: "loggedInUser",
   label: "LoggedIn User",
   options: {
     filter: false,
     display: false,
-    customBodyRender: () => {
-      if (localStorage.getItem("user")) {
-        const currentUser = JSON.parse(localStorage.getItem("user"))
-          ? JSON.parse(localStorage.getItem("user"))
-          : {};
+    customBodyRender: () => <LoggedInUserColumn2Wrapper />,
+  },
+};
 
-        return currentUser.user_name;
-      }
-
-      return "guest_username";
-    },
+const transitionUpdatedByColumn = {
+  name: "transition_done_by",
+  label: "Transition Updated By",
+  options: {
+    filter: false,
+    display: true,
+    // customBodyRender: () => {},
   },
 };
 
@@ -1295,6 +1301,7 @@ const stageColumnStatus = {
     customBodyRender: (rowData) => allStages[rowData],
   },
 };
+
 const cityColumnStatus = {
   label: "City",
   name: "city",
@@ -1530,6 +1537,7 @@ const StudentService = {
       statusColumnTransition,
       timeColumnTransition,
       loggedInUserColumn2,
+      transitionUpdatedByColumn,
       AudioPlayer,
       transitionIdColumn,
       deadlineColumnTrnasition1,
@@ -1559,6 +1567,7 @@ const StudentService = {
       statusColumnTransition,
       timeColumnTransition,
       loggedInUserColumn2,
+      transitionUpdatedByColumn,
       AudioPlayer,
       transitionIdColumn,
     ],

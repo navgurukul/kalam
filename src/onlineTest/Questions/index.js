@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
+import { useSnackbar } from "notistack";
 import Grid from "@material-ui/core/Grid";
 import history from "../../utils/history";
 import Timer from "./Timer";
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Questions(props) {
+  const snackbar = useSnackbar();
   const classes = useStyles();
   const [index, setIndex] = useState(null);
   const [answerObj, setAnswerObj] = useState({});
@@ -87,6 +89,13 @@ function Questions(props) {
   // const answerList = props.location.answerList;
 
   const changeHandler = (e, question_id) => {
+    console.log(e.key, "e.key");
+    if(e.key === "e"){
+      snackbar.enqueueSnackbar("You are required to enter a number", {
+        variant: "error",
+      });
+      return;
+    };
     setAnswerObj({ ...answerObj, [question_id]: e.target.value });
     setQuestionId(e.target.name);
     setAnswerList({ ...answerList, [question_id]: e.target.value });
@@ -279,6 +288,7 @@ function Questions(props) {
                       variant="outlined"
                       required
                       fullWidth
+                      type="number"
                       id={question_id}
                       className={classes.spacing}
                       // label="Your name"
@@ -289,6 +299,12 @@ function Questions(props) {
                       name={question_id}
                       autoComplete="off"
                       onChange={(e) => changeHandler(e, question_id)}
+                      onKeyDown={(e) => {
+                        console.log(e.key, "e.key");
+                        if(e.key === "e"){
+                          e.preventDefault();
+                        }
+                      }}
                     />
                   )}
 

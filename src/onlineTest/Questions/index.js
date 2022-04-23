@@ -89,13 +89,6 @@ function Questions(props) {
   // const answerList = props.location.answerList;
 
   const changeHandler = (e, question_id) => {
-    console.log(e.key, "e.key");
-    if(e.key === "e"){
-      snackbar.enqueueSnackbar("You are required to enter a number", {
-        variant: "error",
-      });
-      return;
-    };
     setAnswerObj({ ...answerObj, [question_id]: e.target.value });
     setQuestionId(e.target.name);
     setAnswerList({ ...answerList, [question_id]: e.target.value });
@@ -300,8 +293,7 @@ function Questions(props) {
                       autoComplete="off"
                       onChange={(e) => changeHandler(e, question_id)}
                       onKeyDown={(e) => {
-                        console.log(e.key, "e.key");
-                        if(e.key === "e"){
+                        if (e.key === "e" || e.key === "+") {
                           e.preventDefault();
                         }
                       }}

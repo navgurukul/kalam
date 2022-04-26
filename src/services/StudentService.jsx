@@ -1,5 +1,5 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React from "react";
-import { InputLabel } from "@mui/material";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useSelector } from "react-redux";
@@ -521,6 +521,7 @@ const dashboardGenderColumn = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
+          <label style={Lables}>Gender</label>
           <SelectReact
             options={[
               { value: "All", label: "All" },
@@ -587,7 +588,7 @@ const dashboardCampusColumn = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          <InputLabel style={Lables}>Campus</InputLabel>
+          <label style={Lables}>Campus</label>
           <SelectReact
             options={[{ name: "All" }, ...campus].map((x) => ({
               value: x.name,
@@ -639,7 +640,7 @@ const dashboardDonorColumn = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          <InputLabel style={Lables}>Donor</InputLabel>
+          <label style={Lables}>Donor</label>
           <SelectReact
             options={[{ name: "All" }, ...donor].map((don) => ({
               value: don.name,
@@ -972,7 +973,7 @@ const dashboardStatusColumn = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          <InputLabel style={Lables}>Status</InputLabel>
+          <label style={Lables}>Status</label>
           <SelectReact
             options={statusFilterList.map((status) => ({
               value: status,
@@ -1119,7 +1120,7 @@ const dashboardOwnerColumnMyreport = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          <InputLabel style={Lables}>Owner</InputLabel>
+          <label style={Lables}>Owner</label>
           <SelectReact
             options={["All", ...JSON.parse(localStorage.getItem("owners"))].map(
               (item) => ({
@@ -1334,7 +1335,7 @@ const dashboardPartnerNameColumn = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          <InputLabel style={Lables}>Partner</InputLabel>
+          <label style={Lables}>Partner</label>
           <SelectReact
             options={[
               "All",

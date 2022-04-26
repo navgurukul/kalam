@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import makeAnimated from "react-select/animated";
-import { Container, TextField, Typography } from "@mui/material";
+import { Container, Grid, TextField, Typography } from "@mui/material";
 import _ from "lodash";
 import { LocalizationProvider, DatePicker } from "@mui/lab";
 // import { setupUsers } from "../store/slices/authSlice";
@@ -371,61 +371,71 @@ const AdmissionsDash = (props) => {
   }, [loggedInUser]);
 
   const options = (
-    <Box>
-      <Select
-        className="filterSelectGlobal"
-        value={dataType}
-        onChange={changeDataType}
-        options={[
-          { value: "requestCallback", label: "Request Callback" },
-          { value: "softwareCourse", label: "Other Data" },
-        ]}
-        placeholder="Select Data Type"
-        isClearable={false}
-        components={animatedComponents}
-        closeMenuOnSelect
-      />
-      <Select
-        className="filterSelectGlobal"
-        value={selectedOption}
-        isMulti
-        onChange={changeStudentStage}
-        options={allStagesOptions}
-        placeholder="Get Student Details By Stage"
-        isClearable={false}
-        components={animatedComponents}
-        closeMenuOnSelect
-      />
-      <LocalizationProvider dateAdapter={DateFnsUtils}>
-        <DatePicker
-          margin="dense"
-          style={{ marginLeft: 16, maxWidth: "40%" }}
-          value={state.fromDate}
-          id="date-picker-dialog"
-          label="From Date"
-          format="MM/dd/yyyy"
-          onChange={changeFromDate}
-          KeyboardButtonProps={{
-            "aria-label": "change date",
-          }}
-          renderInput={(params) => <TextField {...params} />}
+    <Grid container spacing={2} style={{ marginBottom: "0.8rem" }}>
+      <Grid item xs={12} md={6} lg={3}>
+        <Select
+          // className="filterSelectGlobal"
+          value={dataType}
+          onChange={changeDataType}
+          options={[
+            { value: "requestCallback", label: "Request Callback" },
+            { value: "softwareCourse", label: "Other Data" },
+          ]}
+          placeholder="Select Data Type"
+          isClearable={false}
+          components={animatedComponents}
+          closeMenuOnSelect
         />
-
-        <DatePicker
-          margin="dense"
-          style={{ marginLeft: 16, maxWidth: "40%" }}
-          value={state.toDate}
-          id="date-picker-dialog"
-          label="To Date"
-          format="MM/dd/yyyy"
-          onChange={changeToDate}
-          KeyboardButtonProps={{
-            "aria-label": "change date",
-          }}
-          renderInput={(params) => <TextField {...params} />}
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <Select
+          // className="filterSelectGlobal"
+          value={selectedOption}
+          isMulti
+          onChange={changeStudentStage}
+          options={allStagesOptions}
+          placeholder="Get Student Details By Stage"
+          isClearable={false}
+          components={animatedComponents}
+          closeMenuOnSelect
         />
-      </LocalizationProvider>
-    </Box>
+      </Grid>
+      <Grid item xs={6} md={6} lg={3}>
+        <LocalizationProvider dateAdapter={DateFnsUtils}>
+          <DatePicker
+            in
+            margin="dense"
+            style={{ marginLeft: 16, maxWidth: "40%" }}
+            value={fromDate}
+            id="date-picker-dialog"
+            label="From Date"
+            format="MM/dd/yyyy"
+            onChange={changeFromDate}
+            KeyboardButtonProps={{
+              "aria-label": "change date",
+            }}
+            renderInput={(params) => <TextField size="small" {...params} />}
+          />
+        </LocalizationProvider>
+      </Grid>
+      <Grid item xs={6} md={6} lg={3}>
+        <LocalizationProvider dateAdapter={DateFnsUtils}>
+          <DatePicker
+            margin="dense"
+            style={{ marginLeft: 16, maxWidth: "40%" }}
+            value={toDate}
+            id="date-picker-dialog"
+            label="To Date"
+            format="MM/dd/yyyy"
+            onChange={changeToDate}
+            KeyboardButtonProps={{
+              "aria-label": "change date",
+            }}
+            renderInput={(params) => <TextField size="small" {...params} />}
+          />
+        </LocalizationProvider>
+      </Grid>
+    </Grid>
   );
 
   if (fetchPendingInterviewDetails) {
@@ -450,7 +460,7 @@ const AdmissionsDash = (props) => {
   return (
     <div>
       {state.studentDashboardCondition ? (
-        <Box>
+        <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
           <ThemeProvider theme={theme}>
             {fetchPendingInterviewDetails ? null : options}
             <div className={classes.clear} />

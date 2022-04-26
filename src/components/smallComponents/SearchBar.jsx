@@ -38,6 +38,7 @@ const SearchBar = (props) => {
 
   return (
     <TextField
+      size="small"
       error={false}
       id="standard-basic"
       label="Search name or number"

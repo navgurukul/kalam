@@ -37,6 +37,17 @@ const useStyles = makeStyles((theme) => ({
   },
   spacing: {
     paddingBottom: theme.spacing(2),
+    "& input[type=number]": {
+      "-moz-appearance": "textfield",
+    },
+    "& input[type=number]::-webkit-outer-spin-button": {
+      "-webkit-appearance": "none",
+      margin: 0,
+    },
+    "& input[type=number]::-webkit-inner-spin-button": {
+      "-webkit-appearance": "none",
+      margin: 0,
+    },
   },
   optionButton: {
     marginBottom: theme.spacing(2),
@@ -251,7 +262,13 @@ function Questions() {
                 value={decryptText(answerList[questionID]) || ""}
                 name={`${questionID}`}
                 autoComplete="off"
+                type="number"
                 onChange={(e) => changeHandler(e, questionID)}
+                onKeyDown={(e) => {
+                  if (e.key === "e" || e.key === "+") {
+                    e.preventDefault();
+                  }
+                }}
               />
             )}
 

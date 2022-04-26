@@ -38,6 +38,7 @@ const SearchBar = (props) => {
 
   return (
     <TextField
+      sx={{ my: "0.4rem" }}
       size="small"
       error={false}
       id="standard-basic"

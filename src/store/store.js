@@ -37,7 +37,12 @@ export default configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredPaths: ["ui.dialogContent", "ui.dialogActions"],
+        ignoredPaths: [
+          "ui.dialogContent",
+          "ui.dialogActions",
+          "students.fromDate",
+          "students.toDate",
+        ],
         ignoreActions: ["ui/showDialog"],
       },
     }),

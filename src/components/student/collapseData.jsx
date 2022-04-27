@@ -8,9 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import CardActions from "@mui/material/CardActions";
 import { Typography, CardContent } from "@mui/material";
 import StageTransitions from "../smallComponents/StageTransitions";
-import * as config from "../../config";
-
-const { allStages } = config.default;
+import { allStages } from "../../utils/constants";
 
 const showContact = (student) => {
   let studentStatus = "";

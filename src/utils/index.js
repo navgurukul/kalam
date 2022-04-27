@@ -1,8 +1,6 @@
 // eslint-disable-next-line import/no-cycle
 
-import * as config from "../config";
-
-const { allStages, caste } = config.default;
+import { allStages, caste } from "./constants";
 
 export const dConvert = (data) => {
   const x = { ...data };

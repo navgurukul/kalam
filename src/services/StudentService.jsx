@@ -32,11 +32,7 @@ import DeadLineDateUpdate from "../components/smallComponents/DeadlineDateUpdate
 import EndDateUpdate from "../components/smallComponents/EndDateUpdate";
 // eslint-disable-next-line import/no-cycle
 import { decryptText } from "../utils";
-import * as config from "../config";
-
-dayjs.extend(customParseFormat);
-
-const {
+import {
   allStages,
   feedbackableStages,
   feedbackableStagesData,
@@ -45,7 +41,9 @@ const {
   campus,
   campusStageOfLearning,
   caste,
-} = config.default;
+} from "../utils/constants";
+
+dayjs.extend(customParseFormat);
 
 // const baseURL = import.meta.env.VITE_API_URL;
 

@@ -6,9 +6,7 @@ import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
 import StudentsProgressCards from "../student/StudentsProgressCards";
 import GraphingPresentationJob from "../partner/GraphingPresentationJob";
 
-import * as config from "../../config";
-
-const { donor } = config.default;
+import { donor } from "../../utils/constants";
 
 const DonorStudentsData = () => {
   const { donorId } = useParams();

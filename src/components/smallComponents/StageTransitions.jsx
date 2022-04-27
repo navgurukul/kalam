@@ -20,9 +20,7 @@ import Loader from "../ui/Loader";
 // eslint-disable-next-line import/no-cycle
 import DeleteStudentDetails from "./DeleteStudentDetails";
 import OutreachData from "../outreach/OutreachData";
-import * as config from "../../config";
-
-const { campusStageOfLearning } = config.default;
+import { campusStageOfLearning } from "../../utils/constants";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = import.meta.env.VITE_API_URL;

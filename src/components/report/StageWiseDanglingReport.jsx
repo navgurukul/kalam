@@ -12,9 +12,8 @@ import theme from "../../theme";
 import { changeFetching } from "../../store/slices/uiSlice";
 import GlobalService from "../../services/GlobalService";
 import StudentService from "../../services/StudentService";
-import * as config from "../../config";
+import { allStages } from "../../utils/constants";
 
-const { allStages } = config.default;
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = import.meta.env.API_URL;
 

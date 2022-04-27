@@ -9,9 +9,7 @@ import axios from "axios";
 import { changeFetching } from "../../store/slices/uiSlice";
 import StudentService from "../../services/StudentService";
 import MainLayout from "../muiTables/MainLayout";
-import * as config from "../../config";
-
-const { allStages } = config.default;
+import { allStages } from "../../utils/constants";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = import.meta.env.VITE_API_URL;

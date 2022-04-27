@@ -24,10 +24,9 @@ import DashboardPage from "../dashboard/Dashboard";
 import CollapseStudentData from "../student/collapseData";
 import StudentService from "../../services/StudentService";
 import GraphPage from "./GraphPage";
-import * as config from "../../config";
+import { allStages } from "../../utils/constants";
 
 const baseURL = import.meta.env.VITE_API_URL;
-const { allStages } = config.default;
 
 const useStyles = makeStyles((theme) => ({
   root: {

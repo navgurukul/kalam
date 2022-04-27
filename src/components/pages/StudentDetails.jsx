@@ -4,9 +4,12 @@ import DetailsIcon from "@mui/icons-material/Details";
 import { makeStyles } from "@mui/styles";
 
 import * as _ from "underscore";
-import * as config from "../../config";
-
-const { caste, religon, currentStatus, qualification } = config.default;
+import {
+  caste,
+  religon,
+  currentStatus,
+  qualification,
+} from "../../utils/constants";
 
 const getModalStyle = () => {
   const top = 54; // + rand()

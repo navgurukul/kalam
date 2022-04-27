@@ -18,10 +18,7 @@ import { deepOrange } from "@mui/material/colors";
 import pencil from "../../assets/img/pencil.png";
 import AddOrUpdateContact from "./AddOrUpdateContact";
 
-import * as config from "../../config";
-
-// eslint-disable-next-line camelcase
-const { contact_type } = config.default;
+import { contactType } from "../../utils/constants";
 
 const useStyles = makeStyles(() => ({
   dialogContainer: {
@@ -151,7 +148,7 @@ const StudentContact = (props) => {
         >
           <DialogTitle>Add Or Update Contact Number!</DialogTitle>
           {/* eslint-disable-next-line camelcase */}
-          {contact_type.map((type) => (
+          {contactType.map((type) => (
             <React.Fragment key={type}>
               <DialogContent>
                 <Grid

@@ -23,9 +23,7 @@ import Python from "../../assets/img/Python.png";
 import ReactJS from "../../assets/img/ReactJs.png";
 import CollapseStudentData from "./collapseData";
 import Loader from "../ui/Loader";
-import * as config from "../../config";
-
-const { allStages } = config.default;
+import { allStages } from "../../utils/constants";
 
 const baseURL = import.meta.env.VITE_API_URL;
 const useStyles = makeStyles(() => ({

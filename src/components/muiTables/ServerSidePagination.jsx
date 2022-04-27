@@ -12,9 +12,7 @@ import {
   setNoOfRows,
   setPageNo,
 } from "../../store/slices/studentSlice";
-import * as config from "../../config";
-
-const { qualificationKeys } = config.default;
+import { qualificationKeys } from "../../utils/constants";
 
 const baseURL = import.meta.env.VITE_API_URL;
 

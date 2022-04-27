@@ -101,12 +101,12 @@ const StageColumnTransitionWrapper = ({ rowData, rowMeta }) => {
   return permissions.updateStage.indexOf(loggedInUser.email) > -1 &&
     keysCampusStageOfLearning.indexOf(rowData) > -1 ? (
     <div>
-      <DeleteRow transitionId={rowMeta.rowData[10]} />
+      <DeleteRow transitionId={rowMeta.rowData[11]} />
       {allStages[rowData]}
     </div>
   ) : (
     <>
-      <DeleteRow transitionId={rowMeta.rowData[8]} />
+      <DeleteRow transitionId={rowMeta.rowData[9]} />
       <p>{allStages[rowData]}</p>
     </>
   );

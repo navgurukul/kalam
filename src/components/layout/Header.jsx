@@ -1,20 +1,31 @@
 import React from "react";
-import AppBar from "@mui/material/AppBar";
-import Select from "@mui/material/Select";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
+import {
+  AppBar,
+  Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Drawer,
+  Toolbar,
+  Container,
+  Box,
+  Menu,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  LinearProgress,
+  Button,
+  IconButton,
+  Avatar,
+} from "@mui/material";
 
 import { useSelector, useDispatch } from "react-redux";
-import Drawer from "@mui/material/Drawer";
-import Toolbar from "@mui/material/Toolbar";
-import Box from "@mui/material/Box";
-import LinearProgress from "@mui/material/LinearProgress";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 import { Link, useLocation } from "react-router-dom";
 import Image from "@jy95/material-ui-image";
@@ -32,31 +43,22 @@ import {
 } from "../../store/slices/uiSlice";
 
 const Header = () => {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, loggedInUser } = useSelector((state) => state.auth);
   const { isFetching, drawerOpen, lang } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
   const startLogout = () => dispatch(logout());
   const toggleDrawer = () => dispatch(toggleDrawerAction());
   const onLangChange = (e) => dispatch(changeLanguage(e.target.value));
   const location = useLocation();
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  const conditRenderEssential = () =>
-    isAuthenticated ? (
-      <Button
-        color="primary"
-        variant="text"
-        align="right"
-        onClick={startLogout}
-      >
-        Logout
-      </Button>
-    ) : (
-      <Link to="/login">
-        <Button color="primary" variant="contained" align="right">
-          Login
-        </Button>
-      </Link>
-    );
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
   const dashboardModal = () => {
     if (location) {
@@ -67,7 +69,7 @@ const Header = () => {
   const renderProgressBar = () =>
     isFetching ? <LinearProgress color="primary" /> : <span />;
   return (
-    <div>
+    <>
       <Drawer
         open={drawerOpen}
         onClose={toggleDrawer}
@@ -97,7 +99,7 @@ const Header = () => {
           </div>
         </div>
       </Drawer>
-      <div className="appbarwrapper">
+      <Container maxWidth="xl" className="appbarwrapper">
         <AppBar position="fixed" color="default">
           {renderProgressBar()}
           <Toolbar style={{ display: "flex" }}>
@@ -155,14 +157,79 @@ const Header = () => {
                 </FormControl>
               )}
             </Box>
-            <Box style={{ display: "flex" }}>
+            <Box style={{ display: "flex", gap: "12px" }}>
               {dashboardModal()}
-              {conditRenderEssential()}
+              {isAuthenticated ? (
+                <>
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    {loggedInUser ? (
+                      <Avatar
+                        alt={loggedInUser.user_name}
+                        src={loggedInUser.profile_pic}
+                      />
+                    ) : (
+                      <Avatar />
+                    )}
+                  </IconButton>
+                  <Menu
+                    sx={{ mt: "2rem" }}
+                    id="user-menu"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
+                  >
+                    <MenuItem>
+                      {loggedInUser ? (
+                        <>
+                          <ListItemAvatar>
+                            <Avatar
+                              alt={loggedInUser.user_name}
+                              src={loggedInUser.profile_pic}
+                            />
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={loggedInUser.user_name}
+                            secondary={loggedInUser.email}
+                          />
+                        </>
+                      ) : (
+                        ""
+                      )}
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem>
+                      <ListItemIcon>
+                        <LogoutIcon />
+                      </ListItemIcon>
+                      <ListItemButton
+                        onClick={() => {
+                          handleCloseUserMenu();
+                          startLogout();
+                        }}
+                      >
+                        Logout
+                      </ListItemButton>
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <Link to="/login">
+                  <Button color="primary" variant="contained" align="right">
+                    Login
+                  </Button>
+                </Link>
+              )}
             </Box>
           </Toolbar>
         </AppBar>
-      </div>
-    </div>
+      </Container>
+    </>
   );
 };
 

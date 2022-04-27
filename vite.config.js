@@ -1,8 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { esbuildCommonjs, viteCommonjs } from "@originjs/vite-plugin-commonjs";
-import vitePluginRequire from "vite-plugin-require";
-import requireTransform from "vite-plugin-require-transform";
+// import { esbuildCommonjs, viteCommonjs } from "@originjs/vite-plugin-commonjs";
+// import vitePluginRequire from "vite-plugin-require";
+// import requireTransform from "vite-plugin-require-transform";
 
 // https://vitejs.dev/config/
 
@@ -10,13 +10,13 @@ const commonConfig = {
   server: { port: 8080 },
   optimizeDeps: {
     esbuildOptions: {
-      plugins: [esbuildCommonjs(["./src/config/index.js"])],
+      // plugins: [esbuildCommonjs(["./src/config/index.js"])],
     },
   },
   plugins: [
     react(),
-    viteCommonjs({ exclude: ["./*.{js,jsx}", "./src/*.{js,jsx}"] }),
-    requireTransform({ fileRegex: /\src\.js$|.jsx$/ }),
+    // viteCommonjs({ exclude: ["./*.{js,jsx}", "./src/*.{js,jsx}"] }),
+    // requireTransform({ fileRegex: /\src\.js$|.jsx$/ }),
     // vitePluginRequire(),
     // { exclude: ["./*.{js,jsx}", "./src/*.{js,jsx}"] }
   ],

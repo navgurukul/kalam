@@ -53,6 +53,15 @@ const BasicDetails = ({
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const uploadProfilePhoto = (e) => {
+    const file = e.target.files[0];
+    //check if file size is greater than 1mb
+    if (file.size > 1000000) {
+      enqueueSnackbar("File size should not exceed 1MB", { variant: "error" });
+      return;
+    }
+    setProfileImage(file);
+  };
   return (
     <Container maxWidth="lg" align="center">
       <label
@@ -96,7 +105,7 @@ const BasicDetails = ({
       </label>
 
       <input
-        onChange={(e) => setProfileImage(e.target.files[0])}
+        onChange={(e) => uploadProfilePhoto(e)}
         id="ProfileImage"
         type="file"
         name="ProfileImage"

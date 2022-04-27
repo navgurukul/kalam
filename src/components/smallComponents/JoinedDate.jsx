@@ -6,6 +6,7 @@ import { useSnackbar } from "notistack";
 import axios from "axios";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
+import { TextField } from "@mui/material";
 
 dayjs.extend(customParseFormat);
 
@@ -48,7 +49,7 @@ const JoinedDate = (props) => {
   const { currentDate, isShowDatePicker } = state;
   if (isShowDatePicker) {
     return (
-      <LocalizationProvider utils={DateFnsUtils}>
+      <LocalizationProvider dateAdapter={DateFnsUtils}>
         <DatePicker
           margin="dense"
           style={{ marginLeft: 16 }}
@@ -60,13 +61,16 @@ const JoinedDate = (props) => {
           KeyboardButtonProps={{
             "aria-label": "change date",
           }}
+          renderInput={(params) => <TextField {...params} />}
         />
       </LocalizationProvider>
     );
   }
   return (
     <div>
-      <p style={{ marginRight: 10 }}>{dayjs(currentDate, "D MMM YYYY")}</p>
+      <p style={{ marginRight: 10 }}>
+        {dayjs(currentDate).format("D MMM YYYY")}
+      </p>
       <EditIcon onClick={showDatePicker} style={{ cursor: "pointer" }} />
     </div>
   );

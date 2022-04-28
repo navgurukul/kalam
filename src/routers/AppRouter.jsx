@@ -6,7 +6,7 @@ import useCustomNotifier from "../utils/useCustomNotifier";
 import theme from "../theme";
 import RequireAuth from "./RequireAuth";
 
-import { fetchCurrentUser } from "../store/slices/authSlice";
+import { fetchCurrentUser, logout } from "../store/slices/authSlice";
 import { decryptText } from "../utils";
 
 import Header from "../components/layout/Header";
@@ -102,6 +102,14 @@ const AppRouter = () => {
   useEffect(() => {
     if (isAuthenticated) {
       const userId = parseInt(decryptText(localStorage.getItem("userId")), 10);
+      console.log(
+        localStorage.getItem("userI"),
+        parseInt(decryptText(localStorage.getItem("userI")), 10)
+      );
+      if (isNaN(userId)) {
+        dispatch(logout());
+        return;
+      }
       dispatch(fetchCurrentUser({ userId }));
     }
   }, []);

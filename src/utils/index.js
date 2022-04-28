@@ -61,7 +61,7 @@ export const encryptText = (
 export const decryptText = (
   cipherText = "" // convert back to ascii
 ) =>
-  cipherText.length === 0
+  !cipherText || cipherText.length === 0
     ? ""
     : cipherText
         .toString("")

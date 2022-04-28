@@ -26,6 +26,7 @@ import { useSelector, useDispatch } from "react-redux";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import LogoutIcon from "@mui/icons-material/Logout";
+import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 
 import { Link, useLocation } from "react-router-dom";
 import Image from "@jy95/material-ui-image";
@@ -203,6 +204,14 @@ const Header = () => {
                       )}
                     </MenuItem>
                     <Divider />
+                    <Link to="/update/mobile/number">
+                      <MenuItem>
+                        <ListItemIcon>
+                          <ContactPhoneIcon />
+                        </ListItemIcon>
+                        <ListItemButton>Update mobile Number</ListItemButton>
+                      </MenuItem>
+                    </Link>
                     <MenuItem>
                       <ListItemIcon>
                         <LogoutIcon />

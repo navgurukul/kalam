@@ -421,7 +421,10 @@ const setColumn = {
 const NameColumnWrapper = ({ rowData, rowMeta, updateValue }) => {
   const { loggedInUser } = useSelector((state) => state.auth);
   const name = rowData || "Update Name";
-  if (permissions.updateStudentName.indexOf(loggedInUser.email) > -1) {
+  if (
+    loggedInUser &&
+    permissions.updateStudentName.indexOf(loggedInUser.email) > -1
+  ) {
     return (
       <UpdateStudentName
         name={name}

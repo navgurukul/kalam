@@ -79,8 +79,8 @@ const StudentStatus = () => {
           toolbar: false,
           filtering: true,
           filter: true,
-          filterType: "doprdown",
-          responsive: "stacked",
+          filterType: "dropdown",
+          responsive: "vertical",
         }}
         style={{ maxWidth: "90%", margin: "0 auto", marginTop: 25 }}
       />

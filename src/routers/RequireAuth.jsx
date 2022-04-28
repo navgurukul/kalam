@@ -25,32 +25,32 @@ const RequireAuth = ({ children, privateRoute }) => {
     return <Navigate to="/students" replace />;
   const currentPath = location.pathname.split("/")[1];
   switch (currentPath) {
-    case "partner":
-      return params.partnerId === undefined ||
-        roles.some(
-          (role) =>
-            role.split(":")[0] === "Partner" &&
-            parseInt(role.split(":")[1], 10) === parseInt(params.partnerId, 10)
-        ) ? (
-        <div className="bodyComponent">{children}</div>
-      ) : (
-        <div className="bodyComponent">
-          <NotHaveAccess />
-        </div>
-      );
-    case "campus":
-      return params.campusId === undefined ||
-        roles.some(
-          (role) =>
-            role.split(":")[0] === "T&P" &&
-            parseInt(role.split(":")[1], 10) === parseInt(params.campusId, 10)
-        ) ? (
-        <div className="bodyComponent">{children}</div>
-      ) : (
-        <div className="bodyComponent">
-          <NotHaveAccess />
-        </div>
-      );
+    // case "partner":
+    //   return params.partnerId === undefined ||
+    //     roles.some(
+    //       (role) =>
+    //         role.split(":")[0] === "Partner" &&
+    //         parseInt(role.split(":")[1], 10) === parseInt(params.partnerId, 10)
+    //     ) ? (
+    //     <div className="bodyComponent">{children}</div>
+    //   ) : (
+    //     <div className="bodyComponent">
+    //       <NotHaveAccess />
+    //     </div>
+    //   );
+    // case "campus":
+    //   return params.campusId === undefined ||
+    //     roles.some(
+    //       (role) =>
+    //         role.split(":")[0] === "T&P" &&
+    //         parseInt(role.split(":")[1], 10) === parseInt(params.campusId, 10)
+    //     ) ? (
+    //     <div className="bodyComponent">{children}</div>
+    //   ) : (
+    //     <div className="bodyComponent">
+    //       <NotHaveAccess />
+    //     </div>
+    //   );
     default:
       return <div className="bodyComponent">{children}</div>;
   }

@@ -1,8 +1,7 @@
 import axios from "axios";
-// import { useHistory } from "react-router-dom";
 import history from "./history";
 
-const BASE_URL = process.env.API_URL;
+const BASE_URL = import.meta.env.API_URL;
 
 export default async function ngFetch(
   url,
@@ -10,7 +9,7 @@ export default async function ngFetch(
   options = {},
   useAuth = true
 ) {
-  let opts = {
+  const opts = {
     url: `${BASE_URL}${url}`,
     method,
     ...options,
@@ -18,7 +17,7 @@ export default async function ngFetch(
   if (useAuth) {
     const jwt = localStorage.getItem("jwt");
     if (opts.headers) {
-      opts.headers["Authorization"] = jwt;
+      opts.headers.Authorization = jwt;
     } else {
       opts.headers = {
         Authorization: jwt,

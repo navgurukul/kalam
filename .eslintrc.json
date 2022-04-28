@@ -1,38 +1,29 @@
 {
   "env": {
     "browser": true,
-    "es6": true,
-    "amd": true,
-    "node": true
+    "es2021": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended"
-  ],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
-  "parser": "babel-eslint",
+  "extends": ["plugin:react/recommended", "airbnb", "prettier"],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": 2021,
+    "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react"],
+  "plugins": ["react", "prettier"],
   "rules": {
-    "react/prop-types": "off",
+    "prettier/prettier": "warn",
     "no-unused-vars": "warn",
-    "react/react-in-jsx-scope": 0,
-    "react/display-name": 1,
-    "react-hooks/exhaustive-deps": "off"
-  },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
+    "react/function-component-definition": "off",
+    "spaced-comment": "off",
+    "react/prop-types": "off",
+    "camelcase": "warn",
+    "no-restricted-globals": "off",
+    "consistent-return": "off",
+    "import/no-extraneous-dependencies": "off",
+    "no-alert": "off",
+    "no-nested-ternary": "off",
+    "react/jsx-props-no-spreading": "off"
   }
 }

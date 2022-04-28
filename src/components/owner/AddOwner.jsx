@@ -170,7 +170,7 @@ const AddOwner = (props) => {
             ...state,
             dialogOpen: false,
           });
-          //getUpdatedData(response.data.data[0], true);
+          // getUpdatedData(response.data.data[0], true);
         });
     } else {
       snackbar.enqueueSnackbar(`Please fill all fields`, {

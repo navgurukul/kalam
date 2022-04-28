@@ -181,24 +181,37 @@ const SlotBooking = () => {
         on_date: date,
       }),
     }).then((res) => {
-      res.json().then((data) => {
-        //console.log(data);
-        if (data.status === "successfully_scheduled") {
-          enqueueSnackbar("Slot Booked", {
-            variant: "success",
-          });
-          fetch(`${baseUrl}/slot/interview/${studentId}`).then((_res) => {
-            _res.json().then((_data) => {
-              setSlotBookingDetails(_data.data[0]);
-              setSlotCancelled(_data.data[0].is_cancelled);
+      res
+        .json()
+        .then((data) => {
+          //console.log(data);
+          if (data.status === "successfully_scheduled") {
+            enqueueSnackbar("Slot Booked", {
+              variant: "success",
             });
-          });
-        } else {
-          enqueueSnackbar("Cannot Book Slot", {
-            variant: "error",
-          });
-        }
-      });
+            fetch(`${baseUrl}/slot/interview/${studentId}`).then((_res) => {
+              _res.json().then((_data) => {
+                setSlotBookingDetails(_data.data[0]);
+                setSlotCancelled(_data.data[0].is_cancelled);
+              });
+              fetch(`${baseUrl}/slot/interview/${studentId}`).then(
+                (interviewRes) => {
+                  interviewRes.json().then((iData) => {
+                    setSlotBookingDetails(iData.data[0]);
+                    setSlotCancelled(iData.data[0].is_cancelled);
+                  });
+                }
+              );
+            });
+          } else {
+            enqueueSnackbar("Cannot Book Slot", {
+              variant: "error",
+            });
+          }
+        })
+        .catch(() => {
+          enqueueSnackbar("Couldn't Book Slot!", { variant: "error" });
+        });
     });
   };
   function disablePrevDates() {
@@ -261,9 +274,13 @@ const SlotBooking = () => {
                       padding: "8px",
                       fontSize: "14px",
                     }}
-                  >
-                    {item.from} - {item.to}
-                  </Typography>
+                    shouldDisableDate={disablePrevDates()}
+                    inputVariant="outlined"
+                    fullWidth
+                    KeyboardButtonProps={{
+                      "aria-label": "change date",
+                    }}
+                  />
                 </Grid>
               ))
             ) : (
@@ -283,35 +300,15 @@ const SlotBooking = () => {
           </Button>
         </>
       ) : (
-        <>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Interview Slot Booked For {slotBookingDetails.student_name} For{" "}
-            {slotBookingDetails.topic_name}
-          </Typography>
+        <Box style={{ display: "flex", justifyContent: "center" }}>
           <Typography
-            component="h3"
-            variant="h6"
-            id="modal-modal-description"
-            sx={{ mt: 2 }}
-          >
-            On {slotBookingDetails.on_date.split("T")[0]}
-          </Typography>
-          <Typography variant="h6" component="h3">
-            From {slotBookingDetails.start_time} To
-            {slotBookingDetails.end_time_expected}
-          </Typography>
-          <Button
-            variant="contained"
             color="primary"
-            style={{ fontSize: "10px" }}
-            onClick={() => {
-              handelDeleteSlot();
-              setCurrentTimeId(null);
-            }}
+            variant="h2"
+            style={{ marginTop: "0.4rem" }}
           >
-            Delete Slot
-          </Button>
-        </>
+            You cannot book slot
+          </Typography>
+        </Box>
       )}
     </Box>
   );

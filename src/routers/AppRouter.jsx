@@ -102,10 +102,6 @@ const AppRouter = () => {
   useEffect(() => {
     if (isAuthenticated) {
       const userId = parseInt(decryptText(localStorage.getItem("userId")), 10);
-      console.log(
-        localStorage.getItem("userI"),
-        parseInt(decryptText(localStorage.getItem("userI")), 10)
-      );
       if (isNaN(userId)) {
         dispatch(logout());
         return;

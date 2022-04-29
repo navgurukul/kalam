@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import "date-fns";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,6 +53,12 @@ allStagesOptions = [
 const useStyles = makeStyles(() => ({
   clear: {
     clear: "both",
+  },
+  label: {
+    fontSize: "15px",
+    fontWeight: "500",
+    color: "#808080",
+    marginBottom: "5px",
   },
 }));
 
@@ -371,8 +378,10 @@ const AdmissionsDash = (props) => {
   const options = (
     <Grid container spacing={2} style={{ marginBottom: "0.8rem" }}>
       <Grid item xs={12} md={6} lg={3}>
+        <label className={classes.label}>Select Data Type</label>
         <Select
           // className="filterSelectGlobal"
+          id="dataTypeSelect"
           value={dataType}
           onChange={changeDataType}
           options={[
@@ -386,8 +395,10 @@ const AdmissionsDash = (props) => {
         />
       </Grid>
       <Grid item xs={12} md={6} lg={3}>
+        <label className={classes.label}>Filter by Stage</label>
         <Select
           // className="filterSelectGlobal"
+          id="stageSelect"
           value={selectedOption}
           isMulti
           onChange={changeStudentStage}

@@ -1,6 +1,6 @@
 import "date-fns";
 import React from "react";
-import { Modal, Button, Grid, Box, Typography } from "@mui/material";
+import { Modal, Grid, Box, Typography, IconButton } from "@mui/material";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -207,12 +207,12 @@ const StageTransitions = (props) => {
           {studentName}{" "}
         </Typography>
       ) : (
-        <Button color="primary" align="right" onClick={handleOpen}>
+        <IconButton color="primary" align="right" onClick={handleOpen}>
           <ChangeHistoryIcon
             className={classes.transitionIcon}
             color="primary"
           />
-        </Button>
+        </IconButton>
       )}
     </div>
   ) : (

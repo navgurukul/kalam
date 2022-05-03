@@ -433,7 +433,7 @@ const DashboardPage = (props) => {
     </div>
   );
   return (
-    <div>
+    <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
       {locationCampus === "campus" ? options2 : options}
       <MainLayout
         title={title}
@@ -441,7 +441,7 @@ const DashboardPage = (props) => {
         data={mainData}
         showLoader={showLoader}
       />
-    </div>
+    </Box>
   );
 };
 

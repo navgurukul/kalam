@@ -124,6 +124,7 @@ const StageSelect = (props) => {
   };
 
   const { flag } = state;
+  // console.log(stage, getKeyByValue(allStages, stage));
   const allStagesOptions = nextStage[getKeyByValue(allStages, stage)].map(
     (x) => ({ value: x, label: allStages[x] })
   );

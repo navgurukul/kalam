@@ -1,11 +1,13 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Navigate, useLocation, useParams } from "react-router-dom";
-import NotHaveAccess from "../components/layout/NotHaveAccess";
+import { useSnackbar } from "notistack";
+// import NotHaveAccess from "../components/layout/NotHaveAccess";
 import { parseJwt } from "../utils";
 import { logout } from "../store/slices/authSlice";
 
 const RequireAuth = ({ children, privateRoute }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const decodedJwt = parseJwt(localStorage.getItem("jwt"));
   const location = useLocation();
   const params = useParams();
@@ -14,6 +16,7 @@ const RequireAuth = ({ children, privateRoute }) => {
     (state) => state.auth
   );
   if (decodedJwt && decodedJwt.exp * 1000 < Date.now()) {
+    enqueueSnackbar("Token Expierd: Login Again", { variant: "info" });
     dispatch(logout());
     return <Navigate to="/" replace />;
   }

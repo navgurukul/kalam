@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import useCustomNotifier from "../utils/useCustomNotifier";
 
 import theme from "../theme";
@@ -97,12 +98,14 @@ const Questions = React.lazy(() =>
 
 const AppRouter = () => {
   useCustomNotifier();
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
   useEffect(() => {
     if (isAuthenticated) {
       const userId = parseInt(decryptText(localStorage.getItem("userId")), 10);
       if (isNaN(userId)) {
+        enqueueSnackbar("Token Expierd: Login Again", { variant: "info" });
         dispatch(logout());
         return;
       }

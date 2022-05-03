@@ -240,7 +240,9 @@ const AppRouter = () => {
               path="/donor/:donorId/students"
               element={
                 <React.Suspense fallback={<Loader />}>
-                  <DonorStudentsData />
+                  <RequireAuth privateRoute>
+                    <DonorStudentsData />
+                  </RequireAuth>
                 </React.Suspense>
               }
             />

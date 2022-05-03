@@ -76,6 +76,7 @@ export const nextStage = {
     "becameDisIntersested",
     "possibleDuplicate",
   ],
+  selected: ["selectedAndJoiningAwaited", "selectedButNotJoined"],
   cultureFitInterviewFail: ["pendingCultureFitInterview"],
   notReachable: [
     "pendingEnglishInterview",

@@ -100,7 +100,7 @@ const columns = [
         const name = rowMeta.rowData[3];
         return (
           <PartnerLink
-            url={`partner/${value}/progress`}
+            url={`/partner/${value}/progress`}
             text="Get Information"
             name={name}
           />

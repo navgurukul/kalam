@@ -22,8 +22,8 @@ const RequireAuth = ({ children, privateRoute }) => {
   }
   if (!isAuthenticated && privateRoute)
     return <Navigate to="/login" state={{ from: location }} replace />;
-  if (isAuthenticated && loggedInUser && !loggedInUser.mobile)
-    return <Navigate to="/user/mobile/number" replace />;
+  // if (isAuthenticated && loggedInUser && !loggedInUser.mobile)
+  //   return <Navigate to="/user/mobile/number" replace />;
   if (isAuthenticated && !privateRoute)
     return <Navigate to="/students" replace />;
   const currentPath = location.pathname.split("/")[1];

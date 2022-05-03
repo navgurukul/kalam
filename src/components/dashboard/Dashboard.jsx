@@ -246,6 +246,7 @@ const DashboardPage = (props) => {
           ...student,
           qualification: qualificationKeys[student.qualification],
           altNumber: contacts ? contacts.alt_mobile : contacts,
+          donor: student.studentDonor ? student.studentDonor : null,
         };
       });
 

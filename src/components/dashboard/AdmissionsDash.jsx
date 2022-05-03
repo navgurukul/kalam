@@ -405,7 +405,9 @@ const AdmissionsDash = (props) => {
           options={allStagesOptions}
           placeholder="Get Student Details By Stage"
           isClearable={false}
-          components={animatedComponents}
+          menuPortalTarget={document.body}
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+          // components={animatedComponents}
           closeMenuOnSelect
         />
       </Grid>

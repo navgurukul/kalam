@@ -1,0 +1,8 @@
+/dist
+/dev-dist
+*.scss
+*.css
+/.next
+/node_modules
+/build
+# /src/config

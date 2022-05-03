@@ -1,3 +1,5 @@
+@charset 'UTF-8';
+
 body {
   margin: 0px;
 }
@@ -138,17 +140,17 @@ a {
 
 .sidelistwrapper {
   width: 250px;
-  padding-top: 50px;
+  /* padding-top: 50px; */
   /*// background-color: white !important;*/
 }
 
-.appbarwrapper {
+/* .appbarwrapper {
   flex-grow: 1;
-}
+} */
 
-.drawerclass {
-  /*// background-color: white;*/
-}
+/* .drawerclass {
+  background-color: white;
+} */
 
 .NavLinkWrapper {
   width: 100%;
@@ -161,9 +163,9 @@ a {
   max-width: 360px;
 }
 
-.NavLinkItem nav:hover {
-  /*// background-color:#cbcbdc !important;*/
-}
+/* .NavLinkItem nav:hover {
+  background-color:#cbcbdc !important;
+} */
 
 .NavLinkItem-selected nav {
   background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
@@ -187,9 +189,9 @@ a {
   color: rgba(0, 0, 0, 0.4);
 }
 
-.bodyComponent {
-  min-height: 85vh;
-}
+/* .bodyComponent {
+  min-height: 100vh;
+} */
 
 .login-page-class {
   text-align: center;
@@ -226,16 +228,16 @@ a {
   background: #0766b9;
 }
 
-.contact-page-wrapper {
-  /*flex-grow:1*/
-}
+/* .contact-page-wrapper {
+  flex-grow:1
+} */
 
 .contact-page-paper {
   text-align: center;
 }
 
-.Topgridcontactpage {
-}
+/* .Topgridcontactpage {
+} */
 
 .loginheaderpart h1 {
   color: white;

@@ -4,6 +4,8 @@
 
 npm run dev-build
 
+cp 404.html dev-dist/
+
 # cp -r dev-dist/* .
 
 cd dev-dist

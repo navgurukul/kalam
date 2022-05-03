@@ -3,6 +3,9 @@ package-lock.json
 node_modules
 dist
 
+/.env.development
+/.env.production
+
 docs/bundle.js
 logs
 *.log

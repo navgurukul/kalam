@@ -51,6 +51,7 @@ const MainLayout = (props) => {
             // filter: true,
             // filterType: "dropdown",
             responsive: "vertical",
+            tableBodyMaxHeight: "64vh",
             textLabels: {
               body: {
                 noMatch: showLoader ? (

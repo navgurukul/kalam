@@ -120,3 +120,19 @@ npm run preview
 
 Runs the production build on local server.<br>
 Open <http://localhost:8080> to view it in browser
+
+<br>
+
+```sh
+npm run checklint
+```
+
+Checks the files for any linting errors or warnings.<br>
+
+<br>
+
+```sh
+npm run lint
+```
+
+Checks the files for any linting errors and auto fixes them.<br>

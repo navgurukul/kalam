@@ -94,10 +94,15 @@ const CampusList = () => {
   useEffect(() => {
     const fetchData = async () => {
       await fetchCampus();
-      await fetchAccess();
+      // await fetchAccess();
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    fetchAccess();
+  }, [loggedInUser]);
+
   return (
     <div>
       {state.campusCondition ? (

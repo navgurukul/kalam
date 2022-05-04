@@ -48,7 +48,7 @@ const GraphPage = () => {
     const graphData = state.data;
     const { studentNames } = graphData.find(
       (element) => element.name === pointInfo.argument
-    ).studentNames;
+    );
 
     return {
       text: studentNames.sort().map((studentName) => `${studentName}`),

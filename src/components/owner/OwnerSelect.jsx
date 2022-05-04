@@ -3,12 +3,14 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
 const OwnerSelect = (props) => {
   const snackbar = useSnackbar();
+  const { loggedInUser } = useSelector((state) => state.auth);
   const [ownerData, setOwnerData] = React.useState([]);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ const OwnerSelect = (props) => {
       const { change, rowMetaTable, studentId } = props;
       const { value } = selectedValue;
       const { columnIndex, rowData } = rowMetaTable;
-      const whoAssign = JSON.parse(localStorage.getItem("user")).email;
+      const whoAssign = loggedInUser.email;
       const stage = rowData[0];
       axios
         .post(`${baseUrl}students/assign_feedback_work`, {
@@ -50,7 +52,7 @@ const OwnerSelect = (props) => {
           change(value, columnIndex);
         });
     } catch (e) {
-      snackbar.enqueueSnackbar(e, { variant: "error" });
+      snackbar.enqueueSnackbar(e.message, { variant: "error" });
     }
   };
   const { value } = props;

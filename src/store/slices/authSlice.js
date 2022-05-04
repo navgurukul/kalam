@@ -81,7 +81,7 @@ const AuthSlice = createSlice({
   name: "auth",
   initialState: {
     isAuthenticated: !!localStorage.getItem("jwt"),
-    loggedInUser: JSON.parse(localStorage.getItem("user")),
+    loggedInUser: { email: "", mail_id: "" },
     // users: null,
     roles: JSON.parse(localStorage.getItem("roles")) || [],
     privileges: JSON.parse(localStorage.getItem("privileges")) || [],

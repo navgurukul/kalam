@@ -196,9 +196,7 @@ const AppRouter = () => {
                   index
                   element={
                     <React.Suspense fallback={<Loader />}>
-                      <RequireAuth privateRoute>
-                        <ProgressMadeForPartner />
-                      </RequireAuth>
+                      <ProgressMadeForPartner />
                     </React.Suspense>
                   }
                 />

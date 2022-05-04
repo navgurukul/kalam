@@ -86,7 +86,6 @@ export const nextStage = {
   ],
   selectedAndJoiningAwaited: ["offerLetterSent", "becameDisIntersested"],
   selectedButNotJoined: [],
-  selected: [],
   offerLetterSent: [
     "pendingTravelPlanning",
     "pendingParentConversation",

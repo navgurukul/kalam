@@ -1,6 +1,6 @@
 /* eslint-disable prefer-destructuring */
 import React, { Fragment } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { Button, Dialog, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -9,6 +9,7 @@ import TextField from "@mui/material/TextField";
 
 import EditIcon from "@mui/icons-material/Edit";
 import { changeFetching } from "../../store/slices/uiSlice";
+import { decryptText } from "../../utils";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -33,6 +34,7 @@ const StudentFeedback = (props) => {
   const classes = useStyles();
   const snackbar = useSnackbar();
   const dispatch = useDispatch();
+  const { loggedInUser } = useSelector((state) => state.auth);
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const [state, setState] = React.useState({
@@ -51,7 +53,8 @@ const StudentFeedback = (props) => {
       } else {
         studentId = rowData[5];
       }
-      const userId = JSON.parse(localStorage.getItem("user")).id;
+      const userId = parseInt(decryptText(localStorage.getItem("userId")), 10);
+
       const dataURL = `${baseUrl}students/feedback/${studentId}/${userId}`;
       await axios
         .post(dataURL, {
@@ -109,25 +112,23 @@ const StudentFeedback = (props) => {
       dialogOpen: true,
     });
   };
-  const addFeedbackDetails = (user, feedback) => {
+  const addFeedbackDetails = (feedback) => {
     const time = new Date();
     const month = time.getMonth() + 1;
+
+    const currentUser = `@${
+      loggedInUser
+        ? loggedInUser.user_name.toString().split(" ").join("").toLowerCase()
+        : "guest"
+    }`;
     const feedbackTime = `Feedback date ${time.getDate()}/${month}/${time.getFullYear()}`;
     return feedback
-      ? `${user}: ${feedbackTime}\n\n${feedback}`
-      : `${user}: ${feedbackTime}\n\n`;
+      ? `${currentUser}: ${feedbackTime}\n\n${feedback}`
+      : `${currentUser}: ${feedbackTime}\n\n`;
   };
+
   const { feedback } = props;
-  let user;
-  if (localStorage.getItem("user")) {
-    user = `@${JSON.parse(localStorage.getItem("user"))
-      .user_name.toString()
-      .split(" ")
-      .join("")
-      .toLowerCase()}`;
-  } else {
-    user = "@guest";
-  }
+
   return (
     <>
       <Box onClick={handleOpen}>
@@ -144,7 +145,7 @@ const StudentFeedback = (props) => {
             multiline
             rows="6"
             name="feedback"
-            defaultValue={addFeedbackDetails(user, feedback)}
+            defaultValue={addFeedbackDetails(feedback)}
             onChange={handleChange("feedback")}
             className={classes.textField}
             margin="normal"

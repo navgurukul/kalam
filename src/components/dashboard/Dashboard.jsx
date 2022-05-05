@@ -1,7 +1,14 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Box, TextField } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Grid,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/lab";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import axios from "axios";
@@ -338,99 +345,156 @@ const DashboardPage = (props) => {
   const { fromStage, toStage, mainData, showLoader, wholeData } = state;
 
   const options = (
-    <Box>
-      <Select
-        className="filterSelectGlobal"
-        onChange={onChangeFromStage}
-        options={showAllStage ? partnerStages : allStagesOptions}
-        placeholder="from Stage"
-        isClearable={false}
-        closeMenuOnSelect
-        value={fromStage}
-      />
-      <Select
-        className="filterSelectGlobal"
-        onChange={onChangeToStage}
-        options={showAllStage ? partnerStages : allStagesOptions}
-        placeholder="to Stage"
-        isClearable={false}
-        closeMenuOnSelect
-        value={toStage}
-      />
-      <LocalizationProvider dateAdapter={DateFnsUtils}>
-        <DatePicker
-          margin="dense"
-          style={{ marginLeft: 16, maxWidth: "40%" }}
-          value={state.fromDate}
-          id="date-picker-dialog"
-          label="From Date"
-          format="MM/dd/yyyy"
-          onChange={changeFromDate}
-          KeyboardButtonProps={{
-            "aria-label": "change date",
-          }}
-          renderInput={(params) => <TextField {...params} />}
+    <Grid container spacing={4} sx={{ paddingY: "1.2rem" }}>
+      <Grid item xs={12} md={6} lg={3}>
+        <Select
+          // className="filterSelectGlobal"
+          onChange={onChangeFromStage}
+          options={showAllStage ? partnerStages : allStagesOptions}
+          placeholder="From Stage"
+          isClearable={false}
+          closeMenuOnSelect
+          value={fromStage}
+          menuPortalTarget={document.body}
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
         />
-        <DatePicker
-          margin="dense"
-          style={{ marginLeft: 16, maxWidth: "40%" }}
-          value={state.toDate}
-          id="date-picker-dialog"
-          label="To Date"
-          format="MM/dd/yyyy"
-          onChange={changeToDate}
-          KeyboardButtonProps={{
-            "aria-label": "change date",
-          }}
-          renderInput={(params) => <TextField {...params} />}
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <Select
+          // className="filterSelectGlobal"
+          onChange={onChangeToStage}
+          options={showAllStage ? partnerStages : allStagesOptions}
+          placeholder="To Stage"
+          isClearable={false}
+          closeMenuOnSelect
+          value={toStage}
+          menuPortalTarget={document.body}
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
         />
-      </LocalizationProvider>
-    </Box>
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <LocalizationProvider dateAdapter={DateFnsUtils}>
+          <DatePicker
+            margin="dense"
+            style={{ marginLeft: 16, maxWidth: "40%" }}
+            value={state.fromDate}
+            id="date-picker-dialog"
+            label="From Date"
+            format="MM/dd/yyyy"
+            onChange={changeFromDate}
+            KeyboardButtonProps={{
+              "aria-label": "change date",
+            }}
+            renderInput={(params) => (
+              <TextField fullWidth size="small" {...params} />
+            )}
+          />
+        </LocalizationProvider>
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <LocalizationProvider dateAdapter={DateFnsUtils}>
+          <DatePicker
+            margin="dense"
+            style={{ marginLeft: 16, maxWidth: "40%" }}
+            value={state.toDate}
+            id="date-picker-dialog"
+            label="To Date"
+            format="MM/dd/yyyy"
+            onChange={changeToDate}
+            KeyboardButtonProps={{
+              "aria-label": "change date",
+            }}
+            renderInput={(params) => (
+              <TextField size="small" fullWidth {...params} />
+            )}
+          />
+        </LocalizationProvider>
+      </Grid>
+    </Grid>
   );
 
   const options2 = wholeData.length > 0 && (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-      }}
+    <Grid
+      container
+      spacing={4}
+      sx={{ paddingY: "1.2rem" }}
+      // style={{
+      //   display: "flex",
+      //   flexWrap: "wrap",
+      // }}
     >
-      <Select
-        className="filterSelectGlobal"
-        onChange={onChangeFromStage}
-        options={showAllStage ? partnerStages : allStagesOptions}
-        placeholder="from Stage"
-        isClearable={false}
-        closeMenuOnSelect
-      />
-      <Select
-        className="filterSelectGlobal"
-        onChange={onChangeToStage}
-        options={showAllStage ? partnerStages : allStagesOptions}
-        placeholder="to Stage"
-        isClearable={false}
-        closeMenuOnSelect
-      />
+      <Grid item xs={12} md={6} lg={3}>
+        <Select
+          // className="filterSelectGlobal"
+          onChange={onChangeFromStage}
+          options={showAllStage ? partnerStages : allStagesOptions}
+          placeholder="From Stage"
+          isClearable={false}
+          closeMenuOnSelect
+          menuPortalTarget={document.body}
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+        />
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <Select
+          // className="filterSelectGlobal"
+          onChange={onChangeToStage}
+          options={showAllStage ? partnerStages : allStagesOptions}
+          placeholder="To Stage"
+          isClearable={false}
+          closeMenuOnSelect
+          menuPortalTarget={document.body}
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+        />
+      </Grid>
 
-      {locationCampus === "campus" ? (
-        <span
+      <Grid item xs={12} md={12} lg={4} xl={3}>
+        <Paper
           style={{
             fontSize: "17px",
-            padding: "8px 10px",
-            border: "1px solid #B3B3B3",
+            padding: "0.4rem 0.8rem",
+            // border: "1px solid #B3B3B3",
 
             fontFamily: "Times New Roman",
-            marginLeft: "15px",
-            borderRadius: "4px",
-            marginTop: "16px",
+            // marginLeft: "15px",
+            // borderRadius: "4px",
+            // marginTop: "16px",
+            display: "flex",
+            gap: 8,
+            justifyContent: "center",
           }}
         >
-          <span style={{}}>InCampus : {inCampusCount}</span>
-          <span> OnLeave : {onLeaveCount}</span>
-          <span> DropOut : {dropoutCount} </span>
-        </span>
-      ) : null}
-    </div>
+          <Typography fontWeight="semibold" variant="h6">
+            InCampus : {inCampusCount}
+          </Typography>
+          <Divider
+            orientation="vertical"
+            variant="fullWidth"
+            flexItem
+            sx={{
+              borderRightWidth: 1,
+              borderColor: "black",
+            }}
+          />
+          <Typography fontWeight="normal" variant="h6">
+            {" "}
+            OnLeave : {onLeaveCount}
+          </Typography>
+          <Divider
+            orientation="vertical"
+            variant="fullWidth"
+            flexItem
+            sx={{
+              borderRightWidth: 1,
+              borderColor: "black",
+            }}
+          />
+          <Typography fontWeight="semibold" variant="h6">
+            DropOut : {dropoutCount}{" "}
+          </Typography>
+        </Paper>
+      </Grid>
+    </Grid>
   );
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>

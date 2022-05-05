@@ -376,7 +376,7 @@ const AdmissionsDash = (props) => {
   }, [loggedInUser]);
 
   const options = (
-    <Grid container spacing={2} style={{ marginBottom: "0.8rem" }}>
+    <Grid container spacing={4} style={{ marginBottom: "0.8rem" }}>
       <Grid item xs={12} md={6} lg={3}>
         <label className={classes.label}>Select Data Type</label>
         <Select
@@ -411,10 +411,9 @@ const AdmissionsDash = (props) => {
           closeMenuOnSelect
         />
       </Grid>
-      <Grid item xs={6} md={6} lg={3}>
+      <Grid item xs={6} md={6} lg={3} sx={{ marginTop: "0.8rem" }}>
         <LocalizationProvider dateAdapter={DateFnsUtils}>
           <DatePicker
-            in
             margin="dense"
             style={{ marginLeft: 16, maxWidth: "40%" }}
             value={fromDate}
@@ -425,11 +424,13 @@ const AdmissionsDash = (props) => {
             KeyboardButtonProps={{
               "aria-label": "change date",
             }}
-            renderInput={(params) => <TextField size="small" {...params} />}
+            renderInput={(params) => (
+              <TextField fullWidth size="small" {...params} />
+            )}
           />
         </LocalizationProvider>
       </Grid>
-      <Grid item xs={6} md={6} lg={3}>
+      <Grid item xs={6} md={6} lg={3} sx={{ marginTop: "0.8rem" }}>
         <LocalizationProvider dateAdapter={DateFnsUtils}>
           <DatePicker
             margin="dense"
@@ -442,7 +443,9 @@ const AdmissionsDash = (props) => {
             KeyboardButtonProps={{
               "aria-label": "change date",
             }}
-            renderInput={(params) => <TextField size="small" {...params} />}
+            renderInput={(params) => (
+              <TextField fullWidth size="small" {...params} />
+            )}
           />
         </LocalizationProvider>
       </Grid>

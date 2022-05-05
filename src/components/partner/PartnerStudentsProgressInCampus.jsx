@@ -13,7 +13,7 @@ const PartnerStudentsProgressInCampus = () => {
   const { partnerId } = useParams();
   const [state, setState] = React.useState({
     partnerName: "",
-    isShow: false,
+    dataView: 1,
   });
 
   useEffect(() => {
@@ -25,36 +25,55 @@ const PartnerStudentsProgressInCampus = () => {
     });
   }, []);
 
-  const progressMade = (value) => {
-    setState({ ...state, isShow: value });
+  const progressMade = () => {
+    setState({ ...state, dataView: 1 });
   };
-  const tabularData = (value) => {
-    setState({ ...state, isShow: value });
+  const tabularData = () => {
+    setState({ ...state, dataView: 0 });
   };
-  const showGraphData = (value) => {
-    setState({ ...state, isShow: value });
+  const showGraphData = () => {
+    setState({ ...state, dataView: 2 });
   };
-  const { partnerName, isShow } = state;
+  const { partnerName, dataView } = state;
+
+  const getView = (viewNo) => {
+    switch (viewNo) {
+      case 0:
+        return (
+          <DashboardPage
+            displayData={StudentService.CampusData}
+            url={`partners/joined_progress_made/${partnerId}`}
+          />
+        );
+      case 1:
+        return <StudentsProgressCards url={`partners/${partnerId}`} />;
+
+      case 2:
+        return (
+          <GraphingPresentationJob
+            url={`/partners/${partnerId}/students/distribution`}
+          />
+        );
+      default:
+        return <StudentsProgressCards url={`partners/${partnerId}`} />;
+    }
+  };
   return (
     <div>
       <SelectUiByButtons
         name={`Hello ${partnerName}`}
-        progressMade={progressMade}
-        tabularData={tabularData}
-        showGraphData={showGraphData}
+        progressMade={{ label: "Progress Made", action: progressMade }}
+        tabularData={{ label: "Tabular Data", action: tabularData }}
+        showGraphData={{ label: "Graph on Job", action: showGraphData }}
+        selected={
+          dataView === 0
+            ? "tabularData"
+            : dataView === 1
+            ? "progressMade"
+            : "showGraphData"
+        }
       />
-      {isShow ? (
-        <DashboardPage
-          displayData={StudentService.CampusData}
-          url={`partners/joined_progress_made/${partnerId}`}
-        />
-      ) : isShow === null ? (
-        <GraphingPresentationJob
-          url={`/partners/${partnerId}/students/distribution`}
-        />
-      ) : (
-        <StudentsProgressCards url={`partners/${partnerId}`} />
-      )}
+      {getView(dataView)}
     </div>
   );
 };

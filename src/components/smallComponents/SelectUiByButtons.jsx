@@ -13,19 +13,23 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-    marginTop: 10,
   },
   space: {
     marginBottom: 10,
   },
 }));
-const SelectUiByButtons = (props) => {
+const SelectUiByButtons = ({
+  name,
+  progressMade,
+  tabularData,
+  showGraphData,
+  selected,
+}) => {
   const classes = useStyles();
-  const { name, progressMade, tabularData, showGraphData } = props;
   return (
     <Container className={classes.container}>
       <Grid item xs={12} className={classes.space}>
-        <Typography variant="h4"> {name} </Typography>
+        <Typography variant="h4"> {name}</Typography>
       </Grid>
       <Grid item xs={12} className={classes.space}>
         <ButtonGroup
@@ -33,9 +37,24 @@ const SelectUiByButtons = (props) => {
           color="primary"
           aria-label="large outlined primary button group"
         >
-          <Button onClick={() => tabularData(true)}>Tabular Data</Button>
-          <Button onClick={() => progressMade(false)}>Progress Made</Button>
-          <Button onClick={() => showGraphData(null)}>Graph on Job</Button>
+          <Button
+            variant={selected === "tabularData" ? "contained" : "outlined"}
+            onClick={() => tabularData.action()}
+          >
+            {tabularData.label}
+          </Button>
+          <Button
+            variant={selected === "progressMade" ? "contained" : "outlined"}
+            onClick={() => progressMade.action()}
+          >
+            {progressMade.label}
+          </Button>
+          <Button
+            variant={selected === "showGraphData" ? "contained" : "outlined"}
+            onClick={() => showGraphData.action()}
+          >
+            {showGraphData.label}
+          </Button>
         </ButtonGroup>
       </Grid>
     </Container>

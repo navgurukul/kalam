@@ -20,7 +20,7 @@ const showContact = (student) => {
   }
   const locationCampus = location.pathname.split("/")[1];
   return (
-    <center key={student.name}>
+    <center key={`${student.name}${Math.random()}`}>
       <div
         style={{
           fontSize: 15,

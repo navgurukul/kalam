@@ -4,10 +4,9 @@ import { makeStyles } from "@mui/styles";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import { Button, Typography, CardContent, IconButton } from "@mui/material";
+import { Typography, CardContent, IconButton } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import Card from "@mui/material/Card";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import AnnouncementIcon from "@mui/icons-material/Announcement";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -25,6 +24,7 @@ import CollapseStudentData from "../student/collapseData";
 import StudentService from "../../services/StudentService";
 import GraphPage from "./GraphPage";
 import { allStages } from "../../utils/constants";
+import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-    marginTop: 10,
+    marginTop: 2,
   },
 }));
 
@@ -77,6 +77,7 @@ const ProgressMadeForPartner = () => {
     progress: false,
     tabular: false,
     graph: true,
+    dataView: 2,
     "Selected for Navgurukul One-year Fellowship": "",
     "Need Action": "",
     "Need Your Help": "",
@@ -96,6 +97,8 @@ const ProgressMadeForPartner = () => {
       icon: <CancelIcon className={classes.image} />,
     },
   ];
+
+  const { partnerName, data } = state;
 
   const whatsAppMessage = () => {
     Object.entries(state.data).forEach(([key, detailsData]) => {
@@ -143,6 +146,7 @@ const ProgressMadeForPartner = () => {
       tabular: false,
       progress: true,
       graph: false,
+      dataView: 1,
     });
   };
 
@@ -152,6 +156,7 @@ const ProgressMadeForPartner = () => {
       tabular: true,
       progress: false,
       graph: false,
+      dataView: 0,
     });
   };
 
@@ -161,6 +166,7 @@ const ProgressMadeForPartner = () => {
       tabular: false,
       progress: false,
       graph: true,
+      dataView: 2,
     });
   };
 
@@ -184,109 +190,131 @@ const ProgressMadeForPartner = () => {
       </Tooltip>
     </CopyToClipboard>
   );
-  const { partnerName, progress, data, tabular } = state;
+
+  const getView = (viewNo) => {
+    switch (viewNo) {
+      case 0:
+        return (
+          <DashboardPage
+            displayData={StudentService.columns.partnerData}
+            url={`partners/${partnerId}/students`}
+          />
+        );
+      case 1:
+        return (
+          <Grid
+            maxWidth="xl"
+            container
+            spacing={3}
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+            style={{ marginTop: 10, justifyContent: "center" }}
+          >
+            {Object.entries(data).map(([key, detailsData], index) => (
+              <Grid item xs={12} sm={6} md={3} key={key}>
+                <Card className={classes.root}>
+                  <CardContent>
+                    <div style={{ marginBottom: 50 }}>
+                      {isMobile ? (
+                        <Grid
+                          container
+                          direction="row"
+                          justify="flex-end"
+                          alignItems="center"
+                        >
+                          {copyClipBoard(state[key])}
+                          <br />
+                          <Tooltip title="Share Details on WhatsApp">
+                            <a
+                              href={`https://api.whatsapp.com/send?text=${state[key]}`}
+                              data-action="share/whatsapp/share"
+                            >
+                              <Avatar
+                                className={classes.large}
+                                alt="Remy Sharp"
+                                src={WhatsAppIcon}
+                              >
+                                {" "}
+                              </Avatar>
+                            </a>
+                          </Tooltip>
+                        </Grid>
+                      ) : (
+                        <Grid
+                          container
+                          direction="row"
+                          justify="flex-end"
+                          alignItems="center"
+                        >
+                          {copyClipBoard(state[key])}
+                        </Grid>
+                      )}
+                      <br />
+                      <center>{icons[index].icon}</center>
+                      <br />
+                      <center>
+                        <Typography variant="h5">{key}</Typography>
+                      </center>
+                    </div>
+                    {Object.entries(detailsData).map(
+                      ([stage, studentDetails]) => (
+                        <div key={stage}>
+                          <CollapseStudentData
+                            classes={classes}
+                            details={studentDetails}
+                            stage={stage}
+                          />
+                        </div>
+                      )
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        );
+      case 2:
+        return <GraphPage url={`partners/${partnerId}/students`} />;
+      default:
+        return <GraphPage url={`partners/${partnerId}/students`} />;
+    }
+  };
+
   return (
-    <div>
+    <>
       <CssBaseline />
-      <Container className={classes.container}>
-        <Grid item xs={12} style={{ marginBottom: 40 }}>
+      <Container className={classes.container} maxWidth="xl">
+        <Grid item xs={12} style={{ marginBottom: 12 }}>
           <Typography variant="h4"> Hello {partnerName}</Typography>
         </Grid>
-        <Grid item xs={12}>
+        <SelectUiByButtons
+          progressMade={{ label: "Progress Made", action: progressMade }}
+          tabularData={{ label: "Tabular Data", action: tabularData }}
+          showGraphData={{ label: "Graph Data", action: graphData }}
+          selected={
+            state.dataView === 0
+              ? "tabularData"
+              : state.dataView === 1
+              ? "progressMade"
+              : "showGraphData"
+          }
+        />
+        {/* <Grid item xs={12}>
           <ButtonGroup
             size="large"
             color="primary"
             aria-label="large outlined primary button group"
           >
-            <Button onClick={progressMade}>Progress Made</Button>
-            <Button onClick={tabularData}>Tabular Data</Button>
-            <Button onClick={graphData}>Graph Data</Button>
+            <Button onClick={progressMade}></Button>
+            <Button onClick={tabularData}></Button>
+            <Button onClick={graphData}></Button>
           </ButtonGroup>
-        </Grid>
-        {progress && (
-          <div>
-            <Grid
-              container
-              spacing={3}
-              direction="row"
-              justify="flex-start"
-              alignItems="flex-start"
-              style={{ marginTop: 10, justifyContent: "center" }}
-            >
-              {Object.entries(data).map(([key, detailsData], index) => (
-                <Grid item xs={12} sm={6} md={3} key={key}>
-                  <Card className={classes.root}>
-                    <CardContent>
-                      <div style={{ marginBottom: 50 }}>
-                        {isMobile ? (
-                          <Grid
-                            container
-                            direction="row"
-                            justify="flex-end"
-                            alignItems="center"
-                          >
-                            {copyClipBoard(state[key])}
-                            <br />
-                            <Tooltip title="Share Details on WhatsApp">
-                              <a
-                                href={`https://api.whatsapp.com/send?text=${state[key]}`}
-                                data-action="share/whatsapp/share"
-                              >
-                                <Avatar
-                                  className={classes.large}
-                                  alt="Remy Sharp"
-                                  src={WhatsAppIcon}
-                                >
-                                  {" "}
-                                </Avatar>
-                              </a>
-                            </Tooltip>
-                          </Grid>
-                        ) : (
-                          <Grid
-                            container
-                            direction="row"
-                            justify="flex-end"
-                            alignItems="center"
-                          >
-                            {copyClipBoard(state[key])}
-                          </Grid>
-                        )}
-                        <br />
-                        <center>{icons[index].icon}</center>
-                        <br />
-                        <center>
-                          <Typography variant="h5">{key}</Typography>
-                        </center>
-                      </div>
-                      {Object.entries(detailsData).map(
-                        ([stage, studentDetails]) => (
-                          <div key={stage}>
-                            <CollapseStudentData
-                              classes={classes}
-                              details={studentDetails}
-                              stage={stage}
-                            />
-                          </div>
-                        )
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-          </div>
-        )}
-        <br />
+        </Grid> */}
+        {/* <br /> */}
+        {getView(state.dataView)}
       </Container>
-      {tabular && (
-        <DashboardPage
-          displayData={StudentService.columns.partnerData}
-          url={`partners/${partnerId}/students`}
-        />
-      )}
-      {state.graph && <GraphPage url={`partners/${partnerId}/students`} />}
-    </div>
+    </>
   );
 };
 

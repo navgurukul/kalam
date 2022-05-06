@@ -157,7 +157,6 @@ const LandingPage = () => {
       partnerId: response.data.data.id,
     });
   };
-  console.log(state);
 
   const generateTestLink = async (studentId) => {
     try {

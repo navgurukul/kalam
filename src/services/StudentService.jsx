@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from "react";
 import dayjs from "dayjs";
+import { Avatar } from "@mui/material";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useSelector } from "react-redux";
 
@@ -1427,16 +1428,16 @@ const profileImage = {
   options: {
     filter: false,
     sort: false,
-    customBodyRender: (value) =>
+    customBodyRender: (value, rowMeta) =>
       value !== null ? (
-        <img
+        <Avatar
           src={value}
-          alt="profile"
+          alt={rowMeta.rowData[2]}
           style={{
             width: "60px",
             height: "60px",
-            borderRadius: "50%",
-            objectFit: "cover",
+            // borderRadius: "50%",
+            // objectFit: "cover",
           }}
         />
       ) : (

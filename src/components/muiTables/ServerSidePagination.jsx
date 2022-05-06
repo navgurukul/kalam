@@ -32,6 +32,7 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
     query: "",
     value: "",
     newColumns: columns,
+    vertical: false,
   });
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
@@ -266,6 +267,7 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
     },
     responsive: "vertical",
     rowsPerPageOptions: [10, 50, 100],
+    tableBodyMaxHeight: "64vh",
     count: totalData,
     rowsPerPage: numberOfRows,
     page,

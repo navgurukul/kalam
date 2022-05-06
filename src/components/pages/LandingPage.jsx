@@ -154,9 +154,10 @@ const LandingPage = () => {
     const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
     setState({
       ...state,
-      partnerId: response.data.data[".id"],
+      partnerId: response.data.data.id,
     });
   };
+  console.log(state);
 
   const generateTestLink = async (studentId) => {
     try {

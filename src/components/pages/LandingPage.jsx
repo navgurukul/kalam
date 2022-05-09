@@ -9,11 +9,13 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { Link, useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 import Grid from "@mui/material/Grid";
 import { makeStyles, ThemeProvider } from "@mui/styles";
 import { changeFetching } from "../../store/slices/uiSlice";
 import VideoSlider from "../ui/VideoSlider";
 import theme from "../../theme";
+import { decryptText } from "../../utils";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -111,6 +113,7 @@ const LandingPage = () => {
     pendingInterviewStage: "checking",
     enrollmentKey: "",
   });
+  const [goToTest, setGoToTest] = React.useState(false);
   const lang = {
     Heading: {
       en: "Software Engineering Scholarship",
@@ -150,6 +153,11 @@ const LandingPage = () => {
     },
   };
 
+  const getTestData = () => ({
+    enrollmentKey: localStorage.getItem("enrollmentKey"),
+    time: localStorage.getItem("time"),
+    studentId: localStorage.getItem("studentId"),
+  });
   const partnerFetch = async (slug) => {
     const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
     setState({
@@ -185,10 +193,25 @@ const LandingPage = () => {
     }
   };
 
+  const { enrollmentKey, time } = getTestData();
+
   useEffect(() => {
     const slug = window.location.href.split("partnerLanding/")[1];
     if (slug) {
       partnerFetch(slug);
+    }
+    if (time && enrollmentKey) {
+      const Time = parseInt(decryptText(time), 10);
+      const date = new Date(JSON.parse(Time));
+      if (parseInt(dayjs(date).diff(dayjs(), "seconds"), 10) > 0) {
+        setGoToTest(true);
+      } else {
+        localStorage.removeItem("answerList");
+        localStorage.removeItem("enrollmentKey");
+        localStorage.removeItem("index");
+        localStorage.removeItem("time");
+        localStorage.removeItem("testStarted");
+      }
     }
   }, []);
 
@@ -298,6 +321,16 @@ const LandingPage = () => {
       }}
     >
       <ThemeProvider theme={theme}>
+        {goToTest ? (
+          <Button
+            variant="text"
+            color="primary"
+            onClick={() => navigate(-1)}
+            size="large"
+          >
+            Go Back to Test
+          </Button>
+        ) : null}
         <Typography className={classes.paper}>
           {lang.Heading[selectedLang]}
         </Typography>

@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import { Button, Typography, Modal } from "@mui/material";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import { makeStyles } from "@mui/styles";
@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import CsvUpload from "../smallComponents/Uploadcsv";
 import GlobalService from "../../services/GlobalService";
 
-const baseUrl = import.meta.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const getModalStyle = () => {
   const top = 54; // + rand()
@@ -69,12 +69,16 @@ const ModalStages = (props) => {
       name: "assessment_url",
       options: {
         filter: false,
-        customBodyRender: memo((rowData) =>
-          rowData ? (
-            <a target="_blank" rel="noreferrer" href={rowData}>
-              Link to Assessment
-            </a>
-          ) : null
+        customBodyRender: React.useCallback(
+          (rowData) =>
+            rowData ? (
+              <a target="_blank" rel="noreferrer" href={rowData}>
+                <Button variant="text" size="small" color="primary">
+                  Link to Assessment
+                </Button>
+              </a>
+            ) : null,
+          []
         ),
       },
     },
@@ -83,12 +87,17 @@ const ModalStages = (props) => {
       name: "answer_key_url",
       options: {
         filter: false,
-        customBodyRender: memo((rowData) =>
-          rowData ? (
-            <a target="_blank" rel="noreferrer" href={rowData}>
-              Link to Answer Key
-            </a>
-          ) : null
+        customBodyRender: React.useCallback((rowData) =>
+          rowData
+            ? ((
+                <a target="_blank" rel="noreferrer" href={rowData}>
+                  <Button variant="text" size="small" color="primary">
+                    Link to Answer Key
+                  </Button>
+                </a>
+              ),
+              [])
+            : null
         ),
       },
     },
@@ -97,10 +106,16 @@ const ModalStages = (props) => {
       name: "question_set_id",
       options: {
         filter: false,
-        customBodyRender: memo((rowData) => {
-          const url = `/partners/${partnerId}/assessments/${rowData}`;
-          return <Link to={url}>{rowData}</Link>;
-        }),
+        customBodyRender: React.useCallback((rowData) => {
+          const url = `/partner/${partnerId}/assessments/${rowData}`;
+          return (
+            <Link to={url}>
+              <Button variant="text" color="primary" size="small">
+                {rowData}
+              </Button>
+            </Link>
+          );
+        }, []),
       },
     },
     {
@@ -115,9 +130,12 @@ const ModalStages = (props) => {
       name: "partner_id",
       options: {
         filter: false,
-        customBodyRender: memo((rowData, rowMeta) => (
-          <CsvUpload partnerId={rowData} assessmentId={rowMeta.rowData[0]} />
-        )),
+        customBodyRender: React.useCallback(
+          (rowData, rowMeta) => (
+            <CsvUpload partnerId={rowData} assessmentId={rowMeta.rowData[0]} />
+          ),
+          []
+        ),
       },
     },
   ];
@@ -179,8 +197,8 @@ const ModalStages = (props) => {
             toolbar: false,
             filtering: true,
             filter: true,
-            filterType: "doprdown",
-            responsive: "stacked",
+            filterType: "dropdown",
+            responsive: "vertical",
           }}
           style={{ maxWidth: "90%", margin: "0 auto", marginTop: 25 }}
         />

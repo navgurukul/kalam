@@ -4,27 +4,15 @@ import { makeStyles } from "@mui/styles";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import { Typography, CardContent, IconButton } from "@mui/material";
-import Tooltip from "@mui/material/Tooltip";
-import Card from "@mui/material/Card";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import AnnouncementIcon from "@mui/icons-material/Announcement";
-import CancelIcon from "@mui/icons-material/Cancel";
-import HelpIcon from "@mui/icons-material/Help";
-import Avatar from "@mui/material/Avatar";
+import { Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { deepOrange } from "@mui/material/colors";
-import { isMobile } from "react-device-detect";
-import { useSnackbar } from "notistack";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import FileCopyIcon from "@mui/icons-material/FileCopy";
-import WhatsAppIcon from "../../assets/img/whatsapp.png";
 import DashboardPage from "../dashboard/Dashboard";
-import CollapseStudentData from "../student/collapseData";
 import StudentService from "../../services/StudentService";
 import GraphPage from "./GraphPage";
 import { allStages } from "../../utils/constants";
 import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
+import ProgressCard from "../smallComponents/progressCard";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -70,33 +58,15 @@ const useStyles = makeStyles((theme) => ({
 const ProgressMadeForPartner = () => {
   const { partnerId } = useParams();
   const classes = useStyles();
-  const snackbar = useSnackbar();
   const [state, setState] = React.useState({
     data: {},
     partnerName: "",
-    progress: false,
-    tabular: false,
-    graph: true,
     dataView: 2,
     "Selected for Navgurukul One-year Fellowship": "",
     "Need Action": "",
     "Need Your Help": "",
     "Failed Students": "",
   });
-  const icons = [
-    {
-      icon: <AccountBalanceIcon className={classes.image} />,
-    },
-    {
-      icon: <AnnouncementIcon className={classes.image} />,
-    },
-    {
-      icon: <HelpIcon className={classes.image} />,
-    },
-    {
-      icon: <CancelIcon className={classes.image} />,
-    },
-  ];
 
   const { partnerName, data } = state;
 
@@ -132,9 +102,6 @@ const ProgressMadeForPartner = () => {
       setState((prevState) => ({
         ...prevState,
         data: res.data.data,
-        progress: false,
-        tabular: false,
-        graph: true,
       }));
       whatsAppMessage();
     });
@@ -143,9 +110,6 @@ const ProgressMadeForPartner = () => {
   const progressMade = () => {
     setState({
       ...state,
-      tabular: false,
-      progress: true,
-      graph: false,
       dataView: 1,
     });
   };
@@ -153,9 +117,6 @@ const ProgressMadeForPartner = () => {
   const tabularData = () => {
     setState({
       ...state,
-      tabular: true,
-      progress: false,
-      graph: false,
       dataView: 0,
     });
   };
@@ -163,33 +124,9 @@ const ProgressMadeForPartner = () => {
   const graphData = () => {
     setState({
       ...state,
-      tabular: false,
-      progress: false,
-      graph: true,
       dataView: 2,
     });
   };
-
-  const copyClipBoard = (key) => (
-    <CopyToClipboard
-      text={key}
-      onCopy={() => {
-        snackbar.enqueueSnackbar("Message copied!", {
-          variant: "success",
-        });
-      }}
-    >
-      <Tooltip
-        title="Copy Details"
-        style={{ background: "#f05f40" }}
-        className={classes.large}
-      >
-        <IconButton>
-          <FileCopyIcon sx={{ color: "white" }} />
-        </IconButton>
-      </Tooltip>
-    </CopyToClipboard>
-  );
 
   const getView = (viewNo) => {
     switch (viewNo) {
@@ -211,65 +148,9 @@ const ProgressMadeForPartner = () => {
             alignItems="flex-start"
             style={{ marginTop: 10, justifyContent: "center" }}
           >
-            {Object.entries(data).map(([key, detailsData], index) => (
-              <Grid item xs={12} sm={6} md={3} key={key}>
-                <Card className={classes.root}>
-                  <CardContent>
-                    <div style={{ marginBottom: 50 }}>
-                      {isMobile ? (
-                        <Grid
-                          container
-                          direction="row"
-                          justify="flex-end"
-                          alignItems="center"
-                        >
-                          {copyClipBoard(state[key])}
-                          <br />
-                          <Tooltip title="Share Details on WhatsApp">
-                            <a
-                              href={`https://api.whatsapp.com/send?text=${state[key]}`}
-                              data-action="share/whatsapp/share"
-                            >
-                              <Avatar
-                                className={classes.large}
-                                alt="Remy Sharp"
-                                src={WhatsAppIcon}
-                              >
-                                {" "}
-                              </Avatar>
-                            </a>
-                          </Tooltip>
-                        </Grid>
-                      ) : (
-                        <Grid
-                          container
-                          direction="row"
-                          justify="flex-end"
-                          alignItems="center"
-                        >
-                          {copyClipBoard(state[key])}
-                        </Grid>
-                      )}
-                      <br />
-                      <center>{icons[index].icon}</center>
-                      <br />
-                      <center>
-                        <Typography variant="h5">{key}</Typography>
-                      </center>
-                    </div>
-                    {Object.entries(detailsData).map(
-                      ([stage, studentDetails]) => (
-                        <div key={stage}>
-                          <CollapseStudentData
-                            classes={classes}
-                            details={studentDetails}
-                            stage={stage}
-                          />
-                        </div>
-                      )
-                    )}
-                  </CardContent>
-                </Card>
+            {Object.entries(data).map((entry, index) => (
+              <Grid item xs={12} sm={6} md={3} key={entry.key}>
+                <ProgressCard data={entry} index={index} state={state} />
               </Grid>
             ))}
           </Grid>

@@ -252,6 +252,8 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
       };
       if (columnChanged) {
         const filterValue = filterList[indexObj[columnChanged]][0];
+        if (filterValue === undefined)
+          return getfilterApi(columnChanged, "All");
         return getfilterApi(columnChanged, filterValue);
       }
       setState((prevState) => ({

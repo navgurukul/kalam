@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function KuchAurDetails(props) {
+function OtherDetails(props) {
   const classes = useStyles();
   // let casteOptions = ["", "obc", "scSt", "general", "others"];
   // let qualificationOptions = [
@@ -688,4 +688,4 @@ function KuchAurDetails(props) {
   );
 }
 
-export default KuchAurDetails;
+export default OtherDetails;

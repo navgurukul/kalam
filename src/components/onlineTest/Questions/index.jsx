@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useLocation, useParams } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
+import { useSelector } from "react-redux";
 import Timer from "./Timer";
 import ThankYouPage from "../ThankYouPage";
 import SorryPage from "../SorryPage";
@@ -60,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
 function Questions() {
   const classes = useStyles();
   const { enrollmentKey, studentId } = useParams();
+  const { lang } = useSelector((state) => state.ui);
   const [index, setIndex] = useState(null);
   const Time = parseInt(decryptText(localStorage.getItem("time")), 10);
   const time = new Date(JSON.parse(Time));
@@ -166,7 +168,7 @@ function Questions() {
   if (index !== null) {
     //console.log("questionsList inside the condition", questionsList);
     const enText = DOMPurify.sanitize(questionsList[index].en_text);
-    // const hiText = DOMPurify.sanitize(questionsList[index].hi_text);
+    const hiText = DOMPurify.sanitize(questionsList[index].hi_text);
     const commonText = DOMPurify.sanitize(questionsList[index].common_text);
     const questionID = questionsList[index].id;
 
@@ -189,14 +191,19 @@ function Questions() {
             <Typography variant="subtitle1">
               <Timer callback={submitHandler} expiryTimestamp={time} />
             </Typography>
-            <Typography variant="subtitle1">
-              <div dangerouslySetInnerHTML={{ __html: enText }} />
-            </Typography>
+
             {/* <Typography variant="subtitle1">
             <div dangerouslySetInnerHTML={{ __html: hi_text }} />
           </Typography> */}
             <Typography variant="subtitle1">
               <div dangerouslySetInnerHTML={{ __html: commonText }} />
+            </Typography>
+            <Typography variant="subtitle1">
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: lang === "en" ? enText : hiText,
+                }}
+              />
             </Typography>
             {questionsList[index].options.length > 2 ? (
               questionsList[index].options.map((option, i) => {

@@ -5,12 +5,15 @@ import { GoogleLogin } from "react-google-login";
 import Paper from "@mui/material/Paper";
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
+import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
+import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import theme from "../../theme";
 import { loginWithGoogle } from "../../store/slices/authSlice";
+import { decryptText } from "../../utils";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -37,6 +40,7 @@ const LoginDesign = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [specialLogin, setSpecialLogin] = React.useState([]);
+  const [goToTest, setGoToTest] = React.useState();
   const callSnack = (msg, variant) => {
     enqueueSnackbar(msg, { variant });
   };
@@ -46,10 +50,30 @@ const LoginDesign = () => {
   // state = {
   //   specialLogin: [],
   // };
+  const getTestData = () => ({
+    enrollmentKey: localStorage.getItem("enrollmentKey"),
+    time: localStorage.getItem("time"),
+    studentId: localStorage.getItem("studentId"),
+  });
+
+  const { enrollmentKey, time } = getTestData();
   useEffect(() => {
     axios.get(`${baseUrl}rolebaseaccess`).then((res) => {
       setSpecialLogin(res.data.specialLogin);
     });
+    if (time && enrollmentKey) {
+      const Time = parseInt(decryptText(time), 10);
+      const date = new Date(JSON.parse(Time));
+      if (parseInt(dayjs(date).diff(dayjs(), "seconds"), 10) > 0) {
+        setGoToTest(true);
+      } else {
+        localStorage.removeItem("answerList");
+        localStorage.removeItem("enrollmentKey");
+        localStorage.removeItem("index");
+        localStorage.removeItem("time");
+        localStorage.removeItem("testStarted");
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -149,6 +173,16 @@ const LoginDesign = () => {
       style={{ margin: "" }}
     >
       <Box className={classes.container}>
+        {goToTest ? (
+          <Button
+            variant="text"
+            color="primary"
+            onClick={() => navigate(-1)}
+            size="large"
+          >
+            Go Back to Test
+          </Button>
+        ) : null}
         <Paper className={classes.loginContainer}>
           <Box>
             <Typography variant="h5" component="h3">

@@ -191,6 +191,16 @@ const AppRouter = () => {
                   </React.Suspense>
                 }
               />
+              <Route
+                path=":partnerId/assessments/:assessmentId"
+                element={
+                  <React.Suspense fallback={<Loader />}>
+                    <RequireAuth privateRoute>
+                      <AssessmentAttempts />
+                    </RequireAuth>
+                  </React.Suspense>
+                }
+              />
               <Route path=":partnerId">
                 <Route
                   index
@@ -209,16 +219,6 @@ const AppRouter = () => {
                   }
                 />
                 <Route path="assessments" element={<ViewAssessments />} />
-                <Route
-                  path="assessments/:assessmentId"
-                  element={
-                    <React.Suspense fallback={<Loader />}>
-                      <RequireAuth>
-                        <AssessmentAttempts />
-                      </RequireAuth>
-                    </React.Suspense>
-                  }
-                />
               </Route>
             </Route>
 

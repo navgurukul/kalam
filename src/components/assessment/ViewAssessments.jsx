@@ -107,7 +107,7 @@ const ModalStages = (props) => {
       options: {
         filter: false,
         customBodyRender: React.useCallback((rowData) => {
-          const url = `/partners/${partnerId}/assessments/${rowData}`;
+          const url = `/partner/${partnerId}/assessments/${rowData}`;
           return (
             <Link to={url}>
               <Button variant="text" color="primary" size="small">

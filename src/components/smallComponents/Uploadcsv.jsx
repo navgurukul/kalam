@@ -7,7 +7,7 @@ import { Modal } from "@mui/material";
 import Spinner from "react-spinner-material";
 import { useSnackbar } from "notistack";
 
-const baseUrl = import.meta.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((theme) => ({
   innerTable: {

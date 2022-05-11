@@ -3,7 +3,7 @@ import { makeStyles } from "@mui/styles";
 import { Typography, Button, Link, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const baseUrl = import.meta.env.API_URL;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((theme) => ({
   root: {

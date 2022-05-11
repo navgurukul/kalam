@@ -37,6 +37,17 @@ const PlacementStudentsData = () => {
     numberOfRows,
     page,
   } = useSelector((state) => state.students);
+
+  console.log(
+    // filterColumns,
+    url,
+    studentData,
+    fromDate,
+    toDate,
+    totalData,
+    stage,
+    page
+  );
   const dispatch = useDispatch();
 
   const fetchingStart = () => dispatch(changeFetching(true));
@@ -106,10 +117,11 @@ const PlacementStudentsData = () => {
     },
     {
       name: "salary", // Textfield no. input
-      label: "Salary/Stipend",
+      label: "Salary",
       options: {
         filter: false,
         sort: true,
+        customBodyRender: (value) => `₹${value} LPA`,
       },
     },
     {
@@ -189,19 +201,37 @@ const PlacementStudentsData = () => {
 
   useEffect(() => {
     // console.log("Updating changes");
-    if (loggedInUser)
-      dispatch(
-        fetchStudents({
-          fetchPendingInterviewDetails: false,
-          dataType: "softwareCourse",
-        })
-      );
+    // if (loggedInUser)
+    // dispatch(
+    //   fetchStudents({
+    //     fetchPendingInterviewDetails: false,
+    //     dataType: "softwareCourse",
+    //   })
+    // );
   }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser]);
 
   useEffect(() => {
     const controller = new AbortController();
     fetchAccess(controller.signal);
   }, [loggedInUser]);
+
+  useEffect(() => {
+    setStudents({
+      data: [
+        {
+          image_url:
+            "https://lh3.googleusercontent.com/a-/AOh14GiholzQ7vNedGZmxQN6srokfogEkaJ2rpdtFpNY=s96-c",
+          name: "Swanand Buva",
+          designation: "Front End Developer",
+          location: "Online",
+          mode: "Work From Home",
+          employer: "NavGurukul",
+          salary: 1.2,
+        },
+      ],
+      totalData: 1,
+    });
+  }, []);
 
   return (
     <Container maxWidth="xl">
@@ -248,8 +278,7 @@ const PlacementStudentsData = () => {
             </Grid>
           </Grid>
           <ServerSidePagination
-            colums={columns}
-            data={{}}
+            columns={columns}
             showLoader={isFetching}
             sortChange={sortChange}
             params={{

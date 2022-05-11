@@ -109,6 +109,9 @@ const TestInstructions = () => {
     if (activeStep === maxSteps - 1) {
       // console.log(enrollmentKey, rest);
       localStorage.setItem("enrollmentKey", encryptText(`${enrollmentKey}`));
+      if (rest.studentId) {
+        localStorage.setItem("studentId", encryptText(`${rest.studentId}`));
+      }
       navigate("/test/studentdetails", {
         state: { enrollmentKey, lang, ...rest },
       });

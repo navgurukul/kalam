@@ -119,7 +119,8 @@ function Questions() {
   };
 
   const submitHandler = () => {
-    const finalAnswerList = JSON.parse(localStorage.getItem("answerList"));
+    const finalAnswerList =
+      JSON.parse(localStorage.getItem("answerList")) || {};
     const decryptedAnsList = Object.entries(finalAnswerList).reduce(
       (acc, [key, value]) => {
         acc[key] = decryptText(value);

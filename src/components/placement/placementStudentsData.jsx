@@ -1,11 +1,21 @@
 import React, { useEffect } from "react";
-import { Avatar, Container, Grid, TextField, Typography } from "@mui/material";
+import {
+  Avatar,
+  Container,
+  Grid,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import EasyEdit from "react-easy-edit";
 import _ from "lodash";
 
 import { LocalizationProvider, DatePicker } from "@mui/lab";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
+import { useSnackbar } from "notistack";
 
 import {
   setFromDate,
@@ -22,6 +32,30 @@ import NotHaveAccess from "../layout/NotHaveAccess";
 import Loader from "../ui/Loader";
 
 const baseURL = import.meta.env.VITE_API_URL;
+
+const EditText = ({ label, type, value, studentId, change }) => {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleUpdate = (newValue) => {
+    //logic for calling api
+    change(newValue);
+    enqueueSnackbar(`${label} Updated Successfully`, { variant: "success" });
+  };
+
+  return (
+    <EasyEdit
+      type={type}
+      value={value}
+      onSave={(nVal) => handleUpdate(nVal)}
+      saveButtonLabel="✔"
+      cancelButtonLabel="✖"
+      disableAutoCancel
+      onValidate={(val) =>
+        val != null && val.length > 0 && type === "number" ? !isNaN(val) : true
+      }
+    />
+  );
+};
 
 const PlacementStudentsData = () => {
   const { loggedInUser } = useSelector((state) => state.auth);
@@ -65,32 +99,32 @@ const PlacementStudentsData = () => {
   });
 
   const columns = [
-    {
-      label: "Profile Image",
-      name: "image_url",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: React.useCallback(
-          (value, rowMeta) =>
-            value !== null ? (
-              <Avatar
-                src={value}
-                alt={rowMeta.rowData[1]}
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  // borderRadius: "50%",
-                  // objectFit: "cover",
-                }}
-              />
-            ) : (
-              <p> </p>
-            ),
-          []
-        ),
-      },
-    },
+    // {
+    //   label: "Profile Image",
+    //   name: "image_url",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: React.useCallback(
+    //       (value, rowMeta) =>
+    //         value !== null ? (
+    //           <Avatar
+    //             src={value}
+    //             alt={rowMeta.rowData[1]}
+    //             style={{
+    //               width: "60px",
+    //               height: "60px",
+    //               // borderRadius: "50%",
+    //               // objectFit: "cover",
+    //             }}
+    //           />
+    //         ) : (
+    //           <p> </p>
+    //         ),
+    //       []
+    //     ),
+    //   },
+    // },
     {
       name: "name",
       label: "Name",
@@ -105,6 +139,19 @@ const PlacementStudentsData = () => {
       options: {
         filter: true,
         sort: true,
+        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
+          const studentId = 0; //set id
+          const { label } = rowMeta.columnData;
+          return (
+            <EditText
+              label={label}
+              type="text"
+              value={value}
+              change={(val) => updateValue(val)}
+              studentId={studentId}
+            />
+          );
+        }, []),
       },
     },
     {
@@ -113,6 +160,19 @@ const PlacementStudentsData = () => {
       options: {
         filter: true,
         sort: true,
+        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
+          const studentId = 0; //set id
+          const { label } = rowMeta.columnData;
+          return (
+            <EditText
+              label={label}
+              type="text"
+              value={value}
+              change={(val) => updateValue(val)}
+              studentId={studentId}
+            />
+          );
+        }, []),
       },
     },
     {
@@ -121,7 +181,24 @@ const PlacementStudentsData = () => {
       options: {
         filter: false,
         sort: true,
-        customBodyRender: (value) => `₹${value} LPA`,
+        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
+          const studentId = 0; //set id
+          const { label } = rowMeta.columnData;
+          return (
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              ₹
+              <EditText
+                label={label}
+                type="number"
+                value={`${value}`}
+                change={(val) => updateValue(parseFloat(val, 10))}
+                studentId={studentId}
+              />
+              &nbsp;LPA
+            </div>
+          );
+        }, []),
+        // customBodyRender: (value) => `${value} `,
       },
     },
     {
@@ -130,6 +207,20 @@ const PlacementStudentsData = () => {
       options: {
         filter: true,
         sort: true,
+        customBodyRender: React.useCallback(
+          (value, rowMeta, updateValue) => (
+            // const labels = { wfh: "Work From Home", offline: "Offline" };
+            <Select
+              variant="outlined"
+              value={value}
+              onChange={(e) => updateValue(e.target.value)}
+            >
+              <MenuItem value="wfh">Work From Home</MenuItem>
+              <MenuItem value="offline">Offline</MenuItem>
+            </Select>
+          ),
+          []
+        ),
       },
     },
     {
@@ -138,6 +229,19 @@ const PlacementStudentsData = () => {
       options: {
         filter: true,
         sort: true,
+        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
+          const studentId = 0; //set id
+          const { label } = rowMeta.columnData;
+          return (
+            <EditText
+              label={label}
+              type="text"
+              value={value}
+              change={(val) => updateValue(val)}
+              studentId={studentId}
+            />
+          );
+        }, []),
       },
     },
   ];
@@ -224,7 +328,7 @@ const PlacementStudentsData = () => {
           name: "Swanand Buva",
           designation: "Front End Developer",
           location: "Online",
-          mode: "Work From Home",
+          mode: "wfh",
           employer: "NavGurukul",
           salary: 1.2,
         },

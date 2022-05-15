@@ -69,6 +69,7 @@ const AdmissionsDash = (props) => {
   const { isFetching } = useSelector((state) => state.ui);
   const {
     url,
+    // filterColumns,
     studentData,
     fromDate,
     toDate,
@@ -78,7 +79,7 @@ const AdmissionsDash = (props) => {
     page,
   } = useSelector((state) => state.students);
   // console.log(
-  // filterColumns,
+  //   filterColumns,
   //   url,
   //   studentData,
   //   fromDate,

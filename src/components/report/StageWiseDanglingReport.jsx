@@ -15,7 +15,7 @@ import StudentService from "../../services/StudentService";
 import { allStages } from "../../utils/constants";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
-const baseURL = import.meta.env.API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const StageWiseDanglingReport = () => {
   const dispatch = useDispatch();

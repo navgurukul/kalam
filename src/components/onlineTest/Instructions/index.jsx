@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { makeStyles, useTheme } from "@mui/styles";
 import {
   MobileStepper,
@@ -11,10 +11,12 @@ import {
   FormControl,
   Container,
 } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { encryptText } from "../../../utils";
+import { changeLanguage } from "../../../store/slices/uiSlice";
 // import Form from "../Form/index";
 
 const tutorialSteps = [
@@ -92,7 +94,8 @@ const TestInstructions = () => {
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
   const maxSteps = tutorialSteps.length;
-  const [lang, setLang] = useState("En");
+  const dispatch = useDispatch();
+  const { lang } = useSelector((state) => state.ui);
   // const [shuruKarein, SetShuruKarein] = useState(true);
   // const { enrolmentKey } = useParams();
   const navigate = useNavigate();
@@ -106,6 +109,9 @@ const TestInstructions = () => {
     if (activeStep === maxSteps - 1) {
       // console.log(enrollmentKey, rest);
       localStorage.setItem("enrollmentKey", encryptText(`${enrollmentKey}`));
+      if (rest.studentId) {
+        localStorage.setItem("studentId", encryptText(`${rest.studentId}`));
+      }
       navigate("/test/studentdetails", {
         state: { enrollmentKey, lang, ...rest },
       });
@@ -131,7 +137,7 @@ const TestInstructions = () => {
   }, []);
 
   const changeHandler = (e) => {
-    setLang(e.target.value);
+    dispatch(changeLanguage(e.target.value));
   };
 
   return (
@@ -191,8 +197,8 @@ const TestInstructions = () => {
                 label="Choose your language"
                 name="Language"
               >
-                <MenuItem value="Hi">Hindi</MenuItem>
-                <MenuItem value="En">English</MenuItem>
+                <MenuItem value="hi">Hindi</MenuItem>
+                <MenuItem value="en">English</MenuItem>
               </Select>
             </FormControl>
           </Paper>

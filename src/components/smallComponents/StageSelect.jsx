@@ -125,10 +125,20 @@ const StageSelect = (props) => {
 
   const { flag } = state;
   // console.log(stage, getKeyByValue(allStages, stage));
-  const allStagesOptions = nextStage[getKeyByValue(allStages, stage)].map(
-    (x) => ({ value: x, label: allStages[x] })
-  );
-  const selectedValue = { value: _.invert(allStages)[stage], label: stage };
+  let allStagesOptions = [
+    {
+      value: "enrolmentKeyGenerated",
+      label: allStages.enrolmentKeyGenerated,
+    },
+  ]; //90923
+  if (stage)
+    allStagesOptions = nextStage[getKeyByValue(allStages, stage)].map((x) => ({
+      value: x,
+      label: allStages[x],
+    }));
+  let selectedValue = { value: "invalid", label: "Invalid Stage" };
+  if (stage)
+    selectedValue = { value: _.invert(allStages)[stage], label: stage };
   return (
     <div>
       <Select

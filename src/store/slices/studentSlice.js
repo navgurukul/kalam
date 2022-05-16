@@ -54,6 +54,9 @@ export const fetchStudents = createAsyncThunk(
                   },
                 }
               );
+
+        // eslint-disable-next-line no-use-before-define
+        thunkAPI.dispatch(setUrl(url));
       }
       const studentData =
         // response.data &&
@@ -110,6 +113,9 @@ const StudentSlice = createSlice({
     setToDate: (state, action) => {
       state.toDate = action.payload;
     },
+    setUrl: (state, action) => {
+      state.url = action.payload;
+    },
     setNoOfRows: (state, action) => {
       state.numberOfRows = action.payload;
     },
@@ -136,5 +142,6 @@ export const {
   setNoOfRows,
   setPageNo,
   setStage,
+  setUrl,
 } = StudentSlice.actions; // actions auto generated from above reducers
 export default StudentSlice.reducer; // exporting the reducer

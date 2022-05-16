@@ -19,7 +19,8 @@ const CampusStudentsData = () => {
   const dispatch = useDispatch();
   const { loggedInUser } = useSelector((state) => state.auth);
   const [state, setState] = React.useState({
-    isShow: true,
+    dataView: 0,
+    // isShow: true,
     access: null, //access object to store data who are allowed to access the page
     // userLoggedIn: user(), //user object to store data of logged in user
     allCampusCondition: false, //condition to check if user is allowed to access the page
@@ -63,36 +64,60 @@ const CampusStudentsData = () => {
     fetchUsers();
     fetchAccess();
   }, []);
-  const progressMade = (value) => {
-    setState({ ...state, isShow: value });
+
+  const progressMade = () => {
+    setState({ ...state, dataView: 1 });
   };
-  const tabularData = (value) => {
-    setState({ ...state, isShow: value });
+  const tabularData = () => {
+    setState({ ...state, dataView: 0 });
   };
-  const showGraphData = (value) => {
-    setState({ ...state, isShow: value });
+  const showGraphData = () => {
+    setState({ ...state, dataView: 2 });
   };
-  const { isShow } = state;
+  const { dataView } = state;
+
+  const getVIew = (viewNo) => {
+    switch (viewNo) {
+      case 0:
+        return (
+          <DashboardPage
+            displayData={StudentService.CampusData}
+            url="/allcampus/students"
+          />
+        );
+      case 1:
+        return <StudentsProgressCards url="allcampus" />;
+      case 2:
+        return (
+          <GraphingPresentationJob url="/allcampus/students/distribution" />
+        );
+      default:
+        return (
+          <DashboardPage
+            displayData={StudentService.CampusData}
+            url="/allcampus/students"
+          />
+        );
+    }
+  };
   return (
     <div>
       {state.allCampusCondition ? ( //if user is allowed to access the page
         <div>
           <SelectUiByButtons
             name="All Campus"
-            progressMade={progressMade}
-            tabularData={tabularData}
-            showGraphData={showGraphData}
+            progressMade={{ label: "Progress Made", action: progressMade }}
+            tabularData={{ label: "Tabular Data", action: tabularData }}
+            showGraphData={{ label: "Graph on Job", action: showGraphData }}
+            selected={
+              dataView === 0
+                ? "tabularData"
+                : dataView === 1
+                ? "progressMade"
+                : "showGraphData"
+            }
           />
-          {isShow ? (
-            <DashboardPage
-              displayData={StudentService.CampusData}
-              url="/allcampus/students"
-            />
-          ) : isShow === null ? (
-            <GraphingPresentationJob url="/allcampus/students/distribution" />
-          ) : (
-            <StudentsProgressCards url="allcampus" />
-          )}
+          {getVIew(dataView)}
         </div>
       ) : (
         <NotHaveAccess />

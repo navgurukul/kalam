@@ -18,7 +18,7 @@ const baseURL = import.meta.env.VITE_API_URL;
 
 const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
   const snackbar = useSnackbar();
-  const { filterColumns, studentData, totalData, numberOfRows, page } =
+  const { filterColumns, studentData, totalData, numberOfRows, page, url } =
     useSelector((state) => state.students);
   const dispatch = useDispatch();
   const setFilters = (data) => dispatch(setFilterColumns(data));
@@ -51,7 +51,7 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
     };
     const { filterColumns: newColumns } = newState;
     // filterValues(filterColumns);
-    const url = filterColumns.reduce((cUrl, filterColumn, index) => {
+    const newUrl = filterColumns.reduce((cUrl, filterColumn, index) => {
       if (index > 0) {
         return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
       }
@@ -62,13 +62,13 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
     }, `${baseURL}students?`);
 
     if (newColumns.length > 0) {
-      setFilters({ filterColumns: newState.filterColumns, url: `${url}&` });
+      setFilters({ filterColumns: newState.filterColumns, url: `${newUrl}&` });
     } else {
-      setFilters({ filterColumns: [], url: `${url}` });
+      setFilters({ filterColumns: [], url: `${newUrl}` });
       setState({
         ...state,
         filterColumns: [],
-        mainUrl: `${url}`,
+        mainUrl: `${newUrl}`,
       });
     }
   };
@@ -108,7 +108,7 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
     };
     const { filterColumns: newColumns } = newState;
     // filterValues(filterColumns);
-    const url = await filterColumns.reduce((cUrl, filterColumn, index) => {
+    const newUrl = await filterColumns.reduce((cUrl, filterColumn, index) => {
       if (index > 0) {
         return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
       }
@@ -119,15 +119,15 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
     }, `${baseURL}students?`);
     if (newColumns.length > 0) {
       //getStudents(`${url}&limit=${numberOfRows}&page=0`);
-      setFilters({ filterColumns: newState.filterColumns, url: `${url}&` });
+      setFilters({ filterColumns: newState.filterColumns, url: `${newUrl}&` });
       setState({
         ...state,
         filterColumns: newState.filterColumns,
-        mainUrl: `${url}&`,
+        mainUrl: `${newUrl}&`,
       });
     } else {
       //getStudents(0, numberOfRows);
-      setFilters({ filterColumns: [], url: `${url}` });
+      setFilters({ filterColumns: [], url: `${newUrl}` });
       setState({
         ...state,
         filterColumns: [],
@@ -158,7 +158,7 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
       action: CustomSnackSpinner,
       persist: true,
     });
-    const response = await axios.get(state.mainUrl, params);
+    const response = await axios.get(url, params);
     const fullStudentData = await response.data.data.results
       .map((student) => {
         // eslint-disable-next-line import/no-named-as-default-member
@@ -173,8 +173,8 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
         state.newColumns.forEach((col, colInx) => {
           if (col.name === "donor") {
             body += `"${
-              nStudent.donor
-                ? student.donor.map((donor) => donor.donor).join(", ")
+              nStudent.donor !== null && nStudent.donor !== undefined
+                ? nStudent.donor.map((donor) => donor.donor).join(", ")
                 : ""
             }",`;
           } else if (colInx === state.newColumns.length - 1)
@@ -203,8 +203,8 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
       if (link.download !== undefined) {
         // feature detection
         // Browsers that support HTML5 download attribute
-        const url = URL.createObjectURL(encoded);
-        link.setAttribute("href", url);
+        const downloadUrl = URL.createObjectURL(encoded);
+        link.setAttribute("href", downloadUrl);
         link.setAttribute("download", "data.csv");
         link.style.visibility = "hidden";
         document.body.appendChild(link);

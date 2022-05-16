@@ -85,7 +85,8 @@ const ColumnTransitions = {
 
 //column for uploading documents
 const ColumnUpload = {
-  name: "uploadDocument",
+  //get the object of the column
+  name: "studentDocuments",
   label: "Upload Document",
   options: {
     filter: false,
@@ -93,7 +94,7 @@ const ColumnUpload = {
     customBodyRender: (value, rowMeta) => (
       //modal for uploading documents
 
-      <UploadDocuments rowMeta={rowMeta} />
+      <UploadDocuments rowMeta={rowMeta} value={value} />
     ),
   },
 };
@@ -1502,7 +1503,6 @@ const StudentService = {
       cityColumn,
       stateColumn,
       numberColumn,
-      ColumnUpload,
       AltNumberColumn,
       marksColumn,
       EmailColumn,
@@ -1635,6 +1635,7 @@ const StudentService = {
     joinedDate,
     stageColumn,
     JobKabLagegiColumn,
+    ColumnUpload,
     daysPassedColumn,
     kitneAurDin,
     kitneDinLagenge,

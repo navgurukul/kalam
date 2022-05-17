@@ -30,8 +30,8 @@ const styleForViewModal = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "650px",
-  height: "650px",
+  width: "80%",
+  height: "80%",
   bgcolor: "background.paper",
   border: "none",
   boxShadow: 24,
@@ -285,8 +285,8 @@ const UploadDocuments = (props) => {
                       src={documents.Id_proof_link}
                       alt="idProof"
                       style={{
-                        width: "650px",
-                        height: "650px",
+                        width: "100%",
+                        height: "100%",
                       }}
                     />
                   </Box>
@@ -412,10 +412,8 @@ const UploadDocuments = (props) => {
                       src={documents.signed_consent_link}
                       alt="signedConsent"
                       style={{
-                        width: "650px",
-                        height: "650px",
-
-                        // transform: "translate(-50%, -50%)",
+                        width: "100%",
+                        height: "100%",
                       }}
                     />
                   </Box>
@@ -539,8 +537,8 @@ const UploadDocuments = (props) => {
                       src={documents.Resume_link}
                       alt="resume"
                       style={{
-                        width: "650px",
-                        height: "650px",
+                        width: "100%",
+                        height: "100%",
                       }}
                     />
                   </Box>
@@ -664,8 +662,8 @@ const UploadDocuments = (props) => {
                       src={documents.marksheet_link}
                       alt="marksheet"
                       style={{
-                        width: "650px",
-                        height: "650px",
+                        width: "100%",
+                        height: "100%",
 
                         // transform: "translate(-50%, -50%)",
                       }}

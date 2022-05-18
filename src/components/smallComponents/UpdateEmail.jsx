@@ -14,7 +14,7 @@ const UpdateEmail = (props) => {
     const studentId = rowMetatable.rowData[0];
     // const columnIndex = rowMetatable.columnIndex;
     axios
-      .put(`${baseUrl}students/updateEmail/${studentId}`, { newEmail })
+      .put(`${baseUrl}students/updateEmail/${studentId}`, { email: newEmail })
       .then(() => {
         //console.log("Success");
         enqueueSnackbar("Email updated successfully!", {

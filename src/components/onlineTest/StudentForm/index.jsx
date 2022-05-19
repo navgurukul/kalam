@@ -4,6 +4,7 @@ import { Button, Container, Typography, MobileStepper } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { makeStyles, useTheme } from "@mui/styles";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import { useSelector } from "react-redux";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -42,6 +43,7 @@ const StudentForm = () => {
   const theme = useTheme();
   const rLocation = useLocation();
   const navigate = useNavigate();
+  const { lang } = useSelector((state) => state.ui);
   const {
     firstName = "",
     middleName = "",
@@ -49,7 +51,7 @@ const StudentForm = () => {
     mobileNumber = "",
     enrollmentKey,
     studentId = "",
-    lang = "En",
+    // lang = "En",
   } = rLocation.state
     ? rLocation.state
     : {
@@ -367,7 +369,7 @@ const StudentForm = () => {
   return (
     <Container className={classes.root} maxWidth="sm">
       <Typography variant="h5" className={classes.text}>
-        {lang === "En" ? steps[activeStep][0] : steps[activeStep][1]}
+        {lang === "en" ? steps[activeStep][0] : steps[activeStep][1]}
       </Typography>
       <form
         style={{ paddingTop: "2.0rem" }}

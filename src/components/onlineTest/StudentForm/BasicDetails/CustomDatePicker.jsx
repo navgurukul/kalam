@@ -23,8 +23,8 @@ export default function MaterialUIPickers(props) {
           format="dd/MM/yyyy"
           inputVariant="outlined"
           fullWidth
-          label={lang === "En" ? "Your dob" : "आपका जन्मदिन"}
-          placeholder={lang === "En" ? "Your dob" : "आपका जन्मदिन"}
+          label={lang === "en" ? "Your dob" : "आपका जन्मदिन"}
+          placeholder={lang === "en" ? "Your dob" : "आपका जन्मदिन"}
           value={filledDate || selectedDate}
           onChange={handleDateChange}
           KeyboardButtonProps={{

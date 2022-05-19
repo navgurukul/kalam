@@ -97,7 +97,7 @@ const BasicDetails = ({
             variant="caption"
             color="error"
           >
-            {lang === "En" ? "Required Field" : "आवश्यक क्षेत्र"}
+            {lang === "en" ? "Required Field" : "आवश्यक क्षेत्र"}
           </Typography>
         ) : (
           ""
@@ -130,15 +130,15 @@ const BasicDetails = ({
                 inputRef={ref}
                 onBlur={rest.onBlur}
                 className={classes.spacing}
-                label={lang === "En" ? "First Name" : "प्रथम नाम"}
-                placeholder={lang === "En" ? "First Name" : "प्रथम नाम"}
+                label={lang === "en" ? "First Name" : "प्रथम नाम"}
+                placeholder={lang === "en" ? "First Name" : "प्रथम नाम"}
                 // name="FirstName"
                 autoComplete="off"
                 type="text"
                 error={!!errors.FirstName}
                 helperText={
                   errors.FirstName
-                    ? lang === "En"
+                    ? lang === "en"
                       ? "Enter First Name"
                       : "प्रथम नाम दर्ज करें"
                     : "Ex. XYZ"
@@ -160,14 +160,14 @@ const BasicDetails = ({
                 id="MiddleName"
                 inputRef={ref}
                 className={classes.spacing}
-                label={lang === "En" ? "Middle Name " : "मध्यनाम"}
-                placeholder={lang === "En" ? "Middle Name " : "मध्यनाम"}
+                label={lang === "en" ? "Middle Name " : "मध्यनाम"}
+                placeholder={lang === "en" ? "Middle Name " : "मध्यनाम"}
                 autoComplete="off"
                 error={!!errors.MiddleName}
                 type="text"
                 helperText={
                   errors.MiddleName
-                    ? lang === "En"
+                    ? lang === "en"
                       ? "Enter Middle Name"
                       : "मध्यनाम दर्ज करें"
                     : "Ex. PQR"
@@ -192,13 +192,13 @@ const BasicDetails = ({
                 id="LastName"
                 inputRef={ref}
                 className={classes.spacing}
-                label={lang === "En" ? "Last Name" : "कुलनाम"}
-                placeholder={lang === "En" ? "Last Name" : "कुलनाम"}
+                label={lang === "en" ? "Last Name" : "कुलनाम"}
+                placeholder={lang === "en" ? "Last Name" : "कुलनाम"}
                 autoComplete="off"
                 error={!!errors.LastName}
                 helperText={
                   errors.LastName
-                    ? lang === "En"
+                    ? lang === "en"
                       ? "Enter Last Name"
                       : "कुलनाम दर्ज करें"
                     : "Ex. ABC"
@@ -229,7 +229,7 @@ const BasicDetails = ({
                   disabled={inputDisabled}
                   // margin="normal"
                   id="dob"
-                  label={lang === "En" ? "Date of Birth" : "आपका जन्मदिन"}
+                  label={lang === "en" ? "Date of Birth" : "आपका जन्मदिन"}
                   required
                   inputRef={ref}
                   focused={isTouched}
@@ -242,10 +242,10 @@ const BasicDetails = ({
                       helperText={
                         errors.dob
                           ? errors.dob.type === "validate"
-                            ? lang === "En"
+                            ? lang === "en"
                               ? "Age must be 16 or higher"
                               : "आयु 16 या अधिक होनी चाहिए"
-                            : lang === "En"
+                            : lang === "en"
                             ? "Enter Date of Birth"
                             : "जन्मदिन दर्ज करें"
                           : "Ex. 19/11/2005"
@@ -253,7 +253,7 @@ const BasicDetails = ({
                     />
                   )}
                   fullWidth
-                  placeholder={lang === "En" ? "Date of Birth" : "आपका जन्मदिन"}
+                  placeholder={lang === "en" ? "Date of Birth" : "आपका जन्मदिन"}
                   error={!!errors.dob}
                   {...rest}
                 />
@@ -284,10 +284,10 @@ const BasicDetails = ({
                     e.preventDefault();
                 }}
                 label={
-                  lang === "En" ? "Your Whatsapp Number" : "आपका व्हाट्सएप नंबर"
+                  lang === "en" ? "Your Whatsapp Number" : "आपका व्हाट्सएप नंबर"
                 }
                 placeholder={
-                  lang === "En" ? "Your Whatsapp Number" : "आपका व्हाट्सएप नंबर"
+                  lang === "en" ? "Your Whatsapp Number" : "आपका व्हाट्सएप नंबर"
                 }
                 type="number"
                 autoComplete="off"
@@ -296,10 +296,10 @@ const BasicDetails = ({
                   errors.whatsapp
                     ? errors.whatsapp.type === "pattern" ||
                       errors.whatsapp.type === "maxLength"
-                      ? lang === "En"
+                      ? lang === "en"
                         ? "No. should be of 10 digits"
                         : "नंबर 10 अंकों का होना चाहिए"
-                      : lang === "En"
+                      : lang === "en"
                       ? "Enter Whatsapp Number"
                       : "व्हाट्सएप नंबर दर्ज करें"
                     : "Ex. 99065xxxxx"
@@ -331,9 +331,9 @@ const BasicDetails = ({
                 type="tel"
                 inputRef={ref}
                 className={classes.spacing}
-                label={lang === "En" ? "Alternate Number" : "वैकल्पिक नंबर"}
+                label={lang === "en" ? "Alternate Number" : "वैकल्पिक नंबर"}
                 placeholder={
-                  lang === "En" ? "Alternate Number" : "वैकल्पिक नंबर"
+                  lang === "en" ? "Alternate Number" : "वैकल्पिक नंबर"
                 }
                 autoComplete="off"
                 error={!!errors.AlternateNumber}
@@ -341,10 +341,10 @@ const BasicDetails = ({
                   errors.AlternateNumber
                     ? errors.AlternateNumber.type === "pattern" ||
                       errors.AlternateNumber.type === "maxLength"
-                      ? lang === "En"
+                      ? lang === "en"
                         ? "No. should be of 10 digits"
                         : "नंबर 10 अंकों का होना चाहिए"
-                      : lang === "En"
+                      : lang === "en"
                       ? "Enter Alternate Number"
                       : "वैकल्पिक नंबर दर्ज करें"
                     : "Ex. 99065xxxxx"
@@ -372,16 +372,16 @@ const BasicDetails = ({
                 type="email"
                 required
                 className={classes.spacing}
-                label={lang === "En" ? "Email" : "ईमेल"}
-                placeholder={lang === "En" ? "Email" : "ईमेल"}
+                label={lang === "en" ? "Email" : "ईमेल"}
+                placeholder={lang === "en" ? "Email" : "ईमेल"}
                 error={!!errors.email}
                 helperText={
                   errors.email
                     ? errors.email.type === "pattern"
-                      ? lang === "En"
+                      ? lang === "en"
                         ? "Enter Valid Email"
                         : "मान्य ईमेल नंबर दर्ज करें"
-                      : lang === "En"
+                      : lang === "en"
                       ? "Enter Email"
                       : "ईमेल दर्ज करें"
                     : "Ex. xyz@mail.com"
@@ -401,11 +401,12 @@ const BasicDetails = ({
               required: true,
               validate: (gender) => {
                 if (gender === "select gender") return false;
-                if (gender === "female") return true;
-                enqueueSnackbar("Only Females can appear for the Test", {
-                  variant: "info",
-                });
-                return false;
+                // if (gender === "female") return true;
+                // enqueueSnackbar("Only Females can appear for the Test", {
+                //   variant: "info",
+                // });
+                // return false;
+                return true;
               },
             }}
             name="gender"
@@ -417,14 +418,14 @@ const BasicDetails = ({
                 fullWidth
               >
                 <InputLabel id="gender-label">
-                  {lang === "En" ? "Select Gender" : "लिंग चुनें"}
+                  {lang === "en" ? "Select Gender" : "लिंग चुनें"}
                 </InputLabel>
                 <Select
-                  label={lang === "En" ? "Select Gender" : "लिंग चुनें"}
+                  label={lang === "en" ? "Select Gender" : "लिंग चुनें"}
                   error={!!errors.gender}
                   id="gender"
                   inputRef={ref}
-                  placeholder={lang === "En" ? "Select Gender" : "लिंग चुनें"}
+                  placeholder={lang === "en" ? "Select Gender" : "लिंग चुनें"}
                   required
                   disabled={inputDisabled}
                   {...rest}
@@ -440,7 +441,7 @@ const BasicDetails = ({
                       value={el[0].toLowerCase()}
                       disabled={el[0] === "Select Gender"}
                     >
-                      {lang === "En" ? el[0] : el[1]}
+                      {lang === "en" ? el[0] : el[1]}
                     </MenuItem>
                   ))}
                 </Select>
@@ -457,7 +458,7 @@ const BasicDetails = ({
               variant="caption"
               color="error"
             >
-              {lang === "En"
+              {lang === "en"
                 ? "Please specify your gender"
                 : "अपना लिंग निर्दिष्ट करें"}
             </Typography>

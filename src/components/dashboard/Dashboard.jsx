@@ -448,7 +448,7 @@ const DashboardPage = (props) => {
         />
       </Grid>
 
-      <Grid item xs={12} md={12} lg={4} xl={3}>
+      <Grid item xs={12} md={12} lg={6} xl={6}>
         <Paper
           style={{
             fontSize: "17px",

@@ -51,10 +51,10 @@ const UploadDocuments = (props) => {
   const { rowMeta, value } = props;
 
   const [documents, setDocuments] = useState({
-    Id_proof_link: value.Id_proof_link,
-    Resume_link: value.Resume_link,
-    marksheet_link: value.marksheet_link,
-    signed_consent_link: value.signed_consent_link,
+    Id_proof_link: value?.Id_proof_link || "",
+    Resume_link: value?.Resume_link || "",
+    marksheet_link: value?.marksheet_link || "",
+    signed_consent_link: value?.signed_consent_link || "",
   });
   const [open, setOpen] = React.useState(false);
   const [viewOpenIdProof, setViewOpenIdProof] = React.useState(false);

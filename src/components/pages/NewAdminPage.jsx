@@ -22,21 +22,21 @@ import NewCustomToolbar from "../smallComponents/NewCustomToolbar";
 const baseUrl = import.meta.env.VITE_API_URL;
 
 const NewAdminPage = () => {
-  const [roleByMailID, setRoleByMailID] = useState([]);
-  // const [selectedOptionRole, setSelectedOptionRole] = useState([]);
-  // const [selectedOptionPrivilages, setSelectedOptionPrivilages] = useState([]);
-
   //Snackbar
   const snackbar = useSnackbar();
 
   //States and Hooks
+  const [roleByMailID, setRoleByMailID] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [roleMenu, setRoleMenu] = useState("");
+  const [selectedRoles, setSelectedRoles] = useState([]);
   const [selectedPrivilages, setSelectedPrivilages] = useState([]);
   const [mail, setMail] = useState("");
-  const [selectedRolePartners, setSelectedRolePartners] = useState([]);
-  const [selectedRoleTP, setSelectedRoleTP] = useState([]);
+  // const [selectedRolePartners, setSelectedRolePartners] = useState([]);
+
+  const [roleOptions, setRoleOptions] = React.useState([]);
+  const [privilegeOptions, setPrivilegeOptions] = React.useState([]);
 
   //options for dropdowns
   const dropDownOptions = [
@@ -135,8 +135,8 @@ const NewAdminPage = () => {
         setDialogOpen(false);
         setMail("");
         setRoleMenu("");
-        setSelectedRolePartners([]);
-        setSelectedRoleTP([]);
+        // setSelectedRolePartners([]);
+        // setSelectedRoleTP([]);
         setSelectedPrivilages([]);
       },
     []
@@ -146,15 +146,57 @@ const NewAdminPage = () => {
     axios
       .get(`${baseUrl}rolebaseaccess/email`)
       .then((response) => {
-        setRoleByMailID(response.data);
+        const users = response.data.map((user) => {
+          let userData = {};
+          const roles = [];
+          const privileges = [];
+          user.userrole.forEach((roleData) => {
+            if (roleData.role && roleData.access)
+              roles.push({
+                access_id: roleData.access.filter(
+                  (accesObj) => accesObj.user_role_id === roleData.role.id
+                )[0].id,
+                access: roleData.access.filter(
+                  (accesObj) => accesObj.user_role_id === roleData.role.id
+                )[0].access,
+                role_id: roleData.role.id,
+                role: roleData.role.roles,
+              });
+            if (roleData.privilege)
+              privileges.push({
+                privilege: roleData.privilege,
+              });
+          });
+          userData = { email: user.email, roles, privileges };
+          return userData;
+        });
+
+        setRoleByMailID(users);
+        console.log(users);
       })
       .catch(() => {
         // console.log(e);
       });
   };
 
+  const fetchRolesPrivileges = async () => {
+    const roles = await axios.get(`${baseUrl}role/getRole`);
+    const privilege = await axios.get(`${baseUrl}role/getPrivilege`);
+    setRoleOptions(
+      roles.data.map((role) => ({ label: role.roles, value: role.id }))
+    );
+    setPrivilegeOptions(
+      privilege.data.map((priv) => ({
+        label: priv.privilege,
+        value: priv.id,
+      }))
+    );
+    console.log(privilegeOptions);
+  };
+
   useEffect(() => {
     fetchByMailId();
+    fetchRolesPrivileges();
   }, []);
 
   // const handleRoleChange = (selectedOptionRole) => {
@@ -168,10 +210,10 @@ const NewAdminPage = () => {
   // };
 
   const columns = [
-    "Mail-Id",
+    { name: "email", label: "Mail-Id" },
     {
       name: "roles",
-      label: "Role",
+      label: "Roles",
       options: {
         filter: true,
         sort: true,
@@ -206,7 +248,7 @@ const NewAdminPage = () => {
             <div>
               {value.map((item) => (
                 <span
-                  key={`${item.split(":", 1)} ${Math.random() * 10}`}
+                  key={`${item} ${Math.random() * 10}`}
                   style={{
                     display: "inline-block",
                     marginRight: "10px",
@@ -214,7 +256,7 @@ const NewAdminPage = () => {
                     padding: "8px",
                   }}
                 >
-                  {item.split(":", 1)}
+                  {item.role}-{item.access}
                   <br />
                 </span>
               ))}
@@ -225,13 +267,13 @@ const NewAdminPage = () => {
       },
     },
     {
-      name: "privilege",
-      label: "Privilages",
+      name: "privileges",
+      label: "Privileges",
       options: {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback(
-          () => (
+          (value) => (
             <div>
               <span
                 style={{
@@ -241,7 +283,7 @@ const NewAdminPage = () => {
                   padding: "8px",
                 }}
               >
-                Privilege
+                Privilege-{value[0].privilege}
                 <br />
               </span>
             </div>
@@ -273,28 +315,41 @@ const NewAdminPage = () => {
                 onClick={() => {
                   setEditing(rowData[3]);
                   setMail(rowData[0]);
-                  setSelectedPrivilages([
-                    { value: rowData[2], label: rowData[2] },
-                  ]);
+                  console.log(rowData[1]);
+
+                  setSelectedRoles(rowData[1]);
+
+                  setSelectedPrivilages(
+                    rowData[2].map((priv) => {
+                      const privData = privilegeOptions.find(
+                        (opt) => opt.value === priv.privilege
+                      );
+                      if (privData) {
+                        console.log(privData);
+                        return { label: privData.label, value: privData.value };
+                      }
+                      return { label: "Invalid Privelege", value: "0" };
+                    })
+                  );
                   const roles = {};
                   rowData[1].forEach((el) => {
-                    if (el.split(":")[0] === "partner") {
-                      const partners = el
-                        .split(":")[1]
-                        .split(",")
-                        .map((elm) => ({ label: elm, value: elm }));
-                      roles.partners = partners;
-                    }
-                    if (el.split(":")[0] === "T&P") {
-                      const campuses = el
-                        .split(":")[1]
-                        .split(",")
-                        .map((elm) => ({ value: elm, label: elm }));
-                      roles.tnp = campuses;
-                    }
+                    // if (el.split(":")[0] === "partner") {
+                    //   const partners = el
+                    //     .split(":")[1]
+                    //     .split(",")
+                    //     .map((elm) => ({ label: elm, value: elm }));
+                    //   roles.partners = partners;
+                    // }
+                    // if (el.split(":")[0] === "T&P") {
+                    //   const campuses = el
+                    //     .split(":")[1]
+                    //     .split(",")
+                    //     .map((elm) => ({ value: elm, label: elm }));
+                    //   roles.tnp = campuses;
+                    // }
                   });
-                  if (roles.partners) setSelectedRolePartners(roles.partners);
-                  if (roles.tnp) setSelectedRoleTP(roles.tnp);
+                  // if (roles.partners) setSelectedRolePartners(roles.partners);
+                  // if (roles.tnp) setSelectedRoleTP(roles.tnp);
                   handleOpen();
                 }}
               />
@@ -329,31 +384,31 @@ const NewAdminPage = () => {
   ];
 
   const options = {
-    selectableRows: false,
+    selectableRows: "single",
     customToolbar: React.useCallback(
       () => <NewCustomToolbar handleOpen={handleOpen} />,
       []
     ),
   };
 
-  const data = roleByMailID.map((item) => [
-    item.email,
-    item.roles,
-    item.privilege,
-    item.id,
-  ]);
+  // const data = roleByMailID.map((item) => [
+  //   item.email,
+  //   item.roles,
+  //   item.privilege,
+  //   item.id,
+  // ]);
 
   return (
     <>
       <MUIDataTable
         title="Role Based Accesses"
-        data={data}
+        data={roleByMailID}
         columns={columns}
         options={options}
       />
       <Dialog open={dialogOpen} onClose={handleClose}>
         <DialogTitle>
-          <Typography
+          {/* <Typography
             variant="h4"
             color="primary"
             // style={{
@@ -363,9 +418,8 @@ const NewAdminPage = () => {
             //   position: "relative",
             //   bottom: "20px",
             // }}
-          >
-            Give Access To -
-          </Typography>
+          > */}
+          Give Access To -{/* </Typography> */}
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
@@ -406,7 +460,7 @@ const NewAdminPage = () => {
                 placeholder="Role Menu"
                 value={roleMenu}
                 onChange={handleRoleMenuChange}
-                options={RoleMenuOptions}
+                options={roleOptions}
                 styles={{
                   menuList: (base) => ({
                     ...base,
@@ -431,7 +485,7 @@ const NewAdminPage = () => {
                   </InputLabel>
                   <Select
                     placeholder="Select Particular Partners"
-                    value={selectedRolePartners}
+                    // value={selectedRolePartners}
                     onChange={handleRoleChangePartners}
                     isMulti
                     options={dropDownOptions}
@@ -462,7 +516,7 @@ const NewAdminPage = () => {
                   </InputLabel>
                   <Select
                     placeholder="Select Particular T&P"
-                    value={selectedRoleTP}
+                    // value={selectedRoleTP}
                     onChange={handleRoleChangeTP}
                     isMulti
                     options={dropDownOptions}
@@ -494,7 +548,7 @@ const NewAdminPage = () => {
                 value={selectedPrivilages}
                 onChange={handlePrivilagesChange}
                 isMulti
-                // options={PrivilageOptions}
+                options={privilegeOptions}
                 styles={{
                   menuList: (base) => ({
                     ...base,

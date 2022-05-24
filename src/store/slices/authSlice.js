@@ -17,9 +17,11 @@ export const loginWithGoogle = createAsyncThunk(
           idToken: response.tokenObj.id_token,
         });
         const { userToken, user } = userData.data;
-        const rolesData = await axios.get(
-          `${baseUrl}rolebaseaccess/mail/${user.email}`
-        );
+        // const rolesData = await axios.get(
+        //   `${baseUrl}rolebaseaccess/mail/${user.email}`
+        // );
+
+        const rolesData = { data: [] };
 
         const { roles, privilege } =
           rolesData.data.length > 0
@@ -59,9 +61,10 @@ export const fetchCurrentUser = createAsyncThunk(
       try {
         const userData = await axios.get(`${baseUrl}users/${userId}`);
         const { data } = userData.data;
-        const rolesData = await axios.get(
-          `${baseUrl}rolebaseaccess/mail/${data.email}`
-        );
+        // const rolesData = await axios.get(
+        //   `${baseUrl}rolebaseaccess/mail/${data.email}`
+        // );
+        const rolesData = { data: [] };
 
         const { roles, privilege } =
           rolesData.data.length > 0

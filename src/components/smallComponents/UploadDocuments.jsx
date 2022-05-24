@@ -51,10 +51,10 @@ const UploadDocuments = (props) => {
   const { rowMeta, value } = props;
 
   const [documents, setDocuments] = useState({
-    Id_proof_link: value.Id_proof_link,
-    Resume_link: value.Resume_link,
-    marksheet_link: value.marksheet_link,
-    signed_consent_link: value.signed_consent_link,
+    Id_proof_link: value?.Id_proof_link || "",
+    Resume_link: value?.Resume_link || "",
+    marksheet_link: value?.marksheet_link || "",
+    signed_consent_link: value?.signed_consent_link || "",
   });
   const [open, setOpen] = React.useState(false);
   const [viewOpenIdProof, setViewOpenIdProof] = React.useState(false);
@@ -72,11 +72,24 @@ const UploadDocuments = (props) => {
   const studentId = rowMeta.rowData[0];
   const studentName = rowMeta.rowData[1];
 
+  //limiting the size of file
+  const limitFileSize = (file) => {
+    if (file.size > 1000000) {
+      snackbar.enqueueSnackbar("File size should not exceed 1MB", {
+        variant: "error",
+      });
+      return false;
+    }
+  };
+
   //function to create or generate link
   const LinkGenerator = (e, unique) => {
     e.preventDefault();
     const formData = new FormData();
 
+    const file = e.target.files[0];
+
+    limitFileSize(file);
     formData.append("file", e.target.files[0]);
     axios
       .post(`${baseUrl}/students/resume/documents`, formData)
@@ -186,7 +199,6 @@ const UploadDocuments = (props) => {
   //function to upload documents - marksheet
   const UploadMarksheet = (e) => {
     e.preventDefault();
-
     axios
       .post(`${baseUrl}students/uploadDocument/${studentId}`, {
         marksheet_link: Link.marksheetLink,

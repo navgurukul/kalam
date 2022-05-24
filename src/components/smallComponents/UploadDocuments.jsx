@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-unstable-nested-components */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import MUIDataTable from "mui-datatables";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -117,7 +117,7 @@ const UploadDocuments = (props) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -141,7 +141,7 @@ const UploadDocuments = (props) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -168,7 +168,7 @@ const UploadDocuments = (props) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -192,7 +192,7 @@ const UploadDocuments = (props) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -215,7 +215,7 @@ const UploadDocuments = (props) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -751,6 +751,12 @@ const UploadDocuments = (props) => {
     { name: "Joe James", company: "Test Corp", city: "Yonkers", state: "NY" },
   ];
 
+  const isDocumentsEmpty = (docs) =>
+    docs &&
+    Object.values(docs)
+      .map((val) => val && val.length === 0)
+      .includes(false);
+
   const options = {
     filter: false,
     selectableRows: "none",
@@ -762,7 +768,9 @@ const UploadDocuments = (props) => {
 
   return (
     <div>
-      <Button onClick={handleOpen}>UPLOAD</Button>
+      <Button onClick={handleOpen}>
+        {isDocumentsEmpty(documents) ? "VIEW/UPDATE" : "UPLOAD"}{" "}
+      </Button>
       <Modal
         open={open}
         onClose={handleClose}

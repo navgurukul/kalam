@@ -401,12 +401,12 @@ const BasicDetails = ({
               required: true,
               validate: (gender) => {
                 if (gender === "select gender") return false;
-                // if (gender === "female") return true;
-                // enqueueSnackbar("Only Females can appear for the Test", {
-                //   variant: "info",
-                // });
-                // return false;
-                return true;
+                if (gender === "female" || gender === "other") return true;
+                enqueueSnackbar("Curently, Males cannot appear for the Test", {
+                  variant: "info",
+                });
+                return false;
+                // return true;
               },
             }}
             name="gender"

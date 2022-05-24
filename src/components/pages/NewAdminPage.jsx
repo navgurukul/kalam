@@ -14,52 +14,35 @@ import {
   FormControl,
   Grid,
   InputLabel,
-  Typography,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import NewCustomToolbar from "../smallComponents/NewCustomToolbar";
+import { useDispatch } from "react-redux";
+import { showDialog } from "../../store/slices/uiSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
 const NewAdminPage = () => {
-  //Snackbar
   const snackbar = useSnackbar();
+  const dispatch = useDispatch();
 
   //States and Hooks
   const [roleByMailID, setRoleByMailID] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [roleMenu, setRoleMenu] = useState("");
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [selectedPrivilages, setSelectedPrivilages] = useState([]);
+  const [access, setAccess] = useState([]);
   const [mail, setMail] = useState("");
-  // const [selectedRolePartners, setSelectedRolePartners] = useState([]);
-
-  const [roleOptions, setRoleOptions] = React.useState([]);
-  const [privilegeOptions, setPrivilegeOptions] = React.useState([]);
 
   //options for dropdowns
-  const dropDownOptions = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-  ];
-
-  const RoleMenuOptions = [
-    { value: "partner", label: "Partners" },
-    { value: "t&p", label: "T&P" },
-  ];
-
-  // const RoleOptions = [
-  //   { value: "partner", label: "Partners" },
-  //   { value: "t&p", label: "T&P" },
-  // ];
+  const [roleOptions, setRoleOptions] = React.useState([]);
+  const [privilegeOptions, setPrivilegeOptions] = React.useState([]);
 
   const handleClose = () => {
     setDialogOpen(false);
     setMail("");
-    setSelectedRolePartners([]);
-    setSelectedRoleTP([]);
+    setSelectedRoles([]);
     setSelectedPrivilages([]);
     setEditing(null);
   };
@@ -67,27 +50,15 @@ const NewAdminPage = () => {
   const handleOpen = () => {
     setDialogOpen(true);
   };
-  // const allPrivilagesOptions = [
-  //   { value: "admin", label: "Admin" },
-  //   { value: "admin2", label: "Admin2" },
-  //   { value: "admin3", label: "Admin3" },
-  // ];
 
-  //event handlers
-  const handleRoleChangePartners = (selectedRole) => {
-    setSelectedRolePartners(selectedRole);
-  };
-
-  const handleRoleChangeTP = (selectedRole) => {
-    setSelectedRoleTP(selectedRole);
-  };
-
-  const handlePrivilagesChange = (newSelectedPrivilages) => {
+  const handlePrivilegeChange = (newSelectedPrivilages) => {
     setSelectedPrivilages(newSelectedPrivilages);
   };
 
-  const handleRoleMenuChange = (selectedRoleMenu) => {
-    setRoleMenu(selectedRoleMenu);
+  const handleRoleChange = (selectedRoleMenu) => {
+    dispatch(showDialog({ title: "123" }));
+    // setSelectedRoles(selectedRoleMenu);
+    console.log(selectedRoleMenu);
   };
 
   // const handleSubmit = async () => {
@@ -134,9 +105,8 @@ const NewAdminPage = () => {
         //cleanup
         setDialogOpen(false);
         setMail("");
-        setRoleMenu("");
-        // setSelectedRolePartners([]);
-        // setSelectedRoleTP([]);
+        setSelectedRoles("");
+        setSelectedRoles([]);
         setSelectedPrivilages([]);
       },
     []
@@ -172,7 +142,6 @@ const NewAdminPage = () => {
         });
 
         setRoleByMailID(users);
-        console.log(users);
       })
       .catch(() => {
         // console.log(e);
@@ -180,18 +149,21 @@ const NewAdminPage = () => {
   };
 
   const fetchRolesPrivileges = async () => {
-    const roles = await axios.get(`${baseUrl}role/getRole`);
-    const privilege = await axios.get(`${baseUrl}role/getPrivilege`);
-    setRoleOptions(
-      roles.data.map((role) => ({ label: role.roles, value: role.id }))
-    );
-    setPrivilegeOptions(
-      privilege.data.map((priv) => ({
-        label: priv.privilege,
-        value: priv.id,
-      }))
-    );
-    console.log(privilegeOptions);
+    try {
+      const roles = await axios.get(`${baseUrl}role/getRole`);
+      const privilege = await axios.get(`${baseUrl}role/getPrivilege`);
+      setRoleOptions(
+        roles.data.map((role) => ({ label: role.roles, value: role.id }))
+      );
+      setPrivilegeOptions(
+        privilege.data.map((priv) => ({
+          label: priv.privilege,
+          value: priv.id,
+        }))
+      );
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   useEffect(() => {
@@ -317,7 +289,12 @@ const NewAdminPage = () => {
                   setMail(rowData[0]);
                   console.log(rowData[1]);
 
-                  setSelectedRoles(rowData[1]);
+                  setSelectedRoles(
+                    rowData[1].map((role) => ({
+                      label: `${role.role}-${role.access}`,
+                      value: role.role_id,
+                    }))
+                  );
 
                   setSelectedPrivilages(
                     rowData[2].map((priv) => {
@@ -391,13 +368,6 @@ const NewAdminPage = () => {
     ),
   };
 
-  // const data = roleByMailID.map((item) => [
-  //   item.email,
-  //   item.roles,
-  //   item.privilege,
-  //   item.id,
-  // ]);
-
   return (
     <>
       <MUIDataTable
@@ -441,11 +411,6 @@ const NewAdminPage = () => {
                 type="email"
                 value={mail}
                 onChange={(e) => setMail(e.target.value)}
-                // style={{
-                //   width: "50%",
-                //   marginLeft: "20px",
-                //   marginRight: "20px",
-                // }}
               />
             </Grid>
             {/* </div> */}
@@ -457,9 +422,10 @@ const NewAdminPage = () => {
                 Roles
               </InputLabel>
               <Select
-                placeholder="Role Menu"
-                value={roleMenu}
-                onChange={handleRoleMenuChange}
+                placeholder="Roles"
+                isMulti
+                value={selectedRoles}
+                onChange={handleRoleChange}
                 options={roleOptions}
                 styles={{
                   menuList: (base) => ({
@@ -472,7 +438,7 @@ const NewAdminPage = () => {
                 }}
               />
             </Grid>
-            {roleMenu.value === "partner" && (
+            {/* {roleMenu.value === "partner" && (
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <InputLabel
@@ -533,20 +499,20 @@ const NewAdminPage = () => {
                   />
                 </FormControl>
               </Grid>
-            )}
+            )} */}
             <Grid item xs={12}>
               <InputLabel
                 style={{
                   paddingBottom: "0.2rem",
                 }}
-                htmlFor="privilage"
+                htmlFor="privilege"
               >
-                Privilage
+                Privilege
               </InputLabel>
               <Select
-                placeholder="Select Privilage"
+                placeholder="Select Privileges"
                 value={selectedPrivilages}
-                onChange={handlePrivilagesChange}
+                onChange={handlePrivilegeChange}
                 isMulti
                 options={privilegeOptions}
                 styles={{
@@ -600,8 +566,8 @@ const NewAdminPage = () => {
                         );
                         setDialogOpen(false);
                         setMail("");
-                        setSelectedRolePartners([]);
-                        setSelectedRoleTP([]);
+                        // setSelectedRolePartners([]);
+                        // setSelectedRoleTP([]);
                         setSelectedPrivilages([]);
                         setEditing(null);
                       } else {
@@ -626,8 +592,8 @@ const NewAdminPage = () => {
                         );
                         setDialogOpen(false);
                         setMail("");
-                        setSelectedRolePartners([]);
-                        setSelectedRoleTP([]);
+                        // setSelectedRolePartners([]);
+                        // setSelectedRoleTP([]);
                         setSelectedPrivilages([]);
                       } else {
                         snackbar.enqueueSnackbar("Something Went Wrong", {

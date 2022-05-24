@@ -312,24 +312,12 @@ const UploadDocuments = (props) => {
                 }}
               >
                 <label htmlFor="contained-button-file1">
-                  <Input
-                    accept="image/*"
-                    id="contained-button-file1"
-                    type="file"
-                    style={{
-                      display: "none",
-                    }}
-                    onChange={(e) => {
-                      LinkGenerator(e, 1);
-                    }}
-                  />
                   <Button
                     variant="contained"
                     component="span"
                     style={{
                       width: "100%",
                       backgroundColor: "grey",
-
                       //corner radius
                       borderRadius: "20px",
                     }}
@@ -337,6 +325,17 @@ const UploadDocuments = (props) => {
                     Generate Link
                   </Button>
                 </label>
+                <Input
+                  inputProps={{ type: "file", accept: "image/*,.pdf" }}
+                  id="contained-button-file1"
+                  type="file"
+                  style={{
+                    display: "none",
+                  }}
+                  onChange={(e) => {
+                    LinkGenerator(e, 1);
+                  }}
+                />
                 <Input
                   type="text"
                   value={Link.idProofLink}
@@ -374,7 +373,7 @@ const UploadDocuments = (props) => {
       options: {
         customBodyRender: () => (
           <div>
-            {documents.signed_consent_link.length > 0 ? (
+            {documents.signed_consent_link?.length > 0 ? (
               <div
                 style={{
                   display: "flex",
@@ -439,17 +438,6 @@ const UploadDocuments = (props) => {
                 }}
               >
                 <label htmlFor="contained-button-file2">
-                  <Input
-                    accept="image/*"
-                    id="contained-button-file2"
-                    type="file"
-                    style={{
-                      display: "none",
-                    }}
-                    onChange={(e) => {
-                      LinkGenerator(e, 2);
-                    }}
-                  />
                   <Button
                     variant="contained"
                     component="span"
@@ -462,6 +450,17 @@ const UploadDocuments = (props) => {
                     Generate Link
                   </Button>
                 </label>
+                <Input
+                  inputProps={{ type: "file", accept: "image/*,.pdf" }}
+                  id="contained-button-file2"
+                  type="file"
+                  style={{
+                    display: "none",
+                  }}
+                  onChange={(e) => {
+                    LinkGenerator(e, 2);
+                  }}
+                />
                 <Input
                   type="text"
                   value={Link.signedConsentLink}
@@ -499,7 +498,7 @@ const UploadDocuments = (props) => {
       options: {
         customBodyRender: () => (
           <div>
-            {documents.Resume_link.length > 0 ? (
+            {documents.Resume_link?.length > 0 ? (
               <div
                 style={{
                   display: "flex",
@@ -563,18 +562,7 @@ const UploadDocuments = (props) => {
                   flexDirection: "column",
                 }}
               >
-                <label htmlFor="contained-button-file1">
-                  <Input
-                    accept="image/*"
-                    id="contained-button-file1"
-                    type="file"
-                    style={{
-                      display: "none",
-                    }}
-                    onChange={(e) => {
-                      LinkGenerator(e, 3);
-                    }}
-                  />
+                <label htmlFor="resume-input">
                   <Button
                     variant="contained"
                     component="span"
@@ -587,6 +575,17 @@ const UploadDocuments = (props) => {
                     Generate Link
                   </Button>
                 </label>
+                <Input
+                  inputProps={{ type: "file", accept: "image/*,.pdf" }}
+                  id="resume-input"
+                  type="file"
+                  style={{
+                    display: "none",
+                  }}
+                  onChange={(e) => {
+                    LinkGenerator(e, 3);
+                  }}
+                />
                 <Input
                   type="text"
                   value={Link.resumeLink}
@@ -624,7 +623,7 @@ const UploadDocuments = (props) => {
       options: {
         customBodyRender: () => (
           <div>
-            {documents.marksheet_link.length > 0 ? (
+            {documents.marksheet_link?.length > 0 ? (
               <div
                 style={{
                   display: "flex",
@@ -690,18 +689,7 @@ const UploadDocuments = (props) => {
                   flexDirection: "column",
                 }}
               >
-                <label htmlFor="contained-button-file1">
-                  <Input
-                    accept="image/*"
-                    id="contained-button-file1"
-                    type="file"
-                    style={{
-                      display: "none",
-                    }}
-                    onChange={(e) => {
-                      LinkGenerator(e, 4);
-                    }}
-                  />
+                <label htmlFor="marksheet-input">
                   <Button
                     variant="contained"
                     component="span"
@@ -716,6 +704,16 @@ const UploadDocuments = (props) => {
                     Generate Link
                   </Button>
                 </label>
+                <Input
+                  inputProps={{ type: "file", accept: "image/*,.pdf" }}
+                  id="marksheet-input"
+                  name="marksheet-input"
+                  type="file"
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    LinkGenerator(e, 4);
+                  }}
+                />
                 <Input
                   type="text"
                   value={Link.marksheetLink}

@@ -4,6 +4,7 @@ import Select from "react-select";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { useDispatch } from "react-redux";
 import {
   Button,
   TextField,
@@ -14,13 +15,20 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  Slide,
+  DialogActions,
+  Container,
+  Chip,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import NewCustomToolbar from "../smallComponents/NewCustomToolbar";
-import { useDispatch } from "react-redux";
-import { showDialog } from "../../store/slices/uiSlice";
+import { campus } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
+
+const Transition = React.forwardRef((props, ref) => (
+  <Slide direction="up" ref={ref} {...props} />
+));
 
 const NewAdminPage = () => {
   const snackbar = useSnackbar();
@@ -29,6 +37,7 @@ const NewAdminPage = () => {
   //States and Hooks
   const [roleByMailID, setRoleByMailID] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [accessDialog, setAccessDialog] = useState(false);
   const [editing, setEditing] = useState(null);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [selectedPrivilages, setSelectedPrivilages] = useState([]);
@@ -56,9 +65,12 @@ const NewAdminPage = () => {
   };
 
   const handleRoleChange = (selectedRoleMenu) => {
-    dispatch(showDialog({ title: "123" }));
-    // setSelectedRoles(selectedRoleMenu);
-    console.log(selectedRoleMenu);
+    // dispatch(showDialog({ title: "123" }));
+    if (selectedRoleMenu.length === 0) {
+      setSelectedRoles(selectedRoleMenu);
+      return;
+    }
+    setAccessDialog(true);
   };
 
   // const handleSubmit = async () => {
@@ -99,18 +111,31 @@ const NewAdminPage = () => {
   // };
 
   useEffect(
-    () =>
-      //handleSubmit();
-      () => {
-        //cleanup
-        setDialogOpen(false);
-        setMail("");
-        setSelectedRoles("");
-        setSelectedRoles([]);
-        setSelectedPrivilages([]);
-      },
+    () => () => {
+      //cleanup
+      setDialogOpen(false);
+      setMail("");
+      setSelectedRoles("");
+      setSelectedRoles([]);
+      setSelectedPrivilages([]);
+    },
     []
   );
+
+  // const roles = ['campus','partner'];
+
+  const getAccessData = (role, accessId) => {
+    let matchedItem;
+    switch (role.toLowerCase()) {
+      case "campus":
+        matchedItem = campus.find((campusItem) => campusItem.id === accessId);
+        // console.log(matchedItem);
+        return matchedItem;
+
+      default:
+        return {};
+    }
+  };
 
   const fetchByMailId = () => {
     axios
@@ -121,30 +146,30 @@ const NewAdminPage = () => {
           const roles = [];
           const privileges = [];
           user.userrole.forEach((roleData) => {
-            if (roleData.role && roleData.access)
+            if (roleData.role?.length > 0 && roleData.access)
               roles.push({
-                access_id: roleData.access.filter(
-                  (accesObj) => accesObj.user_role_id === roleData.role.id
-                )[0].id,
                 access: roleData.access.filter(
-                  (accesObj) => accesObj.user_role_id === roleData.role.id
-                )[0].access,
-                role_id: roleData.role.id,
-                role: roleData.role.roles,
+                  (accesObj) => accesObj.user_role_id === roleData.role[0].id
+                ),
+                role_id: roleData.role[0].id,
+                role: `${roleData.role[0].roles
+                  .charAt(0)
+                  .toUpperCase()}${roleData.role[0].roles.substr(1)}`,
               });
-            if (roleData.privilege)
+            if (roleData.privilege && roleData.privileges.length !== 0)
               privileges.push({
-                privilege: roleData.privilege,
+                id: roleData.privileges[0].id,
+                privilege: roleData.privileges[0].privilege,
               });
           });
           userData = { email: user.email, roles, privileges };
           return userData;
         });
-
+        console.log(users);
         setRoleByMailID(users);
       })
-      .catch(() => {
-        // console.log(e);
+      .catch((e) => {
+        console.error(e);
       });
   };
 
@@ -218,20 +243,29 @@ const NewAdminPage = () => {
             // />
 
             <div>
-              {value.map((item) => (
-                <span
-                  key={`${item} ${Math.random() * 10}`}
-                  style={{
-                    display: "inline-block",
-                    marginRight: "10px",
-                    border: "1px solid lightgray",
-                    padding: "8px",
-                  }}
-                >
-                  {item.role}-{item.access}
-                  <br />
-                </span>
-              ))}
+              {value.map((item) =>
+                item.access.map((accessItem) => (
+                  // <span
+                  //   key={`${item} ${Math.random() * 10}`}
+                  //   style={{
+                  //     display: "inline-block",
+                  //     marginRight: "10px",
+                  //     border: "1px solid lightgray",
+                  //     padding: "8px",
+                  //   }}
+                  // >
+                  //   {item.role}-
+                  //   {getAccessData(item.role, accessItem.access).name}
+                  // </span>
+                  <Chip
+                    key={`${item} ${Math.random() * 10}`}
+                    label={`${item.role}-${
+                      getAccessData(item.role, accessItem.access).name
+                    }`}
+                    sx={{ marginX: "0.4rem" }}
+                  />
+                ))
+              )}
             </div>
           ),
           []
@@ -245,20 +279,20 @@ const NewAdminPage = () => {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback(
-          (value) => (
-            <div>
-              <span
-                style={{
-                  display: "inline-block",
-                  marginRight: "10px",
-                  border: "1px solid lightgray",
-                  padding: "8px",
-                }}
-              >
-                Privilege-{value[0].privilege}
-                <br />
-              </span>
-            </div>
+          (rowData) => (
+            // <div>
+            //   <span
+            //     style={{
+            //       display: "inline-block",
+            //       marginRight: "10px",
+            //       border: "1px solid lightgray",
+            //       padding: "8px",
+            //     }}
+            //   >
+            //     {rowData[0].privilege}
+            //   </span>
+            // </div>
+            <Chip label={rowData[0].privilege} sx={{ pX: "0.4rem" }} />
           ),
           []
         ),
@@ -290,16 +324,20 @@ const NewAdminPage = () => {
                   console.log(rowData[1]);
 
                   setSelectedRoles(
-                    rowData[1].map((role) => ({
-                      label: `${role.role}-${role.access}`,
-                      value: role.role_id,
-                    }))
+                    rowData[1].map((role) =>
+                      role.access.map((accessItem) => ({
+                        label: `${role.role}-${accessItem.access}`,
+                        value: role.role_id,
+                      }))
+                    )
                   );
+
+                  console.log(rowData[1], privilegeOptions);
 
                   setSelectedPrivilages(
                     rowData[2].map((priv) => {
                       const privData = privilegeOptions.find(
-                        (opt) => opt.value === priv.privilege
+                        (opt) => opt.value === priv.id
                       );
                       if (privData) {
                         console.log(privData);
@@ -361,7 +399,8 @@ const NewAdminPage = () => {
   ];
 
   const options = {
-    selectableRows: "single",
+    selectableRows: "none",
+
     customToolbar: React.useCallback(
       () => <NewCustomToolbar handleOpen={handleOpen} />,
       []
@@ -369,14 +408,19 @@ const NewAdminPage = () => {
   };
 
   return (
-    <>
+    <Container maxWidth="xl">
       <MUIDataTable
         title="Role Based Accesses"
         data={roleByMailID}
         columns={columns}
         options={options}
       />
-      <Dialog open={dialogOpen} onClose={handleClose}>
+      <Dialog
+        fullScreen
+        open={dialogOpen}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
         <DialogTitle>
           {/* <Typography
             variant="h4"
@@ -391,8 +435,19 @@ const NewAdminPage = () => {
           > */}
           Give Access To -{/* </Typography> */}
         </DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2}>
+        <DialogContent
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Dialog open={accessDialog} onClose={() => setAccessDialog(false)}>
+            <DialogContent>
+              <Select />
+            </DialogContent>
+          </Dialog>
+          <Grid container spacing={2} maxWidth="lg">
             {/* <div
               style={{
                 display: "flex",
@@ -510,6 +565,7 @@ const NewAdminPage = () => {
                 Privilege
               </InputLabel>
               <Select
+                variant="outlined"
                 placeholder="Select Privileges"
                 value={selectedPrivilages}
                 onChange={handlePrivilegeChange}
@@ -518,108 +574,106 @@ const NewAdminPage = () => {
                 styles={{
                   menuList: (base) => ({
                     ...base,
-                    // position: "fixed !important",
                     backgroundColor: "white",
                     border: "1px solid lightgray",
-                    // width: "18%",
                   }),
                 }}
               />
             </Grid>
           </Grid>
-          <Box style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{
-                margin: "0.4rem",
-              }}
-              onClick={() => {
-                const PartnerRole =
-                  selectedRolePartners.length > 0 &&
-                  `partner:${selectedRolePartners
-                    .map((role) => role.value)
-                    .join(",")}`;
-                const TPRole =
-                  selectedRoleTP.length > 0 &&
-                  `T&P:${selectedRoleTP.map((role) => role.value).join(",")}`;
-                const Role =
-                  PartnerRole === false
-                    ? [TPRole]
-                    : TPRole === false
-                    ? [PartnerRole]
-                    : [PartnerRole, TPRole];
-
-                if (editing) {
-                  axios
-                    .put(`${baseUrl}rolebaseaccess/email/update/${editing}`, {
-                      email: mail,
-                      roles: Role,
-                    })
-                    .then((res) => {
-                      if (res.status === 200) {
-                        snackbar.enqueueSnackbar(
-                          `Role Updated Successfully for ${mail}`,
-                          {
-                            variant: "success",
-                          }
-                        );
-                        setDialogOpen(false);
-                        setMail("");
-                        // setSelectedRolePartners([]);
-                        // setSelectedRoleTP([]);
-                        setSelectedPrivilages([]);
-                        setEditing(null);
-                      } else {
-                        snackbar.enqueueSnackbar("Something Went Wrong", {
-                          variant: "error",
-                        });
-                      }
-                    });
-                } else {
-                  axios
-                    .post(`${baseUrl}rolebaseaccess/email/add`, {
-                      email: mail,
-                      roles: Role,
-                    })
-                    .then((res) => {
-                      if (res.status === 200) {
-                        snackbar.enqueueSnackbar(
-                          `Role Assigned Successfully to ${mail}`,
-                          {
-                            variant: "success",
-                          }
-                        );
-                        setDialogOpen(false);
-                        setMail("");
-                        // setSelectedRolePartners([]);
-                        // setSelectedRoleTP([]);
-                        setSelectedPrivilages([]);
-                      } else {
-                        snackbar.enqueueSnackbar("Something Went Wrong", {
-                          variant: "error",
-                        });
-                      }
-                    });
-                }
-              }}
-            >
-              {editing ? "Update" : "Submit"}
-            </Button>
-            <Button
-              style={{
-                margin: "0.4rem",
-              }}
-              variant="outlined"
-              color="primary"
-              onClick={handleClose}
-            >
-              Cancel
-            </Button>
-          </Box>
+          {/* <Box style={{ display: "flex", justifyContent: "flex-end" }}>
+          </Box> */}
         </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{
+              margin: "0.4rem",
+            }}
+            onClick={() => {
+              const PartnerRole =
+                selectedRolePartners.length > 0 &&
+                `partner:${selectedRolePartners
+                  .map((role) => role.value)
+                  .join(",")}`;
+              const TPRole =
+                selectedRoleTP.length > 0 &&
+                `T&P:${selectedRoleTP.map((role) => role.value).join(",")}`;
+              const Role =
+                PartnerRole === false
+                  ? [TPRole]
+                  : TPRole === false
+                  ? [PartnerRole]
+                  : [PartnerRole, TPRole];
+
+              if (editing) {
+                axios
+                  .put(`${baseUrl}rolebaseaccess/email/update/${editing}`, {
+                    email: mail,
+                    roles: Role,
+                  })
+                  .then((res) => {
+                    if (res.status === 200) {
+                      snackbar.enqueueSnackbar(
+                        `Role Updated Successfully for ${mail}`,
+                        { variant: "success" }
+                      );
+                      setDialogOpen(false);
+                      setMail("");
+                      // setSelectedRolePartners([]);
+                      // setSelectedRoleTP([]);
+                      setSelectedPrivilages([]);
+                      setEditing(null);
+                    } else {
+                      snackbar.enqueueSnackbar("Something Went Wrong", {
+                        variant: "error",
+                      });
+                    }
+                  });
+              } else {
+                axios
+                  .post(`${baseUrl}rolebaseaccess/email/add`, {
+                    email: mail,
+                    roles: Role,
+                  })
+                  .then((res) => {
+                    if (res.status === 200) {
+                      snackbar.enqueueSnackbar(
+                        `Role Assigned Successfully to ${mail}`,
+                        {
+                          variant: "success",
+                        }
+                      );
+                      setDialogOpen(false);
+                      setMail("");
+                      // setSelectedRolePartners([]);
+                      // setSelectedRoleTP([]);
+                      setSelectedPrivilages([]);
+                    } else {
+                      snackbar.enqueueSnackbar("Something Went Wrong", {
+                        variant: "error",
+                      });
+                    }
+                  });
+              }
+            }}
+          >
+            {editing ? "Update" : "Submit"}
+          </Button>
+          <Button
+            style={{
+              margin: "0.4rem",
+            }}
+            variant="outlined"
+            color="primary"
+            onClick={handleClose}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
       </Dialog>
-    </>
+    </Container>
   );
 };
 

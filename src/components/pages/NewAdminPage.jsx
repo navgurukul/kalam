@@ -8,21 +8,25 @@ import { useDispatch } from "react-redux";
 import {
   Button,
   TextField,
-  Box,
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControl,
   Grid,
   InputLabel,
   Slide,
   DialogActions,
   Container,
   Chip,
+  Autocomplete,
+  Select as MUISelect,
+  MenuItem,
+  FormControl,
 } from "@mui/material";
+import { AddCircleOutlined } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import NewCustomToolbar from "../smallComponents/NewCustomToolbar";
 import { campus } from "../../utils/constants";
+import { showDialog } from "../../store/slices/uiSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -41,7 +45,10 @@ const NewAdminPage = () => {
   const [editing, setEditing] = useState(null);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [selectedPrivilages, setSelectedPrivilages] = useState([]);
-  const [access, setAccess] = useState([]);
+  const [access, setAccess] = useState({
+    role: "selectrole",
+    access: "selectaccess",
+  });
   const [mail, setMail] = useState("");
 
   //options for dropdowns
@@ -66,10 +73,13 @@ const NewAdminPage = () => {
 
   const handleRoleChange = (selectedRoleMenu) => {
     // dispatch(showDialog({ title: "123" }));
-    if (selectedRoleMenu.length === 0) {
+    if (selectedRoleMenu.length < selectedRoles.length) {
       setSelectedRoles(selectedRoleMenu);
       return;
     }
+    setAccess(
+      selectedRoleMenu[selectedRoleMenu.length - 1].label.toLowerCase()
+    );
     setAccessDialog(true);
   };
 
@@ -124,6 +134,8 @@ const NewAdminPage = () => {
 
   // const roles = ['campus','partner'];
 
+  const toTitleCase = (str) => `${str.charAt(0).toUpperCase()}${str.substr(1)}`;
+
   const getAccessData = (role, accessId) => {
     let matchedItem;
     switch (role.toLowerCase()) {
@@ -134,6 +146,24 @@ const NewAdminPage = () => {
 
       default:
         return {};
+    }
+  };
+
+  const getOptions = (role, filterRoles) => {
+    let exclusions;
+    switch (role.toLowerCase()) {
+      case "campus":
+        exclusions = filterRoles.map(
+          (filterItem) => filterItem.label.split("-")[1]
+        );
+        return campus
+          .filter((campusItem) => !exclusions.includes(campusItem.name))
+          .map((campusItem) => ({
+            label: campusItem.name,
+            value: campusItem.id,
+          }));
+      default:
+        return [];
     }
   };
 
@@ -152,9 +182,7 @@ const NewAdminPage = () => {
                   (accesObj) => accesObj.user_role_id === roleData.role[0].id
                 ),
                 role_id: roleData.role[0].id,
-                role: `${roleData.role[0].roles
-                  .charAt(0)
-                  .toUpperCase()}${roleData.role[0].roles.substr(1)}`,
+                role: `${toTitleCase(roleData.role[0].roles)}`,
               });
             if (roleData.privilege && roleData.privileges.length !== 0)
               privileges.push({
@@ -178,7 +206,10 @@ const NewAdminPage = () => {
       const roles = await axios.get(`${baseUrl}role/getRole`);
       const privilege = await axios.get(`${baseUrl}role/getPrivilege`);
       setRoleOptions(
-        roles.data.map((role) => ({ label: role.roles, value: role.id }))
+        roles.data.map((role) => ({
+          label: `${toTitleCase(role.roles)}`,
+          value: role.id,
+        }))
       );
       setPrivilegeOptions(
         privilege.data.map((priv) => ({
@@ -190,6 +221,8 @@ const NewAdminPage = () => {
       console.error(e);
     }
   };
+
+  const updateAccess = (acc) => setAccess(acc);
 
   useEffect(() => {
     fetchByMailId();
@@ -259,13 +292,30 @@ const NewAdminPage = () => {
                   // </span>
                   <Chip
                     key={`${item} ${Math.random() * 10}`}
+                    variant="filled"
                     label={`${item.role}-${
                       getAccessData(item.role, accessItem.access).name
                     }`}
                     sx={{ marginX: "0.4rem" }}
+                    onDelete={() => {}}
                   />
                 ))
               )}
+              <Chip
+                variant="outlined"
+                icon={<AddCircleOutlined />}
+                label="Add"
+                onClick={() => {
+                  setAccessDialog(true);
+                  // dispatch(
+                  //   showDialog({
+                  //     title: "Select ",
+                  //     content: (
+                  //     ),
+                  //   })
+                  // );
+                }}
+              />
             </div>
           ),
           []
@@ -319,20 +369,22 @@ const NewAdminPage = () => {
                   cursor: "pointer",
                 }}
                 onClick={() => {
-                  setEditing(rowData[3]);
+                  setEditing(true);
                   setMail(rowData[0]);
-                  console.log(rowData[1]);
 
                   setSelectedRoles(
-                    rowData[1].map((role) =>
-                      role.access.map((accessItem) => ({
-                        label: `${role.role}-${accessItem.access}`,
-                        value: role.role_id,
-                      }))
-                    )
+                    rowData[1].reduce((acc, role) => {
+                      role.access.forEach((accessItem) => {
+                        acc.push({
+                          label: `${role.role}-${
+                            getAccessData(role.role, accessItem.access).name
+                          }`,
+                          value: `${role.role_id}-${accessItem.id}`,
+                        });
+                      });
+                      return acc;
+                    }, [])
                   );
-
-                  console.log(rowData[1], privilegeOptions);
 
                   setSelectedPrivilages(
                     rowData[2].map((priv) => {
@@ -340,7 +392,6 @@ const NewAdminPage = () => {
                         (opt) => opt.value === priv.id
                       );
                       if (privData) {
-                        console.log(privData);
                         return { label: privData.label, value: privData.value };
                       }
                       return { label: "Invalid Privelege", value: "0" };
@@ -416,6 +467,73 @@ const NewAdminPage = () => {
         options={options}
       />
       <Dialog
+        fullWidth
+        open={accessDialog}
+        onClose={() => setAccessDialog(false)}
+      >
+        <DialogTitle>Select Role</DialogTitle>
+        <DialogContent sx={{ pY: "0.8rem" }}>
+          <Grid container sx={{ mY: "0.8rem" }} spacing={2}>
+            <Grid item xs={12}>
+              <FormControl fullWidth sx={{ pY: "0.4rem" }}>
+                <InputLabel>Select Role</InputLabel>
+                <MUISelect
+                  fullWidth
+                  label="Select Role"
+                  placeholder="Select Role"
+                  name="role-select"
+                  value={access.role.toLowerCase()}
+                  onChange={(ev) => {
+                    updateAccess({
+                      ...access,
+                      access: "selectaccess",
+                      role: toTitleCase(ev.target.value),
+                    });
+                  }}
+                >
+                  <MenuItem disabled value="selectrole">
+                    Select Role
+                  </MenuItem>
+                  {["Campus", "Partners", "Admin"].map((arrItem) => (
+                    <MenuItem key={arrItem} value={arrItem.toLowerCase()}>
+                      {arrItem}
+                    </MenuItem>
+                  ))}
+                </MUISelect>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel>
+                  Select {access.role === "selectRole" ? "Role" : access.role}
+                </InputLabel>
+                <MUISelect
+                  fullWidth
+                  label={`Select ${access.role}`}
+                  placeholder={`Select ${access.role}`}
+                  name="access-select"
+                  value={access.access}
+                  onChange={(ev) =>
+                    updateAccess({ ...access, access: ev.target.value })
+                  }
+                >
+                  <MenuItem disabled value="selectaccess">
+                    Select {access.role === "selectrole" ? "Role" : access.role}
+                  </MenuItem>
+                  {access.role !== "selectRole"
+                    ? getOptions(access.role, []).map((arrItem) => (
+                        <MenuItem key={arrItem.value} value={arrItem.value}>
+                          {arrItem.label}
+                        </MenuItem>
+                      ))
+                    : []}
+                </MUISelect>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </DialogContent>
+      </Dialog>
+      <Dialog
         fullScreen
         open={dialogOpen}
         onClose={handleClose}
@@ -442,11 +560,29 @@ const NewAdminPage = () => {
             alignItems: "center",
           }}
         >
-          <Dialog open={accessDialog} onClose={() => setAccessDialog(false)}>
-            <DialogContent>
-              <Select />
+          <Dialog
+            maxWidth="sm"
+            fullWidth
+            open={false}
+            onClose={() => setAccessDialog(false)}
+          >
+            <DialogTitle>Select {toTitleCase(access.role)}</DialogTitle>
+            <DialogContent sx={{ w: "50%" }}>
+              <Container maxWidth="md" sx={{ p: "0.4rem" }}>
+                <Autocomplete
+                  options={getOptions(access.role, selectedRoles)}
+                  disablePortal
+                  // sx={{ width: "4.8rem" }}
+                  fullWidth
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </Container>
             </DialogContent>
+            <DialogActions>
+              <Button>Confirm</Button>
+            </DialogActions>
           </Dialog>
+
           <Grid container spacing={2} maxWidth="lg">
             {/* <div
               style={{

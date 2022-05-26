@@ -155,6 +155,30 @@ const PlacementStudentsData = () => {
       },
     },
     {
+      name: "gender", // Select Input options male,female
+      label: "Gender",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: React.useCallback(
+          (value, rowMeta, updateValue) => (
+
+            <Select
+              variant="outlined"
+              placeholder="Select Gender"
+              value={value}
+              onChange={(e) => updateValue(e.target.value)}
+            >
+              <MenuItem value="male">Male</MenuItem>
+              <MenuItem value="female">Female</MenuItem>
+              <MenuItem value="transgender">Transgender</MenuItem>
+            </Select>
+          ),
+          []
+        ),
+      },
+    },
+    {
       name: "location", // Select input
       label: "Job Location",
       options: {

@@ -1,13 +1,7 @@
-import React, { useEffect } from "react";
-import {
-  Avatar,
-  Container,
-  Grid,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+/* eslint-disable no-undef */
+import React, { useEffect, useState } from "react";
+import { Container, Grid, TextField, Typography } from "@mui/material";
+import Select from "react-select";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import EasyEdit from "react-easy-edit";
@@ -33,13 +27,37 @@ import Loader from "../ui/Loader";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-const EditText = ({ label, type, value, studentId, change }) => {
+const EditText = ({ label, type, value, studentId, change, getJobDetails }) => {
   const { enqueueSnackbar } = useSnackbar();
-
   const handleUpdate = (newValue) => {
-    //logic for calling api
+    if (newValue === "") {
+      enqueueSnackbar(`${label} cannot be empty`, {
+        variant: "unsuccess!",
+      });
+      return;
+    }
+    if (newValue === value) {
+      change(value);
+      return;
+    }
+    axios
+      .put(`${baseURL}students/jobDetails`, {
+        [label]: newValue,
+        student_id: studentId,
+      })
+      .then(() => {
+        enqueueSnackbar(`${label} successfully updated !`, {
+          variant: "success",
+        });
+        getJobDetails();
+      })
+      .catch(() => {
+        enqueueSnackbar(`Error in updating ${label}`, {
+          variant: "unsuccess!",
+        });
+        getJobDetails();
+      });
     change(newValue);
-    enqueueSnackbar(`${label} Updated Successfully`, { variant: "success" });
   };
 
   return (
@@ -49,15 +67,15 @@ const EditText = ({ label, type, value, studentId, change }) => {
       onSave={(nVal) => handleUpdate(nVal)}
       saveButtonLabel="✔"
       cancelButtonLabel="✖"
+      onValidate={(value1) => value1 !== ""}
       disableAutoCancel
-      onValidate={(val) =>
-        val != null && val.length > 0 && type === "number" ? !isNaN(val) : true
-      }
     />
   );
 };
 
 const PlacementStudentsData = () => {
+  const { enqueueSnackbar } = useSnackbar();
+
   const { loggedInUser } = useSelector((state) => state.auth);
   const { isFetching } = useSelector((state) => state.ui);
   const {
@@ -72,16 +90,6 @@ const PlacementStudentsData = () => {
     page,
   } = useSelector((state) => state.students);
 
-  console.log(
-    // filterColumns,
-    url,
-    studentData,
-    fromDate,
-    toDate,
-    totalData,
-    stage,
-    page
-  );
   const dispatch = useDispatch();
 
   const fetchingStart = () => dispatch(changeFetching(true));
@@ -89,42 +97,52 @@ const PlacementStudentsData = () => {
   const setStudents = (data) => dispatch(setStudentData(data));
   const setFrom = (data) => dispatch(setFromDate(data));
   const setTo = (data) => dispatch(setToDate(data));
-  // const setRows = (data) => dispatch(setNoOfRows(data));
-  // const setPage = (data) => dispatch(setPageNo(data));
-  // const updateStage = (data) => dispatch(setStage(data));
+
+  const getJobDetails = async () => {
+    try {
+      const res = await axios.get(`${baseURL}/students/jobDetails`);
+      setStudents({
+        data: res.data || [],
+        totalData: 1,
+        loader: false,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const [canView, setCanView] = React.useState({
     access: null, //access object to store who are having access data
     studentDashboardCondition: false, //condition to show student dashboard})
   });
 
+  const changeJobType = (val, studentId) => {
+    axios
+      .put(`${baseURL}students/jobDetails`, {
+        student_id: studentId,
+        job_type: val,
+      })
+      .then(() => {
+        console.log("job type updated");
+        enqueueSnackbar(`Job Type successfully updated !`, {
+          variant: "success",
+        });
+        getJobDetails();
+      })
+      .catch(() => {
+        enqueueSnackbar(`Error in updating Job Type`, {
+          variant: "unsuccess!",
+        });
+      });
+  };
+
   const columns = [
-    // {
-    //   label: "Profile Image",
-    //   name: "image_url",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: React.useCallback(
-    //       (value, rowMeta) =>
-    //         value !== null ? (
-    //           <Avatar
-    //             src={value}
-    //             alt={rowMeta.rowData[1]}
-    //             style={{
-    //               width: "60px",
-    //               height: "60px",
-    //               // borderRadius: "50%",
-    //               // objectFit: "cover",
-    //             }}
-    //           />
-    //         ) : (
-    //           <p> </p>
-    //         ),
-    //       []
-    //     ),
-    //   },
-    // },
+    {
+      name: "student_id",
+      options: {
+        display: false,
+      },
+    },
     {
       name: "name",
       label: "Name",
@@ -134,91 +152,179 @@ const PlacementStudentsData = () => {
       },
     },
     {
-      name: "designation", //Textfield
-      label: "Job Designation",
+      name: "partner",
+      label: "Partner",
       options: {
         filter: true,
         sort: true,
-        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
-          const studentId = 0; //set id
-          const { label } = rowMeta.columnData;
-          return (
-            <EditText
-              label={label}
-              type="text"
-              value={value}
-              change={(val) => updateValue(val)}
-              studentId={studentId}
-            />
-          );
-        }, []),
+        customBodyRender: React.useCallback((value) => {
+          const partnerName = value?.name;
+          return <p>{partnerName}</p>;
+        }),
       },
     },
+    {
+      name: "campus",
+      label: "Campus",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: React.useCallback((value) => {
+          const campusName = value && value[0]?.campus;
+
+          return <p>{campusName}</p>;
+        }),
+      },
+    },
+
     {
       name: "gender", // Select Input options male,female
       label: "Gender",
       options: {
         filter: true,
         sort: true,
-        customBodyRender: React.useCallback(
-          (value, rowMeta, updateValue) => (
+        customBodyRender: React.useCallback((value) => {
+          const defaultValue =
+            value === 1 ? "Female" : value === 2 ? "Male" : "Transgender";
 
-            <Select
-              variant="outlined"
-              placeholder="Select Gender"
-              value={value}
-              onChange={(e) => updateValue(e.target.value)}
-            >
-              <MenuItem value="male">Male</MenuItem>
-              <MenuItem value="female">Female</MenuItem>
-              <MenuItem value="transgender">Transgender</MenuItem>
-            </Select>
-          ),
-          []
-        ),
+          return <p>{defaultValue}</p>;
+        }, []),
       },
     },
     {
-      name: "location", // Select input
-      label: "Job Location",
+      name: "contacts", // Select Input options male,female
+      label: "Contact",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: React.useCallback((value) => {
+          const contactValue = value && value[0]?.mobile;
+
+          return <p>{contactValue}</p>;
+        }, []),
+      },
+    },
+    {
+      name: "student_job_details", //Textfield
+      label: "Job Designation",
       options: {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
-          const studentId = 0; //set id
-          const { label } = rowMeta.columnData;
+          const jobDesignation = value?.job_designation || "Click to edit";
+          const studentId = rowMeta.rowData[0];
           return (
             <EditText
-              label={label}
+              label="job_designation"
               type="text"
-              value={value}
+              value={jobDesignation}
               change={(val) => updateValue(val)}
               studentId={studentId}
+              getJobDetails={getJobDetails}
             />
           );
         }, []),
       },
     },
     {
-      name: "salary", // Textfield no. input
+      name: "student_job_details", // Select input
+      label: "Job Location",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
+          const studentId = rowMeta.rowData[0]; //set id
+          const jobLocation = value?.job_location || "Click to edit";
+          // const { label } = rowMeta.columnData;
+          return (
+            <EditText
+              label="job_location"
+              type="text"
+              value={jobLocation}
+              change={(val) => updateValue(val)}
+              studentId={studentId}
+              getJobDetails={getJobDetails}
+            />
+          );
+        }, []),
+      },
+    },
+    {
+      name: "student_job_details", // Select Input options offline, WFH
+      label: "Job Type",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
+          const jobType = value?.job_type || null;
+          const studentId = rowMeta.rowData[0];
+          const jobValue =
+            jobType === "Internship"
+              ? {
+                  value: "Internship",
+                  label: "Internship",
+                }
+              : jobType === "Full Time"
+              ? {
+                  value: "Full Time",
+                  label: "Full Time",
+                }
+              : "";
+          const modes = [
+            {
+              value: "Internship",
+              label: "Internship",
+            },
+            {
+              value: "Full Time",
+              label: "Full Time",
+            },
+          ];
+
+          return (
+            <Select
+              variant="outlined"
+              placeholder="Select Job Type"
+              value={jobValue}
+              options={modes}
+              onChange={(e) => changeJobType(e.value, studentId)}
+              styles={{
+                menuList: (base) => ({
+                  ...base,
+                  position: "fixed !important",
+                  backgroundColor: "white",
+                  border: "1px solid lightgray",
+                  width: "18%",
+                }),
+              }}
+            />
+          );
+        }, []),
+      },
+    },
+    {
+      name: "student_job_details", // Textfield no. input
       label: "Salary",
       options: {
         filter: false,
         sort: true,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
-          const studentId = 0; //set id
-          const { label } = rowMeta.columnData;
+          const studentId = rowMeta.rowData[0]; //set id
+          // eslint-disable-next-line camelcase
+          const salary = value?.salary || "N/A";
+
           return (
             <div style={{ display: "flex", flexDirection: "row" }}>
               ₹
               <EditText
-                label={label}
-                type="number"
-                value={`${value}`}
-                change={(val) => updateValue(parseFloat(val, 10))}
+                label="salary"
+                type="text"
+                value={`${salary}`}
+                change={(val) => updateValue(val)}
                 studentId={studentId}
+                getJobDetails={getJobDetails}
               />
-              &nbsp;LPA
+              &nbsp;/month
             </div>
           );
         }, []),
@@ -226,43 +332,23 @@ const PlacementStudentsData = () => {
       },
     },
     {
-      name: "mode", // Select Input options offline, WFH
-      label: "Job Mode",
-      options: {
-        filter: true,
-        sort: true,
-        customBodyRender: React.useCallback(
-          (value, rowMeta, updateValue) => (
-            // const labels = { wfh: "Work From Home", offline: "Offline" };
-            <Select
-              variant="outlined"
-              value={value}
-              onChange={(e) => updateValue(e.target.value)}
-            >
-              <MenuItem value="wfh">Work From Home</MenuItem>
-              <MenuItem value="offline">Offline</MenuItem>
-            </Select>
-          ),
-          []
-        ),
-      },
-    },
-    {
-      name: "employer", //Textfield
+      name: "student_job_details", //Textfield
       label: "Employer",
       options: {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
-          const studentId = 0; //set id
-          const { label } = rowMeta.columnData;
+          const employer = value?.employer || "Click to edit";
+          const studentId = rowMeta.rowData[0]; //set id
+
           return (
             <EditText
-              label={label}
+              label="employer"
               type="text"
-              value={value}
+              value={employer}
               change={(val) => updateValue(val)}
               studentId={studentId}
+              getJobDetails={getJobDetails}
             />
           );
         }, []),
@@ -272,6 +358,7 @@ const PlacementStudentsData = () => {
 
   const fetchAccess = async (signal) => {
     // setState({ ...state, loading: true });
+
     fetchingStart();
     try {
       const accessUrl = `${baseURL}rolebaseaccess`;
@@ -344,21 +431,7 @@ const PlacementStudentsData = () => {
   }, [loggedInUser]);
 
   useEffect(() => {
-    setStudents({
-      data: [
-        {
-          image_url:
-            "https://lh3.googleusercontent.com/a-/AOh14GiholzQ7vNedGZmxQN6srokfogEkaJ2rpdtFpNY=s96-c",
-          name: "Swanand Buva",
-          designation: "Front End Developer",
-          location: "Online",
-          mode: "wfh",
-          employer: "NavGurukul",
-          salary: 1.2,
-        },
-      ],
-      totalData: 1,
-    });
+    getJobDetails();
   }, []);
 
   return (

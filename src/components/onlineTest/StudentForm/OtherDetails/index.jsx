@@ -115,19 +115,19 @@ function OtherDetails(props) {
                   required
                 >
                   <InputLabel id="state-label">
-                    {lang === "En" ? "Select State" : "राज्य चुनें"}
+                    {lang === "en" ? "Select State" : "राज्य चुनें"}
                   </InputLabel>
                   <Select
                     error={!!errors.state}
                     required
                     inputRef={ref}
-                    label={lang === "En" ? "Select State" : "राज्य चुनें"}
+                    label={lang === "en" ? "Select State" : "राज्य चुनें"}
                     MenuProps={{ classes: { paper: classes.menuPaper } }}
                     // eslint-disable-next-line react/jsx-props-no-spreading
                     {...rest}
                   >
                     <MenuItem value="" disabled>
-                      {lang === "En" ? "Select State" : "राज्य चुनें"}
+                      {lang === "en" ? "Select State" : "राज्य चुनें"}
                     </MenuItem>
                     {Object.keys(states).map((key) => (
                       <MenuItem key={key} value={key}>
@@ -148,7 +148,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "En" ? "Select your State" : "अपना राज्य चुनें"}
+                {lang === "en" ? "Select your State" : "अपना राज्य चुनें"}
               </Typography>
             ) : (
               ""
@@ -172,7 +172,7 @@ function OtherDetails(props) {
                   required
                 >
                   <InputLabel id="district-label">
-                    {lang === "En" ? "Select District" : "जिला चुनें"}
+                    {lang === "en" ? "Select District" : "जिला चुनें"}
                   </InputLabel>
                   <Select
                     error={!!errors.district}
@@ -180,11 +180,11 @@ function OtherDetails(props) {
                     inputRef={ref}
                     // eslint-disable-next-line react/jsx-props-no-spreading
                     {...rest}
-                    label={lang === "En" ? "Select District" : "जिला चुनें"}
+                    label={lang === "en" ? "Select District" : "जिला चुनें"}
                     MenuProps={{ classes: { paper: classes.menuPaper } }}
                   >
                     <MenuItem value="" disabled>
-                      {lang === "En" ? "Select District" : "जिला चुनें"}
+                      {lang === "en" ? "Select District" : "जिला चुनें"}
                     </MenuItem>
                     {districts.map((key) => (
                       <MenuItem key={key.name} value={key.name}>
@@ -205,7 +205,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "En" ? "Select your District" : "अपना जिला चुनें"}
+                {lang === "en" ? "Select your District" : "अपना जिला चुनें"}
               </Typography>
             ) : (
               ""
@@ -226,13 +226,13 @@ function OtherDetails(props) {
                   {...rest}
                   fullWidth
                   id="city"
-                  label={lang === "En" ? "City" : "शहर"}
-                  placeholder={lang === "En" ? "City" : "शहर"}
+                  label={lang === "en" ? "City" : "शहर"}
+                  placeholder={lang === "en" ? "City" : "शहर"}
                   autoComplete="off"
                   error={!!errors.city}
                   helperText={
                     errors.city
-                      ? lang === "En"
+                      ? lang === "en"
                         ? "Select your City"
                         : "अपना शहर चुनें"
                       : "Ex. Bangalore"
@@ -255,18 +255,18 @@ function OtherDetails(props) {
                   fullWidth
                   id="pin_code"
                   inputRef={ref}
-                  label={lang === "En" ? "Pin code" : "पिन कोड"}
-                  placeholder={lang === "En" ? "Pin code" : "पिन कोड"}
+                  label={lang === "en" ? "Pin code" : "पिन कोड"}
+                  placeholder={lang === "en" ? "Pin code" : "पिन कोड"}
                   autoComplete="off"
                   error={!!errors.pin_code}
                   helperText={
                     errors.pin_code
                       ? errors.pin_code.type === "minLength" ||
                         errors.pin_code.type === "maxLength"
-                        ? lang === "En"
+                        ? lang === "en"
                           ? "Enter a valid Pin Code"
                           : "एक मान्य पिन कोड दर्ज करें"
-                        : lang === "En"
+                        : lang === "en"
                         ? "Enter your Pin Code"
                         : "अपना पिन कोड दर्ज करें"
                       : "Ex. 4402xx"
@@ -290,12 +290,12 @@ function OtherDetails(props) {
                   required
                 >
                   <InputLabel id="current-status-label">
-                    {lang === "En" ? "Current Status" : "वर्तमान स्थिति"}
+                    {lang === "en" ? "Current Status" : "वर्तमान स्थिति"}
                   </InputLabel>
                   <Select
                     disabled={inputDisabled}
                     error={!!errors.current_status}
-                    label={lang === "En" ? "Current Status" : "वर्तमान स्थिति"}
+                    label={lang === "en" ? "Current Status" : "वर्तमान स्थिति"}
                     required
                     inputRef={ref}
                     {...rest}
@@ -322,7 +322,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "En"
+                {lang === "en"
                   ? "Select your Current Status"
                   : "अपनी वर्तमान स्थिति चुनें"}
               </Typography>
@@ -344,11 +344,11 @@ function OtherDetails(props) {
                   required
                 >
                   <InputLabel id="qualification-label">
-                    {lang === "En" ? "Maximum Qualification" : "अधिकतम योग्यता"}
+                    {lang === "en" ? "Maximum Qualification" : "अधिकतम योग्यता"}
                   </InputLabel>
                   <Select
                     label={
-                      lang === "En" ? "Maximum Qualification" : "अधिकतम योग्यता"
+                      lang === "en" ? "Maximum Qualification" : "अधिकतम योग्यता"
                     }
                     error={!!errors.qualification}
                     required
@@ -378,7 +378,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "En"
+                {lang === "en"
                   ? "Select your Current Qualification"
                   : "अपनी वर्तमान योग्यता चुनें"}
               </Typography>
@@ -402,12 +402,12 @@ function OtherDetails(props) {
                     {...rest}
                     fullWidth
                     label={
-                      lang === "En"
+                      lang === "en"
                         ? "Percentage in 10th class"
                         : "10वीं कक्षा के प्रतिशत अंक"
                     }
                     placeholder={
-                      lang === "En"
+                      lang === "en"
                         ? "Percentage in 10th class"
                         : "10वीं कक्षा के प्रतिशत अंक"
                     }
@@ -417,10 +417,10 @@ function OtherDetails(props) {
                     helperText={
                       errors.percentage_in10th
                         ? errors.percentage_in10th.type === "max"
-                          ? lang === "En"
+                          ? lang === "en"
                             ? "Enter valid Percentage"
                             : "मान्य प्रतिशत दर्ज करें"
-                          : lang === "En"
+                          : lang === "en"
                           ? "Enter 10th Class Percentage"
                           : "10वीं कक्षा के प्रतिशत अंक दर्ज करें"
                         : "Ex. 86.40"
@@ -447,12 +447,12 @@ function OtherDetails(props) {
                       {...rest}
                       fullWidth
                       label={
-                        lang === "En"
+                        lang === "en"
                           ? "Percentage in 10th class"
                           : "10वीं कक्षा के प्रतिशत अंक"
                       }
                       placeholder={
-                        lang === "En"
+                        lang === "en"
                           ? "Percentage in 10th class"
                           : "10वीं कक्षा के प्रतिशत अंक"
                       }
@@ -462,10 +462,10 @@ function OtherDetails(props) {
                       helperText={
                         errors.percentage_in10th
                           ? errors.percentage_in10th.type === "max"
-                            ? lang === "En"
+                            ? lang === "en"
                               ? "Enter valid Percentage"
                               : "मान्य प्रतिशत दर्ज करें"
-                            : lang === "En"
+                            : lang === "en"
                             ? "Enter 10th Class Percentage"
                             : "10वीं कक्षा के प्रतिशत अंक दर्ज करें"
                           : "Ex. 86.40"
@@ -490,12 +490,12 @@ function OtherDetails(props) {
                       {...rest}
                       fullWidth
                       label={
-                        lang === "En"
+                        lang === "en"
                           ? "Percentage in 12th class"
                           : "12वीं कक्षा के प्रतिशत अंक"
                       }
                       placeholder={
-                        lang === "En"
+                        lang === "en"
                           ? "Percentage in 12th class"
                           : "12वीं कक्षा के प्रतिशत अंक"
                       }
@@ -505,10 +505,10 @@ function OtherDetails(props) {
                       helperText={
                         errors.percentage_in12th
                           ? errors.percentage_in12th.type === "max"
-                            ? lang === "En"
+                            ? lang === "en"
                               ? "Enter valid Percentage"
                               : "मान्य प्रतिशत दर्ज करें"
-                            : lang === "En"
+                            : lang === "en"
                             ? "Enter 12th Class Percentage"
                             : "12वीं कक्षा के प्रतिशत अंक दर्ज करें"
                           : "Ex. 76.40"
@@ -533,10 +533,10 @@ function OtherDetails(props) {
                   required
                 >
                   <InputLabel id="school-medium-label">
-                    {lang === "En" ? "School Medium" : "स्कूल माध्यम"}
+                    {lang === "en" ? "School Medium" : "स्कूल माध्यम"}
                   </InputLabel>
                   <Select
-                    label={lang === "En" ? "School Medium" : "स्कूल माध्यम"}
+                    label={lang === "en" ? "School Medium" : "स्कूल माध्यम"}
                     error={!!errors.school_medium}
                     required
                     inputRef={ref}
@@ -544,13 +544,13 @@ function OtherDetails(props) {
                     disabled={inputDisabled}
                   >
                     <MenuItem value="" disabled>
-                      {lang === "En" ? "Select Langauge" : "भाषा चुने"}
+                      {lang === "en" ? "Select Langauge" : "भाषा चुने"}
                     </MenuItem>
                     <MenuItem value="other">
-                      {lang === "En" ? "Hindi" : "हिन्दी"}
+                      {lang === "en" ? "Hindi" : "हिन्दी"}
                     </MenuItem>
                     <MenuItem value="en">
-                      {lang === "En" ? "English" : "अंग्रेज़ी"}
+                      {lang === "en" ? "English" : "अंग्रेज़ी"}
                     </MenuItem>
                   </Select>
                 </FormControl>
@@ -566,7 +566,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "En"
+                {lang === "en"
                   ? "Select your School Medium"
                   : "अपना स्कूल माध्यम चुनें"}
               </Typography>
@@ -588,10 +588,10 @@ function OtherDetails(props) {
                   required
                 >
                   <InputLabel id="demo-simple-select-outlined-label">
-                    {lang === "En" ? " Caste/Tribe" : "जाति/जनजाति"}
+                    {lang === "en" ? " Caste/Tribe" : "जाति/जनजाति"}
                   </InputLabel>
                   <Select
-                    label={lang === "En" ? " Caste/Tribe" : "जाति/जनजाति"}
+                    label={lang === "en" ? " Caste/Tribe" : "जाति/जनजाति"}
                     error={!!errors.caste}
                     required
                     inputRef={ref}
@@ -622,7 +622,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "En"
+                {lang === "en"
                   ? "Select your Caste/Tribe"
                   : "अपनी जाति/जनजाति चुनें"}
               </Typography>
@@ -644,10 +644,10 @@ function OtherDetails(props) {
                   variant="outlined"
                 >
                   <InputLabel id="religion-label">
-                    {lang === "En" ? "Religion" : "धर्म"}
+                    {lang === "en" ? "Religion" : "धर्म"}
                   </InputLabel>
                   <Select
-                    label={lang === "En" ? "Religion" : "धर्म"}
+                    label={lang === "en" ? "Religion" : "धर्म"}
                     required
                     inputRef={ref}
                     error={!!errors.religion}
@@ -676,7 +676,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "En" ? "Select your Religion" : "अपना धर्म चुनें"}
+                {lang === "en" ? "Select your Religion" : "अपना धर्म चुनें"}
               </Typography>
             ) : (
               ""

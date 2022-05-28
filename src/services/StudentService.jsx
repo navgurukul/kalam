@@ -43,6 +43,7 @@ import {
   campusStageOfLearning,
   caste,
 } from "../utils/constants";
+import UploadDocuments from "../components/smallComponents/UploadDocuments";
 
 dayjs.extend(customParseFormat);
 
@@ -78,6 +79,22 @@ const ColumnTransitions = {
         studentName={rowMeta.rowData[2]}
         dataType="columnTransition"
       />
+    ),
+  },
+};
+
+//column for uploading documents
+const ColumnUpload = {
+  //get the object of the column
+  name: "studentDocuments",
+  label: "Upload Document",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (value, rowMeta) => (
+      //modal for uploading documents
+
+      <UploadDocuments rowMeta={rowMeta} value={value} />
     ),
   },
 };
@@ -1618,6 +1635,7 @@ const StudentService = {
     joinedDate,
     stageColumn,
     JobKabLagegiColumn,
+    ColumnUpload,
     daysPassedColumn,
     kitneAurDin,
     kitneDinLagenge,

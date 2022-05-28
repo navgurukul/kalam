@@ -3,6 +3,8 @@ export const baseUrl = `${import.meta.env.VITE_API_URL}`;
 export const permissions = {
   permissionsView: ["kirithiv@navgurukul.org", "vaibhavmagar@navgurukul.org"],
   updateStage: [
+    "rupakumari20@navgurukul.org",
+    "sapnapandey20@navgurukul.org",
     "reena@navgurukul.org",
     "tarun20@navgurukul.org",
     "vishnusharma@navgurukul.org",

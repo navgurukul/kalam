@@ -121,102 +121,161 @@ const UploadDocuments = (props) => {
       });
   };
 
-  //function to upload documents - ID proof
-  const UploadIdProof = (e) => {
-    e.preventDefault();
-
+  const uploadDocument = async (document, url, successMsg) => {
     axios
       .post(`${baseUrl}students/uploadDocument/${studentId}`, {
-        Id_proof_link: Link.idProofLink,
+        [document]: url,
       })
       .then((res) => {
         if (res.status === 200) {
-          snackbar.enqueueSnackbar("ID Proof uploaded successfully", {
+          snackbar.enqueueSnackbar(successMsg, {
             variant: "success",
           });
 
-          if (Link.idProofLink !== "") {
-            setDocuments({ ...documents, Id_proof_link: Link.idProofLink });
+          if (url !== "") {
+            setDocuments({ ...documents, [document]: url });
           }
         }
       })
       .catch((err) => {
         console.error(err);
       });
+  };
+
+  const convertDriveLink = (url) =>
+    `https://drive.google.com/file/d/${
+      url.match(/d\/([A-Za-z0-9-]+)/)[1]
+    }/preview`;
+
+  //function to upload documents - ID proof
+  const UploadIdProof = (e) => {
+    e.preventDefault();
+
+    const link = Link.idProofLink.includes("drive.google.com")
+      ? convertDriveLink(Link.idProofLink)
+      : Link.idProofLink;
+
+    uploadDocument("Id_proof_link", link, "ID Proof uploaded successfully");
+
+    // axios
+    //   .post(`${baseUrl}students/uploadDocument/${studentId}`, {
+    //     Id_proof_link: Link.idProofLink,
+    //   })
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       snackbar.enqueueSnackbar("ID Proof uploaded successfully", {
+    //         variant: "success",
+    //       });
+
+    //       if (Link.idProofLink !== "") {
+    //         setDocuments({ ...documents, Id_proof_link: Link.idProofLink });
+    //       }
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
   };
 
   //function to upload documents - signed consent
   const UploadSignedConsent = (e) => {
     e.preventDefault();
 
-    axios
-      .post(`${baseUrl}students/uploadDocument/${studentId}`, {
-        signed_consent_link: Link.signedConsentLink,
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          snackbar.enqueueSnackbar("Signed Consent uploaded successfully", {
-            variant: "success",
-          });
+    const link = Link.signedConsentLink.includes("drive.google.com")
+      ? convertDriveLink(Link.signedConsentLink)
+      : Link.signedConsentLink;
 
-          if (Link.signedConsentLink !== "") {
-            setDocuments({
-              ...documents,
-              signed_consent_link: Link.signedConsentLink,
-            });
-          }
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    uploadDocument(
+      "signed_consent_link",
+      link,
+      "Signed Consent uploaded successfully"
+    );
+
+    // axios
+    //   .post(`${baseUrl}students/uploadDocument/${studentId}`, {
+    //     signed_consent_link: Link.signedConsentLink,
+    //   })
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       snackbar.enqueueSnackbar("Signed Consent uploaded successfully", {
+    //         variant: "success",
+    //       });
+
+    //       if (Link.signedConsentLink !== "") {
+    //         setDocuments({
+    //           ...documents,
+    //           signed_consent_link: Link.signedConsentLink,
+    //         });
+    //       }
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
   };
 
   //function to upload documents - resume
   const UploadResume = (e) => {
     e.preventDefault();
 
-    axios
-      .post(`${baseUrl}students/uploadDocument/${studentId}`, {
-        Resume_link: Link.resumeLink,
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          snackbar.enqueueSnackbar("Resume uploaded successfully", {
-            variant: "success",
-          });
+    const link = Link.resumeLink.includes("drive.google.com")
+      ? convertDriveLink(Link.resumeLink)
+      : Link.resumeLink;
 
-          if (Link.resumeLink !== "") {
-            setDocuments({ ...documents, Resume_link: Link.resumeLink });
-          }
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    uploadDocument("Resume_link", link, "Resume uploaded successfully");
+
+    //   axios
+    //     .post(`${baseUrl}students/uploadDocument/${studentId}`, {
+    //       Resume_link: Link.resumeLink,
+    //     })
+    //     .then((res) => {
+    //       if (res.status === 200) {
+    //         snackbar.enqueueSnackbar("Resume uploaded successfully", {
+    //           variant: "success",
+    //         });
+
+    //         if (Link.resumeLink !== "") {
+    //           setDocuments({ ...documents, Resume_link: Link.resumeLink });
+    //         }
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.error(err);
+    //     });
   };
 
   //function to upload documents - marksheet
   const UploadMarksheet = (e) => {
     e.preventDefault();
-    axios
-      .post(`${baseUrl}students/uploadDocument/${studentId}`, {
-        marksheet_link: Link.marksheetLink,
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          snackbar.enqueueSnackbar("10th Marksheet uploaded successfully", {
-            variant: "success",
-          });
 
-          if (Link.marksheetLink !== "") {
-            setDocuments({ ...documents, marksheet_link: Link.marksheetLink });
-          }
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    const link = Link.marksheetLink.includes("drive.google.com")
+      ? convertDriveLink(Link.marksheetLink)
+      : Link.marksheetLink;
+
+    uploadDocument(
+      "marksheet_link",
+      link,
+      "10th Marksheet uploaded successfully"
+    );
+
+    // axios
+    //   .post(`${baseUrl}students/uploadDocument/${studentId}`, {
+    //     marksheet_link: Link.marksheetLink,
+    //   })
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       snackbar.enqueueSnackbar("10th Marksheet uploaded successfully", {
+    //         variant: "success",
+    //       });
+
+    //       if (Link.marksheetLink !== "") {
+    //         setDocuments({ ...documents, marksheet_link: Link.marksheetLink });
+    //       }
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
   };
 
   const handleOpen = () => setOpen(true);

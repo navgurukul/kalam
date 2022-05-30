@@ -362,7 +362,10 @@ const AdmissionsDash = (props) => {
       dispatch(fetchOwnersAction());
     };
     fetchData();
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      setStudents({ data: [], totalData: 0 });
+    };
   }, []);
 
   useEffect(() => {

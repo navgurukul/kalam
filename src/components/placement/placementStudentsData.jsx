@@ -1,7 +1,14 @@
 /* eslint-disable no-undef */
-import React, { useEffect, useState } from "react";
-import { Container, Grid, TextField, Typography } from "@mui/material";
-import Select from "react-select";
+import React, { useEffect } from "react";
+import {
+  Container,
+  Grid,
+  TextField,
+  Typography,
+  Select,
+  MenuItem,
+} from "@mui/material";
+// import Select from "react-select";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import EasyEdit from "react-easy-edit";
@@ -18,7 +25,6 @@ import {
   // setPageNo,
   setStudentData,
   setToDate,
-  fetchStudents,
 } from "../../store/slices/studentSlice";
 import { changeFetching } from "../../store/slices/uiSlice";
 import ServerSidePagination from "../muiTables/ServerSidePagination";
@@ -27,12 +33,13 @@ import Loader from "../ui/Loader";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-const EditText = ({ label, type, value, studentId, change, getJobDetails }) => {
+const EditText = ({ name, type, value, studentId, change, label }) => {
   const { enqueueSnackbar } = useSnackbar();
+  console.log(label);
   const handleUpdate = (newValue) => {
     if (newValue === "") {
-      enqueueSnackbar(`${label} cannot be empty`, {
-        variant: "unsuccess!",
+      enqueueSnackbar(`${name} cannot be empty`, {
+        variant: "error",
       });
       return;
     }
@@ -42,22 +49,20 @@ const EditText = ({ label, type, value, studentId, change, getJobDetails }) => {
     }
     axios
       .put(`${baseURL}students/jobDetails`, {
-        [label]: newValue,
+        [name]: newValue,
         student_id: studentId,
       })
       .then(() => {
-        enqueueSnackbar(`${label} successfully updated !`, {
+        enqueueSnackbar(`${name} successfully updated !`, {
           variant: "success",
         });
-        getJobDetails();
+        change({ [name]: newValue });
       })
       .catch(() => {
-        enqueueSnackbar(`Error in updating ${label}`, {
-          variant: "unsuccess!",
+        enqueueSnackbar(`Error in updating ${name}`, {
+          variant: "error",
         });
-        getJobDetails();
       });
-    change(newValue);
   };
 
   return (
@@ -98,40 +103,26 @@ const PlacementStudentsData = () => {
   const setFrom = (data) => dispatch(setFromDate(data));
   const setTo = (data) => dispatch(setToDate(data));
 
-  const getJobDetails = async () => {
-    try {
-      const res = await axios.get(`${baseURL}/students/jobDetails`);
-      setStudents({
-        data: res.data || [],
-        totalData: 1,
-        loader: false,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const [canView, setCanView] = React.useState({
     access: null, //access object to store who are having access data
     studentDashboardCondition: false, //condition to show student dashboard})
   });
 
-  const changeJobType = (val, studentId) => {
+  const changeJobType = (val, studentId, change) => {
     axios
       .put(`${baseURL}students/jobDetails`, {
         student_id: studentId,
         job_type: val,
       })
       .then(() => {
-        console.log("job type updated");
         enqueueSnackbar(`Job Type successfully updated !`, {
           variant: "success",
         });
-        getJobDetails();
+        change({ job_type: val });
       })
       .catch(() => {
         enqueueSnackbar(`Error in updating Job Type`, {
-          variant: "unsuccess!",
+          variant: "error",
         });
       });
   };
@@ -215,12 +206,12 @@ const PlacementStudentsData = () => {
           const studentId = rowMeta.rowData[0];
           return (
             <EditText
-              label="job_designation"
+              name="job_designation"
+              label={rowMeta.columnData.label}
               type="text"
               value={jobDesignation}
               change={(val) => updateValue(val)}
               studentId={studentId}
-              getJobDetails={getJobDetails}
             />
           );
         }, []),
@@ -238,12 +229,12 @@ const PlacementStudentsData = () => {
           // const { label } = rowMeta.columnData;
           return (
             <EditText
-              label="job_location"
+              name="job_location"
+              label={rowMeta.columnData.label}
               type="text"
               value={jobLocation}
               change={(val) => updateValue(val)}
               studentId={studentId}
-              getJobDetails={getJobDetails}
             />
           );
         }, []),
@@ -285,19 +276,23 @@ const PlacementStudentsData = () => {
             <Select
               variant="outlined"
               placeholder="Select Job Type"
-              value={jobValue}
-              options={modes}
-              onChange={(e) => changeJobType(e.value, studentId)}
-              styles={{
-                menuList: (base) => ({
-                  ...base,
-                  position: "fixed !important",
-                  backgroundColor: "white",
-                  border: "1px solid lightgray",
-                  width: "18%",
-                }),
-              }}
-            />
+              value={jobValue.value}
+              // options={modes}
+              onChange={(e) => changeJobType(e.value, studentId, updateValue)}
+              // styles={{
+              //   menuList: (base) => ({
+              //     ...base,
+              //     position: "fixed !important",
+              //     backgroundColor: "white",
+              //     border: "1px solid lightgray",
+              //     width: "18%",
+              //   }),
+              // }}
+            >
+              {modes.map((mode) => (
+                <MenuItem value={mode.value}>{mode.label}</MenuItem>
+              ))}
+            </Select>
           );
         }, []),
       },
@@ -317,7 +312,8 @@ const PlacementStudentsData = () => {
             <div style={{ display: "flex", flexDirection: "row" }}>
               ₹
               <EditText
-                label="salary"
+                name="salary"
+                label={rowMeta.columnData.label}
                 type="text"
                 value={`${salary}`}
                 change={(val) => updateValue(val)}
@@ -343,7 +339,8 @@ const PlacementStudentsData = () => {
 
           return (
             <EditText
-              label="employer"
+              name="employer"
+              label={rowMeta.columnData.label}
               type="text"
               value={employer}
               change={(val) => updateValue(val)}
@@ -355,6 +352,18 @@ const PlacementStudentsData = () => {
       },
     },
   ];
+
+  const getJobDetails = async () => {
+    try {
+      const res = await axios.get(`${baseURL}/students/jobDetails`);
+      setStudents({
+        data: res.data || [],
+        totalData: res.data.length,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchAccess = async (signal) => {
     // setState({ ...state, loading: true });
@@ -388,30 +397,16 @@ const PlacementStudentsData = () => {
 
   const changeFromDate = async (date) => {
     setFrom(date);
-    // setState((prevState) => ({
-    //   ...prevState,
-    //   fromDate: date,
-    // }));
-    // fetchStudents();
   };
 
   const changeToDate = (date) => {
     setTo(date);
-    // setState((prevState) => ({
-    //   ...prevState,
-    //   toDate: date,
-    // }));
-    // fetchStudents();
   };
 
   const sortChange = (column, order) => {
     // const { data } = state;
     const sorted = _.orderBy(studentData, [column], [order]);
     setStudents({ data: sorted, totalData });
-    // setState((prevState) => ({
-    //   ...prevState,
-    //   data: sorted,
-    // }));
   };
 
   useEffect(() => {
@@ -432,6 +427,9 @@ const PlacementStudentsData = () => {
 
   useEffect(() => {
     getJobDetails();
+    return () => {
+      setStudents({ data: [], totalData: 0 });
+    };
   }, []);
 
   return (

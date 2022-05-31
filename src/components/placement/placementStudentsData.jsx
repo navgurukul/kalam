@@ -1,81 +1,28 @@
 /* eslint-disable no-undef */
 import React, { useEffect } from "react";
-import {
-  Container,
-  Grid,
-  TextField,
-  Typography,
-  Select,
-  MenuItem,
-} from "@mui/material";
+import { Container, Typography, Select, MenuItem, Chip } from "@mui/material";
 // import Select from "react-select";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import EasyEdit from "react-easy-edit";
-import _ from "lodash";
 
-import { LocalizationProvider, DatePicker } from "@mui/lab";
-import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import { useSnackbar } from "notistack";
+import dayjs from "dayjs";
 
 import {
-  setFromDate,
   // setNoOfRows,
   // setStage,
   // setPageNo,
   setStudentData,
-  setToDate,
 } from "../../store/slices/studentSlice";
 import { changeFetching } from "../../store/slices/uiSlice";
-import ServerSidePagination from "../muiTables/ServerSidePagination";
 import NotHaveAccess from "../layout/NotHaveAccess";
 import Loader from "../ui/Loader";
+import { donor } from "../../utils/constants";
+import MainLayout from "../muiTables/MainLayout";
+import EditText from "./EditText";
+import CustomDatePicker from "./CustomDatePicker";
 
-const baseURL = import.meta.env.VITE_API_URL;
-
-const EditText = ({ name, type, value, studentId, change }) => {
-  const { enqueueSnackbar } = useSnackbar();
-
-  const handleUpdate = (newValue) => {
-    if (newValue === "") {
-      enqueueSnackbar(`${name} cannot be empty`, {
-        variant: "error",
-      });
-      return;
-    }
-    if (newValue === value) {
-      return;
-    }
-    axios
-      .put(`${baseURL}students/jobDetails`, {
-        [name]: newValue,
-        student_id: studentId,
-      })
-      .then(() => {
-        enqueueSnackbar(`${name} successfully updated !`, {
-          variant: "success",
-        });
-        change({ [name]: newValue });
-      })
-      .catch(() => {
-        enqueueSnackbar(`Error in updating ${name}`, {
-          variant: "error",
-        });
-      });
-  };
-
-  return (
-    <EasyEdit
-      type={type}
-      value={value}
-      onSave={(nVal) => handleUpdate(nVal)}
-      saveButtonLabel="✔"
-      cancelButtonLabel="✖"
-      onValidate={(value1) => value1 !== ""}
-      disableAutoCancel
-    />
-  );
-};
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const PlacementStudentsData = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -89,7 +36,7 @@ const PlacementStudentsData = () => {
     fromDate,
     toDate,
     stage,
-    totalData,
+    // totalData,
     numberOfRows,
     page,
   } = useSelector((state) => state.students);
@@ -99,12 +46,12 @@ const PlacementStudentsData = () => {
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const setStudents = (data) => dispatch(setStudentData(data));
-  const setFrom = (data) => dispatch(setFromDate(data));
-  const setTo = (data) => dispatch(setToDate(data));
+  // const setFrom = (data) => dispatch(setFromDate(data));
+  // const setTo = (data) => dispatch(setToDate(data));
 
   const getJobDetails = async () => {
     try {
-      const res = await axios.get(`${baseURL}/students/jobDetails`);
+      const res = await axios.get(`${baseUrl}/students/jobDetails`);
       setStudents({
         data: res.data || [],
         totalData: res.data.length,
@@ -121,7 +68,7 @@ const PlacementStudentsData = () => {
 
   const changeJobType = (val, studentId, change) => {
     axios
-      .put(`${baseURL}students/jobDetails`, {
+      .put(`${baseUrl}students/jobDetails`, {
         student_id: studentId,
         job_type: val,
       })
@@ -129,7 +76,7 @@ const PlacementStudentsData = () => {
         enqueueSnackbar(`Job Type successfully updated !`, {
           variant: "success",
         });
-        getJobDetails();
+        // getJobDetails();
         change({ job_type: val });
       })
       .catch(() => {
@@ -193,12 +140,24 @@ const PlacementStudentsData = () => {
       },
     },
     {
-      name: "donor",
+      name: "studentDonor",
       label: "Donor",
       options: {
         filter: true,
         sort: true,
-        customBodyRender: React.useCallback((value) => <p>donor_name</p>),
+        customBodyRender: React.useCallback((value) => {
+          const donorList = donor.filter((donorEl) =>
+            value?.donor_id?.includes(`${donorEl.id}`)
+          );
+          return donorList.map((donorEl) => (
+            <Chip
+              key={donorEl.id}
+              sx={{ m: "0.4rem" }}
+              variant="filled"
+              label={donorEl.name}
+            />
+          ));
+        }),
       },
     },
 
@@ -231,15 +190,69 @@ const PlacementStudentsData = () => {
     },
     {
       name: "student_job_details", // Select Input options male,female
-      label: "Date of Offer Letter Sent",
+      label: "Date of Offer Letter",
       options: {
         filter: true,
         sort: true,
-        customBodyRender: React.useCallback((value) => {
-          const offerletterDate =
-            value?.offer_letter_date.split("T")[0] || "N / A";
+        customBodyRender: React.useCallback((value, rowMeta, change) => {
+          const studentId = rowMeta.rowData[0];
+          const offerLetterDate = value?.offer_letter_date
+            ? dayjs(value.offer_letter_date)
+            : null;
 
-          return <p>{offerletterDate}</p>;
+          return (
+            <CustomDatePicker
+              offerLetterDate={offerLetterDate}
+              studentId={studentId}
+              change={change}
+            />
+          );
+
+          // return (
+          // <Box sx={{ minWidth: "10rem" }}>
+          //   <LocalizationProvider dateAdapter={DateFnsUtils}>
+          //     <DatePicker
+          //       disableFuture
+          //       // margin="normal"
+          //       id="offer_letter_date"
+          //       label="Date of Offer Letter"
+          //       value={offerLetterDate}
+          //       onChange={(newValue) => {
+          //         if (
+          //           dayjs(newValue).diff(value.offer_letter_date, "date") ===
+          //           0
+          //         )
+          //           return;
+          //         // console.log(
+          //         //   newValue,
+          //         //   dayjs(newValue).diff(value.offer_letter_date, "date")
+          //         // );
+          //         axios
+          //           .put(`${baseUrl}students/jobDetails`, {
+          //             offer_letter_date: newValue,
+          //             student_id: studentId,
+          //           })
+          //           .then(() => {
+          //             enqueueSnackbar(`${name} successfully updated !`, {
+          //               variant: "success",
+          //             });
+          //             change({ offer_letter_date: newValue });
+          //           })
+          //           .catch(() => {
+          //             enqueueSnackbar(`Error in updating ${name}`, {
+          //               variant: "error",
+          //             });
+          //           });
+          //       }}
+          //       inputFormat="dd/MM/yyyy"
+          //       inputVariant="outlined"
+          //       renderInput={(params) => <TextField fullWidth {...params} />}
+          //       fullWidth
+          //       placeholder="Date of Offer Letter"
+          //     />
+          //   </LocalizationProvider>
+          // </Box>
+          // );
         }, []),
       },
     },
@@ -250,7 +263,7 @@ const PlacementStudentsData = () => {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
-          const jobDesignation = value?.job_designation || "Click to edit";
+          const jobDesignation = value?.job_designation || "Click to Add";
           const studentId = rowMeta.rowData[0];
           return (
             <EditText
@@ -273,7 +286,7 @@ const PlacementStudentsData = () => {
         sort: true,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const studentId = rowMeta.rowData[0]; //set id
-          const jobLocation = value?.job_location || "Click to edit";
+          const jobLocation = value?.job_location || "Click to Add";
           // const { label } = rowMeta.columnData;
           return (
             <EditText
@@ -296,7 +309,7 @@ const PlacementStudentsData = () => {
         sort: true,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const selectJobType = {
-            value: "Select Job Type",
+            value: "selectJobType",
             label: "Select Job Type",
           };
           const jobType = value?.job_type || selectJobType.value;
@@ -312,7 +325,7 @@ const PlacementStudentsData = () => {
                   value: "Full Time",
                   label: "Full Time",
                 }
-              : "";
+              : selectJobType;
           const modes = [
             {
               value: "Internship",
@@ -347,7 +360,9 @@ const PlacementStudentsData = () => {
                 {selectJobType.label}
               </MenuItem>
               {modes.map((mode) => (
-                <MenuItem value={mode.value}>{mode.label}</MenuItem>
+                <MenuItem key={mode.value} value={mode.value}>
+                  {mode.label}
+                </MenuItem>
               ))}
             </Select>
           );
@@ -375,9 +390,10 @@ const PlacementStudentsData = () => {
                 value={`${salary}`}
                 change={(val) => updateValue(val)}
                 studentId={studentId}
-                getJobDetails={getJobDetails}
+                // getJobDetails={getJobDetails}
               />
-              &nbsp;/month
+              {/* &nbsp; */}
+              /month
             </div>
           );
         }, []),
@@ -391,7 +407,7 @@ const PlacementStudentsData = () => {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
-          const employer = value?.employer || "Click to edit";
+          const employer = value?.employer || "Click to Add";
           const studentId = rowMeta.rowData[0]; //set id
 
           return (
@@ -402,7 +418,7 @@ const PlacementStudentsData = () => {
               value={employer}
               change={(val) => updateValue(val)}
               studentId={studentId}
-              getJobDetails={getJobDetails}
+              // getJobDetails={getJobDetails}
             />
           );
         }, []),
@@ -415,7 +431,7 @@ const PlacementStudentsData = () => {
 
     fetchingStart();
     try {
-      const accessUrl = `${baseURL}rolebaseaccess`;
+      const accessUrl = `${baseUrl}rolebaseaccess`;
       axios.get(accessUrl, { signal }).then((response) => {
         const studentDashboardData = response.data; //variable to store the response
         const conditions = //variable to store the conditions
@@ -440,19 +456,19 @@ const PlacementStudentsData = () => {
     }
   };
 
-  const changeFromDate = async (date) => {
-    setFrom(date);
-  };
+  // const changeFromDate = async (date) => {
+  //   setFrom(date);
+  // };
 
-  const changeToDate = (date) => {
-    setTo(date);
-  };
+  // const changeToDate = (date) => {
+  //   setTo(date);
+  // };
 
-  const sortChange = (column, order) => {
-    // const { data } = state;
-    const sorted = _.orderBy(studentData, [column], [order]);
-    setStudents({ data: sorted, totalData });
-  };
+  // const sortChange = (column, order) => {
+  //   // const { data } = state;
+  //   const sorted = _.orderBy(studentData, [column], [order]);
+  //   setStudents({ data: sorted, totalData });
+  // };
 
   useEffect(() => {
     // console.log("Updating changes");
@@ -481,7 +497,7 @@ const PlacementStudentsData = () => {
     <Container maxWidth="xl">
       {canView ? (
         <>
-          <Grid container spacing={4} style={{ marginBottom: "0.8rem" }}>
+          {/* <Grid container spacing={4} style={{ marginBottom: "0.8rem" }}>
             <Grid item xs={6} md={6} lg={3} sx={{ marginTop: "0.8rem" }}>
               <LocalizationProvider dateAdapter={DateFnsUtils}>
                 <DatePicker
@@ -520,17 +536,12 @@ const PlacementStudentsData = () => {
                 />
               </LocalizationProvider>
             </Grid>
-          </Grid>
-          <ServerSidePagination
+          </Grid> */}
+          <MainLayout
+            title="Placement Data"
+            data={studentData}
             columns={columns}
             showLoader={isFetching}
-            sortChange={sortChange}
-            params={{
-              dataType: "softwareCourse",
-              stage: "inJob",
-              from: fromDate,
-              to: toDate,
-            }}
           />
         </>
       ) : isFetching ? (

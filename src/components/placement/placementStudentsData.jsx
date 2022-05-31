@@ -110,7 +110,7 @@ const PlacementStudentsData = () => {
         customBodyRender: React.useCallback((value) => {
           const DOJdate = value.split("T")[0];
 
-          return <p>{DOJdate}</p>;
+          return <p>{dayjs(DOJdate).format("D MMM YYYY")}</p>;
         }),
       },
     },

@@ -1,3 +1,4 @@
+/* eslint-disable no-return-await */
 import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import Select from "react-select";
@@ -18,6 +19,7 @@ import {
   Container,
   Chip,
   Autocomplete,
+  Typography,
   Select as MUISelect,
   MenuItem,
   FormControl,
@@ -26,7 +28,6 @@ import { AddCircleOutlined } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import NewCustomToolbar from "../smallComponents/NewCustomToolbar";
 import { campus } from "../../utils/constants";
-import { showDialog } from "../../store/slices/uiSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -50,6 +51,10 @@ const NewAdminPage = () => {
     access: "selectaccess",
   });
   const [mail, setMail] = useState("");
+  const [optionsData, setOptionsData] = React.useState({
+    partner: [],
+  });
+  const [changeFn, setChangeFn] = React.useState(() => {});
 
   //options for dropdowns
   const [roleOptions, setRoleOptions] = React.useState([]);
@@ -149,9 +154,10 @@ const NewAdminPage = () => {
     }
   };
 
-  const getOptions = (role, filterRoles) => {
+  const getOptions = (roleId, filterRoles) => {
     let exclusions;
-    switch (role.toLowerCase()) {
+    const role = roleOptions.find((opt) => opt.value === roleId) || "";
+    switch (role?.label?.toLowerCase() || "") {
       case "campus":
         exclusions = filterRoles.map(
           (filterItem) => filterItem.label.split("-")[1]
@@ -162,6 +168,8 @@ const NewAdminPage = () => {
             label: campusItem.name,
             value: campusItem.id,
           }));
+      case "partner":
+        return optionsData.partner;
       default:
         return [];
     }
@@ -222,11 +230,21 @@ const NewAdminPage = () => {
     }
   };
 
+  const fetchPartnerList = async () => {
+    const partnerRes = await axios.get(`${baseUrl}partners`);
+    const partnerList = partnerRes.data.data.map((partnerItem) => ({
+      label: partnerItem.name,
+      value: partnerItem.id,
+    }));
+    setOptionsData({ ...optionsData, partner: partnerList });
+  };
+
   const updateAccess = (acc) => setAccess(acc);
 
   useEffect(() => {
     fetchByMailId();
     fetchRolesPrivileges();
+    fetchPartnerList();
   }, []);
 
   // const handleRoleChange = (selectedOptionRole) => {
@@ -307,6 +325,7 @@ const NewAdminPage = () => {
                 label="Add"
                 onClick={() => {
                   setAccessDialog(true);
+
                   // dispatch(
                   //   showDialog({
                   //     title: "Select ",
@@ -482,56 +501,99 @@ const NewAdminPage = () => {
                   label="Select Role"
                   placeholder="Select Role"
                   name="role-select"
-                  value={access.role.toLowerCase()}
+                  value={access.role}
                   onChange={(ev) => {
                     updateAccess({
                       ...access,
                       access: "selectaccess",
-                      role: toTitleCase(ev.target.value),
+                      role: ev.target.value,
                     });
                   }}
                 >
                   <MenuItem disabled value="selectrole">
                     Select Role
                   </MenuItem>
-                  {["Campus", "Partners", "Admin"].map((arrItem) => (
-                    <MenuItem key={arrItem} value={arrItem.toLowerCase()}>
-                      {arrItem}
+                  {roleOptions.map((arrItem) => (
+                    <MenuItem key={arrItem.value} value={arrItem.value}>
+                      {arrItem.label}
                     </MenuItem>
                   ))}
                 </MUISelect>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel>
-                  Select {access.role === "selectRole" ? "Role" : access.role}
-                </InputLabel>
-                <MUISelect
-                  fullWidth
-                  label={`Select ${access.role}`}
-                  placeholder={`Select ${access.role}`}
-                  name="access-select"
-                  value={access.access}
-                  onChange={(ev) =>
-                    updateAccess({ ...access, access: ev.target.value })
-                  }
-                >
-                  <MenuItem disabled value="selectaccess">
-                    Select {access.role === "selectrole" ? "Role" : access.role}
-                  </MenuItem>
-                  {access.role !== "selectRole"
-                    ? getOptions(access.role, []).map((arrItem) => (
-                        <MenuItem key={arrItem.value} value={arrItem.value}>
-                          {arrItem.label}
-                        </MenuItem>
-                      ))
-                    : []}
-                </MUISelect>
-              </FormControl>
-            </Grid>
+            {access.role !== "selectrole" ? (
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                  <label>
+                    <Typography variant="caption">
+                      Select{" "}
+                      {access.role === "selectRole" ? "Role" : access.role}
+                    </Typography>
+                  </label>
+                  <Select
+                    label={`Select ${access.role}`}
+                    placeholder={`Select ${
+                      roleOptions.find((opt) => opt.value === access.role).label
+                    }`}
+                    isMulti
+                    onChange={(ev) => updateAccess({ ...access, access: ev })}
+                    options={getOptions(access.role, [])}
+                    menuPortalTarget={document.body}
+                    value={access.access}
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                  />
+                  {/* <MUISelect
+                    fullWidth
+                    label={`Select ${access.role}`}
+                    placeholder={`Select ${access.role}`}
+                    name="access-select"
+                    value={access.access}
+                    onChange={(ev) =>
+                      updateAccess({ ...access, access: ev.target.value })
+                    }
+                  >
+                    <MenuItem disabled value="selectaccess">
+                      Select{" "}
+                      {access.role === "selectrole" ? "Role" : access.role}
+                    </MenuItem>
+                    {access.role !== "selectRole"
+                      ? getOptions(access.role, []).map((arrItem) => (
+                          <MenuItem key={arrItem.value} value={arrItem.value}>
+                            {arrItem.label}
+                          </MenuItem>
+                        ))
+                      : []}
+                  </MUISelect> */}
+                </FormControl>
+              </Grid>
+            ) : null}
           </Grid>
         </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              if (
+                window.confirm("Are you sure to assign the mentioned roles?")
+              ) {
+                console.log(access.access);
+              }
+            }}
+          >
+            Assign Roles
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => setAccessDialog(false)}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
       </Dialog>
       <Dialog
         fullScreen
@@ -566,7 +628,10 @@ const NewAdminPage = () => {
             open={false}
             onClose={() => setAccessDialog(false)}
           >
-            <DialogTitle>Select {toTitleCase(access.role)}</DialogTitle>
+            <DialogTitle>
+              Select{" "}
+              {roleOptions.find((opt) => opt.value === access.role)?.label}
+            </DialogTitle>
             <DialogContent sx={{ w: "50%" }}>
               <Container maxWidth="md" sx={{ p: "0.4rem" }}>
                 <Autocomplete
@@ -728,71 +793,70 @@ const NewAdminPage = () => {
               margin: "0.4rem",
             }}
             onClick={() => {
-              const PartnerRole =
-                selectedRolePartners.length > 0 &&
-                `partner:${selectedRolePartners
-                  .map((role) => role.value)
-                  .join(",")}`;
-              const TPRole =
-                selectedRoleTP.length > 0 &&
-                `T&P:${selectedRoleTP.map((role) => role.value).join(",")}`;
-              const Role =
-                PartnerRole === false
-                  ? [TPRole]
-                  : TPRole === false
-                  ? [PartnerRole]
-                  : [PartnerRole, TPRole];
-
-              if (editing) {
-                axios
-                  .put(`${baseUrl}rolebaseaccess/email/update/${editing}`, {
-                    email: mail,
-                    roles: Role,
-                  })
-                  .then((res) => {
-                    if (res.status === 200) {
-                      snackbar.enqueueSnackbar(
-                        `Role Updated Successfully for ${mail}`,
-                        { variant: "success" }
-                      );
-                      setDialogOpen(false);
-                      setMail("");
-                      // setSelectedRolePartners([]);
-                      // setSelectedRoleTP([]);
-                      setSelectedPrivilages([]);
-                      setEditing(null);
-                    } else {
-                      snackbar.enqueueSnackbar("Something Went Wrong", {
-                        variant: "error",
-                      });
-                    }
-                  });
-              } else {
-                axios
-                  .post(`${baseUrl}rolebaseaccess/email/add`, {
-                    email: mail,
-                    roles: Role,
-                  })
-                  .then((res) => {
-                    if (res.status === 200) {
-                      snackbar.enqueueSnackbar(
-                        `Role Assigned Successfully to ${mail}`,
-                        {
-                          variant: "success",
-                        }
-                      );
-                      setDialogOpen(false);
-                      setMail("");
-                      // setSelectedRolePartners([]);
-                      // setSelectedRoleTP([]);
-                      setSelectedPrivilages([]);
-                    } else {
-                      snackbar.enqueueSnackbar("Something Went Wrong", {
-                        variant: "error",
-                      });
-                    }
-                  });
-              }
+              // const PartnerRole =
+              //   selectedRolePartners.length > 0 &&
+              //   `partner:${selectedRolePartners
+              //     .map((role) => role.value)
+              //     .join(",")}`;
+              // const TPRole =
+              //   selectedRoleTP.length > 0 &&
+              //   `T&P:${selectedRoleTP.map((role) => role.value).join(",")}`;
+              // const Role =
+              //   PartnerRole === false
+              //     ? [TPRole]
+              //     : TPRole === false
+              //     ? [PartnerRole]
+              //     : [PartnerRole, TPRole];
+              // if (editing) {
+              //   axios
+              //     .put(`${baseUrl}rolebaseaccess/email/update/${editing}`, {
+              //       email: mail,
+              //       roles: Role,
+              //     })
+              //     .then((res) => {
+              //       if (res.status === 200) {
+              //         snackbar.enqueueSnackbar(
+              //           `Role Updated Successfully for ${mail}`,
+              //           { variant: "success" }
+              //         );
+              //         setDialogOpen(false);
+              //         setMail("");
+              //         // setSelectedRolePartners([]);
+              //         // setSelectedRoleTP([]);
+              //         setSelectedPrivilages([]);
+              //         setEditing(null);
+              //       } else {
+              //         snackbar.enqueueSnackbar("Something Went Wrong", {
+              //           variant: "error",
+              //         });
+              //       }
+              //     });
+              // } else {
+              //   axios
+              //     .post(`${baseUrl}rolebaseaccess/email/add`, {
+              //       email: mail,
+              //       roles: Role,
+              //     })
+              //     .then((res) => {
+              //       if (res.status === 200) {
+              //         snackbar.enqueueSnackbar(
+              //           `Role Assigned Successfully to ${mail}`,
+              //           {
+              //             variant: "success",
+              //           }
+              //         );
+              //         setDialogOpen(false);
+              //         setMail("");
+              //         // setSelectedRolePartners([]);
+              //         // setSelectedRoleTP([]);
+              //         setSelectedPrivilages([]);
+              //       } else {
+              //         snackbar.enqueueSnackbar("Something Went Wrong", {
+              //           variant: "error",
+              //         });
+              // }
+              // });
+              // }
             }}
           >
             {editing ? "Update" : "Submit"}

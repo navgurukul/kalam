@@ -33,9 +33,9 @@ import Loader from "../ui/Loader";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-const EditText = ({ name, type, value, studentId, change, label }) => {
+const EditText = ({ name, type, value, studentId, change }) => {
   const { enqueueSnackbar } = useSnackbar();
-  console.log(label);
+
   const handleUpdate = (newValue) => {
     if (newValue === "") {
       enqueueSnackbar(`${name} cannot be empty`, {
@@ -44,7 +44,6 @@ const EditText = ({ name, type, value, studentId, change, label }) => {
       return;
     }
     if (newValue === value) {
-      change(value);
       return;
     }
     axios
@@ -103,6 +102,18 @@ const PlacementStudentsData = () => {
   const setFrom = (data) => dispatch(setFromDate(data));
   const setTo = (data) => dispatch(setToDate(data));
 
+  const getJobDetails = async () => {
+    try {
+      const res = await axios.get(`${baseURL}/students/jobDetails`);
+      setStudents({
+        data: res.data || [],
+        totalData: res.data.length,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const [canView, setCanView] = React.useState({
     access: null, //access object to store who are having access data
     studentDashboardCondition: false, //condition to show student dashboard})
@@ -118,6 +129,7 @@ const PlacementStudentsData = () => {
         enqueueSnackbar(`Job Type successfully updated !`, {
           variant: "success",
         });
+        getJobDetails();
         change({ job_type: val });
       })
       .catch(() => {
@@ -167,6 +179,15 @@ const PlacementStudentsData = () => {
         }),
       },
     },
+    {
+      name: "donor",
+      label: "Donor",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: React.useCallback((value) => <p>donor_name</p>),
+      },
+    },
 
     {
       name: "gender", // Select Input options male,female
@@ -193,6 +214,15 @@ const PlacementStudentsData = () => {
 
           return <p>{contactValue}</p>;
         }, []),
+      },
+    },
+    {
+      name: "offer_letter_sent", // Select Input options male,female
+      label: "Date of Offer Letter Sent",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: React.useCallback((value) => <p>dd/mm/yyyy</p>, []),
       },
     },
     {
@@ -247,7 +277,7 @@ const PlacementStudentsData = () => {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
-          const jobType = value?.job_type || null;
+          const jobType = value?.job_type || "";
           const studentId = rowMeta.rowData[0];
           const jobValue =
             jobType === "Internship"
@@ -278,7 +308,9 @@ const PlacementStudentsData = () => {
               placeholder="Select Job Type"
               value={jobValue.value}
               // options={modes}
-              onChange={(e) => changeJobType(e.value, studentId, updateValue)}
+              onChange={(e) =>
+                changeJobType(e.target.value, studentId, updateValue)
+              }
               // styles={{
               //   menuList: (base) => ({
               //     ...base,
@@ -352,18 +384,6 @@ const PlacementStudentsData = () => {
       },
     },
   ];
-
-  const getJobDetails = async () => {
-    try {
-      const res = await axios.get(`${baseURL}/students/jobDetails`);
-      setStudents({
-        data: res.data || [],
-        totalData: res.data.length,
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const fetchAccess = async (signal) => {
     // setState({ ...state, loading: true });

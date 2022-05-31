@@ -155,6 +155,19 @@ const PlacementStudentsData = () => {
       },
     },
     {
+      name: "joinDate",
+      label: "Date of Joining",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: React.useCallback((value) => {
+          const DOJdate = value.split("T")[0];
+
+          return <p>{DOJdate}</p>;
+        }),
+      },
+    },
+    {
       name: "partner",
       label: "Partner",
       options: {
@@ -217,12 +230,17 @@ const PlacementStudentsData = () => {
       },
     },
     {
-      name: "offer_letter_sent", // Select Input options male,female
+      name: "student_job_details", // Select Input options male,female
       label: "Date of Offer Letter Sent",
       options: {
         filter: true,
         sort: true,
-        customBodyRender: React.useCallback((value) => <p>dd/mm/yyyy</p>, []),
+        customBodyRender: React.useCallback((value) => {
+          const offerletterDate =
+            value?.offer_letter_date.split("T")[0] || "N / A";
+
+          return <p>{offerletterDate}</p>;
+        }, []),
       },
     },
     {

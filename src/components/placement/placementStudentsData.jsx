@@ -277,7 +277,11 @@ const PlacementStudentsData = () => {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
-          const jobType = value?.job_type || "";
+          const selectJobType = {
+            value: "Select Job Type",
+            label: "Select Job Type",
+          };
+          const jobType = value?.job_type || selectJobType.value;
           const studentId = rowMeta.rowData[0];
           const jobValue =
             jobType === "Internship"
@@ -321,6 +325,9 @@ const PlacementStudentsData = () => {
               //   }),
               // }}
             >
+              <MenuItem value={selectJobType.value} disabled>
+                {selectJobType.label}
+              </MenuItem>
               {modes.map((mode) => (
                 <MenuItem value={mode.value}>{mode.label}</MenuItem>
               ))}

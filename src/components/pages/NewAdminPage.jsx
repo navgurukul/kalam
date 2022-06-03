@@ -266,7 +266,7 @@ const NewAdminPage = () => {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback(
-          (value) => (
+          (value, _, change) => (
             // <Select
             //   placeholder={"Select Role"}
             //   value={
@@ -324,6 +324,8 @@ const NewAdminPage = () => {
                 icon={<AddCircleOutlined />}
                 label="Add"
                 onClick={() => {
+                  setChangeFn(change);
+                  // setSelectedRoles(value);
                   setAccessDialog(true);
 
                   // dispatch(
@@ -494,6 +496,7 @@ const NewAdminPage = () => {
         <DialogContent sx={{ pY: "0.8rem" }}>
           <Grid container sx={{ mY: "0.8rem" }} spacing={2}>
             <Grid item xs={12}>
+              :
               <FormControl fullWidth sx={{ pY: "0.4rem" }}>
                 <InputLabel>Select Role</InputLabel>
                 <MUISelect
@@ -545,28 +548,6 @@ const NewAdminPage = () => {
                       menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                     }}
                   />
-                  {/* <MUISelect
-                    fullWidth
-                    label={`Select ${access.role}`}
-                    placeholder={`Select ${access.role}`}
-                    name="access-select"
-                    value={access.access}
-                    onChange={(ev) =>
-                      updateAccess({ ...access, access: ev.target.value })
-                    }
-                  >
-                    <MenuItem disabled value="selectaccess">
-                      Select{" "}
-                      {access.role === "selectrole" ? "Role" : access.role}
-                    </MenuItem>
-                    {access.role !== "selectRole"
-                      ? getOptions(access.role, []).map((arrItem) => (
-                          <MenuItem key={arrItem.value} value={arrItem.value}>
-                            {arrItem.label}
-                          </MenuItem>
-                        ))
-                      : []}
-                  </MUISelect> */}
                 </FormControl>
               </Grid>
             ) : null}
@@ -595,27 +576,14 @@ const NewAdminPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog
+      {/* <Dialog
         fullScreen
         open={dialogOpen}
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-        <DialogTitle>
-          {/* <Typography
-            variant="h4"
-            color="primary"
-            // style={{
-            //   // color: "#f05f40",
-            //   textAlign: "center",
-            //   marginTop: "0px",
-            //   position: "relative",
-            //   bottom: "20px",
-            // }}
-          > */}
-          Give Access To -{/* </Typography> */}
-        </DialogTitle>
-        <DialogContent
+        <DialogTitle>Give Access To -</DialogTitle> 
+         <DialogContent
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -637,7 +605,6 @@ const NewAdminPage = () => {
                 <Autocomplete
                   options={getOptions(access.role, selectedRoles)}
                   disablePortal
-                  // sx={{ width: "4.8rem" }}
                   fullWidth
                   renderInput={(params) => <TextField {...params} />}
                 />
@@ -649,17 +616,7 @@ const NewAdminPage = () => {
           </Dialog>
 
           <Grid container spacing={2} maxWidth="lg">
-            {/* <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: "20px",
-                marginBottom: "20px",
-              }}
-            > */}
             <Grid item xs={12}>
-              {/* <label htmlFor="email">Email Id</label> */}
               <TextField
                 fullWidth
                 label="Email Id"
@@ -669,7 +626,6 @@ const NewAdminPage = () => {
                 onChange={(e) => setMail(e.target.value)}
               />
             </Grid>
-            {/* </div> */}
             <Grid item xs={12} style={{ padding: "0.1rem" }}>
               <InputLabel
                 id="role-menu-label"
@@ -686,7 +642,6 @@ const NewAdminPage = () => {
                 styles={{
                   menuList: (base) => ({
                     ...base,
-                    // position: "fixed !important",
                     backgroundColor: "white",
                     border: "1px solid lightgray",
                     // width: "100%",
@@ -694,68 +649,6 @@ const NewAdminPage = () => {
                 }}
               />
             </Grid>
-            {/* {roleMenu.value === "partner" && (
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel
-                    htmlFor="role"
-                    style={{
-                      paddingBottom: "0.2rem",
-                    }}
-                  >
-                    Partners
-                  </InputLabel>
-                  <Select
-                    placeholder="Select Particular Partners"
-                    // value={selectedRolePartners}
-                    onChange={handleRoleChangePartners}
-                    isMulti
-                    options={dropDownOptions}
-                    styles={{
-                      menuList: (base) => ({
-                        ...base,
-                        position: "fixed !important",
-
-                        backgroundColor: "white",
-                        border: "1px solid lightgray",
-                        // width: "18%",
-                      }),
-                    }}
-                  />
-                </FormControl>
-              </Grid>
-            )}
-            {roleMenu.value === "t&p" && (
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel
-                    htmlFor="t&p"
-                    style={{
-                      paddingBottom: "0.2rem",
-                    }}
-                  >
-                    T&P
-                  </InputLabel>
-                  <Select
-                    placeholder="Select Particular T&P"
-                    // value={selectedRoleTP}
-                    onChange={handleRoleChangeTP}
-                    isMulti
-                    options={dropDownOptions}
-                    styles={{
-                      menuList: (base) => ({
-                        ...base,
-                        position: "fixed !important",
-
-                        backgroundColor: "white",
-                        border: "1px solid lightgray",
-                        width: "18%",
-                      }),
-                    }}
-                  />
-                </FormControl>
-              </Grid>
-            )} */}
             <Grid item xs={12}>
               <InputLabel
                 style={{
@@ -782,10 +675,8 @@ const NewAdminPage = () => {
               />
             </Grid>
           </Grid>
-          {/* <Box style={{ display: "flex", justifyContent: "flex-end" }}>
-          </Box> */}
-        </DialogContent>
-        <DialogActions>
+        </DialogContent> 
+         <DialogActions>
           <Button
             variant="contained"
             color="primary"
@@ -872,7 +763,7 @@ const NewAdminPage = () => {
             Cancel
           </Button>
         </DialogActions>
-      </Dialog>
+       </Dialog> */}
     </Container>
   );
 };

@@ -104,7 +104,7 @@ function OtherDetails(props) {
           <Grid item xs={12} sm={6}>
             <Controller
               control={control}
-              defaultValue={formData.state}
+              defaultValue={formData.state || ""}
               name="state"
               rules={{ required: true, validate: (st) => st !== "" }}
               render={({ field: { ref, ...rest } }) => (
@@ -157,7 +157,7 @@ function OtherDetails(props) {
           <Grid item xs={12} sm={6}>
             <Controller
               control={control}
-              defaultValue={formData.district}
+              defaultValue={formData.district || ""}
               name="district"
               className={classes.spacing}
               rules={{
@@ -280,7 +280,7 @@ function OtherDetails(props) {
             <Controller
               control={control}
               rules={{ required: "true" }}
-              defaultValue={formData.current_status}
+              defaultValue={formData.current_status || "Select Option"}
               name="current_status"
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
@@ -338,7 +338,7 @@ function OtherDetails(props) {
             <Controller
               control={control}
               rules={{ required: "true" }}
-              defaultValue={formData.qualification}
+              defaultValue={formData.qualification || ""}
               name="qualification"
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
@@ -535,7 +535,7 @@ function OtherDetails(props) {
             <Controller
               control={control}
               name="school_medium"
-              defaultValue={formData.school_medium}
+              defaultValue={formData.school_medium || ""}
               rules={{ required: true }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
@@ -590,7 +590,7 @@ function OtherDetails(props) {
             <Controller
               control={control}
               name="caste"
-              defaultValue={formData.caste}
+              defaultValue={formData.caste || "Select Option"}
               rules={{ required: true }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
@@ -646,7 +646,7 @@ function OtherDetails(props) {
             <Controller
               control={control}
               name="religion"
-              defaultValue={formData.religion}
+              defaultValue={formData.religion || ""}
               rules={{ required: true }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl

@@ -279,7 +279,10 @@ function OtherDetails(props) {
           <Grid item xs={12} sm={6}>
             <Controller
               control={control}
-              rules={{ required: "true" }}
+              rules={{
+                required: "true",
+                validate: (ct) => ct !== "Select Option",
+              }}
               defaultValue={formData.current_status || "Select Option"}
               name="current_status"
               render={({ field: { ref, ...rest } }) => (
@@ -337,7 +340,7 @@ function OtherDetails(props) {
           <Grid item xs={12} sm={6}>
             <Controller
               control={control}
-              rules={{ required: "true" }}
+              rules={{ required: "true", validate: (q) => q !== "" }}
               defaultValue={formData.qualification || ""}
               name="qualification"
               render={({ field: { ref, ...rest } }) => (
@@ -536,10 +539,12 @@ function OtherDetails(props) {
               control={control}
               name="school_medium"
               defaultValue={formData.school_medium || ""}
-              rules={{ required: true }}
+              rules={{ required: true, validate: (sm) => sm !== "" }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled && formData.school_medium !== null}
+                  disabled={
+                    inputDisabled && formData.school_medium !== undefined
+                  }
                   fullWidth
                   variant="outlined"
                   required
@@ -553,7 +558,9 @@ function OtherDetails(props) {
                     required
                     inputRef={ref}
                     {...rest}
-                    disabled={inputDisabled}
+                    disabled={
+                      inputDisabled && formData.school_medium !== undefined
+                    }
                   >
                     <MenuItem value="" disabled>
                       {lang === "en" ? "Select Langauge" : "भाषा चुने"}
@@ -591,7 +598,10 @@ function OtherDetails(props) {
               control={control}
               name="caste"
               defaultValue={formData.caste || "Select Option"}
-              rules={{ required: true }}
+              rules={{
+                required: true,
+                validate: (caste) => caste !== "Select Option",
+              }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
                   disabled={inputDisabled && formData.caste !== undefined}

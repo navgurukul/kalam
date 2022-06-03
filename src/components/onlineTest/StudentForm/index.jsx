@@ -272,9 +272,31 @@ const StudentForm = () => {
     if (prevData.alt_mobile) data.alt_mobile = prevData.alt_mobile;
 
     if (alreadyAUser) {
-      navigate(`/test/finalinstruction/`, {
-        state: { enrollmentKey, studentId },
-      });
+      axios
+        .put(`${baseUrl}students/updateDetails/${studentId}`, {
+          gender: prevData.gender,
+          gps_lat: prevData.gps_lat,
+          gps_long: prevData.gps_long,
+          partner_refer: prevData.partner_refer,
+          qualification: prevData.qualification,
+          state: prevData.state,
+          district: prevData.district,
+          city: prevData.city,
+          current_status: prevData.current_status,
+          school_medium: prevData.school_medium,
+          pin_code: prevData.pin_code,
+          caste: prevData.caste,
+          religon: prevData.religion,
+          percentage_in10th: "string",
+          math_marks_in10th: 0,
+          percentage_in12th: "string",
+          math_marks_in12th: 0,
+        })
+        .then(() => {
+          navigate(`/test/finalinstruction/`, {
+            state: { enrollmentKey, studentId },
+          });
+        });
     } else {
       axios
         .post(`${baseUrl}on_assessment/details/${enrollmentKey}`, data)

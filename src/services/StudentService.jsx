@@ -1573,7 +1573,7 @@ const StudentService = {
       stageColumnStatus,
       lastStageColumn,
       linkForEnglishTestColumn,
-      linkForOnlineTestColumn,
+      // linkForOnlineTestColumn,
       campusColumn,
       donorColumn,
     ],

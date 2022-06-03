@@ -291,7 +291,7 @@ const AppRouter = () => {
                 </React.Suspense>
               }
             />
-            <Route
+            {/* <Route
               path="/placements"
               element={
                 <React.Suspense fallback={<Loader />}>
@@ -300,7 +300,7 @@ const AppRouter = () => {
                   </RequireAuth>
                 </React.Suspense>
               }
-            />
+            /> */}
             <Route
               path="/outreachDetails"
               element={

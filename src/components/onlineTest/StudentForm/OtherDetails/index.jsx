@@ -109,7 +109,7 @@ function OtherDetails(props) {
               rules={{ required: true, validate: (st) => st !== "" }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.state !== null}
                   fullWidth
                   variant="outlined"
                   required
@@ -166,7 +166,7 @@ function OtherDetails(props) {
               }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.district !== null}
                   fullWidth
                   variant="outlined"
                   required
@@ -219,7 +219,7 @@ function OtherDetails(props) {
               rules={{ required: "true" }}
               render={({ field: { ref, ...rest } }) => (
                 <TextField
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.city !== null}
                   variant="outlined"
                   required
                   inputRef={ref}
@@ -249,7 +249,7 @@ function OtherDetails(props) {
               name="pin_code"
               render={({ field: { ref, ...rest } }) => (
                 <TextField
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.pin_code !== null}
                   variant="outlined"
                   required
                   fullWidth
@@ -284,7 +284,9 @@ function OtherDetails(props) {
               name="current_status"
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={
+                    inputDisabled && formData.current_status !== undefined
+                  }
                   fullWidth
                   variant="outlined"
                   required
@@ -293,7 +295,9 @@ function OtherDetails(props) {
                     {lang === "en" ? "Current Status" : "वर्तमान स्थिति"}
                   </InputLabel>
                   <Select
-                    disabled={inputDisabled}
+                    disabled={
+                      inputDisabled && formData.current_status !== undefined
+                    }
                     error={!!errors.current_status}
                     label={lang === "en" ? "Current Status" : "वर्तमान स्थिति"}
                     required
@@ -338,7 +342,9 @@ function OtherDetails(props) {
               name="qualification"
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={
+                    inputDisabled && formData.qualification !== undefined
+                  }
                   variant="outlined"
                   fullWidth
                   required
@@ -395,7 +401,9 @@ function OtherDetails(props) {
                 name="percentage_in10th"
                 render={({ field: { ref, ...rest } }) => (
                   <TextField
-                    disabled={inputDisabled}
+                    disabled={
+                      inputDisabled && formData.percentage_in10th !== null
+                    }
                     variant="outlined"
                     required
                     inputRef={ref}
@@ -440,7 +448,9 @@ function OtherDetails(props) {
                   name="percentage_in10th"
                   render={({ field: { ref, ...rest } }) => (
                     <TextField
-                      disabled={inputDisabled}
+                      disabled={
+                        inputDisabled && formData.percentage_in10th !== null
+                      }
                       variant="outlined"
                       required
                       inputRef={ref}
@@ -483,7 +493,9 @@ function OtherDetails(props) {
                   defaultValue={formData.percentage_in12th}
                   render={({ field: { ref, ...rest } }) => (
                     <TextField
-                      disabled={inputDisabled}
+                      disabled={
+                        inputDisabled && formData.percentage_in12th !== null
+                      }
                       variant="outlined"
                       required
                       inputRef={ref}
@@ -527,7 +539,7 @@ function OtherDetails(props) {
               rules={{ required: true }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.school_medium !== null}
                   fullWidth
                   variant="outlined"
                   required
@@ -582,7 +594,7 @@ function OtherDetails(props) {
               rules={{ required: true }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.caste !== undefined}
                   fullWidth
                   variant="outlined"
                   required
@@ -638,7 +650,7 @@ function OtherDetails(props) {
               rules={{ required: true }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.religion !== undefined}
                   required
                   fullWidth
                   variant="outlined"

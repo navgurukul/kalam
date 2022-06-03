@@ -39,6 +39,7 @@ const EditText = ({ name, type, value, studentId, change }) => {
   return (
     <EasyEdit
       type={type}
+      placeholder="Click to Add"
       value={value}
       onSave={(nVal) => handleUpdate(nVal)}
       saveButtonLabel="✔"

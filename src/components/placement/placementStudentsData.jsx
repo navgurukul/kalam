@@ -378,22 +378,40 @@ const PlacementStudentsData = () => {
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const studentId = rowMeta.rowData[0]; //set id
           // eslint-disable-next-line camelcase
-          const salary = value?.salary || "N/A";
+          const salaryPerMonth = value?.salary || "N/A";
+          const salaryPerAnnum =
+            salaryPerMonth === "N/A" ? "N/A" : salaryPerMonth * 12;
 
-          return (
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              ₹
-              <EditText
-                name="salary"
-                label={rowMeta.columnData.label}
-                type="text"
-                value={`${salary}`}
-                change={(val) => updateValue(val)}
-                studentId={studentId}
-                // getJobDetails={getJobDetails}
-              />
-              {/* &nbsp; */}
-              /month
+          return salaryPerAnnum === "N/A" ? (
+            <EditText
+              name="salary"
+              label={rowMeta.columnData.label}
+              type="text"
+              change={(val) => updateValue(val)}
+              studentId={studentId}
+              // getJobDetails={getJobDetails}
+            />
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                ₹
+                <EditText
+                  name="salary"
+                  label={rowMeta.columnData.label}
+                  type="text"
+                  value={`${salaryPerMonth}`}
+                  change={(val) => updateValue(val)}
+                  studentId={studentId}
+                  // getJobDetails={getJobDetails}
+                />
+                {/* &nbsp; */}/month
+              </div>
+              <div>₹{`${salaryPerAnnum}`}/annum</div>
             </div>
           );
         }, []),

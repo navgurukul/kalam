@@ -116,8 +116,10 @@ const ColumnUpload = {
 
 const StageColumnTransitionWrapper = ({ rowData, rowMeta }) => {
   const { loggedInUser } = useSelector((state) => state.auth);
+  const path = window.location.pathname.split("/");
+  const isCampus = path[1] === "campus";
   return permissions.updateStage.indexOf(loggedInUser.email) > -1 &&
-    keysCampusStageOfLearning.indexOf(rowData) > -1 ? (
+    isCampus ? (
     <div>
       <DeleteRow transitionId={rowMeta.rowData[11]} />
       {allStages[rowData]}

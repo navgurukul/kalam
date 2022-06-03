@@ -104,12 +104,12 @@ function OtherDetails(props) {
           <Grid item xs={12} sm={6}>
             <Controller
               control={control}
-              defaultValue={formData.state}
+              defaultValue={formData.state || ""}
               name="state"
               rules={{ required: true, validate: (st) => st !== "" }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.state !== null}
                   fullWidth
                   variant="outlined"
                   required
@@ -157,7 +157,7 @@ function OtherDetails(props) {
           <Grid item xs={12} sm={6}>
             <Controller
               control={control}
-              defaultValue={formData.district}
+              defaultValue={formData.district || ""}
               name="district"
               className={classes.spacing}
               rules={{
@@ -166,7 +166,7 @@ function OtherDetails(props) {
               }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.district !== null}
                   fullWidth
                   variant="outlined"
                   required
@@ -219,7 +219,7 @@ function OtherDetails(props) {
               rules={{ required: "true" }}
               render={({ field: { ref, ...rest } }) => (
                 <TextField
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.city !== null}
                   variant="outlined"
                   required
                   inputRef={ref}
@@ -249,7 +249,7 @@ function OtherDetails(props) {
               name="pin_code"
               render={({ field: { ref, ...rest } }) => (
                 <TextField
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.pin_code !== null}
                   variant="outlined"
                   required
                   fullWidth
@@ -279,12 +279,17 @@ function OtherDetails(props) {
           <Grid item xs={12} sm={6}>
             <Controller
               control={control}
-              rules={{ required: "true" }}
-              defaultValue={formData.current_status}
+              rules={{
+                required: "true",
+                validate: (ct) => ct !== "Select Option",
+              }}
+              defaultValue={formData.current_status || "Select Option"}
               name="current_status"
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={
+                    inputDisabled && formData.current_status !== undefined
+                  }
                   fullWidth
                   variant="outlined"
                   required
@@ -293,7 +298,9 @@ function OtherDetails(props) {
                     {lang === "en" ? "Current Status" : "वर्तमान स्थिति"}
                   </InputLabel>
                   <Select
-                    disabled={inputDisabled}
+                    disabled={
+                      inputDisabled && formData.current_status !== undefined
+                    }
                     error={!!errors.current_status}
                     label={lang === "en" ? "Current Status" : "वर्तमान स्थिति"}
                     required
@@ -333,12 +340,14 @@ function OtherDetails(props) {
           <Grid item xs={12} sm={6}>
             <Controller
               control={control}
-              rules={{ required: "true" }}
-              defaultValue={formData.qualification}
+              rules={{ required: "true", validate: (q) => q !== "" }}
+              defaultValue={formData.qualification || ""}
               name="qualification"
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={
+                    inputDisabled && formData.qualification !== undefined
+                  }
                   variant="outlined"
                   fullWidth
                   required
@@ -395,7 +404,9 @@ function OtherDetails(props) {
                 name="percentage_in10th"
                 render={({ field: { ref, ...rest } }) => (
                   <TextField
-                    disabled={inputDisabled}
+                    disabled={
+                      inputDisabled && formData.percentage_in10th !== null
+                    }
                     variant="outlined"
                     required
                     inputRef={ref}
@@ -440,7 +451,9 @@ function OtherDetails(props) {
                   name="percentage_in10th"
                   render={({ field: { ref, ...rest } }) => (
                     <TextField
-                      disabled={inputDisabled}
+                      disabled={
+                        inputDisabled && formData.percentage_in10th !== null
+                      }
                       variant="outlined"
                       required
                       inputRef={ref}
@@ -483,7 +496,9 @@ function OtherDetails(props) {
                   defaultValue={formData.percentage_in12th}
                   render={({ field: { ref, ...rest } }) => (
                     <TextField
-                      disabled={inputDisabled}
+                      disabled={
+                        inputDisabled && formData.percentage_in12th !== null
+                      }
                       variant="outlined"
                       required
                       inputRef={ref}
@@ -523,11 +538,13 @@ function OtherDetails(props) {
             <Controller
               control={control}
               name="school_medium"
-              defaultValue={formData.school_medium}
-              rules={{ required: true }}
+              defaultValue={formData.school_medium || ""}
+              rules={{ required: true, validate: (sm) => sm !== "" }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={
+                    inputDisabled && formData.school_medium !== undefined
+                  }
                   fullWidth
                   variant="outlined"
                   required
@@ -541,7 +558,9 @@ function OtherDetails(props) {
                     required
                     inputRef={ref}
                     {...rest}
-                    disabled={inputDisabled}
+                    disabled={
+                      inputDisabled && formData.school_medium !== undefined
+                    }
                   >
                     <MenuItem value="" disabled>
                       {lang === "en" ? "Select Langauge" : "भाषा चुने"}
@@ -578,11 +597,14 @@ function OtherDetails(props) {
             <Controller
               control={control}
               name="caste"
-              defaultValue={formData.caste}
-              rules={{ required: true }}
+              defaultValue={formData.caste || "Select Option"}
+              rules={{
+                required: true,
+                validate: (caste) => caste !== "Select Option",
+              }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.caste !== undefined}
                   fullWidth
                   variant="outlined"
                   required
@@ -634,11 +656,11 @@ function OtherDetails(props) {
             <Controller
               control={control}
               name="religion"
-              defaultValue={formData.religion}
+              defaultValue={formData.religion || ""}
               rules={{ required: true }}
               render={({ field: { ref, ...rest } }) => (
                 <FormControl
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.religion !== undefined}
                   required
                   fullWidth
                   variant="outlined"

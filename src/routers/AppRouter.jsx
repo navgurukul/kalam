@@ -39,6 +39,10 @@ const DonorStudentsData = React.lazy(() =>
 
 const OwnerList = React.lazy(() => import("../components/owner/OwnerList"));
 
+const PlacementStudentsData = React.lazy(() =>
+  import("../components/placement/placementStudentsData")
+);
+
 const AddPartner = React.lazy(() => import("../components/partner/AddPartner"));
 const PartnerList = React.lazy(() =>
   import("../components/partner/PartnerList")
@@ -287,6 +291,16 @@ const AppRouter = () => {
                 </React.Suspense>
               }
             />
+            {/* <Route
+              path="/placements"
+              element={
+                <React.Suspense fallback={<Loader />}>
+                  <RequireAuth privateRoute>
+                    <PlacementStudentsData />
+                  </RequireAuth>
+                </React.Suspense>
+              }
+            /> */}
             <Route
               path="/outreachDetails"
               element={

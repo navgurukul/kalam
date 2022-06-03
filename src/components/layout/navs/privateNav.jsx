@@ -8,6 +8,7 @@ import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import GroupIcon from "@mui/icons-material/Group";
+import WorkIcon from "@mui/icons-material/Work";
 
 import axios from "axios";
 
@@ -66,6 +67,16 @@ export default ({ toggleDrawer }) => {
       name: "Owners",
       icon: <GroupIcon />,
     },
+    // access &&
+    //   loggedInUser &&
+    //   loggedInUser.email &&
+    //   access.campus &&
+    //   access.campus.view &&
+    //   access.campus.view.includes(loggedInUser.email) && {
+    //     url: "/placements",
+    //     name: "Placements",
+    //     icon: <WorkIcon />,
+    //   },
     {
       url: "/outreachDetails",
       name: "Outreach Details",

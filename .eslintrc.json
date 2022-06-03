@@ -24,6 +24,7 @@
     "import/no-extraneous-dependencies": "off",
     "no-alert": "off",
     "no-nested-ternary": "off",
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-props-no-spreading": "off",
+    "no-console": ["warn", { "allow": ["warn", "error"] }]
   }
 }

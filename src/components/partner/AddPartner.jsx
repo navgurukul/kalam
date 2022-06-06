@@ -345,12 +345,113 @@ const AddPartnerPage = (props) => {
                     ? errors.name.type === "maxLength"
                       ? "Length should be under 40 characters"
                       : "Partner ka Name Enter karein."
-                    : "Ex. ABC"
+                    : "Partner ka Name Enter karein."
                 }
                 {...rest}
               />
             )}
           />
+
+          <Controller
+            control={control}
+            defaultValue={formData.email || ""}
+            name="email"
+            rules={{
+              required: true,
+              pattern:
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            }}
+            render={({ field: { ref, ...rest } }) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                id="email"
+                inputRef={ref}
+                className={classes.spacing}
+                label="Email"
+                placeholder="Email"
+                autoComplete="off"
+                type="email"
+                style={{
+                  marginTop: "1rem",
+                }}
+                error={!!errors.email}
+                helperText={
+                  errors.email
+                    ? errors.email.type === "pattern"
+                      ? "Please enter a valid email address"
+                      : "Email ka Address Enter karein."
+                    : "Partner ka Email Enter karein."
+                }
+                {...rest}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            defaultValue={formData.notes || ""}
+            name="notes"
+            rules={{ required: true }}
+            render={({ field: { ref, ...rest } }) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                id="notes"
+                inputRef={ref}
+                className={classes.spacing}
+                label="Notes"
+                placeholder="Notes"
+                autoComplete="off"
+                type="text"
+                style={{
+                  marginTop: "1rem",
+                }}
+                error={!!errors.notes}
+                helperText={
+                  errors.notes
+                    ? errors.notes.type === "required"
+                      ? "Please enter notes"
+                      : "Partner ki thodi details add karein."
+                    : "Partner ki thodi details add karein."
+                }
+                {...rest}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            defaultValue={formData.slug || ""}
+            name="slug"
+            rules={{ required: true }}
+            render={({ field: { ref, ...rest } }) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                id="slug"
+                inputRef={ref}
+                className={classes.spacing}
+                label="Slug"
+                placeholder="Slug"
+                autoComplete="off"
+                type="text"
+                style={{
+                  marginTop: "1rem",
+                }}
+                error={!!errors.slug}
+                helperText={
+                  errors.slug
+                    ? errors.slug.type === "required"
+                      ? "Please enter slug"
+                      : "Partner ke student ko online test dene ke liye Slug add karo."
+                    : "Partner ke student ko online test dene ke liye Slug add karo."
+                }
+                {...rest}
+              />
+            )}
+          />
+
           {/* <FormControl>
           <InputLabel htmlFor="partnerName">Partner Name</InputLabel>
           <Input
@@ -365,49 +466,6 @@ const AddPartnerPage = (props) => {
           </FormHelperText>
         </FormControl> */}
         </Grid>
-
-        <FormControl>
-          <InputLabel htmlFor="partnerEmail">Partner Email</InputLabel>
-          <Input
-            id="partnerEmail"
-            aria-describedby="my-helper-text"
-            name="email"
-            // value={state.email}
-            // onChange={handleChange("email")}
-          />
-          <FormHelperText className={classes.text} id="my-helper-text">
-            Partner ka Email Enter karein.
-          </FormHelperText>
-        </FormControl>
-
-        <FormControl>
-          <InputLabel htmlFor="partnerNotes">Partner Notes</InputLabel>
-          <Input
-            id="partnerNotes"
-            aria-describedby="my-helper-text"
-            name="notes"
-            // value={state.notes}
-            // onChange={handleChange("notes")}
-          />
-          <FormHelperText className={classes.text} id="my-helper-text">
-            Partner ki thodi details add karein.
-          </FormHelperText>
-        </FormControl>
-
-        <FormControl>
-          <InputLabel htmlFor="partnerNotes">Partner Slug</InputLabel>
-          <Input
-            id="partnerNotes"
-            aria-describedby="my-helper-text"
-            name="notes"
-            disabled={!!value}
-            // value={state.slug}
-            // onChange={handleChange("slug")}
-          />
-          <FormHelperText className={classes.text} id="my-helper-text">
-            Partner ke student ko online test dene ke liye Slug add karo.
-          </FormHelperText>
-        </FormControl>
 
         {/* <FormControl>
           {state.partner_user.length > 0 ? (

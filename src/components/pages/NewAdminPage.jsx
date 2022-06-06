@@ -50,7 +50,7 @@ const NewAdminPage = () => {
     role: "selectrole",
     access: "selectaccess",
   });
-  const [mail, setMail] = useState("");
+  const [currentUser, setCurrentUser] = useState({ id: "", email: "" });
   const [optionsData, setOptionsData] = React.useState({
     partner: [],
   });
@@ -59,34 +59,6 @@ const NewAdminPage = () => {
   //options for dropdowns
   const [roleOptions, setRoleOptions] = React.useState([]);
   const [privilegeOptions, setPrivilegeOptions] = React.useState([]);
-
-  const handleClose = () => {
-    setDialogOpen(false);
-    setMail("");
-    setSelectedRoles([]);
-    setSelectedPrivilages([]);
-    setEditing(null);
-  };
-
-  const handleOpen = () => {
-    setDialogOpen(true);
-  };
-
-  const handlePrivilegeChange = (newSelectedPrivilages) => {
-    setSelectedPrivilages(newSelectedPrivilages);
-  };
-
-  const handleRoleChange = (selectedRoleMenu) => {
-    // dispatch(showDialog({ title: "123" }));
-    if (selectedRoleMenu.length < selectedRoles.length) {
-      setSelectedRoles(selectedRoleMenu);
-      return;
-    }
-    setAccess(
-      selectedRoleMenu[selectedRoleMenu.length - 1].label.toLowerCase()
-    );
-    setAccessDialog(true);
-  };
 
   // const handleSubmit = async () => {
   //   const PartnerRole =
@@ -125,20 +97,6 @@ const NewAdminPage = () => {
   //     });
   // };
 
-  useEffect(
-    () => () => {
-      //cleanup
-      setDialogOpen(false);
-      setMail("");
-      setSelectedRoles("");
-      setSelectedRoles([]);
-      setSelectedPrivilages([]);
-    },
-    []
-  );
-
-  // const roles = ['campus','partner'];
-
   const toTitleCase = (str) => `${str.charAt(0).toUpperCase()}${str.substr(1)}`;
 
   const getAccessData = (role, accessId) => {
@@ -149,21 +107,30 @@ const NewAdminPage = () => {
         // console.log(matchedItem);
         return matchedItem;
 
+      case "partner":
+        matchedItem = optionsData.partner.find(
+          (partnerItem) => partnerItem.value === accessId
+        );
+        return matchedItem
+          ? { id: matchedItem.value, name: matchedItem.label }
+          : {};
       default:
         return {};
     }
   };
 
   const getOptions = (roleId, filterRoles) => {
+    console.log(filterRoles);
     let exclusions;
     const role = roleOptions.find((opt) => opt.value === roleId) || "";
     switch (role?.label?.toLowerCase() || "") {
       case "campus":
-        exclusions = filterRoles.map(
-          (filterItem) => filterItem.label.split("-")[1]
-        );
+        exclusions = filterRoles.reduce((acc, filterItem) => {
+          filterItem.access.map((accessItem) => acc.push(accessItem.access));
+          return acc;
+        }, []);
         return campus
-          .filter((campusItem) => !exclusions.includes(campusItem.name))
+          .filter((campusItem) => !exclusions.includes(campusItem.id))
           .map((campusItem) => ({
             label: campusItem.name,
             value: campusItem.id,
@@ -175,87 +142,9 @@ const NewAdminPage = () => {
     }
   };
 
-  const fetchByMailId = () => {
-    axios
-      .get(`${baseUrl}rolebaseaccess/email`)
-      .then((response) => {
-        const users = response.data.map((user) => {
-          let userData = {};
-          const roles = [];
-          const privileges = [];
-          user.userrole.forEach((roleData) => {
-            if (roleData.role?.length > 0 && roleData.access)
-              roles.push({
-                access: roleData.access.filter(
-                  (accesObj) => accesObj.user_role_id === roleData.role[0].id
-                ),
-                role_id: roleData.role[0].id,
-                role: `${toTitleCase(roleData.role[0].roles)}`,
-              });
-            if (roleData.privilege && roleData.privileges.length !== 0)
-              privileges.push({
-                id: roleData.privileges[0].id,
-                privilege: roleData.privileges[0].privilege,
-              });
-          });
-          userData = { email: user.email, roles, privileges };
-          return userData;
-        });
-        console.log(users);
-        setRoleByMailID(users);
-      })
-      .catch((e) => {
-        console.error(e);
-      });
+  const handleOpen = () => {
+    setDialogOpen(true);
   };
-
-  const fetchRolesPrivileges = async () => {
-    try {
-      const roles = await axios.get(`${baseUrl}role/getRole`);
-      const privilege = await axios.get(`${baseUrl}role/getPrivilege`);
-      setRoleOptions(
-        roles.data.map((role) => ({
-          label: `${toTitleCase(role.roles)}`,
-          value: role.id,
-        }))
-      );
-      setPrivilegeOptions(
-        privilege.data.map((priv) => ({
-          label: priv.privilege,
-          value: priv.id,
-        }))
-      );
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const fetchPartnerList = async () => {
-    const partnerRes = await axios.get(`${baseUrl}partners`);
-    const partnerList = partnerRes.data.data.map((partnerItem) => ({
-      label: partnerItem.name,
-      value: partnerItem.id,
-    }));
-    setOptionsData({ ...optionsData, partner: partnerList });
-  };
-
-  const updateAccess = (acc) => setAccess(acc);
-
-  useEffect(() => {
-    fetchByMailId();
-    fetchRolesPrivileges();
-    fetchPartnerList();
-  }, []);
-
-  // const handleRoleChange = (selectedOptionRole) => {
-  //   setSelectedOptionRole(selectedOptionRole);
-  //   console.log(`Option selected:`, selectedOptionRole);
-  // };
-
-  // const handlePrivilagesChange = (selectedOptionPrivilages) => {
-  //   setSelectedOptionPrivilages(selectedOptionPrivilages);
-  //   console.log(`Option selected:`, selectedOptionPrivilages);
-  // };
 
   const columns = [
     { name: "email", label: "Mail-Id" },
@@ -266,7 +155,7 @@ const NewAdminPage = () => {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback(
-          (value, _, change) => (
+          (value, rowMeta, change) => (
             // <Select
             //   placeholder={"Select Role"}
             //   value={
@@ -294,25 +183,14 @@ const NewAdminPage = () => {
             // />
 
             <div>
+              {console.log(value, optionsData)}
               {value.map((item) =>
                 item.access.map((accessItem) => (
-                  // <span
-                  //   key={`${item} ${Math.random() * 10}`}
-                  //   style={{
-                  //     display: "inline-block",
-                  //     marginRight: "10px",
-                  //     border: "1px solid lightgray",
-                  //     padding: "8px",
-                  //   }}
-                  // >
-                  //   {item.role}-
-                  //   {getAccessData(item.role, accessItem.access).name}
-                  // </span>
                   <Chip
                     key={`${item} ${Math.random() * 10}`}
                     variant="filled"
                     label={`${item.role}-${
-                      getAccessData(item.role, accessItem.access).name
+                      getAccessData(item.role, accessItem.access)?.name || ""
                     }`}
                     sx={{ marginX: "0.4rem" }}
                     onDelete={() => {}}
@@ -324,9 +202,13 @@ const NewAdminPage = () => {
                 icon={<AddCircleOutlined />}
                 label="Add"
                 onClick={() => {
-                  setChangeFn(change);
-                  // setSelectedRoles(value);
+                  setChangeFn({ ex: change });
+                  setSelectedRoles(value);
                   setAccessDialog(true);
+                  setCurrentUser({
+                    email: rowMeta.rowData[0],
+                    id: rowMeta.rowData[3],
+                  });
 
                   // dispatch(
                   //   showDialog({
@@ -350,7 +232,7 @@ const NewAdminPage = () => {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback(
-          (rowData) => (
+          (rowData) =>
             // <div>
             //   <span
             //     style={{
@@ -363,14 +245,19 @@ const NewAdminPage = () => {
             //     {rowData[0].privilege}
             //   </span>
             // </div>
-            <Chip label={rowData[0].privilege} sx={{ pX: "0.4rem" }} />
-          ),
+            rowData.map((privItem) => (
+              <Chip
+                label={privItem.privilege}
+                key={privItem.id}
+                sx={{ pX: "0.4rem" }}
+              />
+            )),
           []
         ),
       },
     },
     {
-      name: "Actions",
+      name: "id",
       label: "Actions",
       options: {
         filter: true,
@@ -391,7 +278,7 @@ const NewAdminPage = () => {
                 }}
                 onClick={() => {
                   setEditing(true);
-                  setMail(rowData[0]);
+                  setCurrentUser({ email: rowData[0] });
 
                   setSelectedRoles(
                     rowData[1].reduce((acc, role) => {
@@ -470,6 +357,194 @@ const NewAdminPage = () => {
     },
   ];
 
+  useEffect(
+    () => () => {
+      //cleanup
+      setDialogOpen(false);
+      setCurrentUser({ id: "", email: "" });
+      setSelectedRoles("");
+      setSelectedRoles([]);
+      setSelectedPrivilages([]);
+    },
+    []
+  );
+
+  const handleClose = () => {
+    setDialogOpen(false);
+    setCurrentUser({ id: "", email: "" });
+    setSelectedRoles([]);
+    setSelectedPrivilages([]);
+    setEditing(null);
+  };
+
+  const handlePrivilegeChange = (newSelectedPrivilages) => {
+    setSelectedPrivilages(newSelectedPrivilages);
+  };
+
+  const handleRoleChange = (selectedRoleMenu) => {
+    // dispatch(showDialog({ title: "123" }));
+    if (selectedRoleMenu.length < selectedRoles.length) {
+      setSelectedRoles(selectedRoleMenu);
+      return;
+    }
+    setAccess(
+      selectedRoleMenu[selectedRoleMenu.length - 1].label.toLowerCase()
+    );
+    setAccessDialog(true);
+  };
+
+  const fetchByMailId = () => {
+    axios
+      .get(`${baseUrl}rolebaseaccess/email`)
+      .then((response) => {
+        const users = response.data.map((user) => {
+          let userData = {};
+          const roles = [];
+          const privileges = [];
+          console.log(user);
+          user.userrole.forEach((roleData) => {
+            if (roleData.role?.length > 0 && roleData.access)
+              roles.push({
+                access: roleData.access.filter(
+                  (accesObj) => accesObj.user_role_id === roleData.id
+                ),
+                role_id: roleData.id,
+                role: `${toTitleCase(roleData.role[0].roles)}`,
+              });
+            if (roleData.privilege && roleData.privileges.length !== 0)
+              privileges.push({
+                id: roleData.privileges[0].id,
+                privilege: roleData.privileges[0].privilege,
+              });
+          });
+          userData = { id: user.id, email: user.email, roles, privileges };
+          console.log(userData);
+          return userData;
+        });
+        console.log(users);
+        setRoleByMailID(users);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+
+  const fetchRolesPrivileges = async () => {
+    try {
+      const roles = await axios.get(`${baseUrl}role/getRole`);
+      const privilege = await axios.get(`${baseUrl}role/getPrivilege`);
+      setRoleOptions(
+        roles.data.map((role) => ({
+          label: `${toTitleCase(role.roles)}`,
+          value: role.id,
+        }))
+      );
+      setPrivilegeOptions(
+        privilege.data.map((priv) => ({
+          label: priv.privilege,
+          value: priv.id,
+        }))
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const fetchPartnerList = async () => {
+    const partnerRes = await axios.get(`${baseUrl}partners`);
+    const partnerList = partnerRes.data.data.map((partnerItem) => ({
+      label: partnerItem.name,
+      value: partnerItem.id,
+    }));
+    setOptionsData({ ...optionsData, partner: partnerList });
+  };
+
+  const updateAccess = (acc) => setAccess(acc);
+
+  useEffect(() => {
+    fetchByMailId();
+    fetchRolesPrivileges();
+    fetchPartnerList();
+  }, []);
+
+  // const handleRoleChange = (selectedOptionRole) => {
+  //   setSelectedOptionRole(selectedOptionRole);
+  //   console.log(`Option selected:`, selectedOptionRole);
+  // };
+
+  // const handlePrivilagesChange = (selectedOptionPrivilages) => {
+  //   setSelectedOptionPrivilages(selectedOptionPrivilages);
+  //   console.log(`Option selected:`, selectedOptionPrivilages);
+  // };
+
+  const createUserRolePrivilege = async (
+    emailId,
+    rolePrivilegeId,
+    rolePrivilege = "roles"
+  ) => {
+    console.log(emailId, rolePrivilege, rolePrivilegeId);
+    const newRole = await axios.post(`${baseUrl}role/createUserRole`, {
+      chanakya_user_email_id: emailId,
+      [rolePrivilege]: rolePrivilegeId,
+    });
+    return { id: newRole.data.id, roleId: newRole.data.roles };
+  };
+
+  const createAccess = async (accessList, roleId) => {
+    console.log(accessList, roleId);
+    const newAccess = await Promise.all(
+      accessList.map(async (accessItem) => {
+        const accessRes = await axios.post(
+          `${baseUrl}role/createUserRoleAccess`,
+          { user_role_id: roleId, access: accessItem.value }
+        );
+        return { id: accessRes.data.id, access: accessRes.data.access };
+      })
+    );
+    return newAccess;
+  };
+
+  const assignRoles = async () => {
+    if (window.confirm("Are you sure to assign the mentioned roles?")) {
+      const alreadyHasRole = selectedRoles.findIndex(
+        (roleItem) => roleItem.role_id === access.role
+      );
+      console.log(access, selectedRoles, alreadyHasRole);
+      let newRole;
+      let newAccess;
+      if (alreadyHasRole !== -1) {
+        newRole = selectedRoles[alreadyHasRole];
+        //async code for new access here
+        newAccess = await createAccess(access.access, newRole.role_id);
+        newRole.access = [
+          ...newRole.access,
+          ...newAccess.map((accessItem) => ({
+            id: accessItem.id,
+            user_role_id: access.role,
+            access: accessItem.access,
+          })),
+        ];
+        console.log(newRole);
+        const updatedRoles = [...selectedRoles];
+        updatedRoles[alreadyHasRole] = newRole;
+        setSelectedRoles([]);
+        changeFn.ex(updatedRoles);
+        setAccess({ role: "selectrole", access: "selectaccess" });
+        setAccessDialog(false);
+      } else {
+        // async code for new Role
+        newRole = await createUserRolePrivilege(
+          currentUser.id,
+          access.role,
+          "roles"
+        );
+        // console.log()
+        // async code for new access for that role
+        const newAccess1 = {};
+      }
+    }
+  };
+
   const options = {
     selectableRows: "none",
 
@@ -541,7 +616,7 @@ const NewAdminPage = () => {
                     }`}
                     isMulti
                     onChange={(ev) => updateAccess({ ...access, access: ev })}
-                    options={getOptions(access.role, [])}
+                    options={getOptions(access.role, selectedRoles)}
                     menuPortalTarget={document.body}
                     value={access.access}
                     styles={{
@@ -555,15 +630,12 @@ const NewAdminPage = () => {
         </DialogContent>
         <DialogActions>
           <Button
+            disabled={
+              access.role === "selectrole" || access.access === "selectaccess"
+            }
             variant="contained"
             color="primary"
-            onClick={() => {
-              if (
-                window.confirm("Are you sure to assign the mentioned roles?")
-              ) {
-                console.log(access.access);
-              }
-            }}
+            onClick={assignRoles}
           >
             Assign Roles
           </Button>

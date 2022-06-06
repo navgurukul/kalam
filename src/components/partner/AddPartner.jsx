@@ -17,12 +17,12 @@ import {
   Container,
   Grid,
 } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
 
 import { useSnackbar } from "notistack";
 
 import { useNavigate } from "react-router-dom";
 import { changeFetching } from "../../store/slices/uiSlice";
-import { Controller, useForm } from "react-hook-form";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const useStyles = makeStyles((theme) => ({
@@ -67,7 +67,7 @@ const AddPartnerPage = (props) => {
     states: "",
     state: "",
     partnerEmail: "",
-    partner_user: { email: "" },
+    partner_user: [{ email: "" }],
     districts: [""],
   });
 
@@ -345,7 +345,7 @@ const AddPartnerPage = (props) => {
                     ? errors.name.type === "maxLength"
                       ? "Length should be under 40 characters"
                       : "Partner ka Name Enter karein."
-                    : "Ex. XYZ"
+                    : "Ex. ABC"
                 }
                 {...rest}
               />
@@ -372,8 +372,8 @@ const AddPartnerPage = (props) => {
             id="partnerEmail"
             aria-describedby="my-helper-text"
             name="email"
-            value={state.email}
-            onChange={handleChange("email")}
+            // value={state.email}
+            // onChange={handleChange("email")}
           />
           <FormHelperText className={classes.text} id="my-helper-text">
             Partner ka Email Enter karein.
@@ -386,8 +386,8 @@ const AddPartnerPage = (props) => {
             id="partnerNotes"
             aria-describedby="my-helper-text"
             name="notes"
-            value={state.notes}
-            onChange={handleChange("notes")}
+            // value={state.notes}
+            // onChange={handleChange("notes")}
           />
           <FormHelperText className={classes.text} id="my-helper-text">
             Partner ki thodi details add karein.
@@ -401,31 +401,31 @@ const AddPartnerPage = (props) => {
             aria-describedby="my-helper-text"
             name="notes"
             disabled={!!value}
-            value={state.slug}
-            onChange={handleChange("slug")}
+            // value={state.slug}
+            // onChange={handleChange("slug")}
           />
           <FormHelperText className={classes.text} id="my-helper-text">
             Partner ke student ko online test dene ke liye Slug add karo.
           </FormHelperText>
         </FormControl>
 
-        <FormControl>
+        {/* <FormControl>
           {state.partner_user.length > 0 ? (
             // eslint-disable-next-line arrow-body-style
             state.partner_user.map((user, index) => {
               return (
                 <div key={user.email}>
                   <TextField
-                    type={
-                      state.partner_user.length - 1 === index ? "search" : null
-                    }
+                    // type={
+                    //   state.partner_user.length - 1 === index ? "search" : null
+                    // }
                     id="PartnerUsers"
                     // label="Users"
                     placeholder="User"
                     aria-describedby="my-helper-text"
                     name="user"
                     value={user.email}
-                    onChange={() => changeHandler(index)}
+                    // onChange={() => changeHandler(index)}
                   />
                 </div>
               );
@@ -438,8 +438,8 @@ const AddPartnerPage = (props) => {
                 placeholder="User"
                 aria-describedby="my-helper-text"
                 name="user"
-                value={state.partnerEmail}
-                onChange={() => changeHandler()}
+                // value={state.partnerEmail}
+                // onChange={() => changeHandler()}
               />
             </div>
           )}
@@ -451,32 +451,28 @@ const AddPartnerPage = (props) => {
             className={classes.addIcon}
             color="primary"
             aria-label="add"
-            onClick={addEmail}
-            disabled={state.partner_user[state.partner_user.length - 1] === ""}
+            // onClick={addEmail}
+            // disabled={state.partner_user[state.partner_user.length - 1] === ""}
           >
             <AddIcon />
           </Fab>
-        </FormControl>
+        </FormControl> */}
 
         <FormControl>
-          {React.useCallback(
-            state.districts.map((state_d, index) => (
-              <div key={state_d}>
-                <TextField
-                  // type={state.districts.length - 1 === index ? "search" : null}
-                  id="PartnerDistrictsCities"
-                  label=" Partner Districts/Cities"
-                  aria-describedby="my-helper-text"
-                  name={`districts-${index}`}
-                  defaultValue={state_d}
-                  onChange={(e) => changeDistricts(e.target.value, index)}
-                />
-                {console.log(index)}
-              </div>
-            )),
-            [state.districts.length]
-          )}
-          {console.log(state)}
+          {/* {state.districts.map((state_d, index) => (
+            <div key={state_d}>
+              <TextField
+                // type={state.districts.length - 1 === index ? "search" : null}
+                id="PartnerDistrictsCities"
+                label=" Partner Districts/Cities"
+                aria-describedby="my-helper-text"
+                name={`districts-${index}`}
+                defaultValue={state_d}
+                // onChange={(e) => changeDistricts(e.target.value, index)}
+              />
+              {console.log(index)}
+            </div>
+          ))} */}
           <FormHelperText className={classes.text} id="my-helper-text">
             Partner ka districts or city Enter karein.
           </FormHelperText>
@@ -484,8 +480,8 @@ const AddPartnerPage = (props) => {
             className={classes.addIcon}
             color="primary"
             aria-label="add"
-            onClick={addState}
-            disabled={state.districts[0] === ""}
+            // onClick={addState}
+            // disabled={state.districts[0] === ""}
           >
             <AddIcon />
           </Fab>
@@ -493,7 +489,7 @@ const AddPartnerPage = (props) => {
         <Button
           variant="contained"
           color="primary"
-          onClick={onSubmit}
+          // onClick={onSubmit}
           className={classes.btn}
         >
           {value ? "Edit Partner" : "Add Partner"}

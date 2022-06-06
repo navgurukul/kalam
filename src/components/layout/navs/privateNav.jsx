@@ -67,16 +67,16 @@ export default ({ toggleDrawer }) => {
       name: "Owners",
       icon: <GroupIcon />,
     },
-    access &&
-      loggedInUser &&
-      loggedInUser.email &&
-      access.campus &&
-      access.campus.view &&
-      access.campus.view.includes(loggedInUser.email) && {
-        url: "/placements",
-        name: "Placements",
-        icon: <WorkIcon />,
-      },
+    // access &&
+    //   loggedInUser &&
+    //   loggedInUser.email &&
+    //   access.campus &&
+    //   access.campus.view &&
+    //   access.campus.view.includes(loggedInUser.email) && {
+    //     url: "/placements",
+    //     name: "Placements",
+    //     icon: <WorkIcon />,
+    //   },
     {
       url: "/outreachDetails",
       name: "Outreach Details",

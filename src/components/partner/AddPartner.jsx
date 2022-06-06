@@ -14,12 +14,15 @@ import {
   Input,
   FormHelperText,
   Button,
+  Container,
+  Grid,
 } from "@mui/material";
 
 import { useSnackbar } from "notistack";
 
 import { useNavigate } from "react-router-dom";
 import { changeFetching } from "../../store/slices/uiSlice";
+import { Controller, useForm } from "react-hook-form";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +58,8 @@ const AddPartnerPage = (props) => {
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const [state, setState] = React.useState({
+  const [stateList, setStateList] = React.useState([]);
+  const [formData, setFormData] = React.useState({
     name: "",
     email: "",
     slug: "",
@@ -67,6 +71,14 @@ const AddPartnerPage = (props) => {
     districts: [""],
   });
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+    reset,
+  } = useForm();
+
   useEffect(() => {
     const { value } = props;
     if (value) {
@@ -74,21 +86,41 @@ const AddPartnerPage = (props) => {
       axios.get(dataURL).then((response) => {
         const { data } = response.data;
         //console.log("data", data);
-        setState((prevState) => ({
+        setFormData((prevState) => ({
           ...prevState,
-          name: data.name ? data.name : "",
-          email: data.email ? data.email : "",
-          slug: data.slug ? data.slug : "",
-          notes: data.notes ? data.notes : "",
-          state: data.state ? data.state : "",
-          partner_user: data.partnerUser ? data.partnerUser : [""],
-          districts: data.districts ? data.districts : [""],
+          name: data.name || "",
+          email: data.email || "",
+          slug: data.slug || "",
+          notes: data.notes || "",
+          state: data.state || "",
+          partner_user: data.partnerUser || [""],
+          districts: data.districts || [""],
         }));
+
+        reset({
+          name: data.name || "",
+          email: data.email || "",
+          slug: data.slug || "",
+          notes: data.notes || "",
+          state: data.state || "",
+          partner_user: data.partnerUser || [""],
+          districts: data.districts || [""],
+        });
       });
     }
     // eslint-disable-next-line no-use-before-define
-    getState();
+    getStateList();
   }, []);
+
+  const submitHandler = (data) => {
+    setFormData((prevFormData) => ({ ...prevFormData, ...data }));
+    const { value } = props;
+    if (value) {
+      //edit partner
+    } else {
+      //add partner
+    }
+  };
 
   const addPartner = async () => {
     const {
@@ -99,7 +131,7 @@ const AddPartnerPage = (props) => {
       partner_user,
       districts,
       state: _state,
-    } = state;
+    } = formData;
     const removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
@@ -148,7 +180,7 @@ const AddPartnerPage = (props) => {
       partner_user,
       districts,
       state: _state,
-    } = state;
+    } = formData;
     const removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
@@ -183,16 +215,16 @@ const AddPartnerPage = (props) => {
       });
   };
 
-  const onSubmit = () => {
-    const { value } = props;
-    if (value) {
-      editPartner(value);
-    } else {
-      addPartner();
-    }
-  };
+  // const onSubmit = () => {
+  //   const { value } = props;
+  //   if (value) {
+  //     editPartner(value);
+  //   } else {
+  //     addPartner();
+  //   }
+  // };
 
-  const getState = async () => {
+  const getStateList = async () => {
     const response = await axios.get(
       "https://api.countrystatecity.in/v1/countries/IN/states",
       {
@@ -214,76 +246,112 @@ const AddPartnerPage = (props) => {
       }
       return 0;
     });
-
-    setState((prevState) => ({ ...prevState, states: newData }));
+    setStateList(newData);
   };
 
-  const addState = () => {
-    setState({ ...state, districts: [...state.districts, ""] });
-  };
+  // const addState = () => {
+  //   setState({ ...state, districts: ["", ...state.districts] });
+  // };
 
-  const addEmail = () => {
-    setState({ ...state, partner_user: [...state.partner_user, ""] });
-  };
+  // const addEmail = () => {
+  //   setState({ ...state, partner_user: [...state.partner_user, ""] });
+  // };
 
-  const handleChange = (name) => (event) => {
-    const valChange = {};
-    valChange[name] = event.target.value;
-    setState({ ...state, [name]: event.target.value });
-  };
+  // const handleChange = (name) => (event) => {
+  //   const valChange = {};
+  //   valChange[name] = event.target.value;
+  //   setState({ ...state, [name]: event.target.value });
+  // };
 
-  const changeHandler = (index) => {
-    const { value } = props;
-    if (event.target.name === "state") {
-      const { districts } = state;
-      if (event.target.value) {
-        districts[index] = event.target.value;
-      } else {
-        districts.splice(index, 1);
-      }
-      setState({
-        ...state,
-        districts: districts.length < 1 ? [""] : districts,
-      });
-    }
-    if (event.target.name === "user") {
-      let newPEmail;
-      const { partner_user } = state;
-      if (event.target.value) {
-        if (partner_user.length < 1) {
-          newPEmail = state.partnerEmail + event.target.value;
-          partner_user[0] = {
-            email: newPEmail,
-            partner_id: value,
-          };
-        } else if (partner_user[index]) {
-          partner_user[index] = {
-            ...partner_user[index],
-            email: event.target.value,
-          };
-        } else {
-          partner_user[index] = {
-            email: event.target.value,
-            partner_id: value,
-          };
-        }
-      } else {
-        partner_user.splice(index, 1);
-      }
-      setState({
-        ...state,
-        partnerEmail: newPEmail || state.partnerEmail,
-        partner_user: partner_user.length < 1 ? [""] : partner_user,
-      });
-    }
-  };
+  // const changeDistricts = (value, index) => {
+  //   const newDistricts = [...state.districts];
+  //   newDistricts[index] = value;
+  //   console.log(newDistricts);
+  //   setState((prevState) => ({ ...prevState, districts: newDistricts }));
+  // };
+
+  // const changeHandler = (index) => {
+  //   const { value } = props;
+  //   if (event.target.name === "state") {
+  //     const { districts } = state;
+  //     if (event.target.value) {
+  //       districts[index] = event.target.value;
+  //     } else {
+  //       districts.splice(index, 1);
+  //     }
+  //     setState({
+  //       ...state,
+  //       districts: districts.length < 1 ? [""] : districts,
+  //     });
+  //   }
+  //   if (event.target.name === "user") {
+  //     let newPEmail;
+  //     const { partner_user } = state;
+  //     if (event.target.value) {
+  //       if (partner_user.length < 1) {
+  //         newPEmail = state.partnerEmail + event.target.value;
+  //         partner_user[0] = {
+  //           email: newPEmail,
+  //           partner_id: value,
+  //         };
+  //       } else if (partner_user[index]) {
+  //         partner_user[index] = {
+  //           ...partner_user[index],
+  //           email: event.target.value,
+  //         };
+  //       } else {
+  //         partner_user[index] = {
+  //           email: event.target.value,
+  //           partner_id: value,
+  //         };
+  //       }
+  //     } else {
+  //       partner_user.splice(index, 1);
+  //     }
+  //     setState({
+  //       ...state,
+  //       partnerEmail: newPEmail || state.partnerEmail,
+  //       partner_user: partner_user.length < 1 ? [""] : partner_user,
+  //     });
+  //   }
+  // };
 
   const { value } = props;
   //console.log("state", state);
   return (
-    <Card className={classes.root}>
-      <form className={classes.container}>
-        <FormControl>
+    <Container maxWidth="sm" className={classes.root}>
+      <Grid container spacing={2} className={classes.container}>
+        <Grid item xs={12}>
+          <Controller
+            control={control}
+            defaultValue={formData.name || ""}
+            name="name"
+            rules={{ required: true, maxLength: 40 }}
+            render={({ field: { ref, ...rest } }) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                id="name"
+                // autoFocus
+                inputRef={ref}
+                className={classes.spacing}
+                label="Partner Name"
+                placeholder="Partner Name"
+                autoComplete="off"
+                type="text"
+                error={!!errors.name}
+                helperText={
+                  errors.name
+                    ? errors.name.type === "maxLength"
+                      ? "Length should be under 40 characters"
+                      : "Partner ka Name Enter karein."
+                    : "Ex. XYZ"
+                }
+                {...rest}
+              />
+            )}
+          />
+          {/* <FormControl>
           <InputLabel htmlFor="partnerName">Partner Name</InputLabel>
           <Input
             id="partnerName"
@@ -293,9 +361,10 @@ const AddPartnerPage = (props) => {
             onChange={handleChange("name")}
           />
           <FormHelperText className={classes.text} id="my-helper-text">
-            Partner ka Name Enter karein.
+            
           </FormHelperText>
-        </FormControl>
+        </FormControl> */}
+        </Grid>
 
         <FormControl>
           <InputLabel htmlFor="partnerEmail">Partner Email</InputLabel>
@@ -390,20 +459,24 @@ const AddPartnerPage = (props) => {
         </FormControl>
 
         <FormControl>
-          {state.districts.map((state_d, index) => (
-            <div key={state_d}>
-              <TextField
-                type={state.districts.length - 1 === index ? "search" : null}
-                id="PartnerDistrictsCities"
-                label=" Partner Districts/Cities"
-                aria-describedby="my-helper-text"
-                name="state"
-                value={state_d}
-                onChange={() => changeHandler(index)}
-              />
-            </div>
-          ))}
-
+          {React.useCallback(
+            state.districts.map((state_d, index) => (
+              <div key={state_d}>
+                <TextField
+                  // type={state.districts.length - 1 === index ? "search" : null}
+                  id="PartnerDistrictsCities"
+                  label=" Partner Districts/Cities"
+                  aria-describedby="my-helper-text"
+                  name={`districts-${index}`}
+                  defaultValue={state_d}
+                  onChange={(e) => changeDistricts(e.target.value, index)}
+                />
+                {console.log(index)}
+              </div>
+            )),
+            [state.districts.length]
+          )}
+          {console.log(state)}
           <FormHelperText className={classes.text} id="my-helper-text">
             Partner ka districts or city Enter karein.
           </FormHelperText>
@@ -412,7 +485,7 @@ const AddPartnerPage = (props) => {
             color="primary"
             aria-label="add"
             onClick={addState}
-            disabled={state.districts[state.districts.length - 1] === ""}
+            disabled={state.districts[0] === ""}
           >
             <AddIcon />
           </Fab>
@@ -425,8 +498,8 @@ const AddPartnerPage = (props) => {
         >
           {value ? "Edit Partner" : "Add Partner"}
         </Button>
-      </form>
-    </Card>
+      </Grid>
+    </Container>
   );
 };
 

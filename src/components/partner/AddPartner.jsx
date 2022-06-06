@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddPartnerPage = (props) => {
+const AddPartnerPage = ({ partnerId, closeDialog }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -69,7 +69,6 @@ const AddPartnerPage = (props) => {
     email: "",
     slug: "",
     notes: "",
-    states: "",
     state: "",
     partnerEmail: "",
     partnerUsers: [{ email: "" }],
@@ -84,15 +83,27 @@ const AddPartnerPage = (props) => {
     reset,
   } = useForm();
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: partnerUserFields,
+    append: appendPartnerUser,
+    remove: removePartnerUser,
+  } = useFieldArray({
     control,
     name: "partnerUsers",
   });
 
+  const {
+    fields: districtFields,
+    append: appendDistrict,
+    remove: removeDistrict,
+  } = useFieldArray({
+    control,
+    name: "districts",
+  });
+
   useEffect(() => {
-    const { value } = props;
-    if (value) {
-      const dataURL = `${baseUrl}partners/${value}`;
+    if (partnerId) {
+      const dataURL = `${baseUrl}partners/${partnerId}`;
       axios.get(dataURL).then((response) => {
         const { data } = response.data;
         //console.log("data", data);
@@ -127,16 +138,6 @@ const AddPartnerPage = (props) => {
     // eslint-disable-next-line no-use-before-define
     getStateList();
   }, []);
-
-  const submitHandler = (data) => {
-    setFormData((prevFormData) => ({ ...prevFormData, ...data }));
-    const { value } = props;
-    if (value) {
-      //edit partner
-    } else {
-      //add partner
-    }
-  };
 
   const addPartner = async () => {
     const {
@@ -188,25 +189,18 @@ const AddPartnerPage = (props) => {
     }
   };
 
-  const editPartner = (value) => {
-    const {
-      name,
-      email,
-      notes,
-      partnerUsers,
-      districts,
-      state: _state,
-    } = formData;
+  const editPartner = () => {
+    const { name, email, notes, partnerUsers, districts, state } = formData;
     const removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
 
     axios
-      .put(`${baseUrl}partners/${value}`, {
+      .put(`${baseUrl}partners/${partnerId}`, {
         name,
         email: email || null,
         notes,
-        state: _state || null,
+        state: state || null,
         partner_user: partnerUsers || null,
         districts:
           removeExtraDistricts.length > 0 ? removeExtraDistricts : null,
@@ -231,14 +225,16 @@ const AddPartnerPage = (props) => {
       });
   };
 
-  // const onSubmit = () => {
-  //   const { value } = props;
-  //   if (value) {
-  //     editPartner(value);
-  //   } else {
-  //     addPartner();
-  //   }
-  // };
+  const onSubmit = (data) => {
+    setFormData((prevFormData) => ({ ...prevFormData, ...data }));
+    if (partnerId) {
+      //edit partner
+      editPartner(partnerId);
+    } else {
+      //add partner
+      addPartner();
+    }
+  };
 
   const getStateList = async () => {
     const response = await axios.get(
@@ -332,8 +328,7 @@ const AddPartnerPage = (props) => {
   //   }
   // };
 
-  const { value } = props;
-  //console.log("state", state);
+  // const { value } = props;
   return (
     <Container component={Paper} maxWidth="sm" className={classes.root}>
       <Grid container spacing={2} sx={{ p: ".4rem" }}>
@@ -361,12 +356,113 @@ const AddPartnerPage = (props) => {
                     ? errors.name.type === "maxLength"
                       ? "Length should be under 40 characters"
                       : "Partner ka Name Enter karein."
-                    : "Ex. ABC"
+                    : "Partner ka Name Enter karein."
                 }
                 {...rest}
               />
             )}
           />
+
+          <Controller
+            control={control}
+            defaultValue={formData.email || ""}
+            name="email"
+            rules={{
+              required: true,
+              pattern:
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            }}
+            render={({ field: { ref, ...rest } }) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                id="email"
+                inputRef={ref}
+                className={classes.spacing}
+                label="Email"
+                placeholder="Email"
+                autoComplete="off"
+                type="email"
+                style={{
+                  marginTop: "1rem",
+                }}
+                error={!!errors.email}
+                helperText={
+                  errors.email
+                    ? errors.email.type === "pattern"
+                      ? "Please enter a valid email address"
+                      : "Email ka Address Enter karein."
+                    : "Partner ka Email Enter karein."
+                }
+                {...rest}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            defaultValue={formData.notes || ""}
+            name="notes"
+            rules={{ required: true }}
+            render={({ field: { ref, ...rest } }) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                id="notes"
+                inputRef={ref}
+                className={classes.spacing}
+                label="Notes"
+                placeholder="Notes"
+                autoComplete="off"
+                type="text"
+                style={{
+                  marginTop: "1rem",
+                }}
+                error={!!errors.notes}
+                helperText={
+                  errors.notes
+                    ? errors.notes.type === "required"
+                      ? "Please enter notes"
+                      : "Partner ki thodi details add karein."
+                    : "Partner ki thodi details add karein."
+                }
+                {...rest}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            defaultValue={formData.slug || ""}
+            name="slug"
+            rules={{ required: true }}
+            render={({ field: { ref, ...rest } }) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                id="slug"
+                inputRef={ref}
+                className={classes.spacing}
+                label="Slug"
+                placeholder="Slug"
+                autoComplete="off"
+                type="text"
+                style={{
+                  marginTop: "1rem",
+                }}
+                error={!!errors.slug}
+                helperText={
+                  errors.slug
+                    ? errors.slug.type === "required"
+                      ? "Please enter slug"
+                      : "Partner ke student ko online test dene ke liye Slug add karo."
+                    : "Partner ke student ko online test dene ke liye Slug add karo."
+                }
+                {...rest}
+              />
+            )}
+          />
+
           {/* <FormControl>
           <InputLabel htmlFor="partnerName">Partner Name</InputLabel>
           <Input
@@ -382,7 +478,7 @@ const AddPartnerPage = (props) => {
         </FormControl> */}
         </Grid>
 
-        <FormControl>
+        {/* <FormControl>
           <InputLabel htmlFor="partnerEmail">Partner Email</InputLabel>
           <Input
             id="partnerEmail"
@@ -423,16 +519,20 @@ const AddPartnerPage = (props) => {
           <FormHelperText className={classes.text} id="my-helper-text">
             Partner ke student ko online test dene ke liye Slug add karo.
           </FormHelperText>
-        </FormControl>
+        </FormControl> */}
 
-        {fields.map((email, index) => (
+        {partnerUserFields.map((email, index) => (
           <React.Fragment key={email.id}>
             <Grid item xs={9}>
               <Controller
                 control={control}
                 defaultValue={formData.partnerUsers[index]?.email || ""}
                 name={`partnerUsers[${index}].email`}
-                rules={{ required: true }}
+                rules={{
+                  required: true,
+                  pattern:
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                }}
                 render={({ field: { ref, ...rest } }) => (
                   <TextField
                     variant="outlined"
@@ -470,7 +570,7 @@ const AddPartnerPage = (props) => {
               <IconButton
                 color="primary"
                 size="large"
-                onClick={() => remove(index)}
+                onClick={() => removePartnerUser(index)}
                 style={{
                   // marginTop: "3vh",
                   borderSpacing: "-1",
@@ -482,8 +582,12 @@ const AddPartnerPage = (props) => {
           </React.Fragment>
         ))}
 
-        <Grid item xs={7} sx={{ mY: "0.2rem" }}>
-          <Button variant="outlined" color="primary" onClick={() => append()}>
+        <Grid item xs={12} sx={{ mY: "0.2rem" }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => appendPartnerUser()}
+          >
             <Icon
               style={{
                 display: "flex",
@@ -499,6 +603,83 @@ const AddPartnerPage = (props) => {
         </Grid>
 
         <Divider variant="middle" />
+
+        {districtFields.map((district, index) => (
+          <React.Fragment key={district.id}>
+            <Grid item xs={9}>
+              <Controller
+                control={control}
+                defaultValue={formData.districts[index] || ""}
+                name={`districts[${index}]`}
+                rules={{ required: true }}
+                render={({ field: { ref, ...rest } }) => (
+                  <TextField
+                    variant="outlined"
+                    fullWidth
+                    id={`districts[${index}]`}
+                    inputRef={ref}
+                    // className={classes.spacing}
+                    label={`District ${index + 1}`}
+                    placeholder={`District ${index + 1}`}
+                    autoComplete="off"
+                    type="email"
+                    error={
+                      !!errors.partnerUsers && !!errors.partnerUsers[index]
+                    }
+                    helperText={
+                      errors.name
+                        ? `Required Field`
+                        : `Enter District ${index + 1}`
+                    }
+                    {...rest}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={2}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "left",
+              }}
+            >
+              <IconButton
+                color="primary"
+                size="large"
+                onClick={() => removeDistrict(index)}
+                style={{
+                  // marginTop: "3vh",
+                  borderSpacing: "-1",
+                }}
+              >
+                <DeleteForeverRounded />
+              </IconButton>
+            </Grid>
+          </React.Fragment>
+        ))}
+
+        <Grid item xs={12} sx={{ mY: "0.2rem" }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => appendDistrict()}
+          >
+            <Icon
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginRight: "1vh",
+                // marginTop: "-1vh",
+              }}
+            >
+              <AddCircle />
+            </Icon>
+            Add Another District
+          </Button>
+        </Grid>
+
         {/* <FormControl>
           {state.partner_user.length > 0 ? (
             // eslint-disable-next-line arrow-body-style
@@ -576,14 +757,31 @@ const AddPartnerPage = (props) => {
             <AddIcon />
           </Fab>
         </FormControl> */}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit((data) => console.log(data))}
-          className={classes.btn}
-        >
-          {value ? "Edit Partner" : "Add Partner"}
-        </Button>
+
+        <Grid item xs={partnerId ? 6 : 12}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit(onSubmit)}
+            className={classes.btn}
+          >
+            {partnerId ? "Update Partner" : "Add Partner"}
+          </Button>
+        </Grid>
+        {partnerId ? (
+          <Grid item xs={6}>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="primary"
+              onClick={closeDialog}
+              className={classes.btn}
+            >
+              Cancel
+            </Button>
+          </Grid>
+        ) : null}
       </Grid>
     </Container>
   );

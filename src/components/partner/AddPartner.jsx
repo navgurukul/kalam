@@ -198,7 +198,7 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
   };
 
   const editPartner = (data) => {
-    const { name, email, notes, partnerUsers, districts, state } = data;
+    const { name, email, notes, partnerUsers, districts, state, slug } = data;
     const removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
@@ -210,6 +210,7 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
         name,
         email: email || null,
         notes,
+        slug,
         state: state || null,
         partner_user: partnerUsers || null,
         districts:

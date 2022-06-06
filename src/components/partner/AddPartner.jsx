@@ -477,7 +477,7 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
           </FormHelperText>
         </FormControl> */}
         </Grid>
-
+        ss
         {/* <FormControl>
           <InputLabel htmlFor="partnerEmail">Partner Email</InputLabel>
           <Input
@@ -520,7 +520,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
             Partner ke student ko online test dene ke liye Slug add karo.
           </FormHelperText>
         </FormControl> */}
-
         {partnerUserFields.map((email, index) => (
           <React.Fragment key={email.id}>
             <Grid item xs={9}>
@@ -581,7 +580,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
             </Grid>
           </React.Fragment>
         ))}
-
         <Grid item xs={12} sx={{ mY: "0.2rem" }}>
           <Button
             variant="outlined"
@@ -601,9 +599,7 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
             Add Another Email
           </Button>
         </Grid>
-
         <Divider variant="middle" />
-
         {districtFields.map((district, index) => (
           <React.Fragment key={district.id}>
             <Grid item xs={9}>
@@ -659,7 +655,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
             </Grid>
           </React.Fragment>
         ))}
-
         <Grid item xs={12} sx={{ mY: "0.2rem" }}>
           <Button
             variant="outlined"
@@ -679,7 +674,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
             Add Another District
           </Button>
         </Grid>
-
         {/* <FormControl>
           {state.partner_user.length > 0 ? (
             // eslint-disable-next-line arrow-body-style
@@ -728,7 +722,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
             <AddIcon />
           </Fab>
         </FormControl> */}
-
         {/* <FormControl>
           {state.districts.map((state_d, index) => (
             <div key={state_d}>
@@ -757,7 +750,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
             <AddIcon />
           </Fab>
         </FormControl> */}
-
         <Grid item xs={partnerId ? 6 : 12}>
           <Button
             fullWidth

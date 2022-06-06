@@ -1,18 +1,11 @@
 /* eslint-disable camelcase */
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import Card from "@mui/material/Card";
-import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
 import TextField from "@mui/material/TextField";
 import { makeStyles } from "@mui/styles";
 
 import axios from "axios";
 import {
-  FormControl,
-  InputLabel,
-  Input,
-  FormHelperText,
   Button,
   Container,
   Grid,
@@ -76,7 +69,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
   });
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
     control,
@@ -100,6 +92,31 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
     control,
     name: "districts",
   });
+
+  const getStateList = async () => {
+    const response = await axios.get(
+      "https://api.countrystatecity.in/v1/countries/IN/states",
+      {
+        headers: {
+          "X-CSCAPI-KEY":
+            "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
+        },
+      }
+    );
+    const newData = response.data.sort((a, b) => {
+      const fa = a.name.toLowerCase();
+      const fb = b.name.toLowerCase();
+
+      if (fa < fb) {
+        return -1;
+      }
+      if (fa > fb) {
+        return 1;
+      }
+      return 0;
+    });
+    setStateList(newData);
+  };
 
   useEffect(() => {
     if (partnerId) {
@@ -135,7 +152,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
         districts: [""],
       });
     }
-    // eslint-disable-next-line no-use-before-define
     getStateList();
   }, []);
 
@@ -236,99 +252,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
     }
   };
 
-  const getStateList = async () => {
-    const response = await axios.get(
-      "https://api.countrystatecity.in/v1/countries/IN/states",
-      {
-        headers: {
-          "X-CSCAPI-KEY":
-            "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
-        },
-      }
-    );
-    const newData = response.data.sort((a, b) => {
-      const fa = a.name.toLowerCase();
-      const fb = b.name.toLowerCase();
-
-      if (fa < fb) {
-        return -1;
-      }
-      if (fa > fb) {
-        return 1;
-      }
-      return 0;
-    });
-    setStateList(newData);
-  };
-
-  // const addState = () => {
-  //   setState({ ...state, districts: ["", ...state.districts] });
-  // };
-
-  // const addEmail = () => {
-  //   setState({ ...state, partner_user: [...state.partner_user, ""] });
-  // };
-
-  // const handleChange = (name) => (event) => {
-  //   const valChange = {};
-  //   valChange[name] = event.target.value;
-  //   setState({ ...state, [name]: event.target.value });
-  // };
-
-  // const changeDistricts = (value, index) => {
-  //   const newDistricts = [...state.districts];
-  //   newDistricts[index] = value;
-  //   console.log(newDistricts);
-  //   setState((prevState) => ({ ...prevState, districts: newDistricts }));
-  // };
-
-  // const changeHandler = (index) => {
-  //   const { value } = props;
-  //   if (event.target.name === "state") {
-  //     const { districts } = state;
-  //     if (event.target.value) {
-  //       districts[index] = event.target.value;
-  //     } else {
-  //       districts.splice(index, 1);
-  //     }
-  //     setState({
-  //       ...state,
-  //       districts: districts.length < 1 ? [""] : districts,
-  //     });
-  //   }
-  //   if (event.target.name === "user") {
-  //     let newPEmail;
-  //     const { partner_user } = state;
-  //     if (event.target.value) {
-  //       if (partner_user.length < 1) {
-  //         newPEmail = state.partnerEmail + event.target.value;
-  //         partner_user[0] = {
-  //           email: newPEmail,
-  //           partner_id: value,
-  //         };
-  //       } else if (partner_user[index]) {
-  //         partner_user[index] = {
-  //           ...partner_user[index],
-  //           email: event.target.value,
-  //         };
-  //       } else {
-  //         partner_user[index] = {
-  //           email: event.target.value,
-  //           partner_id: value,
-  //         };
-  //       }
-  //     } else {
-  //       partner_user.splice(index, 1);
-  //     }
-  //     setState({
-  //       ...state,
-  //       partnerEmail: newPEmail || state.partnerEmail,
-  //       partner_user: partner_user.length < 1 ? [""] : partner_user,
-  //     });
-  //   }
-  // };
-
-  // const { value } = props;
   return (
     <Container component={Paper} maxWidth="sm" className={classes.root}>
       <Grid container spacing={2} sx={{ p: ".4rem" }}>
@@ -343,7 +266,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
                 variant="outlined"
                 fullWidth
                 id="name"
-                // autoFocus
                 inputRef={ref}
                 className={classes.spacing}
                 label="Partner Name"
@@ -462,64 +384,8 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
               />
             )}
           />
-
-          {/* <FormControl>
-          <InputLabel htmlFor="partnerName">Partner Name</InputLabel>
-          <Input
-            id="partnerName"
-            aria-describedby="my-helper-text"
-            name="name"
-            value={state.name}
-            onChange={handleChange("name")}
-          />
-          <FormHelperText className={classes.text} id="my-helper-text">
-            
-          </FormHelperText>
-        </FormControl> */}
         </Grid>
-        ss
-        {/* <FormControl>
-          <InputLabel htmlFor="partnerEmail">Partner Email</InputLabel>
-          <Input
-            id="partnerEmail"
-            aria-describedby="my-helper-text"
-            name="email"
-            // value={state.email}
-            // onChange={handleChange("email")}
-          />
-          <FormHelperText className={classes.text} id="my-helper-text">
-            Partner ka Email Enter karein.
-          </FormHelperText>
-        </FormControl>
 
-        <FormControl>
-          <InputLabel htmlFor="partnerNotes">Partner Notes</InputLabel>
-          <Input
-            id="partnerNotes"
-            aria-describedby="my-helper-text"
-            name="notes"
-            // value={state.notes}
-            // onChange={handleChange("notes")}
-          />
-          <FormHelperText className={classes.text} id="my-helper-text">
-            Partner ki thodi details add karein.
-          </FormHelperText>
-        </FormControl>
-
-        <FormControl>
-          <InputLabel htmlFor="partnerNotes">Partner Slug</InputLabel>
-          <Input
-            id="partnerNotes"
-            aria-describedby="my-helper-text"
-            name="notes"
-            disabled={!!value}
-            // value={state.slug}
-            // onChange={handleChange("slug")}
-          />
-          <FormHelperText className={classes.text} id="my-helper-text">
-            Partner ke student ko online test dene ke liye Slug add karo.
-          </FormHelperText>
-        </FormControl> */}
         {partnerUserFields.map((email, index) => (
           <React.Fragment key={email.id}>
             <Grid item xs={9}>
@@ -674,82 +540,7 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
             Add Another District
           </Button>
         </Grid>
-        {/* <FormControl>
-          {state.partner_user.length > 0 ? (
-            // eslint-disable-next-line arrow-body-style
-            state.partner_user.map((user, index) => {
-              return (
-                <div key={user.email}>
-                  <TextField
-                    // type={
-                    //   state.partner_user.length - 1 === index ? "search" : null
-                    // }
-                    id="PartnerUsers"
-                    // label="Users"
-                    placeholder="User"
-                    aria-describedby="my-helper-text"
-                    name="user"
-                    value={user.email}
-                    // onChange={() => changeHandler(index)}
-                  />
-                </div>
-              );
-            })
-          ) : (
-            <div>
-              <TextField
-                id="PartnerUsers"
-                // label="Users"
-                placeholder="User"
-                aria-describedby="my-helper-text"
-                name="user"
-                // value={state.partnerEmail}
-                // onChange={() => changeHandler()}
-              />
-            </div>
-          )}
 
-          <FormHelperText className={classes.text} id="my-helper-text">
-            Multiple Email Enter karein
-          </FormHelperText>
-          <Fab
-            className={classes.addIcon}
-            color="primary"
-            aria-label="add"
-            // onClick={addEmail}
-            // disabled={state.partner_user[state.partner_user.length - 1] === ""}
-          >
-            <AddIcon />
-          </Fab>
-        </FormControl> */}
-        {/* <FormControl>
-          {state.districts.map((state_d, index) => (
-            <div key={state_d}>
-              <TextField
-                // type={state.districts.length - 1 === index ? "search" : null}
-                id="PartnerDistrictsCities"
-                label=" Partner Districts/Cities"
-                aria-describedby="my-helper-text"
-                name={`districts-${index}`}
-                defaultValue={state_d}
-                // onChange={(e) => changeDistricts(e.target.value, index)}
-              />
-              {console.log(index)}
-            </div>
-          ))}
-          <FormHelperText className={classes.text} id="my-helper-text">
-            Partner ka districts or city Enter karein.
-          </FormHelperText>
-          <Fab
-            className={classes.addIcon}
-            color="primary"
-            aria-label="add"
-            // onClick={addState}
-            // disabled={state.districts[0] === ""}
-          >
-            <AddIcon />
-          </Fab>
-        </FormControl> */}
         <Grid item xs={partnerId ? 6 : 12}>
           <Button
             fullWidth

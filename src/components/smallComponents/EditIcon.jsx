@@ -16,7 +16,7 @@ const EditPartnerDetails = (props) => {
       <EditIcon onClick={handleOpen} style={{ cursor: "pointer" }} />
       <Dialog scroll="paper" open={dialogOpen} onClose={handleClose}>
         <DialogContent dividers>
-          <AddPartner value={value} />
+          <AddPartner partnerId={value} closeDialog={handleClose} />
         </DialogContent>
       </Dialog>
     </>

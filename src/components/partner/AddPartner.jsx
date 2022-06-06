@@ -155,20 +155,12 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
     getStateList();
   }, []);
 
-  const addPartner = async () => {
-    const {
-      name,
-      email,
-      notes,
-      slug,
-      partnerUsers,
-      districts,
-      state: _state,
-    } = formData;
+  const addPartner = async (data) => {
+    const { name, email, notes, slug, partnerUsers, districts, state } = data;
     const removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
-
+    console.log(formData);
     try {
       fetchingStart();
       const dataURL = ` ${baseUrl}partners`;
@@ -179,8 +171,8 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
           email,
           notes,
           slug,
-          state: _state,
-          partnerUsers,
+          // state: state || null,
+          partner_user: partnerUsers,
           districts: removeExtraDistricts,
         },
         {
@@ -205,11 +197,13 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
     }
   };
 
-  const editPartner = () => {
-    const { name, email, notes, partnerUsers, districts, state } = formData;
+  const editPartner = (data) => {
+    const { name, email, notes, partnerUsers, districts, state } = data;
     const removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
+
+    console.log(data);
 
     axios
       .put(`${baseUrl}partners/${partnerId}`, {
@@ -245,10 +239,10 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
     setFormData((prevFormData) => ({ ...prevFormData, ...data }));
     if (partnerId) {
       //edit partner
-      editPartner(partnerId);
+      editPartner(data);
     } else {
       //add partner
-      addPartner();
+      addPartner(data);
     }
   };
 
@@ -385,7 +379,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
             )}
           />
         </Grid>
-
         {partnerUserFields.map((email, index) => (
           <React.Fragment key={email.id}>
             <Grid item xs={9}>
@@ -465,7 +458,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
             Add Another Email
           </Button>
         </Grid>
-        <Divider variant="middle" />
         {districtFields.map((district, index) => (
           <React.Fragment key={district.id}>
             <Grid item xs={9}>
@@ -540,7 +532,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
             Add Another District
           </Button>
         </Grid>
-
         <Grid item xs={partnerId ? 6 : 12}>
           <Button
             fullWidth

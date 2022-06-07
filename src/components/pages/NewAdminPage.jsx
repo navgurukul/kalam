@@ -50,12 +50,13 @@ const NewAdminPage = () => {
   const [access, setAccess] = useState({
     role: "selectrole",
     access: "selectaccess",
+    privilege: "selectprivilege",
   });
   const [currentUser, setCurrentUser] = useState({
     id: "",
     email: "",
     selectedRoles: [],
-    setSelectedPrivileges: [],
+    selectedPrivileges: [],
   });
   const [optionsData, setOptionsData] = React.useState({
     partner: [],
@@ -136,7 +137,9 @@ const NewAdminPage = () => {
     switch (role?.label?.toLowerCase() || "") {
       case "campus":
         exclusions = filterRoles.reduce((acc, filterItem) => {
-          filterItem.access.map((accessItem) => acc.push(accessItem.access));
+          filterItem.access.forEach((accessItem) =>
+            acc.push(accessItem.access)
+          );
           return acc;
         }, []);
         return campus
@@ -146,10 +149,13 @@ const NewAdminPage = () => {
             value: campusItem.id,
           }));
       case "partner":
-        exclusions = filterRoles.reduce((acc, filterItem) => {
-          filterItem.access.map((accessItem) => acc.push(accessItem.access));
-          return acc;
-        }, []);
+        exclusions = filterRoles.reduce(
+          (acc, filterItem) => [
+            ...acc,
+            ...filterItem.access.map((accessItem) => accessItem.access),
+          ],
+          []
+        );
         return optionsData.partner.filter(
           (partnerItem) => !exclusions.includes(partnerItem.value)
         );
@@ -199,21 +205,19 @@ const NewAdminPage = () => {
             // />
 
             <>
-              {value.map((item) => (
-                <>
-                  {item.access.map((accessItem) => (
-                    <Chip
-                      key={`${item} ${Math.random() * 10}`}
-                      variant="filled"
-                      label={`${item.role}-${
-                        getAccessData(item.role, accessItem.access)?.name || ""
-                      }`}
-                      sx={{ marginX: "0.4rem", marginY: "0.4rem" }}
-                      onDelete={() => {}}
-                    />
-                  ))}
-                </>
-              ))}
+              {value.map((item) =>
+                item.access.map((accessItem) => (
+                  <Chip
+                    key={`${item} ${Math.random() * 10}`}
+                    variant="filled"
+                    label={`${item.role}-${
+                      getAccessData(item.role, accessItem.access)?.name || ""
+                    }`}
+                    sx={{ marginX: "0.4rem", marginY: "0.4rem" }}
+                    onDelete={() => {}}
+                  />
+                ))
+              )}
               <Chip
                 variant="outlined"
                 sx={{ marginX: "0.4rem", marginY: "0.4rem" }}
@@ -222,7 +226,7 @@ const NewAdminPage = () => {
                 onClick={() => {
                   setChangeFn({ ex: change });
                   // setSelectedRoles();
-                  setAccessDialog(true);
+                  setAccessDialog("role");
                   setCurrentUser({
                     email: rowMeta.rowData[0],
                     id: rowMeta.rowData[3],
@@ -262,6 +266,7 @@ const NewAdminPage = () => {
                   label={privItem.privilege}
                   key={privItem.id}
                   sx={{ pX: "0.4rem" }}
+                  onDelete={() => {}}
                 />
               ))}
               <Chip
@@ -272,11 +277,11 @@ const NewAdminPage = () => {
                 onClick={() => {
                   setChangeFn({ ex: change });
                   // setSelectedRoles();
-                  setAccessDialog(true);
+                  setAccessDialog("privilege");
                   setCurrentUser({
                     email: rowMeta.rowData[0],
                     id: rowMeta.rowData[3],
-                    selectedRoles: value,
+                    selectedPrivileges: rowData,
                   });
                 }}
               />
@@ -322,7 +327,7 @@ const NewAdminPage = () => {
                       });
                       return acc;
                     }, []),
-                    setSelectedPrivileges: rowData[2].map((priv) => {
+                    selectedPrivileges: rowData[2].map((priv) => {
                       const privData = privilegeOptions.find(
                         (opt) => opt.value === priv.id
                       );
@@ -393,7 +398,7 @@ const NewAdminPage = () => {
         id: "",
         email: "",
         selectedRoles: [],
-        setSelectedPrivileges: [],
+        selectedPrivileges: [],
       });
     },
     []
@@ -401,11 +406,12 @@ const NewAdminPage = () => {
 
   const handleClose = () => {
     setAccessDialog(false);
+    setAccess({ role: "selectrole", access: "selectaccess", privilege: [] });
     setCurrentUser({
       id: "",
       email: "",
       selectedRoles: [],
-      setSelectedPrivileges: [],
+      selectedPrivileges: [],
     });
     // setEditing(null);
   };
@@ -443,7 +449,7 @@ const NewAdminPage = () => {
       if (roleData.privilege && roleData.privileges.length !== 0)
         privileges.push({
           id: roleData.privileges[0].id,
-          privilege: roleData.privileges[0].privilege,
+          privilege: toTitleCase(roleData.privileges[0].privilege),
         });
     });
     currentUserData = {
@@ -461,7 +467,6 @@ const NewAdminPage = () => {
       .get(`${baseUrl}rolebaseaccess/email`)
       .then((response) => {
         const userList = response.data.map(setupUser);
-        console.log(userList);
         setUsers(userList);
       })
       .catch((e) => {
@@ -479,7 +484,7 @@ const NewAdminPage = () => {
           value: role.id,
         })),
         privilegeOptions: privilege.data.map((priv) => ({
-          label: priv.privilege,
+          label: toTitleCase(priv.privilege),
           value: priv.id,
         })),
       });
@@ -630,43 +635,20 @@ const NewAdminPage = () => {
     }
   };
 
-  const options = {
-    selectableRows: "none",
-    textLabels: {
-      body: {
-        noMatch: loading ? (
-          <Loader />
-        ) : (
-          "Sorry, there is no matching data to display"
-        ),
-      },
-    },
-    customToolbar: React.useCallback(
-      () => <NewCustomToolbar handleOpen={openEmailDialog} />,
-      []
-    ),
+  const assignPrivileges = () => {
+    if (window.confirm("Are you sure to assign the mentioned privileges?")) {
+      console.log(access.privilege);
+    }
   };
 
   const { roleOptions, privilegeOptions } = rolePrivilegeOptions;
 
-  return (
-    <Container maxWidth="xl">
-      <MUIDataTable
-        title="Role Based Access"
-        data={users}
-        columns={columns}
-        options={options}
-      />
-      <Dialog
-        fullWidth
-        open={accessDialog}
-        onClose={() => setAccessDialog(false)}
-      >
-        <DialogTitle>Select Role</DialogTitle>
-        <DialogContent sx={{ pY: "0.8rem" }}>
+  const getDialogContent = (rolePrivilege) => {
+    switch (rolePrivilege) {
+      case "role":
+        return (
           <Grid container sx={{ mY: "0.8rem" }} spacing={2}>
             <Grid item xs={12}>
-              :
               <FormControl fullWidth sx={{ pY: "0.4rem" }}>
                 <InputLabel>Select Role</InputLabel>
                 <MUISelect
@@ -722,23 +704,89 @@ const NewAdminPage = () => {
               </Grid>
             ) : null}
           </Grid>
+        );
+      case "privilege":
+        return (
+          <Grid container sx={{ mY: "0.8rem" }} spacing={2}>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                <label>
+                  <Typography variant="caption">Select Privileges</Typography>
+                </label>
+                <Select
+                  label="Select Privileges"
+                  placeholder="Select Privileges"
+                  isMulti
+                  onChange={(ev) => updateAccess({ ...access, privilege: ev })}
+                  options={privilegeOptions.filter((privItem) =>
+                    currentUser.selectedPrivileges.findIndex(
+                      (selPrivItem) => selPrivItem.id === privItem.value
+                    )
+                  )}
+                  menuPortalTarget={document.body}
+                  value={access.privilege}
+                  styles={{
+                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                  }}
+                />
+              </FormControl>
+            </Grid>
+          </Grid>
+        );
+      default:
+        return <div />;
+    }
+  };
+
+  const options = {
+    selectableRows: "none",
+    responsive: "vertical",
+    textLabels: {
+      body: {
+        noMatch: loading ? (
+          <Loader />
+        ) : (
+          "Sorry, there is no matching data to display"
+        ),
+      },
+    },
+    customToolbar: React.useCallback(
+      () => <NewCustomToolbar handleOpen={openEmailDialog} />,
+      []
+    ),
+  };
+
+  return (
+    <Container maxWidth="xl">
+      <MUIDataTable
+        title="Role Based Access"
+        data={users}
+        columns={columns}
+        options={options}
+      />
+      <Dialog fullWidth open={Boolean(accessDialog)} onClose={handleClose}>
+        <DialogTitle>
+          Select {accessDialog === "role" ? "Role" : "Privilege"}
+        </DialogTitle>
+        <DialogContent sx={{ pY: "0.8rem" }}>
+          {getDialogContent(accessDialog)}
         </DialogContent>
         <DialogActions>
           <Button
             disabled={
-              access.role === "selectrole" || access.access === "selectaccess"
+              accessDialog === "role"
+                ? access.role === "selectrole" ||
+                  access.access === "selectaccess"
+                : access.privilege.length === 0
             }
             variant="contained"
             color="primary"
-            onClick={assignRoles}
+            onClick={accessDialog === "role" ? assignRoles : assignPrivileges}
           >
-            Assign Roles
+            Assign {accessDialog === "role" ? "Roles" : "Privileges"}
           </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => setAccessDialog(false)}
-          >
+          <Button variant="outlined" color="primary" onClick={handleClose}>
             Cancel
           </Button>
         </DialogActions>

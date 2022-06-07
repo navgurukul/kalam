@@ -8,7 +8,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useDispatch } from "react-redux";
 import {
   Button,
-  TextField,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -18,16 +17,18 @@ import {
   DialogActions,
   Container,
   Chip,
-  Autocomplete,
   Typography,
   Select as MUISelect,
   MenuItem,
   FormControl,
+  TextField,
 } from "@mui/material";
+import { debounce } from "underscore";
 import { AddCircleOutlined } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import NewCustomToolbar from "../smallComponents/NewCustomToolbar";
 import { campus } from "../../utils/constants";
+import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -36,29 +37,37 @@ const Transition = React.forwardRef((props, ref) => (
 ));
 
 const NewAdminPage = () => {
-  const snackbar = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
 
   //States and Hooks
-  const [roleByMailID, setRoleByMailID] = useState([]);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [accessDialog, setAccessDialog] = useState(false);
-  const [editing, setEditing] = useState(null);
-  const [selectedRoles, setSelectedRoles] = useState([]);
-  const [selectedPrivilages, setSelectedPrivilages] = useState([]);
+  const [emailDialog, setEmailDialog] = useState(false);
+  // const [selectedRoles, setSelectedRoles] = useState([]);
+  // const [selectedPrivilages, setSelectedPrivilages] = useState([]);
   const [access, setAccess] = useState({
     role: "selectrole",
     access: "selectaccess",
   });
-  const [currentUser, setCurrentUser] = useState({ id: "", email: "" });
+  const [currentUser, setCurrentUser] = useState({
+    id: "",
+    email: "",
+    selectedRoles: [],
+    setSelectedPrivileges: [],
+  });
   const [optionsData, setOptionsData] = React.useState({
     partner: [],
   });
-  const [changeFn, setChangeFn] = React.useState(() => {});
+  const [changeFn, setChangeFn] = React.useState({ ex: () => {} });
 
   //options for dropdowns
-  const [roleOptions, setRoleOptions] = React.useState([]);
-  const [privilegeOptions, setPrivilegeOptions] = React.useState([]);
+  const [rolePrivilegeOptions, setRolePrivilegeOptions] = React.useState({
+    roleOptions: [],
+    privilegeOptions: [],
+  });
+  // const [privilegeOptions, setPrivilegeOptions] = React.useState([]);
 
   // const handleSubmit = async () => {
   //   const PartnerRole =
@@ -121,6 +130,7 @@ const NewAdminPage = () => {
 
   const getOptions = (roleId, filterRoles) => {
     console.log(filterRoles);
+    const { roleOptions } = rolePrivilegeOptions;
     let exclusions;
     const role = roleOptions.find((opt) => opt.value === roleId) || "";
     switch (role?.label?.toLowerCase() || "") {
@@ -136,14 +146,20 @@ const NewAdminPage = () => {
             value: campusItem.id,
           }));
       case "partner":
-        return optionsData.partner;
+        exclusions = filterRoles.reduce((acc, filterItem) => {
+          filterItem.access.map((accessItem) => acc.push(accessItem.access));
+          return acc;
+        }, []);
+        return optionsData.partner.filter(
+          (partnerItem) => !exclusions.includes(partnerItem.value)
+        );
       default:
         return [];
     }
   };
 
-  const handleOpen = () => {
-    setDialogOpen(true);
+  const openEmailDialog = () => {
+    setEmailDialog(true);
   };
 
   const columns = [
@@ -182,46 +198,41 @@ const NewAdminPage = () => {
             //   }}
             // />
 
-            <div>
-              {console.log(value, optionsData)}
-              {value.map((item) =>
-                item.access.map((accessItem) => (
-                  <Chip
-                    key={`${item} ${Math.random() * 10}`}
-                    variant="filled"
-                    label={`${item.role}-${
-                      getAccessData(item.role, accessItem.access)?.name || ""
-                    }`}
-                    sx={{ marginX: "0.4rem" }}
-                    onDelete={() => {}}
-                  />
-                ))
-              )}
+            <>
+              {value.map((item) => (
+                <>
+                  {item.access.map((accessItem) => (
+                    <Chip
+                      key={`${item} ${Math.random() * 10}`}
+                      variant="filled"
+                      label={`${item.role}-${
+                        getAccessData(item.role, accessItem.access)?.name || ""
+                      }`}
+                      sx={{ marginX: "0.4rem", marginY: "0.4rem" }}
+                      onDelete={() => {}}
+                    />
+                  ))}
+                </>
+              ))}
               <Chip
                 variant="outlined"
+                sx={{ marginX: "0.4rem", marginY: "0.4rem" }}
                 icon={<AddCircleOutlined />}
                 label="Add"
                 onClick={() => {
                   setChangeFn({ ex: change });
-                  setSelectedRoles(value);
+                  // setSelectedRoles();
                   setAccessDialog(true);
                   setCurrentUser({
                     email: rowMeta.rowData[0],
                     id: rowMeta.rowData[3],
+                    selectedRoles: value,
                   });
-
-                  // dispatch(
-                  //   showDialog({
-                  //     title: "Select ",
-                  //     content: (
-                  //     ),
-                  //   })
-                  // );
                 }}
               />
-            </div>
+            </>
           ),
-          []
+          [optionsData.partner, users]
         ),
       },
     },
@@ -232,7 +243,7 @@ const NewAdminPage = () => {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback(
-          (rowData) =>
+          (rowData, rowMeta, change) => (
             // <div>
             //   <span
             //     style={{
@@ -245,13 +256,32 @@ const NewAdminPage = () => {
             //     {rowData[0].privilege}
             //   </span>
             // </div>
-            rowData.map((privItem) => (
+            <>
+              {rowData.map((privItem) => (
+                <Chip
+                  label={privItem.privilege}
+                  key={privItem.id}
+                  sx={{ pX: "0.4rem" }}
+                />
+              ))}
               <Chip
-                label={privItem.privilege}
-                key={privItem.id}
-                sx={{ pX: "0.4rem" }}
+                variant="outlined"
+                sx={{ marginX: "0.4rem", marginY: "0.4rem" }}
+                icon={<AddCircleOutlined />}
+                label="Add"
+                onClick={() => {
+                  setChangeFn({ ex: change });
+                  // setSelectedRoles();
+                  setAccessDialog(true);
+                  setCurrentUser({
+                    email: rowMeta.rowData[0],
+                    id: rowMeta.rowData[3],
+                    selectedRoles: value,
+                  });
+                }}
               />
-            )),
+            </>
+          ),
           []
         ),
       },
@@ -277,11 +307,11 @@ const NewAdminPage = () => {
                   cursor: "pointer",
                 }}
                 onClick={() => {
-                  setEditing(true);
-                  setCurrentUser({ email: rowData[0] });
-
-                  setSelectedRoles(
-                    rowData[1].reduce((acc, role) => {
+                  // setEditing(true);
+                  const { privilegeOptions } = rolePrivilegeOptions;
+                  setCurrentUser({
+                    email: rowData[0],
+                    selectedRoles: rowData[1].reduce((acc, role) => {
                       role.access.forEach((accessItem) => {
                         acc.push({
                           label: `${role.role}-${
@@ -291,11 +321,8 @@ const NewAdminPage = () => {
                         });
                       });
                       return acc;
-                    }, [])
-                  );
-
-                  setSelectedPrivilages(
-                    rowData[2].map((priv) => {
+                    }, []),
+                    setSelectedPrivileges: rowData[2].map((priv) => {
                       const privData = privilegeOptions.find(
                         (opt) => opt.value === priv.id
                       );
@@ -303,8 +330,9 @@ const NewAdminPage = () => {
                         return { label: privData.label, value: privData.value };
                       }
                       return { label: "Invalid Privelege", value: "0" };
-                    })
-                  );
+                    }),
+                  });
+
                   const roles = {};
                   rowData[1].forEach((el) => {
                     // if (el.split(":")[0] === "partner") {
@@ -324,7 +352,7 @@ const NewAdminPage = () => {
                   });
                   // if (roles.partners) setSelectedRolePartners(roles.partners);
                   // if (roles.tnp) setSelectedRoleTP(roles.tnp);
-                  handleOpen();
+                  // handleOpen();
                 }}
               />
               <DeleteIcon
@@ -343,7 +371,7 @@ const NewAdminPage = () => {
                         `${baseUrl}rolebaseaccess/email/delete/${rowData[3]}`
                       )
                       .then(() => {
-                        snackbar.enqueueSnackbar("Role deleted successfully!", {
+                        enqueueSnackbar("Role deleted successfully!", {
                           variant: "success",
                         });
                       });
@@ -360,69 +388,81 @@ const NewAdminPage = () => {
   useEffect(
     () => () => {
       //cleanup
-      setDialogOpen(false);
-      setCurrentUser({ id: "", email: "" });
-      setSelectedRoles("");
-      setSelectedRoles([]);
-      setSelectedPrivilages([]);
+      setAccessDialog(false);
+      setCurrentUser({
+        id: "",
+        email: "",
+        selectedRoles: [],
+        setSelectedPrivileges: [],
+      });
     },
     []
   );
 
   const handleClose = () => {
-    setDialogOpen(false);
-    setCurrentUser({ id: "", email: "" });
-    setSelectedRoles([]);
-    setSelectedPrivilages([]);
-    setEditing(null);
+    setAccessDialog(false);
+    setCurrentUser({
+      id: "",
+      email: "",
+      selectedRoles: [],
+      setSelectedPrivileges: [],
+    });
+    // setEditing(null);
   };
 
-  const handlePrivilegeChange = (newSelectedPrivilages) => {
-    setSelectedPrivilages(newSelectedPrivilages);
-  };
+  // const handlePrivilegeChange = (newSelectedPrivileges) => {
+  //   setSelectedPrivilages(newSelectedPrivileges);
+  // };
 
-  const handleRoleChange = (selectedRoleMenu) => {
-    // dispatch(showDialog({ title: "123" }));
-    if (selectedRoleMenu.length < selectedRoles.length) {
-      setSelectedRoles(selectedRoleMenu);
-      return;
-    }
-    setAccess(
-      selectedRoleMenu[selectedRoleMenu.length - 1].label.toLowerCase()
-    );
-    setAccessDialog(true);
+  // const handleRoleChange = (selectedRoleMenu) => {
+  //   // dispatch(showDialog({ title: "123" }));
+  //   if (selectedRoleMenu.length < selectedRoles.length) {
+  //     setSelectedRoles(selectedRoleMenu);
+  //     return;
+  //   }
+  //   setAccess(
+  //     selectedRoleMenu[selectedRoleMenu.length - 1].label.toLowerCase()
+  //   );
+  //   setAccessDialog(true);
+  // };
+
+  const setupUser = (user) => {
+    let currentUserData = {};
+    const roles = [];
+    const privileges = [];
+    console.log(user);
+    user.userrole.forEach((roleData) => {
+      if (roleData.role?.length > 0 && roleData.access)
+        roles.push({
+          access: roleData.access.filter(
+            (accesObj) => accesObj.user_role_id === roleData.id
+          ),
+          role_id: roleData.id,
+          role: `${toTitleCase(roleData.role[0].roles)}`,
+        });
+      if (roleData.privilege && roleData.privileges.length !== 0)
+        privileges.push({
+          id: roleData.privileges[0].id,
+          privilege: roleData.privileges[0].privilege,
+        });
+    });
+    currentUserData = {
+      id: user.id,
+      email: user.email,
+      roles,
+      privileges,
+    };
+    console.log(currentUserData);
+    return currentUserData;
   };
 
   const fetchByMailId = () => {
     axios
       .get(`${baseUrl}rolebaseaccess/email`)
       .then((response) => {
-        const users = response.data.map((user) => {
-          let userData = {};
-          const roles = [];
-          const privileges = [];
-          console.log(user);
-          user.userrole.forEach((roleData) => {
-            if (roleData.role?.length > 0 && roleData.access)
-              roles.push({
-                access: roleData.access.filter(
-                  (accesObj) => accesObj.user_role_id === roleData.id
-                ),
-                role_id: roleData.id,
-                role: `${toTitleCase(roleData.role[0].roles)}`,
-              });
-            if (roleData.privilege && roleData.privileges.length !== 0)
-              privileges.push({
-                id: roleData.privileges[0].id,
-                privilege: roleData.privileges[0].privilege,
-              });
-          });
-          userData = { id: user.id, email: user.email, roles, privileges };
-          console.log(userData);
-          return userData;
-        });
-        console.log(users);
-        setRoleByMailID(users);
+        const userList = response.data.map(setupUser);
+        console.log(userList);
+        setUsers(userList);
       })
       .catch((e) => {
         console.error(e);
@@ -433,18 +473,16 @@ const NewAdminPage = () => {
     try {
       const roles = await axios.get(`${baseUrl}role/getRole`);
       const privilege = await axios.get(`${baseUrl}role/getPrivilege`);
-      setRoleOptions(
-        roles.data.map((role) => ({
+      setRolePrivilegeOptions({
+        roleOptions: roles.data.map((role) => ({
           label: `${toTitleCase(role.roles)}`,
           value: role.id,
-        }))
-      );
-      setPrivilegeOptions(
-        privilege.data.map((priv) => ({
+        })),
+        privilegeOptions: privilege.data.map((priv) => ({
           label: priv.privilege,
           value: priv.id,
-        }))
-      );
+        })),
+      });
     } catch (e) {
       console.error(e);
     }
@@ -462,9 +500,12 @@ const NewAdminPage = () => {
   const updateAccess = (acc) => setAccess(acc);
 
   useEffect(() => {
-    fetchByMailId();
-    fetchRolesPrivileges();
-    fetchPartnerList();
+    const fetch = async () => {
+      await fetchPartnerList();
+      fetchRolesPrivileges();
+      fetchByMailId();
+    };
+    fetch();
   }, []);
 
   // const handleRoleChange = (selectedOptionRole) => {
@@ -477,6 +518,11 @@ const NewAdminPage = () => {
   //   console.log(`Option selected:`, selectedOptionPrivilages);
   // };
 
+  const getRoleData = (roleId) =>
+    rolePrivilegeOptions.roleOptions.find(
+      (roleItem) => roleId === roleItem.value
+    );
+
   const createUserRolePrivilege = async (
     emailId,
     rolePrivilegeId,
@@ -487,11 +533,38 @@ const NewAdminPage = () => {
       chanakya_user_email_id: emailId,
       [rolePrivilege]: rolePrivilegeId,
     });
-    return { id: newRole.data.id, roleId: newRole.data.roles };
+    return {
+      role_id: newRole.data.id,
+      role: getRoleData(newRole.data.roles).label,
+    };
+  };
+
+  const createUserEmail = async () => {
+    const alreadyExists =
+      (await (
+        await axios.get(`${baseUrl}rolebaseaccess/mail/${currentUser.email}`)
+      ).data.length) !== 0;
+    console.log(currentUser, users);
+    if (alreadyExists) {
+      enqueueSnackbar("Email Already Exists", { variant: "error" });
+      return;
+    }
+
+    await axios.post(`${baseUrl}role/createUserEmail`, {
+      email: currentUser.email,
+    });
+    const newUser = await (
+      await axios.get(`${baseUrl}rolebaseaccess/mail/${currentUser.email}`)
+    ).data[0];
+    setEmailDialog(false);
+    // setCurrentUser({})
+    enqueueSnackbar("Added New Email", { variant: "success" });
+    console.log(setupUser(newUser));
+    setUsers([...users, setupUser(newUser)]);
+    await fetchByMailId();
   };
 
   const createAccess = async (accessList, roleId) => {
-    console.log(accessList, roleId);
     const newAccess = await Promise.all(
       accessList.map(async (accessItem) => {
         const accessRes = await axios.post(
@@ -505,13 +578,15 @@ const NewAdminPage = () => {
   };
 
   const assignRoles = async () => {
+    const { selectedRoles } = currentUser;
     if (window.confirm("Are you sure to assign the mentioned roles?")) {
       const alreadyHasRole = selectedRoles.findIndex(
-        (roleItem) => roleItem.role_id === access.role
+        (roleItem) => roleItem.role === getRoleData(access.role).label
       );
       console.log(access, selectedRoles, alreadyHasRole);
       let newRole;
       let newAccess;
+      let updatedRoles;
       if (alreadyHasRole !== -1) {
         newRole = selectedRoles[alreadyHasRole];
         //async code for new access here
@@ -520,17 +595,14 @@ const NewAdminPage = () => {
           ...newRole.access,
           ...newAccess.map((accessItem) => ({
             id: accessItem.id,
-            user_role_id: access.role,
+            user_role_id: newRole.role_id,
             access: accessItem.access,
           })),
         ];
         console.log(newRole);
-        const updatedRoles = [...selectedRoles];
+        updatedRoles = [...selectedRoles];
         updatedRoles[alreadyHasRole] = newRole;
-        setSelectedRoles([]);
-        changeFn.ex(updatedRoles);
-        setAccess({ role: "selectrole", access: "selectaccess" });
-        setAccessDialog(false);
+        // setSelectedRoles([]);
       } else {
         // async code for new Role
         newRole = await createUserRolePrivilege(
@@ -540,25 +612,48 @@ const NewAdminPage = () => {
         );
         // console.log()
         // async code for new access for that role
-        const newAccess1 = {};
+        newAccess = await createAccess(access.access, newRole.role_id);
+        newRole.access = [
+          ...newAccess.map((accessItem) => ({
+            id: accessItem.id,
+            user_role_id: newRole.role_id,
+            access: accessItem.access,
+          })),
+        ];
+        updatedRoles = [...selectedRoles, newRole];
       }
+      changeFn.ex(updatedRoles);
+      setAccess({ role: "selectrole", access: "selectaccess" });
+      setAccessDialog(false);
+      await fetchByMailId();
+      enqueueSnackbar("Assigned Roles Successfully", { variant: "success" });
     }
   };
 
   const options = {
     selectableRows: "none",
-
+    textLabels: {
+      body: {
+        noMatch: loading ? (
+          <Loader />
+        ) : (
+          "Sorry, there is no matching data to display"
+        ),
+      },
+    },
     customToolbar: React.useCallback(
-      () => <NewCustomToolbar handleOpen={handleOpen} />,
+      () => <NewCustomToolbar handleOpen={openEmailDialog} />,
       []
     ),
   };
 
+  const { roleOptions, privilegeOptions } = rolePrivilegeOptions;
+
   return (
     <Container maxWidth="xl">
       <MUIDataTable
-        title="Role Based Accesses"
-        data={roleByMailID}
+        title="Role Based Access"
+        data={users}
         columns={columns}
         options={options}
       />
@@ -616,7 +711,7 @@ const NewAdminPage = () => {
                     }`}
                     isMulti
                     onChange={(ev) => updateAccess({ ...access, access: ev })}
-                    options={getOptions(access.role, selectedRoles)}
+                    options={getOptions(access.role, currentUser.selectedRoles)}
                     menuPortalTarget={document.body}
                     value={access.access}
                     styles={{
@@ -643,6 +738,45 @@ const NewAdminPage = () => {
             variant="outlined"
             color="primary"
             onClick={() => setAccessDialog(false)}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        fullWidth
+        maxWidth="xs"
+        open={emailDialog}
+        onClose={() => setEmailDialog(false)}
+      >
+        <DialogTitle>Enter New Email</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            autoFocus
+            label="Enter Email"
+            placeholder="Enter Email"
+            variant="outlined"
+            sx={{ mt: "0.4rem" }}
+            // value={currentUser.email}
+            onChange={debounce(
+              (e) =>
+                setCurrentUser({
+                  ...currentUser,
+                  email: e.target.value,
+                }),
+              500
+            )}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" color="primary" onClick={createUserEmail}>
+            Create User Email
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => setEmailDialog(false)}
           >
             Cancel
           </Button>

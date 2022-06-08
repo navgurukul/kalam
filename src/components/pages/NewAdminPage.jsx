@@ -4,7 +4,6 @@ import MUIDataTable from "mui-datatables";
 import Select from "react-select";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import {
   Button,
   Dialog,
@@ -288,7 +287,7 @@ const NewAdminPage = () => {
         filter: true,
         sort: true,
         customBodyRender: React.useCallback(
-          (value, { rowData }) => (
+          () => (
             <div
               style={{
                 display: "flex",
@@ -296,79 +295,26 @@ const NewAdminPage = () => {
                 alignItems: "center",
               }}
             >
-              <EditIcon
-                style={{
-                  color: "green",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  // setEditing(true);
-                  const { privilegeOptions } = rolePrivilegeOptions;
-                  setCurrentUser({
-                    email: rowData[0],
-                    selectedRoles: rowData[1].reduce((acc, role) => {
-                      role.access.forEach((accessItem) => {
-                        acc.push({
-                          label: `${role.role}-${
-                            getAccessData(role.role, accessItem.access).name
-                          }`,
-                          value: `${role.role_id}-${accessItem.id}`,
-                        });
-                      });
-                      return acc;
-                    }, []),
-                    selectedPrivileges: rowData[2].map((priv) => {
-                      const privData = privilegeOptions.find(
-                        (opt) => opt.value === priv.id
-                      );
-                      if (privData) {
-                        return { label: privData.label, value: privData.value };
-                      }
-                      return { label: "Invalid Privelege", value: "0" };
-                    }),
-                  });
-
-                  rowData[1].forEach((el) => {
-                    // if (el.split(":")[0] === "partner") {
-                    //   const partners = el
-                    //     .split(":")[1]
-                    //     .split(",")
-                    //     .map((elm) => ({ label: elm, value: elm }));
-                    //   roles.partners = partners;
-                    // }
-                    // if (el.split(":")[0] === "T&P") {
-                    //   const campuses = el
-                    //     .split(":")[1]
-                    //     .split(",")
-                    //     .map((elm) => ({ value: elm, label: elm }));
-                    //   roles.tnp = campuses;
-                    // }
-                  });
-                  // if (roles.partners) setSelectedRolePartners(roles.partners);
-                  // if (roles.tnp) setSelectedRoleTP(roles.tnp);
-                  // handleOpen();
-                }}
-              />
               <DeleteIcon
                 style={{
                   color: "red",
                   cursor: "pointer",
                 }}
                 onClick={() => {
-                  if (
-                    window.confirm(
-                      `Do you want to delete roles of ${rowData[0]}?`
-                    )
-                  )
-                    axios
-                      .delete(
-                        `${baseUrl}rolebaseaccess/email/delete/${rowData[3]}`
-                      )
-                      .then(() => {
-                        enqueueSnackbar("Role deleted successfully!", {
-                          variant: "success",
-                        });
-                      });
+                  // if (
+                  //   window.confirm(
+                  //     `Do you want to delete roles of ${rowData[0]}?`
+                  //   )
+                  // )
+                  //   axios
+                  //     .delete(
+                  //       `${baseUrl}rolebaseaccess/email/delete/${rowData[3]}`
+                  //     )
+                  //     .then(() => {
+                  //       enqueueSnackbar("Role deleted successfully!", {
+                  //         variant: "success",
+                  //       });
+                  //     });
                 }}
               />
             </div>
@@ -425,7 +371,6 @@ const NewAdminPage = () => {
     let currentUserData = {};
     const roles = [];
     const privileges = [];
-    console.log(user);
     user.userrole.forEach((roleData) => {
       if (roleData.role?.length > 0 && roleData.access)
         roles.push({
@@ -519,7 +464,6 @@ const NewAdminPage = () => {
       (await (
         await axios.get(`${baseUrl}rolebaseaccess/mail/${currentUser.email}`)
       ).data.length) !== 0;
-    console.log(currentUser, users);
     if (alreadyExists) {
       enqueueSnackbar("Email Already Exists", { variant: "error" });
       return;
@@ -534,7 +478,6 @@ const NewAdminPage = () => {
     setEmailDialog(false);
     // setCurrentUser({})
     enqueueSnackbar("Added New Email", { variant: "success" });
-    console.log(setupUser(newUser));
     setUsers([...users, setupUser(newUser)]);
     await fetchByMailId();
   };
@@ -552,7 +495,6 @@ const NewAdminPage = () => {
     rolePrivilegeId,
     rolePrivilege = "roles"
   ) => {
-    console.log(emailId, rolePrivilege, rolePrivilegeId);
     const newRole = await axios.post(`${baseUrl}role/createUserRole`, {
       chanakya_user_email_id: emailId,
       [rolePrivilege]: rolePrivilegeId,
@@ -586,7 +528,6 @@ const NewAdminPage = () => {
         const alreadyHasRole = selectedRoles.findIndex(
           (roleItem) => roleItem.role === getRoleData(access.role).label
         );
-        console.log(access, selectedRoles, alreadyHasRole);
         let newRole;
         let newAccess;
         let updatedRoles;
@@ -602,7 +543,6 @@ const NewAdminPage = () => {
               access: accessItem.access,
             })),
           ];
-          console.log(newRole);
           updatedRoles = [...selectedRoles];
           updatedRoles[alreadyHasRole] = newRole;
           // setSelectedRoles([]);
@@ -639,7 +579,6 @@ const NewAdminPage = () => {
 
   const assignPrivileges = async () => {
     if (window.confirm("Are you sure to assign the mentioned privileges?")) {
-      console.log(access.privilege, currentUser.selectedPrivileges);
       try {
         const newPrivs = await Promise.all(
           access.privilege.map(
@@ -652,7 +591,6 @@ const NewAdminPage = () => {
           )
         );
         const updatedPrivs = [...currentUser.selectedPrivileges, ...newPrivs];
-        console.log(updatedPrivs);
         changeFn.ex(updatedPrivs);
         setAccess({ ...access, privilege: [] });
         setAccessDialog(false);

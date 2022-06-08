@@ -79,9 +79,7 @@ const StudentStatus = React.lazy(() =>
 const MyTaskReport = React.lazy(() => import("../components/pages/MyTask"));
 const MyAssignReport = React.lazy(() => import("../components/pages/MyAssign"));
 const LoginDesign = React.lazy(() => import("../components/pages/LoginDesign"));
-const NewAdminPage = React.lazy(() =>
-  import("../components/pages/NewAdminPage")
-);
+const AdminPage = React.lazy(() => import("../components/admin/AdminPage"));
 const SlotBooking = React.lazy(() => import("../components/pages/SlotBooking"));
 const DuplicateStudents = React.lazy(() =>
   import("../components/pages/DuplicateStudents")
@@ -150,7 +148,7 @@ const AppRouter = () => {
               element={
                 <React.Suspense fallback={<Loader />}>
                   <RequireAuth privateRoute>
-                    <NewAdminPage />
+                    <AdminPage />
                   </RequireAuth>
                 </React.Suspense>
               }

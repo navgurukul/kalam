@@ -23,7 +23,7 @@ import {
 import { debounce } from "underscore";
 import { AddCircleOutlined } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
-import NewCustomToolbar from "../smallComponents/NewCustomToolbar";
+import ToolbarAddButton from "./ToolbarAddButton";
 import { campus } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -447,16 +447,6 @@ const NewAdminPage = () => {
     fetch();
   }, []);
 
-  // const handleRoleChange = (selectedOptionRole) => {
-  //   setSelectedOptionRole(selectedOptionRole);
-  //   console.log(`Option selected:`, selectedOptionRole);
-  // };
-
-  // const handlePrivilagesChange = (selectedOptionPrivilages) => {
-  //   setSelectedOptionPrivilages(selectedOptionPrivilages);
-  //   console.log(`Option selected:`, selectedOptionPrivilages);
-  // };
-
   const { roleOptions, privilegeOptions } = rolePrivilegeOptions;
 
   const createUserEmail = async () => {
@@ -545,7 +535,6 @@ const NewAdminPage = () => {
           ];
           updatedRoles = [...selectedRoles];
           updatedRoles[alreadyHasRole] = newRole;
-          // setSelectedRoles([]);
         } else {
           // async code for new Role
           newRole = await createUserRolePrivilege(
@@ -553,7 +542,6 @@ const NewAdminPage = () => {
             access.role,
             "roles"
           );
-          // console.log()
           // async code for new access for that role
           newAccess = await createAccess(access.access, newRole.role_id);
           newRole.access = [
@@ -714,7 +702,7 @@ const NewAdminPage = () => {
     //   },
     // },
     customToolbar: React.useCallback(
-      () => <NewCustomToolbar handleOpen={openEmailDialog} />,
+      () => <ToolbarAddButton handleOpen={openEmailDialog} />,
       []
     ),
   };
@@ -768,7 +756,6 @@ const NewAdminPage = () => {
             placeholder="Enter Email"
             variant="outlined"
             sx={{ mt: "0.4rem" }}
-            // value={currentUser.email}
             onChange={debounce(
               (e) =>
                 setCurrentUser({
@@ -792,194 +779,6 @@ const NewAdminPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      {/* <Dialog
-        fullScreen
-        open={dialogOpen}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-      >
-        <DialogTitle>Give Access To -</DialogTitle> 
-         <DialogContent
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Dialog
-            maxWidth="sm"
-            fullWidth
-            open={false}
-            onClose={() => setAccessDialog(false)}
-          >
-            <DialogTitle>
-              Select{" "}
-              {roleOptions.find((opt) => opt.value === access.role)?.label}
-            </DialogTitle>
-            <DialogContent sx={{ w: "50%" }}>
-              <Container maxWidth="md" sx={{ p: "0.4rem" }}>
-                <Autocomplete
-                  options={getOptions(access.role, selectedRoles)}
-                  disablePortal
-                  fullWidth
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </Container>
-            </DialogContent>
-            <DialogActions>
-              <Button>Confirm</Button>
-            </DialogActions>
-          </Dialog>
-
-          <Grid container spacing={2} maxWidth="lg">
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Email Id"
-                placeholder="Email Id"
-                type="email"
-                value={mail}
-                onChange={(e) => setMail(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} style={{ padding: "0.1rem" }}>
-              <InputLabel
-                id="role-menu-label"
-                style={{ paddingBottom: "0.2rem" }}
-              >
-                Roles
-              </InputLabel>
-              <Select
-                placeholder="Roles"
-                isMulti
-                value={selectedRoles}
-                onChange={handleRoleChange}
-                options={roleOptions}
-                styles={{
-                  menuList: (base) => ({
-                    ...base,
-                    backgroundColor: "white",
-                    border: "1px solid lightgray",
-                    // width: "100%",
-                  }),
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <InputLabel
-                style={{
-                  paddingBottom: "0.2rem",
-                }}
-                htmlFor="privilege"
-              >
-                Privilege
-              </InputLabel>
-              <Select
-                variant="outlined"
-                placeholder="Select Privileges"
-                value={selectedPrivilages}
-                onChange={handlePrivilegeChange}
-                isMulti
-                options={privilegeOptions}
-                styles={{
-                  menuList: (base) => ({
-                    ...base,
-                    backgroundColor: "white",
-                    border: "1px solid lightgray",
-                  }),
-                }}
-              />
-            </Grid>
-          </Grid>
-        </DialogContent> 
-         <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{
-              margin: "0.4rem",
-            }}
-            onClick={() => {
-              // const PartnerRole =
-              //   selectedRolePartners.length > 0 &&
-              //   `partner:${selectedRolePartners
-              //     .map((role) => role.value)
-              //     .join(",")}`;
-              // const TPRole =
-              //   selectedRoleTP.length > 0 &&
-              //   `T&P:${selectedRoleTP.map((role) => role.value).join(",")}`;
-              // const Role =
-              //   PartnerRole === false
-              //     ? [TPRole]
-              //     : TPRole === false
-              //     ? [PartnerRole]
-              //     : [PartnerRole, TPRole];
-              // if (editing) {
-              //   axios
-              //     .put(`${baseUrl}rolebaseaccess/email/update/${editing}`, {
-              //       email: mail,
-              //       roles: Role,
-              //     })
-              //     .then((res) => {
-              //       if (res.status === 200) {
-              //         snackbar.enqueueSnackbar(
-              //           `Role Updated Successfully for ${mail}`,
-              //           { variant: "success" }
-              //         );
-              //         setDialogOpen(false);
-              //         setMail("");
-              //         // setSelectedRolePartners([]);
-              //         // setSelectedRoleTP([]);
-              //         setSelectedPrivilages([]);
-              //         setEditing(null);
-              //       } else {
-              //         snackbar.enqueueSnackbar("Something Went Wrong", {
-              //           variant: "error",
-              //         });
-              //       }
-              //     });
-              // } else {
-              //   axios
-              //     .post(`${baseUrl}rolebaseaccess/email/add`, {
-              //       email: mail,
-              //       roles: Role,
-              //     })
-              //     .then((res) => {
-              //       if (res.status === 200) {
-              //         snackbar.enqueueSnackbar(
-              //           `Role Assigned Successfully to ${mail}`,
-              //           {
-              //             variant: "success",
-              //           }
-              //         );
-              //         setDialogOpen(false);
-              //         setMail("");
-              //         // setSelectedRolePartners([]);
-              //         // setSelectedRoleTP([]);
-              //         setSelectedPrivilages([]);
-              //       } else {
-              //         snackbar.enqueueSnackbar("Something Went Wrong", {
-              //           variant: "error",
-              //         });
-              // }
-              // });
-              // }
-            }}
-          >
-            {editing ? "Update" : "Submit"}
-          </Button>
-          <Button
-            style={{
-              margin: "0.4rem",
-            }}
-            variant="outlined"
-            color="primary"
-            onClick={handleClose}
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-       </Dialog> */}
     </Container>
   );
 };

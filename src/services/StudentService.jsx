@@ -43,6 +43,7 @@ import {
   campusStageOfLearning,
   caste,
 } from "../utils/constants";
+import UploadDocuments from "../components/smallComponents/UploadDocuments";
 
 dayjs.extend(customParseFormat);
 
@@ -82,6 +83,22 @@ const ColumnTransitions = {
   },
 };
 
+//column for uploading documents
+const ColumnUpload = {
+  //get the object of the column
+  name: "studentDocuments",
+  label: "Upload Document",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (value, rowMeta) => (
+      //modal for uploading documents
+
+      <UploadDocuments rowMeta={rowMeta} value={value} />
+    ),
+  },
+};
+
 //columns related to student dashboard's transitions
 /*
  stageColumnTransition,
@@ -99,8 +116,10 @@ const ColumnTransitions = {
 
 const StageColumnTransitionWrapper = ({ rowData, rowMeta }) => {
   const { loggedInUser } = useSelector((state) => state.auth);
+  const path = window.location.pathname.split("/");
+  const isCampus = path[1] === "campus";
   return permissions.updateStage.indexOf(loggedInUser.email) > -1 &&
-    keysCampusStageOfLearning.indexOf(rowData) > -1 ? (
+    isCampus ? (
     <div>
       <DeleteRow transitionId={rowMeta.rowData[11]} />
       {allStages[rowData]}
@@ -1556,7 +1575,7 @@ const StudentService = {
       stageColumnStatus,
       lastStageColumn,
       linkForEnglishTestColumn,
-      linkForOnlineTestColumn,
+      // linkForOnlineTestColumn,
       campusColumn,
       donorColumn,
     ],
@@ -1618,6 +1637,7 @@ const StudentService = {
     joinedDate,
     stageColumn,
     JobKabLagegiColumn,
+    ColumnUpload,
     daysPassedColumn,
     kitneAurDin,
     kitneDinLagenge,

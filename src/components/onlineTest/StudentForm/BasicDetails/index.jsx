@@ -111,7 +111,7 @@ const BasicDetails = ({
         name="ProfileImage"
         style={{ display: "none" }}
         required
-        disabled={inputDisabled}
+        disabled={inputDisabled && formData.ProfileImage !== null}
         accept=".png,.jpg,.jpeg"
       />
       <Grid style={{ paddingTop: "1.2rem" }} container spacing={2}>
@@ -143,7 +143,7 @@ const BasicDetails = ({
                       : "प्रथम नाम दर्ज करें"
                     : "Ex. XYZ"
                 }
-                disabled={inputDisabled}
+                disabled={inputDisabled && formData.FirstName !== null}
                 {...rest}
               />
             )}
@@ -172,7 +172,7 @@ const BasicDetails = ({
                       : "मध्यनाम दर्ज करें"
                     : "Ex. PQR"
                 }
-                disabled={inputDisabled}
+                disabled={inputDisabled && formData.MiddleName !== null}
                 {...rest}
               />
             )}
@@ -203,7 +203,7 @@ const BasicDetails = ({
                       : "कुलनाम दर्ज करें"
                     : "Ex. ABC"
                 }
-                disabled={inputDisabled}
+                disabled={inputDisabled && formData.LastName !== null}
                 {...rest}
               />
             )}
@@ -226,7 +226,7 @@ const BasicDetails = ({
               <LocalizationProvider dateAdapter={DateFnsUtils}>
                 <DatePicker
                   disableFuture
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.dob !== null}
                   // margin="normal"
                   id="dob"
                   label={lang === "en" ? "Date of Birth" : "आपका जन्मदिन"}
@@ -388,7 +388,7 @@ const BasicDetails = ({
                 }
                 autoComplete="off"
                 fullWidth
-                disabled={inputDisabled}
+                disabled={inputDisabled && formData.email !== null}
                 {...rest}
               />
             )}
@@ -401,12 +401,12 @@ const BasicDetails = ({
               required: true,
               validate: (gender) => {
                 if (gender === "select gender") return false;
-                // if (gender === "female") return true;
-                // enqueueSnackbar("Only Females can appear for the Test", {
-                //   variant: "info",
-                // });
-                // return false;
-                return true;
+                if (gender === "female" || gender === "other") return true;
+                enqueueSnackbar("Curently, Males cannot appear for the Test", {
+                  variant: "info",
+                });
+                return false;
+                // return true;
               },
             }}
             name="gender"
@@ -427,7 +427,7 @@ const BasicDetails = ({
                   inputRef={ref}
                   placeholder={lang === "en" ? "Select Gender" : "लिंग चुनें"}
                   required
-                  disabled={inputDisabled}
+                  disabled={inputDisabled && formData.gender !== null}
                   {...rest}
                 >
                   {[

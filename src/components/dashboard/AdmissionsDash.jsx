@@ -362,13 +362,16 @@ const AdmissionsDash = (props) => {
       dispatch(fetchOwnersAction());
     };
     fetchData();
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      setStudents({ data: [], totalData: 0 });
+    };
   }, []);
 
   useEffect(() => {
     // console.log("Updating changes");
     if (loggedInUser)
-      dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType }));
+      dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType })); //softwareCourse
   }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser]);
 
   useEffect(() => {
@@ -494,11 +497,7 @@ const AdmissionsDash = (props) => {
               }}
               stages={value}
               // dataSetup={dataSetup}
-              totalData={totalData}
-              filterValues={getFilterValues}
               sortChange={sortChange}
-              numberOfRows={numberOfRows}
-              setNumbersOfRows={setNumbersOfRows}
             />
           </ThemeProvider>
         </Box>

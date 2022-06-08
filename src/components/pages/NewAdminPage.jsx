@@ -5,7 +5,6 @@ import Select from "react-select";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { useDispatch } from "react-redux";
 import {
   Button,
   Dialog,
@@ -13,7 +12,6 @@ import {
   DialogTitle,
   Grid,
   InputLabel,
-  Slide,
   DialogActions,
   Container,
   Chip,
@@ -28,21 +26,14 @@ import { AddCircleOutlined } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import NewCustomToolbar from "../smallComponents/NewCustomToolbar";
 import { campus } from "../../utils/constants";
-import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const Transition = React.forwardRef((props, ref) => (
-  <Slide direction="up" ref={ref} {...props} />
-));
-
 const NewAdminPage = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch();
 
   //States and Hooks
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [accessDialog, setAccessDialog] = useState(false);
   const [emailDialog, setEmailDialog] = useState(false);
   // const [selectedRoles, setSelectedRoles] = useState([]);
@@ -130,7 +121,6 @@ const NewAdminPage = () => {
   };
 
   const getOptions = (roleId, filterRoles) => {
-    console.log(filterRoles);
     const { roleOptions } = rolePrivilegeOptions;
     let exclusions;
     const role = roleOptions.find((opt) => opt.value === roleId) || "";
@@ -338,7 +328,6 @@ const NewAdminPage = () => {
                     }),
                   });
 
-                  const roles = {};
                   rowData[1].forEach((el) => {
                     // if (el.split(":")[0] === "partner") {
                     //   const partners = el
@@ -523,26 +512,7 @@ const NewAdminPage = () => {
   //   console.log(`Option selected:`, selectedOptionPrivilages);
   // };
 
-  const getRoleData = (roleId) =>
-    rolePrivilegeOptions.roleOptions.find(
-      (roleItem) => roleId === roleItem.value
-    );
-
-  const createUserRolePrivilege = async (
-    emailId,
-    rolePrivilegeId,
-    rolePrivilege = "roles"
-  ) => {
-    console.log(emailId, rolePrivilege, rolePrivilegeId);
-    const newRole = await axios.post(`${baseUrl}role/createUserRole`, {
-      chanakya_user_email_id: emailId,
-      [rolePrivilege]: rolePrivilegeId,
-    });
-    return {
-      role_id: newRole.data.id,
-      role: getRoleData(newRole.data.roles).label,
-    };
-  };
+  const { roleOptions, privilegeOptions } = rolePrivilegeOptions;
 
   const createUserEmail = async () => {
     const alreadyExists =
@@ -569,6 +539,33 @@ const NewAdminPage = () => {
     await fetchByMailId();
   };
 
+  const getRoleData = (roleId) =>
+    rolePrivilegeOptions.roleOptions.find(
+      (roleItem) => roleId === roleItem.value
+    );
+
+  const getPrivilegeData = (privId) =>
+    privilegeOptions.find((privItem) => privId === privItem.value);
+
+  const createUserRolePrivilege = async (
+    emailId,
+    rolePrivilegeId,
+    rolePrivilege = "roles"
+  ) => {
+    console.log(emailId, rolePrivilege, rolePrivilegeId);
+    const newRole = await axios.post(`${baseUrl}role/createUserRole`, {
+      chanakya_user_email_id: emailId,
+      [rolePrivilege]: rolePrivilegeId,
+    });
+    return {
+      [rolePrivilege === "roles" ? "role_id" : "id"]: newRole.data.id,
+      [rolePrivilege === "roles" ? "role" : "privilege"]:
+        rolePrivilege === "roles"
+          ? getRoleData(newRole.data.roles).label
+          : getPrivilegeData(newRole.data.privilege).label,
+    };
+  };
+
   const createAccess = async (accessList, roleId) => {
     const newAccess = await Promise.all(
       accessList.map(async (accessItem) => {
@@ -585,63 +582,90 @@ const NewAdminPage = () => {
   const assignRoles = async () => {
     const { selectedRoles } = currentUser;
     if (window.confirm("Are you sure to assign the mentioned roles?")) {
-      const alreadyHasRole = selectedRoles.findIndex(
-        (roleItem) => roleItem.role === getRoleData(access.role).label
-      );
-      console.log(access, selectedRoles, alreadyHasRole);
-      let newRole;
-      let newAccess;
-      let updatedRoles;
-      if (alreadyHasRole !== -1) {
-        newRole = selectedRoles[alreadyHasRole];
-        //async code for new access here
-        newAccess = await createAccess(access.access, newRole.role_id);
-        newRole.access = [
-          ...newRole.access,
-          ...newAccess.map((accessItem) => ({
-            id: accessItem.id,
-            user_role_id: newRole.role_id,
-            access: accessItem.access,
-          })),
-        ];
-        console.log(newRole);
-        updatedRoles = [...selectedRoles];
-        updatedRoles[alreadyHasRole] = newRole;
-        // setSelectedRoles([]);
-      } else {
-        // async code for new Role
-        newRole = await createUserRolePrivilege(
-          currentUser.id,
-          access.role,
-          "roles"
+      try {
+        const alreadyHasRole = selectedRoles.findIndex(
+          (roleItem) => roleItem.role === getRoleData(access.role).label
         );
-        // console.log()
-        // async code for new access for that role
-        newAccess = await createAccess(access.access, newRole.role_id);
-        newRole.access = [
-          ...newAccess.map((accessItem) => ({
-            id: accessItem.id,
-            user_role_id: newRole.role_id,
-            access: accessItem.access,
-          })),
-        ];
-        updatedRoles = [...selectedRoles, newRole];
+        console.log(access, selectedRoles, alreadyHasRole);
+        let newRole;
+        let newAccess;
+        let updatedRoles;
+        if (alreadyHasRole !== -1) {
+          newRole = selectedRoles[alreadyHasRole];
+          //async code for new access here
+          newAccess = await createAccess(access.access, newRole.role_id);
+          newRole.access = [
+            ...newRole.access,
+            ...newAccess.map((accessItem) => ({
+              id: accessItem.id,
+              user_role_id: newRole.role_id,
+              access: accessItem.access,
+            })),
+          ];
+          console.log(newRole);
+          updatedRoles = [...selectedRoles];
+          updatedRoles[alreadyHasRole] = newRole;
+          // setSelectedRoles([]);
+        } else {
+          // async code for new Role
+          newRole = await createUserRolePrivilege(
+            currentUser.id,
+            access.role,
+            "roles"
+          );
+          // console.log()
+          // async code for new access for that role
+          newAccess = await createAccess(access.access, newRole.role_id);
+          newRole.access = [
+            ...newAccess.map((accessItem) => ({
+              id: accessItem.id,
+              user_role_id: newRole.role_id,
+              access: accessItem.access,
+            })),
+          ];
+          updatedRoles = [...selectedRoles, newRole];
+        }
+        changeFn.ex(updatedRoles);
+        setAccess({ ...access, role: "selectrole", access: "selectaccess" });
+        setAccessDialog(false);
+        await fetchByMailId();
+        enqueueSnackbar("Assigned Roles Successfully", { variant: "success" });
+      } catch (e) {
+        console.error(e);
+        enqueueSnackbar(`Error: ${e.message}`, { variant: "error" });
       }
-      changeFn.ex(updatedRoles);
-      setAccess({ role: "selectrole", access: "selectaccess" });
-      setAccessDialog(false);
-      await fetchByMailId();
-      enqueueSnackbar("Assigned Roles Successfully", { variant: "success" });
     }
   };
 
-  const assignPrivileges = () => {
+  const assignPrivileges = async () => {
     if (window.confirm("Are you sure to assign the mentioned privileges?")) {
-      console.log(access.privilege);
+      console.log(access.privilege, currentUser.selectedPrivileges);
+      try {
+        const newPrivs = await Promise.all(
+          access.privilege.map(
+            async (privItem) =>
+              await createUserRolePrivilege(
+                currentUser.id,
+                privItem.value,
+                "privilege"
+              )
+          )
+        );
+        const updatedPrivs = [...currentUser.selectedPrivileges, ...newPrivs];
+        console.log(updatedPrivs);
+        changeFn.ex(updatedPrivs);
+        setAccess({ ...access, privilege: [] });
+        setAccessDialog(false);
+        await fetchByMailId();
+        enqueueSnackbar("Assigned Privileges Successfully", {
+          variant: "success",
+        });
+      } catch (e) {
+        console.error(e);
+        enqueueSnackbar(`Error: ${e.message}`, { variant: "error" });
+      }
     }
   };
-
-  const { roleOptions, privilegeOptions } = rolePrivilegeOptions;
 
   const getDialogContent = (rolePrivilege) => {
     switch (rolePrivilege) {
@@ -742,15 +766,15 @@ const NewAdminPage = () => {
   const options = {
     selectableRows: "none",
     responsive: "vertical",
-    textLabels: {
-      body: {
-        noMatch: loading ? (
-          <Loader />
-        ) : (
-          "Sorry, there is no matching data to display"
-        ),
-      },
-    },
+    // textLabels: {
+    //   body: {
+    //     noMatch: loading ? (
+    //       <Loader />
+    //     ) : (
+    //       "Sorry, there is no matching data to display"
+    //     ),
+    //   },
+    // },
     customToolbar: React.useCallback(
       () => <NewCustomToolbar handleOpen={openEmailDialog} />,
       []

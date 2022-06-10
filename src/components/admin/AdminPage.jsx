@@ -118,6 +118,23 @@ const AdminPage = () => {
     setEmailDialog(true);
   };
 
+  const deleteUserEmail = async (email, emailId) => {
+    try {
+      if (window.confirm(`Are you sure to delete ${email}?`)) {
+        await axios.delete(`${baseUrl}role/deleteUserEmail/${emailId}`);
+        setUsers((prevUsers) =>
+          prevUsers.filter((user) => user.id !== emailId)
+        );
+        enqueueSnackbar(`${email} Deleted Successfully`, {
+          variant: "success",
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      enqueueSnackbar(`Error: ${e.message}`, { variant: "error" });
+    }
+  };
+
   const deleteRolePrivilege = async (
     rowData,
     change,
@@ -271,7 +288,7 @@ const AdminPage = () => {
         filter: true,
         sort: false,
         customBodyRender: React.useCallback(
-          () => (
+          (value, { rowData }) => (
             <div
               style={{
                 display: "flex",
@@ -279,24 +296,7 @@ const AdminPage = () => {
                 alignItems: "center",
               }}
             >
-              <IconButton
-                onClick={() => {
-                  // if (
-                  //   window.confirm(
-                  //     `Do you want to delete roles of ${rowData[0]}?`
-                  //   )
-                  // )
-                  //   axios
-                  //     .delete(
-                  //       `${baseUrl}rolebaseaccess/email/delete/${rowData[3]}`
-                  //     )
-                  //     .then(() => {
-                  //       enqueueSnackbar("Role deleted successfully!", {
-                  //         variant: "success",
-                  //       });
-                  //     });
-                }}
-              >
+              <IconButton onClick={() => deleteUserEmail(rowData[0], value)}>
                 <DeleteIcon
                   style={{
                     color: "red",
@@ -371,7 +371,7 @@ const AdminPage = () => {
     axios
       .get(`${baseUrl}rolebaseaccess/email`)
       .then((response) => {
-        const userList = response.data.map(setupUser);
+        const userList = response.data.reverse().map(setupUser);
         setUsers(userList);
       })
       .catch((e) => {

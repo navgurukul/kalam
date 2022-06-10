@@ -118,6 +118,52 @@ const AdminPage = () => {
     setEmailDialog(true);
   };
 
+  const deleteRolePrivilege = async (
+    rowData,
+    change,
+    rolePrivilegeId,
+    rolePrivilege = "Role"
+  ) => {
+    try {
+      await axios.delete(`${baseUrl}role/deleteUserRole/${rolePrivilegeId}`);
+      if (rolePrivilege === "Role") {
+        ///
+      } else {
+        change(rowData.filter((rowItem) => rowItem.id !== rolePrivilegeId));
+      }
+      enqueueSnackbar(`${rolePrivilege} Deleted Successfully`, {
+        variant: "success",
+      });
+    } catch (e) {
+      console.error(e);
+      enqueueSnackbar(`Error: ${e.message}`, { variant: "error" });
+    }
+  };
+
+  const deleteUserAccess = async (rowData, change, accessObj) => {
+    try {
+      await axios.delete(`${baseUrl}role/deleteUserRoleAccess/${accessObj.id}`);
+      change(
+        rowData.map((role) => {
+          const newRole = { ...role };
+          newRole.access = role.access.filter(
+            (accessItem) => accessItem.id !== accessObj.id
+          );
+          return newRole;
+        })
+      );
+      enqueueSnackbar(
+        `${accessObj.role}-${accessObj.name}Deleted Successfully`,
+        {
+          variant: "success",
+        }
+      );
+    } catch (e) {
+      console.error(e);
+      enqueueSnackbar(`Error: ${e.message}`, { variant: "error" });
+    }
+  };
+
   const columns = [
     { name: "email", label: "Email" },
     {
@@ -138,7 +184,15 @@ const AdminPage = () => {
                       getAccessData(item.role, accessItem.access)?.name || ""
                     }`}
                     sx={{ marginX: "0.4rem", marginY: "0.4rem" }}
-                    onDelete={() => {}}
+                    onDelete={() =>
+                      deleteUserAccess(value, change, {
+                        role: item.role,
+                        name:
+                          getAccessData(item.role, accessItem.access)?.name ||
+                          "",
+                        id: accessItem.id,
+                      })
+                    }
                   />
                 ))
               )}
@@ -178,7 +232,14 @@ const AdminPage = () => {
                   label={privItem.privilege}
                   key={privItem.id}
                   sx={{ pX: "0.4rem" }}
-                  onDelete={() => {}}
+                  onDelete={() =>
+                    deleteRolePrivilege(
+                      rowData,
+                      change,
+                      privItem.id,
+                      "Privilege"
+                    )
+                  }
                 />
               ))}
               <Chip
@@ -292,7 +353,7 @@ const AdminPage = () => {
         });
       if (roleData.privilege && roleData.privileges.length !== 0)
         privileges.push({
-          id: roleData.privileges[0].id,
+          id: roleData.id,
           privilege: toTitleCase(roleData.privileges[0].privilege),
         });
     });

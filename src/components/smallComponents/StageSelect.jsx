@@ -121,6 +121,10 @@ const StageSelect = (props) => {
       ...state,
       flag: false,
     });
+    changeStage({
+      label: "Offer Letter Sent",
+      value: "offerLetterSent",
+    });
   };
 
   const { flag } = state;

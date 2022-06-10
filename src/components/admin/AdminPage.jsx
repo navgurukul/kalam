@@ -19,6 +19,7 @@ import {
   MenuItem,
   FormControl,
   TextField,
+  IconButton,
 } from "@mui/material";
 import { debounce } from "underscore";
 import { AddCircleOutlined } from "@mui/icons-material";
@@ -28,15 +29,13 @@ import { campus } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const NewAdminPage = () => {
+const AdminPage = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   //States and Hooks
   const [users, setUsers] = useState([]);
   const [accessDialog, setAccessDialog] = useState(false);
   const [emailDialog, setEmailDialog] = useState(false);
-  // const [selectedRoles, setSelectedRoles] = useState([]);
-  // const [selectedPrivilages, setSelectedPrivilages] = useState([]);
   const [access, setAccess] = useState({
     role: "selectrole",
     access: "selectaccess",
@@ -58,44 +57,6 @@ const NewAdminPage = () => {
     roleOptions: [],
     privilegeOptions: [],
   });
-  // const [privilegeOptions, setPrivilegeOptions] = React.useState([]);
-
-  // const handleSubmit = async () => {
-  //   const PartnerRole =
-  //     selectedRolePartners.length > 0 &&
-  //     selectedRolePartners.map((role) => role.value);
-  //   const TPRole =
-  //     selectedRoleTP.length > 0 && selectedRoleTP.map((role) => role.value);
-  //   const Role =
-  //     PartnerRole === false
-  //       ? [...TPRole]
-  //       : TPRole === false
-  //       ? [...PartnerRole]
-  //       : [...PartnerRole, ...TPRole];
-
-  //   await axios
-  //     .post(`${baseUrl}rolebaseaccess/email/add`, {
-  //       email: mail,
-  //       roles: Role,
-  //     })
-  //     .then((res) => {
-  //       if (res.status === 200) {
-  //         snackbar.enqueueSnackbar(`Role Assigned Successfully to ${mail}`, {
-  //           variant: "success",
-  //         });
-  //         setDialogOpen(false);
-  //         setMail("");
-  //         setRoleMenu("");
-  //         setSelectedRolePartners([]);
-  //         setSelectedRoleTP([]);
-  //         setSelectedPrivilages([]);
-  //       } else {
-  //         snackbar.enqueueSnackbar("Something Went Wrong", {
-  //           variant: "error",
-  //         });
-  //       }
-  //     });
-  // };
 
   const toTitleCase = (str) => `${str.charAt(0).toUpperCase()}${str.substr(1)}`;
 
@@ -158,41 +119,15 @@ const NewAdminPage = () => {
   };
 
   const columns = [
-    { name: "email", label: "Mail-Id" },
+    { name: "email", label: "Email" },
     {
       name: "roles",
       label: "Roles",
       options: {
         filter: true,
-        sort: true,
+        sort: false,
         customBodyRender: React.useCallback(
           (value, rowMeta, change) => (
-            // <Select
-            //   placeholder={"Select Role"}
-            //   value={
-            //     selectedOptionRole.length > 0
-            //       ? selectedOptionRole
-            //       : value.map((item) => {
-            //           return {
-            //             value: item,
-            //             label: item.split(":", 1),
-            //           };
-            //         })
-            //   }
-            //   isMulti={true}
-            //   onChange={handleRoleChange}
-            //   options={allPrivilagesOptions}
-            //   styles={{
-            //     menuList: (base) => ({
-            //       ...base,
-            //       position: "fixed !important",
-            //       backgroundColor: "white",
-            //       border: "1px solid lightgray",
-            //       width: "18%",
-            //     }),
-            //   }}
-            // />
-
             <>
               {value.map((item) =>
                 item.access.map((accessItem) => (
@@ -234,21 +169,9 @@ const NewAdminPage = () => {
       label: "Privileges",
       options: {
         filter: true,
-        sort: true,
+        sort: false,
         customBodyRender: React.useCallback(
           (rowData, rowMeta, change) => (
-            // <div>
-            //   <span
-            //     style={{
-            //       display: "inline-block",
-            //       marginRight: "10px",
-            //       border: "1px solid lightgray",
-            //       padding: "8px",
-            //     }}
-            //   >
-            //     {rowData[0].privilege}
-            //   </span>
-            // </div>
             <>
               {rowData.map((privItem) => (
                 <Chip
@@ -285,7 +208,7 @@ const NewAdminPage = () => {
       label: "Actions",
       options: {
         filter: true,
-        sort: true,
+        sort: false,
         customBodyRender: React.useCallback(
           () => (
             <div
@@ -295,11 +218,7 @@ const NewAdminPage = () => {
                 alignItems: "center",
               }}
             >
-              <DeleteIcon
-                style={{
-                  color: "red",
-                  cursor: "pointer",
-                }}
+              <IconButton
                 onClick={() => {
                   // if (
                   //   window.confirm(
@@ -316,7 +235,14 @@ const NewAdminPage = () => {
                   //       });
                   //     });
                 }}
-              />
+              >
+                <DeleteIcon
+                  style={{
+                    color: "red",
+                    cursor: "pointer",
+                  }}
+                />
+              </IconButton>
             </div>
           ),
           []
@@ -350,22 +276,6 @@ const NewAdminPage = () => {
     });
     // setEditing(null);
   };
-
-  // const handlePrivilegeChange = (newSelectedPrivileges) => {
-  //   setSelectedPrivilages(newSelectedPrivileges);
-  // };
-
-  // const handleRoleChange = (selectedRoleMenu) => {
-  //   // dispatch(showDialog({ title: "123" }));
-  //   if (selectedRoleMenu.length < selectedRoles.length) {
-  //     setSelectedRoles(selectedRoleMenu);
-  //     return;
-  //   }
-  //   setAccess(
-  //     selectedRoleMenu[selectedRoleMenu.length - 1].label.toLowerCase()
-  //   );
-  //   setAccessDialog(true);
-  // };
 
   const setupUser = (user) => {
     let currentUserData = {};
@@ -692,6 +602,7 @@ const NewAdminPage = () => {
   const options = {
     selectableRows: "none",
     responsive: "vertical",
+    filter: false,
     // textLabels: {
     //   body: {
     //     noMatch: loading ? (
@@ -783,4 +694,4 @@ const NewAdminPage = () => {
   );
 };
 
-export default NewAdminPage;
+export default AdminPage;

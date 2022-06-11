@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Navigate, useLocation, useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
-// import NotHaveAccess from "../components/layout/NotHaveAccess";
+import NotHaveAccess from "../components/layout/NotHaveAccess";
 import { parseJwt } from "../utils";
 import { logout } from "../store/slices/authSlice";
 
@@ -27,13 +27,17 @@ const RequireAuth = ({ children, privateRoute }) => {
   if (isAuthenticated && !privateRoute)
     return <Navigate to="/students" replace />;
   const currentPath = location.pathname.split("/")[1];
+  let role;
   switch (currentPath) {
     // case "partner":
     //   return params.partnerId === undefined ||
     //     roles.some(
     //       (role) =>
-    //         role.split(":")[0] === "Partner" &&
-    //         parseInt(role.split(":")[1], 10) === parseInt(params.partnerId, 10)
+    //         role.role === "Partner" &&
+    //         role.access.findIndex(
+    //           (accessItem) =>
+    //             accessItem.access === parseInt(params.partnerId, 10)
+    //         )
     //     ) ? (
     //     <div className="bodyComponent">{children}</div>
     //   ) : (
@@ -41,19 +45,19 @@ const RequireAuth = ({ children, privateRoute }) => {
     //       <NotHaveAccess />
     //     </div>
     //   );
-    // case "campus":
-    //   return params.campusId === undefined ||
-    //     roles.some(
-    //       (role) =>
-    //         role.split(":")[0] === "T&P" &&
-    //         parseInt(role.split(":")[1], 10) === parseInt(params.campusId, 10)
-    //     ) ? (
-    //     <div className="bodyComponent">{children}</div>
-    //   ) : (
-    //     <div className="bodyComponent">
-    //       <NotHaveAccess />
-    //     </div>
-    //   );
+    case "campus":
+      role = roles.find((roleItem) => roleItem.role === "Campus");
+      return params.campusId === undefined ||
+        (role &&
+          role.access.findIndex(
+            (accessItem) => accessItem.access === parseInt(params.campusId, 10)
+          ) !== -1) ? (
+        <div className="bodyComponent">{children}</div>
+      ) : (
+        <div className="bodyComponent">
+          <NotHaveAccess />
+        </div>
+      );
     default:
       return <div className="bodyComponent">{children}</div>;
   }

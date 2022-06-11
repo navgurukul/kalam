@@ -29,6 +29,37 @@ import { campus } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
+const toTitleCase = (str) => `${str.charAt(0).toUpperCase()}${str.substr(1)}`;
+
+export const setupUser = (user) => {
+  let currentUserData = {};
+  const roles = [];
+  const privileges = [];
+  user.userrole.forEach((roleData) => {
+    if (roleData.role?.length > 0 && roleData.access)
+      roles.push({
+        access: roleData.access.filter(
+          (accesObj) => accesObj.user_role_id === roleData.id
+        ),
+        role_id: roleData.id,
+        role: `${toTitleCase(roleData.role[0].roles)}`,
+      });
+    if (roleData.privilege && roleData.privileges.length !== 0)
+      privileges.push({
+        id: roleData.id,
+        privilege: toTitleCase(roleData.privileges[0].privilege),
+      });
+  });
+  currentUserData = {
+    id: user.id,
+    email: user.email,
+    roles,
+    privileges,
+  };
+  console.log(currentUserData);
+  return currentUserData;
+};
+
 const AdminPage = () => {
   const { enqueueSnackbar } = useSnackbar();
 
@@ -57,8 +88,6 @@ const AdminPage = () => {
     roleOptions: [],
     privilegeOptions: [],
   });
-
-  const toTitleCase = (str) => `${str.charAt(0).toUpperCase()}${str.substr(1)}`;
 
   const getAccessData = (role, accessId) => {
     let matchedItem;
@@ -336,35 +365,6 @@ const AdminPage = () => {
       selectedPrivileges: [],
     });
     // setEditing(null);
-  };
-
-  const setupUser = (user) => {
-    let currentUserData = {};
-    const roles = [];
-    const privileges = [];
-    user.userrole.forEach((roleData) => {
-      if (roleData.role?.length > 0 && roleData.access)
-        roles.push({
-          access: roleData.access.filter(
-            (accesObj) => accesObj.user_role_id === roleData.id
-          ),
-          role_id: roleData.id,
-          role: `${toTitleCase(roleData.role[0].roles)}`,
-        });
-      if (roleData.privilege && roleData.privileges.length !== 0)
-        privileges.push({
-          id: roleData.id,
-          privilege: toTitleCase(roleData.privileges[0].privilege),
-        });
-    });
-    currentUserData = {
-      id: user.id,
-      email: user.email,
-      roles,
-      privileges,
-    };
-    console.log(currentUserData);
-    return currentUserData;
   };
 
   const fetchByMailId = () => {

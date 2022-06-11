@@ -54,7 +54,24 @@ const styleForViewModal = {
   bgcolor: "background.paper",
   border: "none",
   boxShadow: 24,
+
+  justifyContent: "center",
+  display: "flex",
+  justifyItems: "center",
+  alignItems: "center",
+};
+
+const styleForAddModal = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "30%",
+  height: "30%",
+  boxShadow: 24,
   p: 4,
+  bgcolor: "background.paper",
+  border: "none",
   justifyContent: "center",
   display: "flex",
   justifyItems: "center",
@@ -62,7 +79,7 @@ const styleForViewModal = {
 };
 
 const PlacementStudentsData = () => {
-  const { enqueueSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
   const [documents, setDocuments] = useState({
     Resume_link: "",
   });
@@ -70,6 +87,10 @@ const PlacementStudentsData = () => {
   const [Link, setLink] = useState({
     resumeLink: "",
   });
+
+  const [pasteLink, setPasteLink] = useState("");
+
+  console.log(pasteLink, "pasteLink");
 
   const [viewOpenResume, setViewOpenResume] = useState(false);
 
@@ -132,6 +153,15 @@ const PlacementStudentsData = () => {
       });
   };
 
+  const limitFileSize = (file) => {
+    if (file.size > 1000000) {
+      snackbar.enqueueSnackbar("File size should not exceed 1MB", {
+        variant: "error",
+      });
+      return false;
+    }
+  };
+
   const addNewResume = () => {
     setDocuments({
       ...documents,
@@ -142,11 +172,6 @@ const PlacementStudentsData = () => {
       resumeLink: "",
     });
   };
-
-  // const uploadResume = (e) => {
-  //   const file = e.target.files[0];
-  //   const formData = new FormData();
-  //   formData.append("file", file);
 
   const LinkGenerator = (e) => {
     e.preventDefault();
@@ -272,6 +297,17 @@ const PlacementStudentsData = () => {
         }),
       },
     },
+
+    {
+      name: "qualification",
+      label: "Qualification",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: React.useCallback((value) => <p>B.Tech</p>),
+      },
+    },
+
     {
       name: "campus",
       label: "Campus",
@@ -283,55 +319,6 @@ const PlacementStudentsData = () => {
 
           return <p>{campusName}</p>;
         }),
-      },
-    },
-    {
-      name: "studentDonor",
-      label: "Donor",
-      options: {
-        filter: true,
-        sort: true,
-        customBodyRender: React.useCallback((value) => {
-          const donorList = donor.filter((donorEl) =>
-            value?.donor_id?.includes(`${donorEl.id}`)
-          );
-          return donorList.map((donorEl) => (
-            <Chip
-              key={donorEl.id}
-              sx={{ m: "0.4rem" }}
-              variant="filled"
-              label={donorEl.name}
-            />
-          ));
-        }),
-      },
-    },
-
-    {
-      name: "gender", // Select Input options male,female
-      label: "Gender",
-      options: {
-        filter: true,
-        sort: true,
-        customBodyRender: React.useCallback((value) => {
-          const defaultValue =
-            value === 1 ? "Female" : value === 2 ? "Male" : "Transgender";
-
-          return <p>{defaultValue}</p>;
-        }, []),
-      },
-    },
-    {
-      name: "contacts", // Select Input options male,female
-      label: "Contact",
-      options: {
-        filter: true,
-        sort: true,
-        customBodyRender: React.useCallback((value) => {
-          const contactValue = value && value[0]?.mobile;
-
-          return <p>{contactValue}</p>;
-        }, []),
       },
     },
     {
@@ -410,12 +397,13 @@ const PlacementStudentsData = () => {
                 >
                   <label htmlFor="resume-input">
                     <Button
+                      size="small"
                       variant="contained"
                       component="span"
                       style={{
                         width: "100%",
                         backgroundColor: "grey",
-                        borderRadius: "20px",
+                        textAlign: "center",
                       }}
                     >
                       Generate Link
@@ -434,15 +422,16 @@ const PlacementStudentsData = () => {
                   />
                   <Input
                     type="text"
-                    value={Link.resumeLink}
+                    value={pasteLink}
                     variant="outlined"
                     style={{
                       width: "100%",
                       margin: "10px 0",
                     }}
-                    placeholder="Paste the link here"
+                    placeholder="Paste link here"
                     onChange={(e) => {
-                      setLink({ ...Link, resumeLink: e.target.value });
+                      console.log("changing");
+                      setPasteLink(e.target.value);
                     }}
                   />
                   <Button
@@ -466,6 +455,56 @@ const PlacementStudentsData = () => {
         }, []),
       },
     },
+    {
+      name: "studentDonor",
+      label: "Donor",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: React.useCallback((value) => {
+          const donorList = donor.filter((donorEl) =>
+            value?.donor_id?.includes(`${donorEl.id}`)
+          );
+          return donorList.map((donorEl) => (
+            <Chip
+              key={donorEl.id}
+              sx={{ m: "0.4rem" }}
+              variant="filled"
+              label={donorEl.name}
+            />
+          ));
+        }),
+      },
+    },
+
+    {
+      name: "gender", // Select Input options male,female
+      label: "Gender",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: React.useCallback((value) => {
+          const defaultValue =
+            value === 1 ? "Female" : value === 2 ? "Male" : "Transgender";
+
+          return <p>{defaultValue}</p>;
+        }, []),
+      },
+    },
+    {
+      name: "contacts", // Select Input options male,female
+      label: "Contact",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: React.useCallback((value) => {
+          const contactValue = value && value[0]?.mobile;
+
+          return <p>{contactValue}</p>;
+        }, []),
+      },
+    },
+
     {
       name: "student_job_details", // Select Input options male,female
       label: "Date of Offer Letter",
@@ -784,6 +823,7 @@ const PlacementStudentsData = () => {
 
   useEffect(() => {
     getJobDetails();
+
     return () => {
       setStudents({ data: [], totalData: 0 });
     };

@@ -481,6 +481,7 @@ const PlacementStudentsData = () => {
       name: "gender", // Select Input options male,female
       label: "Gender",
       options: {
+        display: false,
         filter: true,
         sort: true,
         customBodyRender: React.useCallback((value) => {

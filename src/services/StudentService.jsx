@@ -1670,7 +1670,7 @@ const StudentService = {
     joinedDate,
     stageColumn,
     JobKabLagegiColumn,
-    CampusStatus,
+    // CampusStatus,
     ColumnUpload,
     daysPassedColumn,
     kitneAurDin,

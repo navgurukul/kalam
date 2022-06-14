@@ -731,20 +731,18 @@ const donorColumn = {
 };
 
 const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
-  const { loggedInUser } = useSelector((state) => state.auth);
-
+  const { privileges } = useSelector((state) => state.auth);
   const isCampusPathname = window.location.pathname.indexOf("campus");
-  if (permissions.updateStage.indexOf(loggedInUser.email) > -1) {
-    return (
-      <StageSelect
-        rowMetatable={rowMeta}
-        stage={value}
-        allStages={isCampusPathname > -1 ? campusStageOfLearning : allStages}
-        change={(event) => updateValue(event)}
-      />
-    );
-  }
-  return value;
+  return privileges?.some((priv) => priv.privilege === "UpdateStage") ? (
+    <StageSelect
+      rowMetatable={rowMeta}
+      stage={value}
+      allStages={isCampusPathname > -1 ? campusStageOfLearning : allStages}
+      change={(event) => updateValue(event)}
+    />
+  ) : (
+    <p>{value}</p>
+  );
 };
 
 const stageColumn = {

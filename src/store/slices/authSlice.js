@@ -122,11 +122,11 @@ const AuthSlice = createSlice({
       }
     },
     [fetchCurrentUser.fulfilled]: (state, action) => {
-      const { error, user, roles, privilege } = action.payload;
+      const { error, user, roles, privileges } = action.payload;
       if (!error) {
         state.loggedInUser = user;
         state.roles = roles;
-        state.privilege = privilege;
+        state.privileges = privileges;
       } else {
         state.isAuthenticated = false;
       }

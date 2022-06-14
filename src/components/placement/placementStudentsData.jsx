@@ -1,16 +1,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable no-undef */
-import React, { useEffect, useState } from "react";
-import { Container, Typography, Select, MenuItem, Chip } from "@mui/material";
+import React, { useEffect } from "react";
+import { Typography, Select, MenuItem, Chip, Box } from "@mui/material";
 // import Select from "react-select";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import Modal from "@mui/material/Modal";
-import SendIcon from "@mui/icons-material/Send";
-import Button from "@mui/material/Button";
-import Input from "@mui/material/Input";
-import Box from "@mui/material/Box";
 
 import { useSnackbar } from "notistack";
 import dayjs from "dayjs";
@@ -28,71 +21,41 @@ import { donor } from "../../utils/constants";
 import MainLayout from "../muiTables/MainLayout";
 import EditText from "./EditText";
 import CustomDatePicker from "./CustomDatePicker";
+import UploadResume from "./UploadResume";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "80%",
+// const style = {
+//   position: "absolute",
+//   top: "50%",
+//   left: "50%",
+//   transform: "translate(-50%, -50%)",
+//   width: "80%",
+//   bgcolor: "background.paper",
+//   border: "none",
+//   boxShadow: 24,
+//   p: 4,
+// };
 
-  bgcolor: "background.paper",
-  border: "none",
-  boxShadow: 24,
-  p: 4,
-};
-
-const styleForViewModal = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "80%",
-  height: "80%",
-  bgcolor: "background.paper",
-  border: "none",
-  boxShadow: 24,
-
-  justifyContent: "center",
-  display: "flex",
-  justifyItems: "center",
-  alignItems: "center",
-};
-
-const styleForAddModal = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "30%",
-  height: "30%",
-  boxShadow: 24,
-  p: 4,
-  bgcolor: "background.paper",
-  border: "none",
-  justifyContent: "center",
-  display: "flex",
-  justifyItems: "center",
-  alignItems: "center",
-};
+// const styleForAddModal = {
+//   position: "absolute",
+//   top: "50%",
+//   left: "50%",
+//   transform: "translate(-50%, -50%)",
+//   width: "30%",
+//   height: "30%",
+//   boxShadow: 24,
+//   p: 4,
+//   bgcolor: "background.paper",
+//   border: "none",
+//   justifyContent: "center",
+//   display: "flex",
+//   justifyItems: "center",
+//   alignItems: "center",
+// };
 
 const PlacementStudentsData = () => {
-  const snackbar = useSnackbar();
-  const [documents, setDocuments] = useState({
-    Resume_link: "",
-  });
-
-  const [Link, setLink] = useState({
-    resumeLink: "",
-  });
-
-  const [pasteLink, setPasteLink] = useState("");
-
-  console.log(pasteLink, "pasteLink");
-
-  const [viewOpenResume, setViewOpenResume] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const { loggedInUser } = useSelector((state) => state.auth);
   const { isFetching } = useSelector((state) => state.ui);
@@ -107,14 +70,11 @@ const PlacementStudentsData = () => {
     numberOfRows,
     page,
   } = useSelector((state) => state.students);
-
   const dispatch = useDispatch();
 
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const setStudents = (data) => dispatch(setStudentData(data));
-  // const setFrom = (data) => dispatch(setFromDate(data));
-  // const setTo = (data) => dispatch(setToDate(data));
 
   const getJobDetails = async () => {
     try {
@@ -151,110 +111,6 @@ const PlacementStudentsData = () => {
           variant: "error",
         });
       });
-  };
-
-  const limitFileSize = (file) => {
-    if (file.size > 1000000) {
-      snackbar.enqueueSnackbar("File size should not exceed 1MB", {
-        variant: "error",
-      });
-      return false;
-    }
-  };
-
-  const addNewResume = () => {
-    setDocuments({
-      ...documents,
-      Resume_link: "",
-    });
-    setLink({
-      ...Link,
-      resumeLink: "",
-    });
-  };
-
-  const LinkGenerator = (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-
-    const file = e.target.files[0];
-
-    limitFileSize(file);
-    formData.append("file", e.target.files[0]);
-    axios
-      .post(`${baseUrl}/students/resume/documents`, formData)
-      .then((res) => {
-        if (res.status === 200) {
-          setLink({ ...Link, resumeLink: res.data });
-
-          snackbar.enqueueSnackbar(
-            "Link generated and pasted in the text box successfully, click on upload!",
-            {
-              variant: "success",
-            }
-          );
-          // console.log(Link.idProofLink);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const convertDriveLink = (link) =>
-    `https://drive.google.com/file/d/${
-      link.match(/d\/([A-Za-z0-9-]+)/)[1]
-    }/preview`;
-
-  const uploadDocument = async (document, link, studentid, successMsg) => {
-    axios
-      .post(`${baseUrl}students/jobDetails`, {
-        student_id: studentid,
-        [document]: link,
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          snackbar.enqueueSnackbar(successMsg, {
-            variant: "success",
-          });
-
-          if (link !== "") {
-            setDocuments({ ...documents, [document]: link });
-          }
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const UploadResume = (e, student_id) => {
-    e.preventDefault();
-
-    const link = Link.resumeLink.includes("drive.google.com")
-      ? convertDriveLink(Link.resumeLink)
-      : Link.resumeLink;
-
-    uploadDocument("resume", link, student_id, "Resume uploaded successfully");
-
-    //   axios
-    //     .post(`${baseUrl}students/uploadDocument/${studentId}`, {
-    //       Resume_link: Link.resumeLink,
-    //     })
-    //     .then((res) => {
-    //       if (res.status === 200) {
-    //         snackbar.enqueueSnackbar("Resume uploaded successfully", {
-    //           variant: "success",
-    //         });
-
-    //         if (Link.resumeLink !== "") {
-    //           setDocuments({ ...documents, Resume_link: Link.resumeLink });
-    //         }
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       console.error(err);
-    //     });
   };
 
   const columns = [
@@ -330,127 +186,11 @@ const PlacementStudentsData = () => {
           const studentId = rowMeta.rowData[0];
 
           return (
-            <div>
-              {documents.Resume_link.length > 0 ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    endIcon={<VisibilityIcon />}
-                    style={{
-                      width: "100%",
-                      marginTop: "10px",
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setViewOpenResume(true);
-                    }}
-                  >
-                    View Document
-                  </Button>
-
-                  <Button
-                    variant="contained"
-                    style={{
-                      width: "100%",
-                      marginTop: "10px",
-                      backgroundColor: "grey",
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      addNewResume();
-                    }}
-                  >
-                    Add New
-                  </Button>
-
-                  <Modal
-                    open={viewOpenResume}
-                    onClose={() => {
-                      setViewOpenResume(false);
-                    }}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                  >
-                    <Box sx={styleForViewModal}>
-                      <embed
-                        src={documents.Resume_link}
-                        alt="resume"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      />
-                    </Box>
-                  </Modal>
-                </div>
-              ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <label htmlFor="resume-input">
-                    <Button
-                      size="small"
-                      variant="contained"
-                      component="span"
-                      style={{
-                        width: "100%",
-                        backgroundColor: "grey",
-                        textAlign: "center",
-                      }}
-                    >
-                      Generate Link
-                    </Button>
-                  </label>
-                  <Input
-                    inputProps={{ type: "file", accept: "image/*,.pdf" }}
-                    id="resume-input"
-                    type="file"
-                    style={{
-                      display: "none",
-                    }}
-                    onChange={(e) => {
-                      LinkGenerator(e, 3);
-                    }}
-                  />
-                  <Input
-                    type="text"
-                    value={pasteLink}
-                    variant="outlined"
-                    style={{
-                      width: "100%",
-                      margin: "10px 0",
-                    }}
-                    placeholder="Paste link here"
-                    onChange={(e) => {
-                      console.log("changing");
-                      setPasteLink(e.target.value);
-                    }}
-                  />
-                  <Button
-                    variant="contained"
-                    endIcon={<SendIcon />}
-                    style={{
-                      width: "100%",
-                      marginTop: "10px",
-                    }}
-                    disabled={Link.resumeLink === ""}
-                    onClick={(e) => {
-                      UploadResume(e, studentId);
-                    }}
-                  >
-                    Upload
-                  </Button>
-                </div>
-              )}
-            </div>
+            <UploadResume
+              resume={value?.resume}
+              studentId={studentId}
+              change={change}
+            />
           );
         }, []),
       },
@@ -473,7 +213,7 @@ const PlacementStudentsData = () => {
               label={donorEl.name}
             />
           ));
-        }),
+        }, []),
       },
     },
 
@@ -831,7 +571,7 @@ const PlacementStudentsData = () => {
   }, []);
 
   return (
-    <Container maxWidth="xl">
+    <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
       {canView ? (
         <>
           {/* <Grid container spacing={4} style={{ marginBottom: "0.8rem" }}>
@@ -891,7 +631,7 @@ const PlacementStudentsData = () => {
       ) : (
         <NotHaveAccess />
       )}
-    </Container>
+    </Box>
   );
 };
 

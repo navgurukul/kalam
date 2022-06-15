@@ -115,21 +115,29 @@ const ColumnUpload = {
 */
 
 const StageColumnTransitionWrapper = ({ rowData, rowMeta }) => {
-  const { loggedInUser } = useSelector((state) => state.auth);
+  const { privileges } = useSelector((state) => state.auth);
   const path = window.location.pathname.split("/");
   const isCampus = path[1] === "campus";
-  return permissions.updateStage.indexOf(loggedInUser.email) > -1 &&
-    isCampus ? (
-    <div>
-      <DeleteRow transitionId={rowMeta.rowData[11]} />
-      {allStages[rowData]}
-    </div>
-  ) : (
+
+  return (
     <>
-      <DeleteRow transitionId={rowMeta.rowData[9]} />
-      <p>{allStages[rowData]}</p>
+      {privileges.some((priv) => priv.privilege === "DeleteTransition") ? (
+        <DeleteRow transitionId={rowMeta.rowData[isCampus ? 11 : 9]} />
+      ) : null}
+      {allStages[rowData]}
     </>
   );
+  // return permissions.updateStage.indexOf(loggedInUser.email) > -1 &&
+  //   isCampus ? (
+  //   <div>
+
+  //   </div>
+  // ) : (
+  //   <>
+  //     <DeleteRow transitionId={rowMeta.rowData[9]} />
+  //     <p>{allStages[rowData]}</p>
+  //   </>
+  // );
 };
 
 const stageColumnTransition = {
@@ -144,18 +152,24 @@ const stageColumnTransition = {
   },
 };
 
-const AddedAtColumnWrapper = ({ value, rowMeta }) => {
-  const { loggedInUser } = useSelector((state) => state.auth);
+const AddedAtColumnWrapper = ({ value, rowMeta, change }) => {
+  const { privileges } = useSelector((state) => state.auth);
 
   if (typeof rowMeta.rowData[0] === "number") {
     return <p>{dayjs(value).format("D MMM YYYY")}</p>;
   }
   if (
-    permissions.updateStage.indexOf(loggedInUser.email) > -1 &&
+    privileges.some((priv) => priv.privilege === "UpdateTransition") &&
     (rowMeta.rowData[0].indexOf("Joined") > -1 ||
       keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
   ) {
-    return <JoinedDate transitionId={rowMeta.rowData[10]} value={value} />;
+    return (
+      <JoinedDate
+        transitionId={rowMeta.rowData[10]}
+        value={value}
+        change={change}
+      />
+    );
   }
   return <p>{dayjs(value).format("D MMM YYYY")}</p>;
 };
@@ -166,10 +180,32 @@ const addedAtColumn = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (value, rowMeta) => (
-      <AddedAtColumnWrapper value={value} rowMeta={rowMeta} />
+    customBodyRender: (value, rowMeta, updateValue) => (
+      <AddedAtColumnWrapper
+        value={value}
+        rowMeta={rowMeta}
+        change={updateValue}
+      />
     ),
   },
+};
+
+const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
+  const { privileges } = useSelector((state) => state.auth);
+  const ifExistingFeedback =
+    value || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  return ifExistingFeedback ? (
+    <div>
+      {privileges.some((priv) => priv.privilege === "UpdateTransition") ? (
+        <StudentFeedback
+          rowMetaTable={rowMeta}
+          feedback={value}
+          change={(event) => updateValue(event)}
+        />
+      ) : null}
+      {value?.split("\n\n").map((item) => <p key={item}> {item} </p>) || null}
+    </div>
+  ) : null;
 };
 
 const feedbackColumnTransition = {
@@ -178,29 +214,43 @@ const feedbackColumnTransition = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => {
-      const ifExistingFeedback =
-        rowData || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
-      return (
-        <div>
-          {ifExistingFeedback ? (
-            <div>
-              <StudentFeedback
-                rowMetaTable={rowMeta}
-                feedback={rowData}
-                change={(event) => updateValue(event)}
-              />
-              {rowData
-                ? rowData
-                    .split("\n\n")
-                    .map((item) => <p key={item}> {item} </p>)
-                : null}
-            </div>
-          ) : null}
-        </div>
-      );
-    },
+    customBodyRender: (rowData, rowMeta, updateValue) => (
+      <FeedbackColumnTransitionWrapper
+        rowData={rowData}
+        rowMeta={rowMeta}
+        change={updateValue}
+      />
+    ),
   },
+};
+
+const OwnerColumnTransitionDashboardWrapper = ({
+  value,
+  rowMeta,
+  updateValue,
+}) => {
+  const { privileges } = useSelector((state) => state.auth);
+
+  //for admissiong dashboard student id is coming at rowMeta.rowData[7]
+
+  const ifExistingFeedback =
+    feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  const permissionForOwner = privileges.some(
+    (priv) => priv.privilege === "UpdateTransition"
+  );
+  return (
+    <div>
+      {ifExistingFeedback && permissionForOwner ? (
+        <OwnerSelect
+          currentValue={value}
+          rowMetaTable={rowMeta}
+          value={value}
+          studentId={rowMeta.rowData[5]}
+          change={(event) => updateValue(event)}
+        />
+      ) : null}
+    </div>
+  );
 };
 
 const ownerColumnTransitionDashboard = {
@@ -210,26 +260,13 @@ const ownerColumnTransitionDashboard = {
     filter: false,
     sort: true,
     display: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => {
-      //for admissiong dashboard student id is coming at rowMeta.rowData[7]
-
-      const ifExistingFeedback =
-        feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
-      const permissionForOwner = permissions.updateStage.indexOf(user) > -1;
-      return (
-        <div>
-          {ifExistingFeedback && permissionForOwner ? (
-            <OwnerSelect
-              currentValue={rowData}
-              rowMetaTable={rowMeta}
-              value={rowData}
-              studentId={rowMeta.rowData[5]}
-              change={(event) => updateValue(event)}
-            />
-          ) : null}
-        </div>
-      );
-    },
+    customBodyRender: (value, rowMeta, updateValue) => (
+      <OwnerColumnTransitionDashboardWrapper
+        value={value}
+        rowMeta={rowMeta}
+        updateValue={updateValue}
+      />
+    ),
   },
 };
 
@@ -263,6 +300,21 @@ const ownerColumnTransitionCampus = {
   },
 };
 
+const StatusColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
+  const feedbackableStage = feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  if (rowMeta.rowData[0] === "selectedButNotJoined") {
+    return null;
+  }
+  return (value || rowMeta.rowData[3]) && feedbackableStage ? (
+    <StatusSelect
+      feedbackableStagesData={feedbackableStagesData}
+      rowMetaTable={rowMeta}
+      state={value}
+      change={(event) => updateValue(event)}
+    />
+  ) : null;
+};
+
 const statusColumnTransition = {
   name: "state",
   label: "Status",
@@ -270,26 +322,13 @@ const statusColumnTransition = {
     filter: false,
     sort: true,
     display: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => {
-      const feedbackableStage =
-        feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
-      if (rowMeta.rowData[0] === "selectedButNotJoined") {
-        return null;
-      }
-      if ((rowData || rowMeta.rowData[3]) && feedbackableStage) {
-        return (
-          <div>
-            <StatusSelect
-              feedbackableStagesData={feedbackableStagesData}
-              rowMetaTable={rowMeta}
-              state={rowData}
-              change={(event) => updateValue(event)}
-            />
-          </div>
-        );
-      }
-      return null;
-    },
+    customBodyRender: (value, rowMeta, updateValue) => (
+      <StatusColumnTransitionWrapper
+        value={value}
+        rowMeta={rowMeta}
+        updateValue={updateValue}
+      />
+    ),
   },
 };
 
@@ -324,7 +363,7 @@ const AudioPlayer = {
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
       // console.log(value);
       return (
-        <div style={{ width: "100%", border: "1px solid black" }}>
+        <div style={{ width: "100%" }}>
           {!ifExistingFeedback && !value ? (
             <AudioRecorder audioUrl={value} />
           ) : null}
@@ -380,7 +419,7 @@ const deadlineColumnTrnasition1 = {
             </p>
           );
         }
-        return <p>{remainingTime}</p>;
+        return <p>{remainingTime.toString()}</p>;
       }
     },
   },
@@ -439,12 +478,9 @@ const setColumn = {
 };
 
 const NameColumnWrapper = ({ rowData, rowMeta, updateValue }) => {
-  const { loggedInUser } = useSelector((state) => state.auth);
+  const { privileges } = useSelector((state) => state.auth);
   const name = rowData || "Update Name";
-  if (
-    loggedInUser &&
-    permissions.updateStudentName.indexOf(loggedInUser.email) > -1
-  ) {
+  if (privileges?.some((priv) => priv.privilege === "UpdateStudentName")) {
     return (
       <UpdateStudentName
         name={name}
@@ -1300,18 +1336,18 @@ const linkForEnglishTestColumn = {
   name: "linkForEnglishTest",
 };
 
-const linkForOnlineTestColumn = {
-  label: "Online Test Link",
-  name: "linkForOnlineTest",
-  options: {
-    customBodyRender: (value) =>
-      value ? (
-        <a target="_blank" rel="noreferrer noopener" href={value}>
-          Link to Test
-        </a>
-      ) : null,
-  },
-};
+// const linkForOnlineTestColumn = {
+//   label: "Online Test Link",
+//   name: "linkForOnlineTest",
+//   options: {
+//     customBodyRender: (value) =>
+//       value ? (
+//         <a target="_blank" rel="noreferrer noopener" href={value}>
+//           Link to Test
+//         </a>
+//       ) : null,
+//   },
+// };
 
 const stageColumnStatus = {
   label: "Current Stage",

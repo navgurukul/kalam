@@ -11,7 +11,6 @@ import StudentsProgressCards from "../student/StudentsProgressCards";
 import GraphingPresentationJob from "../partner/GraphingPresentationJob";
 // import user from "../utils/user";
 import NotHaveAccess from "../layout/NotHaveAccess";
-import Loader from "../ui/Loader";
 
 //baseUrl
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -19,9 +18,6 @@ const baseUrl = import.meta.env.VITE_API_URL;
 const CampusStudentsData = () => {
   const dispatch = useDispatch();
   const { loggedInUser } = useSelector((state) => state.auth);
-  const { isFetching } = useSelector((state) => state.ui);
-  const fetchingStart = () => dispatch(changeFetching(true));
-  const fetchingFinish = () => dispatch(changeFetching(false));
   const [state, setState] = React.useState({
     dataView: 0,
     // isShow: true,
@@ -29,16 +25,18 @@ const CampusStudentsData = () => {
     // userLoggedIn: user(), //user object to store data of logged in user
     allCampusCondition: false, //condition to check if user is allowed to access the page
   });
+  const fetchingFinish = () => dispatch(changeFetching(false));
   // const usersSetup = (users) => dispatch(setupUsers(users));
-  // const fetchUsers = async () => {
-  //   const usersURL = `${baseUrl}users/getall`;
-  //   try {
-  //     const response = await axios.get(usersURL, {});
-  //     // usersSetup(response.data.data);
-  //   } catch (e) {
-  //     fetchingFinish();
-  //   }
-  // };
+  const fetchUsers = async () => {
+    const usersURL = `${baseUrl}users/getall`;
+    try {
+      const response = await axios.get(usersURL, {});
+      // usersSetup(response.data.data);
+      fetchingFinish();
+    } catch (e) {
+      fetchingFinish();
+    }
+  };
   const fetchAccess = async () => {
     try {
       const accessUrl = `${baseUrl}rolebaseaccess`; //request url
@@ -63,11 +61,8 @@ const CampusStudentsData = () => {
     }
   };
   useEffect(() => {
-    (async () => {
-      fetchingStart();
-      await fetchAccess();
-      fetchingFinish();
-    })();
+    fetchUsers();
+    fetchAccess();
   }, []);
 
   const progressMade = () => {
@@ -124,8 +119,6 @@ const CampusStudentsData = () => {
           />
           {getVIew(dataView)}
         </div>
-      ) : isFetching ? (
-        <Loader container />
       ) : (
         <NotHaveAccess />
       )}

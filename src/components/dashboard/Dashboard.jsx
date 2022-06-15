@@ -170,9 +170,11 @@ const DashboardPage = (props) => {
 
   const fetchUsers = async () => {
     try {
+      fetchingStart();
       const usersURL = `${baseUrl}users/getall`;
       const response = await axios.get(usersURL, {});
       // usersSetup(response.data.data);
+      fetchingFinish();
     } catch (e) {
       fetchingFinish();
     }
@@ -220,10 +222,13 @@ const DashboardPage = (props) => {
       onLeaveCount: countOnLeave,
       inCampusCount: countInCampus,
     }));
+    fetchingFinish();
   };
 
   const fetchStudents = async () => {
     try {
+      fetchingStart();
+
       const { url } = props;
       const dataURL = baseUrl + url;
       const response = await axios.get(dataURL, {
@@ -263,10 +268,8 @@ const DashboardPage = (props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      fetchingStart();
       await fetchStudents();
       await fetchUsers();
-      fetchingFinish();
     };
     fetchData();
   }, []);

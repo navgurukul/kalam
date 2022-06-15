@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 // eslint-disable-next-line import/no-cycle
 import { dataSetup } from "../../utils";
+import { changeFetching } from "./uiSlice";
 import { qualificationKeys } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -17,7 +18,7 @@ export const fetchStudents = createAsyncThunk(
     // const { numberOfRows } = state;
     const concatinateStage = stage.length === 0 ? null : stage.join(",");
     try {
-      // thunkAPI.dispatch(changeFetching(true)); // startFetching
+      thunkAPI.dispatch(changeFetching(true)); // startFetching
       let response;
       if (fetchPendingInterviewDetails) {
         response = await axios.get(`${baseUrl}students/pending_interview`, {
@@ -71,14 +72,14 @@ export const fetchStudents = createAsyncThunk(
             altNumber: contacts ? contacts.alt_mobile : contacts,
           };
         });
-      // thunkAPI.dispatch(changeFetching(false));
+      thunkAPI.dispatch(changeFetching(false));
       return dataSetup(
         studentData,
         response.data.data.total,
         loggedInUser.mail_id
       );
     } catch (e) {
-      // thunkAPI.dispatch(changeFetching(false));
+      thunkAPI.dispatch(changeFetching(false));
     }
   }
 );

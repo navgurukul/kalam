@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 import axios from "axios";
-import { Box, Button, Container, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import theme from "../../theme";
 import ViewAssessments from "../assessment/ViewAssessments";
@@ -17,7 +17,6 @@ import MainLayout from "../muiTables/MainLayout";
 import ReportSend from "../report/ReportSend";
 // import user from "../utils/user";
 import NotHaveAccess from "../layout/NotHaveAccess";
-import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -174,7 +173,6 @@ const PartnerList = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { loggedInUser } = useSelector((state) => state.auth);
-  const { isFetching } = useSelector((state) => state.ui);
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const [state, setState] = React.useState({
@@ -209,66 +207,60 @@ const PartnerList = () => {
 
   const dataSetup = (data) => {
     setState((prevState) => ({ ...prevState, data }));
+    fetchingFinish();
   };
 
   const fetchPartners = async () => {
     try {
+      fetchingStart();
       const dataURL = `${baseUrl}partners`;
       const response = await axios.get(dataURL, {
         headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
       });
       dataSetup(response.data.data);
     } catch (e) {
-      // fetchingFinish();
+      fetchingFinish();
     }
   };
 
   useEffect(() => {
-    (async () => {
-      fetchingStart();
-      await fetchAccess();
+    const fetchData = async () => {
       await fetchPartners();
-      fetchingFinish();
-    })();
+      await fetchAccess();
+    };
+    fetchData();
   }, []);
 
-  return state.partnerRouteConditon ? (
-    <Box>
-      <ThemeProvider theme={theme}>
-        <div className={classes.innerTable}>
-          <div className={classes.buttons}>
-            <Link to="/partner/add">
-              <Button color="primary" variant="contained">
-                Add Partner
-              </Button>
-            </Link>
-          </div>
-          <MainLayout
-            title="Partners"
-            columns={columns}
-            data={state.data}
-            showLoader={isFetching}
-          />
-        </div>
-      </ThemeProvider>
-    </Box>
-  ) : isFetching ? (
-    <Container
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        marginTop: "4rem",
-      }}
-    >
-      <Typography variant="h3" style={{ marginBottom: "2.4rem" }}>
-        Loading
-      </Typography>
-      <Loader />
-      {isFetching.toString()}
-    </Container>
-  ) : (
-    <NotHaveAccess />
+  // const onRowClick = (event, rowData) => navigate("/partner/" + rowData.id + "/students");
+
+  if (!state.data.length) {
+    return <Box />;
+  }
+  return (
+    <div>
+      {state.partnerRouteConditon ? (
+        <Box>
+          <ThemeProvider theme={theme}>
+            <div className={classes.innerTable}>
+              <div className={classes.buttons}>
+                <Link to="/partner/add">
+                  <Button color="primary" variant="contained">
+                    Add Partner
+                  </Button>
+                </Link>
+              </div>
+              <MainLayout
+                title="Partners"
+                columns={columns}
+                data={state.data}
+              />
+            </div>
+          </ThemeProvider>
+        </Box>
+      ) : (
+        <NotHaveAccess />
+      )}
+    </div>
   );
 };
 

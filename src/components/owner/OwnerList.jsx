@@ -245,8 +245,7 @@ const OwnerList = () => {
   ];
 
   useEffect(() => {
-    const fetchData = async () => dispatch(fetchOwnersAction());
-    fetchData();
+    (async () => dispatch(fetchOwnersAction()))();
   }, []);
 
   const getUpdatedData = (data, isEdit) => {

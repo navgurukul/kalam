@@ -2,10 +2,12 @@ import React, { useEffect } from "react";
 import Container from "@mui/material/Container";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MainLayout from "../muiTables/MainLayout";
 // import user from "../utils/user";
 import NotHaveAccess from "../layout/NotHaveAccess";
+import Loader from "../ui/Loader";
+import { changeFetching } from "../../store/slices/uiSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -46,11 +48,14 @@ const columns = [
 
 const CampusList = () => {
   const { loggedInUser } = useSelector((state) => state.auth);
+  const { isFetching } = useSelector((state) => state.ui);
+
+  const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
+  const fetchingFinish = () => dispatch(changeFetching(false));
   const [state, setState] = React.useState({
     data: [],
-    showLoader: true,
     access: null,
-    // userLoggedIn: user(),
     campusCondition: false,
   });
 
@@ -84,24 +89,29 @@ const CampusList = () => {
       setState((prevState) => ({
         ...prevState,
         data: [...response.data.data, { campus: "All" }],
-        showLoader: false,
       }));
     } catch (e) {
       // console.error(e);
     }
   };
-  const { data, showLoader } = state;
+  const { data } = state;
   useEffect(() => {
-    const fetchData = async () => {
+    (async () => {
+      fetchingStart();
+      await fetchAccess();
       await fetchCampus();
-      // await fetchAccess();
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    fetchAccess();
+      fetchingFinish();
+    })();
   }, [loggedInUser]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     fetchingStart();
+  //     await fetchAccess();
+  //     fetchingFinish();
+  //   };
+  //   fetchData();
+  // }, [loggedInUser]);
 
   return (
     <div>
@@ -111,9 +121,11 @@ const CampusList = () => {
             title="Campuses Name"
             columns={columns}
             data={data}
-            showLoader={showLoader}
+            showLoader={isFetching}
           />
         </Container>
+      ) : isFetching ? (
+        <Loader container />
       ) : (
         <NotHaveAccess />
       )}

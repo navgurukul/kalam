@@ -15,13 +15,16 @@ import GraphingPresentationJob from "../partner/GraphingPresentationJob";
 import NotHaveAccess from "../layout/NotHaveAccess";
 
 import { campus } from "../../utils/constants";
+import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
 const CampusStudentsData = () => {
   const { campusId } = useParams();
   const { loggedInUser } = useSelector((state) => state.auth);
+  const { isFetching } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   // const usersSetup = (users) => dispatch(setupUsers(users));
   const [state, setState] = React.useState({
@@ -56,24 +59,24 @@ const CampusStudentsData = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    const usersURL = `${baseUrl}users/getall`;
-    try {
-      const response = await axios.get(usersURL, {});
-      // usersSetup(response.data.data);
-      fetchingFinish();
-    } catch (e) {
-      // console.error(e);
-      fetchingFinish();
-    }
-  };
+  // const fetchUsers = async () => {
+  //   const usersURL = `${baseUrl}users/getall`;
+  //   try {
+  //     const response = await axios.get(usersURL, {});
+  //     // usersSetup(response.data.data);
+  //   } catch (e) {
+  //     // console.error(e);
+  //     fetchingFinish();
+  //   }
+  // };
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchUsers();
+    (async () => {
+      fetchingStart();
       await fetchAccess();
-    };
-    fetchData();
+      // await fetchUsers();
+      fetchingFinish();
+    })();
   }, []);
 
   const progressMade = () => {
@@ -136,6 +139,8 @@ const CampusStudentsData = () => {
           />
           {getVIew(dataView)}
         </div>
+      ) : isFetching ? (
+        <Loader container />
       ) : (
         <NotHaveAccess />
       )}

@@ -229,7 +229,7 @@ const AdminPage = () => {
                     label={`${item.role}-${
                       getAccessData(item.role, accessItem.access)?.name || ""
                     }`}
-                    sx={{ marginX: "0.4rem", marginY: "0.4rem" }}
+                    sx={{ marginX: "0.4rem", marginY: "0.2rem" }}
                     onDelete={() =>
                       deleteUserAccess(value, change, {
                         role: item.role,
@@ -277,7 +277,7 @@ const AdminPage = () => {
                 <Chip
                   label={privItem.privilege}
                   key={privItem.id}
-                  sx={{ pX: "0.4rem" }}
+                  sx={{ marginX: "0.4rem", marginY: "0.2rem" }}
                   onDelete={() =>
                     deleteRolePrivilege(
                       rowData,
@@ -640,10 +640,12 @@ const AdminPage = () => {
                   placeholder="Select Privileges"
                   isMulti
                   onChange={(ev) => updateAccess({ ...access, privilege: ev })}
-                  options={privilegeOptions.filter((privItem) =>
-                    currentUser.selectedPrivileges.findIndex(
-                      (selPrivItem) => selPrivItem.id === privItem.value
-                    )
+                  options={privilegeOptions.filter(
+                    (privItem) =>
+                      !currentUser.selectedPrivileges.some(
+                        (selPrivItem) =>
+                          selPrivItem.privilege === privItem.label
+                      )
                   )}
                   menuPortalTarget={document.body}
                   value={access.privilege}

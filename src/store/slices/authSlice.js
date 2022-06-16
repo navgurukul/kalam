@@ -69,7 +69,7 @@ export const fetchCurrentUser = createAsyncThunk(
         const { roles, privileges } =
           rolesData.data.length > 0
             ? setupUser(rolesData.data[0])
-            : { roles: [], privilege: [] };
+            : { roles: [], privileges: [] };
         return { error: false, user: data, roles, privileges };
       } catch (err) {
         throw Error(err.message);

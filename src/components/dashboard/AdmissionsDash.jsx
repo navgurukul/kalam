@@ -24,7 +24,6 @@ import Loader from "../ui/Loader";
 import { fetchOwners as fetchOwnersAction } from "../../store/slices/dataSlice";
 import {
   setFromDate,
-  setNoOfRows,
   setStage,
   setStudentData,
   setToDate,
@@ -94,7 +93,7 @@ const AdmissionsDash = (props) => {
   const setStudents = (data) => dispatch(setStudentData(data));
   const setFrom = (data) => dispatch(setFromDate(data));
   const setTo = (data) => dispatch(setToDate(data));
-  const setRows = (data) => dispatch(setNoOfRows(data));
+  // const setRows = (data) => dispatch(setNoOfRows(data));
   const setPage = (data) => dispatch(setPageNo(data));
   const updateStage = (data) => dispatch(setStage(data));
   const [state, setState] = React.useState({
@@ -161,7 +160,6 @@ const AdmissionsDash = (props) => {
       // usersSetup(response.data.data);
       const newData = response.data.data.map((data) => data.user);
       localStorage.setItem("users", JSON.stringify(newData));
-      fetchingFinish();
     } catch (e) {
       // console.error(e);
       fetchingFinish();
@@ -184,7 +182,6 @@ const AdmissionsDash = (props) => {
         showLoader: true,
         totalData: totalData || state.totalData,
       }));
-      fetchingFinish();
     } else {
       setStudents({ data: [], totalData: 0 });
       setState((prevState) => ({
@@ -259,17 +256,17 @@ const AdmissionsDash = (props) => {
   //   }
   // };
 
-  const setNumbersOfRows = (_value) => {
-    setRows(value);
-    setState((prevState) => ({
-      ...prevState,
-      numberOfRows: _value,
-    }));
-  };
+  // const setNumbersOfRows = (_value) => {
+  //   setRows(value);
+  //   setState((prevState) => ({
+  //     ...prevState,
+  //     numberOfRows: _value,
+  //   }));
+  // };
 
-  const getFilterValues = (_value) => {
-    setState((prevState) => ({ ...prevState, filterValues: _value }));
-  };
+  // const getFilterValues = (_value) => {
+  //   setState((prevState) => ({ ...prevState, filterValues: _value }));
+  // };
 
   // const stageChangeEvent = (iData) => {
   //   let dataElem = state.data[iData.rowId];
@@ -353,15 +350,17 @@ const AdmissionsDash = (props) => {
   useEffect(() => {
     const controller = new AbortController();
     // dispatch(rFStudents({ dataType, fetchPendingInterviewDetails }));
-    const fetchData = async () => {
+
+    (async () => {
+      fetchingStart();
       // await fetchStudents(null, controller.signal);
       await fetchUsers(controller.signal);
       await fetchOWner(controller.signal);
       await fetchPartner(controller.signal);
       // await fetchAccess(controller.signal);
+      fetchingFinish();
       dispatch(fetchOwnersAction());
-    };
-    fetchData();
+    })();
     return () => {
       controller.abort();
       setStudents({ data: [], totalData: 0 });
@@ -501,7 +500,7 @@ const AdmissionsDash = (props) => {
             />
           </ThemeProvider>
         </Box>
-      ) : state.loading ? (
+      ) : isFetching ? (
         <Container
           style={{
             display: "flex",

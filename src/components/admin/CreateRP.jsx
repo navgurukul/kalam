@@ -6,6 +6,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
@@ -60,8 +61,11 @@ const CreateRP = () => {
     }
   };
   return (
-    <Container sx={{ py: "2rem" }} maxWidth="md">
-      <FormControl fullWidth>
+    <Container sx={{ py: "1rem" }} maxWidth="md">
+      <Typography sx={{ mb: "2.4rem" }} variant="h4">
+        Enter New Role/Privilege Details
+      </Typography>
+      <FormControl fullWidth sx={{ my: "0.4rem" }}>
         <InputLabel>Select Role/Privilege</InputLabel>
         <Select
           fullWidth
@@ -70,7 +74,6 @@ const CreateRP = () => {
           name="select-rp"
           value={rolePrivilege}
           onChange={handleRPChange}
-          sx={{ my: "0.8rem" }}
         >
           <MenuItem disabled value="SelectRP">
             Select an Option
@@ -90,7 +93,7 @@ const CreateRP = () => {
         value={rpName}
         onChange={handleRPNameChange}
         disabled={rolePrivilege === "selectrp"}
-        sx={{ my: "0.8rem" }}
+        sx={{ my: "0.4rem" }}
       />
       {/* <TextField
         fullWidth
@@ -105,7 +108,9 @@ const CreateRP = () => {
 
       <Box
         sx={{
+          my: "0.8rem",
           px: "0.4rem",
+
           display: "flex",
           justifyContent: "flex-end",
           gap: "0.6rem",

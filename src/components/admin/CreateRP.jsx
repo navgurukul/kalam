@@ -42,7 +42,7 @@ const CreateRP = () => {
         dispatch(changeFetching(true));
         await axios.post(`${baseUrl}role/create${rolePrivilege}`, {
           [getAPIKey(rolePrivilege)]: rpName,
-          // desc: rpDesc,
+          description: rpDesc,
         });
         enqueueSnackbar(`${rolePrivilege} created by name ${rpName}`, {
           variant: "success",
@@ -95,7 +95,7 @@ const CreateRP = () => {
         disabled={rolePrivilege === "selectrp"}
         sx={{ my: "0.4rem" }}
       />
-      {/* <TextField
+      <TextField
         fullWidth
         name={`${rolePrivilege} desc`}
         label={`${rolePrivilege} Description`}
@@ -104,7 +104,7 @@ const CreateRP = () => {
         onChange={handleRPDescChange}
         disabled={rolePrivilege === "selectrp"}
         sx={{ my: "0.8rem" }}
-      /> */}
+      />
 
       <Box
         sx={{

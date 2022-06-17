@@ -1,7 +1,7 @@
 /* eslint-disable no-return-await */
 import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -60,6 +60,18 @@ export const setupUser = (user) => {
   return currentUserData;
 };
 
+const CustomMVLabel = ({ children, ...rest }) => (
+  <components.MultiValueLabel {...rest}>
+    {children.name}
+  </components.MultiValueLabel>
+);
+
+const CustomOption = ({ children, ...rest }) => (
+  <components.Option {...rest}>
+    {children.name} - {children.description}
+  </components.Option>
+);
+
 const AdminPage = () => {
   const { enqueueSnackbar } = useSnackbar();
 
@@ -113,7 +125,7 @@ const AdminPage = () => {
     const { roleOptions } = rolePrivilegeOptions;
     let exclusions;
     const role = roleOptions.find((opt) => opt.value === roleId) || "";
-    switch (role?.label?.toLowerCase() || "") {
+    switch (role?.label?.name.toLowerCase() || "") {
       case "campus":
         exclusions = filterRoles.reduce((acc, filterItem) => {
           filterItem.access.forEach((accessItem) =>
@@ -385,11 +397,17 @@ const AdminPage = () => {
       const privilege = await axios.get(`${baseUrl}role/getPrivilege`);
       setRolePrivilegeOptions({
         roleOptions: roles.data.map((role) => ({
-          label: `${toTitleCase(role.roles)}`,
+          label: {
+            name: `${toTitleCase(role.roles)}`,
+            description: role.description,
+          },
           value: role.id,
         })),
         privilegeOptions: privilege.data.map((priv) => ({
-          label: toTitleCase(priv.privilege),
+          label: {
+            name: toTitleCase(priv.privilege),
+            description: priv.description,
+          },
           value: priv.id,
         })),
       });
@@ -585,13 +603,14 @@ const AdminPage = () => {
                       role: ev.target.value,
                     });
                   }}
+                  // renderValue={(value) => value.name}
                 >
                   <MenuItem disabled value="selectrole">
                     Select Role
                   </MenuItem>
                   {roleOptions.map((arrItem) => (
                     <MenuItem key={arrItem.value} value={arrItem.value}>
-                      {arrItem.label}
+                      {arrItem.label.name} - {arrItem.label.description}
                     </MenuItem>
                   ))}
                 </MUISelect>
@@ -608,9 +627,10 @@ const AdminPage = () => {
                     </Typography>
                   </label>
                   <Select
-                    label={`Select ${access.role}`}
+                    label={`Select ${access.role?.name}`}
                     placeholder={`Select ${
                       roleOptions.find((opt) => opt.value === access.role).label
+                        .name
                     }`}
                     isMulti
                     onChange={(ev) => updateAccess({ ...access, access: ev })}
@@ -647,6 +667,10 @@ const AdminPage = () => {
                           selPrivItem.privilege === privItem.label
                       )
                   )}
+                  components={{
+                    MultiValueLabel: CustomMVLabel,
+                    Option: CustomOption,
+                  }}
                   menuPortalTarget={document.body}
                   value={access.privilege}
                   styles={{

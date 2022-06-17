@@ -515,7 +515,7 @@ const AdminPage = () => {
       [rolePrivilege === "roles" ? "role" : "privilege"]:
         rolePrivilege === "roles"
           ? getRoleData(newRole.data.roles).label
-          : getPrivilegeData(newRole.data.privilege).label,
+          : getPrivilegeData(newRole.data.privilege).label.name,
     };
   };
 

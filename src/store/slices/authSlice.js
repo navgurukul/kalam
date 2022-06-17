@@ -4,16 +4,25 @@ import axios from "axios";
 import { setupUser } from "../../components/admin/AdminPage";
 import { encryptText } from "../../utils";
 import { baseUrl } from "../../utils/constants";
-import { enqueueSnackbar } from "./uiSlice";
+import { changeFetching, enqueueSnackbar } from "./uiSlice";
 
 export const loginWithGoogle = createAsyncThunk(
   "auth/login",
-  async ({ response, specialLogin, callSnack }, thunkAPI) => {
-    if (
-      response.profileObj.email.includes("@navgurukul.org") ||
-      specialLogin.includes(response.profileObj.email)
-    ) {
-      try {
+  async ({ response }, thunkAPI) => {
+    thunkAPI.dispatch(changeFetching(true));
+    try {
+      const rolesData = await axios.get(
+        `${baseUrl}rolebaseaccess/mail/${response.profileObj.email}`
+      );
+      // const rolesData = { data: [] };
+      const { roles, privileges } =
+        rolesData.data.length > 0
+          ? setupUser(rolesData.data[0])
+          : { roles: [], privileges: [] };
+      if (
+        response.profileObj.email.includes("@navgurukul.org") ||
+        privileges.some((priv) => priv.privilege === "SpecialLogin")
+      ) {
         const userData = await axios.post(`${baseUrl}users/login/google`, {
           idToken: response.tokenObj.id_token,
         });
@@ -22,12 +31,6 @@ export const loginWithGoogle = createAsyncThunk(
         //   `${baseUrl}rolebaseaccess/mail/${user.email}`
         // );
 
-        const rolesData = { data: [] };
-
-        const { roles, privilege } =
-          rolesData.data.length > 0
-            ? rolesData.data[0]
-            : { roles: [], privilege: [] };
         localStorage.setItem("jwt", userToken);
         localStorage.setItem("userId", encryptText(`${user.id}`));
         localStorage.setItem("email", encryptText(user.email));
@@ -37,19 +40,27 @@ export const loginWithGoogle = createAsyncThunk(
             options: { variant: "success" },
           })
         );
-        return { isAuthenticated: true, user, roles, privilege };
-      } catch (err) {
-        thunkAPI.dispatch(
-          enqueueSnackbar({
-            message: `Error : ${err.message}`,
-            options: { variant: "error" },
-          })
-        );
-        throw Error(err.message);
+        thunkAPI.dispatch(changeFetching(false));
+        return { isAuthenticated: true, user, roles, privileges };
       }
+      thunkAPI.dispatch(
+        enqueueSnackbar({
+          message: `Please use NG Email, or request Special Access`,
+          options: { variant: "error" },
+        })
+      );
+      thunkAPI.dispatch(changeFetching(false));
+      return { isAuthenticated: false };
+    } catch (err) {
+      thunkAPI.dispatch(
+        enqueueSnackbar({
+          message: `Error : ${err.message}`,
+          options: { variant: "error" },
+        })
+      );
+      thunkAPI.dispatch(changeFetching(false));
+      throw Error(err.message);
     }
-    callSnack(`Error Occured`, "error");
-    return { isAuthenticated: false };
   }
 );
 

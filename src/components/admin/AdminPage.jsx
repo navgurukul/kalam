@@ -92,6 +92,7 @@ const AdminPage = () => {
   });
   const [optionsData, setOptionsData] = React.useState({
     partner: [],
+    donor: [],
   });
   const [changeFn, setChangeFn] = React.useState({ ex: () => {} });
 
@@ -116,6 +117,13 @@ const AdminPage = () => {
         return matchedItem
           ? { id: matchedItem.value, name: matchedItem.label }
           : {};
+      case "donor":
+        matchedItem = optionsData.donor.find(
+          (donorItem) => donorItem.value === accessId
+        );
+        return matchedItem
+          ? { id: matchedItem.value, name: matchedItem.label }
+          : {};
       default:
         return {};
     }
@@ -123,16 +131,19 @@ const AdminPage = () => {
 
   const getOptions = (roleId, filterRoles) => {
     const { roleOptions } = rolePrivilegeOptions;
-    let exclusions;
     const role = roleOptions.find((opt) => opt.value === roleId) || "";
+    const exclusions = filterRoles.reduce(
+      (acc, filterItem) =>
+        role.label.name === filterItem.role
+          ? [
+              ...acc,
+              ...filterItem.access.map((accessItem) => accessItem.access),
+            ]
+          : acc,
+      []
+    );
     switch (role?.label?.name.toLowerCase() || "") {
       case "campus":
-        exclusions = filterRoles.reduce((acc, filterItem) => {
-          filterItem.access.forEach((accessItem) =>
-            acc.push(accessItem.access)
-          );
-          return acc;
-        }, []);
         return campus
           .filter((campusItem) => !exclusions.includes(campusItem.id))
           .map((campusItem) => ({
@@ -140,15 +151,13 @@ const AdminPage = () => {
             value: campusItem.id,
           }));
       case "partner":
-        exclusions = filterRoles.reduce(
-          (acc, filterItem) => [
-            ...acc,
-            ...filterItem.access.map((accessItem) => accessItem.access),
-          ],
-          []
-        );
         return optionsData.partner.filter(
           (partnerItem) => !exclusions.includes(partnerItem.value)
+        );
+
+      case "donor":
+        return optionsData.donor.filter(
+          (donorItem) => !exclusions.includes(donorItem.value)
         );
       default:
         return [];
@@ -434,20 +443,25 @@ const AdminPage = () => {
     }
   };
 
-  const fetchPartnerList = async () => {
+  const fetchLists = async () => {
     const partnerRes = await axios.get(`${baseUrl}partners`);
     const partnerList = partnerRes.data.data.map((partnerItem) => ({
       label: partnerItem.name,
       value: partnerItem.id,
     }));
-    setOptionsData({ ...optionsData, partner: partnerList });
+    const donorRes = await axios.get(`${baseUrl}donors`);
+    const donorList = donorRes.data.map(({ id, donor: donorName }) => ({
+      label: donorName,
+      value: id,
+    }));
+    setOptionsData({ ...optionsData, partner: partnerList, donor: donorList });
   };
 
   const updateAccess = (acc) => setAccess(acc);
 
   useEffect(() => {
     const fetch = async () => {
-      await fetchPartnerList();
+      await fetchLists();
       fetchRolesPrivileges();
       fetchByMailId();
     };
@@ -523,7 +537,7 @@ const AdminPage = () => {
     if (window.confirm("Are you sure to assign the mentioned roles?")) {
       try {
         const alreadyHasRole = selectedRoles.findIndex(
-          (roleItem) => roleItem.role === getRoleData(access.role).label
+          (roleItem) => roleItem.role === getRoleData(access.role).label.name
         );
         let newRole;
         let newAccess;
@@ -549,8 +563,9 @@ const AdminPage = () => {
             access.role,
             "roles"
           );
+
           // async code for new access for that role
-          if (hasAccessObj(newRole.label)) {
+          if (hasAccessObj(newRole.role.name)) {
             newAccess = await createAccess(access.access, newRole.role_id);
             newRole.access = [
               ...newAccess.map((accessItem) => ({
@@ -560,7 +575,10 @@ const AdminPage = () => {
               })),
             ];
           }
-          updatedRoles = [...selectedRoles, newRole];
+          updatedRoles = [
+            ...selectedRoles,
+            { ...newRole, role: newRole.role.name },
+          ];
         }
         changeFn.ex(updatedRoles);
         setAccess({ ...access, role: "selectrole", access: "selectaccess" });

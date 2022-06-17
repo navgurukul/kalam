@@ -186,6 +186,9 @@ const AdminPage = () => {
       await axios.delete(`${baseUrl}role/deleteUserRole/${rolePrivilegeId}`);
       if (rolePrivilege === "Role") {
         ///
+        change(
+          rowData.filter((rowItem) => rowItem.role_id !== rolePrivilegeId)
+        );
       } else {
         change(rowData.filter((rowItem) => rowItem.id !== rolePrivilegeId));
       }
@@ -222,6 +225,9 @@ const AdminPage = () => {
     }
   };
 
+  const hasAccessObj = (role) =>
+    !["admin", "dev"].some((roleItem) => role.toLowerCase() === roleItem);
+
   const columns = [
     { name: "email", label: "Email" },
     {
@@ -234,25 +240,37 @@ const AdminPage = () => {
           (value, rowMeta, change) => (
             <>
               {value.map((item) =>
-                item.access.map((accessItem) => (
+                hasAccessObj(item.role) ? (
+                  item.access.map((accessItem) => (
+                    <Chip
+                      key={`${item} ${Math.random() * 10}`}
+                      variant="filled"
+                      label={`${item.role}-${
+                        getAccessData(item.role, accessItem.access)?.name || ""
+                      }`}
+                      sx={{ marginX: "0.4rem", marginY: "0.2rem" }}
+                      onDelete={() =>
+                        deleteUserAccess(value, change, {
+                          role: item.role,
+                          name:
+                            getAccessData(item.role, accessItem.access)?.name ||
+                            "",
+                          id: accessItem.id,
+                        })
+                      }
+                    />
+                  ))
+                ) : (
                   <Chip
-                    key={`${item} ${Math.random() * 10}`}
                     variant="filled"
-                    label={`${item.role}-${
-                      getAccessData(item.role, accessItem.access)?.name || ""
-                    }`}
+                    label={`${item.role}`}
+                    key={item.role_id}
                     sx={{ marginX: "0.4rem", marginY: "0.2rem" }}
                     onDelete={() =>
-                      deleteUserAccess(value, change, {
-                        role: item.role,
-                        name:
-                          getAccessData(item.role, accessItem.access)?.name ||
-                          "",
-                        id: accessItem.id,
-                      })
+                      deleteRolePrivilege(value, change, item.role_id, "Role")
                     }
                   />
-                ))
+                )
               )}
               <Chip
                 variant="outlined"
@@ -532,14 +550,16 @@ const AdminPage = () => {
             "roles"
           );
           // async code for new access for that role
-          newAccess = await createAccess(access.access, newRole.role_id);
-          newRole.access = [
-            ...newAccess.map((accessItem) => ({
-              id: accessItem.id,
-              user_role_id: newRole.role_id,
-              access: accessItem.access,
-            })),
-          ];
+          if (hasAccessObj(newRole.label)) {
+            newAccess = await createAccess(access.access, newRole.role_id);
+            newRole.access = [
+              ...newAccess.map((accessItem) => ({
+                id: accessItem.id,
+                user_role_id: newRole.role_id,
+                access: accessItem.access,
+              })),
+            ];
+          }
           updatedRoles = [...selectedRoles, newRole];
         }
         changeFn.ex(updatedRoles);
@@ -616,7 +636,10 @@ const AdminPage = () => {
                 </MUISelect>
               </FormControl>
             </Grid>
-            {access.role !== "selectrole" ? (
+            {access.role !== "selectrole" &&
+            hasAccessObj(
+              roleOptions.find((opt) => opt.value === access.role).label.name
+            ) ? (
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -725,7 +748,11 @@ const AdminPage = () => {
             disabled={
               accessDialog === "role"
                 ? access.role === "selectrole" ||
-                  access.access === "selectaccess"
+                  (hasAccessObj(
+                    roleOptions.find((opt) => opt.value === access.role).label
+                      .name
+                  ) &&
+                    access.access === "selectaccess")
                 : access.privilege.length === 0
             }
             variant="contained"

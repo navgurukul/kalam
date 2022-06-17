@@ -883,30 +883,32 @@ const lastUpdatedColumn = {
 };
 
 const JobKabLagegiColumn = {
-  name: "jobKabLagega.expectedDate",
+  name: "jobKabLagega",
   label: "Job Kab Lagegi",
   options: {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
-      if (value) {
-        return <p>{dayjs(value).format("D MMM YYYY")}</p>;
+      if (value?.expectedDate) {
+        return <p>{dayjs(value?.expectedDate).format("D MMM YYYY")}</p>;
       }
-      return value;
+      return "N/A";
     },
   },
 };
 
 const daysPassedColumn = {
-  name: "jobKabLagega.daysPassedInCampus",
+  name: "jobKabLagega",
   label: "Days Passed",
   options: {
     filter: false,
     display: false,
     customBodyRender: (value) => {
       if (value) {
-        const parseValue = parseInt(value, 10);
-        return <p>{parseValue} days</p>;
+        const parseValue = value?.daysPassedInCampus
+          ? `${parseInt(value?.daysPassedInCampus, 10)} days`
+          : "N/A";
+        return <p>{parseValue}</p>;
       }
       return value;
     },
@@ -914,15 +916,17 @@ const daysPassedColumn = {
 };
 
 const kitneAurDin = {
-  name: "jobKabLagega.kitneAurDin",
+  name: "jobKabLagega",
   label: "kitne Aur Din",
   options: {
     filter: false,
     display: false,
     customBodyRender: (value) => {
       if (value) {
-        const parseValue = parseInt(value, 10);
-        return <p>{parseValue} days</p>;
+        const parseValue = value?.kitneAurDin
+          ? `${parseInt(value?.kitneAurDin, 10)} days`
+          : "N/A";
+        return <p>{parseValue}</p>;
       }
       return value;
     },
@@ -930,15 +934,17 @@ const kitneAurDin = {
 };
 
 const kitneDinLagenge = {
-  name: "jobKabLagega.kitneDinLagenge",
+  name: "jobKabLagega",
   label: "kitne Din Lagenge",
   options: {
     filter: false,
     display: false,
     customBodyRender: (value) => {
       if (value) {
-        const parseValue = parseInt(value, 10);
-        return <p>{parseValue} days</p>;
+        const parseValue = value?.kitneDinLagenge
+          ? `${parseInt(value?.kitneDinLagenge, 10)} days`
+          : "N/A";
+        return <p>{parseValue}</p>;
       }
       return value;
     },

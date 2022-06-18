@@ -196,7 +196,7 @@ const PlacementStudentsData = () => {
             <UploadView
               label="resume"
               type="Resume"
-              resume={value?.resume}
+              docLink={value?.resume}
               studentId={studentId}
               change={change}
             />
@@ -214,7 +214,7 @@ const PlacementStudentsData = () => {
             <UploadView
               label="photo_link"
               type="Photo Link"
-              photo_Link={value?.photo_link}
+              docLink={value?.photo_link}
               studentId={studentId}
               change={change}
             />
@@ -232,7 +232,7 @@ const PlacementStudentsData = () => {
             <UploadView
               label="video_link"
               type="Video Link"
-              video_link={value?.video_link}
+              docLink={value?.video_link}
               studentId={studentId}
               change={change}
             />

@@ -10,6 +10,9 @@ import Input from "@mui/material/Input";
 import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useDispatch, useSelector } from "react-redux";
+import { changeFetching } from "../../store/slices/uiSlice";
+import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -32,41 +35,24 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const UploadView = ({
-  label,
-  type,
-  resume,
-  photo_Link,
-  video_Link,
-  studentId,
-  change,
-}) => {
+const UploadView = ({ label, type, docLink, studentId, change }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const { isFetching } = useSelector((state) => state.ui);
+  const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
+  const fetchingFinish = () => dispatch(changeFetching(false));
 
-  const [links, setLinks] = React.useState({
-    resumeLink: resume || "",
-    photoLink: photo_Link || "",
-    videoLink: video_Link || "",
-  });
+  const [link, setLink] = React.useState(docLink || "");
 
-  const [edits, setEdits] = React.useState({
-    editResume: false,
-    editPhoto: false,
-    editVideo: false,
-  });
+  const [edit, setEdit] = React.useState(false);
 
-  const [views, setViews] = React.useState({
-    viewOpenResume: false,
-    viewOpenPhoto: false,
-    viewOpenVideo: false,
-  });
+  const [view, setView] = React.useState(false);
 
   const limitFileSize = (file) => file.size <= 1000000;
   const generateLink = (e) => {
     e.preventDefault();
     const formData = new FormData();
-
     const file = e.target.files[0];
 
     if (!limitFileSize(file)) {
@@ -75,29 +61,13 @@ const UploadView = ({
       });
       return;
     }
-
-    console.log(label, "checking label");
+    fetchingStart();
     formData.append("file", e.target.files[0]);
     axios
       .post(`${baseUrl}/students/resume/documents`, formData)
       .then((res) => {
         if (res.status === 200) {
-          if (label === "resume") {
-            setLinks({
-              ...links,
-              resumeLink: res.data,
-            });
-          } else if (label === "photo_link") {
-            setLinks({
-              ...links,
-              photoLink: res.data,
-            });
-          } else if (label === "video_link") {
-            setLinks({
-              ...links,
-              videoLink: res.data,
-            });
-          }
+          setLink(res.data);
 
           enqueueSnackbar(
             "Link generated and pasted in the text box successfully, click on upload!",
@@ -105,6 +75,7 @@ const UploadView = ({
               variant: "success",
             }
           );
+          fetchingFinish();
         }
       })
       .catch((err) => {
@@ -112,116 +83,104 @@ const UploadView = ({
       });
   };
 
-  const convertDriveLink = (link) =>
+  const convertDriveLink = (linkToConv) =>
     `https://drive.google.com/file/d/${
-      link.match(/d\/([A-Za-z0-9-]+)/)[1]
+      linkToConv.match(/d\/([A-Za-z0-9-]+)/)[1]
     }/preview`;
 
   const addNew = () => {
-    console.log(label, "label");
-    if (label === "resume") {
-      setLinks({
-        ...links,
-        resumeLink: "",
-      });
-      setEdits({
-        ...edits,
-        editResume: true,
-      });
-    } else if (label === "photo_link") {
-      setLinks({
-        ...links,
-        photoLink: "",
-      });
-      setEdits({
-        ...edits,
-        editPhoto: true,
-      });
-    } else {
-      setLinks({
-        ...links,
-        videoLink: "",
-      });
-      setEdits({
-        ...edits,
-        editVideo: true,
-      });
-    }
+    // if (label === "resume") {
+    //   setLinks({
+    //     ...links,
+    //     resumeLink: "",
+    //   });
+    //   setEdits({
+    //     ...edits,
+    //     editResume: true,
+    //   });
+    // } else if (label === "photo_link") {
+    //   setLinks({
+    //     ...links,
+    //     photoLink: "",
+    //   });
+    //   setEdits({
+    //     ...edits,
+    //     editPhoto: true,
+    //   });
+    // } else {
+    //   setLinks({
+    //     ...links,
+    //     videoLink: "",
+    //   });
+    //   setEdits({
+    //     ...edits,
+    //     editVideo: true,
+    //   });
+    // }
+    setLink("");
+    setEdit(true);
   };
 
-  const embeddedURL = (link) => {
+  const embeddedURL = (linkToEmbed) => {
     //if link is a youtube link then return the embeded link
-    if (link.includes("youtube")) {
+    if (linkToEmbed.includes("youtube")) {
       return `https://www.youtube.com/embed/${link.split("v=")[1]}`;
     }
+    if (linkToEmbed.includes("youtu"))
+      return `https://www.youtube.com/embed/${link.split("/")[3]}`;
   };
 
   const uploadLink = (e) => {
     e.preventDefault();
+    if (isFetching) return;
+    fetchingStart();
 
-    const linkResume = links.resumeLink.includes("drive.google.com")
-      ? convertDriveLink(links.resumeLink)
-      : links.resumeLink;
-    const linkPhoto = links.photoLink.includes("drive.google.com")
-      ? convertDriveLink(links.photoLink)
-      : links.photoLink;
-    const linkVideo = links.videoLink.includes("drive.google.com")
-      ? convertDriveLink(links.videoLink)
-      : links.videoLink.includes("youtube")
-      ? embeddedURL(links.videoLink)
-      : links.videoLink;
+    const linkResumePhoto = link.includes("drive.google.com")
+      ? convertDriveLink(link)
+      : link;
+    const linkVideo = link.includes("drive.google.com")
+      ? convertDriveLink(link)
+      : link.includes("youtu")
+      ? embeddedURL(link)
+      : link;
 
-    const link =
-      label === "resume"
-        ? linkResume
-        : label === "photo_link"
-        ? linkPhoto
+    const linkDoc =
+      label === "resume" || label === "photo_link"
+        ? linkResumePhoto
         : linkVideo;
-
-    console.log(link, "link");
 
     //https://s3.ap-south-1.amazonaws.com/chanakya-dev/students_documents/e24753e8-49e2-45bb-bcd9-3750f6b96a07-Test_Doc.pdf
 
     axios
       .put(`${baseUrl}students/jobDetails`, {
         student_id: studentId,
-        [label]: link,
+        [label]: linkDoc,
       })
       .then((res) => {
         if (res.status === 200) {
-          enqueueSnackbar(`${label} uploaded successfully`, {
+          enqueueSnackbar(`${type} uploaded successfully`, {
             variant: "success",
           });
-          change(
-            label === "resume"
-              ? {
-                  resume: link,
-                }
-              : label === "photo_link"
-              ? {
-                  photo_Link: link,
-                }
-              : {
-                  video_Link: link,
-                }
-          );
+          change({ [label]: docLink });
 
-          if (label === "resume") {
-            setEdits({
-              ...edits,
-              editResume: false,
-            });
-          } else if (label === "photo_link") {
-            setEdits({
-              ...edits,
-              editPhoto: false,
-            });
-          } else {
-            setEdits({
-              ...edits,
-              editVideo: false,
-            });
-          }
+          // if (label === "resume") {
+          //   setEdits({
+          //     ...edits,
+          //     editResume: false,
+          //   });
+          // } else if (label === "photo_link") {
+          //   setEdits({
+          //     ...edits,
+          //     editPhoto: false,
+          //   });
+          // } else {
+          //   setEdits({
+          //     ...edits,
+          //     editVideo: false,
+          //   });
+          // }
+          setEdit(false);
+          fetchingFinish();
         }
       })
       .catch((err) => {
@@ -230,68 +189,66 @@ const UploadView = ({
   };
 
   const handleClose = () => {
-    if (label === "resume") {
-      setViews({
-        ...views,
-        viewOpenResume: false,
-      });
-    } else if (label === "photo_link") {
-      setViews({
-        ...views,
-        viewOpenPhoto: false,
-      });
-    } else {
-      setViews({
-        ...views,
-        viewOpenVideo: false,
-      });
-    }
+    // if (label === "resume") {
+    //   setViews({
+    //     ...views,
+    //     viewOpenResume: false,
+    //   });
+    // } else if (label === "photo_link") {
+    //   setViews({
+    //     ...views,
+    //     viewOpenPhoto: false,
+    //   });
+    // } else {
+    //   setViews({
+    //     ...views,
+    //     viewOpenVideo: false,
+    //   });
+    // }
+    setView(false);
   };
 
-  const editCondition =
-    label === "resume"
-      ? edits.editResume
-      : label === "photo_link"
-      ? edits.editPhoto
-      : edits.editVideo;
+  // const editCondition =
+  //   label === "resume"
+  //     ? edits.editResume
+  //     : label === "photo_link"
+  //     ? edits.editPhoto
+  //     : edits.editVideo;
 
   const openView = () => {
-    if (label === "resume") {
-      setViews({ ...views, viewOpenResume: true });
-    } else if (label === "photo_link") {
-      setViews({ ...views, viewOpenPhoto: true });
-    } else {
-      setViews({ ...views, viewOpenVideo: true });
-    }
+    // if (label === "resume") {
+    //   setViews({ ...views, viewOpenResume: true });
+    // } else if (label === "photo_link") {
+    //   setViews({ ...views, viewOpenPhoto: true });
+    // } else {
+    //   setViews({ ...views, viewOpenVideo: true });
+    // }
+    setView(true);
   };
 
-  const viewButtonCondition =
-    label === "resume"
-      ? links.resumeLink?.length > 0
-      : label === "photo_link"
-      ? links.photoLink?.length > 0
-      : links.videoLink?.length > 0;
+  const viewButtonCondition = link?.length > 0;
 
   const changeTextField = (e) => {
-    if (label === "resume") {
-      setLinks({
-        ...links,
-        resumeLink: e.target.value,
-      });
-    } else if (label === "photo_link") {
-      setLinks({
-        ...links,
-        photoLink: e.target.value,
-      });
-    } else {
-      setLinks({
-        ...links,
-        videoLink: e.target.value,
-      });
-    }
+    // if (label === "resume") {
+    //   setLinks({
+    //     ...links,
+    //     resumeLink: e.target.value,
+    //   });
+    // } else if (label === "photo_link") {
+    //   setLinks({
+    //     ...links,
+    //     photoLink: e.target.value,
+    //   });
+    // } else {
+    //   setLinks({
+    //     ...links,
+    //     videoLink: e.target.value,
+    //   });
+    // }
+    setLink(e.target.value);
   };
 
-  return !editCondition ? (
+  return !edit ? (
     <div
       style={{
         display: "flex",
@@ -323,32 +280,32 @@ const UploadView = ({
       </Button>
 
       <Modal
-        open={
-          label === "resume"
-            ? views.viewOpenResume
-            : label === "photo_link"
-            ? views.viewOpenPhoto
-            : views.viewOpenVideo
-        }
+        open={view}
         onClose={() => handleClose()}
         aria-labelledby="viewDoc"
         aria-describedby="modal to view"
       >
         <Box className={classes.viewModal}>
-          <embed
-            src={
-              label === "resume"
-                ? links.resumeLink
-                : label === "photo_link"
-                ? links.photoLink
-                : links.videoLink
-            }
-            alt="Resume"
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-          />
+          {label === "resume" || label === "photo_link" ? (
+            <embed
+              src={link}
+              alt="Resume"
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+            />
+          ) : (
+            <iframe
+              id="ytplayer"
+              title="Video Player"
+              type="text/html"
+              width="1280"
+              height="720"
+              src={`${link}?autoplay=1`}
+              frameBorder="0"
+            />
+          )}
         </Box>
       </Modal>
     </div>
@@ -359,7 +316,7 @@ const UploadView = ({
         flexDirection: "column",
       }}
     >
-      {label === "video_link" && (
+      {label !== "video_link" && (
         <label htmlFor="resume-input">
           <Button
             variant="contained"
@@ -399,13 +356,7 @@ const UploadView = ({
       <TextField
         type="text"
         size="small"
-        value={
-          label === "resume"
-            ? links.resumeLink
-            : label === "photo_link"
-            ? links.photoLink
-            : links.videoLink
-        }
+        value={link}
         variant="outlined"
         style={{
           margin: "0.6rem 0",
@@ -419,16 +370,10 @@ const UploadView = ({
         style={{
           marginTop: "0.2rem",
         }}
-        disabled={
-          label === "resume"
-            ? links.resumeLink === ""
-            : label === "photo_link"
-            ? links.photoLink === ""
-            : links.videoLink === ""
-        }
+        disabled={link === ""}
         onClick={(e) => uploadLink(e, studentId)}
       >
-        Upload
+        {isFetching ? <Loader /> : "Upload"}
       </Button>
     </div>
   );

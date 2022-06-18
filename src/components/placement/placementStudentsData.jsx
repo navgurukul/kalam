@@ -17,11 +17,11 @@ import {
 import { changeFetching } from "../../store/slices/uiSlice";
 import NotHaveAccess from "../layout/NotHaveAccess";
 import Loader from "../ui/Loader";
-import { donor } from "../../utils/constants";
+import { donor, qualificationKeys } from "../../utils/constants";
 import MainLayout from "../muiTables/MainLayout";
 import EditText from "./EditText";
 import CustomDatePicker from "./CustomDatePicker";
-import UploadResume from "./UploadResume";
+import UploadView from "./UploadView";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -134,11 +134,16 @@ const PlacementStudentsData = () => {
       options: {
         filter: true,
         sort: true,
-        customBodyRender: React.useCallback((value) => {
-          const DOJdate = value.split("T")[0];
-
-          return <p>{dayjs(DOJdate).format("D MMM YYYY")}</p>;
-        }),
+        customBodyRender: React.useCallback(
+          (value) => (
+            <p>
+              {dayjs(value).isValid()
+                ? dayjs(value).format("D MMM YYYY")
+                : "N/A"}
+            </p>
+          ),
+          []
+        ),
       },
     },
     {
@@ -160,7 +165,10 @@ const PlacementStudentsData = () => {
       options: {
         filter: true,
         sort: true,
-        customBodyRender: React.useCallback((value) => <p>B.Tech</p>),
+        customBodyRender: React.useCallback((value) => {
+          const qualificationName = value && qualificationKeys[value];
+          return <p>{qualificationName}</p>;
+        }),
       },
     },
 
@@ -184,10 +192,47 @@ const PlacementStudentsData = () => {
         customBodyRender: React.useCallback((value, rowMeta, change) => {
           // setDocuments({ ...documents, Resume_link: value?.resume || "" });
           const studentId = rowMeta.rowData[0];
-
           return (
-            <UploadResume
+            <UploadView
+              label="resume"
+              type="Resume"
               resume={value?.resume}
+              studentId={studentId}
+              change={change}
+            />
+          );
+        }, []),
+      },
+    },
+    {
+      name: "student_job_details",
+      label: "Photo Link",
+      options: {
+        customBodyRender: React.useCallback((value, rowMeta, change) => {
+          const studentId = rowMeta.rowData[0];
+          return (
+            <UploadView
+              label="photo_link"
+              type="Photo Link"
+              photo_Link={value?.photo_link}
+              studentId={studentId}
+              change={change}
+            />
+          );
+        }, []),
+      },
+    },
+    {
+      name: "student_job_details",
+      label: "Video Link",
+      options: {
+        customBodyRender: React.useCallback((value, rowMeta, change) => {
+          const studentId = rowMeta.rowData[0];
+          return (
+            <UploadView
+              label="video_link"
+              type="Video Link"
+              video_link={value?.video_link}
               studentId={studentId}
               change={change}
             />

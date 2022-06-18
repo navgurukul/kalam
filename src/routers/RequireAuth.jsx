@@ -15,8 +15,6 @@ const RequireAuth = ({ children, privateRoute }) => {
   const { isAuthenticated, roles, privileges, loggedInUser } = useSelector(
     (state) => state.auth
   );
-
-  React.useEffect(() => console.log(roles), [roles]);
   if (decodedJwt && decodedJwt.exp * 1000 < Date.now()) {
     enqueueSnackbar("Token Expierd: Login Again", { variant: "info" });
     dispatch(logout());
@@ -37,6 +35,16 @@ const RequireAuth = ({ children, privateRoute }) => {
       return (
         <div className="bodyComponent">
           {roles.some((roleItem) => roleItem.role === "Admin") ? (
+            children
+          ) : (
+            <NotHaveAccess />
+          )}
+        </div>
+      );
+    case "students":
+      return (
+        <div className="bodyComponent">
+          {privileges.some((priv) => priv.privilege === "ViewDashboard") ? (
             children
           ) : (
             <NotHaveAccess />

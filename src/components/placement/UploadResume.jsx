@@ -38,7 +38,8 @@ const UploadResume = ({ resume, studentId, change }) => {
 
   const [resumeLink, setResumeLink] = React.useState(resume || "");
   const [editResume, setEditResume] = React.useState(
-    resume === null || resume === undefined || resume === ""
+    // resume === null || resume === undefined || resume === ""
+    false
   );
   const [viewOpenResume, setViewOpenResume] = React.useState(false);
 
@@ -120,13 +121,15 @@ const UploadResume = ({ resume, studentId, change }) => {
         flexDirection: "column",
       }}
     >
-      <Button
-        variant="contained"
-        endIcon={<VisibilityIcon />}
-        onClick={() => setViewOpenResume(true)}
-      >
-        View Resume
-      </Button>
+      {resumeLink?.length > 0 ? (
+        <Button
+          variant="contained"
+          endIcon={<VisibilityIcon />}
+          onClick={() => setViewOpenResume(true)}
+        >
+          View Resume
+        </Button>
+      ) : null}
 
       <Button
         variant="contained"

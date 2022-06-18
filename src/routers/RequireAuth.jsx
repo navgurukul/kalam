@@ -80,10 +80,26 @@ const RequireAuth = ({ children, privateRoute }) => {
           <NotHaveAccess />
         </div>
       );
+    case "donor":
+      role = roles.find((roleItem) => roleItem.role === "Donor");
+      return (
+        <div className="bodyComponent">
+          {params.donorItem === undefined ||
+          (role &&
+            role.access.findIndex(
+              (accessItem) =>
+                accessItem.access === parseInt(params.donorItem, 10)
+            ) !== -1) ? (
+            children
+          ) : (
+            <NotHaveAccess />
+          )}
+        </div>
+      );
     default:
       return (
         <div className="bodyComponent">
-          {!privileges.some((priv) => priv.privilege === "ViewDashboard") ? (
+          {privileges.some((priv) => priv.privilege === "ViewDashboard") ? (
             children
           ) : (
             <NotHaveAccess />

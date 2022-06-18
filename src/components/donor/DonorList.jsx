@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Container from "@mui/material/Container";
 import axios from "axios";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import MainLayout from "../muiTables/MainLayout";
 
@@ -39,17 +40,22 @@ const columns = [
 ];
 
 const DonorList = () => {
+  const { roles } = useSelector((state) => state.auth);
   const [state, setState] = React.useState({
     data: [],
     showLoader: true,
   });
   const fetchDonors = async () => {
     try {
+      const role = roles.find((roleItem) => roleItem.role === "Donor");
+      const access = role?.access?.map((accessItem) => accessItem.access);
       const dataURL = `${baseUrl}donors`;
       const response = await axios.get(dataURL);
       setState({
         ...state,
-        data: response.data,
+        data: response.data.filter((donorItem) =>
+          access.includes(donorItem.id)
+        ),
         showLoader: false,
       });
     } catch (e) {

@@ -152,7 +152,7 @@ const OtherActivities = (props) => {
             onClick={() => onSubmit()}
             className={classes.btn}
           >
-            Submit Feedback
+            Submit
           </Button>
         </form>
       </Dialog>

@@ -44,6 +44,7 @@ import {
   caste,
 } from "../utils/constants";
 import UploadDocuments from "../components/smallComponents/UploadDocuments";
+import OtherActivities from "../components/campus/OtherActivities";
 
 dayjs.extend(customParseFormat);
 
@@ -198,6 +199,25 @@ const feedbackColumnTransition = {
             </div>
           ) : null}
         </div>
+      );
+    },
+  },
+};
+
+const OtherActivitiesColumn = {
+  name: "other_activities",
+  label: "Other Activities",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const values = "testing";
+      return (
+        <OtherActivities
+          rowMetaTable={rowMeta}
+          otherActivities={rowData}
+          change={(event) => updateValue(event)}
+        />
       );
     },
   },
@@ -1651,6 +1671,7 @@ const StudentService = {
     partnerNameColumn,
     donorColumn,
     EvaluationColumn,
+    OtherActivitiesColumn,
     redFlagColumn,
     navGurukulSurveyForm,
   ],

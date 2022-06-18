@@ -169,10 +169,14 @@ const UploadResume = ({ resume, studentId, change }) => {
     >
       <label htmlFor="resume-input">
         <Button
-          size="small"
           variant="contained"
+          component="span"
           style={{
+            width: "100%",
+            textAlign: "center",
             backgroundColor: "grey",
+            //corner radius
+            // borderRadius: "20px",
           }}
         >
           Generate Link
@@ -181,12 +185,23 @@ const UploadResume = ({ resume, studentId, change }) => {
       <Input
         inputProps={{ type: "file", accept: "image/*,.pdf" }}
         id="resume-input"
+        name="resume-input"
         type="file"
         style={{
           display: "none",
         }}
         onChange={(e) => generateLink(e)}
       />
+      {/* <input
+        onChange={(e) => generateLink(e)}
+        id="reume-input"
+        type="file"
+        name="ResumeIP"
+        style={{ display: "none" }}
+        required
+        // disabled={inputDisabled && formData.ProfileImage !== null}
+        accept="image/*,.pdf"
+      /> */}
       <TextField
         type="text"
         size="small"

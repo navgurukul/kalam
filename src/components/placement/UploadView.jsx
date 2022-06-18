@@ -7,12 +7,12 @@ import Modal from "@mui/material/Modal";
 import SendIcon from "@mui/icons-material/Send";
 import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
+import { HalfCircleSpinner } from "react-epic-spinners";
 import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { changeFetching } from "../../store/slices/uiSlice";
-import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -89,34 +89,6 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
     }/preview`;
 
   const addNew = () => {
-    // if (label === "resume") {
-    //   setLinks({
-    //     ...links,
-    //     resumeLink: "",
-    //   });
-    //   setEdits({
-    //     ...edits,
-    //     editResume: true,
-    //   });
-    // } else if (label === "photo_link") {
-    //   setLinks({
-    //     ...links,
-    //     photoLink: "",
-    //   });
-    //   setEdits({
-    //     ...edits,
-    //     editPhoto: true,
-    //   });
-    // } else {
-    //   setLinks({
-    //     ...links,
-    //     videoLink: "",
-    //   });
-    //   setEdits({
-    //     ...edits,
-    //     editVideo: true,
-    //   });
-    // }
     setLink("");
     setEdit(true);
   };
@@ -161,24 +133,7 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
           enqueueSnackbar(`${type} uploaded successfully`, {
             variant: "success",
           });
-          change({ [label]: docLink });
-
-          // if (label === "resume") {
-          //   setEdits({
-          //     ...edits,
-          //     editResume: false,
-          //   });
-          // } else if (label === "photo_link") {
-          //   setEdits({
-          //     ...edits,
-          //     editPhoto: false,
-          //   });
-          // } else {
-          //   setEdits({
-          //     ...edits,
-          //     editVideo: false,
-          //   });
-          // }
+          change({ [label]: linkDoc });
           setEdit(false);
           fetchingFinish();
         }
@@ -188,65 +143,13 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
       });
   };
 
-  const handleClose = () => {
-    // if (label === "resume") {
-    //   setViews({
-    //     ...views,
-    //     viewOpenResume: false,
-    //   });
-    // } else if (label === "photo_link") {
-    //   setViews({
-    //     ...views,
-    //     viewOpenPhoto: false,
-    //   });
-    // } else {
-    //   setViews({
-    //     ...views,
-    //     viewOpenVideo: false,
-    //   });
-    // }
-    setView(false);
-  };
+  const handleClose = () => setView(false);
 
-  // const editCondition =
-  //   label === "resume"
-  //     ? edits.editResume
-  //     : label === "photo_link"
-  //     ? edits.editPhoto
-  //     : edits.editVideo;
-
-  const openView = () => {
-    // if (label === "resume") {
-    //   setViews({ ...views, viewOpenResume: true });
-    // } else if (label === "photo_link") {
-    //   setViews({ ...views, viewOpenPhoto: true });
-    // } else {
-    //   setViews({ ...views, viewOpenVideo: true });
-    // }
-    setView(true);
-  };
+  const openView = () => setView(true);
 
   const viewButtonCondition = link?.length > 0;
 
-  const changeTextField = (e) => {
-    // if (label === "resume") {
-    //   setLinks({
-    //     ...links,
-    //     resumeLink: e.target.value,
-    //   });
-    // } else if (label === "photo_link") {
-    //   setLinks({
-    //     ...links,
-    //     photoLink: e.target.value,
-    //   });
-    // } else {
-    //   setLinks({
-    //     ...links,
-    //     videoLink: e.target.value,
-    //   });
-    // }
-    setLink(e.target.value);
-  };
+  const changeTextField = (e) => setLink(e.target.value);
 
   return !edit ? (
     <div
@@ -325,8 +228,6 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
               width: "100%",
               textAlign: "center",
               backgroundColor: "grey",
-              //corner radius
-              // borderRadius: "20px",
             }}
           >
             Generate Link
@@ -343,16 +244,6 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
         }}
         onChange={(e) => generateLink(e)}
       />
-      {/* <input
-        onChange={(e) => generateLink(e)}
-        id="reume-input"
-        type="file"
-        name="ResumeIP"
-        style={{ display: "none" }}
-        required
-        // disabled={inputDisabled && formData.ProfileImage !== null}
-        accept="image/*,.pdf"
-      /> */}
       <TextField
         type="text"
         size="small"
@@ -373,7 +264,7 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
         disabled={link === ""}
         onClick={(e) => uploadLink(e, studentId)}
       >
-        {isFetching ? <Loader /> : "Upload"}
+        {isFetching ? <HalfCircleSpinner size={24} /> : "Upload"}
       </Button>
     </div>
   );

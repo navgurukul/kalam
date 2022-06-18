@@ -12,9 +12,11 @@ const RequireAuth = ({ children, privateRoute }) => {
   const location = useLocation();
   const params = useParams();
   const dispatch = useDispatch();
-  const { isAuthenticated, roles, loggedInUser } = useSelector(
+  const { isAuthenticated, roles, privileges, loggedInUser } = useSelector(
     (state) => state.auth
   );
+
+  React.useEffect(() => console.log(roles), [roles]);
   if (decodedJwt && decodedJwt.exp * 1000 < Date.now()) {
     enqueueSnackbar("Token Expierd: Login Again", { variant: "info" });
     dispatch(logout());
@@ -26,9 +28,21 @@ const RequireAuth = ({ children, privateRoute }) => {
   //   return <Navigate to="/user/mobile/number" replace />;
   if (isAuthenticated && !privateRoute)
     return <Navigate to="/students" replace />;
+  // if (isAuthenticated && roles.some((roleItem) => roleItem.role === "Admin"))
+  //   return <div className="bodyComponent">{children}</div>;
   const currentPath = location.pathname.split("/")[1];
   let role;
   switch (currentPath) {
+    case "admin":
+      return (
+        <div className="bodyComponent">
+          {roles.some((roleItem) => roleItem.role === "Admin") ? (
+            children
+          ) : (
+            <NotHaveAccess />
+          )}
+        </div>
+      );
     // case "partner":
     //   return params.partnerId === undefined ||
     //     roles.some(
@@ -59,7 +73,15 @@ const RequireAuth = ({ children, privateRoute }) => {
         </div>
       );
     default:
-      return <div className="bodyComponent">{children}</div>;
+      return (
+        <div className="bodyComponent">
+          {!privileges.some((priv) => priv.privilege === "ViewDashboard") ? (
+            children
+          ) : (
+            <NotHaveAccess />
+          )}
+        </div>
+      );
   }
 };
 

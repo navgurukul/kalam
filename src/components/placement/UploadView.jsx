@@ -199,13 +199,13 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
               }}
             />
           ) : (
-            <iframe
+            <embed
               id="ytplayer"
               title="Video Player"
               type="text/html"
               width="1280"
               height="720"
-              src={`${link}?autoplay=1`}
+              src={link}
               frameBorder="0"
             />
           )}

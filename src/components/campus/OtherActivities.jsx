@@ -54,9 +54,9 @@ const OtherActivities = (props) => {
         studentId = rowData[0];
       }
       const dataURL = `${baseUrl}students/updateDetails/${studentId}`;
-      console.log(dataURL, "dataURL");
+
       await axios
-        .post(dataURL, {
+        .put(dataURL, {
           other_activities: state.otherActivities,
         })
         .then(() => {
@@ -68,7 +68,7 @@ const OtherActivities = (props) => {
           snackbar.enqueueSnackbar("Other Activities are successfully added!", {
             variant: "success",
           });
-          change(state.otherActivities, columnIndex);
+          change(state.otherActivities);
         });
 
       fetchingFinish();

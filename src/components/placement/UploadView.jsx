@@ -149,6 +149,13 @@ const UploadView = ({
     }
   };
 
+  const embeddedURL = (link) => {
+    //if link is a youtube link then return the embeded link
+    if (link.includes("youtube")) {
+      return `https://www.youtube.com/embed/${link.split("v=")[1]}`;
+    }
+  };
+
   const uploadLink = (e) => {
     e.preventDefault();
 
@@ -160,6 +167,8 @@ const UploadView = ({
       : links.photoLink;
     const linkVideo = links.videoLink.includes("drive.google.com")
       ? convertDriveLink(links.videoLink)
+      : links.videoLink.includes("youtube")
+      ? embeddedURL(links.videoLink)
       : links.videoLink;
 
     const link =
@@ -168,6 +177,8 @@ const UploadView = ({
         : label === "photo_link"
         ? linkPhoto
         : linkVideo;
+
+    console.log(link, "link");
 
     //https://s3.ap-south-1.amazonaws.com/chanakya-dev/students_documents/e24753e8-49e2-45bb-bcd9-3750f6b96a07-Test_Doc.pdf
 
@@ -348,21 +359,23 @@ const UploadView = ({
         flexDirection: "column",
       }}
     >
-      <label htmlFor="resume-input">
-        <Button
-          variant="contained"
-          component="span"
-          style={{
-            width: "100%",
-            textAlign: "center",
-            backgroundColor: "grey",
-            //corner radius
-            // borderRadius: "20px",
-          }}
-        >
-          Generate Link
-        </Button>
-      </label>
+      {label === "video_link" && (
+        <label htmlFor="resume-input">
+          <Button
+            variant="contained"
+            component="span"
+            style={{
+              width: "100%",
+              textAlign: "center",
+              backgroundColor: "grey",
+              //corner radius
+              // borderRadius: "20px",
+            }}
+          >
+            Generate Link
+          </Button>
+        </label>
+      )}
       <Input
         inputProps={{ type: "file", accept: "image/*,.pdf" }}
         id="resume-input"

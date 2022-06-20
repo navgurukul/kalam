@@ -168,15 +168,15 @@ const DashboardPage = (props) => {
 
   EventEmitter.subscribe("stageChange", stageChangeEvent);
 
-  const fetchUsers = async () => {
-    try {
-      const usersURL = `${baseUrl}users/getall`;
-      const response = await axios.get(usersURL, {});
-      // usersSetup(response.data.data);
-    } catch (e) {
-      fetchingFinish();
-    }
-  };
+  // const fetchUsers = async (signal) => {
+  //   try {
+  //     const usersURL = `${baseUrl}users/getall`;
+  //     const response = await axios.get(usersURL, { signal });
+  //     // usersSetup(response.data.data);
+  //   } catch (e) {
+  //     fetchingFinish();
+  //   }
+  // };
 
   const dataSetup = (studentData) => {
     const locationCampus = location.pathname.split("/")[1];
@@ -222,11 +222,12 @@ const DashboardPage = (props) => {
     }));
   };
 
-  const fetchStudents = async () => {
+  const fetchStudents = async (signal) => {
     try {
       const { url } = props;
       const dataURL = baseUrl + url;
       const response = await axios.get(dataURL, {
+        signal,
         params: {
           from: state.fromDate,
           to: state.toDate,
@@ -262,13 +263,15 @@ const DashboardPage = (props) => {
   };
 
   useEffect(() => {
+    const controller = new AbortController();
     const fetchData = async () => {
       fetchingStart();
-      await fetchStudents();
-      await fetchUsers();
+      await fetchStudents(controller.signal);
+      // await fetchUsers(controller.signal);
       fetchingFinish();
     };
     fetchData();
+    return () => controller.abort();
   }, []);
 
   const changeFromDate = async (date) => {

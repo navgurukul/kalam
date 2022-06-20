@@ -11,85 +11,34 @@ import DashboardPage from "../dashboard/Dashboard";
 import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
 import StudentsProgressCards from "../student/StudentsProgressCards";
 import GraphingPresentationJob from "../partner/GraphingPresentationJob";
-// import user from "../utils/user";
-import NotHaveAccess from "../layout/NotHaveAccess";
 
 import { campus } from "../../utils/constants";
 import Loader from "../ui/Loader";
 
-const baseUrl = import.meta.env.VITE_API_URL;
+// const baseUrl = import.meta.env.VITE_API_URL;
 
 const CampusStudentsData = () => {
   const { campusId } = useParams();
   const { loggedInUser } = useSelector((state) => state.auth);
   const { isFetching } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
-  const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   // const usersSetup = (users) => dispatch(setupUsers(users));
-  const [state, setState] = React.useState({
-    dataView: 0,
-    campusName: campus.find((x) => x.id === parseInt(campusId, 10)).name,
-    access: null,
-    // userLoggedIn: user(),
-    campusRouteCondition: false,
-  });
-  const fetchAccess = async () => {
-    try {
-      const accessUrl = `${baseUrl}rolebaseaccess`;
+  const [dataView, setDataView] = React.useState(0);
 
-      axios.get(accessUrl).then((response) => {
-        const campusData = response.data.campus;
-        const conditions = //variable to check if user is allowed to access the page
-          campusData &&
-          loggedInUser &&
-          loggedInUser.email &&
-          campusData[state.campusName] &&
-          campusData[state.campusName].view &&
-          campusData[state.campusName].view.includes(loggedInUser.email);
+  const campusName = campus.find((x) => x.id === parseInt(campusId, 10)).name;
 
-        setState({
-          ...state,
-          access: campusData || null,
-          campusRouteCondition: conditions, //to set access object
-        });
-      });
-    } catch (e) {
-      // console.error(e);
-    }
-  };
-
-  // const fetchUsers = async () => {
-  //   const usersURL = `${baseUrl}users/getall`;
-  //   try {
-  //     const response = await axios.get(usersURL, {});
-  //     // usersSetup(response.data.data);
-  //   } catch (e) {
-  //     // console.error(e);
-  //     fetchingFinish();
-  //   }
-  // };
-
-  useEffect(() => {
-    (async () => {
-      fetchingStart();
-      await fetchAccess();
-      // await fetchUsers();
-      fetchingFinish();
-    })();
-  }, []);
+  useEffect(() => fetchingFinish(), []);
 
   const progressMade = () => {
-    setState({ ...state, dataView: 1 });
+    setDataView(1);
   };
   const tabularData = () => {
-    setState({ ...state, dataView: 0 });
+    setDataView(0);
   };
   const showGraphData = () => {
-    setState({ ...state, dataView: 2 });
+    setDataView(2);
   };
-
-  const { campusName, dataView } = state;
   //console.log(campusName, campusId);
 
   const getVIew = (viewNo) => {
@@ -120,31 +69,25 @@ const CampusStudentsData = () => {
         );
     }
   };
-  return (
-    <div>
-      {state.campusRouteCondition ? (
-        <div>
-          <SelectUiByButtons
-            name={`${campusName} Campus`}
-            progressMade={{ label: "Progress Made", action: progressMade }}
-            tabularData={{ label: "Tabular Data", action: tabularData }}
-            showGraphData={{ label: "Graph on Job", action: showGraphData }}
-            selected={
-              dataView === 0
-                ? "tabularData"
-                : dataView === 1
-                ? "progressMade"
-                : "showGraphData"
-            }
-          />
-          {getVIew(dataView)}
-        </div>
-      ) : isFetching ? (
-        <Loader container />
-      ) : (
-        <NotHaveAccess />
-      )}
-    </div>
+  return !isFetching ? (
+    <>
+      <SelectUiByButtons
+        name={`${campusName} Campus`}
+        progressMade={{ label: "Progress Made", action: progressMade }}
+        tabularData={{ label: "Tabular Data", action: tabularData }}
+        showGraphData={{ label: "Graph on Job", action: showGraphData }}
+        selected={
+          dataView === 0
+            ? "tabularData"
+            : dataView === 1
+            ? "progressMade"
+            : "showGraphData"
+        }
+      />
+      {getVIew(dataView)}
+    </>
+  ) : (
+    <Loader container />
   );
 };
 

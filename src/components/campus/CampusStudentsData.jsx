@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-import axios from "axios";
 import { useParams } from "react-router-dom";
 
 import StudentService from "../../services/StudentService";
@@ -13,14 +12,11 @@ import StudentsProgressCards from "../student/StudentsProgressCards";
 import GraphingPresentationJob from "../partner/GraphingPresentationJob";
 
 import { campus } from "../../utils/constants";
-import Loader from "../ui/Loader";
 
 // const baseUrl = import.meta.env.VITE_API_URL;
 
 const CampusStudentsData = () => {
   const { campusId } = useParams();
-  const { loggedInUser } = useSelector((state) => state.auth);
-  const { isFetching } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
   const fetchingFinish = () => dispatch(changeFetching(false));
   // const usersSetup = (users) => dispatch(setupUsers(users));
@@ -69,7 +65,7 @@ const CampusStudentsData = () => {
         );
     }
   };
-  return !isFetching ? (
+  return (
     <>
       <SelectUiByButtons
         name={`${campusName} Campus`}
@@ -86,8 +82,6 @@ const CampusStudentsData = () => {
       />
       {getVIew(dataView)}
     </>
-  ) : (
-    <Loader container />
   );
 };
 

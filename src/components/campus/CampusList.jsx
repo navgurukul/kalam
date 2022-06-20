@@ -4,8 +4,6 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import MainLayout from "../muiTables/MainLayout";
-// import user from "../utils/user";
-import NotHaveAccess from "../layout/NotHaveAccess";
 import Loader from "../ui/Loader";
 import { changeFetching } from "../../store/slices/uiSlice";
 
@@ -47,58 +45,64 @@ const columns = [
 ];
 
 const CampusList = () => {
-  const { loggedInUser } = useSelector((state) => state.auth);
+  const { loggedInUser, roles } = useSelector((state) => state.auth);
   const { isFetching } = useSelector((state) => state.ui);
 
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const [state, setState] = React.useState({
-    data: [],
-    access: null,
-    campusCondition: false,
-  });
+  const [campusList, setCampusList] = React.useState([]);
 
-  const fetchAccess = async () => {
-    try {
-      const accessUrl = `${baseUrl}rolebaseaccess`;
-      axios.get(accessUrl).then((response) => {
-        const campusData = response.data.campus; //storing response data in campusData variable
-        const conditions = //variable to check if user is allowed to access the page
-          campusData &&
-          loggedInUser &&
-          loggedInUser.email &&
-          campusData.view &&
-          campusData.view.includes(loggedInUser.email);
+  // const fetchAccess = async () => {
+  //   try {
+  //     const accessUrl = `${baseUrl}rolebaseaccess`;
+  //     axios.get(accessUrl).then((response) => {
+  //       const campusData = response.data.campus; //storing response data in campusData variable
+  //       const conditions = //variable to check if user is allowed to access the page
+  //         campusData &&
+  //         loggedInUser &&
+  //         loggedInUser.email &&
+  //         campusData.view &&
+  //         campusData.view.includes(loggedInUser.email);
 
-        setState((prevState) => ({
-          ...prevState,
-          access: campusData || null,
-          campusCondition: conditions, //to set access object
-        }));
-      });
-    } catch (e) {
-      // console.error(e);
-    }
-  };
+  //       setState((prevState) => ({
+  //         ...prevState,
+  //         access: campusData || null,
+  //         // campusCondition: conditions, //to set access object
+  //       }));
+  //     });
+  //   } catch (e) {
+  //     // console.error(e);
+  //   }
+  // };
 
   const fetchCampus = async () => {
     try {
+      const adminRole = roles.findIndex(
+        (roleItem) => roleItem.role === "Admin"
+      );
+      const role = roles.find((roleItem) => roleItem.role === "Campus");
+      const access = role?.access?.map((accessItem) => accessItem.access) || [];
       const dataURL = `${baseUrl}campus`;
       const response = await axios.get(dataURL);
-      setState((prevState) => ({
-        ...prevState,
-        data: [...response.data.data, { campus: "All" }],
-      }));
+      setCampusList(
+        adminRole !== -1
+          ? [...response.data.data, { campus: "All" }]
+          : [
+              ...response.data.data.filter((campusItem) =>
+                access.includes(campusItem.id)
+              ),
+            ]
+      );
     } catch (e) {
       // console.error(e);
     }
   };
-  const { data } = state;
+
   useEffect(() => {
     (async () => {
       fetchingStart();
-      await fetchAccess();
+      // await fetchAccess();
       await fetchCampus();
       fetchingFinish();
     })();
@@ -113,23 +117,17 @@ const CampusList = () => {
   //   fetchData();
   // }, [loggedInUser]);
 
-  return (
-    <div>
-      {state.campusCondition ? (
-        <Container maxWidth="sm">
-          <MainLayout
-            title="Campuses Name"
-            columns={columns}
-            data={data}
-            showLoader={isFetching}
-          />
-        </Container>
-      ) : isFetching ? (
-        <Loader container />
-      ) : (
-        <NotHaveAccess />
-      )}
-    </div>
+  return !isFetching ? (
+    <Container maxWidth="sm">
+      <MainLayout
+        title="Campuses Name"
+        columns={columns}
+        data={campusList}
+        showLoader={isFetching}
+      />
+    </Container>
+  ) : (
+    <Loader container />
   );
 };
 

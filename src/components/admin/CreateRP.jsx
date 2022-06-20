@@ -29,6 +29,8 @@ const CreateRP = () => {
   const [rpName, setRPName] = React.useState("");
   const [rpDesc, setRPDesc] = React.useState("");
 
+  React.useEffect(() => dispatch(changeFetching(false)), []);
+
   const getAPIKey = (rp) => (rp === "Role" ? "roles" : "privilege");
 
   const handleRPChange = (e) => setRolePrivilege(e.target.value);

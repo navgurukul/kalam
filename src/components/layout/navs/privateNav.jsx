@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 
 import HomeIcon from "@mui/icons-material/Home";
@@ -10,73 +10,50 @@ import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import GroupIcon from "@mui/icons-material/Group";
 import WorkIcon from "@mui/icons-material/Work";
 
-import axios from "axios";
-
-/* import your desired icon from material-ui icons library */
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export default ({ toggleDrawer }) => {
-  const baseUrl = import.meta.env.VITE_API_URL;
-  const { loggedInUser } = useSelector((state) => state.auth);
-  const [access, setAccess] = useState({});
+  // const baseUrl = import.meta.env.VITE_API_URL;
+  const { privileges } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    axios.get(`${baseUrl}rolebaseaccess`).then((res) => {
-      setAccess(res.data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   axios.get(`${baseUrl}rolebaseaccess`).then((res) => {
+  //     setAccess(res.data);
+  //   });
+  // }, []);
+
   const publicNavs = [
-    access &&
-      loggedInUser &&
-      loggedInUser.email &&
-      access.students &&
-      access.students.view &&
-      access.students.view.includes(loggedInUser.email) && {
-        url: "/students",
-        name: "Students",
-        icon: <HomeIcon />,
-      },
-    access &&
-      loggedInUser &&
-      loggedInUser.email &&
-      access.partners &&
-      access.partners.view &&
-      access.partners.view.includes(loggedInUser.email) && {
-        url: "/partners",
-        name: "Partners",
-        icon: <GroupIcon />,
-      },
+    privileges.some((priv) => priv.privilege === "ViewDashboard") && {
+      url: "/students",
+      name: "Students",
+      icon: <HomeIcon />,
+    },
+    privileges.some((priv) => priv.privilege === "ViewPartners") && {
+      url: "/partners",
+      name: "Partners",
+      icon: <GroupIcon />,
+    },
     {
       url: "/donors",
       name: "Donors",
       icon: <GroupIcon />,
     },
-    access &&
-      loggedInUser &&
-      loggedInUser.email &&
-      access.campus &&
-      access.campus.view &&
-      access.campus.view.includes(loggedInUser.email) && {
-        url: "/campus",
-        name: "Campuses",
-        icon: <MapsHomeWorkIcon />,
-      },
+    {
+      url: "/campus",
+      name: "Campuses",
+      icon: <MapsHomeWorkIcon />,
+    },
     {
       url: "/owner",
       name: "Owners",
       icon: <GroupIcon />,
     },
-    // access &&
-    //   loggedInUser &&
-    //   loggedInUser.email &&
-    //   access.campus &&
-    //   access.campus.view &&
-    //   access.campus.view.includes(loggedInUser.email) && {
-    //     url: "/placements",
-    //     name: "Placements",
-    //     icon: <WorkIcon />,
-    //   },
+    privileges.some((priv) => priv.privilege === "ViewPlacements") && {
+      url: "/placements",
+      name: "Placements",
+      icon: <WorkIcon />,
+    },
     {
       url: "/outreachDetails",
       name: "Outreach Details",

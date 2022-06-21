@@ -5,6 +5,7 @@ import { useSnackbar } from "notistack";
 import NotHaveAccess from "../components/layout/NotHaveAccess";
 import { parseJwt } from "../utils";
 import { logout } from "../store/slices/authSlice";
+import Loader from "../components/ui/Loader";
 
 const RequireAuth = ({ children, privateRoute }) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -12,7 +13,8 @@ const RequireAuth = ({ children, privateRoute }) => {
   const location = useLocation();
   const params = useParams();
   const dispatch = useDispatch();
-  const { isAuthenticated, roles, privileges, loggedInUser } = useSelector(
+  const { isFetching } = useSelector((state) => state.ui);
+  const { isAuthenticated, roles, privileges } = useSelector(
     (state) => state.auth
   );
   if (decodedJwt && decodedJwt.exp * 1000 < Date.now()) {
@@ -30,12 +32,15 @@ const RequireAuth = ({ children, privateRoute }) => {
   //   return <div className="bodyComponent">{children}</div>;
   const currentPath = location.pathname.split("/")[1];
   let role;
+  if (!privateRoute) return <div className="bodyComponent">{children}</div>;
   switch (currentPath) {
     case "admin":
       return (
         <div className="bodyComponent">
           {roles.some((roleItem) => roleItem.role === "Admin") ? (
             children
+          ) : isFetching ? (
+            <Loader container />
           ) : (
             <NotHaveAccess />
           )}
@@ -46,6 +51,8 @@ const RequireAuth = ({ children, privateRoute }) => {
         <div className="bodyComponent">
           {privileges.some((priv) => priv.privilege === "ViewDashboard") ? (
             children
+          ) : isFetching ? (
+            <Loader container />
           ) : (
             <NotHaveAccess />
           )}
@@ -69,15 +76,20 @@ const RequireAuth = ({ children, privateRoute }) => {
     //   );
     case "campus":
       role = roles.find((roleItem) => roleItem.role === "Campus");
-      return params.campusId === undefined ||
-        (role &&
-          role.access.findIndex(
-            (accessItem) => accessItem.access === parseInt(params.campusId, 10)
-          ) !== -1) ? (
-        <div className="bodyComponent">{children}</div>
-      ) : (
+      return (
         <div className="bodyComponent">
-          <NotHaveAccess />
+          {params.campusId === undefined ||
+          (role &&
+            role.access.findIndex(
+              (accessItem) =>
+                accessItem.access === parseInt(params.campusId, 10)
+            ) !== -1) ? (
+            children
+          ) : isFetching ? (
+            <Loader container />
+          ) : (
+            <NotHaveAccess />
+          )}
         </div>
       );
     case "donor":
@@ -91,6 +103,8 @@ const RequireAuth = ({ children, privateRoute }) => {
                 accessItem.access === parseInt(params.donorItem, 10)
             ) !== -1) ? (
             children
+          ) : isFetching ? (
+            <Loader container />
           ) : (
             <NotHaveAccess />
           )}
@@ -101,6 +115,8 @@ const RequireAuth = ({ children, privateRoute }) => {
         <div className="bodyComponent">
           {privileges.some((priv) => priv.privilege === "ViewDashboard") ? (
             children
+          ) : isFetching ? (
+            <Loader container />
           ) : (
             <NotHaveAccess />
           )}

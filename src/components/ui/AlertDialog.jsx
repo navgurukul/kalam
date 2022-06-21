@@ -26,6 +26,7 @@ const AlertDialog = () => {
 
   return (
     <Dialog
+      fullWidth
       open={dialogOpen}
       TransitionComponent={Transition}
       keepMounted

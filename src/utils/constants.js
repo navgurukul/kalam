@@ -107,6 +107,8 @@ export const permissions = {
   ],
 
   updateStudentName: [
+    "shikha21@navgurukul.org",
+    "rupalisingh@navgurukul.org",
     "kittiy@navgurukul.org",
     "komal@navgurukul.org",
     "shreshta20@navgurukul.org",

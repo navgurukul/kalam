@@ -16,7 +16,7 @@ import { changeFetching } from "../../store/slices/uiSlice";
 import MainLayout from "../muiTables/MainLayout";
 import ReportSend from "../report/ReportSend";
 // import user from "../utils/user";
-import NotHaveAccess from "../layout/NotHaveAccess";
+import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -172,95 +172,57 @@ const columns = [
 const PartnerList = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { loggedInUser } = useSelector((state) => state.auth);
+  const { isFetching } = useSelector((state) => state.ui);
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const [state, setState] = React.useState({
-    data: [],
-    access: null, //access object to store access data
-    // userLoggedIn: user(), //user object to store user data
-    partnerRouteConditon: false, //to check condition of partner route
-  });
-
-  const fetchAccess = async () => {
-    try {
-      const accessUrl = `${baseUrl}rolebaseaccess`;
-      axios.get(accessUrl).then((response) => {
-        const partnerData = response.data; //variable to store response data
-        const conditions =
-          partnerData &&
-          loggedInUser &&
-          loggedInUser.email &&
-          partnerData.partners &&
-          partnerData.partners.view &&
-          partnerData.partners.view.includes(loggedInUser.email);
-        setState((prevState) => ({
-          ...prevState,
-          access: partnerData || null, //set access data to state
-          partnerRouteConditon: conditions,
-        }));
-      });
-    } catch (e) {
-      // console.error(e);
-    }
-  };
+  const [partnerList, setPartnerList] = React.useState([]);
 
   const dataSetup = (data) => {
-    setState((prevState) => ({ ...prevState, data }));
-    fetchingFinish();
+    setPartnerList(data);
   };
 
   const fetchPartners = async () => {
     try {
-      fetchingStart();
       const dataURL = `${baseUrl}partners`;
       const response = await axios.get(dataURL, {
         headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
       });
       dataSetup(response.data.data);
     } catch (e) {
-      fetchingFinish();
+      // fetchingFinish();
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    (async () => {
+      fetchingStart();
       await fetchPartners();
-      await fetchAccess();
-    };
-    fetchData();
+      fetchingFinish();
+    })();
   }, []);
 
-  // const onRowClick = (event, rowData) => navigate("/partner/" + rowData.id + "/students");
-
-  if (!state.data.length) {
-    return <Box />;
-  }
-  return (
-    <div>
-      {state.partnerRouteConditon ? (
-        <Box>
-          <ThemeProvider theme={theme}>
-            <div className={classes.innerTable}>
-              <div className={classes.buttons}>
-                <Link to="/partner/add">
-                  <Button color="primary" variant="contained">
-                    Add Partner
-                  </Button>
-                </Link>
-              </div>
-              <MainLayout
-                title="Partners"
-                columns={columns}
-                data={state.data}
-              />
-            </div>
-          </ThemeProvider>
-        </Box>
-      ) : (
-        <NotHaveAccess />
-      )}
-    </div>
+  return !isFetching ? (
+    <Box>
+      <ThemeProvider theme={theme}>
+        <div className={classes.innerTable}>
+          <div className={classes.buttons}>
+            <Link to="/partner/add">
+              <Button color="primary" variant="contained">
+                Add Partner
+              </Button>
+            </Link>
+          </div>
+          <MainLayout
+            title="Partners"
+            columns={columns}
+            data={partnerList}
+            showLoader={isFetching}
+          />
+        </div>
+      </ThemeProvider>
+    </Box>
+  ) : (
+    <Loader container />
   );
 };
 

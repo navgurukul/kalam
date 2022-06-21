@@ -18,13 +18,10 @@ import { changeFetching } from "../../store/slices/uiSlice";
 import StudentService from "../../services/StudentService";
 import ServerSidePagination from "../muiTables/ServerSidePagination";
 import theme from "../../theme";
-// import user from "../utils/user";
-import NotHaveAccess from "../layout/NotHaveAccess";
 import Loader from "../ui/Loader";
 import { fetchOwners as fetchOwnersAction } from "../../store/slices/dataSlice";
 import {
   setFromDate,
-  setNoOfRows,
   setStage,
   setStudentData,
   setToDate,
@@ -94,7 +91,7 @@ const AdmissionsDash = (props) => {
   const setStudents = (data) => dispatch(setStudentData(data));
   const setFrom = (data) => dispatch(setFromDate(data));
   const setTo = (data) => dispatch(setToDate(data));
-  const setRows = (data) => dispatch(setNoOfRows(data));
+  // const setRows = (data) => dispatch(setNoOfRows(data));
   const setPage = (data) => dispatch(setPageNo(data));
   const updateStage = (data) => dispatch(setStage(data));
   const [state, setState] = React.useState({
@@ -109,7 +106,7 @@ const AdmissionsDash = (props) => {
     selectedOption: [],
     access: null, //access object to store who are having access data
     // userLoggedIn: user(), //user object to store who is logged in
-    studentDashboardCondition: false, //condition to show student dashboard
+    studentDashboardCondition: true, //condition to show student dashboard
     loading: true,
   });
   let dataType = paramDataType || "softwareCourse";
@@ -117,31 +114,6 @@ const AdmissionsDash = (props) => {
   const usersURL = `${baseURL}users/getall`;
   // let stage = null;
   let value = null;
-  const fetchAccess = async (signal) => {
-    setState({ ...state, loading: true });
-    try {
-      const accessUrl = `${baseURL}rolebaseaccess`;
-      axios.get(accessUrl, { signal }).then((response) => {
-        const studentDashboardData = response.data; //variable to store the response
-        const conditions = //variable to store the conditions
-          studentDashboardData &&
-          loggedInUser &&
-          loggedInUser.email &&
-          studentDashboardData.students &&
-          studentDashboardData.students.view &&
-          studentDashboardData.students.view.includes(loggedInUser.email);
-        setState((prevState) => ({
-          ...prevState,
-          access: studentDashboardData || null, //set access to state
-          studentDashboardCondition: conditions,
-          loading: false,
-        }));
-      });
-    } catch (e) {
-      // console.error(e);
-      setState({ ...state, loading: false });
-    }
-  };
 
   const fetchOWner = async (signal) => {
     const response = await axios.get(`${baseURL}owner`, { signal });
@@ -161,7 +133,6 @@ const AdmissionsDash = (props) => {
       // usersSetup(response.data.data);
       const newData = response.data.data.map((data) => data.user);
       localStorage.setItem("users", JSON.stringify(newData));
-      fetchingFinish();
     } catch (e) {
       // console.error(e);
       fetchingFinish();
@@ -184,7 +155,6 @@ const AdmissionsDash = (props) => {
         showLoader: true,
         totalData: totalData || state.totalData,
       }));
-      fetchingFinish();
     } else {
       setStudents({ data: [], totalData: 0 });
       setState((prevState) => ({
@@ -259,17 +229,17 @@ const AdmissionsDash = (props) => {
   //   }
   // };
 
-  const setNumbersOfRows = (_value) => {
-    setRows(value);
-    setState((prevState) => ({
-      ...prevState,
-      numberOfRows: _value,
-    }));
-  };
+  // const setNumbersOfRows = (_value) => {
+  //   setRows(value);
+  //   setState((prevState) => ({
+  //     ...prevState,
+  //     numberOfRows: _value,
+  //   }));
+  // };
 
-  const getFilterValues = (_value) => {
-    setState((prevState) => ({ ...prevState, filterValues: _value }));
-  };
+  // const getFilterValues = (_value) => {
+  //   setState((prevState) => ({ ...prevState, filterValues: _value }));
+  // };
 
   // const stageChangeEvent = (iData) => {
   //   let dataElem = state.data[iData.rowId];
@@ -353,15 +323,17 @@ const AdmissionsDash = (props) => {
   useEffect(() => {
     const controller = new AbortController();
     // dispatch(rFStudents({ dataType, fetchPendingInterviewDetails }));
-    const fetchData = async () => {
+
+    (async () => {
+      fetchingStart();
       // await fetchStudents(null, controller.signal);
       await fetchUsers(controller.signal);
       await fetchOWner(controller.signal);
       await fetchPartner(controller.signal);
       // await fetchAccess(controller.signal);
+      fetchingFinish();
       dispatch(fetchOwnersAction());
-    };
-    fetchData();
+    })();
     return () => {
       controller.abort();
       setStudents({ data: [], totalData: 0 });
@@ -373,11 +345,6 @@ const AdmissionsDash = (props) => {
     if (loggedInUser)
       dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType })); //softwareCourse
   }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchAccess(controller.signal);
-  }, [loggedInUser]);
 
   const options = (
     <Grid container spacing={4} style={{ marginBottom: "0.8rem" }}>
@@ -475,50 +442,44 @@ const AdmissionsDash = (props) => {
       />
     );
   }
-  return (
-    <div>
-      {state.studentDashboardCondition ? (
-        <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
-          <ThemeProvider theme={theme}>
-            {fetchPendingInterviewDetails ? null : options}
-            <div className={classes.clear} />
-            <ServerSidePagination
-              columns={StudentService.columns[dataType]}
-              data={sData || studentData}
-              showLoader={isFetching}
-              // fun={fetchStudents}
-              params={{
-                params: {
-                  dataType,
-                  stage: stage.length === 0 ? null : stage.join(","),
-                  from: fromDate,
-                  to: toDate,
-                },
-              }}
-              stages={value}
-              // dataSetup={dataSetup}
-              sortChange={sortChange}
-            />
-          </ThemeProvider>
-        </Box>
-      ) : state.loading ? (
-        <Container
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginTop: "4rem",
+  return !isFetching ? (
+    <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
+      <ThemeProvider theme={theme}>
+        {fetchPendingInterviewDetails ? null : options}
+        <div className={classes.clear} />
+        <ServerSidePagination
+          columns={StudentService.columns[dataType]}
+          data={sData || studentData}
+          showLoader={isFetching}
+          // fun={fetchStudents}
+          params={{
+            params: {
+              dataType,
+              stage: stage.length === 0 ? null : stage.join(","),
+              from: fromDate,
+              to: toDate,
+            },
           }}
-        >
-          <Typography variant="h3" style={{ marginBottom: "2.4rem" }}>
-            Loading
-          </Typography>
-          <Loader />
-        </Container>
-      ) : (
-        <NotHaveAccess />
-      )}
-    </div>
+          stages={value}
+          // dataSetup={dataSetup}
+          sortChange={sortChange}
+        />
+      </ThemeProvider>
+    </Box>
+  ) : (
+    <Container
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        marginTop: "4rem",
+      }}
+    >
+      <Typography variant="h3" style={{ marginBottom: "2.4rem" }}>
+        Loading
+      </Typography>
+      <Loader />
+    </Container>
   );
 };
 

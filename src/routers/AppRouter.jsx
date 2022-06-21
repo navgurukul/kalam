@@ -13,6 +13,7 @@ import LandingPage from "../components/pages/LandingPage";
 import AdmissionsDash from "../components/dashboard/AdmissionsDash";
 import NotFoundPage from "../components/layout/NotFoundPage";
 import Loader from "../components/ui/Loader";
+import { changeFetching } from "../store/slices/uiSlice";
 
 const AssessmentAttempts = React.lazy(() =>
   import("../components/assessment/AssessmentAttempts")
@@ -76,9 +77,8 @@ const StudentStatus = React.lazy(() =>
 const MyTaskReport = React.lazy(() => import("../components/pages/MyTask"));
 const MyAssignReport = React.lazy(() => import("../components/pages/MyAssign"));
 const LoginDesign = React.lazy(() => import("../components/pages/LoginDesign"));
-const NewAdminPage = React.lazy(() =>
-  import("../components/pages/NewAdminPage")
-);
+const AdminPage = React.lazy(() => import("../components/admin/AdminPage"));
+const CreateRP = React.lazy(() => import("../components/admin/CreateRP"));
 const SlotBooking = React.lazy(() => import("../components/pages/SlotBooking"));
 const DuplicateStudents = React.lazy(() =>
   import("../components/pages/DuplicateStudents")
@@ -110,6 +110,7 @@ const AppRouter = () => {
         dispatch(logout());
         return;
       }
+      dispatch(changeFetching(true));
       dispatch(fetchCurrentUser({ userId }));
     }
   }, []);
@@ -142,16 +143,28 @@ const AppRouter = () => {
               }
             />
             {/* <PublicRoute path="/" component={LandingPage} exact={true} /> */}
-            <Route
-              path="/admin"
-              element={
-                <React.Suspense fallback={<Loader />}>
-                  <RequireAuth privateRoute>
-                    <NewAdminPage />
-                  </RequireAuth>
-                </React.Suspense>
-              }
-            />
+            <Route path="/admin">
+              <Route
+                index
+                element={
+                  <React.Suspense fallback={<Loader />}>
+                    <RequireAuth privateRoute>
+                      <AdminPage />
+                    </RequireAuth>
+                  </React.Suspense>
+                }
+              />
+              <Route
+                path="create"
+                element={
+                  <React.Suspense fallback={<Loader />}>
+                    <RequireAuth privateRoute>
+                      <CreateRP />
+                    </RequireAuth>
+                  </React.Suspense>
+                }
+              />
+            </Route>
             <Route path="/students">
               <Route
                 index

@@ -1,6 +1,5 @@
 /* eslint-disable no-return-await */
 import React, { useEffect, useState } from "react";
-import MUIDataTable from "mui-datatables";
 import Select, { components, createFilter } from "react-select";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -21,11 +20,13 @@ import {
   TextField,
   IconButton,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 import { debounce } from "underscore";
 import { AddCircleOutlined } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import ToolbarAddButton from "./ToolbarAddButton";
 import { campus } from "../../utils/constants";
+import MainLayout from "../muiTables/MainLayout";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -75,6 +76,7 @@ const CustomOption = ({ children, ...rest }) => (
 const AdminPage = () => {
   const { enqueueSnackbar } = useSnackbar();
 
+  const { isFetching } = useSelector((state) => state.ui);
   //States and Hooks
   const [users, setUsers] = useState([]);
   const [accessDialog, setAccessDialog] = useState(false);
@@ -664,7 +666,10 @@ const AdminPage = () => {
                   <label>
                     <Typography variant="caption">
                       Select{" "}
-                      {access.role === "selectRole" ? "Role" : access.role}
+                      {access.role === "selectRole"
+                        ? "Role"
+                        : roleOptions.find((opt) => opt.value === access.role)
+                            .label.name}
                     </Typography>
                   </label>
                   <Select
@@ -735,15 +740,6 @@ const AdminPage = () => {
     selectableRows: "none",
     responsive: "vertical",
     filter: false,
-    // textLabels: {
-    //   body: {
-    //     noMatch: loading ? (
-    //       <Loader />
-    //     ) : (
-    //       "Sorry, there is no matching data to display"
-    //     ),
-    //   },
-    // },
     customToolbar: React.useCallback(
       () => <ToolbarAddButton handleOpen={openEmailDialog} />,
       []
@@ -752,10 +748,17 @@ const AdminPage = () => {
 
   return (
     <Container maxWidth="xl">
-      <MUIDataTable
+      {/* <MUIDataTable
         title="Role Based Access"
         data={users}
         columns={columns}
+        options={options}
+      /> */}
+      <MainLayout
+        title="Role Based Access"
+        columns={columns}
+        data={users}
+        showLoader={isFetching}
         options={options}
       />
       <Dialog fullWidth open={Boolean(accessDialog)} onClose={handleClose}>

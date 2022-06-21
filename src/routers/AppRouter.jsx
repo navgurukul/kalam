@@ -13,6 +13,7 @@ import LandingPage from "../components/pages/LandingPage";
 import AdmissionsDash from "../components/dashboard/AdmissionsDash";
 import NotFoundPage from "../components/layout/NotFoundPage";
 import Loader from "../components/ui/Loader";
+import { changeFetching } from "../store/slices/uiSlice";
 
 const AssessmentAttempts = React.lazy(() =>
   import("../components/assessment/AssessmentAttempts")
@@ -109,6 +110,7 @@ const AppRouter = () => {
         dispatch(logout());
         return;
       }
+      dispatch(changeFetching(true));
       dispatch(fetchCurrentUser({ userId }));
     }
   }, []);

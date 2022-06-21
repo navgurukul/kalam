@@ -71,7 +71,7 @@ const PlacementStudentsData = () => {
   } = useSelector((state) => state.students);
   const dispatch = useDispatch();
 
-  const fetchingStart = () => dispatch(changeFetching(true));
+  // const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const setStudents = (data) => dispatch(setStudentData(data));
 
@@ -590,7 +590,7 @@ const PlacementStudentsData = () => {
 
   useEffect(() => {
     (async () => {
-      fetchingStart();
+      // fetchingStart();
       await getJobDetails();
       fetchingFinish();
     })();

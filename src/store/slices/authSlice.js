@@ -81,6 +81,7 @@ export const fetchCurrentUser = createAsyncThunk(
           rolesData.data.length > 0
             ? setupUser(rolesData.data[0])
             : { roles: [], privileges: [] };
+        thunkAPI.dispatch(changeFetching(false));
         return { error: false, user: data, roles, privileges };
       } catch (err) {
         throw Error(err.message);

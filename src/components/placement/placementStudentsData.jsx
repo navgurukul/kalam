@@ -118,6 +118,7 @@ const PlacementStudentsData = () => {
       name: "student_id",
       options: {
         display: false,
+        filter: false,
       },
     },
     {
@@ -132,7 +133,7 @@ const PlacementStudentsData = () => {
       name: "joinDate",
       label: "Date of Joining",
       options: {
-        filter: true,
+        filter: false,
         sort: true,
         customBodyRender: React.useCallback(
           (value) => (
@@ -150,8 +151,8 @@ const PlacementStudentsData = () => {
       name: "partner",
       label: "Partner",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value) => {
           const partnerName = value?.name;
           return <p>{partnerName}</p>;
@@ -163,8 +164,8 @@ const PlacementStudentsData = () => {
       name: "qualification",
       label: "Qualification",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value) => {
           const qualificationName = value && qualificationKeys[value];
           return <p>{qualificationName}</p>;
@@ -176,8 +177,8 @@ const PlacementStudentsData = () => {
       name: "campus",
       label: "Campus",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value) => {
           const campusName = value && value[0]?.campus;
 
@@ -189,6 +190,8 @@ const PlacementStudentsData = () => {
       name: "student_job_details",
       label: "Resume",
       options: {
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, change) => {
           // setDocuments({ ...documents, Resume_link: value?.resume || "" });
           const studentId = rowMeta.rowData[0];
@@ -208,6 +211,8 @@ const PlacementStudentsData = () => {
       name: "student_job_details",
       label: "Photo Link",
       options: {
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, change) => {
           const studentId = rowMeta.rowData[0];
           return (
@@ -226,6 +231,8 @@ const PlacementStudentsData = () => {
       name: "student_job_details",
       label: "Video Link",
       options: {
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, change) => {
           const studentId = rowMeta.rowData[0];
           return (
@@ -244,8 +251,9 @@ const PlacementStudentsData = () => {
       name: "studentDonor",
       label: "Donor",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
+
         customBodyRender: React.useCallback((value) => {
           const donorList = donor.filter((donorEl) =>
             value?.donor_id?.includes(`${donorEl.id}`)
@@ -267,8 +275,8 @@ const PlacementStudentsData = () => {
       label: "Gender",
       options: {
         display: false,
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value) => {
           const defaultValue =
             value === 1 ? "Female" : value === 2 ? "Male" : "Transgender";
@@ -281,8 +289,8 @@ const PlacementStudentsData = () => {
       name: "contacts", // Select Input options male,female
       label: "Contact",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value) => {
           const contactValue = value && value[0]?.mobile;
 
@@ -295,8 +303,8 @@ const PlacementStudentsData = () => {
       name: "student_job_details", // Select Input options male,female
       label: "Date of Offer Letter",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, change) => {
           const studentId = rowMeta.rowData[0];
           const offerLetterDate = value?.offer_letter_date
@@ -363,8 +371,8 @@ const PlacementStudentsData = () => {
       name: "student_job_details", //Textfield
       label: "Job Designation",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const jobDesignation = value?.job_designation || "Click to Add";
           const studentId = rowMeta.rowData[0];
@@ -385,8 +393,8 @@ const PlacementStudentsData = () => {
       name: "student_job_details", // Select input
       label: "Job Location",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const studentId = rowMeta.rowData[0]; //set id
           const jobLocation = value?.job_location || "Click to Add";
@@ -408,8 +416,8 @@ const PlacementStudentsData = () => {
       name: "student_job_details", // Select Input options offline, WFH
       label: "Job Type",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const selectJobType = {
             value: "selectJobType",
@@ -477,7 +485,7 @@ const PlacementStudentsData = () => {
       label: "Salary",
       options: {
         filter: false,
-        sort: true,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const studentId = rowMeta.rowData[0]; //set id
           // eslint-disable-next-line camelcase
@@ -525,8 +533,8 @@ const PlacementStudentsData = () => {
       name: "student_job_details", //Textfield
       label: "Employer",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const employer = value?.employer || "Click to Add";
           const studentId = rowMeta.rowData[0]; //set id

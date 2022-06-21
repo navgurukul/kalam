@@ -14,7 +14,7 @@ const RequireAuth = ({ children, privateRoute }) => {
   const params = useParams();
   const dispatch = useDispatch();
   const { isFetching } = useSelector((state) => state.ui);
-  const { isAuthenticated, roles, privileges } = useSelector(
+  const { loggedInUser, isAuthenticated, roles, privileges } = useSelector(
     (state) => state.auth
   );
   if (decodedJwt && decodedJwt.exp * 1000 < Date.now()) {
@@ -28,6 +28,17 @@ const RequireAuth = ({ children, privateRoute }) => {
   //   return <Navigate to="/user/mobile/number" replace />;
   if (isAuthenticated && !privateRoute)
     return <Navigate to="/students" replace />;
+  if (
+    location.pathname.split("/")[1] === "admin" &&
+    location.pathname.split("/")[2] === "create" &&
+    ![
+      "swanand@navgurukul.org",
+      "vaibhav@navgurukul.org",
+      "kirithiv@navgurukul.org",
+      "anand@navgurukul.org",
+    ].includes(loggedInUser.email)
+  )
+    return <NotHaveAccess />;
   if (isAuthenticated && roles.some((roleItem) => roleItem.role === "Admin"))
     return <div className="bodyComponent">{children}</div>;
   const currentPath = location.pathname.split("/")[1];

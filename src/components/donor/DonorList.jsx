@@ -54,11 +54,17 @@ const DonorList = () => {
       const access = role?.access?.map((accessItem) => accessItem.access) || [];
       const dataURL = `${baseUrl}donors`;
       const response = await axios.get(dataURL, { signal });
+      const adminRole = roles.findIndex(
+        (roleItem) => roleItem.role === "Admin"
+      );
       setState({
         ...state,
-        data: response.data.filter((donorItem) =>
-          access.includes(donorItem.id)
-        ),
+        data:
+          adminRole !== -1
+            ? response.data
+            : response.data.filter((donorItem) =>
+                access.includes(donorItem.id)
+              ),
         showLoader: false,
       });
     } catch (e) {

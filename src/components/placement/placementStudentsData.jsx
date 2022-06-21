@@ -129,14 +129,7 @@ const PlacementStudentsData = () => {
         sort: true,
       },
     },
-    {
-      name: "email",
-      label: "Email",
-      options: {
-        filter: false,
-        sort: true,
-      },
-    },
+
     {
       name: "joinDate",
       label: "Date of Joining",
@@ -291,6 +284,14 @@ const PlacementStudentsData = () => {
 
           return <p>{defaultValue}</p>;
         }, []),
+      },
+    },
+    {
+      name: "email",
+      label: "Email",
+      options: {
+        filter: false,
+        sort: true,
       },
     },
     {

@@ -36,9 +36,9 @@ const DonorStudentsData = React.lazy(() =>
 
 const OwnerList = React.lazy(() => import("../components/owner/OwnerList"));
 
-// const PlacementStudentsData = React.lazy(() =>
-//   import("../components/placement/placementStudentsData")
-// );
+const PlacementStudentsData = React.lazy(() =>
+  import("../components/placement/placementStudentsData")
+);
 
 const AddPartner = React.lazy(() => import("../components/partner/AddPartner"));
 const PartnerList = React.lazy(() =>

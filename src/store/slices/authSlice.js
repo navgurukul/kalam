@@ -2,9 +2,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { setupUser } from "../../components/admin/AdminPage";
-import { encryptText } from "../../utils";
+import { encryptText, toTitleCase } from "../../utils";
 import { baseUrl } from "../../utils/constants";
 import { changeFetching, enqueueSnackbar } from "./uiSlice";
+
+const fetchAllPrivileges = async () => {
+  const res = await axios.get(`${baseUrl}role/getPrivilege`);
+  return res.data;
+};
 
 export const loginWithGoogle = createAsyncThunk(
   "auth/login",
@@ -81,7 +86,23 @@ export const fetchCurrentUser = createAsyncThunk(
           rolesData.data.length > 0
             ? setupUser(rolesData.data[0])
             : { roles: [], privileges: [] };
-        return { error: false, user: data, roles, privileges };
+        const isAdmin = roles.some((role) => role.role === "Admin");
+
+        // thunkAPI.dispatch(changeFetching(false));
+        return {
+          error: false,
+          user: data,
+          roles,
+          privileges: isAdmin
+            ? [
+                ...privileges,
+                ...(await fetchAllPrivileges()).map((priv) => ({
+                  ...priv,
+                  privilege: toTitleCase(priv.privilege),
+                })),
+              ]
+            : privileges,
+        };
       } catch (err) {
         throw Error(err.message);
       }

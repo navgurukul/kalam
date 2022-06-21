@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 import axios from "axios";
-import { Box, Button, Container, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import theme from "../../theme";
 import ViewAssessments from "../assessment/ViewAssessments";
@@ -16,7 +16,6 @@ import { changeFetching } from "../../store/slices/uiSlice";
 import MainLayout from "../muiTables/MainLayout";
 import ReportSend from "../report/ReportSend";
 // import user from "../utils/user";
-import NotHaveAccess from "../layout/NotHaveAccess";
 import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -173,42 +172,13 @@ const columns = [
 const PartnerList = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { loggedInUser } = useSelector((state) => state.auth);
   const { isFetching } = useSelector((state) => state.ui);
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const [state, setState] = React.useState({
-    data: [],
-    access: null, //access object to store access data
-    // userLoggedIn: user(), //user object to store user data
-    partnerRouteConditon: false, //to check condition of partner route
-  });
-
-  const fetchAccess = async () => {
-    try {
-      const accessUrl = `${baseUrl}rolebaseaccess`;
-      axios.get(accessUrl).then((response) => {
-        const partnerData = response.data; //variable to store response data
-        const conditions =
-          partnerData &&
-          loggedInUser &&
-          loggedInUser.email &&
-          partnerData.partners &&
-          partnerData.partners.view &&
-          partnerData.partners.view.includes(loggedInUser.email);
-        setState((prevState) => ({
-          ...prevState,
-          access: partnerData || null, //set access data to state
-          partnerRouteConditon: conditions,
-        }));
-      });
-    } catch (e) {
-      // console.error(e);
-    }
-  };
+  const [partnerList, setPartnerList] = React.useState([]);
 
   const dataSetup = (data) => {
-    setState((prevState) => ({ ...prevState, data }));
+    setPartnerList(data);
   };
 
   const fetchPartners = async () => {
@@ -226,13 +196,12 @@ const PartnerList = () => {
   useEffect(() => {
     (async () => {
       fetchingStart();
-      await fetchAccess();
       await fetchPartners();
       fetchingFinish();
     })();
   }, []);
 
-  return state.partnerRouteConditon ? (
+  return !isFetching ? (
     <Box>
       <ThemeProvider theme={theme}>
         <div className={classes.innerTable}>
@@ -246,29 +215,14 @@ const PartnerList = () => {
           <MainLayout
             title="Partners"
             columns={columns}
-            data={state.data}
+            data={partnerList}
             showLoader={isFetching}
           />
         </div>
       </ThemeProvider>
     </Box>
-  ) : isFetching ? (
-    <Container
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        marginTop: "4rem",
-      }}
-    >
-      <Typography variant="h3" style={{ marginBottom: "2.4rem" }}>
-        Loading
-      </Typography>
-      <Loader />
-      {isFetching.toString()}
-    </Container>
   ) : (
-    <NotHaveAccess />
+    <Loader container />
   );
 };
 

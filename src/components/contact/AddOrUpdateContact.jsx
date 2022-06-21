@@ -6,12 +6,10 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useSelector } from "react-redux";
 
-import { permissions } from "../../utils/constants";
-
 const baseUrl = import.meta.env.VITE_API_URL;
 
 const AddOrUpdateContact = (props) => {
-  const { loggedInUser } = useSelector((state) => state.auth);
+  const { privileges } = useSelector((state) => state.auth);
   const [updateOrAddType, setUpdateOrAddType] = React.useState("");
   const snackbar = useSnackbar();
   const addOrUpdateMobile = async (event) => {
@@ -20,7 +18,7 @@ const AddOrUpdateContact = (props) => {
 
     await setUpdateOrAddType(type === "ADD" ? "addContact" : "updateContact");
 
-    if (permissions.addOrUpdateContact.indexOf(loggedInUser.mail_id) >= 0) {
+    if (privileges.some((priv) => priv.privilege === "AddOrUpdateContact")) {
       try {
         if (mobile) {
           axios

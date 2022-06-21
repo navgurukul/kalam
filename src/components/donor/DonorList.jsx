@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import Container from "@mui/material/Container";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import MainLayout from "../muiTables/MainLayout";
+import { changeFetching } from "../../store/slices/uiSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -39,17 +41,24 @@ const columns = [
 ];
 
 const DonorList = () => {
+  const { roles } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const fetchingFinish = () => dispatch(changeFetching(false));
   const [state, setState] = React.useState({
     data: [],
     showLoader: true,
   });
-  const fetchDonors = async () => {
+  const fetchDonors = async (signal) => {
     try {
+      const role = roles.find((roleItem) => roleItem.role === "Donor");
+      const access = role?.access?.map((accessItem) => accessItem.access) || [];
       const dataURL = `${baseUrl}donors`;
-      const response = await axios.get(dataURL);
+      const response = await axios.get(dataURL, { signal });
       setState({
         ...state,
-        data: response.data,
+        data: response.data.filter((donorItem) =>
+          access.includes(donorItem.id)
+        ),
         showLoader: false,
       });
     } catch (e) {
@@ -57,8 +66,11 @@ const DonorList = () => {
     }
   };
   useEffect(() => {
-    const fetchData = async () => fetchDonors();
+    const controller = new AbortController();
+    const fetchData = async () => fetchDonors(controller.signal);
     fetchData();
+    fetchingFinish();
+    return () => controller.abort();
   }, []);
 
   const { data, showLoader } = state;

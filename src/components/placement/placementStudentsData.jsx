@@ -130,6 +130,14 @@ const PlacementStudentsData = () => {
       },
     },
     {
+      name: "email",
+      label: "Email",
+      options: {
+        filter: false,
+        sort: true,
+      },
+    },
+    {
       name: "joinDate",
       label: "Date of Joining",
       options: {

@@ -705,7 +705,7 @@ const AdminPage = () => {
                     (privItem) =>
                       !currentUser.selectedPrivileges.some(
                         (selPrivItem) =>
-                          selPrivItem.privilege === privItem.label
+                          selPrivItem.privilege === privItem.label.name
                       )
                   )}
                   components={{

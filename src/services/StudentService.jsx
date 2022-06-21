@@ -1399,7 +1399,7 @@ const DashboardPartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
       change={(event) => updateValue(event)}
     />
   ) : (
-    value
+    <p>{value}</p>
   );
 };
 

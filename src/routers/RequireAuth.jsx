@@ -58,6 +58,18 @@ const RequireAuth = ({ children, privateRoute }) => {
           )}
         </div>
       );
+    case "placements":
+      return (
+        <div className="bodyComponent">
+          {privileges.some((priv) => priv.privilege === "ViewPlacements") ? (
+            children
+          ) : isFetching ? (
+            <Loader container />
+          ) : (
+            <NotHaveAccess />
+          )}
+        </div>
+      );
     // case "partner":
     //   return params.partnerId === undefined ||
     //     roles.some(

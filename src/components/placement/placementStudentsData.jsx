@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect } from "react";
-import { Typography, Select, MenuItem, Chip, Box } from "@mui/material";
+import { Select, MenuItem, Chip, Box } from "@mui/material";
 // import Select from "react-select";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +15,6 @@ import {
   setStudentData,
 } from "../../store/slices/studentSlice";
 import { changeFetching } from "../../store/slices/uiSlice";
-import NotHaveAccess from "../layout/NotHaveAccess";
 import Loader from "../ui/Loader";
 import { donor, qualificationKeys } from "../../utils/constants";
 import MainLayout from "../muiTables/MainLayout";
@@ -87,11 +86,6 @@ const PlacementStudentsData = () => {
       console.error(err);
     }
   };
-
-  const [canView, setCanView] = React.useState({
-    access: null, //access object to store who are having access data
-    studentDashboardCondition: false, //condition to show student dashboard})
-  });
 
   const changeJobType = (val, studentId, change) => {
     axios
@@ -564,36 +558,6 @@ const PlacementStudentsData = () => {
     },
   ];
 
-  const fetchAccess = async (signal) => {
-    // setState({ ...state, loading: true });
-
-    fetchingStart();
-    try {
-      const accessUrl = `${baseUrl}rolebaseaccess`;
-      axios.get(accessUrl, { signal }).then((response) => {
-        const studentDashboardData = response.data; //variable to store the response
-        const conditions = //variable to store the conditions
-          studentDashboardData &&
-          loggedInUser &&
-          loggedInUser.email &&
-          studentDashboardData.students &&
-          studentDashboardData.students.view &&
-          studentDashboardData.students.view.includes(loggedInUser.email);
-        setCanView((prevState) => ({
-          ...prevState,
-          access: studentDashboardData || null, //set access to state
-          studentDashboardCondition: conditions,
-          // loading: false,
-        }));
-        fetchingFinish();
-      });
-    } catch (e) {
-      // console.error(e);
-      // setState({ ...state, loading: false });
-      fetchingFinish();
-    }
-  };
-
   // const changeFromDate = async (date) => {
   //   setFrom(date);
   // };
@@ -619,13 +583,17 @@ const PlacementStudentsData = () => {
     // );
   }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser]);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchAccess(controller.signal);
-  }, [loggedInUser]);
+  // useEffect(() => {
+  //   const controller = new AbortController();
+  //   fetchAccess(controller.signal);
+  // }, [loggedInUser]);
 
   useEffect(() => {
-    getJobDetails();
+    (async () => {
+      fetchingStart();
+      await getJobDetails();
+      fetchingFinish();
+    })();
 
     return () => {
       setStudents({ data: [], totalData: 0 });
@@ -634,64 +602,15 @@ const PlacementStudentsData = () => {
 
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
-      {canView ? (
-        <>
-          {/* <Grid container spacing={4} style={{ marginBottom: "0.8rem" }}>
-            <Grid item xs={6} md={6} lg={3} sx={{ marginTop: "0.8rem" }}>
-              <LocalizationProvider dateAdapter={DateFnsUtils}>
-                <DatePicker
-                  margin="dense"
-                  style={{ marginLeft: 16, maxWidth: "40%" }}
-                  value={fromDate}
-                  id="date-picker-dialog"
-                  label="From Date"
-                  format="MM/dd/yyyy"
-                  onChange={changeFromDate}
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                  renderInput={(params) => (
-                    <TextField fullWidth size="small" {...params} />
-                  )}
-                />
-              </LocalizationProvider>
-            </Grid>
-            <Grid item xs={6} md={6} lg={3} sx={{ marginTop: "0.8rem" }}>
-              <LocalizationProvider dateAdapter={DateFnsUtils}>
-                <DatePicker
-                  margin="dense"
-                  style={{ marginLeft: 16, maxWidth: "40%" }}
-                  value={toDate}
-                  id="date-picker-dialog"
-                  label="To Date"
-                  format="MM/dd/yyyy"
-                  onChange={changeToDate}
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                  renderInput={(params) => (
-                    <TextField fullWidth size="small" {...params} />
-                  )}
-                />
-              </LocalizationProvider>
-            </Grid>
-          </Grid> */}
-          <MainLayout
-            title="Placement Data"
-            data={studentData}
-            columns={columns}
-            showLoader={isFetching}
-          />
-        </>
-      ) : isFetching ? (
-        <>
-          <Typography variant="h3" style={{ marginBottom: "2.4rem" }}>
-            Loading
-          </Typography>
-          <Loader />
-        </>
+      {!isFetching ? (
+        <MainLayout
+          title="Placement Data"
+          data={studentData}
+          columns={columns}
+          showLoader={isFetching}
+        />
       ) : (
-        <NotHaveAccess />
+        <Loader container />
       )}
     </Box>
   );

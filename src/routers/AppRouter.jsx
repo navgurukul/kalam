@@ -3,13 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import useCustomNotifier from "../utils/useCustomNotifier";
-
 import theme from "../theme";
 import RequireAuth from "./RequireAuth";
-
 import { fetchCurrentUser, logout } from "../store/slices/authSlice";
 import { decryptText } from "../utils";
-
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import LandingPage from "../components/pages/LandingPage";
@@ -302,7 +299,7 @@ const AppRouter = () => {
                 </React.Suspense>
               }
             />
-            {/* <Route
+            <Route
               path="/placements"
               element={
                 <React.Suspense fallback={<Loader />}>
@@ -311,7 +308,7 @@ const AppRouter = () => {
                   </RequireAuth>
                 </React.Suspense>
               }
-            /> */}
+            />
             <Route
               path="/outreachDetails"
               element={

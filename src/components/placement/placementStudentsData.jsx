@@ -1,6 +1,6 @@
-/* eslint-disable no-undef */
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect } from "react";
-import { Container, Typography, Select, MenuItem, Chip } from "@mui/material";
+import { Typography, Select, MenuItem, Chip, Box } from "@mui/material";
 // import Select from "react-select";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,12 +17,42 @@ import {
 import { changeFetching } from "../../store/slices/uiSlice";
 import NotHaveAccess from "../layout/NotHaveAccess";
 import Loader from "../ui/Loader";
-import { donor } from "../../utils/constants";
+import { donor, qualificationKeys } from "../../utils/constants";
 import MainLayout from "../muiTables/MainLayout";
 import EditText from "./EditText";
 import CustomDatePicker from "./CustomDatePicker";
+import UploadView from "./UploadView";
 
 const baseUrl = import.meta.env.VITE_API_URL;
+
+// const style = {
+//   position: "absolute",
+//   top: "50%",
+//   left: "50%",
+//   transform: "translate(-50%, -50%)",
+//   width: "80%",
+//   bgcolor: "background.paper",
+//   border: "none",
+//   boxShadow: 24,
+//   p: 4,
+// };
+
+// const styleForAddModal = {
+//   position: "absolute",
+//   top: "50%",
+//   left: "50%",
+//   transform: "translate(-50%, -50%)",
+//   width: "30%",
+//   height: "30%",
+//   boxShadow: 24,
+//   p: 4,
+//   bgcolor: "background.paper",
+//   border: "none",
+//   justifyContent: "center",
+//   display: "flex",
+//   justifyItems: "center",
+//   alignItems: "center",
+// };
 
 const PlacementStudentsData = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -40,14 +70,11 @@ const PlacementStudentsData = () => {
     numberOfRows,
     page,
   } = useSelector((state) => state.students);
-
   const dispatch = useDispatch();
 
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const setStudents = (data) => dispatch(setStudentData(data));
-  // const setFrom = (data) => dispatch(setFromDate(data));
-  // const setTo = (data) => dispatch(setToDate(data));
 
   const getJobDetails = async () => {
     try {
@@ -91,6 +118,7 @@ const PlacementStudentsData = () => {
       name: "student_id",
       options: {
         display: false,
+        filter: false,
       },
     },
     {
@@ -101,37 +129,57 @@ const PlacementStudentsData = () => {
         sort: true,
       },
     },
+
     {
       name: "joinDate",
       label: "Date of Joining",
       options: {
-        filter: true,
+        filter: false,
         sort: true,
-        customBodyRender: React.useCallback((value) => {
-          const DOJdate = value.split("T")[0];
-
-          return <p>{dayjs(DOJdate).format("D MMM YYYY")}</p>;
-        }),
+        customBodyRender: React.useCallback(
+          (value) => (
+            <p>
+              {dayjs(value).isValid()
+                ? dayjs(value).format("D MMM YYYY")
+                : "N/A"}
+            </p>
+          ),
+          []
+        ),
       },
     },
     {
       name: "partner",
       label: "Partner",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value) => {
           const partnerName = value?.name;
           return <p>{partnerName}</p>;
         }),
       },
     },
+
+    {
+      name: "qualification",
+      label: "Qualification",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: React.useCallback((value) => {
+          const qualificationName = value && qualificationKeys[value];
+          return <p>{qualificationName}</p>;
+        }),
+      },
+    },
+
     {
       name: "campus",
       label: "Campus",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value) => {
           const campusName = value && value[0]?.campus;
 
@@ -140,11 +188,73 @@ const PlacementStudentsData = () => {
       },
     },
     {
+      name: "student_job_details",
+      label: "Resume",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: React.useCallback((value, rowMeta, change) => {
+          // setDocuments({ ...documents, Resume_link: value?.resume || "" });
+          const studentId = rowMeta.rowData[0];
+          return (
+            <UploadView
+              label="resume"
+              type="Resume"
+              docLink={value?.resume}
+              studentId={studentId}
+              change={change}
+            />
+          );
+        }, []),
+      },
+    },
+    {
+      name: "student_job_details",
+      label: "Photo Link",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: React.useCallback((value, rowMeta, change) => {
+          const studentId = rowMeta.rowData[0];
+          return (
+            <UploadView
+              label="photo_link"
+              type="Photo Link"
+              docLink={value?.photo_link}
+              studentId={studentId}
+              change={change}
+            />
+          );
+        }, []),
+      },
+    },
+    {
+      name: "student_job_details",
+      label: "Video Link",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: React.useCallback((value, rowMeta, change) => {
+          const studentId = rowMeta.rowData[0];
+          return (
+            <UploadView
+              label="video_link"
+              type="Video Link"
+              docLink={value?.video_link}
+              studentId={studentId}
+              change={change}
+            />
+          );
+        }, []),
+      },
+    },
+    {
       name: "studentDonor",
       label: "Donor",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
+
         customBodyRender: React.useCallback((value) => {
           const donorList = donor.filter((donorEl) =>
             value?.donor_id?.includes(`${donorEl.id}`)
@@ -157,7 +267,7 @@ const PlacementStudentsData = () => {
               label={donorEl.name}
             />
           ));
-        }),
+        }, []),
       },
     },
 
@@ -165,8 +275,9 @@ const PlacementStudentsData = () => {
       name: "gender", // Select Input options male,female
       label: "Gender",
       options: {
-        filter: true,
-        sort: true,
+        display: false,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value) => {
           const defaultValue =
             value === 1 ? "Female" : value === 2 ? "Male" : "Transgender";
@@ -176,11 +287,19 @@ const PlacementStudentsData = () => {
       },
     },
     {
+      name: "email",
+      label: "Email",
+      options: {
+        filter: false,
+        sort: true,
+      },
+    },
+    {
       name: "contacts", // Select Input options male,female
       label: "Contact",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value) => {
           const contactValue = value && value[0]?.mobile;
 
@@ -188,12 +307,13 @@ const PlacementStudentsData = () => {
         }, []),
       },
     },
+
     {
       name: "student_job_details", // Select Input options male,female
       label: "Date of Offer Letter",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, change) => {
           const studentId = rowMeta.rowData[0];
           const offerLetterDate = value?.offer_letter_date
@@ -260,8 +380,8 @@ const PlacementStudentsData = () => {
       name: "student_job_details", //Textfield
       label: "Job Designation",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const jobDesignation = value?.job_designation || "Click to Add";
           const studentId = rowMeta.rowData[0];
@@ -282,8 +402,8 @@ const PlacementStudentsData = () => {
       name: "student_job_details", // Select input
       label: "Job Location",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const studentId = rowMeta.rowData[0]; //set id
           const jobLocation = value?.job_location || "Click to Add";
@@ -305,8 +425,8 @@ const PlacementStudentsData = () => {
       name: "student_job_details", // Select Input options offline, WFH
       label: "Job Type",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const selectJobType = {
             value: "selectJobType",
@@ -374,7 +494,7 @@ const PlacementStudentsData = () => {
       label: "Salary",
       options: {
         filter: false,
-        sort: true,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const studentId = rowMeta.rowData[0]; //set id
           // eslint-disable-next-line camelcase
@@ -422,8 +542,8 @@ const PlacementStudentsData = () => {
       name: "student_job_details", //Textfield
       label: "Employer",
       options: {
-        filter: true,
-        sort: true,
+        filter: false,
+        sort: false,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const employer = value?.employer || "Click to Add";
           const studentId = rowMeta.rowData[0]; //set id
@@ -506,13 +626,14 @@ const PlacementStudentsData = () => {
 
   useEffect(() => {
     getJobDetails();
+
     return () => {
       setStudents({ data: [], totalData: 0 });
     };
   }, []);
 
   return (
-    <Container maxWidth="xl">
+    <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
       {canView ? (
         <>
           {/* <Grid container spacing={4} style={{ marginBottom: "0.8rem" }}>
@@ -572,7 +693,7 @@ const PlacementStudentsData = () => {
       ) : (
         <NotHaveAccess />
       )}
-    </Container>
+    </Box>
   );
 };
 

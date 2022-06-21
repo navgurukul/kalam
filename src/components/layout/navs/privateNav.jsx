@@ -9,14 +9,20 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import GroupIcon from "@mui/icons-material/Group";
 import WorkIcon from "@mui/icons-material/Work";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export default ({ toggleDrawer }) => {
-  const { privileges } = useSelector((state) => state.auth);
+  const { roles, privileges } = useSelector((state) => state.auth);
 
   const publicNavs = [
+    roles.some((role) => role.role === "Admin") && {
+      url: "/admin",
+      name: "Admin",
+      icon: <AdminPanelSettingsIcon />,
+    },
     privileges.some((priv) => priv.privilege === "ViewDashboard") && {
       url: "/students",
       name: "Students",

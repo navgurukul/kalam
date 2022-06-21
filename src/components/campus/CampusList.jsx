@@ -53,29 +53,6 @@ const CampusList = () => {
   const fetchingFinish = () => dispatch(changeFetching(false));
   const [campusList, setCampusList] = React.useState([]);
 
-  // const fetchAccess = async () => {
-  //   try {
-  //     const accessUrl = `${baseUrl}rolebaseaccess`;
-  //     axios.get(accessUrl).then((response) => {
-  //       const campusData = response.data.campus; //storing response data in campusData variable
-  //       const conditions = //variable to check if user is allowed to access the page
-  //         campusData &&
-  //         loggedInUser &&
-  //         loggedInUser.email &&
-  //         campusData.view &&
-  //         campusData.view.includes(loggedInUser.email);
-
-  //       setState((prevState) => ({
-  //         ...prevState,
-  //         access: campusData || null,
-  //         // campusCondition: conditions, //to set access object
-  //       }));
-  //     });
-  //   } catch (e) {
-  //     // console.error(e);
-  //   }
-  // };
-
   const fetchCampus = async () => {
     try {
       const adminRole = roles.findIndex(

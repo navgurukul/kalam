@@ -14,14 +14,7 @@ import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export default ({ toggleDrawer }) => {
-  // const baseUrl = import.meta.env.VITE_API_URL;
   const { privileges } = useSelector((state) => state.auth);
-
-  // useEffect(() => {
-  //   axios.get(`${baseUrl}rolebaseaccess`).then((res) => {
-  //     setAccess(res.data);
-  //   });
-  // }, []);
 
   const publicNavs = [
     privileges.some((priv) => priv.privilege === "ViewDashboard") && {

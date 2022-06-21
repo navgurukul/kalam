@@ -1,7 +1,7 @@
 /* eslint-disable no-return-await */
 import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
-import Select, { components } from "react-select";
+import Select, { components, createFilter } from "react-select";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -56,7 +56,7 @@ export const setupUser = (user) => {
     roles,
     privileges,
   };
-  console.log(currentUserData);
+  // console.log(currentUserData);
   return currentUserData;
 };
 
@@ -712,6 +712,10 @@ const AdminPage = () => {
                     MultiValueLabel: CustomMVLabel,
                     Option: CustomOption,
                   }}
+                  filterOption={createFilter({
+                    stringify: (option) =>
+                      `${option.label.name} ${option.label.description}`,
+                  })}
                   menuPortalTarget={document.body}
                   value={access.privilege}
                   styles={{

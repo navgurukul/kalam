@@ -28,8 +28,8 @@ const RequireAuth = ({ children, privateRoute }) => {
   //   return <Navigate to="/user/mobile/number" replace />;
   if (isAuthenticated && !privateRoute)
     return <Navigate to="/students" replace />;
-  // if (isAuthenticated && roles.some((roleItem) => roleItem.role === "Admin"))
-  //   return <div className="bodyComponent">{children}</div>;
+  if (isAuthenticated && roles.some((roleItem) => roleItem.role === "Admin"))
+    return <div className="bodyComponent">{children}</div>;
   const currentPath = location.pathname.split("/")[1];
   let role;
   if (!privateRoute) return <div className="bodyComponent">{children}</div>;

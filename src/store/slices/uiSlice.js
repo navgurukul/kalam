@@ -6,7 +6,7 @@ const UISlice = createSlice({
   initialState: {
     lang: localStorage.getItem("lang") || "en",
     drawerOpen: false,
-    isFetching: true,
+    isFetching: false,
     dialogOpen: false,
     dialogProps: {},
     dialogTitle: null,

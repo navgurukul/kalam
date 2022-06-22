@@ -3,19 +3,10 @@ import React, { useEffect } from "react";
 import { Select, MenuItem, Chip, Box } from "@mui/material";
 // import Select from "react-select";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
 
 import { useSnackbar } from "notistack";
 import dayjs from "dayjs";
 
-import {
-  // setNoOfRows,
-  // setStage,
-  // setPageNo,
-  setStudentData,
-} from "../../store/slices/studentSlice";
-import { changeFetching } from "../../store/slices/uiSlice";
-import Loader from "../ui/Loader";
 import { donor, qualificationKeys } from "../../utils/constants";
 import MainLayout from "../muiTables/MainLayout";
 import EditText from "./EditText";
@@ -56,32 +47,13 @@ const baseUrl = import.meta.env.VITE_API_URL;
 const PlacementStudentsData = () => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { loggedInUser } = useSelector((state) => state.auth);
-  const { isFetching } = useSelector((state) => state.ui);
-  const {
-    url,
-    // filterColumns,
-    studentData,
-    fromDate,
-    toDate,
-    stage,
-    // totalData,
-    numberOfRows,
-    page,
-  } = useSelector((state) => state.students);
-  const dispatch = useDispatch();
-
-  // const fetchingStart = () => dispatch(changeFetching(true));
-  const fetchingFinish = () => dispatch(changeFetching(false));
-  const setStudents = (data) => dispatch(setStudentData(data));
+  const [studentData, setStudentData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
   const getJobDetails = async () => {
     try {
-      const res = await axios.get(`${baseUrl}/students/jobDetails`);
-      setStudents({
-        data: res.data || [],
-        totalData: res.data.length,
-      });
+      const res = await axios.get(`${baseUrl}students/jobDetails`);
+      setStudentData(res.data);
     } catch (err) {
       console.error(err);
     }
@@ -97,7 +69,6 @@ const PlacementStudentsData = () => {
         enqueueSnackbar(`Job Type successfully updated !`, {
           variant: "success",
         });
-        // getJobDetails();
         change({ job_type: val });
       })
       .catch(() => {
@@ -188,7 +159,6 @@ const PlacementStudentsData = () => {
         filter: false,
         sort: false,
         customBodyRender: React.useCallback((value, rowMeta, change) => {
-          // setDocuments({ ...documents, Resume_link: value?.resume || "" });
           const studentId = rowMeta.rowData[0];
           return (
             <UploadView
@@ -321,52 +291,6 @@ const PlacementStudentsData = () => {
               change={change}
             />
           );
-
-          // return (
-          // <Box sx={{ minWidth: "10rem" }}>
-          //   <LocalizationProvider dateAdapter={DateFnsUtils}>
-          //     <DatePicker
-          //       disableFuture
-          //       // margin="normal"
-          //       id="offer_letter_date"
-          //       label="Date of Offer Letter"
-          //       value={offerLetterDate}
-          //       onChange={(newValue) => {
-          //         if (
-          //           dayjs(newValue).diff(value.offer_letter_date, "date") ===
-          //           0
-          //         )
-          //           return;
-          //         // console.log(
-          //         //   newValue,
-          //         //   dayjs(newValue).diff(value.offer_letter_date, "date")
-          //         // );
-          //         axios
-          //           .put(`${baseUrl}students/jobDetails`, {
-          //             offer_letter_date: newValue,
-          //             student_id: studentId,
-          //           })
-          //           .then(() => {
-          //             enqueueSnackbar(`${name} successfully updated !`, {
-          //               variant: "success",
-          //             });
-          //             change({ offer_letter_date: newValue });
-          //           })
-          //           .catch(() => {
-          //             enqueueSnackbar(`Error in updating ${name}`, {
-          //               variant: "error",
-          //             });
-          //           });
-          //       }}
-          //       inputFormat="dd/MM/yyyy"
-          //       inputVariant="outlined"
-          //       renderInput={(params) => <TextField fullWidth {...params} />}
-          //       fullWidth
-          //       placeholder="Date of Offer Letter"
-          //     />
-          //   </LocalizationProvider>
-          // </Box>
-          // );
         }, []),
       },
     },
@@ -558,60 +482,24 @@ const PlacementStudentsData = () => {
     },
   ];
 
-  // const changeFromDate = async (date) => {
-  //   setFrom(date);
-  // };
-
-  // const changeToDate = (date) => {
-  //   setTo(date);
-  // };
-
-  // const sortChange = (column, order) => {
-  //   // const { data } = state;
-  //   const sorted = _.orderBy(studentData, [column], [order]);
-  //   setStudents({ data: sorted, totalData });
-  // };
-
-  useEffect(() => {
-    // console.log("Updating changes");
-    // if (loggedInUser)
-    // dispatch(
-    //   fetchStudents({
-    //     fetchPendingInterviewDetails: false,
-    //     dataType: "softwareCourse",
-    //   })
-    // );
-  }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser]);
-
-  // useEffect(() => {
-  //   const controller = new AbortController();
-  //   fetchAccess(controller.signal);
-  // }, [loggedInUser]);
-
   useEffect(() => {
     (async () => {
-      // fetchingStart();
+      setLoading(true);
       await getJobDetails();
-      fetchingFinish();
+      setLoading(false);
     })();
-
-    return () => {
-      setStudents({ data: [], totalData: 0 });
-    };
   }, []);
 
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
-      {!isFetching ? (
-        <MainLayout
-          title="Placement Data"
-          data={studentData}
-          columns={columns}
-          showLoader={isFetching}
-        />
-      ) : (
-        <Loader container />
-      )}
+      (
+      <MainLayout
+        title="Placement Data"
+        data={studentData}
+        columns={columns}
+        showLoader={loading}
+      />
+      )
     </Box>
   );
 };

@@ -30,7 +30,6 @@ import {
   allStages,
 } from "../../utils/constants";
 import EventEmitter from "../../utils/eventEmitter";
-import Loader from "../ui/Loader";
 
 const allStagesOptions = Object.keys(campusStageOfLearning).map((x) => ({
   value: x,
@@ -135,7 +134,6 @@ const DashboardPage = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
   const { studentData: data } = useSelector((state) => state.students);
-  const { isFetching } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
   const fetchingFinish = () => dispatch(changeFetching(false));
   // const usersSetup = (users) => dispatch(setupUsers(users));
@@ -265,13 +263,9 @@ const DashboardPage = (props) => {
 
   useEffect(() => {
     const controller = new AbortController();
-    const fetchData = async () => {
-      // fetchingStart();
+    (async () => {
       await fetchStudents(controller.signal);
-      // await fetchUsers(controller.signal);
-      fetchingFinish();
-    };
-    fetchData();
+    })();
     return () => controller.abort();
   }, []);
 
@@ -497,7 +491,7 @@ const DashboardPage = (props) => {
       </Grid>
     </Grid>
   );
-  return !isFetching ? (
+  return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
       {locationCampus === "campus" ? options2 : options}
       <MainLayout
@@ -507,8 +501,6 @@ const DashboardPage = (props) => {
         showLoader={showLoader}
       />
     </Box>
-  ) : (
-    <Loader container />
   );
 };
 

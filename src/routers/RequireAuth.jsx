@@ -26,8 +26,24 @@ const RequireAuth = ({ children, privateRoute }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   // if (isAuthenticated && loggedInUser && !loggedInUser.mobile)
   //   return <Navigate to="/user/mobile/number" replace />;
+
+  const getRoute = () => {
+    if (
+      roles.some((role) => role.role === "Admin") ||
+      privileges.some((priv) => priv.privilege === "ViewDashboard")
+    )
+      return "/students";
+    if (roles.some((role) => role.role === "Campus")) return "/campus";
+    if (roles.some((role) => role.role === "Donor")) return "/donor";
+    if (privileges.some((priv) => priv.privilege === "ViewPartners"))
+      return "/partners";
+    if (privileges.some((priv) => priv.privilege === "ViewPlacements"))
+      return "/partners";
+    return "/students";
+  };
+
   if (isAuthenticated && !privateRoute)
-    return <Navigate to="/students" replace />;
+    return <Navigate to={getRoute()} replace />;
   if (
     location.pathname.split("/")[1] === "admin" &&
     location.pathname.split("/")[2] === "create" &&

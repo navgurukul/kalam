@@ -133,16 +133,29 @@ const RequireAuth = ({ children, privateRoute }) => {
           )}
         </div>
       );
-    default:
+    case "partners":
       return (
         <div className="bodyComponent">
-          {privileges.some((priv) => priv.privilege === "ViewDashboard") ? (
+          {privileges.some((priv) => priv.privilege === "ViewPartners") ? (
             children
           ) : isFetching ? (
             <Loader container />
           ) : (
             <NotHaveAccess />
           )}
+        </div>
+      );
+    default:
+      return (
+        <div className="bodyComponent">
+          {/* {privileges.some((priv) => priv.privilege === "ViewDashboard") ? (
+            children
+          ) : isFetching ? (
+            <Loader container />
+          ) : (
+            <NotHaveAccess />
+          )} */}
+          {children}
         </div>
       );
   }

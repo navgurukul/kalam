@@ -50,6 +50,7 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
   const [view, setView] = React.useState(false);
 
   const limitFileSize = (file) => file.size <= 1000000;
+
   const generateLink = (e) => {
     e.preventDefault();
     const formData = new FormData();

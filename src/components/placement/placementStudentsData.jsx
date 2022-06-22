@@ -3,13 +3,10 @@ import React, { useEffect } from "react";
 import { Select, MenuItem, Chip, Box } from "@mui/material";
 // import Select from "react-select";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
 
 import { useSnackbar } from "notistack";
 import dayjs from "dayjs";
 
-import { changeFetching } from "../../store/slices/uiSlice";
-import Loader from "../ui/Loader";
 import { donor, qualificationKeys } from "../../utils/constants";
 import MainLayout from "../muiTables/MainLayout";
 import EditText from "./EditText";
@@ -50,14 +47,8 @@ const baseUrl = import.meta.env.VITE_API_URL;
 const PlacementStudentsData = () => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { isFetching } = useSelector((state) => state.ui);
-  const dispatch = useDispatch();
-
-  // const fetchingStart = () => dispatch(changeFetching(true));
-  const fetchingFinish = () => dispatch(changeFetching(false));
-  // const setStudents = (data) => dispatch(setStudentData(data));
-
   const [studentData, setStudentData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
   const getJobDetails = async () => {
     try {
@@ -493,24 +484,22 @@ const PlacementStudentsData = () => {
 
   useEffect(() => {
     (async () => {
-      // fetchingStart();
+      setLoading(true);
       await getJobDetails();
-      fetchingFinish();
+      setLoading(false);
     })();
   }, []);
 
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
-      {!isFetching ? (
-        <MainLayout
-          title="Placement Data"
-          data={studentData}
-          columns={columns}
-          showLoader={isFetching}
-        />
-      ) : (
-        <Loader container />
-      )}
+      (
+      <MainLayout
+        title="Placement Data"
+        data={studentData}
+        columns={columns}
+        showLoader={loading}
+      />
+      )
     </Box>
   );
 };

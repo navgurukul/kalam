@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 import axios from "axios";
 import { Box, Button } from "@mui/material";
@@ -12,11 +11,8 @@ import EditPartner from "./EditPartner";
 import CreateAssessment from "../assessment/CreateAssessment";
 import AddMerakiLink from "../smallComponents/AddMerakiLink";
 import EditPartnerDetails from "../smallComponents/EditIcon";
-import { changeFetching } from "../../store/slices/uiSlice";
 import MainLayout from "../muiTables/MainLayout";
 import ReportSend from "../report/ReportSend";
-// import user from "../utils/user";
-import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -171,10 +167,7 @@ const columns = [
 
 const PartnerList = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const { isFetching } = useSelector((state) => state.ui);
-  const fetchingStart = () => dispatch(changeFetching(true));
-  const fetchingFinish = () => dispatch(changeFetching(false));
+  const [loading, setLoading] = React.useState(true);
   const [partnerList, setPartnerList] = React.useState([]);
 
   const dataSetup = (data) => {
@@ -195,13 +188,13 @@ const PartnerList = () => {
 
   useEffect(() => {
     (async () => {
-      fetchingStart();
+      setLoading(true);
       await fetchPartners();
-      fetchingFinish();
+      setLoading(false);
     })();
   }, []);
 
-  return !isFetching ? (
+  return (
     <Box>
       <ThemeProvider theme={theme}>
         <div className={classes.innerTable}>
@@ -216,13 +209,11 @@ const PartnerList = () => {
             title="Partners"
             columns={columns}
             data={partnerList}
-            showLoader={isFetching}
+            showLoader={loading}
           />
         </div>
       </ThemeProvider>
     </Box>
-  ) : (
-    <Loader container />
   );
 };
 

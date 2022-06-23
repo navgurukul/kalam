@@ -17,8 +17,6 @@ import OwnerSchedule from "./OwnerSchedule";
 import { closeDialog, showDialog } from "../../store/slices/uiSlice";
 // import AddOwnerSchedule from "./AddOwnerSchedule";
 
-import { permissions } from "../../utils/constants";
-
 const useStyles = makeStyles(() => ({
   innerTable: {
     marginLeft: "3vw",
@@ -49,7 +47,7 @@ const stagesColor = {
 const OwnerList = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { loggedInUser } = useSelector((state) => state.auth);
+  const { loggedInUser, privileges } = useSelector((state) => state.auth);
   const { ownerData } = useSelector((state) => state.owners);
   const { isFetching } = useSelector((state) => state.ui);
   const [scheduleOpen, setScheduleOpen] = React.useState(false);
@@ -62,10 +60,15 @@ const OwnerList = () => {
         sort: false,
         customBodyRender: React.useCallback((value, rowMeta) => {
           const user = (loggedInUser && loggedInUser.mail_id) || null;
-          //const update = !permissions.updateStage.includes(user);
           const canUpdate =
-            permissions.updateStage.includes(user) ||
+            privileges.some((priv) => priv.privilege === "UpdateOwner") ||
             rowMeta.rowData[1] === user;
+
+          const canDelete =
+            (privileges.some((priv) => priv.privilege === "DeleteOwner") ||
+              rowMeta.rowData[1] === user) &&
+            rowMeta.rowData[3];
+
           return (
             <div
               style={{
@@ -82,7 +85,7 @@ const OwnerList = () => {
               />
 
               <IconButton
-                disabled={rowMeta.rowData[3]}
+                disabled={!canDelete}
                 onClick={() =>
                   dispatch(
                     showDialog({
@@ -104,7 +107,7 @@ const OwnerList = () => {
                 }
               >
                 <DeleteIcon
-                  color={rowMeta.rowData[3] ? "" : "error"}
+                  color={!canDelete ? "" : "error"}
                   style={{ cursor: "pointer" }}
                 />
               </IconButton>
@@ -213,11 +216,6 @@ const OwnerList = () => {
     //       const user = window.localStorage.user
     //         ? JSON.parse(window.localStorage.user).email
     //         : null;
-    //       //const update = !permissions.updateStage.includes(user);
-    //       const canUpdate =
-    //         permissions.updateStage.includes(user) ||
-    //         rowData[1] === user.split("@")[0];
-    //       //console.log(value,rowData);
 
     //       return (
     //         <div
@@ -245,8 +243,7 @@ const OwnerList = () => {
   ];
 
   useEffect(() => {
-    const fetchData = async () => dispatch(fetchOwnersAction());
-    fetchData();
+    (async () => dispatch(fetchOwnersAction()))();
   }, []);
 
   const getUpdatedData = (data, isEdit) => {
@@ -297,7 +294,13 @@ const OwnerList = () => {
       <ThemeProvider theme={theme}>
         <div className={classes.innerTable}>
           <div className={classes.buttons}>
-            <AddOwner getUpdatedData={getUpdatedData} ownerData={ownerData} />
+            <AddOwner
+              disabled={
+                !privileges.some((priv) => priv.privilege === "AddOwner")
+              }
+              getUpdatedData={getUpdatedData}
+              ownerData={ownerData}
+            />
             <Button
               variant="contained"
               color="primary"

@@ -4,8 +4,6 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import MainLayout from "../muiTables/MainLayout";
-// import user from "../utils/user";
-import NotHaveAccess from "../layout/NotHaveAccess";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -45,79 +43,60 @@ const columns = [
 ];
 
 const CampusList = () => {
-  const { loggedInUser } = useSelector((state) => state.auth);
-  const [state, setState] = React.useState({
-    data: [],
-    showLoader: true,
-    access: null,
-    // userLoggedIn: user(),
-    campusCondition: false,
-  });
+  const { loggedInUser, roles } = useSelector((state) => state.auth);
 
-  const fetchAccess = async () => {
-    try {
-      const accessUrl = `${baseUrl}rolebaseaccess`;
-      axios.get(accessUrl).then((response) => {
-        const campusData = response.data.campus; //storing response data in campusData variable
-        const conditions = //variable to check if user is allowed to access the page
-          campusData &&
-          loggedInUser &&
-          loggedInUser.email &&
-          campusData.view &&
-          campusData.view.includes(loggedInUser.email);
-
-        setState((prevState) => ({
-          ...prevState,
-          access: campusData || null,
-          campusCondition: conditions, //to set access object
-        }));
-      });
-    } catch (e) {
-      // console.error(e);
-    }
-  };
+  const [campusList, setCampusList] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
   const fetchCampus = async () => {
     try {
+      const adminRole = roles.findIndex(
+        (roleItem) => roleItem.role === "Admin"
+      );
+      const role = roles.find((roleItem) => roleItem.role === "Campus");
+      const access = role?.access?.map((accessItem) => accessItem.access) || [];
       const dataURL = `${baseUrl}campus`;
       const response = await axios.get(dataURL);
-      setState((prevState) => ({
-        ...prevState,
-        data: [...response.data.data, { campus: "All" }],
-        showLoader: false,
-      }));
+      setCampusList(
+        adminRole !== -1
+          ? [...response.data.data, { campus: "All" }]
+          : [
+              ...response.data.data.filter((campusItem) =>
+                access.includes(campusItem.id)
+              ),
+            ]
+      );
+      setLoading(false);
     } catch (e) {
       // console.error(e);
     }
   };
-  const { data, showLoader } = state;
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchCampus();
-      // await fetchAccess();
-    };
-    fetchData();
-  }, []);
 
   useEffect(() => {
-    fetchAccess();
+    (async () => {
+      // await fetchAccess();
+      await fetchCampus();
+    })();
   }, [loggedInUser]);
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     fetchingStart();
+  //     await fetchAccess();
+  //     fetchingFinish();
+  //   };
+  //   fetchData();
+  // }, [loggedInUser]);
+
   return (
-    <div>
-      {state.campusCondition ? (
-        <Container maxWidth="sm">
-          <MainLayout
-            title="Campuses Name"
-            columns={columns}
-            data={data}
-            showLoader={showLoader}
-          />
-        </Container>
-      ) : (
-        <NotHaveAccess />
-      )}
-    </div>
+    <Container maxWidth="sm">
+      <MainLayout
+        title="Campuses Name"
+        columns={columns}
+        data={campusList}
+        showLoader={loading}
+      />
+    </Container>
   );
 };
 

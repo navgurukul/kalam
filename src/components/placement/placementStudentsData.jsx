@@ -83,6 +83,7 @@ const PlacementStudentsData = () => {
       name: "student_id",
       options: {
         display: false,
+        viewColumns: false,
         filter: false,
       },
     },

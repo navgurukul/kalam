@@ -59,7 +59,7 @@ const useStyles = makeStyles(() => ({
 const AdmissionsDash = (props) => {
   const classes = useStyles();
   const { dataType: paramDataType } = useParams();
-  const { loggedInUser } = useSelector((state) => state.auth);
+  const { loggedInUser, privileges } = useSelector((state) => state.auth);
   const {
     url,
     // filterColumns,
@@ -435,6 +435,10 @@ const AdmissionsDash = (props) => {
       />
     );
   }
+  const newColumns = [...StudentService.columns[[dataType]]];
+  newColumns[1].options.viewColumns = privileges.some(
+    (priv) => priv.privilege === "DeleteStudent"
+  );
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
       <ThemeProvider theme={theme}>

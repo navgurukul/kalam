@@ -2,10 +2,12 @@ import React from "react";
 import EasyEdit from "react-easy-edit";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
 const UpdateEmail = (props) => {
+  const { privileges } = useSelector((state) => state.auth);
   const { email } = props;
   const { enqueueSnackbar } = useSnackbar();
 
@@ -31,7 +33,7 @@ const UpdateEmail = (props) => {
       });
   };
 
-  return (
+  return privileges.some((priv) => priv.privilege === "UpdateStudentEmail") ? (
     <div>
       <EasyEdit
         type="text"
@@ -52,6 +54,8 @@ const UpdateEmail = (props) => {
         disableAutoCancel
       />
     </div>
+  ) : (
+    <p>{email}</p>
   );
 };
 

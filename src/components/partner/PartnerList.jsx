@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 import axios from "axios";
 import { Box, Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import theme from "../../theme";
 import ViewAssessments from "../assessment/ViewAssessments";
 import PartnerLink from "./PartnerLink";
@@ -167,6 +168,8 @@ const columns = [
 
 const PartnerList = () => {
   const classes = useStyles();
+  const { privileges } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
   const [partnerList, setPartnerList] = React.useState([]);
 
@@ -199,11 +202,16 @@ const PartnerList = () => {
       <ThemeProvider theme={theme}>
         <div className={classes.innerTable}>
           <div className={classes.buttons}>
-            <Link to="/partner/add">
-              <Button color="primary" variant="contained">
-                Add Partner
-              </Button>
-            </Link>
+            <Button
+              disabled={
+                !privileges.some((priv) => priv.privilege === "AddPartner")
+              }
+              color="primary"
+              variant="contained"
+              onClick={() => navigate("/partner/add")}
+            >
+              Add Partner
+            </Button>
           </div>
           <MainLayout
             title="Partners"

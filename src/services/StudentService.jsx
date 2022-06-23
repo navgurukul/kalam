@@ -40,6 +40,7 @@ import {
   caste,
 } from "../utils/constants";
 import UploadDocuments from "../components/smallComponents/UploadDocuments";
+import DeleteStudent from "../components/smallComponents/DeleteStudent";
 
 dayjs.extend(customParseFormat);
 
@@ -73,6 +74,20 @@ const ColumnTransitions = {
         studentName={rowMeta.rowData[2]}
         dataType="columnTransition"
       />
+    ),
+  },
+};
+
+//column for deleting student from main dashboard
+const deleteStudentColumn = {
+  name: "delete",
+  label: "Delete",
+  options: {
+    filter: false,
+    sort: false,
+    display: false,
+    customBodyRender: (value, rowMeta) => (
+      <DeleteStudent studentId={rowMeta.rowData[0]} />
     ),
   },
 };
@@ -1552,6 +1567,7 @@ const StudentService = {
     ],
     softwareCourse: [
       ColumnTransitions,
+      deleteStudentColumn,
       profileImage,
       nameColumn,
       setColumn,

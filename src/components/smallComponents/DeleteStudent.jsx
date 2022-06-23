@@ -51,7 +51,13 @@ const DeleteStudent = (props) => {
         alignItems: "center",
       }}
     >
-      <DeleteIcon onClick={() => handleDelete(studentId)} />
+      <DeleteIcon
+        style={{
+          color: "red",
+          cursor: "pointer",
+        }}
+        onClick={() => handleDelete(studentId)}
+      />
     </div>
   );
 };

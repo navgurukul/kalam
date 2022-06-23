@@ -77,12 +77,15 @@ const ColumnTransitions = {
     ),
   },
 };
+
+//column for deleting student from main dashboard
 const deleteStudentColumn = {
   name: "delete",
   label: "Delete",
   options: {
     filter: false,
     sort: false,
+    display: false,
     customBodyRender: (value, rowMeta) => (
       <DeleteStudent studentId={rowMeta.rowData[0]} />
     ),

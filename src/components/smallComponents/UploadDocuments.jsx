@@ -11,6 +11,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Input from "@mui/material/Input";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -18,7 +19,6 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "80%",
-
   bgcolor: "background.paper",
   border: "none",
   boxShadow: 24,
@@ -45,6 +45,7 @@ const styleForViewModal = {
 const baseUrl = import.meta.env.VITE_API_URL;
 
 const UploadDocuments = (props) => {
+  const { privileges } = useSelector((state) => state.auth);
   //snackbar for success and error
   const snackbar = useSnackbar();
 
@@ -299,6 +300,13 @@ const UploadDocuments = (props) => {
     setLink({ ...Link, marksheetLink: "" });
   };
 
+  const canView = privileges.some(
+    (priv) => priv.privilege === "ViewStudentDocuments"
+  );
+  const canUpload = privileges.some(
+    (priv) => priv.privilege === "UploadStudentDocuments"
+  );
+
   const columns = [
     {
       name: "ID_Proof_link",
@@ -339,6 +347,7 @@ const UploadDocuments = (props) => {
                     e.preventDefault();
                     addNewIDProof();
                   }}
+                  disabled={!canUpload}
                 >
                   Add New
                 </Button>
@@ -380,6 +389,7 @@ const UploadDocuments = (props) => {
                       //corner radius
                       borderRadius: "20px",
                     }}
+                    disabled={!canUpload}
                   >
                     Generate Link
                   </Button>
@@ -394,6 +404,7 @@ const UploadDocuments = (props) => {
                   onChange={(e) => {
                     LinkGenerator(e, 1);
                   }}
+                  disabled={!canUpload}
                 />
                 <Input
                   type="text"
@@ -407,6 +418,7 @@ const UploadDocuments = (props) => {
                   onChange={(e) => {
                     setLink({ ...Link, idProofLink: e.target.value });
                   }}
+                  disabled={!canUpload}
                 />
                 <Button
                   variant="contained"
@@ -415,7 +427,7 @@ const UploadDocuments = (props) => {
                     width: "100%",
                     marginTop: "10px",
                   }}
-                  disabled={Link.idProofLink === ""}
+                  disabled={!canUpload || Link.idProofLink === ""}
                   onClick={UploadIdProof}
                 >
                   Upload
@@ -465,6 +477,7 @@ const UploadDocuments = (props) => {
                     e.preventDefault();
                     addNewSignedConsent();
                   }}
+                  disabled={!canUpload}
                 >
                   Add New
                 </Button>
@@ -505,6 +518,7 @@ const UploadDocuments = (props) => {
                       backgroundColor: "grey",
                       borderRadius: "20px",
                     }}
+                    disabled={!canUpload}
                   >
                     Generate Link
                   </Button>
@@ -519,6 +533,7 @@ const UploadDocuments = (props) => {
                   onChange={(e) => {
                     LinkGenerator(e, 2);
                   }}
+                  disabled={!canUpload}
                 />
                 <Input
                   type="text"
@@ -532,6 +547,7 @@ const UploadDocuments = (props) => {
                   onChange={(e) => {
                     setLink({ ...Link, signedConsentLink: e.target.value });
                   }}
+                  disabled={!canUpload}
                 />
                 <Button
                   variant="contained"
@@ -540,7 +556,7 @@ const UploadDocuments = (props) => {
                     width: "100%",
                     marginTop: "10px",
                   }}
-                  disabled={Link.signedConsentLink === ""}
+                  disabled={!canUpload || Link.signedConsentLink === ""}
                   onClick={UploadSignedConsent}
                 >
                   Upload
@@ -590,6 +606,7 @@ const UploadDocuments = (props) => {
                     e.preventDefault();
                     addNewResume();
                   }}
+                  disabled={!canUpload}
                 >
                   Add New
                 </Button>
@@ -630,6 +647,7 @@ const UploadDocuments = (props) => {
                       backgroundColor: "grey",
                       borderRadius: "20px",
                     }}
+                    disabled={!canUpload}
                   >
                     Generate Link
                   </Button>
@@ -644,6 +662,7 @@ const UploadDocuments = (props) => {
                   onChange={(e) => {
                     LinkGenerator(e, 3);
                   }}
+                  disabled={!canUpload}
                 />
                 <Input
                   type="text"
@@ -657,6 +676,7 @@ const UploadDocuments = (props) => {
                   onChange={(e) => {
                     setLink({ ...Link, resumeLink: e.target.value });
                   }}
+                  disabled={!canUpload}
                 />
                 <Button
                   variant="contained"
@@ -665,7 +685,7 @@ const UploadDocuments = (props) => {
                     width: "100%",
                     marginTop: "10px",
                   }}
-                  disabled={Link.resumeLink === ""}
+                  disabled={!canUpload || Link.resumeLink === ""}
                   onClick={UploadResume}
                 >
                   Upload
@@ -715,6 +735,7 @@ const UploadDocuments = (props) => {
                     e.preventDefault();
                     addNewMarksheet();
                   }}
+                  disabled={!canUpload}
                 >
                   Add New
                 </Button>
@@ -759,6 +780,7 @@ const UploadDocuments = (props) => {
                       //corner radius
                       borderRadius: "20px",
                     }}
+                    disabled={!canUpload}
                   >
                     Generate Link
                   </Button>
@@ -772,6 +794,7 @@ const UploadDocuments = (props) => {
                   onChange={(e) => {
                     LinkGenerator(e, 4);
                   }}
+                  disabled={!canUpload}
                 />
                 <Input
                   type="text"
@@ -785,6 +808,7 @@ const UploadDocuments = (props) => {
                   onChange={(e) => {
                     setLink({ ...Link, marksheetLink: e.target.value });
                   }}
+                  disabled={!canUpload}
                 />
                 <Button
                   variant="contained"
@@ -793,7 +817,7 @@ const UploadDocuments = (props) => {
                     width: "100%",
                     marginTop: "10px",
                   }}
-                  disabled={Link.marksheetLink === ""}
+                  disabled={!canUpload || Link.marksheetLink === ""}
                   onClick={UploadMarksheet}
                 >
                   Upload
@@ -827,7 +851,10 @@ const UploadDocuments = (props) => {
 
   return (
     <div>
-      <Button onClick={handleOpen}>
+      <Button
+        onClick={handleOpen}
+        disabled={isDocumentsEmpty(documents) ? !canView : !canUpload}
+      >
         {isDocumentsEmpty(documents) ? "VIEW/UPDATE" : "UPLOAD"}{" "}
       </Button>
       <Modal

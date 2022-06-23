@@ -28,10 +28,10 @@ const useStyles = makeStyles(() => ({
 
 const MainLayout = (props) => {
   const classes = useStyles();
-  const { data, columns, title, showLoader } = props;
+  const { data, columns, options, title, showLoader } = props;
   return (
-    <Box>
-      <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <Box>
         <div className={classes.clear} />
         <MUIDataTable
           title={title}
@@ -61,21 +61,12 @@ const MainLayout = (props) => {
                 ),
               },
             },
+            ...(options || {}),
           }}
         />
-      </ThemeProvider>
-    </Box>
+      </Box>
+    </ThemeProvider>
   );
 };
-
-// const mapDispatchToProps = (dispatch) => ({
-//   fetchingStart: () => dispatch(changeFetching(true)),
-//   fetchingFinish: () => dispatch(changeFetching(false)),
-//   usersSetup: (users) => dispatch(setupUsers(users)),
-// });
-
-// export default withStyles(styles)(
-//   connect(undefined, mapDispatchToProps)(MainLayout)
-// );
 
 export default MainLayout;

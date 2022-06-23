@@ -307,6 +307,7 @@ const AddOwner = (props) => {
           color="primary"
           onClick={openDialog}
           className={classes.btn}
+          disabled={disabled}
         >
           Add Owner
         </Button>

@@ -68,3 +68,6 @@ export const decryptText = (
         .match(/.{1,2}/g)
         .map((el) => String.fromCharCode(parseInt(el, 16)))
         .join("");
+
+export const toTitleCase = (str) =>
+  `${str.charAt(0).toUpperCase()}${str.substr(1)}`;

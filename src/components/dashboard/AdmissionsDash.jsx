@@ -10,17 +10,12 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import makeAnimated from "react-select/animated";
-import { Container, Grid, TextField, Typography } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import _ from "lodash";
 import { LocalizationProvider, DatePicker } from "@mui/lab";
-// import { setupUsers } from "../store/slices/authSlice";
-import { changeFetching } from "../../store/slices/uiSlice";
 import StudentService from "../../services/StudentService";
 import ServerSidePagination from "../muiTables/ServerSidePagination";
 import theme from "../../theme";
-// import user from "../utils/user";
-import NotHaveAccess from "../layout/NotHaveAccess";
-import Loader from "../ui/Loader";
 import { fetchOwners as fetchOwnersAction } from "../../store/slices/dataSlice";
 import {
   setFromDate,
@@ -64,8 +59,7 @@ const useStyles = makeStyles(() => ({
 const AdmissionsDash = (props) => {
   const classes = useStyles();
   const { dataType: paramDataType } = useParams();
-  const { loggedInUser } = useSelector((state) => state.auth);
-  const { isFetching } = useSelector((state) => state.ui);
+  const { loggedInUser, privileges } = useSelector((state) => state.auth);
   const {
     url,
     // filterColumns,
@@ -88,8 +82,6 @@ const AdmissionsDash = (props) => {
   //   page
   // );
   const dispatch = useDispatch();
-  const fetchingStart = () => dispatch(changeFetching(true));
-  const fetchingFinish = () => dispatch(changeFetching(false));
   const setStudents = (data) => dispatch(setStudentData(data));
   const setFrom = (data) => dispatch(setFromDate(data));
   const setTo = (data) => dispatch(setToDate(data));
@@ -108,7 +100,7 @@ const AdmissionsDash = (props) => {
     selectedOption: [],
     access: null, //access object to store who are having access data
     // userLoggedIn: user(), //user object to store who is logged in
-    studentDashboardCondition: false, //condition to show student dashboard
+    studentDashboardCondition: true, //condition to show student dashboard
     loading: true,
   });
   let dataType = paramDataType || "softwareCourse";
@@ -116,31 +108,6 @@ const AdmissionsDash = (props) => {
   const usersURL = `${baseURL}users/getall`;
   // let stage = null;
   let value = null;
-  const fetchAccess = async (signal) => {
-    setState({ ...state, loading: true });
-    try {
-      const accessUrl = `${baseURL}rolebaseaccess`;
-      axios.get(accessUrl, { signal }).then((response) => {
-        const studentDashboardData = response.data; //variable to store the response
-        const conditions = //variable to store the conditions
-          studentDashboardData &&
-          loggedInUser &&
-          loggedInUser.email &&
-          studentDashboardData.students &&
-          studentDashboardData.students.view &&
-          studentDashboardData.students.view.includes(loggedInUser.email);
-        setState((prevState) => ({
-          ...prevState,
-          access: studentDashboardData || null, //set access to state
-          studentDashboardCondition: conditions,
-          loading: false,
-        }));
-      });
-    } catch (e) {
-      // console.error(e);
-      setState({ ...state, loading: false });
-    }
-  };
 
   const fetchOWner = async (signal) => {
     const response = await axios.get(`${baseURL}owner`, { signal });
@@ -155,14 +122,12 @@ const AdmissionsDash = (props) => {
   };
   const fetchUsers = async (signal) => {
     try {
-      fetchingStart();
       const response = await axios.get(usersURL, { signal });
       // usersSetup(response.data.data);
       const newData = response.data.data.map((data) => data.user);
       localStorage.setItem("users", JSON.stringify(newData));
     } catch (e) {
       // console.error(e);
-      fetchingFinish();
     }
   };
   const dataSetup = (data, _totalData) => {
@@ -179,7 +144,7 @@ const AdmissionsDash = (props) => {
       setState((prevState) => ({
         ...prevState,
         data: newData,
-        showLoader: true,
+        loading: true,
         totalData: totalData || state.totalData,
       }));
     } else {
@@ -187,7 +152,7 @@ const AdmissionsDash = (props) => {
       setState((prevState) => ({
         ...prevState,
         data,
-        showLoader: false,
+        loading: false,
       }));
     }
   };
@@ -352,14 +317,13 @@ const AdmissionsDash = (props) => {
     // dispatch(rFStudents({ dataType, fetchPendingInterviewDetails }));
 
     (async () => {
-      fetchingStart();
       // await fetchStudents(null, controller.signal);
       await fetchUsers(controller.signal);
       await fetchOWner(controller.signal);
       await fetchPartner(controller.signal);
       // await fetchAccess(controller.signal);
-      fetchingFinish();
       dispatch(fetchOwnersAction());
+      setState({ ...state, loading: false });
     })();
     return () => {
       controller.abort();
@@ -372,11 +336,6 @@ const AdmissionsDash = (props) => {
     if (loggedInUser)
       dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType })); //softwareCourse
   }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchAccess(controller.signal);
-  }, [loggedInUser]);
 
   const options = (
     <Grid container spacing={4} style={{ marginBottom: "0.8rem" }}>
@@ -455,12 +414,14 @@ const AdmissionsDash = (props) => {
     </Grid>
   );
 
+  const { loading } = state;
+
   if (fetchPendingInterviewDetails) {
     return (
       <ServerSidePagination
         columns={StudentService.columns[dataType]}
         data={sData || studentData}
-        showLoader={isFetching}
+        showLoader={loading}
         params={{
           params: {
             dataType,
@@ -474,50 +435,33 @@ const AdmissionsDash = (props) => {
       />
     );
   }
+  const newColumns = [...StudentService.columns[[dataType]]];
+  newColumns[1].options.viewColumns = privileges.some(
+    (priv) => priv.privilege === "DeleteStudent"
+  );
   return (
-    <div>
-      {state.studentDashboardCondition ? (
-        <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
-          <ThemeProvider theme={theme}>
-            {fetchPendingInterviewDetails ? null : options}
-            <div className={classes.clear} />
-            <ServerSidePagination
-              columns={StudentService.columns[dataType]}
-              data={sData || studentData}
-              showLoader={isFetching}
-              // fun={fetchStudents}
-              params={{
-                params: {
-                  dataType,
-                  stage: stage.length === 0 ? null : stage.join(","),
-                  from: fromDate,
-                  to: toDate,
-                },
-              }}
-              stages={value}
-              // dataSetup={dataSetup}
-              sortChange={sortChange}
-            />
-          </ThemeProvider>
-        </Box>
-      ) : isFetching ? (
-        <Container
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginTop: "4rem",
+    <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
+      <ThemeProvider theme={theme}>
+        {fetchPendingInterviewDetails ? null : options}
+        <div className={classes.clear} />
+        <ServerSidePagination
+          columns={StudentService.columns[dataType]}
+          data={sData || studentData}
+          showLoader={loading}
+          // fun={fetchStudents}
+          params={{
+            params: {
+              dataType,
+              stage: stage.length === 0 ? null : stage.join(","),
+              from: fromDate,
+              to: toDate,
+            },
           }}
-        >
-          <Typography variant="h3" style={{ marginBottom: "2.4rem" }}>
-            Loading
-          </Typography>
-          <Loader />
-        </Container>
-      ) : (
-        <NotHaveAccess />
-      )}
-    </div>
+          stages={value}
+          sortChange={sortChange}
+        />
+      </ThemeProvider>
+    </Box>
   );
 };
 

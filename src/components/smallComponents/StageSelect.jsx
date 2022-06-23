@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
@@ -14,6 +14,7 @@ const animatedComponents = makeAnimated();
 const StageSelect = (props) => {
   const { allStages, stage } = props;
   const { enqueueSnackbar } = useSnackbar();
+  const isCampusPathname = window.location.pathname.indexOf("campus");
   const { loggedInUser } = useSelector((state) => state.auth);
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
@@ -27,6 +28,35 @@ const StageSelect = (props) => {
       cc: "",
     },
   });
+
+  const [stagess, setStages] = React.useState({
+    currentStage: "",
+    nextStage: "",
+  });
+
+  console.log(stagess, "stagess");
+
+  const getTransitionStage = (studentId) => {
+    axios
+      .get(`${baseUrl}students/transitions/${studentId}`)
+      .then((res) => {
+        const { data } = res;
+
+        const beforeStage = data.data[data.data.length - 1].from_stage;
+        const afterStage = data.data[data.data.length - 1].to_stage;
+
+        const beforeStageValue = allStages[beforeStage];
+        const afterStageValue = allStages[afterStage];
+
+        setStages({
+          currentStage: beforeStageValue,
+          nextStage: afterStageValue,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const getPartnerEmail = async (studentId) => {
     const response = await axios.get(
@@ -52,6 +82,7 @@ const StageSelect = (props) => {
           variant: "success",
         });
         change(label, columnIndex);
+        getTransitionStage(studentId);
       })
       .catch(() => {
         enqueueSnackbar("Something is wrong with previous stage!", {
@@ -135,20 +166,64 @@ const StageSelect = (props) => {
       label: allStages.enrolmentKeyGenerated,
     },
   ]; //90923
-  if (stage)
+
+  // if (stage === "Dropped Out") {
+  //   const { rowMetatable } = props;
+  //   selectedValue = {
+  //     value: _.invert(allStages)[stagess.currentStage],
+  //     label: stagess.currentStage,
+  //   };
+  // }
+  if (stage) {
     allStagesOptions = nextStage[getKeyByValue(allStages, stage)].map((x) => ({
       value: x,
       label: allStages[x],
     }));
+  }
+
   let selectedValue = { value: "invalid", label: "Invalid Stage" };
+
   if (stage)
     selectedValue = { value: _.invert(allStages)[stage], label: stage };
+
+  useEffect(() => {
+    const { rowMetatable } = props;
+    getTransitionStage(rowMetatable.rowData[0]);
+  }, []);
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {isCampusPathname > -1 && (
+        <Button>
+          {stage === "Dropped Out"
+            ? "Dropped Out"
+            : stage === "On Leave"
+            ? "On Leave"
+            : "Present"}
+        </Button>
+      )}
       <Select
         className="filterSelectStage"
         // defaultValue={selectedValue}
-        value={selectedValue}
+        value={
+          selectedValue && selectedValue.label === "Dropped Out"
+            ? {
+                value: stagess.currentStage,
+                label: stagess.currentStage,
+              }
+            : selectedValue.label === "On Leave"
+            ? {
+                value: stagess.currentStage,
+                label: stagess.currentStage,
+              }
+            : selectedValue
+        }
         onChange={handleChange}
         options={allStagesOptions}
         // placeholder={"Select "+props.filter.name+" ..."}

@@ -40,6 +40,7 @@ import {
   caste,
 } from "../utils/constants";
 import UploadDocuments from "../components/smallComponents/UploadDocuments";
+import CampusStatusDropdown from "../components/smallComponents/CampusStatus";
 import OtherActivities from "../components/campus/OtherActivities";
 import DeleteStudent from "../components/smallComponents/DeleteStudent";
 
@@ -1506,6 +1507,39 @@ const partnerNameColumn = {
   },
 };
 
+const CampusStatusColumnWrapper = ({ value, rowMeta, updateValue }) => {
+  const { loggedInUser } = useSelector((state) => state.auth);
+  if (permissions.updateStage.indexOf(loggedInUser.email) > -1) {
+    return (
+      <CampusStatusDropdown
+        // studentId={rowMeta.rowData[0]}
+        rowMeta={rowMeta}
+        value={value}
+        change={(event) => updateValue(event)}
+        S
+      />
+    );
+  }
+  return value;
+};
+
+const CampusStatus = {
+  name: "campusStatus",
+  label: "Campus Status",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (value, rowMeta, updateValue) => (
+      <CampusStatusColumnWrapper
+        rowMeta={rowMeta}
+        value={value}
+        updateValue={updateValue}
+      />
+    ),
+  },
+};
+
+const navGurukulSurveyForm = {
 export const navGurukulSurveyForm = {
   label: "Survey Form",
   name: "partnerName",
@@ -1724,6 +1758,7 @@ const StudentService = {
     joinedDate,
     stageColumn,
     JobKabLagegiColumn,
+    // CampusStatus,
     ColumnUpload,
     daysPassedColumn,
     kitneAurDin,

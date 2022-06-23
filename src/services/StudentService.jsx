@@ -40,7 +40,7 @@ import {
   caste,
 } from "../utils/constants";
 import UploadDocuments from "../components/smallComponents/UploadDocuments";
-import CampusStatusDropdown from "../components/smallComponents/CampusStatus";
+// import CampusStatusDropdown from "../components/smallComponents/CampusStatus";
 import OtherActivities from "../components/campus/OtherActivities";
 import DeleteStudent from "../components/smallComponents/DeleteStudent";
 
@@ -230,17 +230,16 @@ const OtherActivitiesColumn = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => {
-      const values = "testing";
-      return (
-        <OtherActivities
-          rowMetaTable={rowMeta}
-          otherActivities={rowData}
-          change={(event) => updateValue(event)}
-        />
-      );
-    },
+    customBodyRender: (rowData, rowMeta, updateValue) => (
+      <OtherActivities
+        rowMetaTable={rowMeta}
+        otherActivities={rowData}
+        change={(event) => updateValue(event)}
+      />
+    ),
   },
+};
+
 const OwnerColumnTransitionDashboardWrapper = ({
   value,
   rowMeta,
@@ -1507,39 +1506,37 @@ const partnerNameColumn = {
   },
 };
 
-const CampusStatusColumnWrapper = ({ value, rowMeta, updateValue }) => {
-  const { loggedInUser } = useSelector((state) => state.auth);
-  if (permissions.updateStage.indexOf(loggedInUser.email) > -1) {
-    return (
-      <CampusStatusDropdown
-        // studentId={rowMeta.rowData[0]}
-        rowMeta={rowMeta}
-        value={value}
-        change={(event) => updateValue(event)}
-        S
-      />
-    );
-  }
-  return value;
-};
+// const CampusStatusColumnWrapper = ({ value, rowMeta, updateValue }) => {
+//   const { privileges } = useSelector((state) => state.auth);
+//   return privileges?.some((priv) => priv.privilege === "UpdateStage") ? (
+//     <CampusStatusDropdown
+//       // studentId={rowMeta.rowData[0]}
+//       rowMeta={rowMeta}
+//       value={value}
+//       change={(event) => updateValue(event)}
+//       S
+//     />
+//   ) : (
+//     <p>{value}</p>
+//   );
+// };
 
-const CampusStatus = {
-  name: "campusStatus",
-  label: "Campus Status",
-  options: {
-    filter: false,
-    sort: false,
-    customBodyRender: (value, rowMeta, updateValue) => (
-      <CampusStatusColumnWrapper
-        rowMeta={rowMeta}
-        value={value}
-        updateValue={updateValue}
-      />
-    ),
-  },
-};
+// const CampusStatus = {
+//   name: "campusStatus",
+//   label: "Campus Status",
+//   options: {
+//     filter: false,
+//     sort: false,
+//     customBodyRender: (value, rowMeta, updateValue) => (
+//       <CampusStatusColumnWrapper
+//         rowMeta={rowMeta}
+//         value={value}
+//         updateValue={updateValue}
+//       />
+//     ),
+//   },
+// };
 
-const navGurukulSurveyForm = {
 export const navGurukulSurveyForm = {
   label: "Survey Form",
   name: "partnerName",

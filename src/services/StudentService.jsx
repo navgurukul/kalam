@@ -89,7 +89,10 @@ const deleteStudentColumn = {
     sort: false,
     display: false,
     customBodyRender: (value, rowMeta) => (
-      <DeleteStudent studentId={rowMeta.rowData[0]} />
+      <DeleteStudent
+        studentId={rowMeta.rowData[0]}
+        studentName={rowMeta.rowData[3]}
+      />
     ),
   },
 };

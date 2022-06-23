@@ -34,8 +34,6 @@ const StageSelect = (props) => {
     nextStage: "",
   });
 
-  console.log(stagess, "stagess");
-
   const getTransitionStage = (studentId) => {
     axios
       .get(`${baseUrl}students/transitions/${studentId}`)
@@ -54,7 +52,7 @@ const StageSelect = (props) => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 

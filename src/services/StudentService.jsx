@@ -40,6 +40,7 @@ import {
   caste,
 } from "../utils/constants";
 import UploadDocuments from "../components/smallComponents/UploadDocuments";
+import OtherActivities from "../components/campus/OtherActivities";
 import DeleteStudent from "../components/smallComponents/DeleteStudent";
 
 dayjs.extend(customParseFormat);
@@ -222,6 +223,23 @@ const feedbackColumnTransition = {
   },
 };
 
+const OtherActivitiesColumn = {
+  name: "other_activities",
+  label: "Other Activities",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => {
+      const values = "testing";
+      return (
+        <OtherActivities
+          rowMetaTable={rowMeta}
+          otherActivities={rowData}
+          change={(event) => updateValue(event)}
+        />
+      );
+    },
+  },
 const OwnerColumnTransitionDashboardWrapper = ({
   value,
   rowMeta,
@@ -1713,6 +1731,7 @@ const StudentService = {
     QualificationColumn,
     partnerNameColumn,
     donorColumn,
+    OtherActivitiesColumn,
     // EvaluationColumn,
     // redFlagColumn,
     // navGurukulSurveyForm,

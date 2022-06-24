@@ -79,15 +79,6 @@ const CampusList = () => {
     })();
   }, [loggedInUser]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     fetchingStart();
-  //     await fetchAccess();
-  //     fetchingFinish();
-  //   };
-  //   fetchData();
-  // }, [loggedInUser]);
-
   return (
     <Container maxWidth="sm">
       <MainLayout

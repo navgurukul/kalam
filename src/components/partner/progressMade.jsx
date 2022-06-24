@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { makeStyles } from "@mui/styles";
+import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { deepOrange } from "@mui/material/colors";
 import DashboardPage from "../dashboard/Dashboard";
@@ -89,37 +90,21 @@ const ProgressMadeForPartner = () => {
     });
   };
 
-  const fetchPartner = async () => {
-    const partnerNameRes = await (
-      await axios.get(`${baseURL}partners/${partnerId}`)
-    ).data.data.name;
-    const partnerData = await (
-      await axios.get(`${baseURL}partners/progress_made/${partnerId}`)
-    ).data.data;
-    setState((prevState) => ({
-      ...prevState,
-      partnerName: partnerNameRes,
-      data: partnerData,
-    }));
-    whatsAppMessage();
-  };
-
   useEffect(() => {
-    // axios.get(`${baseURL}partners/${partnerId}`).then((res) => {
-    //   setState((prevState) => ({
-    //     ...prevState,
-    //     partnerName: res.data.data.name,
-    //   }));
-    // });
+    axios.get(`${baseURL}partners/${partnerId}`).then((res) => {
+      setState((prevState) => ({
+        ...prevState,
+        partnerName: res.data.data.name,
+      }));
+    });
 
-    // axios.get(`${baseURL}partners/progress_made/${partnerId}`).then((res) => {
-    //   setState((prevState) => ({
-    //     ...prevState,
-    //     data: res.data.data,
-    //   }));
-    //   whatsAppMessage();
-    // });
-    (async () => fetchPartner())();
+    axios.get(`${baseURL}partners/progress_made/${partnerId}`).then((res) => {
+      setState((prevState) => ({
+        ...prevState,
+        data: res.data.data,
+      }));
+      whatsAppMessage();
+    });
   }, []);
 
   const progressMade = () => {
@@ -180,7 +165,7 @@ const ProgressMadeForPartner = () => {
   return (
     <>
       <CssBaseline />
-      <Box className={classes.container}>
+      <Container className={classes.container} maxWidth="xl">
         <Grid item xs={12} style={{ marginBottom: 12 }}>
           <Typography variant="h4"> Hello {partnerName}</Typography>
         </Grid>
@@ -209,7 +194,7 @@ const ProgressMadeForPartner = () => {
         </Grid> */}
         {/* <br /> */}
         {getView(state.dataView)}
-      </Box>
+      </Container>
     </>
   );
 };

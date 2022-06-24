@@ -243,7 +243,8 @@ const OwnerList = () => {
   ];
 
   useEffect(() => {
-    (async () => dispatch(fetchOwnersAction()))();
+    const fetchData = async () => dispatch(fetchOwnersAction());
+    fetchData();
   }, []);
 
   const getUpdatedData = (data, isEdit) => {

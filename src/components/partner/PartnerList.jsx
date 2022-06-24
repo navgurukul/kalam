@@ -185,7 +185,7 @@ const PartnerList = () => {
       });
       dataSetup(response.data.data);
     } catch (e) {
-      // fetchingFinish();
+      console.error(e);
     }
   };
 

@@ -4,8 +4,8 @@ import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 // import ExtensionIcon from "@mui/icons-material/Extension";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
-import AssignmentIcon from "@mui/icons-material/Assignment";
+// import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
+// import AssignmentIcon from "@mui/icons-material/Assignment";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import GroupIcon from "@mui/icons-material/Group";
 import WorkIcon from "@mui/icons-material/Work";
@@ -58,11 +58,11 @@ export default ({ toggleDrawer }) => {
       name: "Outreach Details",
       icon: <GroupIcon />,
     },
-    {
-      url: "/tasks",
-      name: "My Tasks",
-      icon: <AssignmentIcon />,
-    },
+    // {
+    //   url: "/tasks",
+    //   name: "My Tasks",
+    //   icon: <AssignmentIcon />,
+    // },
 
     {
       url: "/report/all",
@@ -75,11 +75,11 @@ export default ({ toggleDrawer }) => {
       name: "Assigned Users",
       icon: <GroupIcon />,
     },
-    {
-      url: "/update/mobile/number",
-      name: "Update mobile Number",
-      icon: <ContactPhoneIcon />,
-    },
+    // {
+    //   url: "/update/mobile/number",
+    //   name: "Update mobile Number",
+    //   icon: <ContactPhoneIcon />,
+    // },
   ];
 
   // const data = filter(function (element) {

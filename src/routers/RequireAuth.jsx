@@ -65,11 +65,11 @@ const RequireAuth = ({ children, privateRoute }) => {
   )
     if (isFetching) return <Loader container />;
     else return <NotHaveAccess />;
-  if (
-    location.pathname.split("/")[1] !== "admin" &&
-    !roles.some((role) => role.role === "FullDashboardAccess")
-  )
-    return <div className="bodyComponent">{children}</div>;
+  // if (
+  //   location.pathname.split("/")[1] === "admin" &&
+  //   !roles.some((role) => role.role === "Admin")
+  // )
+  //   return <NotHaveAccess />;
   const currentPath = location.pathname.split("/")[1];
   let role;
   if (!privateRoute) return <div className="bodyComponent">{children}</div>;

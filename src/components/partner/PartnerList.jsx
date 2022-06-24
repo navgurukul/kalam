@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 import axios from "axios";
 import { Box, Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import theme from "../../theme";
 import ViewAssessments from "../assessment/ViewAssessments";
 import PartnerLink from "./PartnerLink";
@@ -12,11 +12,8 @@ import EditPartner from "./EditPartner";
 import CreateAssessment from "../assessment/CreateAssessment";
 import AddMerakiLink from "../smallComponents/AddMerakiLink";
 import EditPartnerDetails from "../smallComponents/EditIcon";
-import { changeFetching } from "../../store/slices/uiSlice";
 import MainLayout from "../muiTables/MainLayout";
 import ReportSend from "../report/ReportSend";
-// import user from "../utils/user";
-import NotHaveAccess from "../layout/NotHaveAccess";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -171,96 +168,60 @@ const columns = [
 
 const PartnerList = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const { loggedInUser } = useSelector((state) => state.auth);
-  const fetchingStart = () => dispatch(changeFetching(true));
-  const fetchingFinish = () => dispatch(changeFetching(false));
-  const [state, setState] = React.useState({
-    data: [],
-    access: null, //access object to store access data
-    // userLoggedIn: user(), //user object to store user data
-    partnerRouteConditon: false, //to check condition of partner route
-  });
-
-  const fetchAccess = async () => {
-    try {
-      const accessUrl = `${baseUrl}rolebaseaccess`;
-      axios.get(accessUrl).then((response) => {
-        const partnerData = response.data; //variable to store response data
-        const conditions =
-          partnerData &&
-          loggedInUser &&
-          loggedInUser.email &&
-          partnerData.partners &&
-          partnerData.partners.view &&
-          partnerData.partners.view.includes(loggedInUser.email);
-        setState((prevState) => ({
-          ...prevState,
-          access: partnerData || null, //set access data to state
-          partnerRouteConditon: conditions,
-        }));
-      });
-    } catch (e) {
-      // console.error(e);
-    }
-  };
+  const { privileges } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(true);
+  const [partnerList, setPartnerList] = React.useState([]);
 
   const dataSetup = (data) => {
-    setState((prevState) => ({ ...prevState, data }));
-    fetchingFinish();
+    setPartnerList(data);
   };
 
   const fetchPartners = async () => {
     try {
-      fetchingStart();
       const dataURL = `${baseUrl}partners`;
       const response = await axios.get(dataURL, {
         headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
       });
       dataSetup(response.data.data);
     } catch (e) {
-      fetchingFinish();
+      console.error(e);
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    (async () => {
+      setLoading(true);
       await fetchPartners();
-      await fetchAccess();
-    };
-    fetchData();
+      setLoading(false);
+    })();
   }, []);
 
-  // const onRowClick = (event, rowData) => navigate("/partner/" + rowData.id + "/students");
-
-  if (!state.data.length) {
-    return <Box />;
-  }
   return (
-    <div>
-      {state.partnerRouteConditon ? (
-        <Box>
-          <ThemeProvider theme={theme}>
-            <div className={classes.innerTable}>
-              <div className={classes.buttons}>
-                <Link to="/partner/add">
-                  <Button color="primary" variant="contained">
-                    Add Partner
-                  </Button>
-                </Link>
-              </div>
-              <MainLayout
-                title="Partners"
-                columns={columns}
-                data={state.data}
-              />
-            </div>
-          </ThemeProvider>
-        </Box>
-      ) : (
-        <NotHaveAccess />
-      )}
-    </div>
+    <Box>
+      <ThemeProvider theme={theme}>
+        <div className={classes.innerTable}>
+          <div className={classes.buttons}>
+            <Button
+              disabled={
+                !privileges.some((priv) => priv.privilege === "AddPartner")
+              }
+              color="primary"
+              variant="contained"
+              onClick={() => navigate("/partner/add")}
+            >
+              Add Partner
+            </Button>
+          </div>
+          <MainLayout
+            title="Partners"
+            columns={columns}
+            data={partnerList}
+            showLoader={loading}
+          />
+        </div>
+      </ThemeProvider>
+    </Box>
   );
 };
 

@@ -1,18 +1,33 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { encryptText } from "../../utils";
+import { setupUser } from "../../components/admin/AdminPage";
+import { encryptText, toTitleCase } from "../../utils";
 import { baseUrl } from "../../utils/constants";
-import { enqueueSnackbar } from "./uiSlice";
+import { changeFetching, enqueueSnackbar } from "./uiSlice";
+
+const fetchAllPrivileges = async () => {
+  const res = await axios.get(`${baseUrl}role/getPrivilege`);
+  return res.data;
+};
 
 export const loginWithGoogle = createAsyncThunk(
   "auth/login",
-  async ({ response, specialLogin, callSnack }, thunkAPI) => {
-    if (
-      response.profileObj.email.includes("@navgurukul.org") ||
-      specialLogin.includes(response.profileObj.email)
-    ) {
-      try {
+  async ({ response }, thunkAPI) => {
+    thunkAPI.dispatch(changeFetching(true));
+    try {
+      const rolesData = await axios.get(
+        `${baseUrl}rolebaseaccess/mail/${response.profileObj.email}`
+      );
+      // const rolesData = { data: [] };
+      const { roles, privileges } =
+        rolesData.data.length > 0
+          ? setupUser(rolesData.data[0])
+          : { roles: [], privileges: [] };
+      if (
+        response.profileObj.email.includes("@navgurukul.org") ||
+        privileges.some((priv) => priv.privilege === "SpecialLogin")
+      ) {
         const userData = await axios.post(`${baseUrl}users/login/google`, {
           idToken: response.tokenObj.id_token,
         });
@@ -21,12 +36,6 @@ export const loginWithGoogle = createAsyncThunk(
         //   `${baseUrl}rolebaseaccess/mail/${user.email}`
         // );
 
-        const rolesData = { data: [] };
-
-        const { roles, privilege } =
-          rolesData.data.length > 0
-            ? rolesData.data[0]
-            : { roles: [], privilege: [] };
         localStorage.setItem("jwt", userToken);
         localStorage.setItem("userId", encryptText(`${user.id}`));
         localStorage.setItem("email", encryptText(user.email));
@@ -36,19 +45,27 @@ export const loginWithGoogle = createAsyncThunk(
             options: { variant: "success" },
           })
         );
-        return { isAuthenticated: true, user, roles, privilege };
-      } catch (err) {
-        thunkAPI.dispatch(
-          enqueueSnackbar({
-            message: `Error : ${err.message}`,
-            options: { variant: "error" },
-          })
-        );
-        throw Error(err.message);
+        thunkAPI.dispatch(changeFetching(false));
+        return { isAuthenticated: true, user, roles, privileges };
       }
+      thunkAPI.dispatch(
+        enqueueSnackbar({
+          message: `Please use NG Email, or request Special Access`,
+          options: { variant: "error" },
+        })
+      );
+      thunkAPI.dispatch(changeFetching(false));
+      return { isAuthenticated: false };
+    } catch (err) {
+      thunkAPI.dispatch(
+        enqueueSnackbar({
+          message: `Error : ${err.message}`,
+          options: { variant: "error" },
+        })
+      );
+      thunkAPI.dispatch(changeFetching(false));
+      throw Error(err.message);
     }
-    callSnack(`Error Occured`, "error");
-    return { isAuthenticated: false };
   }
 );
 
@@ -61,17 +78,34 @@ export const fetchCurrentUser = createAsyncThunk(
       try {
         const userData = await axios.get(`${baseUrl}users/${userId}`);
         const { data } = userData.data;
-        // const rolesData = await axios.get(
-        //   `${baseUrl}rolebaseaccess/mail/${data.email}`
-        // );
-        const rolesData = { data: [] };
-
-        const { roles, privilege } =
+        const rolesData = await axios.get(
+          `${baseUrl}rolebaseaccess/mail/${data.email}`
+        );
+        // const rolesData = { data: [] };
+        const { roles, privileges } =
           rolesData.data.length > 0
-            ? rolesData.data[0]
-            : { roles: [], privilege: [] };
+            ? setupUser(rolesData.data[0])
+            : { roles: [], privileges: [] };
+        const isAdmin = roles.some(
+          (role) => role.role === "Admin" || role.role === "FullDashboardAccess"
+        );
 
-        return { error: false, user: data, roles, privilege };
+        const newPrivs = isAdmin
+          ? [
+              ...privileges,
+              ...(await fetchAllPrivileges()).map((priv) => ({
+                ...priv,
+                privilege: toTitleCase(priv.privilege),
+              })),
+            ]
+          : privileges;
+        thunkAPI.dispatch(changeFetching(false));
+        return {
+          error: false,
+          user: data,
+          roles,
+          privileges: newPrivs,
+        };
       } catch (err) {
         throw Error(err.message);
       }
@@ -86,8 +120,8 @@ const AuthSlice = createSlice({
     isAuthenticated: !!localStorage.getItem("jwt"),
     loggedInUser: { email: "", mail_id: "" },
     // users: null,
-    roles: JSON.parse(localStorage.getItem("roles")) || [],
-    privileges: JSON.parse(localStorage.getItem("privileges")) || [],
+    roles: [],
+    privileges: [],
   },
   reducers: {
     // // creating reducers
@@ -114,20 +148,20 @@ const AuthSlice = createSlice({
   },
   extraReducers: {
     [loginWithGoogle.fulfilled]: (state, action) => {
-      const { isAuthenticated, user, roles, privilege } = action.payload;
+      const { isAuthenticated, user, roles, privileges } = action.payload;
       if (isAuthenticated) {
         state.isAuthenticated = isAuthenticated;
         state.loggedInUser = user;
         state.roles = roles;
-        state.privilege = privilege;
+        state.privileges = privileges;
       }
     },
     [fetchCurrentUser.fulfilled]: (state, action) => {
-      const { error, user, roles, privilege } = action.payload;
+      const { error, user, roles, privileges } = action.payload;
       if (!error) {
         state.loggedInUser = user;
         state.roles = roles;
-        state.privilege = privilege;
+        state.privileges = privileges;
       } else {
         state.isAuthenticated = false;
       }

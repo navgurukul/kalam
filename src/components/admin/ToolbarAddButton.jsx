@@ -4,7 +4,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 const NewCustomToolbar = ({ handleOpen }) => (
   //BaseURL
-  <Tooltip title="custom icon">
+  <Tooltip title="Add New Email">
     <IconButton onClick={handleOpen}>
       <AddIcon />
     </IconButton>

@@ -4,10 +4,8 @@ import Box from "@mui/material/Box";
 import { GoogleLogin } from "react-google-login";
 import Paper from "@mui/material/Paper";
 import { makeStyles } from "@mui/styles";
-import axios from "axios";
 import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
-import { useSnackbar } from "notistack";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
@@ -15,7 +13,7 @@ import theme from "../../theme";
 import { loginWithGoogle } from "../../store/slices/authSlice";
 import { decryptText } from "../../utils";
 
-const baseUrl = import.meta.env.VITE_API_URL;
+// const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles(() => ({
   loginContainer: {
@@ -35,17 +33,12 @@ const useStyles = makeStyles(() => ({
 
 const LoginDesign = () => {
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const [specialLogin, setSpecialLogin] = React.useState([]);
+  // const [specialLogin, setSpecialLogin] = React.useState([]);
   const [goToTest, setGoToTest] = React.useState();
-  const callSnack = (msg, variant) => {
-    enqueueSnackbar(msg, { variant });
-  };
-  const handleLogin = (response) =>
-    dispatch(loginWithGoogle({ specialLogin, response, callSnack }));
+  const handleLogin = (response) => dispatch(loginWithGoogle({ response }));
   //maintaing a state for special login
   // state = {
   //   specialLogin: [],
@@ -58,9 +51,6 @@ const LoginDesign = () => {
 
   const { enrollmentKey, time } = getTestData();
   useEffect(() => {
-    axios.get(`${baseUrl}rolebaseaccess`).then((res) => {
-      setSpecialLogin(res.data.specialLogin);
-    });
     if (time && enrollmentKey) {
       const Time = parseInt(decryptText(time), 10);
       const date = new Date(JSON.parse(Time));
@@ -79,52 +69,6 @@ const LoginDesign = () => {
   useEffect(() => {
     if (isAuthenticated) navigate("/students", { replace: true });
   }, [isAuthenticated]);
-
-  // const responseGoogle = (response) => {
-  //   if (
-  //     response.profileObj.email.includes("@navgurukul.org") ||
-  //     specialLogin.includes(response.profileObj.email)
-  //   ) {
-  //     axios
-  //       .post(`${baseUrl}users/login/google`, {
-  //         idToken: response.tokenObj.id_token,
-  //       })
-  //       .then((resp) => {
-  //         const { userToken, user } = resp.data;
-  //         axios.get(`${baseUrl}rolebaseaccess/email`).then((res) => {
-  //           const { data } = res;
-  //           const userRoles = data.find((role) => role.email === user.email);
-  //           if (userRoles) {
-  //             localStorage.setItem("roles", JSON.stringify(userRoles.roles));
-  //             localStorage.setItem(
-  //               "privileges",
-  //               JSON.stringify(userRoles.privilege)
-  //             );
-  //           } else {
-  //             localStorage.setItem("roles", JSON.stringify([]));
-  //             localStorage.setItem("privileges", JSON.stringify([]));
-  //           }
-  //           localStorage.setItem("jwt", userToken);
-  //           localStorage.setItem("user", JSON.stringify(user));
-  //           if (user.mobile) {
-  //             handleLogin();
-  //             navigate("/students");
-  //           } else {
-  //             handleLogin();
-  //             navigate("/user/mobile/number");
-  //           }
-  //         });
-  //       });
-  //   } else {
-  //     snackbar.enqueueSnackbar("Only Accessible by Navgurukul user ID", {
-  //       variant: "message",
-  //       anchorOrigin: {
-  //         vertical: "bottom",
-  //         horizontal: "left",
-  //       },
-  //     });
-  //   }
-  // };
 
   const errr = () => {
     alert("There was some issue with Google Login. Contact the admin.");

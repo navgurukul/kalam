@@ -54,7 +54,7 @@ const RedFlag = (props) => {
   };
 
   return (
-    <fragment>
+    <>
       <Box onClick={handleOpen}>
         {state.flagColorToggle ? (
           <FlagIcon
@@ -110,7 +110,7 @@ const RedFlag = (props) => {
           />
         </form>
       </Dialog>
-    </fragment>
+    </>
   );
 };
 

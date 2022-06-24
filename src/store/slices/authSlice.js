@@ -86,7 +86,9 @@ export const fetchCurrentUser = createAsyncThunk(
           rolesData.data.length > 0
             ? setupUser(rolesData.data[0])
             : { roles: [], privileges: [] };
-        const isAdmin = roles.some((role) => role.role === "Admin");
+        const isAdmin = roles.some(
+          (role) => role.role === "Admin" || role.role === "FullDashboardAccess"
+        );
 
         const newPrivs = isAdmin
           ? [

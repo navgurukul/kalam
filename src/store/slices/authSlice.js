@@ -86,22 +86,25 @@ export const fetchCurrentUser = createAsyncThunk(
           rolesData.data.length > 0
             ? setupUser(rolesData.data[0])
             : { roles: [], privileges: [] };
-        const isAdmin = roles.some((role) => role.role === "Admin");
+        const isAdmin = roles.some(
+          (role) => role.role === "Admin" || role.role === "FullDashboardAccess"
+        );
 
-        // thunkAPI.dispatch(changeFetching(false));
+        const newPrivs = isAdmin
+          ? [
+              ...privileges,
+              ...(await fetchAllPrivileges()).map((priv) => ({
+                ...priv,
+                privilege: toTitleCase(priv.privilege),
+              })),
+            ]
+          : privileges;
+        thunkAPI.dispatch(changeFetching(false));
         return {
           error: false,
           user: data,
           roles,
-          privileges: isAdmin
-            ? [
-                ...privileges,
-                ...(await fetchAllPrivileges()).map((priv) => ({
-                  ...priv,
-                  privilege: toTitleCase(priv.privilege),
-                })),
-              ]
-            : privileges,
+          privileges: newPrivs,
         };
       } catch (err) {
         throw Error(err.message);

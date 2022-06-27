@@ -40,6 +40,9 @@ import {
   caste,
 } from "../utils/constants";
 import UploadDocuments from "../components/smallComponents/UploadDocuments";
+// import CampusStatusDropdown from "../components/smallComponents/CampusStatus";
+import OtherActivities from "../components/campus/OtherActivities";
+import DeleteStudent from "../components/smallComponents/DeleteStudent";
 
 dayjs.extend(customParseFormat);
 
@@ -72,6 +75,23 @@ const ColumnTransitions = {
         studentId={value}
         studentName={rowMeta.rowData[2]}
         dataType="columnTransition"
+      />
+    ),
+  },
+};
+
+//column for deleting student from main dashboard
+const deleteStudentColumn = {
+  name: "delete",
+  label: "Delete",
+  options: {
+    filter: false,
+    sort: false,
+    display: false,
+    customBodyRender: (value, rowMeta) => (
+      <DeleteStudent
+        studentId={rowMeta.rowData[0]}
+        studentName={rowMeta.rowData[3]}
       />
     ),
   },
@@ -186,7 +206,9 @@ const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
           change={(event) => updateValue(event)}
         />
       ) : null}
-      {value?.split("\n\n").map((item) => <p key={item}> {item} </p>) || null}
+      {value
+        ?.split("\n\n")
+        .map((item) => <p key={item + Math.random()}> {item} </p>) || null}
     </div>
   ) : null;
 };
@@ -199,9 +221,25 @@ const feedbackColumnTransition = {
     sort: true,
     customBodyRender: (rowData, rowMeta, updateValue) => (
       <FeedbackColumnTransitionWrapper
-        rowData={rowData}
+        value={rowData}
         rowMeta={rowMeta}
-        change={updateValue}
+        updateValue={updateValue}
+      />
+    ),
+  },
+};
+
+const OtherActivitiesColumn = {
+  name: "other_activities",
+  label: "Other Activities",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => (
+      <OtherActivities
+        rowMetaTable={rowMeta}
+        otherActivities={rowData}
+        change={(event) => updateValue(event)}
       />
     ),
   },
@@ -1473,6 +1511,37 @@ const partnerNameColumn = {
   },
 };
 
+// const CampusStatusColumnWrapper = ({ value, rowMeta, updateValue }) => {
+//   const { privileges } = useSelector((state) => state.auth);
+//   return privileges?.some((priv) => priv.privilege === "UpdateStage") ? (
+//     <CampusStatusDropdown
+//       // studentId={rowMeta.rowData[0]}
+//       rowMeta={rowMeta}
+//       value={value}
+//       change={(event) => updateValue(event)}
+//       S
+//     />
+//   ) : (
+//     <p>{value}</p>
+//   );
+// };
+
+// const CampusStatus = {
+//   name: "campusStatus",
+//   label: "Campus Status",
+//   options: {
+//     filter: false,
+//     sort: false,
+//     customBodyRender: (value, rowMeta, updateValue) => (
+//       <CampusStatusColumnWrapper
+//         rowMeta={rowMeta}
+//         value={value}
+//         updateValue={updateValue}
+//       />
+//     ),
+//   },
+// };
+
 export const navGurukulSurveyForm = {
   label: "Survey Form",
   name: "partnerName",
@@ -1552,6 +1621,7 @@ const StudentService = {
     ],
     softwareCourse: [
       ColumnTransitions,
+      deleteStudentColumn,
       profileImage,
       nameColumn,
       setColumn,
@@ -1690,6 +1760,7 @@ const StudentService = {
     joinedDate,
     stageColumn,
     JobKabLagegiColumn,
+    // CampusStatus,
     ColumnUpload,
     daysPassedColumn,
     kitneAurDin,
@@ -1697,6 +1768,7 @@ const StudentService = {
     QualificationColumn,
     partnerNameColumn,
     donorColumn,
+    OtherActivitiesColumn,
     // EvaluationColumn,
     // redFlagColumn,
     // navGurukulSurveyForm,

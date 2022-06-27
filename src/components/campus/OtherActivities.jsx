@@ -2,7 +2,7 @@
 import React, { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { Button, Dialog, IconButton } from "@mui/material";
+import { Button, Dialog, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useSnackbar } from "notistack";
 import TextField from "@mui/material/TextField";
@@ -30,98 +30,118 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StudentFeedback = (props) => {
+const OtherActivities = (props) => {
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
   const dispatch = useDispatch();
   const { loggedInUser } = useSelector((state) => state.auth);
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const [feedbackValue, setFeedbackValue] = React.useState("");
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const addFeedbck = async () => {
+  const [state, setState] = React.useState({
+    otherActivities: "",
+    dialogOpen: false,
+  });
+  const addActivities = async () => {
     try {
       fetchingStart();
       const { change, rowMetaTable } = props;
-      const { rowData } = rowMetaTable;
+      const { rowData, columnIndex } = rowMetaTable;
       let studentId;
 
       if (window.location.pathname.includes("/campus")) {
-        studentId = rowData[7];
+        studentId = rowData[0];
       } else {
-        studentId = rowData[5];
+        studentId = rowData[0];
       }
-      const userId = parseInt(decryptText(localStorage.getItem("userId")), 10);
+      const dataURL = `${baseUrl}students/updateDetails/${studentId}`;
 
-      const dataURL = `${baseUrl}students/feedback/${studentId}/${userId}`;
       await axios
-        .post(dataURL, {
-          student_stage: rowData[0],
-          feedback: feedbackValue,
+        .put(dataURL, {
+          other_activities: state.otherActivities,
         })
         .then(() => {
           //console.log(response.data);
-          setDialogOpen(false);
-          enqueueSnackbar("Feedback is successfully added!", {
+          setState({
+            ...state,
+            dialogOpen: false,
+          });
+          snackbar.enqueueSnackbar("Other Activities are successfully added!", {
             variant: "success",
           });
-          change(feedbackValue);
+          change(state.otherActivities);
         });
 
       fetchingFinish();
     } catch (e) {
-      console.error(e);
-      enqueueSnackbar("Please select student Status", {
+      snackbar.enqueueSnackbar("Please select student Status", {
         variant: "error",
       });
       fetchingFinish();
     }
   };
 
-  const onSubmit = () => addFeedbck();
+  const onSubmit = () => {
+    setState({
+      ...state,
+      loading: true,
+    });
+    addActivities();
+  };
 
   // const validate = () => {};
 
-  const handleChange = (event) => setFeedbackValue(event.target.value);
+  const handleChange = (name) => (event) => {
+    const valChange = {};
+    valChange[name] = event.target.value;
 
-  const handleClose = () => setDialogOpen(false);
-
-  const handleOpen = () => setDialogOpen(true);
-
-  const addFeedbackDetails = (feedback) => {
-    const time = new Date();
-    const month = time.getMonth() + 1;
-
-    const currentUser = `@${
-      loggedInUser?.user_name?.toString().split(" ").join("").toLowerCase() ||
-      "guest"
-    }`;
-    const feedbackTime = `Feedback date ${time.getDate()}/${month}/${time.getFullYear()}`;
-    return feedback
-      ? `${currentUser}: ${feedbackTime}\n\n${feedback}`
-      : `${currentUser}: ${feedbackTime}\n\n`;
+    setState({ ...state, [name]: event.target.value });
   };
 
-  const { feedback } = props;
+  const handleClose = () => {
+    setState({
+      ...state,
+      dialogOpen: false,
+    });
+  };
+
+  const handleOpen = () => {
+    setState({
+      ...state,
+      dialogOpen: true,
+    });
+  };
+  const addActitiviesDetails = (otherActivities) => {
+    const currentUser = `@${
+      loggedInUser
+        ? loggedInUser.user_name.toString().split(" ").join("").toLowerCase()
+        : "guest"
+    }`;
+
+    return otherActivities
+      ? `${currentUser}: \n\n${otherActivities}`
+      : `${currentUser}: \n\n`;
+  };
+
+  const { otherActivities } = props;
 
   return (
     <>
-      <IconButton onClick={handleOpen}>
-        <EditIcon />
-      </IconButton>
-      <Dialog open={dialogOpen} onClose={handleClose}>
+      <Box onClick={handleOpen}>
+        <EditIcon style={{ cursor: "pointer" }} />
+      </Box>
+      <Dialog open={state.dialogOpen} onClose={handleClose}>
         <form className={classes.container}>
           <h1 style={{ color: "#f05f40", textAlign: "center" }}>
-            Add Feedback
+            Add Other Activities
           </h1>
           <TextField
             id="outlined-multiline-static"
-            label="Feedback"
+            label="Other Activities"
             multiline
             rows="6"
-            name="feedback"
-            defaultValue={addFeedbackDetails(feedback)}
-            onChange={handleChange}
+            name="otherActivities"
+            defaultValue={addActitiviesDetails(otherActivities)}
+            onChange={handleChange("otherActivities")}
             className={classes.textField}
             margin="normal"
             variant="outlined"
@@ -129,10 +149,10 @@ const StudentFeedback = (props) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={onSubmit}
+            onClick={() => onSubmit()}
             className={classes.btn}
           >
-            Submit Feedback
+            Submit
           </Button>
         </form>
       </Dialog>
@@ -140,4 +160,4 @@ const StudentFeedback = (props) => {
   );
 };
 
-export default StudentFeedback;
+export default OtherActivities;

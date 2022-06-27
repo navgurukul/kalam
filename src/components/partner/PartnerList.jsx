@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 import axios from "axios";
 import { Box, Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import theme from "../../theme";
 import ViewAssessments from "../assessment/ViewAssessments";
 import PartnerLink from "./PartnerLink";
@@ -12,11 +12,8 @@ import EditPartner from "./EditPartner";
 import CreateAssessment from "../assessment/CreateAssessment";
 import AddMerakiLink from "../smallComponents/AddMerakiLink";
 import EditPartnerDetails from "../smallComponents/EditIcon";
-import { changeFetching } from "../../store/slices/uiSlice";
 import MainLayout from "../muiTables/MainLayout";
 import ReportSend from "../report/ReportSend";
-// import user from "../utils/user";
-import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -171,10 +168,9 @@ const columns = [
 
 const PartnerList = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const { isFetching } = useSelector((state) => state.ui);
-  const fetchingStart = () => dispatch(changeFetching(true));
-  const fetchingFinish = () => dispatch(changeFetching(false));
+  const { privileges } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(true);
   const [partnerList, setPartnerList] = React.useState([]);
 
   const dataSetup = (data) => {
@@ -189,40 +185,43 @@ const PartnerList = () => {
       });
       dataSetup(response.data.data);
     } catch (e) {
-      // fetchingFinish();
+      console.error(e);
     }
   };
 
   useEffect(() => {
     (async () => {
-      fetchingStart();
+      setLoading(true);
       await fetchPartners();
-      fetchingFinish();
+      setLoading(false);
     })();
   }, []);
 
-  return !isFetching ? (
+  return (
     <Box>
       <ThemeProvider theme={theme}>
         <div className={classes.innerTable}>
           <div className={classes.buttons}>
-            <Link to="/partner/add">
-              <Button color="primary" variant="contained">
-                Add Partner
-              </Button>
-            </Link>
+            <Button
+              disabled={
+                !privileges.some((priv) => priv.privilege === "AddPartner")
+              }
+              color="primary"
+              variant="contained"
+              onClick={() => navigate("/partner/add")}
+            >
+              Add Partner
+            </Button>
           </div>
           <MainLayout
             title="Partners"
             columns={columns}
             data={partnerList}
-            showLoader={isFetching}
+            showLoader={loading}
           />
         </div>
       </ThemeProvider>
     </Box>
-  ) : (
-    <Loader container />
   );
 };
 

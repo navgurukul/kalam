@@ -2,10 +2,8 @@ import React, { useEffect } from "react";
 import Container from "@mui/material/Container";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import MainLayout from "../muiTables/MainLayout";
-import Loader from "../ui/Loader";
-import { changeFetching } from "../../store/slices/uiSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -46,12 +44,9 @@ const columns = [
 
 const CampusList = () => {
   const { loggedInUser, roles } = useSelector((state) => state.auth);
-  const { isFetching } = useSelector((state) => state.ui);
 
-  const dispatch = useDispatch();
-  const fetchingStart = () => dispatch(changeFetching(true));
-  const fetchingFinish = () => dispatch(changeFetching(false));
   const [campusList, setCampusList] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
   const fetchCampus = async () => {
     try {
@@ -71,6 +66,7 @@ const CampusList = () => {
               ),
             ]
       );
+      setLoading(false);
     } catch (e) {
       // console.error(e);
     }
@@ -78,33 +74,20 @@ const CampusList = () => {
 
   useEffect(() => {
     (async () => {
-      fetchingStart();
       // await fetchAccess();
       await fetchCampus();
-      fetchingFinish();
     })();
   }, [loggedInUser]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     fetchingStart();
-  //     await fetchAccess();
-  //     fetchingFinish();
-  //   };
-  //   fetchData();
-  // }, [loggedInUser]);
-
-  return !isFetching ? (
+  return (
     <Container maxWidth="sm">
       <MainLayout
         title="Campuses Name"
         columns={columns}
         data={campusList}
-        showLoader={isFetching}
+        showLoader={loading}
       />
     </Container>
-  ) : (
-    <Loader container />
   );
 };
 

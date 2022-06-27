@@ -243,7 +243,8 @@ const OwnerList = () => {
   ];
 
   useEffect(() => {
-    (async () => dispatch(fetchOwnersAction()))();
+    const fetchData = async () => dispatch(fetchOwnersAction());
+    fetchData();
   }, []);
 
   const getUpdatedData = (data, isEdit) => {
@@ -294,7 +295,13 @@ const OwnerList = () => {
       <ThemeProvider theme={theme}>
         <div className={classes.innerTable}>
           <div className={classes.buttons}>
-            <AddOwner getUpdatedData={getUpdatedData} ownerData={ownerData} />
+            <AddOwner
+              disabled={
+                !privileges.some((priv) => priv.privilege === "AddOwner")
+              }
+              getUpdatedData={getUpdatedData}
+              ownerData={ownerData}
+            />
             <Button
               variant="contained"
               color="primary"

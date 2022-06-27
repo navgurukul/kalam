@@ -1,6 +1,5 @@
 /* eslint-disable no-return-await */
 import React, { useEffect, useState } from "react";
-import MUIDataTable from "mui-datatables";
 import Select, { components, createFilter } from "react-select";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -21,11 +20,15 @@ import {
   TextField,
   IconButton,
 } from "@mui/material";
+import { HalfCircleSpinner } from "react-epic-spinners";
+import { useDispatch, useSelector } from "react-redux";
 import { debounce } from "underscore";
 import { AddCircleOutlined } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import ToolbarAddButton from "./ToolbarAddButton";
 import { campus } from "../../utils/constants";
+import MainLayout from "../muiTables/MainLayout";
+import { changeFetching } from "../../store/slices/uiSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -75,10 +78,15 @@ const CustomOption = ({ children, ...rest }) => (
 const AdminPage = () => {
   const { enqueueSnackbar } = useSnackbar();
 
+  const { isFetching } = useSelector((state) => state.ui);
+  const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
+  const fetchingFinish = () => dispatch(changeFetching(false));
   //States and Hooks
   const [users, setUsers] = useState([]);
   const [accessDialog, setAccessDialog] = useState(false);
   const [emailDialog, setEmailDialog] = useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [access, setAccess] = useState({
     role: "selectrole",
     access: "selectaccess",
@@ -168,13 +176,27 @@ const AdminPage = () => {
     setEmailDialog(true);
   };
 
+  const fetchByMailId = () => {
+    axios
+      .get(`${baseUrl}rolebaseaccess/email`)
+      .then((response) => {
+        const userList = response.data.reverse().map(setupUser);
+        setUsers(userList);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+
   const deleteUserEmail = async (email, emailId) => {
     try {
       if (window.confirm(`Are you sure to delete ${email}?`)) {
+        fetchingStart();
         await axios.delete(`${baseUrl}role/deleteUserEmail/${emailId}`);
         setUsers((prevUsers) =>
           prevUsers.filter((user) => user.id !== emailId)
         );
+        fetchingFinish();
         enqueueSnackbar(`${email} Deleted Successfully`, {
           variant: "success",
         });
@@ -192,6 +214,7 @@ const AdminPage = () => {
     rolePrivilege = "Role"
   ) => {
     try {
+      fetchingStart();
       await axios.delete(`${baseUrl}role/deleteUserRole/${rolePrivilegeId}`);
       if (rolePrivilege === "Role") {
         ///
@@ -201,6 +224,8 @@ const AdminPage = () => {
       } else {
         change(rowData.filter((rowItem) => rowItem.id !== rolePrivilegeId));
       }
+      await fetchByMailId();
+      fetchingFinish();
       enqueueSnackbar(`${rolePrivilege} Deleted Successfully`, {
         variant: "success",
       });
@@ -212,6 +237,7 @@ const AdminPage = () => {
 
   const deleteUserAccess = async (rowData, change, accessObj) => {
     try {
+      fetchingStart();
       await axios.delete(`${baseUrl}role/deleteUserRoleAccess/${accessObj.id}`);
       change(
         rowData.map((role) => {
@@ -222,6 +248,7 @@ const AdminPage = () => {
           return newRole;
         })
       );
+      fetchingFinish();
       enqueueSnackbar(
         `${accessObj.role}-${accessObj.name}Deleted Successfully`,
         {
@@ -235,7 +262,9 @@ const AdminPage = () => {
   };
 
   const hasAccessObj = (role) =>
-    !["admin", "dev"].some((roleItem) => role.toLowerCase() === roleItem);
+    !["admin", "dev", "fullDashboardAccess"].some(
+      (roleItem) => role.toLowerCase() === roleItem.toLowerCase()
+    );
 
   const columns = [
     { name: "email", label: "Email" },
@@ -406,18 +435,6 @@ const AdminPage = () => {
     // setEditing(null);
   };
 
-  const fetchByMailId = () => {
-    axios
-      .get(`${baseUrl}rolebaseaccess/email`)
-      .then((response) => {
-        const userList = response.data.reverse().map(setupUser);
-        setUsers(userList);
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
-
   const fetchRolesPrivileges = async () => {
     try {
       const roles = await axios.get(`${baseUrl}role/getRole`);
@@ -460,12 +477,12 @@ const AdminPage = () => {
   const updateAccess = (acc) => setAccess(acc);
 
   useEffect(() => {
-    const fetch = async () => {
+    (async () => {
       await fetchLists();
       fetchRolesPrivileges();
       fetchByMailId();
-    };
-    fetch();
+      setLoading(false);
+    })();
   }, []);
 
   const { roleOptions, privilegeOptions } = rolePrivilegeOptions;
@@ -479,7 +496,7 @@ const AdminPage = () => {
       enqueueSnackbar("Email Already Exists", { variant: "error" });
       return;
     }
-
+    fetchingStart();
     await axios.post(`${baseUrl}role/createUserEmail`, {
       email: currentUser.email,
     });
@@ -490,7 +507,10 @@ const AdminPage = () => {
     // setCurrentUser({})
     enqueueSnackbar("Added New Email", { variant: "success" });
     setUsers([...users, setupUser(newUser)]);
+    fetchingFinish();
+    setLoading(true);
     await fetchByMailId();
+    setLoading(false);
   };
 
   const getRoleData = (roleId) =>
@@ -536,6 +556,7 @@ const AdminPage = () => {
     const { selectedRoles } = currentUser;
     if (window.confirm("Are you sure to assign the mentioned roles?")) {
       try {
+        fetchingStart();
         const alreadyHasRole = selectedRoles.findIndex(
           (roleItem) => roleItem.role === getRoleData(access.role).label.name
         );
@@ -583,6 +604,7 @@ const AdminPage = () => {
         changeFn.ex(updatedRoles);
         setAccess({ ...access, role: "selectrole", access: "selectaccess" });
         setAccessDialog(false);
+        fetchingFinish();
         await fetchByMailId();
         enqueueSnackbar("Assigned Roles Successfully", { variant: "success" });
       } catch (e) {
@@ -595,6 +617,7 @@ const AdminPage = () => {
   const assignPrivileges = async () => {
     if (window.confirm("Are you sure to assign the mentioned privileges?")) {
       try {
+        fetchingStart();
         const newPrivs = await Promise.all(
           access.privilege.map(
             async (privItem) =>
@@ -610,6 +633,7 @@ const AdminPage = () => {
         setAccess({ ...access, privilege: [] });
         setAccessDialog(false);
         await fetchByMailId();
+        fetchingFinish();
         enqueueSnackbar("Assigned Privileges Successfully", {
           variant: "success",
         });
@@ -664,7 +688,10 @@ const AdminPage = () => {
                   <label>
                     <Typography variant="caption">
                       Select{" "}
-                      {access.role === "selectRole" ? "Role" : access.role}
+                      {access.role === "selectRole"
+                        ? "Role"
+                        : roleOptions.find((opt) => opt.value === access.role)
+                            .label.name}
                     </Typography>
                   </label>
                   <Select
@@ -735,15 +762,6 @@ const AdminPage = () => {
     selectableRows: "none",
     responsive: "vertical",
     filter: false,
-    // textLabels: {
-    //   body: {
-    //     noMatch: loading ? (
-    //       <Loader />
-    //     ) : (
-    //       "Sorry, there is no matching data to display"
-    //     ),
-    //   },
-    // },
     customToolbar: React.useCallback(
       () => <ToolbarAddButton handleOpen={openEmailDialog} />,
       []
@@ -752,10 +770,17 @@ const AdminPage = () => {
 
   return (
     <Container maxWidth="xl">
-      <MUIDataTable
+      {/* <MUIDataTable
         title="Role Based Access"
         data={users}
         columns={columns}
+        options={options}
+      /> */}
+      <MainLayout
+        title="Role Based Access"
+        columns={columns}
+        data={users}
+        showLoader={loading}
         options={options}
       />
       <Dialog fullWidth open={Boolean(accessDialog)} onClose={handleClose}>
@@ -781,7 +806,11 @@ const AdminPage = () => {
             color="primary"
             onClick={accessDialog === "role" ? assignRoles : assignPrivileges}
           >
-            Assign {accessDialog === "role" ? "Roles" : "Privileges"}
+            {isFetching ? (
+              <HalfCircleSpinner size={24} />
+            ) : (
+              `Assign ${accessDialog === "role" ? "Roles" : "Privileges"}`
+            )}
           </Button>
           <Button variant="outlined" color="primary" onClick={handleClose}>
             Cancel
@@ -815,7 +844,7 @@ const AdminPage = () => {
         </DialogContent>
         <DialogActions>
           <Button variant="contained" color="primary" onClick={createUserEmail}>
-            Create User Email
+            {isFetching ? <HalfCircleSpinner size={24} /> : `Create User Email`}
           </Button>
           <Button
             variant="outlined"

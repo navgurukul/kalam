@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => ({
 
 const MainLayout = (props) => {
   const classes = useStyles();
-  const { data, columns, title, showLoader } = props;
+  const { data, columns, options, title, showLoader } = props;
   return (
     <ThemeProvider theme={theme}>
       <Box>
@@ -61,6 +61,7 @@ const MainLayout = (props) => {
                 ),
               },
             },
+            ...(options || {}),
           }}
         />
       </Box>

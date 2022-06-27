@@ -26,8 +26,24 @@ const RequireAuth = ({ children, privateRoute }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   // if (isAuthenticated && loggedInUser && !loggedInUser.mobile)
   //   return <Navigate to="/user/mobile/number" replace />;
+
+  const getRoute = () => {
+    if (
+      roles.some((role) => role.role === "Admin") ||
+      privileges.some((priv) => priv.privilege === "ViewDashboard")
+    )
+      return "/students";
+    if (roles.some((role) => role.role === "Campus")) return "/campus";
+    if (roles.some((role) => role.role === "Donor")) return "/donor";
+    if (privileges.some((priv) => priv.privilege === "ViewPartners"))
+      return "/partners";
+    if (privileges.some((priv) => priv.privilege === "ViewPlacements"))
+      return "/partners";
+    return "/students";
+  };
+
   if (isAuthenticated && !privateRoute)
-    return <Navigate to="/students" replace />;
+    return <Navigate to={getRoute()} replace />;
   if (
     location.pathname.split("/")[1] === "admin" &&
     location.pathname.split("/")[2] === "create" &&
@@ -38,9 +54,22 @@ const RequireAuth = ({ children, privateRoute }) => {
       "anand@navgurukul.org",
     ].includes(loggedInUser.email)
   )
-    return <NotHaveAccess />;
+    if (isFetching) return <Loader container />;
+    else return <NotHaveAccess />;
   if (isAuthenticated && roles.some((roleItem) => roleItem.role === "Admin"))
     return <div className="bodyComponent">{children}</div>;
+  if (
+    location.pathname.split("/")[1] === "partner" &&
+    location.pathname.split("/")[2] === "add" &&
+    !privileges.some((priv) => priv.privilege === "AddPartner")
+  )
+    if (isFetching) return <Loader container />;
+    else return <NotHaveAccess />;
+  // if (
+  //   location.pathname.split("/")[1] === "admin" &&
+  //   !roles.some((role) => role.role === "Admin")
+  // )
+  //   return <NotHaveAccess />;
   const currentPath = location.pathname.split("/")[1];
   let role;
   if (!privateRoute) return <div className="bodyComponent">{children}</div>;
@@ -61,6 +90,18 @@ const RequireAuth = ({ children, privateRoute }) => {
       return (
         <div className="bodyComponent">
           {privileges.some((priv) => priv.privilege === "ViewDashboard") ? (
+            children
+          ) : isFetching ? (
+            <Loader container />
+          ) : (
+            <NotHaveAccess />
+          )}
+        </div>
+      );
+    case "owner":
+      return (
+        <div className="bodyComponent">
+          {privileges.some((priv) => priv.privilege === "ViewOwners") ? (
             children
           ) : isFetching ? (
             <Loader container />
@@ -133,16 +174,29 @@ const RequireAuth = ({ children, privateRoute }) => {
           )}
         </div>
       );
-    default:
+    case "partners":
       return (
         <div className="bodyComponent">
-          {privileges.some((priv) => priv.privilege === "ViewDashboard") ? (
+          {privileges.some((priv) => priv.privilege === "ViewPartners") ? (
             children
           ) : isFetching ? (
             <Loader container />
           ) : (
             <NotHaveAccess />
           )}
+        </div>
+      );
+    default:
+      return (
+        <div className="bodyComponent">
+          {/* {privileges.some((priv) => priv.privilege === "ViewDashboard") ? (
+            children
+          ) : isFetching ? (
+            <Loader container />
+          ) : (
+            <NotHaveAccess />
+          )} */}
+          {children}
         </div>
       );
   }

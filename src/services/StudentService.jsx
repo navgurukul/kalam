@@ -206,7 +206,9 @@ const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
           change={(event) => updateValue(event)}
         />
       ) : null}
-      {value?.split("\n\n").map((item) => <p key={item}> {item} </p>) || null}
+      {value
+        ?.split("\n\n")
+        .map((item) => <p key={item + Math.random()}> {item} </p>) || null}
     </div>
   ) : null;
 };
@@ -219,9 +221,9 @@ const feedbackColumnTransition = {
     sort: true,
     customBodyRender: (rowData, rowMeta, updateValue) => (
       <FeedbackColumnTransitionWrapper
-        rowData={rowData}
+        value={rowData}
         rowMeta={rowMeta}
-        change={updateValue}
+        updateValue={updateValue}
       />
     ),
   },

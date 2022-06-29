@@ -92,6 +92,7 @@ const PlacementStudentsData = () => {
         });
       });
   };
+
   const columns = [
     {
       name: "student_id",
@@ -664,7 +665,7 @@ const PlacementStudentsData = () => {
       />
       <PlacementTransitions
         studentId={selectedStudent.studentId}
-        studentTransition={selectedStudent.transitions}
+        studentTransitions={selectedStudent.transitions}
         studentName={selectedStudent.studentName}
         modalOpen={selectedStudent.action === "viewTransition"}
         closeModal={() =>

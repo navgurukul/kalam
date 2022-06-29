@@ -122,7 +122,7 @@ export const nextStage = {
   M3: ["M4", "droppedOut", "onLeave"],
   M4: ["M5", "droppedOut", "onLeave"],
   M5: ["M6", "droppedOut", "onLeave"],
-  M6: ["M7", "droppedOut", "onLeave"],
+  M6: ["M7", "droppedOut", "onLeave", "inJob"],
   M7: ["M8", "droppedOut", "onLeave", "inJob"],
   M8: ["M9", "droppedOut", "onLeave", "inJob"],
   M9: ["M10", "droppedOut", "onLeave", "inJob"],

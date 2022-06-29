@@ -171,6 +171,16 @@ const PlacementTransitions = ({
     <Modal open={modalOpen} onClose={closeModal}>
       <Box style={getModalStyle()} className={classes.paper}>
         {/* <Typography variant="h3">Transition Data for {studentName}</Typography> */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row-reverse",
+          }}
+        >
+          <IconButton onClick={closeModal}>
+            <CancelIcon />
+          </IconButton>
+        </Box>
         <Modal
           open={!!viewLink}
           onClose={() => setViewLink(null)}

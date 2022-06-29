@@ -91,9 +91,9 @@ const PlacementStudentsData = () => {
         filter: false,
         sort: false,
         customBodyRender: React.useCallback(
-          (value, rowMeta) => (
+          (value, { rowData }) => (
             <>
-              <AddPlacementsEntry studentId={value} rowMeta={rowMeta} />
+              <AddPlacementsEntry studentId={value} studentName={rowData[1]} />
               <PlacementTransitions studentId={value} />
             </>
           ),

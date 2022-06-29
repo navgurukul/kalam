@@ -87,7 +87,6 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
       // eslint-disable-next-line no-param-reassign
       value = value === "Female" ? 1 : value === "Male" ? 2 : 3;
     }
-
     const keys = {
       gender: "gender",
       donor: "searchDonorName",
@@ -243,12 +242,12 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
     },
     onFilterChange: async (columnChanged, filterList) => {
       const indexObj = {
-        gender: 10,
-        campus: 24,
-        donor: 25,
-        studentOwner: 18,
-        status: 19,
-        partnerName: 21,
+        gender: 11,
+        campus: 25,
+        donor: 26,
+        studentOwner: 19,
+        status: 20,
+        partnerName: 22,
       };
       if (columnChanged) {
         const filterValue = filterList[indexObj[columnChanged]][0];

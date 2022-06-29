@@ -8,30 +8,44 @@ import {
   DialogTitle,
   FormControl,
   Grid,
-  IconButton,
   Input,
   InputLabel,
   MenuItem,
   Select,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
+import { HalfCircleSpinner } from "react-epic-spinners";
 import { DatePicker, LocalizationProvider } from "@mui/lab";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import { Controller, useForm } from "react-hook-form";
+import dayjs from "dayjs";
 import { Box } from "@mui/system";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useSnackbar } from "notistack";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { changeFetching } from "../../store/slices/uiSlice";
 
-const AddPlacementsEntry = ({ studentId, studentName }) => {
+const baseUrl = import.meta.env.VITE_API_URL;
+
+const AddPlacementsEntry = ({
+  studentId,
+  studentName,
+  dialogOpen,
+  updateJobEntry,
+  closeDialog,
+}) => {
   const { enqueueSnackbar } = useSnackbar();
+  const { isFetching } = useSelector((state) => state.ui);
+  const dispatch = useDispatch();
+  const fetchingStart = () => dispatch(changeFetching(true));
+  const fetchingFinish = () => dispatch(changeFetching(false));
   const {
     handleSubmit,
     formState: { errors },
     control,
   } = useForm();
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  // const [dialogOpen, setDialogOpen] = React.useState(false);
   const [formData, setFormData] = React.useState({
     employer: "",
     designation: "",
@@ -45,12 +59,71 @@ const AddPlacementsEntry = ({ studentId, studentName }) => {
     writeUp: "",
   });
 
-  const onSubmit = (data, e) => {
-    console.log(data);
-    setFormData({ ...formData, ...data });
+  const limitFileSize = (file) => file.size <= 1000000;
+
+  const generateLink = async (file) => {
+    const fileData = new FormData();
+
+    if (!limitFileSize(file)) {
+      enqueueSnackbar("File size should not exceed 1MB", {
+        variant: "error",
+      });
+      return;
+    }
+    fileData.append("file", file);
+    const res = await (
+      await axios.post(`${baseUrl}/students/resume/documents`, fileData)
+    ).data;
+    return res;
   };
 
-  const handleClose = () => setDialogOpen(false);
+  const onSubmit = async (data) => {
+    if (isFetching) return;
+    // setFormData({ ...formData, ...data });
+
+    fetchingStart();
+
+    const submitData = {
+      student_id: studentId,
+      job_designation: data.designation,
+      job_location: data.location,
+      salary: data.salary,
+      job_type: data.jobType,
+      employer: data.employer,
+      // resume: "string",
+      offer_letter_date: dayjs(data.offerLetterDate).format("YYYY-MM-DD"),
+      // photo_link: "string",
+      // "write_up": "string"
+    };
+
+    if (data.videoLink !== "") submitData.video_link = data.videoLink;
+
+    if (formData.resume !== "")
+      // setFormData({ ...formData, resume:  });
+      submitData.resume = await generateLink(formData.resume);
+
+    if (formData.photoLink !== "")
+      // setFormData({ ...formData, photoLink:  });
+      submitData.photo_link = await generateLink(formData.photoLink);
+
+    axios
+      .post(`${baseUrl}students/jobDetails`, submitData)
+      .then((res) => {
+        enqueueSnackbar("Added Entry Successfully", { variant: "success" });
+        fetchingFinish();
+        // setDialogOpen(false);
+        updateJobEntry(res.data);
+        closeDialog();
+      })
+      .catch((e) => {
+        enqueueSnackbar("An Error Occurred", { variant: "error" });
+        fetchingFinish();
+        console.error(e);
+      });
+  };
+
+  const handleClose = () => closeDialog();
+  // setDialogOpen(false);
 
   const modes = [
     {
@@ -65,11 +138,11 @@ const AddPlacementsEntry = ({ studentId, studentName }) => {
 
   return (
     <Box>
-      <Tooltip title="Add New Entry" placement="top">
+      {/* <Tooltip title="Add New Entry" placement="top">
         <IconButton onClick={() => setDialogOpen(true)}>
           <AddCircleIcon fontSize="medium" />
         </IconButton>
-      </Tooltip>
+      </Tooltip> */}
       <Dialog fullWidth open={dialogOpen} onClose={handleClose}>
         <DialogTitle>Add New Job Entry for {studentName}</DialogTitle>
         <DialogContent>
@@ -285,7 +358,7 @@ const AddPlacementsEntry = ({ studentId, studentName }) => {
               />
             </Grid>
             <Grid item xs={6}>
-              <Controller
+              {/* <Controller
                 control={control}
                 // defaultValue={formData.resume || ""}
                 name="resume"
@@ -299,7 +372,9 @@ const AddPlacementsEntry = ({ studentId, studentName }) => {
                       inputProps={{ type: "file", accept: "image/*,.pdf" }}
                       id="resume"
                       fullWidth
+                      name="resume"
                       inputRef={ref}
+                      ref={resumeRef}
                       type="file"
                       style={
                         {
@@ -309,6 +384,7 @@ const AddPlacementsEntry = ({ studentId, studentName }) => {
                       error={!!errors.resume}
                       onChange={(e) => {
                         // LinkGenerator(e, 1);
+                        console.log(e.target.files[0]);
                       }}
                       // helperText={
                       //   errors.resume ? "Enter Job Salary/Stipend" : ""
@@ -317,61 +393,46 @@ const AddPlacementsEntry = ({ studentId, studentName }) => {
                     />
                   </FormControl>
                 )}
-              />
-
-              {/* <label htmlFor="resume-input">
-                <Button variant="raised" component="span">
-                  Upload
-                </Button>
-              </label> */}
+              /> */}
+              <FormControl variant="outlined" fullWidth>
+                <label id="resume-label">
+                  <Typography variant="caption">Upload Resume</Typography>
+                </label>
+                <Input
+                  inputProps={{ type: "file", accept: "image/*,.pdf" }}
+                  id="resume"
+                  fullWidth
+                  name="resume"
+                  type="file"
+                  onChange={(e) =>
+                    setFormData({ ...formData, resume: e.target.files[0] })
+                  }
+                />
+              </FormControl>
             </Grid>
             <Grid item xs={6}>
-              <Controller
-                control={control}
-                // defaultValue={formData.photoLink || ""}
-                name="photoLink"
-                rules={{ required: true }}
-                render={({ field: { ref, ...rest } }) => (
-                  <FormControl variant="outlined" fullWidth>
-                    <label id="photoLink-label">
-                      <Typography variant="caption">Upload Photo</Typography>
-                    </label>
-                    <Input
-                      inputProps={{ type: "file", accept: "image/*,.pdf" }}
-                      id="photoLink"
-                      fullWidth
-                      inputRef={ref}
-                      type="file"
-                      style={
-                        {
-                          // display: "none",
-                        }
-                      }
-                      error={!!errors.photoLink}
-                      onChange={(e) => {
-                        // LinkGenerator(e, 1);
-                      }}
-                      // helperText={
-                      //   errors.photoLink ? "Enter Job Salary/Stipend" : ""
-                      // }
-                      {...rest}
-                    />
-                  </FormControl>
-                )}
-              />
-
-              {/* <label htmlFor="resume-input">
-                <Button variant="raised" component="span">
-                  Upload
-                </Button>
-              </label> */}
+              <FormControl variant="outlined" fullWidth>
+                <label id="photoLink-label">
+                  <Typography variant="caption">Upload Photo</Typography>
+                </label>
+                <Input
+                  inputProps={{ type: "file", accept: "image/*,.pdf" }}
+                  type="file"
+                  id="photoLink"
+                  fullWidth
+                  name="photoLink"
+                  onChange={(e) =>
+                    setFormData({ ...formData, photoLink: e.target.files[0] })
+                  }
+                />
+              </FormControl>
             </Grid>
             <Grid item xs={6}>
               <Controller
                 control={control}
                 defaultValue={formData.videoLink || ""}
                 name="videoLink"
-                rules={{ required: true }}
+                // rules={{ required: true }}
                 render={({ field: { ref, ...rest } }) => (
                   <TextField
                     variant="outlined"
@@ -394,12 +455,6 @@ const AddPlacementsEntry = ({ studentId, studentName }) => {
                   />
                 )}
               />
-
-              {/* <label htmlFor="resume-input">
-                <Button variant="raised" component="span">
-                  Upload
-                </Button>
-              </label> */}
             </Grid>
             {/* <Grid item xs={6}>
               <Controller
@@ -438,11 +493,6 @@ const AddPlacementsEntry = ({ studentId, studentName }) => {
                 )}
               />
 
-              <label htmlFor="resume-input">
-                <Button variant="raised" component="span">
-                  Upload
-                </Button>
-              </label>
             </Grid> */}
           </Grid>
         </DialogContent>
@@ -455,7 +505,7 @@ const AddPlacementsEntry = ({ studentId, studentName }) => {
             color="primary"
             onClick={handleSubmit(onSubmit)}
           >
-            Add New Entry
+            {isFetching ? <HalfCircleSpinner size={24} /> : "Add New Entry"}
           </Button>
         </DialogActions>
       </Dialog>

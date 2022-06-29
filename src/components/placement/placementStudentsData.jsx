@@ -1,7 +1,15 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect } from "react";
-import { Select, MenuItem, Chip, Box } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  Chip,
+  Box,
+  Tooltip,
+  IconButton,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/AddCircle";
+import ChangeHistoryIcon from "@mui/icons-material/ChangeHistory";
 // import Select from "react-select";
 import axios from "axios";
 
@@ -52,6 +60,10 @@ const PlacementStudentsData = () => {
 
   const [studentData, setStudentData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const [selectedStudent, setSelectedStudent] = React.useState({
+    studentId: null,
+    studentName: null,
+  });
 
   const getJobDetails = async () => {
     try {
@@ -80,7 +92,6 @@ const PlacementStudentsData = () => {
         });
       });
   };
-
   const columns = [
     {
       name: "student_id",
@@ -91,13 +102,50 @@ const PlacementStudentsData = () => {
         filter: false,
         sort: false,
         customBodyRender: React.useCallback(
-          (value, { rowData }) => (
+          (value, { rowData, rowIndex }) => (
             <>
-              <AddPlacementsEntry studentId={value} studentName={rowData[1]} />
-              <PlacementTransitions studentId={value} />
+              {/* <AddPlacementsEntry studentId={value} studentName={rowData[1]} />
+               */}
+              <Tooltip title="Add New Entry" placement="top">
+                <IconButton
+                  onClick={() => {
+                    setSelectedStudent({
+                      action: "addNewEntry",
+                      studentId: value,
+                      studentName: rowData[1],
+                      rowIndex,
+                    });
+                  }}
+                >
+                  <AddIcon fontSize="medium" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="View Transitions" placement="top">
+                <IconButton
+                  color="primary"
+                  onClick={() => {
+                    // console.log(studentData[rowIndex]);
+                    setSelectedStudent({
+                      action: "viewTransition",
+                      studentId: value,
+                      studentName: rowData[1],
+                      transitions:
+                        studentData[rowIndex].student_job_details_all,
+                    });
+                  }}
+                >
+                  <ChangeHistoryIcon
+                    sx={{
+                      transitionIcon: {
+                        transform: "rotate(-180deg)",
+                      },
+                    }}
+                  />
+                </IconButton>
+              </Tooltip>
             </>
           ),
-          []
+          [studentData]
         ),
       },
     },
@@ -582,16 +630,47 @@ const PlacementStudentsData = () => {
     })();
   }, []);
 
+  const updateJobData = (index, jobData) => {
+    const newStudentData = [...studentData];
+    const newStudent = newStudentData[index];
+    newStudent.student_job_details_all.push(jobData);
+    newStudent.student_job_details = jobData;
+    newStudentData[index] = newStudent;
+    setStudentData(newStudentData);
+  };
+
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
-      (
       <MainLayout
         title="Placement Data"
         data={studentData}
         columns={columns}
         showLoader={loading}
       />
-      )
+      <AddPlacementsEntry
+        closeDialog={() =>
+          setSelectedStudent({
+            action: null,
+            studentId: null,
+            studentName: null,
+          })
+        }
+        updateJobEntry={(jobData) =>
+          updateJobData(selectedStudent.rowIndex, jobData)
+        }
+        dialogOpen={selectedStudent.action === "addNewEntry"}
+        studentId={selectedStudent.studentId}
+        studentName={selectedStudent.studentName}
+      />
+      <PlacementTransitions
+        studentId={selectedStudent.studentId}
+        studentTransition={selectedStudent.transitions}
+        studentName={selectedStudent.studentName}
+        modalOpen={selectedStudent.action === "viewTransition"}
+        closeModal={() =>
+          setSelectedStudent({ studentId: null, studentName: null })
+        }
+      />
     </Box>
   );
 };

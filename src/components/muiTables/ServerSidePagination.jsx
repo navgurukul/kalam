@@ -13,6 +13,7 @@ import {
   setPageNo,
 } from "../../store/slices/studentSlice";
 import { qualificationKeys } from "../../utils/constants";
+import { getColumnIndex } from "../../utils";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -241,16 +242,17 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
       sortChange(changedColumn, order);
     },
     onFilterChange: async (columnChanged, filterList) => {
-      const indexObj = {
-        gender: 11,
-        campus: 25,
-        donor: 26,
-        studentOwner: 19,
-        status: 20,
-        partnerName: 22,
-      };
+      // const indexObj = {
+      //   gender: getColumnIndex,
+      //   campus: 25,
+      //   donor: 26,
+      //   studentOwner: 19,
+      //   status: 20,
+      //   partnerName: 22,
+      // };
       if (columnChanged) {
-        const filterValue = filterList[indexObj[columnChanged]][0];
+        const filterValue =
+          filterList[getColumnIndex(newColumns, columnChanged)][0];
         if (filterValue === undefined)
           return getfilterApi(columnChanged, "All");
         return getfilterApi(columnChanged, filterValue);

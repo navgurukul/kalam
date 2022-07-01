@@ -50,6 +50,9 @@ export const parseJwt = (token) => {
   }
 };
 
+export const getColumnIndex = (columnList, columnName) =>
+  columnList.findIndex((columnItem) => columnItem.name === columnName);
+
 export const encryptText = (
   plainText = "" //convert to hex
 ) =>

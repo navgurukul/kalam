@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from "react";
 import dayjs from "dayjs";
@@ -11,7 +12,6 @@ import UpdateEmail from "../components/smallComponents/UpdateEmail";
 import OwnerSelect from "../components/owner/OwnerSelect";
 import StatusSelect from "../components/smallComponents/StatusSelect";
 import StudentFeedback from "../components/feedback/FeedbackPage";
-// eslint-disable-next-line import/no-cycle
 import StageTransitions from "../components/smallComponents/StageTransitions";
 import StageTransitionsStudentStatus from "../components/student/StageTransitionsStudentStatus";
 import AudioRecorder from "../components/smallComponents/AudioRecording";

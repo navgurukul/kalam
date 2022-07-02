@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#f1f3f4",
     textAlign: "center",
     color: "black",
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
   },
   dummySpace: {
     // height: theme.spacing(8),

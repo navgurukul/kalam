@@ -104,18 +104,27 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
       filterColumns:
         value === "All"
           ? [...newData]
-          : [...newData, { key: keys[query], value }],
+          : [
+              ...newData,
+              { key: keys[query], value: encodeURIComponent(value) },
+            ],
     };
     const { filterColumns: newColumns } = newState;
     // filterValues(filterColumns);
     const newUrl = await filterColumns.reduce((cUrl, filterColumn, index) => {
       if (index > 0) {
-        return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
+        return `${cUrl}&${filterColumn.key}=${encodeURIComponent(
+          filterColumn.value
+        )}`;
       }
       if (state.query) {
-        return `${cUrl}${state.query}=${state.value}&${filterColumn.key}=${filterColumn.value}`;
+        return `${cUrl}${state.query}=${state.value}&${
+          filterColumn.key
+        }=${encodeURIComponent(filterColumn.value)}`;
       }
-      return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
+      return `${cUrl}${filterColumn.key}=${encodeURIComponent(
+        filterColumn.value
+      )}`;
     }, `${baseURL}students?`);
     if (newColumns.length > 0) {
       //getStudents(`${url}&limit=${numberOfRows}&page=0`);

@@ -12,6 +12,7 @@ import ChangeHistoryIcon from "@mui/icons-material/ChangeHistory";
 import { useLocation } from "react-router-dom";
 import theme from "../../theme";
 import { changeFetching } from "../../store/slices/uiSlice";
+import { setSelectedStudent } from "../../store/slices/studentSlice";
 import GlobalService from "../../services/GlobalService";
 // eslint-disable-next-line import/no-cycle
 import StudentService from "../../services/StudentService";
@@ -66,11 +67,14 @@ const useStyles = makeStyles((_theme) => ({
   },
 }));
 
-const StageTransitions = (props) => {
+const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
   const classes = useStyles();
   const location = useLocation();
   const { loggedInUser } = useSelector((state) => state.auth);
+  const { selectedStudent } = useSelector((state) => state.students);
   const dispatch = useDispatch();
+  const setTransitions = (transitions) =>
+    dispatch(setSelectedStudent({ studentId, transitions }));
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const [state, setState] = React.useState({
@@ -84,7 +88,7 @@ const StageTransitions = (props) => {
   });
 
   const fetchtransition = async () => {
-    const { studentId } = props;
+    // const { studentId } = props;
     try {
       const transitionURL = `${baseURL}students/transitionsWithFeedback/${studentId}`;
       fetchingStart();
@@ -124,6 +128,8 @@ const StageTransitions = (props) => {
         newData = joinedStudent;
       }
 
+      setTransitions(newData);
+
       setState((prevState) => ({
         ...prevState,
         data: newData,
@@ -161,6 +167,9 @@ const StageTransitions = (props) => {
         ? prevState.joinedStudentData
         : prevState.joinedOutreachData,
     }));
+    setTransitions(
+      state.toggleOutreach ? state.joinedStudentData : state.joinedOutreachData
+    );
   };
 
   const style = {
@@ -173,11 +182,9 @@ const StageTransitions = (props) => {
     maxHeight: "140px",
     flexWrap: "wrap",
   };
-  const { studentName, studentId, isShow } = props;
   const campusPath = location.pathname.split("/")[1];
 
   const modalStyle = getModalStyle();
-  const { dataType } = props;
   return !state.modalOpen ? (
     <div>
       {isShow ? (
@@ -253,7 +260,7 @@ const StageTransitions = (props) => {
           </Box>
           <MUIDataTable
             columns={StudentService.columns[dataType]}
-            data={state.data}
+            data={selectedStudent?.transitions || []}
             icons={GlobalService.tableIcons}
             options={{
               headerStyle: {
@@ -284,18 +291,5 @@ const StageTransitions = (props) => {
     </Modal>
   );
 };
-
-// const mapStateToProps = (state) => ({
-//   loggedInUser: state.auth.loggedInUser,
-// });
-
-// const mapDispatchToProps = (dispatch) => ({
-//   fetchingStart: () => dispatch(changeFetching(true)),
-//   fetchingFinish: () => dispatch(changeFetching(false)),
-// });
-
-// export default withRouter(
-//   withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Transition))
-// );
 
 export default StageTransitions;

@@ -340,7 +340,7 @@ const DashboardPage = (props) => {
   const { fromStage, toStage, mainData, showLoader, wholeData } = state;
 
   const options = (
-    <Grid container spacing={4} sx={{ paddingY: "1.2rem" }}>
+    <Grid container spacing={4} sx={{ paddingY: "0.8rem" }}>
       <Grid item xs={12} md={6} lg={3}>
         <Select
           // className="filterSelectGlobal"
@@ -412,7 +412,7 @@ const DashboardPage = (props) => {
     <Grid
       container
       spacing={4}
-      sx={{ paddingY: "1.2rem" }}
+      sx={{ paddingY: "0.8rem" }}
       // style={{
       //   display: "flex",
       //   flexWrap: "wrap",
@@ -492,9 +492,10 @@ const DashboardPage = (props) => {
     </Grid>
   );
   return (
-    <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
+    <Box sx={{ paddingX: "1.2rem", paddingY: "0.2rem" }}>
       {locationCampus === "campus" ? options2 : options}
       <MainLayout
+        tableBodyMaxHeight="56vh"
         title={title}
         columns={[...displayData, ...columns]}
         data={mainData}

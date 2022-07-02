@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 import axios from "axios";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import theme from "../../theme";
@@ -14,6 +14,7 @@ import AddMerakiLink from "../smallComponents/AddMerakiLink";
 import EditPartnerDetails from "../smallComponents/EditIcon";
 import MainLayout from "../muiTables/MainLayout";
 import ReportSend from "../report/ReportSend";
+import ToolbarAddButton from "../admin/ToolbarAddButton";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -197,26 +198,28 @@ const PartnerList = () => {
     })();
   }, []);
 
+  const options = {
+    customToolbar: React.useCallback(
+      () => (
+        <ToolbarAddButton
+          handleOpen={() => navigate("/partner/add")}
+          disabled={!privileges.some((priv) => priv.privilege === "AddPartner")}
+        />
+      ),
+      []
+    ),
+  };
+
   return (
     <Box>
       <ThemeProvider theme={theme}>
         <div className={classes.innerTable}>
-          <div className={classes.buttons}>
-            <Button
-              disabled={
-                !privileges.some((priv) => priv.privilege === "AddPartner")
-              }
-              color="primary"
-              variant="contained"
-              onClick={() => navigate("/partner/add")}
-            >
-              Add Partner
-            </Button>
-          </div>
           <MainLayout
             title="Partners"
             columns={columns}
             data={partnerList}
+            options={options}
+            tableBodyMaxHeight="74vh"
             showLoader={loading}
           />
         </div>

@@ -2,23 +2,24 @@ import React from "react";
 import {
   Button,
   Grid,
-  Typography,
   Dialog,
   DialogContent,
   DialogTitle,
   DialogActions,
-  TextField,
   List,
   ListItem,
   ListItemText,
-  Avatar,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { deepOrange } from "@mui/material/colors";
-import pencil from "../../assets/img/pencil.png";
+// import pencil from "../../assets/img/pencil.png";
+import EditIcon from "@mui/icons-material/Edit";
 import AddOrUpdateContact from "./AddOrUpdateContact";
 
 import { contactType } from "../../utils/constants";
+import { toTitleCase } from "../../utils";
 
 const useStyles = makeStyles(() => ({
   dialogContainer: {
@@ -33,113 +34,69 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const StudentContact = (props) => {
+const StudentContact = ({
+  closeTransition,
+  contacts,
+  studentId,
+  studentName,
+}) => {
   const classes = useStyles();
-  const [state, setState] = React.useState({
-    mobile: "",
-    dialogOpen: false,
-    dialogOpen2: false,
-    updateOrAddType: "",
-    contact_type: "",
-  });
-  const handelChange = (event) => {
-    const { name, value } = event.target;
-    setState({
-      ...state,
-      [name]: value,
-    });
-  };
 
-  const handleOpen = () => {
-    setState({
-      ...state,
-      dialogOpen: true,
-    });
-  };
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [dialog2Open, setDialog2Open] = React.useState(false);
 
-  const handleClose = () => {
-    setState({
-      ...state,
-      dialogOpen: false,
-    });
-  };
+  const handleOpen = () => setDialogOpen(true);
 
-  const dialog2HandelClose = () => {
-    setState({
-      ...state,
-      dialogOpen2: false,
-    });
-  };
+  const handleClose = () => setDialogOpen(false);
+
+  const dialog2HandleOpen = () => setDialog2Open(true);
+
+  const dialog2HandleClose = () => setDialog2Open(false);
 
   const allClose = () => {
-    const { closeTransition } = props;
-    setState({
-      ...state,
-      dialogOpen2: false,
-      dialogOpen: false,
-    });
+    dialog2HandleClose();
+    handleClose();
     closeTransition();
   };
 
-  const dialog2HandelOpen = () => {
-    setState({
-      ...state,
-      dialogOpen2: true,
-    });
-  };
-  const { contacts, studentId } = props;
-
   return (
-    <div>
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="flex-start"
-      >
-        <Typography variant="h6" id="modal-title">
-          Edit Student Contact Number
-        </Typography>
-        <Avatar
-          alt="Remy Sharp"
-          src={pencil}
-          onClick={handleOpen}
-          className={classes.orange}
-        />
-      </Grid>
-      <Dialog open={state.dialogOpen} onClose={handleClose}>
-        <Grid
-          container
-          direction="column"
-          justify="space-between"
-          className={classes.dialogContainer}
-        >
-          <DialogActions>
-            <Button
-              variant="contained"
-              color="primary"
-              value="add"
-              onClick={dialog2HandelOpen}
-            >
-              Edit Number
-            </Button>
-          </DialogActions>
-          <DialogContent>
-            <List>
-              {contacts.map((item) => (
-                <ListItem key={item.mobile}>
-                  <ListItemText
-                    primary={`(${item.contact_type.toUpperCase()}): ${
-                      item.mobile
-                    }`}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </DialogContent>
-        </Grid>
+    <>
+      {/* <Typography variant="h6" id="modal-title">
+          Edit Student Contact
+        </Typography> */}
+      <Tooltip title="Edit Student Contact">
+        <IconButton color="primary" size="small" onClick={handleOpen}>
+          <EditIcon />
+        </IconButton>
+      </Tooltip>
+      <Dialog open={dialogOpen} onClose={handleClose}>
+        <DialogTitle>Contacts for {studentName}</DialogTitle>
+        <DialogContent>
+          <List>
+            {contacts.map((item) => (
+              <ListItem key={item.mobile}>
+                <ListItemText
+                  primary={`${toTitleCase(item.contact_type)}`}
+                  secondary={item.mobile}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" color="primary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={dialog2HandleOpen}
+          >
+            Edit Number
+          </Button>
+        </DialogActions>
       </Dialog>
-      <Dialog open={state.dialogOpen2} onClose={dialog2HandelClose}>
+      <Dialog open={dialog2Open} onClose={dialog2HandleClose}>
         <Grid
           container
           direction="column"
@@ -157,24 +114,12 @@ const StudentContact = (props) => {
                   justify="space-between"
                   alignItems="center"
                 >
-                  <TextField
-                    name="mobile"
-                    variant="outlined"
-                    onChange={handelChange}
-                    defaultValue={
-                      contacts.filter(
-                        (contact) => contact.contact_type === type
-                      ).length > 0
-                        ? contacts.filter(
-                            (contact) => contact.contact_type === type
-                          )[0].mobile
-                        : null
-                    }
-                    label={type.toUpperCase()}
-                  />
                   <AddOrUpdateContact
-                    contact_type={type}
-                    mobile={state.mobile}
+                    contactType={type}
+                    mobile={
+                      contacts.find((contact) => contact.contact_type === type)
+                        ?.mobile || null
+                    }
                     handleClose={allClose}
                     studentId={studentId}
                   />
@@ -184,16 +129,16 @@ const StudentContact = (props) => {
           ))}
           <DialogActions>
             <Button
-              variant="contained"
+              variant="outlined"
               color="primary"
-              onClick={dialog2HandelClose}
+              onClick={dialog2HandleClose}
             >
-              cancel
+              Cancel
             </Button>
           </DialogActions>
         </Grid>
       </Dialog>
-    </div>
+    </>
   );
 };
 

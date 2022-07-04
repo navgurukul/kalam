@@ -4,11 +4,12 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
+import { Container } from "@mui/material";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import Grid from "@mui/material/Grid";
 import { makeStyles, ThemeProvider } from "@mui/styles";
@@ -97,6 +98,7 @@ const LandingPage = () => {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { slug } = useParams();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const { lang: selectedLang } = useSelector((state) => state.ui);
@@ -114,6 +116,7 @@ const LandingPage = () => {
     enrollmentKey: "",
   });
   const [goToTest, setGoToTest] = React.useState(false);
+  const testClosed = ["amravati"];
   const lang = {
     Heading: {
       en: "Software Engineering Scholarship",
@@ -158,8 +161,8 @@ const LandingPage = () => {
     time: localStorage.getItem("time"),
     studentId: localStorage.getItem("studentId"),
   });
-  const partnerFetch = async (slug) => {
-    const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
+  const partnerFetch = async (_slug) => {
+    const response = await axios.get(`${baseUrl}partners/slug/${_slug}`, {});
     setState({
       ...state,
       partnerId: response.data.data.id,
@@ -196,7 +199,6 @@ const LandingPage = () => {
   const { enrollmentKey, time } = getTestData();
 
   useEffect(() => {
-    const slug = window.location.href.split("partnerLanding/")[1];
     if (slug) {
       partnerFetch(slug);
     }
@@ -308,6 +310,15 @@ const LandingPage = () => {
     }
     await isDuplicate();
   };
+
+  if (slug && testClosed.includes(slug))
+    return (
+      <Container sx={{ display: "flex", justifyContent: "center" }}>
+        <Typography color="error" variant="h4">
+          Tests will open on 10th July
+        </Typography>
+      </Container>
+    );
 
   const { mobileNumber, firstName, middleName, lastName, mobile } = state;
   return (

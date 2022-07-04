@@ -9,33 +9,36 @@ import {
   DialogActions,
   Dialog,
   Button,
-  Typography,
-  Grid,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 // eslint-disable-next-line import/no-cycle
 import { setStudentData } from "../../store/slices/studentSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const DeleteStudentDetails = (props) => {
-  const snackbar = useSnackbar();
+const DeleteStudentDetails = ({
+  pathname,
+  studentName,
+  studentId,
+  closeModal,
+}) => {
+  const { enqueueSnackbar } = useSnackbar();
   const data = useSelector((state) => state.students.studentData);
   const { privileges } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const getStudentsData = (data) => dispatch(setStudentData(data));
+  const setStudents = (data) => dispatch(setStudentData(data));
   const [open, setOpen] = React.useState(false);
 
   const deleteStudentDetails = async () => {
-    const { studentId, handleClose } = props;
-    await axios.delete(`${baseUrl}/campus/student/${studentId}`).then(() => {
-      const newData = data.filter((element) => element.id !== studentId);
-      getStudentsData(newData);
-      snackbar.enqueueSnackbar("Details successfully deleted!", {
-        variant: "success",
-      });
+    await axios.delete(`${baseUrl}/campus/student/${studentId}`);
+    const newData = data.filter((element) => element.id !== studentId);
+    setStudents(newData);
+    enqueueSnackbar("Details successfully deleted!", {
+      variant: "success",
     });
     setOpen(false);
-    handleClose();
+    closeModal();
   };
 
   const handleClickOpen = () => {
@@ -46,53 +49,40 @@ const DeleteStudentDetails = (props) => {
     setOpen(false);
   };
 
-  const { pathname, studentName } = props;
   if (
     privileges.some((priv) => priv.privilege === "DeleteStudent") &&
     pathname.indexOf("campus") > -1
   ) {
     return (
-      <div>
-        <Grid
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="flex-start"
-        >
-          <Typography
-            variant="h6"
-            id="modal-title"
-            pl={9}
-            style={{ paddingRight: "12px" }}
-          >
-            Delete Student Details
-          </Typography>
-          <DeleteIcon
-            style={{ color: "#f05f40", cursor: "pointer", fontSize: "30px" }}
-            onClick={handleClickOpen}
-          />
-        </Grid>
+      <>
+        <Tooltip title="Delete Student Details">
+          <IconButton color="primary" size="small" onClick={handleClickOpen}>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
         <Dialog
           open={open}
-          keepMounted
           onClose={handleClose}
-          aria-labelledby="alert-dialog-slide-title"
-          aria-describedby="alert-dialog-slide-description"
+          aria-labelledby="delete-student-dialog"
+          aria-describedby="dialog to delete student"
         >
           <DialogTitle id="alert-dialog-slide-title">
-            {" "}
             Do you want to delete {studentName}&apos;s details ??
           </DialogTitle>
           <DialogActions>
-            <Button onClick={handleClose} color="primary">
+            <Button variant="outlined" color="primary" onClick={handleClose}>
               NO
             </Button>
-            <Button onClick={deleteStudentDetails} color="primary">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={deleteStudentDetails}
+            >
               YES
             </Button>
           </DialogActions>
         </Dialog>
-      </div>
+      </>
     );
   }
   return null;

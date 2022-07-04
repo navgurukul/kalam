@@ -1,9 +1,9 @@
 import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Box from "@mui/material/Box";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
+import { IconButton } from "@mui/material";
 import { allStages } from "../../utils/constants";
 import {
   setSelectedStudent,
@@ -49,12 +49,13 @@ const DeleteRow = ({ transitionId }) => {
     }
   };
   return (
-    <Box textAlign="left" m={1}>
-      <DeleteIcon
-        onClick={deleteTransition}
-        style={{ color: "#f05f40", cursor: "pointer" }}
-      />
-    </Box>
+    <IconButton
+      // m={1}
+      onClick={deleteTransition}
+      color="primary"
+    >
+      <DeleteIcon />
+    </IconButton>
   );
 };
 

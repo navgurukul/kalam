@@ -112,6 +112,11 @@ const TestInstructions = () => {
       if (rest.studentId) {
         localStorage.setItem("studentId", encryptText(`${rest.studentId}`));
       }
+      // if (rest.partner)
+      //   localStorage.setItem(
+      //     "partner",
+      //     encryptText(JSON.stringify(rest.partner))
+      //   );
       navigate("/test/studentdetails", {
         state: { enrollmentKey, lang, ...rest },
       });

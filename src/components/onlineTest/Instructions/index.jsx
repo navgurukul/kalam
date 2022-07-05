@@ -23,9 +23,10 @@ const tutorialSteps = [
   {
     heading: "NavGurukul Scholarship Test",
     subHadding: "Select Your Languge/ अपनी भाषा चुने",
-    enContent:
-      "You can also change the langauge between Hindi and English during the test.",
-    hiContent: "आप test के बीच मे भी अपने test की भाशा बदल सकते है।",
+    // enContent:"You can also change the langauge between Hindi and English during the test.",
+    // hiContent: "आप test के बीच मे भी अपने test की भाशा बदल सकते है।",
+    enContent: "",
+    hiContent: "",
     inputField: true,
     button: "Aage chalein",
     button3: false,
@@ -46,7 +47,7 @@ const tutorialSteps = [
   {
     heading: "Read Carefully",
     enContent1:
-      "Kafi sare students pure India se NavGurukul ka test dete ha taki woh NavGurukul ke 1 saal wale program ke madad se high paying software engineering jobs le sake. Hala ki akhir me bohut bada eenam hota ha, magar uske liye apko kafi jada mehnat bi karni padhti hai. Hume har kisi student ko padhna chate hai chae uske educational qualifications kuch bi ho magar hume kuch basic knowledge chaiye kuch chizo me. Yeh test ke duwara hum yeh jane ki kosish karte ha ki kya apke pass woh basic knowledge hai. Kuch students test meh cheat karke score kar lete ha but woh program meh ache tarike se perform ni kar pahte ha, Jiske karan uneh yeh program chorna padhta ha. Agar aap ish test ke liye aage badh rahe hai toh kripaya ish test ko khudse de bina kisike madad ke. Agar hume pata chalta ha ki apne cheating ki hai toh hum apko disqualify kardenge aage.",
+      "Kafi sare students pure India se NavGurukul ka test dete ha taki woh NavGurukul ke 1 saal wale program ke madad se high paying software engineering jobs le sake. Hala ki akhir me bohut bada eenam hota ha, magar uske liye apko kafi jada mehnat bi karni padhti hai. Hume har kisi student ko padhna chate hai chae uske educational qualifications kuch bi ho magar hume kuch basic knowledge chaiye kuch chizo me. Yeh test ke duwara hum yeh jane ki kosish karte ha ki kya apke pass woh basic knowledge hai. Kuch students test meh cheat karke score kar lete ha but woh program meh ache tarike se perform ni kar pahte ha, Jiske karan uneh yeh program chorna padhta ha. Agar aap ish test ke liye aage badh rahe hai toh kripaya ish test ko khudse de, bina kisike madad ke. Agar hume pata chalta ha ki apne cheating ki hai toh hum apko disqualify kardenge aage.",
     enContent2:
       "Kuch students test meh cheat karke score kar lete ha but woh program meh ache tarike se perform ni kar pahte ha, Jiske karan uneh yeh program chorna padhta ha.",
     enContent3:

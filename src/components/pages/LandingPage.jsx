@@ -121,38 +121,47 @@ const LandingPage = () => {
     Heading: {
       en: "Software Engineering Scholarship",
       hi: "Software Engineering Scholarship",
+      ma: "Software Engineering Scholarship",
     },
     Course: {
       en: "Course Information",
       hi: "कोर्स के बारे में जाने",
+      ma: "अभ्यासक्रम माहिती",
     },
     Status: {
       en: "Check your test result by entering the number you gave test from",
       hi: "आपने जिस नंबर से परीक्षा दी है, उसे एंटर करके अपना परीक्षा रिजल्ट देखें",
+      ma: "तुम्ही ज्या क्रमांकावरून चाचणी दिली होती ती क्रमांक टाकून तुमचा चाचणी निकाल तपासा",
     },
     AdmisssionTitle: {
       en: "Start Admisssion Test",
       hi: "परीक्षा शुरू करें",
+      ma: "प्रवेश परीक्षा सुरू करा",
     },
     TestButton: {
       en: "GIVE TEST",
       hi: "परीक्षा दे।",
+      ma: "परीक्षा द्या.",
     },
     StatusButton: {
       en: "Check Result",
       hi: "रिजल्ट देखे",
+      ma: "निकाल तपासा",
     },
     Footer: {
       en: "For more queries, write at hi@navgurukul.org",
       hi: "अधिक जानकारी के लिए ईमेल करे: hi@navgurukul.org",
+      ma: "अधिक प्रश्नांसाठी, येथे लिहा: hi@navgurukul.org",
     },
     mandatoryField: {
       en: "To attempt the test, it is compulsory to enter your First Name, Last Name and Mobile Number. Middle Name is optional, you can choose not to enter.",
       hi: "टेस्ट देने के लिए अपना फर्स्ट नेम, लास्ट नेम और मोबाइल नंबर डालना आवश्यक  है। मध्य नाम वैकल्पिक है, आप प्रवेश नहीं करना चुन सकते हैं।",
+      ma: "चाचणीचा प्रयत्न करण्यासाठी, आपले नाव, आडनाव आणि मोबाइल नंबर प्रविष्ट करणे अनिवार्य आहे. मधले नाव ऐच्छिक आहे, तुम्ही एंटर न करणे निवडू शकता.",
     },
     mobileNumber: {
       en: "Please give 10 digits of the mobile number.",
       hi: "कृपया मोबाइल नंबर के 10 अंक दें।",
+      ma: "कृपया मोबाईल नंबरचे 10 अंक द्या.",
     },
   };
 

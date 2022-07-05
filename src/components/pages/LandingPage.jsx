@@ -280,6 +280,7 @@ const LandingPage = () => {
               lastName,
               mobileNumber,
               enrollmentKey: res.data.key,
+              partner: { slug, partnerId: state.partnerId },
             },
           });
         }

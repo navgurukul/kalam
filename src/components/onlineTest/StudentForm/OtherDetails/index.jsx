@@ -65,11 +65,33 @@ function OtherDetails(props) {
     inputDisabled,
     formData,
     reactForm: { errors, control, watch, setValue },
+    partnerSlug,
   } = props;
   const { lang } = props;
 
+  const customPartner = ["amravati", "breakthrough"];
+
   const [districts, setDistricts] = useState([]);
   async function getCityFromState(_state) {
+    if (partnerSlug && customPartner.includes(partnerSlug)) {
+      const newDistricts = [
+        { name: "Amravati" },
+        {
+          name: "Buldhana",
+        },
+        {
+          name: "Akola",
+        },
+        {
+          name: "Yavatmal",
+        },
+        {
+          name: "Washim",
+        },
+      ];
+      setDistricts(newDistricts);
+      return;
+    }
     fetch(
       `https://api.countrystatecity.in/v1/countries/IN/states/${_state}/cities`, //API URL
       {
@@ -129,9 +151,13 @@ function OtherDetails(props) {
                     <MenuItem value="" disabled>
                       {lang === "en" ? "Select State" : "राज्य चुनें"}
                     </MenuItem>
-                    {Object.keys(states).map((key) => (
+                    {Object.entries(
+                      partnerSlug && customPartner.includes(partnerSlug)
+                        ? { MH: "Maharashtra" }
+                        : states
+                    ).map(([key, value]) => (
                       <MenuItem key={key} value={key}>
-                        {states[key]}
+                        {value}
                       </MenuItem>
                     ))}
                   </Select>
@@ -367,12 +393,20 @@ function OtherDetails(props) {
                     <MenuItem value="" disabled>
                       Select Option
                     </MenuItem>
-                    <MenuItem value="lessThan10th">
-                      Less than 10th pass
-                    </MenuItem>
-                    <MenuItem value="class10th">10th pass</MenuItem>
+                    {partnerSlug &&
+                    customPartner.includes(partnerSlug) ? null : (
+                      <>
+                        <MenuItem value="lessThan10th">
+                          Less than 10th pass
+                        </MenuItem>
+                        <MenuItem value="class10th">10th pass</MenuItem>
+                      </>
+                    )}
                     <MenuItem value="class12th">12th pass</MenuItem>
                     <MenuItem value="graduate">Graduated</MenuItem>
+                    {partnerSlug && customPartner.includes(partnerSlug) ? (
+                      <MenuItem value="iti">ITI</MenuItem>
+                    ) : null}
                   </Select>
                 </FormControl>
               )}
@@ -441,7 +475,9 @@ function OtherDetails(props) {
               />
             </Grid>
           ) : null}
-          {qualification === "class12th" || qualification === "graduate" ? (
+          {qualification === "class12th" ||
+          qualification === "graduate" ||
+          qualification === "iti" ? (
             <>
               <Grid item xs={12} sm={6}>
                 <Controller
@@ -506,13 +542,21 @@ function OtherDetails(props) {
                       fullWidth
                       label={
                         lang === "en"
-                          ? "Percentage in 12th class"
-                          : "12वीं कक्षा के प्रतिशत अंक"
+                          ? `Percentage in ${
+                              qualification === "iti" ? "ITI" : "12th class"
+                            }`
+                          : `${
+                              qualification === "iti" ? "ITI" : "12वीं कक्षा"
+                            } के प्रतिशत अंक`
                       }
                       placeholder={
                         lang === "en"
-                          ? "Percentage in 12th class"
-                          : "12वीं कक्षा के प्रतिशत अंक"
+                          ? `Percentage in ${
+                              qualification === "iti" ? "ITI" : "12th class"
+                            }`
+                          : `${
+                              qualification === "iti" ? "ITI" : "12वीं कक्षा"
+                            } के प्रतिशत अंक`
                       }
                       type="number"
                       autoComplete="off"
@@ -524,8 +568,18 @@ function OtherDetails(props) {
                               ? "Enter valid Percentage"
                               : "मान्य प्रतिशत दर्ज करें"
                             : lang === "en"
-                            ? "Enter 12th Class Percentage"
-                            : "12वीं कक्षा के प्रतिशत अंक दर्ज करें"
+                            ? `Enter ${
+                                partnerSlug &&
+                                customPartner.includes(partnerSlug)
+                                  ? "ITI"
+                                  : "Class 12th"
+                              } Percentage`
+                            : `${
+                                partnerSlug &&
+                                customPartner.includes(partnerSlug)
+                                  ? "ITI"
+                                  : "12वीं कक्षा"
+                              } के प्रतिशत अंक दर्ज करें`
                           : "Ex. 76.40"
                       }
                     />
@@ -565,12 +619,16 @@ function OtherDetails(props) {
                     <MenuItem value="" disabled>
                       {lang === "en" ? "Select Langauge" : "भाषा चुने"}
                     </MenuItem>
-                    <MenuItem value="other">
-                      {lang === "en" ? "Hindi" : "हिन्दी"}
-                    </MenuItem>
-                    <MenuItem value="en">
-                      {lang === "en" ? "English" : "अंग्रेज़ी"}
-                    </MenuItem>
+
+                    {Object.entries({
+                      hi: ["Hindi", "हिन्दी"],
+                      en: ["English", "अंग्रेज़ी"],
+                      ma: ["Marathi", "मराठी"],
+                    }).map(([key, value]) => (
+                      <MenuItem value={key} key={key}>
+                        {value[lang === "en" ? 0 : 1]}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               )}
@@ -683,6 +741,7 @@ function OtherDetails(props) {
                     <MenuItem value="sikh">Sikh</MenuItem>
                     <MenuItem value="christian">Christian</MenuItem>
                     <MenuItem value="jain">Jain</MenuItem>
+                    <MenuItem value="buddhism">Buddhism</MenuItem>
                     <MenuItem value="others">Others</MenuItem>
                   </Select>
                 </FormControl>

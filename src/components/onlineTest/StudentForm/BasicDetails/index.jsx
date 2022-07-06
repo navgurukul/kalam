@@ -65,45 +65,47 @@ const BasicDetails = ({
   };
   return (
     <Container maxWidth="lg" align="center">
-      <label
-        style={{
-          cursor: inputDisabled ? "default" : "pointer",
-        }}
-        htmlFor="ProfileImage"
-      >
-        <Badge
-          overlap="circular"
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          badgeContent={<CameraAltIcon />}
+      {pfpCompulsion ? (
+        <label
+          style={{
+            cursor: inputDisabled ? "default" : "pointer",
+          }}
+          htmlFor="ProfileImage"
         >
-          <Avatar
-            style={{
-              width: "70px",
-              height: "70px",
-            }}
-            alt="ProfileImage"
-            src={
-              formData.ProfileImage
-                ? URL.createObjectURL(formData.ProfileImage)
-                : formData.PrevImage
-            }
-          />
-        </Badge>
-        <Typography variant="h6" className={classes.text}>
-          Profile Image{pfpCompulsion ? "*" : ""}
-        </Typography>
-        {errors.ProfileImage ? (
-          <Typography
-            style={{ paddingTop: "-0.2rem" }}
-            variant="caption"
-            color="error"
+          <Badge
+            overlap="circular"
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            badgeContent={<CameraAltIcon />}
           >
-            {lang === "en" ? "Required Field" : "आवश्यक क्षेत्र"}
+            <Avatar
+              style={{
+                width: "70px",
+                height: "70px",
+              }}
+              alt="ProfileImage"
+              src={
+                formData.ProfileImage
+                  ? URL.createObjectURL(formData.ProfileImage)
+                  : formData.PrevImage
+              }
+            />
+          </Badge>
+          <Typography variant="h6" className={classes.text}>
+            Profile Image*
           </Typography>
-        ) : (
-          ""
-        )}
-      </label>
+          {errors.ProfileImage ? (
+            <Typography
+              style={{ paddingTop: "-0.2rem" }}
+              variant="caption"
+              color="error"
+            >
+              {lang === "en" ? "Required Field" : "आवश्यक क्षेत्र"}
+            </Typography>
+          ) : (
+            ""
+          )}
+        </label>
+      ) : null}
 
       <input
         onChange={(e) => uploadProfilePhoto(e)}
@@ -246,7 +248,7 @@ const BasicDetails = ({
                           ? errors.dob.type === "validate"
                             ? lang === "en"
                               ? "Age must be between 16 & 27"
-                              : "आयु 16 या अधिक होनी चाहिए"
+                              : "उम्र 16 से 27 के बीच होनी चाहिए"
                             : lang === "en"
                             ? "Enter Date of Birth"
                             : "जन्मदिन दर्ज करें"
@@ -403,7 +405,12 @@ const BasicDetails = ({
               required: true,
               validate: (gender) => {
                 if (gender === "select gender") return false;
-                if (gender === "female" || gender === "other") return true;
+                if (
+                  gender === "female" ||
+                  gender === "other" ||
+                  gender === "transwomen"
+                )
+                  return true;
                 enqueueSnackbar("Curently, Males cannot appear for the Test", {
                   variant: "info",
                 });
@@ -435,8 +442,9 @@ const BasicDetails = ({
                   {[
                     ["Select Gender", "लिंग चुनें"],
                     ["Female", "महिला"],
-                    ["Male", "पुरुष"],
-                    ["Other", "अन्य"],
+                    // pfpCompulsion && ["Male", "पुरुष"],
+                    // ["Other", "अन्य"],
+                    ["Transwomen", "ट्रांसवुमेन"],
                   ].map((el) => (
                     <MenuItem
                       key={el[0]}

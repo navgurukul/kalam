@@ -483,7 +483,10 @@ function OtherDetails(props) {
                 <Controller
                   control={control}
                   defaultValue={formData.percentage_in10th}
-                  rules={{ required: true, max: 100 }}
+                  rules={{
+                    required: !customPartner.includes(partnerSlug),
+                    max: 100,
+                  }}
                   name="percentage_in10th"
                   render={({ field: { ref, ...rest } }) => (
                     <TextField
@@ -491,7 +494,7 @@ function OtherDetails(props) {
                         inputDisabled && formData.percentage_in10th !== null
                       }
                       variant="outlined"
-                      required
+                      required={!customPartner.includes(partnerSlug)}
                       inputRef={ref}
                       {...rest}
                       fullWidth
@@ -528,7 +531,10 @@ function OtherDetails(props) {
                 <Controller
                   control={control}
                   name="percentage_in12th"
-                  rules={{ required: true, max: 100 }}
+                  rules={{
+                    required: !customPartner.includes(partnerSlug),
+                    max: 100,
+                  }}
                   defaultValue={formData.percentage_in12th}
                   render={({ field: { ref, ...rest } }) => (
                     <TextField
@@ -536,7 +542,7 @@ function OtherDetails(props) {
                         inputDisabled && formData.percentage_in12th !== null
                       }
                       variant="outlined"
-                      required
+                      required={!customPartner.includes(partnerSlug)}
                       inputRef={ref}
                       {...rest}
                       fullWidth
@@ -569,16 +575,10 @@ function OtherDetails(props) {
                               : "मान्य प्रतिशत दर्ज करें"
                             : lang === "en"
                             ? `Enter ${
-                                partnerSlug &&
-                                customPartner.includes(partnerSlug)
-                                  ? "ITI"
-                                  : "Class 12th"
+                                qualification === "iti" ? "ITI" : "Class 12th"
                               } Percentage`
                             : `${
-                                partnerSlug &&
-                                customPartner.includes(partnerSlug)
-                                  ? "ITI"
-                                  : "12वीं कक्षा"
+                                qualification === "iti" ? "ITI" : "12वीं कक्षा"
                               } के प्रतिशत अंक दर्ज करें`
                           : "Ex. 76.40"
                       }
@@ -651,65 +651,67 @@ function OtherDetails(props) {
               ""
             )}
           </Grid>
-          <Grid item xs={12}>
-            <Controller
-              control={control}
-              name="caste"
-              defaultValue={formData.caste || "Select Option"}
-              rules={{
-                required: true,
-                validate: (caste) => caste !== "Select Option",
-              }}
-              render={({ field: { ref, ...rest } }) => (
-                <FormControl
-                  disabled={inputDisabled && formData.caste !== undefined}
-                  fullWidth
-                  variant="outlined"
-                  required
-                >
-                  <InputLabel id="demo-simple-select-outlined-label">
-                    {lang === "en" ? " Caste/Tribe" : "जाति/जनजाति"}
-                  </InputLabel>
-                  <Select
-                    label={lang === "en" ? " Caste/Tribe" : "जाति/जनजाति"}
-                    error={!!errors.caste}
-                    required
-                    inputRef={ref}
-                    {...rest}
-                  >
-                    <MenuItem value="Select Option" disabled>
-                      Select Option
-                    </MenuItem>
-                    <MenuItem value="scSt">
-                      (SC) Scheduled Caste / (ST) Scheduled Tribe
-                    </MenuItem>
-                    <MenuItem value="obc">
-                      (OBC) Other Backward Classes
-                    </MenuItem>
-                    <MenuItem value="general">General</MenuItem>
-                    <MenuItem value="others">Other</MenuItem>
-                  </Select>
-                </FormControl>
-              )}
-            />
-            {errors.caste ? (
-              <Typography
-                style={{
-                  paddingLeft: "0.8rem",
-                  paddingTop: "0.4rem",
-                  paddingBottom: "0.4rem",
+          {customPartner.includes(partnerSlug) ? null : (
+            <Grid item xs={12}>
+              <Controller
+                control={control}
+                name="caste"
+                defaultValue={formData.caste || "Select Option"}
+                rules={{
+                  required: true,
+                  validate: (caste) => caste !== "Select Option",
                 }}
-                variant="caption"
-                color="error"
-              >
-                {lang === "en"
-                  ? "Select your Caste/Tribe"
-                  : "अपनी जाति/जनजाति चुनें"}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </Grid>
+                render={({ field: { ref, ...rest } }) => (
+                  <FormControl
+                    disabled={inputDisabled && formData.caste !== undefined}
+                    fullWidth
+                    variant="outlined"
+                    required
+                  >
+                    <InputLabel id="demo-simple-select-outlined-label">
+                      {lang === "en" ? " Caste/Tribe" : "जाति/जनजाति"}
+                    </InputLabel>
+                    <Select
+                      label={lang === "en" ? " Caste/Tribe" : "जाति/जनजाति"}
+                      error={!!errors.caste}
+                      required
+                      inputRef={ref}
+                      {...rest}
+                    >
+                      <MenuItem value="Select Option" disabled>
+                        Select Option
+                      </MenuItem>
+                      <MenuItem value="scSt">
+                        (SC) Scheduled Caste / (ST) Scheduled Tribe
+                      </MenuItem>
+                      <MenuItem value="obc">
+                        (OBC) Other Backward Classes
+                      </MenuItem>
+                      <MenuItem value="general">General</MenuItem>
+                      <MenuItem value="others">Other</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
+              />
+              {errors.caste ? (
+                <Typography
+                  style={{
+                    paddingLeft: "0.8rem",
+                    paddingTop: "0.4rem",
+                    paddingBottom: "0.4rem",
+                  }}
+                  variant="caption"
+                  color="error"
+                >
+                  {lang === "en"
+                    ? "Select your Caste/Tribe"
+                    : "अपनी जाति/जनजाति चुनें"}
+                </Typography>
+              ) : (
+                ""
+              )}
+            </Grid>
+          )}
           <Grid item xs={12}>
             <Controller
               control={control}

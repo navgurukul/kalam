@@ -77,16 +77,24 @@ function OtherDetails(props) {
       const newDistricts = [
         { name: "Amravati" },
         {
+          name: "Akola",
+        },
+        { name: "Bhandara" },
+        {
           name: "Buldhana",
         },
         {
-          name: "Akola",
+          name: "Chandrapur",
+        },
+        { name: "Gadchiroli" },
+        { name: "Gondia" },
+        { name: "Nagpur" },
+        { name: "Wardha" },
+        {
+          name: "Washim",
         },
         {
           name: "Yavatmal",
-        },
-        {
-          name: "Washim",
         },
       ];
       setDistricts(newDistricts);

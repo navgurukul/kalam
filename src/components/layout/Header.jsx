@@ -132,6 +132,7 @@ const Header = () => {
               </Link>
               {/* </Box> */}
               {(location.pathname === "/" ||
+                location.pathname === "/amravati" ||
                 location.pathname.indexOf("partnerLanding") > -1) && (
                 <FormControl
                   style={{

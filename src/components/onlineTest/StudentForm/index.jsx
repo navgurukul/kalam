@@ -240,9 +240,10 @@ const StudentForm = () => {
   }, []);
 
   const getSteps = () => [
-    ["Basic Details", "बुनियादी जानकारी"],
-    ["Other Details", "अन्य जानकारी"],
+    { en: "Basic Details", hi: "बुनियादी जानकारी", ma: "मूलभूत माहिती" },
+    { en: "Other Details", hi: "अन्य जानकारी", ma: "इतर माहिती" },
   ];
+
   const steps = getSteps();
 
   const submitHandler = (prevData) => {
@@ -402,7 +403,7 @@ const StudentForm = () => {
   return (
     <Container className={classes.root} maxWidth="sm">
       <Typography variant="h5" className={classes.text}>
-        {lang === "en" ? steps[activeStep][0] : steps[activeStep][1]}
+        {steps[activeStep][lang]}
       </Typography>
       <form
         style={{ paddingTop: "2.0rem" }}

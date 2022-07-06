@@ -61,6 +61,150 @@ function OtherDetails(props) {
 
   // let CurrentStatusOptions = ["", "nothing", "job", "study", "other"];
   // let schoolMediumOptipns = ["", "en", "other"];
+
+  const langOptions = {
+    state: {
+      en: "Select State",
+      hi: "राज्य चुनें",
+      ma: "राज्य निवडा",
+      error: {
+        en: "Select your State",
+        hi: "अपना राज्य चुनें",
+        ma: "तुमचे राज्य निवडा",
+      },
+    },
+    district: {
+      en: "Select District",
+      hi: "जिला चुनें",
+      ma: "जिल्हा निवडा",
+      error: {
+        en: "Select your District",
+        hi: "अपना जिला चुनें",
+        ma: "तुमचा जिल्हा निवडा",
+      },
+    },
+    city: {
+      en: "City",
+      hi: "शहर",
+      ma: "शहर",
+      error: {
+        en: "Select your City",
+        hi: "अपना शहर चुनें",
+        ma: "तुमचे शहर निवडा",
+      },
+    },
+    pin_code: {
+      en: "Pin Code",
+      hi: "पिन कोड",
+      ma: "पिन कोड",
+      error: {
+        en: "Enter your Pin Code",
+        hi: "अपना पिन कोड दर्ज करें",
+        ma: "तुमचा पिन कोड टाका",
+        minLength: {
+          en: "Enter a valid Pin Code",
+          hi: "अपना शहर चुनें",
+          ma: "वैध पिन कोड प्रविष्ट करा",
+        },
+      },
+    },
+    current_status: {
+      en: "Current Status",
+      hi: "वर्तमान स्थिति",
+      ma: "वर्तमान स्थिती",
+      error: {
+        en: "Select your Current Status",
+        hi: "अपनी वर्तमान स्थिति चुनें",
+        ma: "तुमची वर्तमान स्थिती निवडा",
+      },
+    },
+    qualification: {
+      en: "Maximum Qualification",
+      hi: "अधिकतम योग्यता",
+      ma: "कमाल पात्रता",
+      error: {
+        en: "Select your Current Qualification",
+        hi: "अपनी वर्तमान योग्यता चुनें",
+        ma: "तुमची सध्याची पात्रता निवडा",
+      },
+    },
+    percentage_in10th: {
+      en: "Percentage in 10th class",
+      hi: "10वीं कक्षा के प्रतिशत अंक",
+      ma: "दहावीत टक्केवारी",
+      error: {
+        en: "Enter 10th Class Percentage",
+        hi: "10वीं कक्षा के प्रतिशत अंक दर्ज करें",
+        ma: "10वी वर्ग टक्केवारी प्रविष्ट करा",
+        max: {
+          en: "Enter valid Percentage",
+          hi: "मान्य प्रतिशत दर्ज करें",
+          ma: "वैध टक्केवारी प्रविष्ट करा",
+        },
+      },
+    },
+    percentage_in12th: {
+      en: "Percentage in 12th class",
+      hi: "12वीं कक्षा के प्रतिशत अंक",
+      ma: "बारावीत टक्केवारी",
+      error: {
+        en: "Enter 12th Class Percentage",
+        hi: "12वीं कक्षा के प्रतिशत अंक दर्ज करें",
+        ma: "12वी वर्ग टक्केवारी प्रविष्ट करा",
+        max: {
+          en: "Enter valid Percentage",
+          hi: "मान्य प्रतिशत दर्ज करें",
+          ma: "वैध टक्केवारी प्रविष्ट करा",
+        },
+      },
+    },
+    iti: {
+      en: "Percentage in ITI",
+      hi: "ITI के प्रतिशत अंक",
+      ma: "ITIमध्ये टक्केवारी",
+      error: {
+        en: "Enter ITI Percentage",
+        hi: "ITI के प्रतिशत अंक दर्ज करें",
+        ma: "ITIमध्ये टक्केवारी प्रविष्ट करा",
+        max: {
+          en: "Enter valid Percentage",
+          hi: "मान्य प्रतिशत दर्ज करें",
+          ma: "वैध टक्केवारी प्रविष्ट करा",
+        },
+      },
+    },
+    school_medium: {
+      en: "School Medium",
+      hi: "स्कूल माध्यम",
+      ma: "शाळा माध्यम",
+      error: {
+        en: "Select your School Medium",
+        hi: "अपना स्कूल माध्यम चुनें",
+        ma: "तुमचे शाळेचे माध्यम निवडा",
+      },
+    },
+    caste: {
+      en: "Caste/Tribe",
+      hi: "जाति/जनजाति",
+      ma: "जात/जमाती",
+      error: {
+        en: "Select your Caste/Tribe",
+        hi: "अपनी जाति/जनजाति चुनें",
+        ma: "तुमची जात/जमाती निवडा",
+      },
+    },
+    religion: {
+      en: "Religion",
+      hi: "धर्म",
+      ma: "धर्म",
+      error: {
+        en: "Select your Religion",
+        hi: "अपना धर्म चुनें",
+        ma: "तुमचा धर्म निवडा",
+      },
+    },
+  };
+
   const {
     inputDisabled,
     formData,
@@ -145,19 +289,20 @@ function OtherDetails(props) {
                   required
                 >
                   <InputLabel id="state-label">
-                    {lang === "en" ? "Select State" : "राज्य चुनें"}
+                    {langOptions.state[lang]}
                   </InputLabel>
                   <Select
                     error={!!errors.state}
                     required
                     inputRef={ref}
-                    label={lang === "en" ? "Select State" : "राज्य चुनें"}
+                    label={langOptions.state[lang]}
+                    placeholder={langOptions.state[lang]}
                     MenuProps={{ classes: { paper: classes.menuPaper } }}
                     // eslint-disable-next-line react/jsx-props-no-spreading
                     {...rest}
                   >
                     <MenuItem value="" disabled>
-                      {lang === "en" ? "Select State" : "राज्य चुनें"}
+                      {langOptions.state[lang]}
                     </MenuItem>
                     {Object.entries(
                       partnerSlug && customPartner.includes(partnerSlug)
@@ -182,7 +327,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "en" ? "Select your State" : "अपना राज्य चुनें"}
+                {langOptions.state.error[lang]}
               </Typography>
             ) : (
               ""
@@ -206,7 +351,7 @@ function OtherDetails(props) {
                   required
                 >
                   <InputLabel id="district-label">
-                    {lang === "en" ? "Select District" : "जिला चुनें"}
+                    {langOptions.district[lang]}
                   </InputLabel>
                   <Select
                     error={!!errors.district}
@@ -214,11 +359,12 @@ function OtherDetails(props) {
                     inputRef={ref}
                     // eslint-disable-next-line react/jsx-props-no-spreading
                     {...rest}
-                    label={lang === "en" ? "Select District" : "जिला चुनें"}
+                    label={langOptions.district[lang]}
+                    placeholder={langOptions.district[lang]}
                     MenuProps={{ classes: { paper: classes.menuPaper } }}
                   >
                     <MenuItem value="" disabled>
-                      {lang === "en" ? "Select District" : "जिला चुनें"}
+                      {langOptions.district[lang]}
                     </MenuItem>
                     {districts.map((key) => (
                       <MenuItem key={key.name} value={key.name}>
@@ -239,7 +385,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "en" ? "Select your District" : "अपना जिला चुनें"}
+                {langOptions.district.error[lang]}
               </Typography>
             ) : (
               ""
@@ -260,16 +406,12 @@ function OtherDetails(props) {
                   {...rest}
                   fullWidth
                   id="city"
-                  label={lang === "en" ? "City" : "शहर"}
-                  placeholder={lang === "en" ? "City" : "शहर"}
+                  label={langOptions.city[lang]}
+                  placeholder={langOptions.city[lang]}
                   autoComplete="off"
                   error={!!errors.city}
                   helperText={
-                    errors.city
-                      ? lang === "en"
-                        ? "Select your City"
-                        : "अपना शहर चुनें"
-                      : "Ex. Bangalore"
+                    errors.city ? langOptions.city.error[lang] : "Ex. Bangalore"
                   }
                 />
               )}
@@ -289,20 +431,16 @@ function OtherDetails(props) {
                   fullWidth
                   id="pin_code"
                   inputRef={ref}
-                  label={lang === "en" ? "Pin code" : "पिन कोड"}
-                  placeholder={lang === "en" ? "Pin code" : "पिन कोड"}
+                  label={langOptions.pin_code[lang]}
+                  placeholder={langOptions.pin_code[lang]}
                   autoComplete="off"
                   error={!!errors.pin_code}
                   helperText={
                     errors.pin_code
                       ? errors.pin_code.type === "minLength" ||
                         errors.pin_code.type === "maxLength"
-                        ? lang === "en"
-                          ? "Enter a valid Pin Code"
-                          : "एक मान्य पिन कोड दर्ज करें"
-                        : lang === "en"
-                        ? "Enter your Pin Code"
-                        : "अपना पिन कोड दर्ज करें"
+                        ? langOptions.pin_code.error.minLength[lang]
+                        : langOptions.pin_code.error[lang]
                       : "Ex. 4402xx"
                   }
                   {...rest}
@@ -329,14 +467,15 @@ function OtherDetails(props) {
                   required
                 >
                   <InputLabel id="current-status-label">
-                    {lang === "en" ? "Current Status" : "वर्तमान स्थिति"}
+                    {langOptions.current_status[lang]}
                   </InputLabel>
                   <Select
                     disabled={
                       inputDisabled && formData.current_status !== undefined
                     }
                     error={!!errors.current_status}
-                    label={lang === "en" ? "Current Status" : "वर्तमान स्थिति"}
+                    label={langOptions.current_status[lang]}
+                    placeholder={langOptions.current_status[lang]}
                     required
                     inputRef={ref}
                     {...rest}
@@ -363,9 +502,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "en"
-                  ? "Select your Current Status"
-                  : "अपनी वर्तमान स्थिति चुनें"}
+                {langOptions.current_status.error[lang]}
               </Typography>
             ) : (
               ""
@@ -387,12 +524,11 @@ function OtherDetails(props) {
                   required
                 >
                   <InputLabel id="qualification-label">
-                    {lang === "en" ? "Maximum Qualification" : "अधिकतम योग्यता"}
+                    {langOptions.qualification[lang]}
                   </InputLabel>
                   <Select
-                    label={
-                      lang === "en" ? "Maximum Qualification" : "अधिकतम योग्यता"
-                    }
+                    label={langOptions.qualification[lang]}
+                    placeholder={langOptions.qualification[lang]}
                     error={!!errors.qualification}
                     required
                     inputRef={ref}
@@ -429,9 +565,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "en"
-                  ? "Select your Current Qualification"
-                  : "अपनी वर्तमान योग्यता चुनें"}
+                {langOptions.qualification.error[lang]}
               </Typography>
             ) : (
               ""
@@ -454,28 +588,16 @@ function OtherDetails(props) {
                     inputRef={ref}
                     {...rest}
                     fullWidth
-                    label={
-                      lang === "en"
-                        ? "Percentage in 10th class"
-                        : "10वीं कक्षा के प्रतिशत अंक"
-                    }
-                    placeholder={
-                      lang === "en"
-                        ? "Percentage in 10th class"
-                        : "10वीं कक्षा के प्रतिशत अंक"
-                    }
+                    label={langOptions.percentage_in10th[lang]}
+                    placeholder={langOptions.percentage_in10th[lang]}
                     type="number"
                     autoComplete="off"
                     error={!!errors.percentage_in10th}
                     helperText={
                       errors.percentage_in10th
                         ? errors.percentage_in10th.type === "max"
-                          ? lang === "en"
-                            ? "Enter valid Percentage"
-                            : "मान्य प्रतिशत दर्ज करें"
-                          : lang === "en"
-                          ? "Enter 10th Class Percentage"
-                          : "10वीं कक्षा के प्रतिशत अंक दर्ज करें"
+                          ? langOptions.percentage_in10th.error.max[lang]
+                          : langOptions.percentage_in10th.error[lang]
                         : "Ex. 86.40"
                     }
                   />
@@ -506,28 +628,16 @@ function OtherDetails(props) {
                       inputRef={ref}
                       {...rest}
                       fullWidth
-                      label={
-                        lang === "en"
-                          ? "Percentage in 10th class"
-                          : "10वीं कक्षा के प्रतिशत अंक"
-                      }
-                      placeholder={
-                        lang === "en"
-                          ? "Percentage in 10th class"
-                          : "10वीं कक्षा के प्रतिशत अंक"
-                      }
+                      label={langOptions.percentage_in10th[lang]}
+                      placeholder={langOptions.percentage_in10th[lang]}
                       type="number"
                       autoComplete="off"
                       error={!!errors.percentage_in10th}
                       helperText={
                         errors.percentage_in10th
                           ? errors.percentage_in10th.type === "max"
-                            ? lang === "en"
-                              ? "Enter valid Percentage"
-                              : "मान्य प्रतिशत दर्ज करें"
-                            : lang === "en"
-                            ? "Enter 10th Class Percentage"
-                            : "10वीं कक्षा के प्रतिशत अंक दर्ज करें"
+                            ? langOptions.percentage_in10th.error.max[lang]
+                            : langOptions.percentage_in10th.error[lang]
                           : "Ex. 86.40"
                       }
                     />
@@ -555,22 +665,24 @@ function OtherDetails(props) {
                       {...rest}
                       fullWidth
                       label={
-                        lang === "en"
-                          ? `Percentage in ${
-                              qualification === "iti" ? "ITI" : "12th class"
-                            }`
-                          : `${
-                              qualification === "iti" ? "ITI" : "12वीं कक्षा"
-                            } के प्रतिशत अंक`
+                        langOptions[qualification][lang]
+                        // lang === "en"
+                        //   ? `Percentage in ${
+                        //       qualification === "iti" ? "ITI" : "12th class"
+                        //     }`
+                        //   : `${
+                        //       qualification === "iti" ? "ITI" : "12वीं कक्षा"
+                        //     } के प्रतिशत अंक`
                       }
                       placeholder={
-                        lang === "en"
-                          ? `Percentage in ${
-                              qualification === "iti" ? "ITI" : "12th class"
-                            }`
-                          : `${
-                              qualification === "iti" ? "ITI" : "12वीं कक्षा"
-                            } के प्रतिशत अंक`
+                        langOptions[qualification][lang]
+                        // lang === "en"
+                        //   ? `Percentage in ${
+                        //       qualification === "iti" ? "ITI" : "12th class"
+                        //     }`
+                        //   : `${
+                        //       qualification === "iti" ? "ITI" : "12वीं कक्षा"
+                        //     } के प्रतिशत अंक`
                       }
                       type="number"
                       autoComplete="off"
@@ -578,16 +690,8 @@ function OtherDetails(props) {
                       helperText={
                         errors.percentage_in12th
                           ? errors.percentage_in12th.type === "max"
-                            ? lang === "en"
-                              ? "Enter valid Percentage"
-                              : "मान्य प्रतिशत दर्ज करें"
-                            : lang === "en"
-                            ? `Enter ${
-                                qualification === "iti" ? "ITI" : "Class 12th"
-                              } Percentage`
-                            : `${
-                                qualification === "iti" ? "ITI" : "12वीं कक्षा"
-                              } के प्रतिशत अंक दर्ज करें`
+                            ? langOptions[qualification].error.max[lang]
+                            : langOptions[qualification].error[lang]
                           : "Ex. 76.40"
                       }
                     />
@@ -612,10 +716,11 @@ function OtherDetails(props) {
                   required
                 >
                   <InputLabel id="school-medium-label">
-                    {lang === "en" ? "School Medium" : "स्कूल माध्यम"}
+                    {langOptions.school_medium[lang]}
                   </InputLabel>
                   <Select
-                    label={lang === "en" ? "School Medium" : "स्कूल माध्यम"}
+                    label={langOptions.school_medium[lang]}
+                    placeholder={langOptions.school_medium[lang]}
                     error={!!errors.school_medium}
                     required
                     inputRef={ref}
@@ -625,7 +730,7 @@ function OtherDetails(props) {
                     }
                   >
                     <MenuItem value="" disabled>
-                      {lang === "en" ? "Select Langauge" : "भाषा चुने"}
+                      {langOptions.school_medium[lang]}
                     </MenuItem>
 
                     {Object.entries({
@@ -651,9 +756,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "en"
-                  ? "Select your School Medium"
-                  : "अपना स्कूल माध्यम चुनें"}
+                {langOptions.school_medium.error[lang]}
               </Typography>
             ) : (
               ""
@@ -677,10 +780,11 @@ function OtherDetails(props) {
                     required
                   >
                     <InputLabel id="demo-simple-select-outlined-label">
-                      {lang === "en" ? " Caste/Tribe" : "जाति/जनजाति"}
+                      {langOptions.caste[lang]}
                     </InputLabel>
                     <Select
-                      label={lang === "en" ? " Caste/Tribe" : "जाति/जनजाति"}
+                      label={langOptions.caste[lang]}
+                      placeholder={langOptions.caste[lang]}
                       error={!!errors.caste}
                       required
                       inputRef={ref}
@@ -711,9 +815,7 @@ function OtherDetails(props) {
                   variant="caption"
                   color="error"
                 >
-                  {lang === "en"
-                    ? "Select your Caste/Tribe"
-                    : "अपनी जाति/जनजाति चुनें"}
+                  {langOptions.caste.error[lang]}
                 </Typography>
               ) : (
                 ""
@@ -734,10 +836,11 @@ function OtherDetails(props) {
                   variant="outlined"
                 >
                   <InputLabel id="religion-label">
-                    {lang === "en" ? "Religion" : "धर्म"}
+                    {langOptions.religion[lang]}
                   </InputLabel>
                   <Select
-                    label={lang === "en" ? "Religion" : "धर्म"}
+                    label={langOptions.religion[lang]}
+                    placeholder={langOptions.religion[lang]}
                     required
                     inputRef={ref}
                     error={!!errors.religion}
@@ -767,7 +870,7 @@ function OtherDetails(props) {
                 variant="caption"
                 color="error"
               >
-                {lang === "en" ? "Select your Religion" : "अपना धर्म चुनें"}
+                {langOptions.religion.error[lang]}
               </Typography>
             ) : (
               ""

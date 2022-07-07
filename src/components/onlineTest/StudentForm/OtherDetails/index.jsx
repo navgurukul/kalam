@@ -752,6 +752,7 @@ function OtherDetails(props) {
                       hi: ["Hindi", "हिन्दी"],
                       en: ["English", "अंग्रेज़ी"],
                       ma: ["Marathi", "मराठी"],
+                      ur: ["Urdu", "उर्दू"],
                     }).map(([key, value]) => (
                       <MenuItem value={key} key={key}>
                         {value[lang === "en" ? 0 : 1]}

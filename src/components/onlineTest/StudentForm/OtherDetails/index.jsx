@@ -128,7 +128,7 @@ function OtherDetails(props) {
         ma: "तुमची सध्याची पात्रता निवडा",
       },
     },
-    percentage_in10th: {
+    class10th: {
       en: "Percentage in 10th class",
       hi: "10वीं कक्षा के प्रतिशत अंक",
       ma: "दहावीत टक्केवारी",
@@ -143,7 +143,22 @@ function OtherDetails(props) {
         },
       },
     },
-    percentage_in12th: {
+    class12th: {
+      en: "Percentage in 12th class",
+      hi: "12वीं कक्षा के प्रतिशत अंक",
+      ma: "बारावीत टक्केवारी",
+      error: {
+        en: "Enter 12th Class Percentage",
+        hi: "12वीं कक्षा के प्रतिशत अंक दर्ज करें",
+        ma: "12वी वर्ग टक्केवारी प्रविष्ट करा",
+        max: {
+          en: "Enter valid Percentage",
+          hi: "मान्य प्रतिशत दर्ज करें",
+          ma: "वैध टक्केवारी प्रविष्ट करा",
+        },
+      },
+    },
+    graduate: {
       en: "Percentage in 12th class",
       hi: "12वीं कक्षा के प्रतिशत अंक",
       ma: "बारावीत टक्केवारी",
@@ -628,16 +643,16 @@ function OtherDetails(props) {
                       inputRef={ref}
                       {...rest}
                       fullWidth
-                      label={langOptions.percentage_in10th[lang]}
-                      placeholder={langOptions.percentage_in10th[lang]}
+                      label={langOptions.class10th[lang]}
+                      placeholder={langOptions.class10th[lang]}
                       type="number"
                       autoComplete="off"
                       error={!!errors.percentage_in10th}
                       helperText={
                         errors.percentage_in10th
                           ? errors.percentage_in10th.type === "max"
-                            ? langOptions.percentage_in10th.error.max[lang]
-                            : langOptions.percentage_in10th.error[lang]
+                            ? langOptions.class10th.error.max[lang]
+                            : langOptions.class10th.error[lang]
                           : "Ex. 86.40"
                       }
                     />

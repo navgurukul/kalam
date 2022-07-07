@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
 import { Paper, Typography, Button, Container } from "@mui/material";
+import { useSelector } from "react-redux";
+
 import { makeStyles } from "@mui/styles";
 import { useLocation, useNavigate } from "react-router-dom";
 import { encryptText } from "../../../utils";
@@ -8,11 +10,36 @@ import { encryptText } from "../../../utils";
 const baseUrl = import.meta.env.VITE_API_URL;
 
 const tutorialSteps = {
-  heading: "Ek aur baat:",
-  content:
-    "Aapse ab test mein kuch questions pooche jaenge. Aapko answers araam se soch samajh kar dena hai.",
-  imp1: "Par time ka bhi khyaal rakhe!",
-  imp2: "Aapko next 18 questions, 1 Hour 30 Minutes me karne hai!",
+  heading: {
+    old: "Ek aur baat:",
+    en: "One More Thing:",
+    hi: "एक और बात:",
+    ma: "आणखी एक गोष्ट:",
+  },
+  content: {
+    old: "Aapse ab test mein kuch questions pooche jaenge. Aapko answers araam se soch samajh kar dena hai.",
+    en: "Now, you will be asked some questions in the test. Answer them carefully.",
+    hi: "अब, आपसे परीक्षण में कुछ प्रश्न पूछे जाएंगे। उन्हें ध्यान से उत्तर दें।",
+    ma: "आता तुम्हाला परीक्षेत काही प्रश्न विचारले जातील. त्यांना काळजीपूर्वक उत्तर द्या.",
+  },
+  imp1: {
+    old: "Par time ka bhi khyaal rakhe!",
+    en: "But also keep an eye on time",
+    hi: "लेकिन समय का भी ध्यान रखें",
+    ma: "पण वेळेवरही लक्ष ठेवा",
+  },
+  imp2: {
+    old: "Aapko next 18 questions, 1 Hour 30 Minutes me karne hai!",
+    en: "You have to answer 18 questions in 1 Hour & 30 Minutes",
+    hi: "आपको 1 घंटे और 30 मिनट में 18 प्रश्नों के उत्तर देने हैं",
+    ma: "तुम्हाला 1 तास आणि 30 मिनिटांत 18 प्रश्नांची उत्तरे द्यावी लागतील",
+  },
+  button: {
+    old: "Shuru karein",
+    en: "Start the Test",
+    hi: "शुरू करें",
+    ma: "सुरू करा",
+  },
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -51,6 +78,7 @@ function FinalInstruction() {
   const classes = useStyles();
   const navigate = useNavigate();
   const location = useLocation();
+  const { lang } = useSelector((state) => state.ui);
 
   const { enrollmentKey, studentId } = location.state;
 
@@ -97,16 +125,16 @@ function FinalInstruction() {
     <Container maxWidth="lg" align="center">
       <div className={classes.root}>
         <Paper square elevation={0} className={classes.heading}>
-          <Typography variant="h4">{tutorialSteps.heading}</Typography>
+          <Typography variant="h4">{tutorialSteps.heading?.[lang]}</Typography>
         </Paper>
         <Paper square elevation={0} className={classes.content}>
-          <Typography>{tutorialSteps.content}</Typography>
+          <Typography>{tutorialSteps.content?.[lang]}</Typography>
         </Paper>
         <Paper square elevation={0} className={classes.imp}>
-          <Typography variant="h5">{tutorialSteps.imp1}</Typography>
+          <Typography variant="h5">{tutorialSteps.imp1?.[lang]}</Typography>
         </Paper>
         <Paper square elevation={0} className={classes.imp}>
-          <Typography variant="h5">{tutorialSteps.imp2}</Typography>
+          <Typography variant="h5">{tutorialSteps.imp2?.[lang]}</Typography>
         </Paper>
         <Paper square elevation={0} className={classes.button}>
           <Button
@@ -116,7 +144,7 @@ function FinalInstruction() {
             color="primary"
             onClick={fetchQuestionsAndOptions}
           >
-            Shuru karein
+            {tutorialSteps.button?.[lang]}
           </Button>
         </Paper>
       </div>

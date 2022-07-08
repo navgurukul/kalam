@@ -169,7 +169,6 @@ const BasicDetails = ({
   formData,
   setProfileImage,
   inputDisabled,
-  pfpCompulsion,
   reactForm: { errors, control },
 }) => {
   const classes = useStyles();
@@ -185,48 +184,47 @@ const BasicDetails = ({
   };
   return (
     <Container maxWidth="lg" align="center">
-      {pfpCompulsion ? (
-        <label
-          style={{
-            cursor: inputDisabled ? "default" : "pointer",
-          }}
-          htmlFor="ProfileImage"
+      {/* {pfpCompulsion ?  */}
+      <label
+        style={{
+          cursor: inputDisabled ? "default" : "pointer",
+        }}
+        htmlFor="ProfileImage"
+      >
+        <Badge
+          overlap="circular"
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          badgeContent={<CameraAltIcon />}
         >
-          <Badge
-            overlap="circular"
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            badgeContent={<CameraAltIcon />}
+          <Avatar
+            style={{
+              width: "70px",
+              height: "70px",
+            }}
+            alt="ProfileImage"
+            src={
+              formData.ProfileImage
+                ? URL.createObjectURL(formData.ProfileImage)
+                : formData.PrevImage
+            }
+          />
+        </Badge>
+        <Typography variant="h6" className={classes.text}>
+          {langOptions.ProfileImage[lang]}
+        </Typography>
+        {errors.ProfileImage ? (
+          <Typography
+            style={{ paddingTop: "-0.2rem" }}
+            variant="caption"
+            color="error"
           >
-            <Avatar
-              style={{
-                width: "70px",
-                height: "70px",
-              }}
-              alt="ProfileImage"
-              src={
-                formData.ProfileImage
-                  ? URL.createObjectURL(formData.ProfileImage)
-                  : formData.PrevImage
-              }
-            />
-          </Badge>
-          <Typography variant="h6" className={classes.text}>
-            {langOptions.ProfileImage[lang]}
+            {langOptions.ProfileImage.error[lang]}
           </Typography>
-          {errors.ProfileImage ? (
-            <Typography
-              style={{ paddingTop: "-0.2rem" }}
-              variant="caption"
-              color="error"
-            >
-              {langOptions.ProfileImage.error[lang]}
-            </Typography>
-          ) : (
-            ""
-          )}
-        </label>
-      ) : null}
-
+        ) : (
+          ""
+        )}
+      </label>
+      {/* : null} */}
       <input
         onChange={(e) => uploadProfilePhoto(e)}
         id="ProfileImage"

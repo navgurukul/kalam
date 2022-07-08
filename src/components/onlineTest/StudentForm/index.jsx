@@ -325,7 +325,7 @@ const StudentForm = () => {
     setFormData((prevFormData) => ({ ...prevFormData, ...data }));
 
     if (
-      !customPartner.includes(partner?.slug || "") &&
+      // !customPartner.includes(partner?.slug || "") &&
       activeStep === 0 &&
       !formData.PrevImage &&
       !formData.ProfileImage

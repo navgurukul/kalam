@@ -334,8 +334,8 @@ const BasicDetails = ({
             rules={{
               required: true,
               validate: (dob) =>
-                parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 16 &&
-                parseInt(dayjs().diff(dayjs(dob), "year"), 10) <= 27,
+                parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 17 &&
+                parseInt(dayjs().diff(dayjs(dob), "year"), 10) <= 28,
             }}
             render={({
               field: { ref, ...rest },

@@ -21,16 +21,16 @@ const tutorialSteps = {
     ma: " गुण मिळाले आहेत.",
   },
   // hiContent3:    "आप थोड़ी और तैयारी के बाद यह टेस्ट फिर से दे सकते है | गणित की प्रैक्टिस के लिए ",
-  enContent3: {
+  content3: {
     en: "You can use this study guide for more maths practice ",
     hi: "आप थोड़ी और तैयारी के बाद यह टेस्ट फिर से दे सकते है | गणित की प्रैक्टिस के लिए ",
     ma: "अधिक गणिताच्या सरावासाठी तुम्ही या अभ्यास मार्गदर्शकाचा वापर करू शकता ",
   },
   // hiLink: "यहाँ क्लिक करे",
   link: {
-    en: "Click Here",
-    hi: "यहाँ क्लिक करे",
-    ma: "इथे क्लिक करा",
+    en: "Click Here. ",
+    hi: "यहाँ क्लिक करे। ",
+    ma: "इथे क्लिक करा. ",
   },
   // hiContent4: " स्टडी गाइड का उपयोग करे |",
   content4: {
@@ -113,7 +113,7 @@ function SorryPage() {
         </Paper> */}
         <Paper square elevation={0} className={classes.content}>
           <Typography>
-            {tutorialSteps.content[lang]}
+            {tutorialSteps.content3[lang]}
             <a
               href="https://merakilearn.org/"
               style={{

@@ -22,9 +22,9 @@ import { changeLanguage } from "../../../store/slices/uiSlice";
 const tutorialSteps = [
   {
     heading: {
-      en: "NavGurukul Preliminary Test",
-      hi: "NavGurukul Preliminary Test",
-      ma: "NavGurukul Preliminary Test",
+      en: "NavGurukul Entrance Test",
+      hi: "NavGurukul Entrance Test",
+      ma: "NavGurukul Entrance Test",
     },
     subHadding: {
       // old:"Select Your Languge/ अपनी भाषा चुने",
@@ -46,9 +46,9 @@ const tutorialSteps = [
   },
   {
     heading: {
-      en: "NavGurukul Preliminary Test",
-      hi: "NavGurukul Preliminary Test",
-      ma: "NavGurukul Preliminary Test",
+      en: "NavGurukul Entrance Test",
+      hi: "NavGurukul Entrance Test",
+      ma: "NavGurukul Entrance Test",
     },
     content: {
       en: "Please read the following important instructions before starting the test. These instruction will come in handy while giving the test",

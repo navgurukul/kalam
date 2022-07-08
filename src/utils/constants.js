@@ -635,6 +635,7 @@ export const religon = {
   jain: 4,
   christian: 5,
   others: 6,
+  buddhism: 7,
 };
 
 export const allTagsForOnlineClass = [

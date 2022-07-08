@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 400,
     margin: "0 auto",
     [theme.breakpoints.up("sm")]: {
-      maxWidth: 780,
+      maxWidth: 400,
     },
   },
   title: {
@@ -122,7 +122,7 @@ window.mobileAndTabletCheck = function mobileAndTabletCheck() {
   return check;
 };
 
-const VideoSlider = (props) => {
+const VideoSlider = ({ language, customLinks }) => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     activeStep: 0,
@@ -156,7 +156,6 @@ const VideoSlider = (props) => {
     event.target.playVideo();
   };
 
-  const { language } = props;
   //console.log(classes, this.props);
 
   const width = Math.min(600, window.screen.width);
@@ -180,15 +179,17 @@ const VideoSlider = (props) => {
     origin: window.location.origin,
   };
 
+  const links = customLinks || aboutNavgurukul;
+
   return (
     <div style={{ width: "100%" }}>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <Slider {...settings} className={classes.slider}>
-        {aboutNavgurukul.map((ele) => (
+        {links.map((ele) => (
           <div key={ele.videoId}>
             <Box
               maxWidth={width}
-              style={{ margin: "0 auto", position: "relative" }}
+              style={{ margin: "0 auto", position: "relative", padding: 0 }}
               onClick={handleClickOpen}
               value={ele.videoId}
               data-video_id={ele.videoId}
@@ -201,7 +202,7 @@ const VideoSlider = (props) => {
                 style={{ maxWidth: "100%" }}
               />
               <img alt="play" src={playIcon} className={classes.playIcon} />
-              <Box py={2} style={{ fontSize: 18, textAlign: "center" }}>
+              <Box py={1} style={{ fontSize: 18, textAlign: "center" }}>
                 <span align="center">{ele.label[language]}</span>
               </Box>
             </Box>

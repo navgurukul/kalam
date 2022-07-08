@@ -2,9 +2,8 @@
 import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
-import { Container, List, ListItem } from "@mui/material";
+import { Divider, List, ListItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +16,15 @@ import { changeFetching } from "../../store/slices/uiSlice";
 import VideoSlider from "../ui/VideoSlider";
 import theme from "../../theme";
 import { decryptText } from "../../utils";
+import Carousel from "../ui/Carousel";
+import akansha1 from "../../assets/img/akansha/1.jpg";
+import akansha2 from "../../assets/img/akansha/2.jpg";
+import akansha3 from "../../assets/img/akansha/3.jpg";
+import akansha4 from "../../assets/img/akansha/4.jpg";
+import akansha5 from "../../assets/img/akansha/5.jpg";
+import mhGovtLogo from "../../assets/img/akansha/mh-govt-logo.jpg";
+import MSSDSLogo from "../../assets/img/akansha/MSSDS-logo.jpg";
+import sdeedLogo from "../../assets/img/akansha/sdeed-logo.png";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -44,9 +52,9 @@ const useStyles = makeStyles(() => ({
     flexGrow: 1,
   },
   paper: {
-    marginTop: theme.spacing(2),
-    padding: theme.spacing(1),
-    textAlign: "center",
+    // marginTop: theme.spacing(2),
+    // padding: theme.spacing(1),
+    // textAlign: "center",
     fontSize: 32,
     [theme.breakpoints.down("md")]: {
       fontSize: 24,
@@ -76,6 +84,25 @@ const useStyles = makeStyles(() => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(4),
     outline: "none",
+  },
+  logo: {
+    [theme.breakpoints.up("xs")]: {
+      width: "60px",
+      height: "60px",
+    },
+    [theme.breakpoints.up("lg")]: {
+      width: "80px",
+      height: "80px",
+    },
+    [theme.breakpoints.up("xl")]: {
+      width: "100px",
+      height: "100px",
+    },
+  },
+  goForTestButton: {
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
   },
 }));
 
@@ -116,12 +143,12 @@ const CustomLandingPage = () => {
     enrollmentKey: "",
   });
   const [goToTest, setGoToTest] = React.useState(false);
-  const testClosed = ["amravati"];
+  // const testClosed = ["amravati"];
   const lang = {
     Heading: {
-      en: "AKANKSHA Campus",
-      hi: "आकांक्षा Campus",
-      ma: "आकांक्षा Campus",
+      en: "AKANKSHA",
+      hi: "आकांक्षा",
+      ma: "आकांक्षा",
     },
     Course: {
       en: "Course Information",
@@ -162,6 +189,275 @@ const CustomLandingPage = () => {
       en: "Please give 10 digits of the mobile number.",
       hi: "कृपया मोबाइल नंबर के 10 अंक दें।",
       ma: "कृपया मोबाईल नंबरचे 10 अंक द्या.",
+    },
+    courseDetails: [
+      {
+        en: "Special Course for Women : 2022 - 2024",
+        hi: "महिलाओं के लिए विशेष पाठ्यक्रम : 2022 - 2024",
+        ma: "महिलांकरिता विशेष कोर्स - २०२२-२४",
+        isBold: false,
+      },
+      {
+        en: "(Advanced Diploma in Software Programming)",
+        hi: "(सॉफ्टवेयर प्रोग्रामिंग में उन्नत डिप्लोमा)",
+        ma: "(अडव्हांस डिप्लोमा इन सॉफ्टवेअर प्रोग्रामिंग )",
+        isBold: false,
+      },
+      {
+        en: "Hurry Up...! Register Now!",
+        hi: "जल्दी करो...! अभी पंजीकरण करें!",
+        ma: "त्वरित अर्ज करा, प्रवेश प्रक्रिया सुरु!",
+        isBold: true,
+      },
+      {
+        en: "200 Seats only...!",
+        hi: "सिर्फ 200 सीट...!",
+        ma: "केवळ २०० जागा..!",
+        isBold: true,
+      },
+    ],
+    trainingVenue: {
+      en: "Training Venue: ",
+      hi: "प्रशिक्षण स्थल: ",
+      ma: "प्रशिक्षण स्थळ: ",
+      venue: {
+        en: "Dr Punjabrao Deshmukh Vidarbha Administrative & Development Training Academy, Amravati (Prabodhini Amravati)",
+        hi: "डॉ पंजाबराव देशमुख विदर्भ प्रशासनिक एवं विकास प्रशिक्षण अकादमी, अमरावती (प्रबोधिनी अमरावती)",
+        ma: "डॉ. पंजाबराव देशमुख विदर्भ प्रशासकीय व विकास प्रशिक्षण प्रबोधिनी, अमरावती (प्रबोधिनी अमरावती)",
+      },
+    },
+    exam: [
+      {
+        en: "Online Exam",
+        hi: "ऑनलाइन परीक्षा",
+        ma: "ऑनलाईन परीक्षा",
+        date: {
+          en: "10 - 30 July 2022",
+          hi: "१० - ३० जुलै २०२२",
+          ma: "१० - ३० जुलै २०२२",
+        },
+      },
+      {
+        en: "Offline Exam",
+        hi: "ऑफलाइन परीक्षा",
+        ma: "ऑफलाइन परीक्षा",
+        date: {
+          en: "7th August 2022",
+          hi: "७ ऑगस्ट २०२२",
+          ma: "७ ऑगस्ट २०२२",
+        },
+      },
+    ],
+
+    eligibilityCriteria: {
+      en: "Eligibility Criteria for Admission",
+      hi: "प्रवेश पात्रता मानदंड",
+      ma: "प्रवेश पात्रता",
+      criteria: [
+        {
+          en: "Age: 17-28 years",
+          hi: "आयु: १७ से २८ वर्ष",
+          ma: "वयोमर्यादा: १७ ते २८",
+        },
+        {
+          en: "Education: 12th Pass (Science, Arts or Commerce)/Completed ITI",
+          hi: "शिक्षा : 12वीं पास (विज्ञान, कला या वाणिज्य) / पूर्ण ITI",
+          ma: "किमान शैक्षणिक पात्रता: १२वी पास  (विज्ञान, कला अथवा वाणिज्य) / ITI पूर्ण",
+        },
+        {
+          en: "Residents of Amravati & Nagpur Division (Amravati, Akola, Yavatmal, Buldhana, Washim, Nagpur, Gondia, Bhandara, Chadrapur, Gadchiroli and Wardha)",
+          hi: "अमरावती और नागपुर के निवासी संभाग (अमरावती, अकोला, यवतमाल, बुलढाणा, वाशिम, नागपुर, गोंदिया, भंडारा, चद्रपुर, गढ़चिरौली और वर्धा)",
+          ma: "अमरावती व नागपूर विभागातील रहिवासी (अमरावती, अकोला, यवतमाळ,बुलढाणा, वाशीम, नागपूर, चंद्रपूर, गडचिरोली, गोंदिया, भंडारा व वर्धा )",
+        },
+        {
+          en: "Neither Parent should be in Government Sector job",
+          hi: "कोई भी अभिभावक सरकारी क्षेत्र की नौकरी में नहीं होना चाहिए",
+          ma: "पालक शासकीय क्षेत्रातील नोकरीत नसावे",
+        },
+        {
+          en: "Women from Economically Vulnerable Sections will be given preference",
+          hi: "आर्थिक रूप से महिलाएं कमजोर धाराएं दी जाएंगी पसंद",
+          ma: "आर्थिकदृष्ट्या दुर्बल   घटकातील महिलांना प्राधान्य",
+        },
+      ],
+    },
+    trainingFeatures: {
+      en: "Training Features",
+      hi: "प्रशिक्षण सुविधाएँ",
+      ma: "प्रशिक्षण सुविधाएँ",
+      features: [
+        {
+          en: "Duration of training: 18 months",
+          hi: "प्रशिक्षण की अवधि: 18 महीने",
+          ma: "प्रशिक्षण कालावधी: १८ महिने",
+        },
+        {
+          en: "Free of cost training, food and accommodation",
+          hi: "नि:शुल्क प्रशिक्षण, भोजन और आवास",
+          ma: "निशुल्क प्रशिक्षण, निवास व भोजन व्यवस्था",
+        },
+        {
+          en: "Laptops will be provided during training",
+          hi: "नि:शुल्क प्रशिक्षण, भोजन और आवास",
+          ma: "प्रशिक्षण कालावधीमध्ये लॅपटॉप दिले जाईल",
+        },
+        {
+          en: "Guidance from expert trainers",
+          hi: "विशेषज्ञ प्रशिक्षकों से मार्गदर्शन",
+          ma: "प्रशिक्षित व तज्ञ प्रशिक्षकांकडून मार्गदर्शन",
+        },
+        {
+          en: "Emphasis on communication skills & personality development",
+          hi: "संचार कौशल और व्यक्तित्व विकास पर जोर",
+          ma: "संभाषण कौशल्य व व्यक्तिमत्व विकासावर भर",
+        },
+        {
+          en: "Guaranteed job in reputed company/start-up on Navgurukul Foundation State Level Coordinator course completion & evaluation",
+          hi: "प्रतिष्ठित कंपनी में नौकरी की गारंटी/नवगुरुकुल फाउंडेशन पर स्टार्ट-अप राज्य स्तरीय समन्वयक पाठ्यक्रम समापन और मूल्यांकन",
+          ma: "प्रशिक्षण व मुल्यामापनानंतर नामांकित कं पनी / स्टार्ट अप मध्ये रोजगाराची हमी",
+        },
+      ],
+    },
+    goForTest: {
+      en: "Go For Test",
+      hi: "परीक्षण के लिए जाएं",
+      ma: "परीक्षेला जा",
+    },
+
+    contact: {
+      en: "Contact",
+      hi: "संपर्क",
+      ma: "संपर्क",
+      center: {
+        en: "District Skill Development, Employment & Duration of training: 18 months Entrepreneurship Guidance Center",
+        hi: "जिला कौशल विकास, रोजगार एवं प्रशिक्षण की अवधि: 18 महीने उद्यमिता मार्गदर्शन केंद्र",
+        ma: "जिल्हा कौशल्य विकास , रोजगार व उद्योजकता मार्गदर्शन केंद्र",
+      },
+      locations: [
+        {
+          en: "Amravati: 9405102600/07212 566066",
+          hi: "अमरावती: ९४०५१०२६००/०७२१२ ५६६०६६",
+          ma: "अमरावती: ९४०५१०२६००/०७२१२ ५६६०६६",
+        },
+        {
+          en: "Buldhana: 9975704117/07262 242342",
+          hi: "बुलढाणा: ९७५७०८६६०३/०७२६२ २४२३४२",
+          ma: "बुलढाणा: ९७५७०८६६०३/०७२६२ २४२३४२",
+        },
+        {
+          en: "Akola: 8275369800/07242 433849",
+          hi: "अकोला: ८२७५३६९८००/०७२४२ ४३३८४९",
+          ma: "अकोला: ८२७५३६९८००/०७२४२ ४३३८४९",
+        },
+        {
+          en: "Yavatmal: 8379898798/07232 244395",
+          hi: "यवतमाळ: ८३७९८९८७९८/०७२३२ २४४३९५",
+          ma: "यवतमाळ: ८३७९८९८७९८/०७२३२ २४४३९५",
+        },
+        {
+          en: "Washim: 9096855798/07252 231494",
+          hi: "वाशीम: ९०९६८५५७९८/०७२५२ २३१४९४",
+          ma: "वाशीम: ९०९६८५५७९८/०७२५२ २३१४९४",
+        },
+      ],
+      ng: {
+        en: "Navgurukul Foundation",
+        hi: "नवगुरुकुल फाउंडेशन",
+        ma: "नवगुरूकू ल फॉउंडेशन",
+      },
+      ngContact: {
+        en: "Nitesh (Delhi): 889130030",
+        hi: "नितेश (दिल्ली):८८९१३००३००",
+        ma: "नितेश (दिल्ली):८८९१३००३००",
+      },
+    },
+
+    examMethod: {
+      en: "Entrance Exam Methods",
+      hi: "प्रवेश परीक्षा के तरीके",
+      ma: "प्रवेश परीक्षा पद्धती",
+      secondaryText: {
+        en: "(Online or Offline)",
+        hi: "जिला कौशल विकास, रोजगार एवं प्रशिक्षण की अवधि: 18 महीने उद्यमिता मार्गदर्शन केंद्र",
+        ma: "(ऑनलाईन व ऑफलाईन)",
+      },
+      steps: [
+        {
+          en: "Written Examination",
+          hi: "लिखित परीक्षा",
+          ma: "चाळणी परीक्षा",
+        },
+        {
+          en: "English Proficiency Test",
+          hi: "अंग्रेजी प्रवीणता परीक्षा",
+          ma: "इंग्रजी प्रवीणता चाचणी",
+        },
+        {
+          en: "General Math Test",
+          hi: "सामान्य गणित परीक्षा",
+          ma: "सामान्य गणित चाचणी",
+        },
+        {
+          en: "Interview with Parents",
+          hi: "माता-पिता के साथ साक्षात्कार",
+          ma: "पालकांसोबत मुलाखत",
+        },
+      ],
+    },
+    videoSLiderText: {
+      en: "Videos to Get You Started...",
+      hi: "आपको आरंभ करने के लिए वीडियो...",
+      ma: "तुम्हाला सुरुवात करण्यासाठी व्हिडिओ...",
+    },
+    CarouselText: {
+      en: "Campus Tour",
+      hi: "कॅम्पस टूर",
+      ma: "कॅम्पस टूर",
+    },
+    firstName: {
+      en: "First Name",
+      hi: "प्रथम नाम",
+      ma: "पहिले नाव",
+      error: {
+        en: "Enter First Name",
+        hi: "प्रथम नाम दर्ज करें",
+        ma: "प्रथम नाव प्रविष्ट करा",
+      },
+    },
+    middleName: {
+      en: "Middle Name",
+      hi: "मध्यनाम",
+      ma: "मधले नाव",
+      error: {
+        en: "Enter Middle Name",
+        hi: "मध्यनाम नाम दर्ज करें",
+        ma: "मधले नाव प्रविष्ट करा",
+      },
+    },
+    lastName: {
+      en: "Last Name",
+      hi: "कुलनाम",
+      ma: "आडनाव",
+      error: {
+        en: "Enter Last Name",
+        hi: "कुलनाम नाम दर्ज करें",
+        ma: "आडनाव प्रविष्ट करा",
+      },
+    },
+    mobNoField: {
+      en: "Your Mobile Number",
+      hi: "आपका व्हाट्सएप नंबर",
+      ma: "तुमचा Whatsapp नंबर",
+      error: {
+        en: "Enter Mobile Number",
+        hi: "मोबाइल नंबर दर्ज करें",
+        ma: "मोबाइल नंबर टाका",
+        pattern: {
+          en: "No. should be of 10 digits",
+          hi: "नंबर 10 अंकों का होना चाहिए",
+          ma: "क्रमांक 10 अंकांचा असावा",
+        },
+      },
     },
   };
 
@@ -331,6 +627,15 @@ const CustomLandingPage = () => {
   //   );
 
   const { mobileNumber, firstName, middleName, lastName, mobile } = state;
+
+  const akanshaImageList = [
+    { label: "akansha1", imageUrl: akansha1 },
+    { label: "akansha2", imageUrl: akansha2 },
+    { label: "akansha3", imageUrl: akansha3 },
+    { label: "akansha4", imageUrl: akansha4 },
+    { label: "akansha5", imageUrl: akansha5 },
+  ];
+
   return (
     <div
       style={{
@@ -352,239 +657,266 @@ const CustomLandingPage = () => {
             Go Back to Test
           </Button>
         ) : null}
-        <Typography className={classes.paper}>
-          {lang.Heading[selectedLang]}
-        </Typography>
-        <Grid container>
+
+        <Grid container sx={{ mt: "2rem" }} spacing={2} justifyContent="center">
           <Grid
             item
-            xs={12}
-            sm={6}
+            xs={10}
+            sm={5}
             sx={{
               flexDirection: "column",
-              alignItems: "center",
+              // alignItems: "center",
               display: "flex",
               p: "0.4rem",
               // border: "1px solid black",
+              pl: "2rem",
               overflowX: "hidden",
-              overflowY: "scroll",
-              height: {
-                xs: "100%",
-                sm: "calc(100vh - 14rem)",
-              },
+              // overflowY: "scroll",
+              // height: {
+              //   xs: "100%",
+              //   sm: "calc(100vh - 14rem)",
+              // },
             }}
             className="custom-scroll"
           >
-            <VideoSlider
-              customLinks={[
-                {
-                  label: {
-                    hi: "रानी पंडित की कहानी!",
-                    en: "Rani Pandit's Story",
-                    ma: "राणी पंडितची गोष्ट",
-                  },
-                  videoId: "XJ6hcfkSDkw",
-                },
-                {
-                  label: {
-                    hi: "नवगुरुकुल क्या है २ मिनट मे समजे!",
-                    en: "2 mins introduction to NavGurukul",
-                    ma: "नवगुरुकुलचा 2 मिनिटे परिचय",
-                  },
-                  videoId: "HjqfZ-Matyk",
-                },
-                {
-                  label: {
-                    hi: "नवगुरुकुल परीक्षा को कैसे क्रैक करें",
-                    en: "How to crack NavGurukul Examination",
-                    ma: "नवगुरुकुल परीक्षा कशी क्रॅक करावी",
-                  },
-                  videoId: "ivHrBBRAp9s",
-                },
-              ]}
-              language={selectedLang}
-            />
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography
+                className={classes.paper}
+                fontWeight="bold"
+                sx={{ display: "flex", justifyContent: "flex-start" }}
+              >
+                {lang.Heading[selectedLang]}
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "0.2rem",
+                }}
+              >
+                <img
+                  alt="Maharashtra Govt. Logo"
+                  src={mhGovtLogo}
+                  className={classes.logo}
+                />
+                <img
+                  alt="SDEED Logo."
+                  src={sdeedLogo}
+                  width="100"
+                  className={classes.logo}
+                />
+                <img
+                  alt="MSSDS Logo>"
+                  src={MSSDSLogo}
+                  width="100"
+                  className={classes.logo}
+                />
+              </Box>
+            </Box>
+            <Typography>कौशल्यातून जीवनोन्नतीकडे</Typography>
+            <Divider color="gray" sx={{ my: "2rem" }} />
+            {lang.courseDetails.map((courseDetail) => (
+              <Typography
+                key={courseDetail.en}
+                fontWeight={courseDetail.isBold ? "bold" : "normal"}
+              >
+                {courseDetail[selectedLang]}
+              </Typography>
+            ))}
+            <Typography sx={{ my: "1.6rem" }}>
+              <b>{lang.trainingVenue[selectedLang]}</b>
+              {lang.trainingVenue.venue[selectedLang]}
+            </Typography>
 
-            <Grid
-              container
-              spacing={2}
-              sx={{
-                mt: "1.2rem",
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-around",
-              }}
-            >
-              <Grid item xs={6} xl={4}>
-                <Typography variant="h5" textAlign="center">
-                  प्रवेश पात्रता
-                </Typography>
-                <List sx={{ listStyleType: "disc", ml: "1.4rem" }}>
-                  {[
-                    "वयोमर्यादा: १७ ते २८",
-                    "किमान शैक्षणिक पात्रता: १२वी पास  (विज्ञान, कला अथवा वाणिज्य) / ITI पूर्ण",
-                    "अमरावती विभागातील   (अमरावती, अकोला, यवतमाळ,बुलढाणा व वाशीम जिल्ह्यातील ) रहिवासी",
-                    "पालक शासकीय क्षेत्रातील नोकरीत नसावे",
-                    "आर्थिकदृष्ट्या दुर्बल   घटकातील",
-                    "महिलांना प्राधान्य",
-                  ].map((el) => (
-                    <ListItem
-                      key={el}
-                      sx={{
-                        display: "list-item",
-                        py: "0.1rem",
-                        pl: "0.4rem",
-                      }}
-                    >
-                      {el}
-                    </ListItem>
-                  ))}
-                </List>
-              </Grid>
-              <Grid item xs={6} xl={4}>
-                <Typography
-                  variant="h5"
-                  textAlign="center"
-                  sx={{ border: "1px solid black", mt: "-2.7rem" }}
+            <Box sx={{ display: "flex", gap: "0.8rem" }}>
+              {lang.exam.map((ex) => (
+                <Box
+                  key={ex.en}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    backgroundColor: "primary.main",
+                    px: "0.2rem",
+                    py: "0.4rem",
+                    width: "8rem",
+                    borderRadius: "10%",
+                  }}
                 >
-                  प्रशिक्षण वैशिष्ठ
-                </Typography>
-                <List sx={{ listStyleType: "disc" }}>
-                  {[
-                    "प्रशिक्षण कालावधी - १८ महिने",
-                    "निशुल्क प्रशिक्षण, निवास व भोजन व्यवस्था",
-                    "प्रशिक्षण कालावधीमध्ये लॅपटॉप दिले जाईल",
-                    "प्रशिक्षित व तज्ञ प्रशिक्षकांकडून मार्गदर्शन",
-                    "संभाषण कौशल्य व व्यक्तिमत्व विकासावर भर",
-                    "प्रशिक्षण व मुल्यामापनानंतर नामांकित कं पनी / स्टार्ट अप मध्ये रोजगाराची हमी",
-                  ].map((el) => (
-                    <ListItem
-                      key={el}
-                      sx={{
-                        display: "list-item",
-                        py: "0.1rem",
-                        pl: "0.4rem",
-                      }}
-                    >
-                      {el}
-                    </ListItem>
-                  ))}
-                </List>
-              </Grid>
-              <Grid
-                item
-                xs={6}
-                xl={4}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <Typography textAlign="center" variant="h5">
-                  संपर्क
-                </Typography>
-                <Typography
-                  textAlign="center"
-                  variant="body1"
-                  fontWeight="bold"
-                >
-                  जिल्हा कौशल्य विकास , रोजगार व उद्योजकता मार्गदर्शन कें द्र
-                </Typography>
-                <List sx={{ listStyleType: "disc" }}>
-                  {[
-                    "अमरावती: ९४०५१०२६००/०७२१२ ५६६०६६",
-                    "बुलढाणा: ९७५७०८६६०३/०७२६२ २४२३४२",
-                    "अकोला: ८२७५३६९८००/०७२४२ ४३३८४९",
-                    "यवतमाळ: ८३७९८९८७९८/०७२३२ २४४३९५",
-                    "वाशीम: ९०९६८५५७९८/०७२५२ २३१४९४",
-                  ].map((el) => (
-                    <ListItem
-                      key={el}
-                      sx={{
-                        display: "list-item",
-                        py: "0rem",
-                        pl: "0.4rem",
-                        // pl: "3.2rem",
-                      }}
-                    >
-                      {el}
-                    </ListItem>
-                  ))}
-                </List>
-              </Grid>
-              <Grid
-                item
-                xs={6}
-                xl={12}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <Typography
-                  variant="h5"
-                  textAlign="center"
-                  fontWeight="bold"
-                  // sx={{ pt: "0.8rem" }}
-                >
-                  प्रवेश परीक्षा पद्धती
-                </Typography>
-                <Typography
-                  textAlign="center"
-                  variant="body1"
-                  fontWeight="bold"
-                >
-                  (ऑनलाईन व ऑफलाईन)
-                </Typography>
-                <List sx={{ listStyleType: "disc" }}>
-                  {[
-                    "अमरावती: ९४०५१०२६००/०७२१२ ५६६०६६",
-                    "बुलढाणा: ९७५७०८६६०३/०७२६२ २४२३४२",
-                    "अकोला: ८२७५३६९८००/०७२४२ ४३३८४९",
-                    "यवतमाळ: ८३७९८९८७९८/०७२३२ २४४३९५",
-                    "वाशीम: ९०९६८५५७९८/०७२५२ २३१४९४",
-                  ].map((el) => (
-                    <ListItem
-                      key={el}
-                      sx={{
-                        display: "list-item",
-                        py: "0rem",
-                        pl: "0.4rem",
-                      }}
-                    >
-                      {el}
-                    </ListItem>
-                  ))}
-                </List>
-              </Grid>
-            </Grid>
-            {/* <Box
-                sx={{
-                  width: {
-                    sm: "45%",
-                    lg: "30%",
-                  },
-                }}
-              >
-                
-              </Box> */}
+                  <Typography fontWeight="bold">{ex[selectedLang]}</Typography>
+                  <Typography>{ex.date[selectedLang]}</Typography>
+                </Box>
+              ))}
+            </Box>
+            <Box sx={{ mt: "1.2rem" }}>
+              <Typography variant="h6" fontWeight="bold">
+                {lang.eligibilityCriteria[selectedLang]}
+              </Typography>
+              <List sx={{ listStyleType: "disc", ml: "1.4rem", mt: 0 }}>
+                {lang.eligibilityCriteria.criteria.map((el) => (
+                  <ListItem
+                    key={el.en}
+                    sx={{
+                      display: "list-item",
+                      py: "0.1rem",
+                      pl: "0.4rem",
+                    }}
+                  >
+                    {el[selectedLang]}
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+
+            <Box sx={{ mt: "1.2rem" }}>
+              <Typography variant="h6" fontWeight="bold">
+                {lang.trainingFeatures[selectedLang]}
+              </Typography>
+              <List sx={{ listStyleType: "disc", ml: "1.4rem", mt: 0 }}>
+                {lang.trainingFeatures.features.map((el) => (
+                  <ListItem
+                    key={el.en}
+                    sx={{
+                      display: "list-item",
+                      py: "0.1rem",
+                      pl: "0.4rem",
+                    }}
+                  >
+                    {el[selectedLang]}
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+            <Box sx={{ mt: "1.2rem" }} className={classes.goForTestButton}>
+              <a href="#online-form">
+                <Button variant="contained" color="primary">
+                  {lang.goForTest[selectedLang]}
+                </Button>
+              </a>
+            </Box>
+            <Box sx={{ mt: "1.2rem" }}>
+              <Typography variant="h6" fontWeight="bold">
+                {lang.contact[selectedLang]}
+              </Typography>
+              <Typography variant="body1">
+                {lang.contact.center[selectedLang]}
+              </Typography>
+              <List sx={{ listStyleType: "disc", ml: "1.4rem", mt: 0 }}>
+                {lang.contact.locations.map((el) => (
+                  <ListItem
+                    key={el.en}
+                    sx={{
+                      display: "list-item",
+                      py: "0rem",
+                      pl: "0.4rem",
+                      // pl: "3.2rem",
+                    }}
+                  >
+                    {el[selectedLang]}
+                  </ListItem>
+                ))}
+              </List>
+              <Typography variant="body1" fontWeight="bold">
+                {lang.contact.ng[selectedLang]}
+              </Typography>
+              <Typography variant="body1">
+                {lang.contact.ngContact[selectedLang]}
+              </Typography>
+            </Box>
+            <Divider color="gray" sx={{ my: "2rem" }} />
+            <Box sx={{ mt: "1.2rem" }}>
+              <Typography variant="h6" fontWeight="bold">
+                {lang.examMethod[selectedLang]}
+              </Typography>
+              <Typography variant="body1" fontWeight="bold">
+                {lang.examMethod.secondaryText[selectedLang]}
+              </Typography>
+              <List sx={{ listStyleType: "number" }}>
+                {lang.examMethod.steps.map((el) => (
+                  <ListItem
+                    key={el.en}
+                    sx={{
+                      display: "list-item",
+                      py: "0rem",
+                      pl: "0.4rem",
+                      ml: "1.4rem",
+                      mt: 0,
+                    }}
+                  >
+                    {el[selectedLang]}
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
           </Grid>
-          <Grid item container spacing={1} xs={12} sm={6}>
+          <Grid item container spacing={1} xs={10} sm={5}>
             <Grid item xs={12}>
               <Typography
-                variant="h5"
-                textAlign="center"
+                variant="h6"
                 fontWeight="bold"
-                sx={{ pt: "0.8rem" }}
+                sx={{ pt: "1.2rem", mb: "0.4rem" }}
               >
-                ऑनलाईन परीक्षा : १० - २३ जुलै २०२२
+                {lang.videoSLiderText[selectedLang]}
               </Typography>
+              <VideoSlider
+                customLinks={[
+                  {
+                    label: {
+                      hi: "रानी पंडित की कहानी!",
+                      en: "Rani Pandit's Story",
+                      ma: "राणी पंडितची गोष्ट",
+                    },
+                    videoId: "XJ6hcfkSDkw",
+                  },
+                  {
+                    label: {
+                      hi: "नवगुरुकुल क्या है २ मिनट मे समजे!",
+                      en: "2 mins introduction to NavGurukul",
+                      ma: "नवगुरुकुलचा 2 मिनिटे परिचय",
+                    },
+                    videoId: "HjqfZ-Matyk",
+                  },
+                  {
+                    label: {
+                      hi: "नवगुरुकुल परीक्षा को कैसे क्रैक करें",
+                      en: "How to crack NavGurukul Examination",
+                      ma: "नवगुरुकुल परीक्षा कशी क्रॅक करावी",
+                    },
+                    videoId: "ivHrBBRAp9s",
+                  },
+                ]}
+                language={selectedLang}
+              />
             </Grid>
+            <Grid item xs={12}>
+              <Typography
+                variant="h6"
+                fontWeight="bold"
+                sx={{ pt: "1.2rem", mb: "0.4rem" }}
+              >
+                {lang.CarouselText[selectedLang]}
+              </Typography>
+              <Carousel lang={lang} images={akanshaImageList} />
+            </Grid>
+            {/* <Grid
+              item
+              xs={12}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                // alignItems: "center",
+              }}
+            >
+              
+            </Grid> */}
 
-            <Grid item xs={12} className={classes.loginContainer}>
+            <Grid
+              item
+              xs={12}
+              className={classes.loginContainer}
+              component="section"
+              id="online-form"
+            >
               {/* <Paper className={classes.loginContainer}> */}
               <Box>
                 <Typography variant="h5" component="h4">
@@ -604,10 +936,10 @@ const CustomLandingPage = () => {
                   id="filled-full-width"
                   margin="normal"
                   style={{ margin: 8 }}
-                  label="First Name"
+                  label={lang.firstName[selectedLang]}
                   name="firstName"
                   value={firstName}
-                  placeholder="First Name..."
+                  placeholder={`${lang.firstName[selectedLang]}...`}
                   onChange={onChangeEvent}
                   InputLabelProps={{
                     shrink: true,
@@ -620,9 +952,9 @@ const CustomLandingPage = () => {
                   margin="normal"
                   style={{ margin: 8 }}
                   name="middleName"
-                  label="Middle Name"
+                  label={`${lang.firstName[selectedLang]}`}
                   value={middleName}
-                  placeholder="Middle Name..."
+                  placeholder={`${lang.middleName[selectedLang]}...`}
                   onChange={onChangeEvent}
                   InputLabelProps={{
                     shrink: true,
@@ -641,9 +973,9 @@ const CustomLandingPage = () => {
                   margin="normal"
                   name="lastName"
                   style={{ margin: 8 }}
-                  label="Last Name"
+                  label={`${lang.lastName[selectedLang]}...`}
                   value={lastName}
-                  placeholder="Last Name..."
+                  placeholder={`${lang.lastName[selectedLang]}...`}
                   onChange={onChangeEvent}
                   InputLabelProps={{
                     shrink: true,
@@ -660,9 +992,9 @@ const CustomLandingPage = () => {
                   }}
                   type="number"
                   name="mobileNumber"
-                  label="Mobile Number"
+                  label={lang.mobNoField[selectedLang]}
                   value={mobileNumber}
-                  placeholder="Mobile Number..."
+                  placeholder={lang.mobNoField[selectedLang]}
                   onChange={onChangeEvent}
                   InputLabelProps={{
                     shrink: true,
@@ -671,7 +1003,7 @@ const CustomLandingPage = () => {
                 />
               </div>
               <div className={classes.root}>
-                <Button variant="outlined" onClick={giveTest} color="primary">
+                <Button variant="contained" onClick={giveTest} color="primary">
                   {lang.TestButton[selectedLang]}
                 </Button>
               </div>
@@ -700,9 +1032,9 @@ const CustomLandingPage = () => {
                   id="filled-full-width"
                   margin="normal"
                   style={{ margin: 8 }}
-                  label="Mobile Number"
+                  label={lang.mobNoField[selectedLang]}
                   value={state.mobile}
-                  placeholder="Mobile Number..."
+                  placeholder={lang.mobNoField[selectedLang]}
                   onChange={onChangeEventStatus}
                   InputLabelProps={{
                     shrink: true,
@@ -717,7 +1049,7 @@ const CustomLandingPage = () => {
                     state: { mobile },
                   }}
                 >
-                  <Button variant="outlined" color="primary">
+                  <Button variant="contained" color="primary">
                     {lang.StatusButton[selectedLang]}
                   </Button>
                 </Link>

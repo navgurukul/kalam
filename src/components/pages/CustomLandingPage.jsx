@@ -779,7 +779,7 @@ const CustomLandingPage = () => {
               ))}
             </Box>
             <Box sx={{ mt: "1.2rem" }}>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h6" fontWeight={500}>
                 {lang.eligibilityCriteria[selectedLang]}
               </Typography>
               <List sx={{ listStyleType: "disc", ml: "1.4rem", mt: 0 }}>
@@ -792,14 +792,14 @@ const CustomLandingPage = () => {
                       pl: "0.4rem",
                     }}
                   >
-                    {el[selectedLang]}
+                    <Typography variant="body1">{el[selectedLang]}</Typography>
                   </ListItem>
                 ))}
               </List>
             </Box>
 
             <Box sx={{ mt: "1.2rem" }}>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h6" fontWeight={500}>
                 {lang.trainingFeatures[selectedLang]}
               </Typography>
               <List sx={{ listStyleType: "disc", ml: "1.4rem", mt: 0 }}>
@@ -812,7 +812,7 @@ const CustomLandingPage = () => {
                       pl: "0.4rem",
                     }}
                   >
-                    {el[selectedLang]}
+                    <Typography variant="body1">{el[selectedLang]}</Typography>
                   </ListItem>
                 ))}
               </List>
@@ -825,7 +825,7 @@ const CustomLandingPage = () => {
               </a>
             </Box>
             <Box sx={{ mt: "1.2rem" }}>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h6" fontWeight={500}>
                 {lang.contact[selectedLang]}
               </Typography>
               <Typography variant="body1">
@@ -842,11 +842,11 @@ const CustomLandingPage = () => {
                       // pl: "3.2rem",
                     }}
                   >
-                    {el[selectedLang]}
+                    <Typography variant="body1">{el[selectedLang]}</Typography>
                   </ListItem>
                 ))}
               </List>
-              <Typography variant="body1" fontWeight="bold">
+              <Typography variant="body1" fontWeight={500}>
                 {lang.contact.ng[selectedLang]}
               </Typography>
               <Typography variant="body1">
@@ -855,10 +855,10 @@ const CustomLandingPage = () => {
             </Box>
             <Divider color="gray" sx={{ my: "2rem" }} />
             <Box sx={{ mt: "1.2rem" }}>
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h6" fontWeight={500}>
                 {lang.examMethod[selectedLang]}
               </Typography>
-              <Typography variant="body1" fontWeight="bold">
+              <Typography variant="body1" fontWeight={500}>
                 {lang.examMethod.secondaryText[selectedLang]}
               </Typography>
               <List sx={{ listStyleType: "number" }}>
@@ -873,17 +873,17 @@ const CustomLandingPage = () => {
                       mt: 0,
                     }}
                   >
-                    {el[selectedLang]}
+                    <Typography variant="body1">{el[selectedLang]}</Typography>
                   </ListItem>
                 ))}
               </List>
             </Box>
           </Grid>
-          <Grid item container spacing={1} xs={10} sm={5}>
+          <Grid item xs={10} sm={5}>
             <Grid item xs={12}>
               <Typography
                 variant="h6"
-                fontWeight="bold"
+                fontWeight={500}
                 sx={{ pt: "1.2rem", mb: "0.4rem" }}
               >
                 {lang.videoSLiderText[selectedLang]}
@@ -921,170 +921,168 @@ const CustomLandingPage = () => {
             <Grid item xs={12}>
               <Typography
                 variant="h6"
-                fontWeight="bold"
+                fontWeight={500}
                 sx={{ pt: "1.2rem", mb: "0.4rem" }}
               >
                 {lang.CarouselText[selectedLang]}
               </Typography>
               <Carousel lang={lang} images={akanshaImageList} />
             </Grid>
-            {/* <Grid
-              item
-              xs={12}
+          </Grid>
+        </Grid>
+        <Grid container spacing={2} sx={{ mt: "1.2rem" }}>
+          <Grid
+            item
+            xs={12}
+            md={12}
+            className={classes.loginContainer}
+            component="section"
+            id="online-form"
+          >
+            {/* <Paper className={classes.loginContainer}> */}
+            <Box>
+              <Typography variant="h5" component="h4">
+                {lang.AdmisssionTitle[selectedLang]}
+              </Typography>
+            </Box>
+            <Box style={{ height: theme.spacing(2) }} />
+            <Box
               sx={{
+                width: "100%",
                 display: "flex",
-                flexDirection: "column",
-                // alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              
-            </Grid> */}
+              <TextField
+                required
+                id="filled-full-width"
+                margin="normal"
+                style={{ margin: 8 }}
+                label={lang.firstName[selectedLang]}
+                name="firstName"
+                value={firstName}
+                placeholder={`${lang.firstName[selectedLang]}...`}
+                onChange={onChangeEvent}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+              />
 
-            <Grid
-              item
-              xs={12}
-              className={classes.loginContainer}
-              component="section"
-              id="online-form"
+              <TextField
+                id="filled-full-width"
+                margin="normal"
+                style={{ margin: 8 }}
+                name="middleName"
+                label={`${lang.firstName[selectedLang]}`}
+                value={middleName}
+                placeholder={`${lang.middleName[selectedLang]}...`}
+                onChange={onChangeEvent}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+              />
+            </Box>
+            <div
+              style={{
+                display: "flex",
+              }}
             >
-              {/* <Paper className={classes.loginContainer}> */}
-              <Box>
-                <Typography variant="h5" component="h4">
-                  {lang.AdmisssionTitle[selectedLang]}
-                </Typography>
-              </Box>
-              <Box style={{ height: theme.spacing(2) }} />
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
+              <TextField
+                required
+                id="filled-full-width"
+                margin="normal"
+                name="lastName"
+                style={{ margin: 8 }}
+                label={`${lang.lastName[selectedLang]}...`}
+                value={lastName}
+                placeholder={`${lang.lastName[selectedLang]}...`}
+                onChange={onChangeEvent}
+                InputLabelProps={{
+                  shrink: true,
                 }}
-              >
-                <TextField
-                  required
-                  id="filled-full-width"
-                  margin="normal"
-                  style={{ margin: 8 }}
-                  label={lang.firstName[selectedLang]}
-                  name="firstName"
-                  value={firstName}
-                  placeholder={`${lang.firstName[selectedLang]}...`}
-                  onChange={onChangeEvent}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                />
+                variant="outlined"
+              />
 
-                <TextField
-                  id="filled-full-width"
-                  margin="normal"
-                  style={{ margin: 8 }}
-                  name="middleName"
-                  label={`${lang.firstName[selectedLang]}`}
-                  value={middleName}
-                  placeholder={`${lang.middleName[selectedLang]}...`}
-                  onChange={onChangeEvent}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                />
-              </Box>
-              <div
+              <TextField
+                required
+                id="filled-full-width"
+                margin="normal"
                 style={{
-                  display: "flex",
+                  margin: 8,
+                }}
+                type="number"
+                name="mobileNumber"
+                label={lang.mobNoField[selectedLang]}
+                value={mobileNumber}
+                placeholder={lang.mobNoField[selectedLang]}
+                onChange={onChangeEvent}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+              />
+            </div>
+            <div className={classes.root}>
+              <Button variant="contained" onClick={giveTest} color="primary">
+                {lang.TestButton[selectedLang]}
+              </Button>
+            </div>
+          </Grid>
+          <Box style={{ height: theme.spacing(6) }} />
+          <Grid
+            item
+            xs={12}
+            md={12}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Box
+              display="flex"
+              alignItems="center"
+              flexDirection="column"
+              px={4}
+              sx={{ textAlign: "center", mb: "0.8rem" }}
+            >
+              <Typography
+                className={classes.typography}
+                variant="h5"
+                component="h3"
+              >
+                {lang.Status[selectedLang]}
+              </Typography>
+            </Box>
+            <Box>
+              <TextField
+                id="filled-full-width"
+                margin="normal"
+                style={{ margin: 8 }}
+                label={lang.mobNoField[selectedLang]}
+                value={state.mobile}
+                placeholder={lang.mobNoField[selectedLang]}
+                onChange={onChangeEventStatus}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+              />
+            </Box>
+            <div className={classes.root} style={{ marginBottom: "1.2rem" }}>
+              <Link
+                to={{
+                  pathname: `/status/${mobile}`,
+                  state: { mobile },
                 }}
               >
-                <TextField
-                  required
-                  id="filled-full-width"
-                  margin="normal"
-                  name="lastName"
-                  style={{ margin: 8 }}
-                  label={`${lang.lastName[selectedLang]}...`}
-                  value={lastName}
-                  placeholder={`${lang.lastName[selectedLang]}...`}
-                  onChange={onChangeEvent}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                />
-
-                <TextField
-                  required
-                  id="filled-full-width"
-                  margin="normal"
-                  style={{
-                    margin: 8,
-                  }}
-                  type="number"
-                  name="mobileNumber"
-                  label={lang.mobNoField[selectedLang]}
-                  value={mobileNumber}
-                  placeholder={lang.mobNoField[selectedLang]}
-                  onChange={onChangeEvent}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                />
-              </div>
-              <div className={classes.root}>
-                <Button variant="contained" onClick={giveTest} color="primary">
-                  {lang.TestButton[selectedLang]}
+                <Button variant="contained" color="primary">
+                  {lang.StatusButton[selectedLang]}
                 </Button>
-              </div>
-            </Grid>
-            <Box style={{ height: theme.spacing(6) }} />
-            <Grid item>
-              <Box
-                display="flex"
-                alignItems="center"
-                flexDirection="column"
-                px={4}
-                style={{ textAlign: "center" }}
-              >
-                <Typography
-                  className={classes.typography}
-                  variant="h5"
-                  component="h3"
-                >
-                  {lang.Status[selectedLang]}
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item className={classes.loginContainer}>
-              <Box>
-                <TextField
-                  id="filled-full-width"
-                  margin="normal"
-                  style={{ margin: 8 }}
-                  label={lang.mobNoField[selectedLang]}
-                  value={state.mobile}
-                  placeholder={lang.mobNoField[selectedLang]}
-                  onChange={onChangeEventStatus}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                />
-              </Box>
-              <div className={classes.root}>
-                <Link
-                  to={{
-                    pathname: `/status/${mobile}`,
-                    state: { mobile },
-                  }}
-                >
-                  <Button variant="contained" color="primary">
-                    {lang.StatusButton[selectedLang]}
-                  </Button>
-                </Link>
-              </div>
-            </Grid>
+              </Link>
+            </div>
           </Grid>
         </Grid>
       </ThemeProvider>

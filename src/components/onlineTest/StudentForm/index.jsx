@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import { baseUrl } from "../../../utils/constants";
+import { baseUrl, customPartner } from "../../../utils/constants";
 import Loader from "../../ui/Loader";
 
 const BasicDetails = React.lazy(() => import("./BasicDetails"));
@@ -162,8 +162,6 @@ const StudentForm = () => {
     "others",
   ];
 
-  const customPartner = ["amravati", "breakthrough"];
-
   const CurrentStatusOptions = ["", "nothing", "job", "study", "other"];
   const schoolMediumOptions = ["", "en", "other"];
 
@@ -307,7 +305,11 @@ const StudentForm = () => {
         .post(`${baseUrl}on_assessment/details/${enrollmentKey}`, data)
         .then((res) => {
           navigate(`/test/finalinstruction/`, {
-            state: { enrollmentKey, studentId: res.data.details.id },
+            state: {
+              enrollmentKey,
+              partnerSlug: partner?.slug,
+              studentId: res.data.details.id,
+            },
           });
 
           //console.log("res", res);

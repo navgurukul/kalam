@@ -13,7 +13,7 @@ import {
   Select,
 } from "@mui/material";
 import { Controller } from "react-hook-form";
-import { states } from "../../../../utils/constants";
+import { states, customPartner } from "../../../../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -227,8 +227,6 @@ function OtherDetails(props) {
     partnerSlug,
   } = props;
   const { lang } = props;
-
-  const customPartner = ["amravati", "breakthrough"];
 
   const [districts, setDistricts] = useState([]);
   async function getCityFromState(_state) {

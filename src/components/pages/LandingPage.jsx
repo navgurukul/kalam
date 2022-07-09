@@ -17,6 +17,7 @@ import { changeFetching } from "../../store/slices/uiSlice";
 import VideoSlider from "../ui/VideoSlider";
 import theme from "../../theme";
 import { decryptText } from "../../utils";
+import { customPartner } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -116,7 +117,7 @@ const LandingPage = () => {
     enrollmentKey: "",
   });
   const [goToTest, setGoToTest] = React.useState(false);
-  const testClosed = ["amravati"];
+  const testClosed = customPartner;
   const lang = {
     Heading: {
       en: "Software Engineering Scholarship",

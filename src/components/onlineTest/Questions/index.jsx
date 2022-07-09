@@ -16,6 +16,7 @@ import Timer from "./Timer";
 import ThankYouPage from "../ThankYouPage";
 import SorryPage from "../SorryPage";
 import { decryptText, encryptText } from "../../../utils";
+import { customPartner } from "../../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const tutorialSteps = {
@@ -81,7 +82,7 @@ function Questions() {
   const Time = parseInt(decryptText(localStorage.getItem("time")), 10);
   const time = new Date(JSON.parse(Time));
   const location = useLocation();
-  const { questionsList } = location.state;
+  const { questionsList, partnerSlug } = location.state;
   const [answerList, setAnswerList] = useState({});
   const [result, setResult] = useState({
     success: false,
@@ -183,8 +184,11 @@ function Questions() {
 
   if (index !== null) {
     //console.log("questionsList inside the condition", questionsList);
-    const enText = DOMPurify.sanitize(questionsList[index].en_text);
-    const hiText = DOMPurify.sanitize(questionsList[index].hi_text);
+    const text = {
+      en: DOMPurify.sanitize(questionsList[index].en_text),
+      hi: DOMPurify.sanitize(questionsList[index].hi_text),
+      ma: DOMPurify.sanitize(questionsList[index].ma_text),
+    };
     const commonText = DOMPurify.sanitize(questionsList[index].common_text);
     const questionID = questionsList[index].id;
 
@@ -192,7 +196,12 @@ function Questions() {
       result.success ? (
         <ThankYouPage total_marks={result.total_marks} userID={studentId} />
       ) : (
-        <SorryPage total_marks={result.total_marks} />
+        <SorryPage
+          redirect={
+            customPartner.includes(partnerSlug) ? `/${partnerSlug}` : "/"
+          }
+          total_marks={result.total_marks}
+        />
       )
     ) : (
       <Container maxWidth="lg" align="center">
@@ -206,7 +215,11 @@ function Questions() {
               {tutorialSteps.content3[lang]}
             </Typography>
             <Typography variant="subtitle1">
-              <Timer callback={submitHandler} expiryTimestamp={time} />
+              <Timer
+                callback={submitHandler}
+                lang={lang}
+                expiryTimestamp={time}
+              />
             </Typography>
 
             {/* <Typography variant="subtitle1">
@@ -218,7 +231,7 @@ function Questions() {
             <Typography variant="subtitle1">
               <div
                 dangerouslySetInnerHTML={{
-                  __html: lang === "en" ? enText : hiText,
+                  __html: text[lang] !== "" ? text[lang] : text.hi,
                 }}
               />
             </Typography>

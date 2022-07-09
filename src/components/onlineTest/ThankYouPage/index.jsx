@@ -62,9 +62,24 @@ const tutorialSteps = {
     hi: " पर मेल भेज सकते हैं।",
     ma: " वर मेल पाठवू शकता.",
   },
+  bookSlot: {
+    en: "Book Slot",
+    hi: "स्लॉट बुक करें",
+    ma: "स्लॉट बुक करा",
+  },
+  visitNGSite: {
+    en: "Visit NavGurukul Website",
+    hi: "नवगुरुकुल वेबसाइट पर जाएँ",
+    ma: "नवगुरुकुल वेबसाइटला भेट द्या",
+  },
+  startLearning: {
+    en: "Start Learning Coding Now",
+    hi: "अभी कोडिंग सीखना शुरू करें",
+    ma: "आता कोडिंग शिकणे सुरू करा",
+  },
 };
 
-function ThankYouPage(props) {
+function ThankYouPage({ userID }) {
   const classes = useStyles();
   const navigate = useNavigate();
   const { lang } = useSelector((state) => state.ui);
@@ -109,11 +124,10 @@ function ThankYouPage(props) {
             localStorage.removeItem("enrollmentKey");
             localStorage.removeItem("index");
             localStorage.removeItem("time");
-            const { userID } = props;
             navigate(`/bookSlot/${userID}`);
           }}
         >
-          Book Slot
+          {tutorialSteps.bookSlot[lang]}
         </Button>
         <Button
           type="submit"
@@ -128,7 +142,7 @@ function ThankYouPage(props) {
             target="_blank"
             rel="noreferrer noopener"
           >
-            Visit NavGurukul Website
+            {tutorialSteps.visitNGSite[lang]}
           </a>
         </Button>
         <Button
@@ -144,7 +158,7 @@ function ThankYouPage(props) {
             target="_blank"
             rel="noreferrer noopener"
           >
-            Start Learning Coding Now
+            {tutorialSteps.startLearning[lang]}
           </a>
         </Button>
       </div>

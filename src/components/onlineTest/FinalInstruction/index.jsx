@@ -80,7 +80,7 @@ function FinalInstruction() {
   const location = useLocation();
   const { lang } = useSelector((state) => state.ui);
 
-  const { enrollmentKey, studentId } = location.state;
+  const { enrollmentKey, studentId, partnerSlug } = location.state;
 
   // //1. Where we'll get time 00:00:00
   // const time = useRef(new Date().setSeconds(new Date().getSeconds() + 5400));
@@ -112,7 +112,7 @@ function FinalInstruction() {
           // questions: res.data.data,
           // time: time.current, // 2nd point
           // time: TIME,   // 1st point and 3rd point
-          state: { answerList, questionsList: res.data.data },
+          state: { answerList, questionsList: res.data.data, partnerSlug },
           // correctAnswerObj: correctAnswerObj,
         });
       })

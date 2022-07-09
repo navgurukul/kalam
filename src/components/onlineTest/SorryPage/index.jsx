@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
-function SorryPage() {
+function SorryPage({ redirect }) {
   const navigate = useNavigate();
   const classes = useStyles();
   const [totalMarks, setTotalMarks] = useState("");
@@ -136,7 +136,7 @@ function SorryPage() {
               localStorage.removeItem("enrollmentKey");
               localStorage.removeItem("index");
               localStorage.removeItem("time");
-              navigate("/");
+              navigate(redirect);
             }}
           >
             Ok

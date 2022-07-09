@@ -87,8 +87,8 @@ const useStyles = makeStyles(() => ({
   },
   logo: {
     [theme.breakpoints.up("xs")]: {
-      width: "60px",
-      height: "60px",
+      width: "35px",
+      height: "35px",
     },
     [theme.breakpoints.up("lg")]: {
       width: "80px",
@@ -284,7 +284,7 @@ const CustomLandingPage = () => {
     trainingFeatures: {
       en: "Training Features",
       hi: "प्रशिक्षण सुविधाएँ",
-      ma: "प्रशिक्षण सुविधाएँ",
+      ma: "प्रशिक्षण वैशिष्ठे",
       features: [
         {
           en: "Duration of training: 18 months",

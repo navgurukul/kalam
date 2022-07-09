@@ -19,9 +19,24 @@ import { decryptText, encryptText } from "../../../utils";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const tutorialSteps = {
-  content1: "Yeh Question no. ",
-  content2: "(out of 18 questions) Aapne  ",
-  content3: "questions already attempt kar liye hai!",
+  content1: {
+    old: "Yeh Question no. ",
+    en: "Current Question No. ",
+    hi: "सध्याचा प्रश्न क्र. ",
+    ma: "वर्तमान प्रश्न no. ",
+  },
+  content2: {
+    old: "(out of 18 questions) Aapne  ",
+    en: "(out of 18 questions) You have attempted ",
+    hi: "(18 प्रश्नों में से) आपने अब तक ",
+    ma: "(18 प्रश्नांपैकी) तुम्ही आतापर्यंत ",
+  },
+  content3: {
+    old: "questions already attempt kar liye hai!",
+    en: " so far.",
+    hi: " प्रश्नों का प्रयास किया है।",
+    ma: " प्रश्नांचा प्रयत्न केला आहे.",
+  },
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -185,9 +200,10 @@ function Questions() {
           <Paper square elevation={0} className={classes.content}>
             <Typography variant="subtitle1">
               <b>
-                {tutorialSteps.content1} {index + 1}
+                {tutorialSteps.content1[lang]} {index + 1}
               </b>{" "}
-              {tutorialSteps.content2} <b>{index}</b> {tutorialSteps.content3}
+              {tutorialSteps.content2[lang]} <b>{index}</b>{" "}
+              {tutorialSteps.content3[lang]}
             </Typography>
             <Typography variant="subtitle1">
               <Timer callback={submitHandler} expiryTimestamp={time} />

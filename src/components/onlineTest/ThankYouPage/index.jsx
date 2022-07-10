@@ -100,7 +100,7 @@ function ThankYouPage({ userID }) {
       <div className={classes.root} align="center">
         <Typography variant="h4" className={classes.thanks}>
           {tutorialSteps.heading1[lang]}
-          {totalMarks}
+          <b>{totalMarks}</b>
           {tutorialSteps.heading2[lang]}
         </Typography>
         <Typography>{tutorialSteps.content1[lang]}</Typography>

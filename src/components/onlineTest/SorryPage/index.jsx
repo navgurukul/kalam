@@ -100,7 +100,7 @@ function SorryPage({ redirect }) {
         <Paper square elevation={0} className={classes.content}>
           <Typography>
             {tutorialSteps.content1[lang]}
-            {totalMarks}
+            <b>{totalMarks}</b>
             {tutorialSteps.content2[lang]}
           </Typography>
         </Paper>

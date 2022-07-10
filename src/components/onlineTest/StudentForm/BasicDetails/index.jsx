@@ -44,12 +44,136 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const langOptions = {
+  ProfileImage: {
+    en: "Profile Image*",
+    hi: "Profile Image*",
+    ma: "Profile Image*",
+    error: {
+      en: "Required Field",
+      hi: "आवश्यक क्षेत्र",
+      ma: "आवश्यक फील्ड",
+    },
+  },
+  FirstName: {
+    en: "First Name",
+    hi: "प्रथम नाम",
+    ma: "पहिले नाव",
+    error: {
+      en: "Enter First Name",
+      hi: "प्रथम नाम दर्ज करें",
+      ma: "प्रथम नाव प्रविष्ट करा",
+    },
+  },
+  MiddleName: {
+    en: "Middle Name",
+    hi: "मध्यनाम",
+    ma: "मधले नाव",
+    error: {
+      en: "Enter Middle Name",
+      hi: "मध्यनाम नाम दर्ज करें",
+      ma: "मधले नाव प्रविष्ट करा",
+    },
+  },
+  LastName: {
+    en: "Last Name",
+    hi: "कुलनाम",
+    ma: "आडनाव",
+    error: {
+      en: "Enter Last Name",
+      hi: "कुलनाम नाम दर्ज करें",
+      ma: "आडनाव प्रविष्ट करा",
+    },
+  },
+  dob: {
+    en: "Date of Birth",
+    hi: "जन्मदिन",
+    ma: "जन्मदिवस",
+    error: {
+      en: "Enter Date of Birth",
+      hi: "जन्मदिन दर्ज करें",
+      ma: "जन्मदिवस टाका",
+      validate: {
+        en: "Age must be between 16 & 27",
+        hi: "उम्र 16 से 27 के बीच होनी चाहिए",
+        ma: "वय 16 आणि 27 च्या दरम्यान असावे",
+      },
+    },
+  },
+  whatsapp: {
+    en: "Your Whatsapp Number",
+    hi: "आपका व्हाट्सएप नंबर",
+    ma: "तुमचा Whatsapp नंबर",
+    error: {
+      en: "Enter Whatsapp Number",
+      hi: "व्हाट्सएप नंबर दर्ज करें",
+      ma: "Whatsapp नंबर टाका",
+      pattern: {
+        en: "No. should be of 10 digits",
+        hi: "नंबर 10 अंकों का होना चाहिए",
+        ma: "क्रमांक 10 अंकांचा असावा",
+      },
+    },
+  },
+  AlternateNumber: {
+    en: "Alternate Number",
+    hi: "वैकल्पिक नंबर",
+    ma: "पर्यायी क्रमांक",
+    error: {
+      en: "Enter Alternate Number",
+      hi: "वैकल्पिक नंबर दर्ज करें",
+      ma: "पर्यायी क्रमांक प्रविष्ट करा",
+      pattern: {
+        en: "No. should be of 10 digits",
+        hi: "नंबर 10 अंकों का होना चाहिए",
+        ma: "क्रमांक 10 अंकांचा असावा",
+      },
+    },
+  },
+  email: {
+    en: "Email",
+    hi: "ईमेल",
+    ma: "ईमेल",
+    error: {
+      en: "Enter Email",
+      hi: "ईमेल दर्ज करें",
+      ma: "ईमेल प्रविष्ट करा",
+      pattern: {
+        en: "Enter Valid Email",
+        hi: "मान्य ईमेल नंबर दर्ज करें",
+        ma: "वैध ईमेल प्रविष्ट करा",
+      },
+    },
+  },
+  gender: {
+    en: "Select Gender",
+    hi: "लिंग चुनें",
+    ma: "लिंग निवडा",
+    options: [
+      {
+        key: "select gender",
+        en: "Select Gender",
+        hi: "लिंग चुनें",
+        ma: "लिंग निवडा",
+      },
+      { key: "female", en: "Female", hi: "महिला", ma: "स्त्री" },
+      // {key:"male", en: "Male", hi: "पुरुष", ma: "पुरुष" },
+      // {key:"other", en: "Other", hi: "अन्य", ma: "इतर" },
+      { key: "trans", en: "Transwomen", hi: "ट्रांसवुमेन", ma: "ट्रांसवुमेन" },
+    ],
+    error: {
+      en: "Please specify your gender",
+      hi: "अपना लिंग निर्दिष्ट करें",
+      ma: "कृपया तुमचे लिंग निर्दिष्ट करा",
+    },
+  },
+};
+
 const BasicDetails = ({
   lang,
   formData,
   setProfileImage,
   inputDisabled,
-  pfpCompulsion,
   reactForm: { errors, control },
 }) => {
   const classes = useStyles();
@@ -65,6 +189,7 @@ const BasicDetails = ({
   };
   return (
     <Container maxWidth="lg" align="center">
+      {/* {pfpCompulsion ?  */}
       <label
         style={{
           cursor: inputDisabled ? "default" : "pointer",
@@ -90,7 +215,7 @@ const BasicDetails = ({
           />
         </Badge>
         <Typography variant="h6" className={classes.text}>
-          Profile Image{pfpCompulsion ? "*" : ""}
+          {langOptions.ProfileImage[lang]}
         </Typography>
         {errors.ProfileImage ? (
           <Typography
@@ -98,13 +223,13 @@ const BasicDetails = ({
             variant="caption"
             color="error"
           >
-            {lang === "en" ? "Required Field" : "आवश्यक क्षेत्र"}
+            {langOptions.ProfileImage.error[lang]}
           </Typography>
         ) : (
           ""
         )}
       </label>
-
+      {/* : null} */}
       <input
         onChange={(e) => uploadProfilePhoto(e)}
         id="ProfileImage"
@@ -131,17 +256,15 @@ const BasicDetails = ({
                 inputRef={ref}
                 onBlur={rest.onBlur}
                 className={classes.spacing}
-                label={lang === "en" ? "First Name" : "प्रथम नाम"}
-                placeholder={lang === "en" ? "First Name" : "प्रथम नाम"}
+                label={langOptions.FirstName[lang]}
+                placeholder={langOptions.FirstName[lang]}
                 // name="FirstName"
                 autoComplete="off"
                 type="text"
                 error={!!errors.FirstName}
                 helperText={
                   errors.FirstName
-                    ? lang === "en"
-                      ? "Enter First Name"
-                      : "प्रथम नाम दर्ज करें"
+                    ? langOptions.FirstName.error[lang]
                     : "Ex. XYZ"
                 }
                 disabled={inputDisabled && formData.FirstName !== null}
@@ -161,16 +284,14 @@ const BasicDetails = ({
                 id="MiddleName"
                 inputRef={ref}
                 className={classes.spacing}
-                label={lang === "en" ? "Middle Name " : "मध्यनाम"}
-                placeholder={lang === "en" ? "Middle Name " : "मध्यनाम"}
+                label={langOptions.MiddleName[lang]}
+                placeholder={langOptions.MiddleName[lang]}
                 autoComplete="off"
                 error={!!errors.MiddleName}
                 type="text"
                 helperText={
                   errors.MiddleName
-                    ? lang === "en"
-                      ? "Enter Middle Name"
-                      : "मध्यनाम दर्ज करें"
+                    ? langOptions.MiddleName.error[lang]
                     : "Ex. PQR"
                 }
                 disabled={inputDisabled && formData.MiddleName !== null}
@@ -218,8 +339,8 @@ const BasicDetails = ({
             rules={{
               required: true,
               validate: (dob) =>
-                parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 16 &&
-                parseInt(dayjs().diff(dayjs(dob), "year"), 10) <= 27,
+                parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 17 &&
+                parseInt(dayjs().diff(dayjs(dob), "year"), 10) <= 28,
             }}
             render={({
               field: { ref, ...rest },
@@ -231,7 +352,7 @@ const BasicDetails = ({
                   disabled={inputDisabled && formData.dob !== null}
                   // margin="normal"
                   id="dob"
-                  label={lang === "en" ? "Date of Birth" : "आपका जन्मदिन"}
+                  label={langOptions.dob[lang]}
                   required
                   inputRef={ref}
                   focused={isTouched}
@@ -244,18 +365,14 @@ const BasicDetails = ({
                       helperText={
                         errors.dob
                           ? errors.dob.type === "validate"
-                            ? lang === "en"
-                              ? "Age must be between 16 & 27"
-                              : "आयु 16 या अधिक होनी चाहिए"
-                            : lang === "en"
-                            ? "Enter Date of Birth"
-                            : "जन्मदिन दर्ज करें"
-                          : "Ex. 19/11/2005"
+                            ? langOptions.dob.error.validate[lang]
+                            : langOptions.dob.error[lang]
+                          : "Ex. 19/11/2003"
                       }
                     />
                   )}
                   fullWidth
-                  placeholder={lang === "en" ? "Date of Birth" : "आपका जन्मदिन"}
+                  placeholder={langOptions.dob[lang]}
                   error={!!errors.dob}
                   {...rest}
                 />
@@ -285,12 +402,8 @@ const BasicDetails = ({
                   if (e.key === "e" || e.key === "+" || e.key === "-")
                     e.preventDefault();
                 }}
-                label={
-                  lang === "en" ? "Your Whatsapp Number" : "आपका व्हाट्सएप नंबर"
-                }
-                placeholder={
-                  lang === "en" ? "Your Whatsapp Number" : "आपका व्हाट्सएप नंबर"
-                }
+                label={langOptions.whatsapp[lang]}
+                placeholder={langOptions.whatsapp[lang]}
                 type="number"
                 autoComplete="off"
                 error={!!errors.whatsapp}
@@ -298,12 +411,8 @@ const BasicDetails = ({
                   errors.whatsapp
                     ? errors.whatsapp.type === "pattern" ||
                       errors.whatsapp.type === "maxLength"
-                      ? lang === "en"
-                        ? "No. should be of 10 digits"
-                        : "नंबर 10 अंकों का होना चाहिए"
-                      : lang === "en"
-                      ? "Enter Whatsapp Number"
-                      : "व्हाट्सएप नंबर दर्ज करें"
+                      ? langOptions.whatsapp.error.pattern[lang]
+                      : langOptions.whatsapp.error[lang]
                     : "Ex. 99065xxxxx"
                 }
                 disabled={inputDisabled}
@@ -333,22 +442,16 @@ const BasicDetails = ({
                 type="tel"
                 inputRef={ref}
                 className={classes.spacing}
-                label={lang === "en" ? "Alternate Number" : "वैकल्पिक नंबर"}
-                placeholder={
-                  lang === "en" ? "Alternate Number" : "वैकल्पिक नंबर"
-                }
+                label={langOptions.AlternateNumber[lang]}
+                placeholder={langOptions.AlternateNumber[lang]}
                 autoComplete="off"
                 error={!!errors.AlternateNumber}
                 helperText={
                   errors.AlternateNumber
                     ? errors.AlternateNumber.type === "pattern" ||
                       errors.AlternateNumber.type === "maxLength"
-                      ? lang === "en"
-                        ? "No. should be of 10 digits"
-                        : "नंबर 10 अंकों का होना चाहिए"
-                      : lang === "en"
-                      ? "Enter Alternate Number"
-                      : "वैकल्पिक नंबर दर्ज करें"
+                      ? langOptions.AlternateNumber.error.pattern[lang]
+                      : langOptions.AlternateNumber.error[lang]
                     : "Ex. 99065xxxxx"
                 }
                 disabled={inputDisabled}
@@ -374,18 +477,14 @@ const BasicDetails = ({
                 type="email"
                 required
                 className={classes.spacing}
-                label={lang === "en" ? "Email" : "ईमेल"}
-                placeholder={lang === "en" ? "Email" : "ईमेल"}
+                label={langOptions.email[lang]}
+                placeholder={langOptions.email[lang]}
                 error={!!errors.email}
                 helperText={
                   errors.email
                     ? errors.email.type === "pattern"
-                      ? lang === "en"
-                        ? "Enter Valid Email"
-                        : "मान्य ईमेल नंबर दर्ज करें"
-                      : lang === "en"
-                      ? "Enter Email"
-                      : "ईमेल दर्ज करें"
+                      ? langOptions.email.error.pattern[lang]
+                      : langOptions.email.error[lang]
                     : "Ex. xyz@mail.com"
                 }
                 autoComplete="off"
@@ -403,8 +502,13 @@ const BasicDetails = ({
               required: true,
               validate: (gender) => {
                 if (gender === "select gender") return false;
-                if (gender === "female" || gender === "other") return true;
-                enqueueSnackbar("Curently, Males cannot appear for the Test", {
+                if (
+                  gender === "female" ||
+                  gender === "other" ||
+                  gender === "trans"
+                )
+                  return true;
+                enqueueSnackbar("Currently, Males cannot appear for the Test", {
                   variant: "info",
                 });
                 return false;
@@ -420,30 +524,25 @@ const BasicDetails = ({
                 fullWidth
               >
                 <InputLabel id="gender-label">
-                  {lang === "en" ? "Select Gender" : "लिंग चुनें"}
+                  {langOptions.gender[lang]}
                 </InputLabel>
                 <Select
-                  label={lang === "en" ? "Select Gender" : "लिंग चुनें"}
+                  label={langOptions.gender[lang]}
+                  placeholder={langOptions.gender[lang]}
                   error={!!errors.gender}
                   id="gender"
                   inputRef={ref}
-                  placeholder={lang === "en" ? "Select Gender" : "लिंग चुनें"}
                   required
                   disabled={inputDisabled && formData.gender !== null}
                   {...rest}
                 >
-                  {[
-                    ["Select Gender", "लिंग चुनें"],
-                    ["Female", "महिला"],
-                    ["Male", "पुरुष"],
-                    ["Other", "अन्य"],
-                  ].map((el) => (
+                  {langOptions.gender.options.map((el) => (
                     <MenuItem
-                      key={el[0]}
-                      value={el[0].toLowerCase()}
-                      disabled={el[0] === "Select Gender"}
+                      key={el.key}
+                      value={el.key}
+                      disabled={el.en === "Select Gender"}
                     >
-                      {lang === "en" ? el[0] : el[1]}
+                      {el[lang]}
                     </MenuItem>
                   ))}
                 </Select>
@@ -460,9 +559,7 @@ const BasicDetails = ({
               variant="caption"
               color="error"
             >
-              {lang === "en"
-                ? "Please specify your gender"
-                : "अपना लिंग निर्दिष्ट करें"}
+              {langOptions.gender.error[lang]}
             </Typography>
           ) : (
             ""

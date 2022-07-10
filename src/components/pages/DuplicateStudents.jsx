@@ -4,11 +4,16 @@ import Button from "@mui/material/Button";
 import MUIDataTable from "mui-datatables";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { changeFetching } from "../../store/slices/uiSlice";
 import SlotBooking from "./SlotBooking";
 import { allStages } from "../../utils/constants";
+import {
+  setEnrollmentKey,
+  setStudentData,
+  setStudentId,
+} from "../../store/slices/onlineTestSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -33,11 +38,11 @@ const DuplicateStudents = () => {
   // const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const location = useLocation();
   const { name, number } = useParams();
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
+  const { lang } = useSelector((state) => state.ui);
   const [state, setState] = React.useState({
     partnerId: "",
     data: [],
@@ -50,8 +55,6 @@ const DuplicateStudents = () => {
   const generateTestLink = async (studentId) => {
     try {
       const partnerId = state.partnerId ? state.partnerId : null;
-      // const details = window.location.href.split("Name=")[1];
-      // const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
       const mobile = `0${number}`;
       fetchingStart();
       const dataURL = `${baseUrl}helpline/register_exotel_call`;
@@ -93,16 +96,26 @@ const DuplicateStudents = () => {
               onClick={async () => {
                 const response = await generateTestLink(value);
                 const [firstName, middleName, lastName] = name.split("_");
-                navigate(`/test/instructions`, {
-                  state: {
-                    enrollmentKey: response.data.key,
-                    studentId: value,
-                    number,
+                dispatch(
+                  setStudentData({
                     firstName,
                     middleName,
                     lastName,
                     mobileNumber: number,
-                  },
+                  })
+                );
+                dispatch(setEnrollmentKey(response.data.key));
+                dispatch(setStudentId(value));
+                navigate(`/test/instructions`, {
+                  // state: {
+                  //   enrollmentKey: response.data.key,
+                  //   studentId: value,
+                  //   number,
+                  //   firstName,
+                  //   middleName,
+                  //   lastName,
+                  //   mobileNumber: number,
+                  // },
                 });
                 fetchingFinish();
               }}
@@ -238,8 +251,7 @@ const DuplicateStudents = () => {
   }, []);
 
   const { data } = state;
-  const selectedLang =
-    location.state === null ? "en" : location.state.selectedLang;
+  const selectedLang = lang;
   let firstName;
   let middleName = "";
   let lastName;

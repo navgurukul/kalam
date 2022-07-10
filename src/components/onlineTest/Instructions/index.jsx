@@ -12,11 +12,12 @@ import {
   Container,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { encryptText } from "../../../utils";
 import { changeLanguage } from "../../../store/slices/uiSlice";
+import { setStudentId } from "../../../store/slices/onlineTestSlice";
 // import Form from "../Form/index";
 
 const tutorialSteps = [
@@ -162,12 +163,12 @@ const TestInstructions = () => {
   const [activeStep, setActiveStep] = React.useState(0);
   const maxSteps = tutorialSteps.length;
   const dispatch = useDispatch();
+  const { enrollmentKey, studentId } = useSelector((state) => state.onlineTest);
   const { lang } = useSelector((state) => state.ui);
   // const [shuruKarein, SetShuruKarein] = useState(true);
   // const { enrolmentKey } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { enrollmentKey, ...rest } = location.state;
+  // const { enrollmentKey, ...rest } = location.state;
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
@@ -176,8 +177,10 @@ const TestInstructions = () => {
     if (activeStep === maxSteps - 1) {
       // console.log(enrollmentKey, rest);
       localStorage.setItem("enrollmentKey", encryptText(`${enrollmentKey}`));
-      if (rest.studentId) {
-        localStorage.setItem("studentId", encryptText(`${rest.studentId}`));
+      // dispatch(setEnrollmentKey(enrollmentKey));
+      if (studentId) {
+        localStorage.setItem("studentId", encryptText(`${studentId}`));
+        dispatch(setStudentId(studentId));
       }
       // if (rest.partner)
       //   localStorage.setItem(
@@ -185,7 +188,7 @@ const TestInstructions = () => {
       //     encryptText(JSON.stringify(rest.partner))
       //   );
       navigate("/test/studentdetails", {
-        state: { enrollmentKey, lang, ...rest },
+        // state: { enrollmentKey, lang, ...rest },
       });
       return;
     }

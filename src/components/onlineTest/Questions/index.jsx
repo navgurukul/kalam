@@ -9,7 +9,7 @@ import {
   Container,
   Grid,
 } from "@mui/material";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { useSelector } from "react-redux";
 import Timer from "./Timer";
@@ -82,12 +82,15 @@ const useStyles = makeStyles((theme) => ({
 function Questions() {
   const classes = useStyles();
   const { enrollmentKey, studentId } = useParams();
+  const { partner, questions: questionsList } = useSelector(
+    (state) => state.onlineTest
+  );
+  const partnerSlug = partner?.slug;
   const { lang } = useSelector((state) => state.ui);
   const [index, setIndex] = useState(null);
   const Time = parseInt(decryptText(localStorage.getItem("time")), 10);
   const time = new Date(JSON.parse(Time));
-  const location = useLocation();
-  const { questionsList, partnerSlug } = location.state;
+  // const { questionsList  } = location.state;
   const [answerList, setAnswerList] = useState({});
   const [result, setResult] = useState({
     success: false,

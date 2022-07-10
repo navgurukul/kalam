@@ -552,12 +552,13 @@ function OtherDetails(props) {
                     </MenuItem>
                     {partnerSlug &&
                     customPartner.includes(partnerSlug) ? null : (
-                      <>
-                        <MenuItem value="lessThan10th">
-                          Less than 10th pass
-                        </MenuItem>
-                        <MenuItem value="class10th">10th pass</MenuItem>
-                      </>
+                      <MenuItem value="lessThan10th">
+                        Less than 10th pass
+                      </MenuItem>
+                    )}
+                    {partnerSlug &&
+                    customPartner.includes(partnerSlug) ? null : (
+                      <MenuItem value="class10th">10th pass</MenuItem>
                     )}
                     <MenuItem value="class12th">12th pass</MenuItem>
                     <MenuItem value="graduate">Graduated</MenuItem>

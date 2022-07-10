@@ -1,11 +1,12 @@
 import React from "react";
 import axios from "axios";
 import { Paper, Typography, Button, Container } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { makeStyles } from "@mui/styles";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { encryptText } from "../../../utils";
+import { setQuestions } from "../../../store/slices/onlineTestSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -77,10 +78,10 @@ function FinalInstruction() {
   //console.log("Props in ek aur baat", props.location.enrolment_key);
   const classes = useStyles();
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
+  const dispatch = useDispatch();
+  const { enrollmentKey, studentId } = useSelector((state) => state.onlineTest);
   const { lang } = useSelector((state) => state.ui);
-
-  const { enrollmentKey, studentId, partnerSlug } = location.state;
 
   // //1. Where we'll get time 00:00:00
   // const time = useRef(new Date().setSeconds(new Date().getSeconds() + 5400));
@@ -108,11 +109,12 @@ function FinalInstruction() {
         //console.log("response", res.data.data);
         // localStorage.setItem("questionsList", JSON.stringify(res.data.data));
         // localStorage.setItem("questionsList", res.data.data);
+        dispatch(setQuestions(res.data.data));
         navigate(`/test/${enrollmentKey}/${studentId}`, {
           // questions: res.data.data,
           // time: time.current, // 2nd point
           // time: TIME,   // 1st point and 3rd point
-          state: { answerList, questionsList: res.data.data, partnerSlug },
+          state: { answerList },
           // correctAnswerObj: correctAnswerObj,
         });
       })

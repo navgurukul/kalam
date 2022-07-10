@@ -17,6 +17,11 @@ import { changeFetching } from "../../store/slices/uiSlice";
 import VideoSlider from "../ui/VideoSlider";
 import theme from "../../theme";
 import { decryptText } from "../../utils";
+import {
+  setEnrollmentKey,
+  setPartner,
+  setStudentData,
+} from "../../store/slices/onlineTestSlice";
 // import { customPartner } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -282,6 +287,12 @@ const LandingPage = () => {
             enrollmentKey: res.data.key,
           });
           fetchingFinish();
+
+          dispatch(
+            setStudentData({ firstName, middleName, lastName, mobileNumber })
+          );
+          dispatch(setPartner({ slug, id: state.partnerId }));
+          dispatch(setEnrollmentKey(res.data.key));
 
           navigate(`/test/instructions`, {
             state: {

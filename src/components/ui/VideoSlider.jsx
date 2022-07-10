@@ -20,7 +20,7 @@ import YouTube from "react-youtube";
 import playIcon from "../../assets/img/playicon.png";
 
 const settings = {
-  dots: true,
+  dots: false,
   arrows: true,
   autoplay: true,
   autoplaySpeed: 3000,
@@ -42,8 +42,15 @@ const useStyles = makeStyles((theme) => ({
   slider: {
     maxWidth: 400,
     margin: "0 auto",
+    padding: "1.2rem",
     [theme.breakpoints.up("sm")]: {
-      maxWidth: 780,
+      maxWidth: 400,
+    },
+    [theme.breakpoints.up("lg")]: {
+      maxWidth: 600,
+    },
+    [theme.breakpoints.up("xl")]: {
+      maxWidth: 720,
     },
   },
   title: {
@@ -56,9 +63,9 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     cursor: "pointer",
     [theme.breakpoints.up("md")]: {
-      top: "calc(50% - 60px)",
+      top: "calc(50% - 70px)",
       width: 120,
-      left: "calc(50% - 60px)",
+      left: "calc(50% - 65px)",
     },
     [theme.breakpoints.down("md")]: {
       top: "calc(50% - 60px)",
@@ -122,7 +129,7 @@ window.mobileAndTabletCheck = function mobileAndTabletCheck() {
   return check;
 };
 
-const VideoSlider = (props) => {
+const VideoSlider = ({ language, customLinks }) => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     activeStep: 0,
@@ -156,7 +163,6 @@ const VideoSlider = (props) => {
     event.target.playVideo();
   };
 
-  const { language } = props;
   //console.log(classes, this.props);
 
   const width = Math.min(600, window.screen.width);
@@ -180,15 +186,17 @@ const VideoSlider = (props) => {
     origin: window.location.origin,
   };
 
+  const links = customLinks || aboutNavgurukul;
+
   return (
     <div style={{ width: "100%" }}>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <Slider {...settings} className={classes.slider}>
-        {aboutNavgurukul.map((ele) => (
+        {links.map((ele) => (
           <div key={ele.videoId}>
             <Box
               maxWidth={width}
-              style={{ margin: "0 auto", position: "relative" }}
+              style={{ margin: "0 auto", position: "relative", padding: 0 }}
               onClick={handleClickOpen}
               value={ele.videoId}
               data-video_id={ele.videoId}
@@ -198,10 +206,10 @@ const VideoSlider = (props) => {
                 alt={ele.label}
                 loading="lazy"
                 src={`https://img.youtube.com/vi/${ele.videoId}/maxresdefault.jpg`}
-                style={{ maxWidth: "100%" }}
+                style={{ maxWidth: "100%", borderRadius: "0.4rem" }}
               />
               <img alt="play" src={playIcon} className={classes.playIcon} />
-              <Box py={2} style={{ fontSize: 18, textAlign: "center" }}>
+              <Box py={1} style={{ fontSize: 18, textAlign: "center" }}>
                 <span align="center">{ele.label[language]}</span>
               </Box>
             </Box>

@@ -10,13 +10,16 @@ import {
   Grid,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 import { makeStyles } from "@mui/styles";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Timer from "./Timer";
 import ThankYouPage from "../ThankYouPage";
 import SorryPage from "../SorryPage";
+import Loader from "../../ui/Loader";
 import { decryptText, encryptText } from "../../../utils";
 import { customPartner } from "../../../utils/constants";
+import { setQuestions } from "../../../store/slices/onlineTestSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const tutorialSteps = {
@@ -82,13 +85,16 @@ const useStyles = makeStyles((theme) => ({
 function Questions() {
   const classes = useStyles();
   const { enrollmentKey, studentId } = useParams();
+  const dispatch = useDispatch();
   const { partner, questions: questionsList } = useSelector(
     (state) => state.onlineTest
   );
+  const [loading, setLoading] = useState(true);
   const partnerSlug = partner?.slug;
   const { lang } = useSelector((state) => state.ui);
   const [index, setIndex] = useState(null);
-  const Time = parseInt(decryptText(localStorage.getItem("time")), 10);
+  const Time =
+    parseInt(decryptText(localStorage.getItem("time")), 10) || Date.now();
   const time = new Date(JSON.parse(Time));
   // const { questionsList  } = location.state;
   const [answerList, setAnswerList] = useState({});
@@ -105,22 +111,30 @@ function Questions() {
 
   useEffect(() => {
     setIndex(parseInt(decryptText(localStorage.getItem("index")), 10));
-    const questionNumbers = [];
-    questionsList.forEach((question) => {
-      questionNumbers.push(question.id);
-    });
-    const data = questionNumbers.reduce((acc, curr) => {
-      acc[curr] = "";
-      return acc;
-    }, {});
-    const prevAnsList = JSON.parse(localStorage.getItem("answerList"));
-    setAnswerList(prevAnsList || data);
+    axios
+      .get(`${baseUrl}on_assessment/questions/${enrollmentKey}`)
+      .then((res) => {
+        dispatch(setQuestions(res.data.data));
+        const questionNumbers = [];
+        res.data.data.forEach((question) => {
+          questionNumbers.push(question.id);
+        });
+        const data = questionNumbers.reduce((acc, curr) => {
+          acc[curr] = "";
+          return acc;
+        }, {});
+        const prevAnsList = JSON.parse(localStorage.getItem("answerList"));
+        setAnswerList(prevAnsList || data);
+        setLoading(false);
+      });
+
     return () => {
       if (result.done) {
         localStorage.removeItem("answerList");
         localStorage.removeItem("enrollmentKey");
         localStorage.removeItem("index");
         localStorage.removeItem("time");
+        localStorage.removeItem("partnerSlug");
       }
     };
   }, []);
@@ -190,17 +204,19 @@ function Questions() {
       });
   };
 
-  if (index !== null) {
+  if (index !== null && !loading) {
     //console.log("questionsList inside the condition", questionsList);
     const text = {
-      en: DOMPurify.sanitize(questionsList[index].en_text),
-      hi: DOMPurify.sanitize(questionsList[index].hi_text),
-      ma: DOMPurify.sanitize(questionsList[index].ma_text),
+      en: DOMPurify.sanitize(questionsList[index]?.en_text),
+      hi: DOMPurify.sanitize(questionsList[index]?.hi_text),
+      ma: DOMPurify.sanitize(questionsList[index]?.ma_text),
     };
-    const commonText = DOMPurify.sanitize(questionsList[index].common_text);
-    const questionID = questionsList[index].id;
+    const commonText = DOMPurify.sanitize(questionsList[index]?.common_text);
+    const questionID = questionsList[index]?.id;
 
-    return result.done ? (
+    return loading ? (
+      <Loader container />
+    ) : result.done ? (
       result.success ? (
         <ThankYouPage total_marks={result.total_marks} userID={studentId} />
       ) : (
@@ -244,7 +260,7 @@ function Questions() {
             <Typography variant="subtitle1">
               <div dangerouslySetInnerHTML={{ __html: commonText }} />
             </Typography>
-            {questionsList[index].options.length > 2 ? (
+            {questionsList[index]?.options.length > 2 ? (
               questionsList[index].options.map((option, i) => {
                 const purifiedOptions = DOMPurify.sanitize(option.text);
                 return (

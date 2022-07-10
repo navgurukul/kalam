@@ -16,7 +16,7 @@ import { makeStyles, ThemeProvider } from "@mui/styles";
 import { changeFetching } from "../../store/slices/uiSlice";
 import VideoSlider from "../ui/VideoSlider";
 import theme from "../../theme";
-import { decryptText } from "../../utils";
+import { decryptText, encryptText } from "../../utils";
 import {
   setEnrollmentKey,
   setPartner,
@@ -121,7 +121,7 @@ const LandingPage = () => {
     pendingInterviewStage: "checking",
     enrollmentKey: "",
   });
-  const [goToTest, setGoToTest] = React.useState(false);
+  // const [goToTest, setGoToTest] = React.useState(false);
   const testClosed = [];
   const lang = {
     Heading: {
@@ -221,7 +221,7 @@ const LandingPage = () => {
       const Time = parseInt(decryptText(time), 10);
       const date = new Date(JSON.parse(Time));
       if (parseInt(dayjs(date).diff(dayjs(), "seconds"), 10) > 0) {
-        setGoToTest(true);
+        // setGoToTest(true);
       } else {
         localStorage.removeItem("answerList");
         localStorage.removeItem("enrollmentKey");
@@ -292,6 +292,7 @@ const LandingPage = () => {
             setStudentData({ firstName, middleName, lastName, mobileNumber })
           );
           dispatch(setPartner({ slug, id: state.partnerId }));
+          localStorage.setItem("partnerSlug", encryptText(slug));
           dispatch(setEnrollmentKey(res.data.key));
 
           navigate(`/test/instructions`, {
@@ -355,7 +356,7 @@ const LandingPage = () => {
       }}
     >
       <ThemeProvider theme={theme}>
-        {goToTest ? (
+        {/* {goToTest ? (
           <Button
             variant="text"
             color="primary"
@@ -364,7 +365,7 @@ const LandingPage = () => {
           >
             Go Back to Test
           </Button>
-        ) : null}
+        ) : null} */}
         <Typography className={classes.paper}>
           {lang.Heading[selectedLang]}
         </Typography>

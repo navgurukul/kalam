@@ -1,12 +1,13 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from "@reduxjs/toolkit";
+import { decryptText } from "../../utils";
 
 const OnlineTestSlice = createSlice({
   name: "onlineTest",
   initialState: {
     questions: [],
-    enrollmentKey: "",
-    studentId: "",
+    enrollmentKey: decryptText(localStorage.getItem("enrollmentKey")) || "",
+    studentId: decryptText(localStorage.getItem("enrollmentKey")) || "",
     studentData: {
       firstName: "",
       middleName: "",
@@ -14,7 +15,7 @@ const OnlineTestSlice = createSlice({
       mobileNumber: "",
     },
     partner: {
-      slug: "",
+      slug: decryptText(localStorage.getItem("partnerSlug")) || "",
       id: "",
     },
   },

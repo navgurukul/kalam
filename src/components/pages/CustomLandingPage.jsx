@@ -15,7 +15,7 @@ import { makeStyles, ThemeProvider } from "@mui/styles";
 import { changeFetching } from "../../store/slices/uiSlice";
 import VideoSlider from "../ui/VideoSlider";
 import theme from "../../theme";
-import { decryptText } from "../../utils";
+import { decryptText, encryptText } from "../../utils";
 import Carousel from "../ui/Carousel";
 import akansha1 from "../../assets/img/akansha/1.jpg";
 import akansha2 from "../../assets/img/akansha/2.jpg";
@@ -147,7 +147,7 @@ const CustomLandingPage = () => {
     pendingInterviewStage: "checking",
     enrollmentKey: "",
   });
-  const [goToTest, setGoToTest] = React.useState(false);
+  // const [goToTest, setGoToTest] = React.useState(false);
   // const testClosed = ["amravati"];
   const lang = {
     Heading: {
@@ -546,7 +546,7 @@ const CustomLandingPage = () => {
       const Time = parseInt(decryptText(time), 10);
       const date = new Date(JSON.parse(Time));
       if (parseInt(dayjs(date).diff(dayjs(), "seconds"), 10) > 0) {
-        setGoToTest(true);
+        // setGoToTest(true);
       } else {
         localStorage.removeItem("answerList");
         localStorage.removeItem("enrollmentKey");
@@ -616,6 +616,7 @@ const CustomLandingPage = () => {
             setStudentData({ firstName, middleName, lastName, mobileNumber })
           );
           dispatch(setEnrollmentKey(res.data.key));
+          localStorage.setItem("partnerSlug", encryptText(slug));
           dispatch(setPartner({ slug, id: state.partnerId }));
           navigate(`/test/instructions`, {
             state: {
@@ -686,7 +687,7 @@ const CustomLandingPage = () => {
       }}
     >
       <ThemeProvider theme={theme}>
-        {goToTest ? (
+        {/* {goToTest ? (
           <Button
             variant="text"
             color="primary"
@@ -695,7 +696,7 @@ const CustomLandingPage = () => {
           >
             Go Back to Test
           </Button>
-        ) : null}
+        ) : null} */}
 
         <Grid container sx={{ mt: "2rem" }} spacing={2} justifyContent="center">
           <Grid

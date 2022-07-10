@@ -150,11 +150,16 @@ const langOptions = {
     hi: "लिंग चुनें",
     ma: "लिंग निवडा",
     options: [
-      { en: "Select Gender", hi: "लिंग चुनें", ma: "लिंग निवडा" },
-      { en: "Female", hi: "महिला", ma: "स्त्री" },
-      // { en: "Male", hi: "पुरुष", ma: "पुरुष" },
-      // { en: "Other", hi: "अन्य", ma: "इतर" },
-      { en: "Transwomen", hi: "ट्रांसवुमेन", ma: "ट्रांसवुमेन" },
+      {
+        key: "select gender",
+        en: "Select Gender",
+        hi: "लिंग चुनें",
+        ma: "लिंग निवडा",
+      },
+      { key: "female", en: "Female", hi: "महिला", ma: "स्त्री" },
+      // {key:"male", en: "Male", hi: "पुरुष", ma: "पुरुष" },
+      // {key:"other", en: "Other", hi: "अन्य", ma: "इतर" },
+      { key: "trans", en: "Transwomen", hi: "ट्रांसवुमेन", ma: "ट्रांसवुमेन" },
     ],
     error: {
       en: "Please specify your gender",
@@ -500,7 +505,7 @@ const BasicDetails = ({
                 if (
                   gender === "female" ||
                   gender === "other" ||
-                  gender === "transwomen"
+                  gender === "trans"
                 )
                   return true;
                 enqueueSnackbar("Currently, Males cannot appear for the Test", {
@@ -533,8 +538,8 @@ const BasicDetails = ({
                 >
                   {langOptions.gender.options.map((el) => (
                     <MenuItem
-                      key={el.en}
-                      value={el.en.toLowerCase()}
+                      key={el.key}
+                      value={el.key}
                       disabled={el.en === "Select Gender"}
                     >
                       {el[lang]}

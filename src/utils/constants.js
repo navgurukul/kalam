@@ -1,6 +1,6 @@
 export const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
-export const customPartner = ["amravati", "breakthrough"];
+export const customPartner = ["amravati", "lahia"];
 
 export const permissions = {
   permissionsView: ["kirithiv@navgurukul.org", "vaibhavmagar@navgurukul.org"],

@@ -338,7 +338,7 @@ const LandingPage = () => {
     return (
       <Container sx={{ display: "flex", justifyContent: "center" }}>
         <Typography color="error" variant="h4">
-          Tests will open on 10th July
+          Tests will open at 1PM Today!
         </Typography>
         ``
       </Container>

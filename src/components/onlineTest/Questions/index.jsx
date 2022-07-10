@@ -38,6 +38,11 @@ const tutorialSteps = {
     hi: " प्रश्नों का प्रयास किया है।",
     ma: " प्रश्नांचा प्रयत्न केला आहे.",
   },
+  inputText: {
+    en: "Write Your Answer Here...",
+    hi: "अपना उत्तर यहां लिखें...",
+    ma: "तुमचे उत्तर इथे लिहा...",
+  },
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -225,15 +230,16 @@ function Questions() {
             {/* <Typography variant="subtitle1">
             <div dangerouslySetInnerHTML={{ __html: hi_text }} />
           </Typography> */}
-            <Typography variant="subtitle1">
-              <div dangerouslySetInnerHTML={{ __html: commonText }} />
-            </Typography>
+
             <Typography variant="subtitle1">
               <div
                 dangerouslySetInnerHTML={{
                   __html: text[lang] !== "" ? text[lang] : text.hi,
                 }}
               />
+            </Typography>
+            <Typography variant="subtitle1">
+              <div dangerouslySetInnerHTML={{ __html: commonText }} />
             </Typography>
             {questionsList[index].options.length > 2 ? (
               questionsList[index].options.map((option, i) => {
@@ -295,7 +301,7 @@ function Questions() {
                 id={`${questionID}`}
                 className={classes.spacing}
                 // label="Your name"
-                placeholder="Write your answer here..."
+                placeholder={tutorialSteps.inputText[lang]}
                 value={decryptText(answerList[questionID]) || ""}
                 name={`${questionID}`}
                 autoComplete="off"

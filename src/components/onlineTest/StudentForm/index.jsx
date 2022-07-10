@@ -52,6 +52,7 @@ const StudentForm = () => {
     enrollmentKey,
     studentId = "",
     // lang = "En",
+    partner,
   } = rLocation.state
     ? rLocation.state
     : {
@@ -61,6 +62,7 @@ const StudentForm = () => {
         mobileNumber: null,
         enrollmentKey: "",
         studentId: "",
+        partner: {},
       };
   const {
     register,
@@ -159,6 +161,8 @@ const StudentForm = () => {
     "christian",
     "others",
   ];
+
+  const customPartner = ["amravati", "breakthrough"];
 
   const CurrentStatusOptions = ["", "nothing", "job", "study", "other"];
   const schoolMediumOptions = ["", "en", "other"];
@@ -319,7 +323,12 @@ const StudentForm = () => {
     e.preventDefault();
     setFormData((prevFormData) => ({ ...prevFormData, ...data }));
 
-    if (activeStep === 0 && !formData.PrevImage && !formData.ProfileImage) {
+    if (
+      !customPartner.includes(partner?.slug || "") &&
+      activeStep === 0 &&
+      !formData.PrevImage &&
+      !formData.ProfileImage
+    ) {
       enqueueSnackbar("Please provide a Profile Picture", { variant: "error" });
       return;
     }
@@ -360,6 +369,7 @@ const StudentForm = () => {
               // handleChange={handleChange}
               reactForm={{ register, errors, control }}
               inputDisabled={alreadyAUser}
+              pfpCompulsion={!customPartner.includes(partner?.slug)}
               setProfileImage={setProfileImage}
             />
           </React.Suspense>
@@ -379,6 +389,7 @@ const StudentForm = () => {
               lang={lang}
               // prevFilledData={prevData}
               alreadyAUser={alreadyAUser}
+              partnerSlug={partner?.slug}
               inputDisabled={alreadyAUser}
             />
           </React.Suspense>

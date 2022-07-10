@@ -280,6 +280,7 @@ const LandingPage = () => {
               lastName,
               mobileNumber,
               enrollmentKey: res.data.key,
+              partner: { slug, partnerId: state.partnerId },
             },
           });
         }
@@ -315,7 +316,7 @@ const LandingPage = () => {
     return (
       <Container sx={{ display: "flex", justifyContent: "center" }}>
         <Typography color="error" variant="h4">
-          Tests will open on 10th July
+          Tests will open at 1PM Today!
         </Typography>
       </Container>
     );

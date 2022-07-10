@@ -49,6 +49,7 @@ const BasicDetails = ({
   formData,
   setProfileImage,
   inputDisabled,
+  pfpCompulsion,
   reactForm: { errors, control },
 }) => {
   const classes = useStyles();
@@ -89,7 +90,7 @@ const BasicDetails = ({
           />
         </Badge>
         <Typography variant="h6" className={classes.text}>
-          Profile Image*
+          Profile Image{pfpCompulsion ? "*" : ""}
         </Typography>
         {errors.ProfileImage ? (
           <Typography
@@ -217,7 +218,8 @@ const BasicDetails = ({
             rules={{
               required: true,
               validate: (dob) =>
-                parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 16,
+                parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 16 &&
+                parseInt(dayjs().diff(dayjs(dob), "year"), 10) <= 27,
             }}
             render={({
               field: { ref, ...rest },
@@ -243,7 +245,7 @@ const BasicDetails = ({
                         errors.dob
                           ? errors.dob.type === "validate"
                             ? lang === "en"
-                              ? "Age must be 16 or higher"
+                              ? "Age must be between 16 & 27"
                               : "आयु 16 या अधिक होनी चाहिए"
                             : lang === "en"
                             ? "Enter Date of Birth"

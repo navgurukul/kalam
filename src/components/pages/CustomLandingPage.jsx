@@ -25,7 +25,11 @@ import akansha5 from "../../assets/img/akansha/5.jpg";
 import mhGovtLogo from "../../assets/img/akansha/mh-govt-logo.jpg";
 import MSSDSLogo from "../../assets/img/akansha/MSSDS-logo.jpg";
 import sdeedLogo from "../../assets/img/akansha/sdeed-logo.png";
-import { setPartner, setStudentData } from "../../store/slices/onlineTestSlice";
+import {
+  setEnrollmentKey,
+  setPartner,
+  setStudentData,
+} from "../../store/slices/onlineTestSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -611,6 +615,7 @@ const CustomLandingPage = () => {
           dispatch(
             setStudentData({ firstName, middleName, lastName, mobileNumber })
           );
+          dispatch(setEnrollmentKey(res.data.key));
           dispatch(setPartner({ slug, id: state.partnerId }));
           navigate(`/test/instructions`, {
             state: {

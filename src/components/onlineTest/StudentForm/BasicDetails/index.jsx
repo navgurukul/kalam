@@ -367,7 +367,7 @@ const BasicDetails = ({
                           ? errors.dob.type === "validate"
                             ? langOptions.dob.error.validate[lang]
                             : langOptions.dob.error[lang]
-                          : "Ex. 19/11/2005"
+                          : "Ex. 19/11/2003"
                       }
                     />
                   )}

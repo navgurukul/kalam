@@ -590,7 +590,7 @@ function OtherDetails(props) {
               <Controller
                 control={control}
                 defaultValue={formData.percentage_in10th}
-                rules={{ required: true, max: 100 }}
+                rules={{ required: true, max: 100, min: 33 }}
                 name="percentage_in10th"
                 render={({ field: { ref, ...rest } }) => (
                   <TextField
@@ -609,7 +609,8 @@ function OtherDetails(props) {
                     error={!!errors.percentage_in10th}
                     helperText={
                       errors.percentage_in10th
-                        ? errors.percentage_in10th.type === "max"
+                        ? errors.percentage_in10th.type === "max" ||
+                          errors.percentage_in10th.type === "min"
                           ? langOptions.percentage_in10th.error.max[lang]
                           : langOptions.percentage_in10th.error[lang]
                         : "Ex. 86.40"
@@ -629,6 +630,7 @@ function OtherDetails(props) {
                   defaultValue={formData.percentage_in10th}
                   rules={{
                     required: !customPartner.includes(partnerSlug),
+                    min: 33,
                     max: 100,
                   }}
                   name="percentage_in10th"
@@ -649,7 +651,8 @@ function OtherDetails(props) {
                       error={!!errors.percentage_in10th}
                       helperText={
                         errors.percentage_in10th
-                          ? errors.percentage_in10th.type === "max"
+                          ? errors.percentage_in10th.type === "max" ||
+                            errors.percentage_in10th.type === "min"
                             ? langOptions.class10th.error.max[lang]
                             : langOptions.class10th.error[lang]
                           : "Ex. 86.40"
@@ -665,6 +668,7 @@ function OtherDetails(props) {
                   name="percentage_in12th"
                   rules={{
                     required: !customPartner.includes(partnerSlug),
+                    min: 33,
                     max: 100,
                   }}
                   defaultValue={formData.percentage_in12th}
@@ -703,7 +707,8 @@ function OtherDetails(props) {
                       error={!!errors.percentage_in12th}
                       helperText={
                         errors.percentage_in12th
-                          ? errors.percentage_in12th.type === "max"
+                          ? errors.percentage_in12th.type === "min" ||
+                            errors.percentage_in12th.type === "max"
                             ? langOptions[qualification].error.max[lang]
                             : langOptions[qualification].error[lang]
                           : "Ex. 76.40"

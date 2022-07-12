@@ -219,6 +219,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details",
       label: "Resume",
+      key: "resume",
       options: {
         filter: false,
         sort: false,
@@ -246,6 +247,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details",
       label: "Photo Link",
+      key: "photo_link",
       options: {
         filter: false,
         sort: false,
@@ -273,6 +275,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details",
       label: "Video Link",
+      key: "video_link",
       options: {
         filter: false,
         sort: false,
@@ -360,6 +363,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details", // Select Input options male,female
       label: "Date of Offer Letter",
+      key: "offer_letter_date",
       options: {
         filter: false,
         sort: false,
@@ -390,6 +394,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details", //Textfield
       label: "Job Designation",
+      key: "job_designation",
       options: {
         filter: false,
         sort: false,
@@ -419,6 +424,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details", // Select input
       label: "Job Location",
+      key: "job_location",
       options: {
         filter: false,
         sort: false,
@@ -449,6 +455,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details", // Select Input options offline, WFH
       label: "Job Type",
+      key: "job_type",
       options: {
         filter: false,
         sort: false,
@@ -524,6 +531,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details", // Textfield no. input
       label: "Salary",
+      key: "salary",
       options: {
         filter: false,
         sort: false,
@@ -592,6 +600,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details", //Textfield
       label: "Employer",
+      key: "employer",
       options: {
         filter: false,
         sort: false,
@@ -640,12 +649,49 @@ const PlacementStudentsData = () => {
     setStudentData(newStudentData);
   };
 
+  const onDownload = (buildHead, buildBody, downloadColumns, data) => {
+    const newData = data.map(({ data: student }) => ({
+      data: student.map((col, inx) => {
+        switch (columns[inx].name) {
+          case "partner":
+            return col?.name || "";
+          case "campus":
+            return col[0]?.campus || "";
+          case "joinDate":
+            return dayjs(col).format("D MMM YYYY");
+          case "student_job_details":
+            return columns[inx].label === "Date of Offer Letter"
+              ? dayjs(col[columns[inx].key]).format("D MMM YYYY")
+              : col[columns[inx].key];
+          case "gender":
+            return col === 1 ? "Female" : col === 2 ? "Male" : "Transgender";
+          case "studentDonor":
+            return `${
+              donor
+                ?.filter((donorEl) => col?.donor_id?.includes(`${donorEl.id}`))
+                .map((donorEl) => donorEl.name)
+                .join(",") || ""
+            }`;
+          case "qualification":
+            return qualificationKeys[col];
+          case "contacts":
+            return `${col?.map((contact) => contact.mobile).join(",") || ""}`;
+          default:
+            return col;
+        }
+      }),
+    }));
+
+    return `\uFEFF${buildHead(downloadColumns)}${buildBody(newData)}`;
+  };
+
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
       <MainLayout
         title="Placement Data"
         data={studentData}
         columns={columns}
+        onDownload={onDownload}
         showLoader={loading}
       />
       <AddPlacementsEntry

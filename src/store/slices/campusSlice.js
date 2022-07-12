@@ -1,9 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import { baseUrl } from "../../utils/constants";
-
-const fetchStudents = createAsyncThunk();
+import { createSlice } from "@reduxjs/toolkit";
 
 const CampusSlice = createSlice({
   name: "campus",
@@ -43,10 +39,22 @@ const CampusSlice = createSlice({
       state.onLeaveCount = onLeaveCount;
       state.inCampusCount = inCampusCount;
     },
+    clearData: (state) => {
+      state.students = [];
+      state.allStudents = [];
+      state.fromStage = null;
+      state.toStage = null;
+      state.fromDate = null;
+      state.toDate = null;
+      state.dropoutCount = null;
+      state.onLeaveCount = null;
+      state.inCampusCount = null;
+    },
   },
 });
 
 export const {
+  clearData,
   setStudentData,
   setAllStudentData,
   setFromStage,

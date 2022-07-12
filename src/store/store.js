@@ -31,7 +31,7 @@ import uiReducer from "./slices/uiSlice";
 export default configureStore({
   reducer: {
     auth: authReducer,
-    data: dataReducer
+    data: dataReducer,
     campus: campusReducer,
     onlineTest: onlineTestReducer,
     owners: ownerReducer,

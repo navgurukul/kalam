@@ -16,7 +16,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import Select from "react-select";
 import { useSnackbar } from "notistack";
-import { setStudentData } from "../../store/slices/studentSlice";
+import { setStudentData } from "../../store/slices/campusSlice";
 import MainLayout from "../muiTables/MainLayout";
 
 import StudentService from "../../services/StudentService";
@@ -130,15 +130,14 @@ const columns = [
 ];
 // let filterFns = [];
 
-const DashboardPage = (props) => {
+const DashboardPage = ({ displayData, title, url }) => {
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
-  const { studentData: data } = useSelector((state) => state.students);
+  const { students, allStudents } = useSelector((state) => state.campus);
   const dispatch = useDispatch();
   const fetchingFinish = () => dispatch(changeFetching(false));
   // const usersSetup = (users) => dispatch(setupUsers(users));
-  const getStudentsData = (studentData) =>
-    dispatch(setStudentData(studentData));
+  const setStudents = (studentData) => dispatch(setStudentData(studentData));
   const [state, setState] = React.useState({
     mainData: [],
     wholeData: [],
@@ -152,17 +151,19 @@ const DashboardPage = (props) => {
     inCampusCount: null,
   });
 
+  const { fromStage, toStage, mainData, showLoader, wholeData } = state;
+
   const stageChangeEvent = (iData) => {
-    const rowIds = data.map((x) => x.id);
+    const rowIds = mainData.map((x) => x.id);
     const rowIndex = rowIds.indexOf(iData.rowData.id);
 
-    const dataElem = data[rowIndex];
+    const dataElem = mainData[rowIndex];
     dataElem.stageTitle = iData.selectedValue.label;
     dataElem.stage = iData.selectedValue.value;
 
-    const newData = data;
+    const newData = [...mainData];
     newData[rowIndex] = dataElem;
-    getStudentsData(newData);
+    setStudents(newData);
   };
 
   EventEmitter.subscribe("stageChange", stageChangeEvent);
@@ -208,7 +209,7 @@ const DashboardPage = (props) => {
       // eslint-disable-next-line no-param-reassign, import/no-named-as-default-member
       studentData[i] = StudentService.dConvert(studentData[i]);
     }
-    getStudentsData(studentData);
+    setStudents(studentData);
 
     setState((prevState) => ({
       ...prevState,
@@ -223,7 +224,6 @@ const DashboardPage = (props) => {
 
   const fetchStudents = async (signal) => {
     try {
-      const { url } = props;
       const dataURL = baseUrl + url;
       const response = await axios.get(dataURL, {
         signal,
@@ -286,8 +286,7 @@ const DashboardPage = (props) => {
   };
 
   const filterData = () => {
-    const { fromStage, toStage, mainData, wholeData } = state;
-    getStudentsData(mainData);
+    setStudents(mainData);
     if (allStagesValue.indexOf(fromStage) <= allStagesValue.indexOf(toStage)) {
       const newAllStagesValue = allStagesValue.slice(
         allStagesValue.indexOf(fromStage),
@@ -296,13 +295,13 @@ const DashboardPage = (props) => {
       const newData = wholeData.filter(
         (element) => newAllStagesValue.indexOf(element.stage) > -1
       );
-      getStudentsData(newData);
+      setStudents(newData);
       setState({
         ...state,
         mainData: newData,
       });
     } else {
-      getStudentsData([]);
+      setStudents([]);
       setState({
         ...state,
         mainData: [],
@@ -315,7 +314,6 @@ const DashboardPage = (props) => {
 
   const onChangeFromStage = async (event) => {
     setState({ ...state, fromStage: event.label });
-    const { fromStage, toStage } = state;
     if (fromStage && toStage) {
       filterData();
     }
@@ -323,13 +321,11 @@ const DashboardPage = (props) => {
 
   const onChangeToStage = async (event) => {
     setState({ ...state, toStage: event.label });
-    const { fromStage, toStage } = state;
     if (fromStage && toStage) {
       filterData();
     }
   };
 
-  const { displayData, title } = props;
   const { dropoutCount, onLeaveCount, inCampusCount } = state;
   const locationCampus = location.pathname.split("/")[1];
 
@@ -337,7 +333,6 @@ const DashboardPage = (props) => {
     location.pathname[location.pathname.length - 1],
     10
   );
-  const { fromStage, toStage, mainData, showLoader, wholeData } = state;
 
   const options = (
     <Grid container spacing={4} sx={{ paddingY: "0.8rem" }}>

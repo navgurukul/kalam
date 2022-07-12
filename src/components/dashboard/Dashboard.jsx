@@ -16,7 +16,16 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import Select from "react-select";
 import { useSnackbar } from "notistack";
-import { setStudentData } from "../../store/slices/campusSlice";
+import {
+  setAllStudentData,
+  setCounts,
+  setFromStage as setFromStageAction,
+  setToStage as setToStageAction,
+  setFromDate as setFromDateAction,
+  setToDate as setToDateAction,
+  setStudentData,
+  clearData,
+} from "../../store/slices/campusSlice";
 import MainLayout from "../muiTables/MainLayout";
 
 import StudentService from "../../services/StudentService";
@@ -133,50 +142,47 @@ const columns = [
 const DashboardPage = ({ displayData, title, url }) => {
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
-  const { students, allStudents } = useSelector((state) => state.campus);
+  const {
+    students,
+    allStudents,
+    fromDate,
+    toDate,
+    fromStage,
+    toStage,
+    inCampusCount,
+    dropoutCount,
+    onLeaveCount,
+  } = useSelector((state) => state.campus);
+
   const dispatch = useDispatch();
   const fetchingFinish = () => dispatch(changeFetching(false));
-  // const usersSetup = (users) => dispatch(setupUsers(users));
+  const setFromStage = (from) => dispatch(setFromStageAction(from));
+  const setToStage = (to) => dispatch(setToStageAction(to));
+  const setFromDate = (from) => dispatch(setFromDateAction(from));
+  const setToDate = (to) => dispatch(setToDateAction(to));
+  const setCampusCounts = (counts) => dispatch(setCounts(counts));
   const setStudents = (studentData) => dispatch(setStudentData(studentData));
-  const [state, setState] = React.useState({
-    mainData: [],
-    wholeData: [],
-    fromDate: null,
-    toDate: null,
-    showLoader: true,
-    fromStage: null,
-    toStage: null,
-    dropoutCount: null,
-    onLeaveCount: null,
-    inCampusCount: null,
-  });
+  const setAllStudents = (studentData) =>
+    dispatch(setAllStudentData(studentData));
 
-  const { fromStage, toStage, mainData, showLoader, wholeData } = state;
+  const clearStudents = () => dispatch(clearData());
+
+  const [loading, setLoading] = React.useState(true);
 
   const stageChangeEvent = (iData) => {
-    const rowIds = mainData.map((x) => x.id);
+    const rowIds = students.map((x) => x.id);
     const rowIndex = rowIds.indexOf(iData.rowData.id);
 
-    const dataElem = mainData[rowIndex];
+    const dataElem = students[rowIndex];
     dataElem.stageTitle = iData.selectedValue.label;
     dataElem.stage = iData.selectedValue.value;
 
-    const newData = [...mainData];
+    const newData = [...students];
     newData[rowIndex] = dataElem;
     setStudents(newData);
   };
 
   EventEmitter.subscribe("stageChange", stageChangeEvent);
-
-  // const fetchUsers = async (signal) => {
-  //   try {
-  //     const usersURL = `${baseUrl}users/getall`;
-  //     const response = await axios.get(usersURL, { signal });
-  //     // usersSetup(response.data.data);
-  //   } catch (e) {
-  //     fetchingFinish();
-  //   }
-  // };
 
   const dataSetup = (studentData) => {
     const locationCampus = location.pathname.split("/")[1];
@@ -205,21 +211,21 @@ const DashboardPage = ({ displayData, title, url }) => {
       }
     }
 
-    for (let i = 0; i < studentData.length; i += 1) {
-      // eslint-disable-next-line no-param-reassign, import/no-named-as-default-member
-      studentData[i] = StudentService.dConvert(studentData[i]);
-    }
-    setStudents(studentData);
+    const sData = studentData.map((data) => StudentService.dConvert(data));
 
-    setState((prevState) => ({
-      ...prevState,
-      mainData: studentData,
-      wholeData: studentData,
-      showLoader: false,
+    // for (let i = 0; i < studentData.length; i += 1) {
+    //   // eslint-disable-next-line no-param-reassign, import/no-named-as-default-member
+    //   studentData[i] = StudentService.dConvert(studentData[i]);
+    // }
+    setStudents(sData);
+    setAllStudents(sData);
+    setCampusCounts({
       dropoutCount: countDropOut,
       onLeaveCount: countOnLeave,
       inCampusCount: countInCampus,
-    }));
+    });
+
+    setLoading(false);
   };
 
   const fetchStudents = async (signal) => {
@@ -228,8 +234,8 @@ const DashboardPage = ({ displayData, title, url }) => {
       const response = await axios.get(dataURL, {
         signal,
         params: {
-          from: state.fromDate,
-          to: state.toDate,
+          from: fromDate,
+          to: toDate,
         },
       });
       const obj = {};
@@ -266,46 +272,36 @@ const DashboardPage = ({ displayData, title, url }) => {
     (async () => {
       await fetchStudents(controller.signal);
     })();
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      setStudents([]);
+      clearStudents();
+    };
   }, []);
 
   const changeFromDate = async (date) => {
-    setState((prevState) => ({
-      ...prevState,
-      fromDate: date,
-    }));
+    setFromDate(date);
     fetchStudents();
   };
 
   const changeToDate = (date) => {
-    setState((prevState) => ({
-      ...prevState,
-      toDate: date,
-    }));
+    setToDate(date);
     fetchStudents();
   };
 
   const filterData = () => {
-    setStudents(mainData);
+    // setStudents(mainData);
     if (allStagesValue.indexOf(fromStage) <= allStagesValue.indexOf(toStage)) {
       const newAllStagesValue = allStagesValue.slice(
         allStagesValue.indexOf(fromStage),
         allStagesValue.indexOf(toStage) + 1
       );
-      const newData = wholeData.filter(
+      const newData = allStudents.filter(
         (element) => newAllStagesValue.indexOf(element.stage) > -1
       );
       setStudents(newData);
-      setState({
-        ...state,
-        mainData: newData,
-      });
     } else {
       setStudents([]);
-      setState({
-        ...state,
-        mainData: [],
-      });
       enqueueSnackbar(`Stage inputs not correct. Please check once.`, {
         variant: "error",
       });
@@ -313,20 +309,20 @@ const DashboardPage = ({ displayData, title, url }) => {
   };
 
   const onChangeFromStage = async (event) => {
-    setState({ ...state, fromStage: event.label });
+    setFromStage(event.label);
     if (fromStage && toStage) {
       filterData();
     }
   };
 
   const onChangeToStage = async (event) => {
-    setState({ ...state, toStage: event.label });
+    setToStage(event.label);
     if (fromStage && toStage) {
       filterData();
     }
   };
 
-  const { dropoutCount, onLeaveCount, inCampusCount } = state;
+  // const { dropoutCount, onLeaveCount, inCampusCount } = state;
   const locationCampus = location.pathname.split("/")[1];
 
   const showAllStage = parseInt(
@@ -367,7 +363,7 @@ const DashboardPage = ({ displayData, title, url }) => {
           <DatePicker
             margin="dense"
             style={{ marginLeft: 16, maxWidth: "40%" }}
-            value={state.fromDate}
+            value={fromDate}
             id="date-picker-dialog"
             label="From Date"
             format="MM/dd/yyyy"
@@ -386,7 +382,7 @@ const DashboardPage = ({ displayData, title, url }) => {
           <DatePicker
             margin="dense"
             style={{ marginLeft: 16, maxWidth: "40%" }}
-            value={state.toDate}
+            value={toDate}
             id="date-picker-dialog"
             label="To Date"
             format="MM/dd/yyyy"
@@ -403,19 +399,10 @@ const DashboardPage = ({ displayData, title, url }) => {
     </Grid>
   );
 
-  const options2 = wholeData.length > 0 && (
-    <Grid
-      container
-      spacing={4}
-      sx={{ paddingY: "0.8rem" }}
-      // style={{
-      //   display: "flex",
-      //   flexWrap: "wrap",
-      // }}
-    >
+  const options2 = allStudents.length > 0 && (
+    <Grid container spacing={4} sx={{ paddingY: "0.8rem" }}>
       <Grid item xs={12} md={6} lg={3}>
         <Select
-          // className="filterSelectGlobal"
           onChange={onChangeFromStage}
           options={showAllStage ? partnerStages : allStagesOptions}
           placeholder="From Stage"
@@ -427,7 +414,6 @@ const DashboardPage = ({ displayData, title, url }) => {
       </Grid>
       <Grid item xs={12} md={6} lg={3}>
         <Select
-          // className="filterSelectGlobal"
           onChange={onChangeToStage}
           options={showAllStage ? partnerStages : allStagesOptions}
           placeholder="To Stage"
@@ -440,15 +426,10 @@ const DashboardPage = ({ displayData, title, url }) => {
 
       <Grid item xs={12} md={12} lg={6} xl={6}>
         <Paper
-          style={{
+          sx={{
             fontSize: "17px",
             padding: "0.4rem 0.8rem",
-            // border: "1px solid #B3B3B3",
-
             fontFamily: "Times New Roman",
-            // marginLeft: "15px",
-            // borderRadius: "4px",
-            // marginTop: "16px",
             display: "flex",
             gap: 8,
             justifyContent: "center",
@@ -493,8 +474,8 @@ const DashboardPage = ({ displayData, title, url }) => {
         tableBodyMaxHeight="56vh"
         title={title}
         columns={[...displayData, ...columns]}
-        data={mainData}
-        showLoader={showLoader}
+        data={students}
+        showLoader={loading}
       />
     </Box>
   );

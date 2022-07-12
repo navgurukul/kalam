@@ -13,6 +13,7 @@ import {
   setPageNo,
 } from "../../store/slices/studentSlice";
 import { qualificationKeys } from "../../utils/constants";
+import { getColumnIndex } from "../../utils";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -87,7 +88,6 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
       // eslint-disable-next-line no-param-reassign
       value = value === "Female" ? 1 : value === "Male" ? 2 : 3;
     }
-
     const keys = {
       gender: "gender",
       donor: "searchDonorName",
@@ -104,18 +104,27 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
       filterColumns:
         value === "All"
           ? [...newData]
-          : [...newData, { key: keys[query], value }],
+          : [
+              ...newData,
+              { key: keys[query], value: encodeURIComponent(value) },
+            ],
     };
     const { filterColumns: newColumns } = newState;
     // filterValues(filterColumns);
     const newUrl = await filterColumns.reduce((cUrl, filterColumn, index) => {
       if (index > 0) {
-        return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
+        return `${cUrl}&${filterColumn.key}=${encodeURIComponent(
+          filterColumn.value
+        )}`;
       }
       if (state.query) {
-        return `${cUrl}${state.query}=${state.value}&${filterColumn.key}=${filterColumn.value}`;
+        return `${cUrl}${state.query}=${state.value}&${
+          filterColumn.key
+        }=${encodeURIComponent(filterColumn.value)}`;
       }
-      return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
+      return `${cUrl}${filterColumn.key}=${encodeURIComponent(
+        filterColumn.value
+      )}`;
     }, `${baseURL}students?`);
     if (newColumns.length > 0) {
       //getStudents(`${url}&limit=${numberOfRows}&page=0`);
@@ -242,16 +251,17 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
       sortChange(changedColumn, order);
     },
     onFilterChange: async (columnChanged, filterList) => {
-      const indexObj = {
-        gender: 10,
-        campus: 24,
-        donor: 25,
-        studentOwner: 18,
-        status: 19,
-        partnerName: 21,
-      };
+      // const indexObj = {
+      //   gender: getColumnIndex,
+      //   campus: 25,
+      //   donor: 26,
+      //   studentOwner: 19,
+      //   status: 20,
+      //   partnerName: 22,
+      // };
       if (columnChanged) {
-        const filterValue = filterList[indexObj[columnChanged]][0];
+        const filterValue =
+          filterList[getColumnIndex(newColumns, columnChanged)][0];
         if (filterValue === undefined)
           return getfilterApi(columnChanged, "All");
         return getfilterApi(columnChanged, filterValue);

@@ -96,6 +96,7 @@ const StudentSlice = createSlice({
     numberOfRows: 10,
     page: 0,
     stage: [],
+    selectedStudent: { studentId: null, transitions: [] },
   },
   reducers: {
     // creating reducers
@@ -125,6 +126,9 @@ const StudentSlice = createSlice({
     setStage: (state, action) => {
       state.stage = action.payload;
     },
+    setSelectedStudent: (state, action) => {
+      state.selectedStudent = action.payload;
+    },
   },
   extraReducers: {
     [fetchStudents.fulfilled]: (state, action) => {
@@ -143,5 +147,6 @@ export const {
   setPageNo,
   setStage,
   setUrl,
+  setSelectedStudent,
 } = StudentSlice.actions; // actions auto generated from above reducers
 export default StudentSlice.reducer; // exporting the reducer

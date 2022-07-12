@@ -26,9 +26,15 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const MainLayout = (props) => {
+const MainLayout = ({
+  data,
+  columns,
+  options,
+  title,
+  showLoader,
+  tableBodyMaxHeight,
+}) => {
   const classes = useStyles();
-  const { data, columns, options, title, showLoader } = props;
   return (
     <ThemeProvider theme={theme}>
       <Box>
@@ -51,7 +57,7 @@ const MainLayout = (props) => {
             // filter: true,
             // filterType: "dropdown",
             responsive: "vertical",
-            tableBodyMaxHeight: "64vh",
+            tableBodyMaxHeight: tableBodyMaxHeight || "64vh",
             textLabels: {
               body: {
                 noMatch: showLoader ? (

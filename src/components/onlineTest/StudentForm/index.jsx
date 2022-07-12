@@ -4,12 +4,13 @@ import { Button, Container, Typography, MobileStepper } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { makeStyles, useTheme } from "@mui/styles";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
-import { baseUrl } from "../../../utils/constants";
+import { useNavigate } from "react-router-dom";
+import { baseUrl, customPartner } from "../../../utils/constants";
 import Loader from "../../ui/Loader";
+import { setStudentId } from "../../../store/slices/onlineTestSlice";
 
 const BasicDetails = React.lazy(() => import("./BasicDetails"));
 const OtherDetails = React.lazy(() => import("./OtherDetails"));
@@ -41,27 +42,28 @@ const useStyles = makeStyles((theme) => ({
 const StudentForm = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const rLocation = useLocation();
+  // const rLocation = useLocation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { lang } = useSelector((state) => state.ui);
   const {
-    firstName = "",
-    middleName = "",
-    lastName = "",
-    mobileNumber = "",
+    studentData,
     enrollmentKey,
     studentId = "",
+    partner,
+  } = useSelector((state) => state.onlineTest);
+  const { lang } = useSelector((state) => state.ui);
+  const {
+    firstName,
+    middleName,
+    lastName,
+    mobileNumber,
     // lang = "En",
-  } = rLocation.state
-    ? rLocation.state
-    : {
-        firstName: null,
-        middleName: null,
-        lastName: null,
-        mobileNumber: null,
-        enrollmentKey: "",
-        studentId: "",
-      };
+  } = studentData || {
+    firstName: null,
+    middleName: null,
+    lastName: null,
+    mobileNumber: null,
+  };
   const {
     register,
     handleSubmit,
@@ -236,9 +238,10 @@ const StudentForm = () => {
   }, []);
 
   const getSteps = () => [
-    ["Basic Details", "बुनियादी जानकारी"],
-    ["Other Details", "अन्य जानकारी"],
+    { en: "Basic Details", hi: "बुनियादी जानकारी", ma: "मूलभूत माहिती" },
+    { en: "Other Details", hi: "अन्य जानकारी", ma: "इतर माहिती" },
   ];
+
   const steps = getSteps();
 
   const submitHandler = (prevData) => {
@@ -294,15 +297,20 @@ const StudentForm = () => {
         })
         .then(() => {
           navigate(`/test/finalinstruction/`, {
-            state: { enrollmentKey, studentId },
+            // state: { enrollmentKey, studentId },
           });
         });
     } else {
       axios
         .post(`${baseUrl}on_assessment/details/${enrollmentKey}`, data)
         .then((res) => {
+          dispatch(setStudentId(res.data.details.id));
           navigate(`/test/finalinstruction/`, {
-            state: { enrollmentKey, studentId: res.data.details.id },
+            // state: {
+            //   enrollmentKey,
+            //   partnerSlug: partner?.slug,
+            //   studentId: res.data.details.id,
+            // },
           });
 
           //console.log("res", res);
@@ -319,7 +327,12 @@ const StudentForm = () => {
     e.preventDefault();
     setFormData((prevFormData) => ({ ...prevFormData, ...data }));
 
-    if (activeStep === 0 && !formData.PrevImage && !formData.ProfileImage) {
+    if (
+      // !customPartner.includes(partner?.slug || "") &&
+      activeStep === 0 &&
+      !formData.PrevImage &&
+      !formData.ProfileImage
+    ) {
       enqueueSnackbar("Please provide a Profile Picture", { variant: "error" });
       return;
     }
@@ -360,6 +373,7 @@ const StudentForm = () => {
               // handleChange={handleChange}
               reactForm={{ register, errors, control }}
               inputDisabled={alreadyAUser}
+              pfpCompulsion={!customPartner.includes(partner?.slug)}
               setProfileImage={setProfileImage}
             />
           </React.Suspense>
@@ -379,6 +393,7 @@ const StudentForm = () => {
               lang={lang}
               // prevFilledData={prevData}
               alreadyAUser={alreadyAUser}
+              partnerSlug={partner?.slug}
               inputDisabled={alreadyAUser}
             />
           </React.Suspense>
@@ -391,7 +406,7 @@ const StudentForm = () => {
   return (
     <Container className={classes.root} maxWidth="sm">
       <Typography variant="h5" className={classes.text}>
-        {lang === "en" ? steps[activeStep][0] : steps[activeStep][1]}
+        {steps[activeStep][lang]}
       </Typography>
       <form
         style={{ paddingTop: "2.0rem" }}

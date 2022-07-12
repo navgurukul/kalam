@@ -10,6 +10,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
 import dataReducer from "./slices/dataSlice";
 import campusReducer from "./slices/campusSlice";
+import onlineTestReducer from "./slices/onlineTestSlice";
 import ownerReducer from "./slices/ownerSlice";
 import studentsReducer from "./slices/studentSlice";
 import uiReducer from "./slices/uiSlice";
@@ -30,8 +31,9 @@ import uiReducer from "./slices/uiSlice";
 export default configureStore({
   reducer: {
     auth: authReducer,
-    data: dataReducer,
+    data: dataReducer
     campus: campusReducer,
+    onlineTest: onlineTestReducer,
     owners: ownerReducer,
     students: studentsReducer,
     ui: uiReducer,

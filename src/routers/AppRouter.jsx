@@ -10,6 +10,7 @@ import { decryptText } from "../utils";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import LandingPage from "../components/pages/LandingPage";
+import CustomLandingPage from "../components/pages/CustomLandingPage";
 import AdmissionsDash from "../components/dashboard/AdmissionsDash";
 import NotFoundPage from "../components/layout/NotFoundPage";
 import Loader from "../components/ui/Loader";
@@ -237,6 +238,7 @@ const AppRouter = () => {
             </Route>
 
             <Route path="/partnerLanding/:slug" element={<LandingPage />} />
+            <Route path="/amravati" element={<CustomLandingPage />} />
 
             <Route
               path="/donors"

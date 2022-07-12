@@ -1,5 +1,7 @@
 export const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
+export const customPartner = ["amravati", "lahia"];
+
 export const permissions = {
   permissionsView: ["kirithiv@navgurukul.org", "vaibhavmagar@navgurukul.org"],
   updateStage: [
@@ -635,6 +637,7 @@ export const religon = {
   jain: 4,
   christian: 5,
   others: 6,
+  buddhism: 7,
 };
 
 export const allTagsForOnlineClass = [

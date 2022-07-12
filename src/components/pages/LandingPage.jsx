@@ -4,18 +4,25 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
+import { Container } from "@mui/material";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import Grid from "@mui/material/Grid";
 import { makeStyles, ThemeProvider } from "@mui/styles";
 import { changeFetching } from "../../store/slices/uiSlice";
 import VideoSlider from "../ui/VideoSlider";
 import theme from "../../theme";
-import { decryptText } from "../../utils";
+import { decryptText, encryptText } from "../../utils";
+import {
+  setEnrollmentKey,
+  setPartner,
+  setStudentData,
+} from "../../store/slices/onlineTestSlice";
+// import { customPartner } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -97,6 +104,7 @@ const LandingPage = () => {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { slug } = useParams();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const { lang: selectedLang } = useSelector((state) => state.ui);
@@ -113,43 +121,53 @@ const LandingPage = () => {
     pendingInterviewStage: "checking",
     enrollmentKey: "",
   });
-  const [goToTest, setGoToTest] = React.useState(false);
+  // const [goToTest, setGoToTest] = React.useState(false);
+  const testClosed = [];
   const lang = {
     Heading: {
       en: "Software Engineering Scholarship",
       hi: "Software Engineering Scholarship",
+      ma: "Software Engineering Scholarship",
     },
     Course: {
       en: "Course Information",
       hi: "कोर्स के बारे में जाने",
+      ma: "अभ्यासक्रम माहिती",
     },
     Status: {
       en: "Check your test result by entering the number you gave test from",
       hi: "आपने जिस नंबर से परीक्षा दी है, उसे एंटर करके अपना परीक्षा रिजल्ट देखें",
+      ma: "तुम्ही ज्या क्रमांकावरून चाचणी दिली होती ती क्रमांक टाकून तुमचा चाचणी निकाल तपासा",
     },
     AdmisssionTitle: {
       en: "Start Admisssion Test",
       hi: "परीक्षा शुरू करें",
+      ma: "प्रवेश परीक्षा सुरू करा",
     },
     TestButton: {
       en: "GIVE TEST",
       hi: "परीक्षा दे।",
+      ma: "परीक्षा द्या.",
     },
     StatusButton: {
       en: "Check Result",
       hi: "रिजल्ट देखे",
+      ma: "निकाल तपासा",
     },
     Footer: {
       en: "For more queries, write at hi@navgurukul.org",
       hi: "अधिक जानकारी के लिए ईमेल करे: hi@navgurukul.org",
+      ma: "अधिक प्रश्नांसाठी, येथे लिहा: hi@navgurukul.org",
     },
     mandatoryField: {
       en: "To attempt the test, it is compulsory to enter your First Name, Last Name and Mobile Number. Middle Name is optional, you can choose not to enter.",
       hi: "टेस्ट देने के लिए अपना फर्स्ट नेम, लास्ट नेम और मोबाइल नंबर डालना आवश्यक  है। मध्य नाम वैकल्पिक है, आप प्रवेश नहीं करना चुन सकते हैं।",
+      ma: "चाचणीचा प्रयत्न करण्यासाठी, आपले नाव, आडनाव आणि मोबाइल नंबर प्रविष्ट करणे अनिवार्य आहे. मधले नाव ऐच्छिक आहे, तुम्ही एंटर न करणे निवडू शकता.",
     },
     mobileNumber: {
       en: "Please give 10 digits of the mobile number.",
       hi: "कृपया मोबाइल नंबर के 10 अंक दें।",
+      ma: "कृपया मोबाईल नंबरचे 10 अंक द्या.",
     },
   };
 
@@ -158,8 +176,8 @@ const LandingPage = () => {
     time: localStorage.getItem("time"),
     studentId: localStorage.getItem("studentId"),
   });
-  const partnerFetch = async (slug) => {
-    const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
+  const partnerFetch = async (_slug) => {
+    const response = await axios.get(`${baseUrl}partners/slug/${_slug}`, {});
     setState({
       ...state,
       partnerId: response.data.data.id,
@@ -196,7 +214,6 @@ const LandingPage = () => {
   const { enrollmentKey, time } = getTestData();
 
   useEffect(() => {
-    const slug = window.location.href.split("partnerLanding/")[1];
     if (slug) {
       partnerFetch(slug);
     }
@@ -204,7 +221,7 @@ const LandingPage = () => {
       const Time = parseInt(decryptText(time), 10);
       const date = new Date(JSON.parse(Time));
       if (parseInt(dayjs(date).diff(dayjs(), "seconds"), 10) > 0) {
-        setGoToTest(true);
+        // setGoToTest(true);
       } else {
         localStorage.removeItem("answerList");
         localStorage.removeItem("enrollmentKey");
@@ -271,6 +288,13 @@ const LandingPage = () => {
           });
           fetchingFinish();
 
+          dispatch(
+            setStudentData({ firstName, middleName, lastName, mobileNumber })
+          );
+          dispatch(setPartner({ slug, id: state.partnerId }));
+          localStorage.setItem("partnerSlug", encryptText(slug));
+          dispatch(setEnrollmentKey(res.data.key));
+
           navigate(`/test/instructions`, {
             state: {
               firstName,
@@ -278,6 +302,7 @@ const LandingPage = () => {
               lastName,
               mobileNumber,
               enrollmentKey: res.data.key,
+              partner: { slug, partnerId: state.partnerId },
             },
           });
         }
@@ -309,6 +334,16 @@ const LandingPage = () => {
     await isDuplicate();
   };
 
+  if (slug && testClosed.includes(slug))
+    return (
+      <Container sx={{ display: "flex", justifyContent: "center" }}>
+        <Typography color="error" variant="h4">
+          Tests will open at 1PM Today!
+        </Typography>
+        ``
+      </Container>
+    );
+
   const { mobileNumber, firstName, middleName, lastName, mobile } = state;
   return (
     <div
@@ -321,7 +356,7 @@ const LandingPage = () => {
       }}
     >
       <ThemeProvider theme={theme}>
-        {goToTest ? (
+        {/* {goToTest ? (
           <Button
             variant="text"
             color="primary"
@@ -330,7 +365,7 @@ const LandingPage = () => {
           >
             Go Back to Test
           </Button>
-        ) : null}
+        ) : null} */}
         <Typography className={classes.paper}>
           {lang.Heading[selectedLang]}
         </Typography>

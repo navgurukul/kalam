@@ -7,6 +7,9 @@ import { DialogTitle, DialogActions, Dialog, Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import * as _ from "underscore";
 import { nextStage } from "../../services/GlobalService";
+// eslint-disable-next-line import/no-cycle
+import StudentService from "../../services/StudentService";
+import { getColumnIndex } from "../../utils";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
@@ -34,8 +37,6 @@ const StageSelect = (props) => {
     nextStage: "",
   });
 
-  console.log(stagess, "stagess");
-
   const getTransitionStage = (studentId) => {
     axios
       .get(`${baseUrl}students/transitions/${studentId}`)
@@ -54,7 +55,7 @@ const StageSelect = (props) => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -64,7 +65,7 @@ const StageSelect = (props) => {
     );
     const { data } = response.data;
     // eslint-disable-next-line no-nested-ternary
-    return data ? (data.email ? data.email : "") : "";
+    return data?.email || "";
   };
 
   const changeStage = (selectedValue) => {
@@ -94,9 +95,19 @@ const StageSelect = (props) => {
   const handleChange = async (selectedValue) => {
     const { value } = selectedValue;
     const { rowMetatable } = props;
-    const email = rowMetatable.rowData[9];
-    const name = rowMetatable.rowData[2];
-    const campus = rowMetatable.rowData[24];
+
+    const email =
+      rowMetatable.rowData[
+        getColumnIndex(StudentService.columns.softwareCourse, "email")
+      ];
+    const name =
+      rowMetatable.rowData[
+        getColumnIndex(StudentService.columns.softwareCourse, "name")
+      ];
+    const campus =
+      rowMetatable.rowData[
+        getColumnIndex(StudentService.columns.softwareCourse, "campus")
+      ];
 
     if (value === "offerLetterSent" && campus && name && email) {
       setState({
@@ -147,7 +158,8 @@ const StageSelect = (props) => {
       });
   };
 
-  const handleClose = () => {
+  const handleClose = (e, clickaway) => {
+    if (clickaway) return;
     setState({
       ...state,
       flag: false,

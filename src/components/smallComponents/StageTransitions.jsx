@@ -1,7 +1,7 @@
 import "date-fns";
 import React from "react";
 import { Modal, Grid, Box, Typography, IconButton } from "@mui/material";
-import { ThemeProvider, makeStyles } from "@mui/styles";
+import { makeStyles } from "@mui/styles";
 
 import CancelIcon from "@mui/icons-material/Cancel";
 
@@ -12,6 +12,7 @@ import ChangeHistoryIcon from "@mui/icons-material/ChangeHistory";
 import { useLocation } from "react-router-dom";
 import theme from "../../theme";
 import { changeFetching } from "../../store/slices/uiSlice";
+import { setSelectedStudent } from "../../store/slices/studentSlice";
 import GlobalService from "../../services/GlobalService";
 // eslint-disable-next-line import/no-cycle
 import StudentService from "../../services/StudentService";
@@ -66,25 +67,29 @@ const useStyles = makeStyles((_theme) => ({
   },
 }));
 
-const StageTransitions = (props) => {
+const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
   const classes = useStyles();
   const location = useLocation();
+
   const { loggedInUser } = useSelector((state) => state.auth);
+  const { selectedStudent } = useSelector((state) => state.students);
+
   const dispatch = useDispatch();
+  const setTransitions = (transitions) =>
+    dispatch(setSelectedStudent({ studentId, transitions }));
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const [state, setState] = React.useState({
-    data: [],
-    contacts: [],
-    modalOpen: false,
-    showLoader: true,
-    toggleOutreach: false,
+
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [contacts, setContacts] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [toggleOutreach, setToggleOutreach] = React.useState(false);
+  const [data, setData] = React.useState({
     joinedStudentData: [],
-    joinedOutreachData: [],
+    joinedOutreach: [],
   });
 
   const fetchtransition = async () => {
-    const { studentId } = props;
     try {
       const transitionURL = `${baseURL}students/transitionsWithFeedback/${studentId}`;
       fetchingStart();
@@ -96,11 +101,10 @@ const StageTransitions = (props) => {
 
       if (loggedInUser) {
         newData = response.data.data.map((v) => {
-          if (campusMilestoneKey.indexOf(v.to_stage) !== -1) {
+          if (campusMilestoneKey.indexOf(v.to_stage) !== -1)
             joinedStudent.push(v);
-          } else {
-            joinedOutreach.push(v);
-          }
+          else joinedOutreach.push(v);
+
           return {
             ...v,
             loggedInUser,
@@ -124,62 +128,63 @@ const StageTransitions = (props) => {
         newData = joinedStudent;
       }
 
-      setState((prevState) => ({
-        ...prevState,
-        data: newData,
+      setTransitions(newData);
+
+      setData({
         joinedStudentData: joinedStudent,
         joinedOutreachData: joinedOutreach,
-        contacts: response.data.contacts,
-        showLoader: false,
-      }));
+      });
+      setContacts(response.data.contacts);
+      setLoading(false);
+
       fetchingFinish();
     } catch (e) {
       fetchingFinish();
     }
   };
 
-  const handleClose = () => {
-    setState((prevState) => ({
-      ...prevState,
-      modalOpen: false,
-    }));
-  };
+  const handleClose = () => setModalOpen(false);
 
   const handleOpen = () => {
     fetchtransition();
-    setState((prevState) => ({
-      ...prevState,
-      modalOpen: true,
-    }));
+    setModalOpen(true);
   };
 
   const handleChange = () => {
-    setState((prevState) => ({
-      ...prevState,
-      toggleOutreach: !prevState.toggleOutreach,
-      data: prevState.toggleOutreach
-        ? prevState.joinedStudentData
-        : prevState.joinedOutreachData,
-    }));
+    setTransitions(
+      toggleOutreach ? data.joinedStudentData : data.joinedOutreachData
+    );
+    setToggleOutreach((prevData) => !prevData);
   };
 
-  const style = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "120%",
-    marginBottom: "10px",
-    minHeight: "40px",
-    maxHeight: "140px",
-    flexWrap: "wrap",
-  };
-  const { studentName, studentId, isShow } = props;
   const campusPath = location.pathname.split("/")[1];
 
   const modalStyle = getModalStyle();
-  const { dataType } = props;
-  return !state.modalOpen ? (
-    <div>
+  const options = {
+    headerStyle: {
+      color: theme.palette.primary.main,
+    },
+    textLabels: {
+      body: {
+        noMatch: loading ? (
+          <Loader />
+        ) : (
+          "Sorry, there is no matching data to display"
+        ),
+      },
+    },
+    exportButton: true,
+    pageSize: 100,
+    showTitle: false,
+    selectableRows: "none",
+    toolbar: false,
+    filtering: true,
+    filter: true,
+    filterType: "dropdown",
+    responsive: "vertical",
+  };
+  return (
+    <>
       {isShow ? (
         <Typography
           variant="body1"
@@ -204,7 +209,7 @@ const StageTransitions = (props) => {
             e.target.style.color = "black";
           }}
         >
-          {studentName}{" "}
+          {studentName}
         </Typography>
       ) : (
         <IconButton color="primary" align="right" onClick={handleOpen}>
@@ -214,88 +219,55 @@ const StageTransitions = (props) => {
           />
         </IconButton>
       )}
-    </div>
-  ) : (
-    <Modal open={state.modalOpen} onClose={handleClose}>
-      <Box style={modalStyle} className={classes.paper}>
-        <ThemeProvider theme={theme}>
-          <Box display="flex" justifyContent="space-between" pt={4}>
-            <Grid
-              container
-              direction="column"
-              justifyContent="center"
-              alignItems="flex-start"
-            >
-              <Typography variant="h6" id="modal-title">
-                Student Name:- {studentName}
-              </Typography>
-              <br />
-              <div className="transition-tools" style={style}>
+      <Modal open={modalOpen} onClose={handleClose}>
+        <Box style={modalStyle} className={classes.paper}>
+          <Box display="flex" justifyContent="space-between" pt={2}>
+            <Grid container spacing={2}>
+              <Grid item xs={10}>
+                <Typography variant="h5" id="modal-title">
+                  Student Name:- {studentName}
+                </Typography>
+              </Grid>
+              <Grid item xs={2} display="flex">
+                {campusPath === "campus" ? (
+                  // <Grid item xs={4}>
+                  <OutreachData onChange={handleChange} />
+                ) : // </Grid>
+                null}
                 <StudentContact
                   studentId={studentId}
-                  contacts={state.contacts}
+                  contacts={contacts}
                   closeTransition={handleClose}
+                  studentName={studentName}
                 />
-                {campusPath === "campus" ? (
-                  <OutreachData onChange={handleChange} />
-                ) : null}
                 <DeleteStudentDetails
                   studentId={studentId}
-                  handleClose={handleClose}
+                  closeModal={handleClose}
                   pathname={location.pathname}
                   studentName={studentName}
                 />
-              </div>
+              </Grid>
             </Grid>
-            <Box style={{ cursor: "pointer" }} onClick={handleClose}>
-              <CancelIcon />
+            <Box display="flex" alignItems="flex-start">
+              <IconButton
+                sx={{ padding: 0, margin: 0, py: 0 }}
+                size="small"
+                onClick={handleClose}
+              >
+                <CancelIcon />
+              </IconButton>
             </Box>
           </Box>
           <MUIDataTable
             columns={StudentService.columns[dataType]}
-            data={state.data}
+            data={selectedStudent?.transitions || []}
             icons={GlobalService.tableIcons}
-            options={{
-              headerStyle: {
-                color: theme.palette.primary.main,
-              },
-              textLabels: {
-                body: {
-                  noMatch: state.showLoader ? (
-                    <Loader />
-                  ) : (
-                    "Sorry, there is no matching data to display"
-                  ),
-                },
-              },
-              exportButton: true,
-              pageSize: 100,
-              showTitle: false,
-              selectableRows: "none",
-              toolbar: false,
-              filtering: true,
-              filter: true,
-              filterType: "dropdown",
-              responsive: "vertical",
-            }}
+            options={options}
           />
-        </ThemeProvider>
-      </Box>
-    </Modal>
+        </Box>
+      </Modal>
+    </>
   );
 };
-
-// const mapStateToProps = (state) => ({
-//   loggedInUser: state.auth.loggedInUser,
-// });
-
-// const mapDispatchToProps = (dispatch) => ({
-//   fetchingStart: () => dispatch(changeFetching(true)),
-//   fetchingFinish: () => dispatch(changeFetching(false)),
-// });
-
-// export default withRouter(
-//   withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Transition))
-// );
 
 export default StageTransitions;

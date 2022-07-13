@@ -2,23 +2,42 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { Container, Paper, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const tutorialSteps = {
   heading: "Oh Sorry!",
-  hiContent1: "आप इस बारी इस टेस्ट में पास नहीं हो पाए। आपके ",
-  enContent1:
-    "You could not clear the Navgurukul Scholarship Test this time. You have scored ",
-  hiContent2: " नंबर आए है| कोई बात नहीं आप दोबारा कोशिश कर सकते हो।",
-  enContent2:
-    " marks in the test. Don't worry, you can give the test again after some preparation",
-  hiContent3:
-    "आप थोड़ी और तैयारी के बाद यह टेस्ट फिर से दे सकते है | गणित की प्रैक्टिस के लिए ",
-  enContent3: "You can use this study guide for more maths practice ",
-  hiLink: "यहाँ क्लिक करे",
-  enLink: "click here",
-  hiContent4: " स्टडी गाइड का उपयोग करे |",
-  enContent4: " Prepare, Practice and Pass :)",
+  // hiContent1: ,
+  content1: {
+    en: "You could not clear the Navgurukul Preliminary Test this time. You have scored ",
+    hi: "आप इस बारी इस टेस्ट में पास नहीं हो पाए। आपके ",
+    ma: "यावेळी तुम्हाला नवगुरुकुल प्राथमिक चाचणी पास करता आली नाही. तुम्हाला ",
+  },
+
+  // hiContent2: " ",
+  content2: {
+    en: " marks in the test. Don't worry, you can give the test again after some preparation",
+    hi: " नंबर आए है| कोई बात नहीं आप दोबारा कोशिश कर सकते हो।",
+    ma: " गुण मिळाले आहेत.",
+  },
+  // hiContent3:    "आप थोड़ी और तैयारी के बाद यह टेस्ट फिर से दे सकते है | गणित की प्रैक्टिस के लिए ",
+  content3: {
+    en: "You can use this study guide for more maths practice ",
+    hi: "आप थोड़ी और तैयारी के बाद यह टेस्ट फिर से दे सकते है | गणित की प्रैक्टिस के लिए ",
+    ma: "अधिक गणिताच्या सरावासाठी तुम्ही या अभ्यास मार्गदर्शकाचा वापर करू शकता ",
+  },
+  // hiLink: "यहाँ क्लिक करे",
+  link: {
+    en: "Click Here. ",
+    hi: "यहाँ क्लिक करे। ",
+    ma: "इथे क्लिक करा. ",
+  },
+  // hiContent4: " स्टडी गाइड का उपयोग करे |",
+  content4: {
+    en: " Prepare, Practice and Pass :)",
+    hi: " स्टडी गाइड का उपयोग करे |",
+    ma: "तयारी करा, सराव करा आणि उत्तीर्ण व्हा :)",
+  },
   button: "Ok",
 };
 // meraki = https://saral.navgurukul.org/
@@ -48,10 +67,11 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
-function SorryPage() {
+function SorryPage({ redirect }) {
   const navigate = useNavigate();
   const classes = useStyles();
   const [totalMarks, setTotalMarks] = useState("");
+  const { lang } = useSelector((state) => state.ui);
   useEffect(() => {
     fetch(
       `${baseUrl}/on_assessment/Show_testResult/${
@@ -79,9 +99,9 @@ function SorryPage() {
         </Paper> */}
         <Paper square elevation={0} className={classes.content}>
           <Typography>
-            {tutorialSteps.enContent1}
-            {totalMarks}
-            {tutorialSteps.enContent2}
+            {tutorialSteps.content1[lang]}
+            <b>{totalMarks}</b>
+            {tutorialSteps.content2[lang]}
           </Typography>
         </Paper>
         {/* <Paper square elevation={0} className={classes.content}>
@@ -93,16 +113,16 @@ function SorryPage() {
         </Paper> */}
         <Paper square elevation={0} className={classes.content}>
           <Typography>
-            {tutorialSteps.enContent3}
+            {tutorialSteps.content3[lang]}
             <a
               href="https://merakilearn.org/"
               style={{
                 color: "blue",
               }}
             >
-              {tutorialSteps.enLink}
+              {tutorialSteps.link[lang]}
             </a>
-            {tutorialSteps.enContent4}
+            {tutorialSteps.content4[lang]}
           </Typography>
         </Paper>
         <Paper square elevation={0} className={classes.button}>
@@ -116,7 +136,7 @@ function SorryPage() {
               localStorage.removeItem("enrollmentKey");
               localStorage.removeItem("index");
               localStorage.removeItem("time");
-              navigate("/");
+              navigate(redirect);
             }}
           >
             Ok

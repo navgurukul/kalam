@@ -2,10 +2,10 @@ import React from "react";
 import { IconButton, Tooltip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
-const NewCustomToolbar = ({ handleOpen }) => (
+const NewCustomToolbar = ({ handleOpen, disabled }) => (
   //BaseURL
   <Tooltip title="Add New Email">
-    <IconButton onClick={handleOpen}>
+    <IconButton disabled={disabled} onClick={handleOpen}>
       <AddIcon />
     </IconButton>
   </Tooltip>

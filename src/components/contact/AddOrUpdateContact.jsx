@@ -1,72 +1,87 @@
 /* eslint-disable camelcase */
 import React from "react";
-import { Button } from "@mui/material";
-import DialogActions from "@mui/material/DialogActions";
+import { Button, Grid, TextField } from "@mui/material";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useSelector } from "react-redux";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const AddOrUpdateContact = (props) => {
+const AddOrUpdateContact = ({
+  contactType,
+  mobile,
+  studentId,
+  handleClose,
+}) => {
   const { privileges } = useSelector((state) => state.auth);
-  const [updateOrAddType, setUpdateOrAddType] = React.useState("");
-  const snackbar = useSnackbar();
-  const addOrUpdateMobile = async (event) => {
-    const { contact_type, mobile, studentId, handleClose } = props;
-    const type = event.target.innerText;
+  const { enqueueSnackbar } = useSnackbar();
+  const [contact, setContact] = React.useState(mobile);
 
-    await setUpdateOrAddType(type === "ADD" ? "addContact" : "updateContact");
+  const handleChange = (e) => setContact(e.target.value);
+
+  const addOrUpdateMobile = async (action) => {
+    if (!contact || contact === "") {
+      enqueueSnackbar("New Mobile number is required!", {
+        variant: "error",
+      });
+      return;
+    }
+
+    const updateOrAddType =
+      action.toUpperCase() === "ADD" ? "addContact" : "updateContact";
 
     if (privileges.some((priv) => priv.privilege === "AddOrUpdateContact")) {
       try {
-        if (mobile) {
-          axios
-            .post(`${baseUrl}students/contactUpdateAdd/${studentId}`, {
-              mobile,
-              contact_type,
-              updateOrAddType,
-            })
-            .then(() => {
-              handleClose();
-              snackbar.enqueueSnackbar(
-                "Contact is successfully Added/Updated!",
-                { variant: "success" }
-              );
-            })
-            .catch(() => {
-              snackbar.enqueueSnackbar("Mobile number should be 10 digit!", {
-                variant: "error",
-              });
-            });
-        } else {
-          snackbar.enqueueSnackbar("New mobile number is required!", {
-            variant: "error",
-          });
-        }
+        await axios.post(`${baseUrl}students/contactUpdateAdd/${studentId}`, {
+          mobile,
+          contact_type: contactType,
+          updateOrAddType,
+        });
+        handleClose();
+        enqueueSnackbar("Contact is successfully Added/Updated!", {
+          variant: "success",
+        });
       } catch (e) {
-        //console.log(e);
-        snackbar.enqueueSnackbar("Something went wrong in server", {
+        enqueueSnackbar("Mobile number should be 10 digit!", {
           variant: "error",
         });
       }
     } else {
-      handleClose();
-      snackbar.enqueueSnackbar(
-        "You are not Authenticated user to Add/Update contact!",
-        { variant: "error" }
-      );
+      enqueueSnackbar("You are not Authenticated user to Add/Update contact!", {
+        variant: "error",
+      });
     }
   };
   return (
-    <DialogActions>
-      <Button variant="contained" color="primary" onClick={addOrUpdateMobile}>
-        Update
-      </Button>
-      <Button variant="contained" color="primary" onClick={addOrUpdateMobile}>
-        Add
-      </Button>
-    </DialogActions>
+    <Grid container spacing={1}>
+      <Grid item xs={7}>
+        <TextField
+          name={contactType}
+          variant="outlined"
+          onChange={handleChange}
+          label={contactType.toUpperCase()}
+          defaultValue={mobile}
+        />
+      </Grid>
+      <Grid item xs={3}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => addOrUpdateMobile("add")}
+        >
+          Update
+        </Button>
+      </Grid>
+      <Grid item xs={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => addOrUpdateMobile("update")}
+        >
+          Add
+        </Button>
+      </Grid>
+    </Grid>
   );
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from "react";
 import dayjs from "dayjs";
@@ -11,7 +12,6 @@ import UpdateEmail from "../components/smallComponents/UpdateEmail";
 import OwnerSelect from "../components/owner/OwnerSelect";
 import StatusSelect from "../components/smallComponents/StatusSelect";
 import StudentFeedback from "../components/feedback/FeedbackPage";
-// eslint-disable-next-line import/no-cycle
 import StageTransitions from "../components/smallComponents/StageTransitions";
 import StageTransitionsStudentStatus from "../components/student/StageTransitionsStudentStatus";
 import AudioRecorder from "../components/smallComponents/AudioRecording";
@@ -40,9 +40,10 @@ import {
   caste,
 } from "../utils/constants";
 import UploadDocuments from "../components/smallComponents/UploadDocuments";
-import CampusStatusDropdown from "../components/smallComponents/CampusStatus";
+// import CampusStatusDropdown from "../components/smallComponents/CampusStatus";
 import OtherActivities from "../components/campus/OtherActivities";
 import DeleteStudent from "../components/smallComponents/DeleteStudent";
+import { getColumnIndex } from "../utils";
 
 dayjs.extend(customParseFormat);
 
@@ -73,7 +74,12 @@ const ColumnTransitions = {
     customBodyRender: (value, rowMeta) => (
       <StageTransitions
         studentId={value}
-        studentName={rowMeta.rowData[2]}
+        studentName={
+          rowMeta.rowData[
+            // eslint-disable-next-line no-use-before-define
+            getColumnIndex(StudentService.columns.softwareCourse, "name")
+          ]
+        }
         dataType="columnTransition"
       />
     ),
@@ -89,7 +95,10 @@ const deleteStudentColumn = {
     sort: false,
     display: false,
     customBodyRender: (value, rowMeta) => (
-      <DeleteStudent studentId={rowMeta.rowData[0]} />
+      <DeleteStudent
+        studentId={rowMeta.rowData[0]}
+        studentName={rowMeta.rowData[3]}
+      />
     ),
   },
 };
@@ -125,7 +134,7 @@ const ColumnUpload = {
       finishedColumnTransition,
 */
 
-const StageColumnTransitionWrapper = ({ rowData, rowMeta }) => {
+const StageColumnTransitionWrapper = ({ value, rowMeta }) => {
   const { privileges } = useSelector((state) => state.auth);
   const path = window.location.pathname.split("/");
   const isCampus = path[1] === "campus";
@@ -135,7 +144,7 @@ const StageColumnTransitionWrapper = ({ rowData, rowMeta }) => {
       {privileges.some((priv) => priv.privilege === "DeleteTransition") ? (
         <DeleteRow transitionId={rowMeta.rowData[isCampus ? 11 : 9]} />
       ) : null}
-      {allStages[rowData]}
+      {allStages[value]}
     </>
   );
 };
@@ -146,8 +155,8 @@ const stageColumnTransition = {
   options: {
     filter: true,
     sort: true,
-    customBodyRender: (rowData, rowMeta) => (
-      <StageColumnTransitionWrapper rowData={rowData} rowMeta={rowMeta} />
+    customBodyRender: (value, rowMeta) => (
+      <StageColumnTransitionWrapper value={value} rowMeta={rowMeta} />
     ),
   },
 };
@@ -203,7 +212,9 @@ const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
           change={(event) => updateValue(event)}
         />
       ) : null}
-      {value?.split("\n\n").map((item) => <p key={item}> {item} </p>) || null}
+      {value
+        ?.split("\n\n")
+        .map((item) => <p key={item + Math.random()}> {item} </p>) || null}
     </div>
   ) : null;
 };
@@ -216,9 +227,9 @@ const feedbackColumnTransition = {
     sort: true,
     customBodyRender: (rowData, rowMeta, updateValue) => (
       <FeedbackColumnTransitionWrapper
-        rowData={rowData}
+        value={rowData}
         rowMeta={rowMeta}
-        change={updateValue}
+        updateValue={updateValue}
       />
     ),
   },
@@ -230,17 +241,16 @@ const OtherActivitiesColumn = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => {
-      const values = "testing";
-      return (
-        <OtherActivities
-          rowMetaTable={rowMeta}
-          otherActivities={rowData}
-          change={(event) => updateValue(event)}
-        />
-      );
-    },
+    customBodyRender: (rowData, rowMeta, updateValue) => (
+      <OtherActivities
+        rowMetaTable={rowMeta}
+        otherActivities={rowData}
+        change={(event) => updateValue(event)}
+      />
+    ),
   },
+};
+
 const OwnerColumnTransitionDashboardWrapper = ({
   value,
   rowMeta,
@@ -1507,39 +1517,37 @@ const partnerNameColumn = {
   },
 };
 
-const CampusStatusColumnWrapper = ({ value, rowMeta, updateValue }) => {
-  const { loggedInUser } = useSelector((state) => state.auth);
-  if (permissions.updateStage.indexOf(loggedInUser.email) > -1) {
-    return (
-      <CampusStatusDropdown
-        // studentId={rowMeta.rowData[0]}
-        rowMeta={rowMeta}
-        value={value}
-        change={(event) => updateValue(event)}
-        S
-      />
-    );
-  }
-  return value;
-};
+// const CampusStatusColumnWrapper = ({ value, rowMeta, updateValue }) => {
+//   const { privileges } = useSelector((state) => state.auth);
+//   return privileges?.some((priv) => priv.privilege === "UpdateStage") ? (
+//     <CampusStatusDropdown
+//       // studentId={rowMeta.rowData[0]}
+//       rowMeta={rowMeta}
+//       value={value}
+//       change={(event) => updateValue(event)}
+//       S
+//     />
+//   ) : (
+//     <p>{value}</p>
+//   );
+// };
 
-const CampusStatus = {
-  name: "campusStatus",
-  label: "Campus Status",
-  options: {
-    filter: false,
-    sort: false,
-    customBodyRender: (value, rowMeta, updateValue) => (
-      <CampusStatusColumnWrapper
-        rowMeta={rowMeta}
-        value={value}
-        updateValue={updateValue}
-      />
-    ),
-  },
-};
+// const CampusStatus = {
+//   name: "campusStatus",
+//   label: "Campus Status",
+//   options: {
+//     filter: false,
+//     sort: false,
+//     customBodyRender: (value, rowMeta, updateValue) => (
+//       <CampusStatusColumnWrapper
+//         rowMeta={rowMeta}
+//         value={value}
+//         updateValue={updateValue}
+//       />
+//     ),
+//   },
+// };
 
-const navGurukulSurveyForm = {
 export const navGurukulSurveyForm = {
   label: "Survey Form",
   name: "partnerName",

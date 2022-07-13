@@ -7,9 +7,8 @@ import { setStudentData } from "../../store/slices/studentSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const DeleteStudent = (props) => {
+const DeleteStudent = ({ studentId, studentName }) => {
   const snackbar = useSnackbar();
-  const { studentId } = props;
 
   const { studentData, totalData } = useSelector((state) => state.students);
 
@@ -20,13 +19,18 @@ const DeleteStudent = (props) => {
   // eslint-disable-next-line no-shadow
   const handleDelete = (studentId) => {
     //confirm whether to delete
-    if (window.confirm("Are you sure you want to delete this student?")) {
+    if (
+      window.confirm(`Are you sure you want to delete student ${studentName}?`)
+    ) {
       axios
         .delete(`${baseUrl}students/${studentId}`)
         .then(() => {
-          snackbar.enqueueSnackbar("Student deleted successfully", {
-            variant: "success",
-          });
+          snackbar.enqueueSnackbar(
+            `Student ${studentName} deleted successfully`,
+            {
+              variant: "success",
+            }
+          );
           const newStudentData = studentData.filter(
             (student) => student.id !== studentId
           );

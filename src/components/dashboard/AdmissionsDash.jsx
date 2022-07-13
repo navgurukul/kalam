@@ -19,6 +19,7 @@ import theme from "../../theme";
 import { fetchOwners as fetchOwnersAction } from "../../store/slices/dataSlice";
 import {
   setFromDate,
+  // setNoOfRows,
   setStage,
   setStudentData,
   setToDate,

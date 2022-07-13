@@ -262,7 +262,9 @@ const AdminPage = () => {
   };
 
   const hasAccessObj = (role) =>
-    !["admin", "dev"].some((roleItem) => role.toLowerCase() === roleItem);
+    !["admin", "dev", "fullDashboardAccess"].some(
+      (roleItem) => role.toLowerCase() === roleItem.toLowerCase()
+    );
 
   const columns = [
     { name: "email", label: "Email" },

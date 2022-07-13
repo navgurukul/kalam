@@ -132,6 +132,7 @@ const Header = () => {
               </Link>
               {/* </Box> */}
               {(location.pathname === "/" ||
+                location.pathname === "/amravati" ||
                 location.pathname.indexOf("partnerLanding") > -1) && (
                 <FormControl
                   style={{
@@ -154,6 +155,7 @@ const Header = () => {
                     </MenuItem>
                     <MenuItem value="en">English</MenuItem>
                     <MenuItem value="hi">Hindi</MenuItem>
+                    <MenuItem value="ma">Marathi</MenuItem>
                   </Select>
                 </FormControl>
               )}

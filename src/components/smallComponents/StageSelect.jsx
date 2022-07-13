@@ -3,7 +3,17 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { DialogTitle, DialogActions, Dialog, Button } from "@mui/material";
+import {
+  DialogTitle,
+  DialogActions,
+  Dialog,
+  Button,
+  Select as MUISelect,
+  MenuItem,
+  Typography,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import { useSelector } from "react-redux";
 import * as _ from "underscore";
 import { nextStage } from "../../services/GlobalService";
@@ -19,6 +29,9 @@ const StageSelect = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const isCampusPathname = window.location.pathname.indexOf("campus");
   const { loggedInUser } = useSelector((state) => state.auth);
+
+  const [campusStatus, setCampusStatus] = React.useState("selectoption");
+
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
 
@@ -202,6 +215,17 @@ const StageSelect = (props) => {
     const { rowMetatable } = props;
     getTransitionStage(rowMetatable.rowData[0]);
   }, []);
+
+  const campusStageOptions = {
+    present: "Present",
+    onLeave: "On Leave",
+    droppedOut: "Dropped Out",
+    gotJobLeftCampus: "Got Job & Left the Campus",
+    alumniInternStayingInCampus: "Alumni/Interns Staying in Campus",
+    teamMember: "Team Member",
+  };
+
+  const handleCampusStatusChange = (e) => setCampusStatus(e.target.value);
   return (
     <div
       style={{
@@ -209,40 +233,60 @@ const StageSelect = (props) => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        gap: "2rem",
       }}
     >
       {isCampusPathname > -1 && (
-        <Button>
-          {stage === "Dropped Out"
-            ? "Dropped Out"
-            : stage === "On Leave"
-            ? "On Leave"
-            : "Present"}
-        </Button>
+        <FormControl fullWidth>
+          <InputLabel>Select Campus Status</InputLabel>
+          <MUISelect
+            value={campusStatus}
+            name="campusStatus"
+            label="Select Campus Status"
+            onChange={handleCampusStatusChange}
+            fullWidth
+            size="small"
+          >
+            <MenuItem value="selectoption" disabled>
+              Select an Option
+            </MenuItem>
+            {Object.entries(campusStageOptions).map(([key, status]) => (
+              <MenuItem value={key} key={key}>
+                {status}
+              </MenuItem>
+            ))}
+          </MUISelect>
+        </FormControl>
       )}
-      <Select
-        className="filterSelectStage"
-        // defaultValue={selectedValue}
-        value={
-          selectedValue && selectedValue.label === "Dropped Out"
-            ? {
-                value: stagess.currentStage,
-                label: stagess.currentStage,
-              }
-            : selectedValue.label === "On Leave"
-            ? {
-                value: stagess.currentStage,
-                label: stagess.currentStage,
-              }
-            : selectedValue
-        }
-        onChange={handleChange}
-        options={allStagesOptions}
-        // placeholder={"Select "+props.filter.name+" ..."}
-        isClearable={false}
-        components={animatedComponents}
-        closeMenuOnSelect
-      />
+      <div>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label>
+          <Typography variant="caption">Select Academic Stage</Typography>
+        </label>
+        <Select
+          className="filterSelectStage"
+          // defaultValue={selectedValue}
+          value={
+            selectedValue && selectedValue.label === "Dropped Out"
+              ? {
+                  value: stagess.currentStage,
+                  label: stagess.currentStage,
+                }
+              : selectedValue.label === "On Leave"
+              ? {
+                  value: stagess.currentStage,
+                  label: stagess.currentStage,
+                }
+              : selectedValue
+          }
+          onChange={handleChange}
+          options={allStagesOptions}
+          // placeholder={"Select "+props.filter.name+" ..."}
+          isClearable={false}
+          components={animatedComponents}
+          closeMenuOnSelect
+        />
+      </div>
       <Dialog
         open={flag}
         keepMounted

@@ -557,9 +557,29 @@ const cityColumn = {
   },
 };
 
+const districtColumn = {
+  name: "district",
+  label: "District",
+  options: {
+    filter: true,
+    sort: true,
+    display: false,
+  },
+};
+
 const stateColumn = {
   name: "state",
   label: "State",
+  options: {
+    filter: false,
+    sort: true,
+    display: false,
+  },
+};
+
+const pinCodeColumn = {
+  name: "pin_code",
+  label: "Pin Code",
   options: {
     filter: false,
     sort: true,
@@ -1632,7 +1652,9 @@ const StudentService = {
       nameColumn,
       setColumn,
       cityColumn,
+      districtColumn,
       stateColumn,
+      pinCodeColumn,
       numberColumn,
       AltNumberColumn,
       marksColumn,

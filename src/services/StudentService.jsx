@@ -43,6 +43,7 @@ import UploadDocuments from "../components/smallComponents/UploadDocuments";
 // import CampusStatusDropdown from "../components/smallComponents/CampusStatus";
 import OtherActivities from "../components/campus/OtherActivities";
 import DeleteStudent from "../components/smallComponents/DeleteStudent";
+import { getColumnIndex } from "../utils";
 
 dayjs.extend(customParseFormat);
 
@@ -73,7 +74,12 @@ const ColumnTransitions = {
     customBodyRender: (value, rowMeta) => (
       <StageTransitions
         studentId={value}
-        studentName={rowMeta.rowData[2]}
+        studentName={
+          rowMeta.rowData[
+            // eslint-disable-next-line no-use-before-define
+            getColumnIndex(StudentService.columns.softwareCourse, "name")
+          ]
+        }
         dataType="columnTransition"
       />
     ),
@@ -128,7 +134,7 @@ const ColumnUpload = {
       finishedColumnTransition,
 */
 
-const StageColumnTransitionWrapper = ({ rowData, rowMeta }) => {
+const StageColumnTransitionWrapper = ({ value, rowMeta }) => {
   const { privileges } = useSelector((state) => state.auth);
   const path = window.location.pathname.split("/");
   const isCampus = path[1] === "campus";
@@ -138,7 +144,7 @@ const StageColumnTransitionWrapper = ({ rowData, rowMeta }) => {
       {privileges.some((priv) => priv.privilege === "DeleteTransition") ? (
         <DeleteRow transitionId={rowMeta.rowData[isCampus ? 11 : 9]} />
       ) : null}
-      {allStages[rowData]}
+      {allStages[value]}
     </>
   );
 };
@@ -149,8 +155,8 @@ const stageColumnTransition = {
   options: {
     filter: true,
     sort: true,
-    customBodyRender: (rowData, rowMeta) => (
-      <StageColumnTransitionWrapper rowData={rowData} rowMeta={rowMeta} />
+    customBodyRender: (value, rowMeta) => (
+      <StageColumnTransitionWrapper value={value} rowMeta={rowMeta} />
     ),
   },
 };
@@ -551,9 +557,29 @@ const cityColumn = {
   },
 };
 
+const districtColumn = {
+  name: "district",
+  label: "District",
+  options: {
+    filter: true,
+    sort: true,
+    display: false,
+  },
+};
+
 const stateColumn = {
   name: "state",
   label: "State",
+  options: {
+    filter: false,
+    sort: true,
+    display: false,
+  },
+};
+
+const pinCodeColumn = {
+  name: "pin_code",
+  label: "Pin Code",
   options: {
     filter: false,
     sort: true,
@@ -1626,7 +1652,9 @@ const StudentService = {
       nameColumn,
       setColumn,
       cityColumn,
+      districtColumn,
       stateColumn,
+      pinCodeColumn,
       numberColumn,
       AltNumberColumn,
       marksColumn,

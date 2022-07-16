@@ -72,7 +72,7 @@ const Header = () => {
     isFetching ? <LinearProgress color="primary" /> : <span />;
 
   useEffect(() => {
-    const handleScroll = (event) => {
+    const handleScroll = () => {
       if (window.scrollY > 0) {
         setAppBarScroll(true);
       } else if (window.scrollY === 0) {
@@ -125,6 +125,7 @@ const Header = () => {
           // onScroll={handleScroll()}
           style={{
             boxShadow: !appBarScroll && "none",
+            backgroundColor: !appBarScroll && "white",
           }}
         >
           {renderProgressBar()}

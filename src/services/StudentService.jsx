@@ -1522,14 +1522,14 @@ const PartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
 
 const partnerNameColumn = {
   label: "Partner Name",
-  name: "partner.name",
+  name: "partner",
   options: {
     filter: true,
     filterOptions: { names: JSON.parse(localStorage.getItem("partners")) },
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => (
       <PartnerNameColumnWrapper
-        value={value}
+        value={value?.name || ""}
         rowMeta={rowMeta}
         updateValue={updateValue}
       />

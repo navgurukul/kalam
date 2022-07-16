@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   AppBar,
   Select,
@@ -52,6 +52,7 @@ const Header = () => {
   const onLangChange = (e) => dispatch(changeLanguage(e.target.value));
   const location = useLocation();
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [appBarScroll, setAppBarScroll] = React.useState(false);
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -69,6 +70,22 @@ const Header = () => {
 
   const renderProgressBar = () =>
     isFetching ? <LinearProgress color="primary" /> : <span />;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setAppBarScroll(true);
+      } else if (window.scrollY === 0) {
+        setAppBarScroll(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   return (
     <>
       <Drawer
@@ -101,7 +118,16 @@ const Header = () => {
         </div>
       </Drawer>
       <Container maxWidth="xl" className="appbarwrapper">
-        <AppBar position="fixed" color="default">
+        <AppBar
+          id="appheader"
+          position="fixed"
+          color="default"
+          // onScroll={handleScroll()}
+          style={{
+            boxShadow: !appBarScroll && "none",
+            backgroundColor: !appBarScroll && "white",
+          }}
+        >
           {renderProgressBar()}
           <Toolbar style={{ display: "flex" }}>
             {/* <Box style={{ display: "flex" }}> */}

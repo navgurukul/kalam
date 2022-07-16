@@ -11,6 +11,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+
+import RSelect from "react-select";
+
 import { DatePicker, LocalizationProvider } from "@mui/lab";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import { Controller, useForm } from "react-hook-form";
@@ -18,6 +21,8 @@ import dayjs from "dayjs";
 import { useSnackbar } from "notistack";
 import axios from "axios";
 import { states } from "../../utils/constants";
+
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const AddNewStudent = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -30,6 +35,11 @@ const AddNewStudent = () => {
   } = useForm();
 
   const [districts, setDistricts] = React.useState([]);
+  const [optionsData, setOptionsData] = React.useState({
+    campus: [],
+    donor: [],
+    partner: [],
+  });
 
   const [studentData, setStudentData] = React.useState({
     fullName: "",
@@ -65,8 +75,41 @@ const AddNewStudent = () => {
     setDistricts(districtRes.data);
   };
 
+  const fetchLists = async () => {
+    const campusRes = await axios.get(`${baseUrl}campus`);
+    const campusList = campusRes.data.data.map(({ id, campus: name }) => ({
+      name,
+      id,
+    }));
+
+    const donorRes = await axios.get(`${baseUrl}donors`);
+    const donorList = donorRes.data.map(({ id, donor: donorName }) => ({
+      label: donorName,
+      value: id,
+    }));
+    const partnerRes = await axios.get(`${baseUrl}partners`);
+    const partnerList = partnerRes.data.data.map((partnerItem) => ({
+      label: partnerItem.name,
+      value: partnerItem.id,
+    }));
+    setOptionsData({
+      ...optionsData,
+      campus: campusList,
+      donor: donorList,
+      partner: [...partnerList],
+    });
+  };
+
+  console.log(optionsData);
+
   const addrState = watch("state");
   const qualification = watch("qualification");
+
+  useEffect(() => {
+    (async () => {
+      await fetchLists();
+    })();
+  }, []);
 
   useEffect(() => {
     if (addrState !== "") {
@@ -836,6 +879,12 @@ const AddNewStudent = () => {
                     Select Campus
                   </MenuItem>
 
+                  {optionsData.campus.map((campusItem) => (
+                    <MenuItem value={campusItem.id} key={campusItem.id}>
+                      {campusItem.name}
+                    </MenuItem>
+                  ))}
+
                   {/* {Object.entries({
                     hi: ["Hindi", "हिन्दी"],
                     en: ["English", "अंग्रेज़ी"],
@@ -870,25 +919,23 @@ const AddNewStudent = () => {
           <Controller
             control={control}
             name="partner"
-            defaultValue={studentData.campus || ""}
             rules={{ validate: (sm) => sm !== "" }}
             render={({ field: { ref, ...rest } }) => (
               <FormControl fullWidth variant="outlined">
-                <Autocomplete
-                  label="Select Partner"
-                  // placeholder="Select Partner"
-                  error={!!errors.partner}
-                  options={[]}
+                <RSelect
+                  label="School Medium"
+                  placeholder="School Medium"
+                  error={!!errors.schoolMedium}
                   inputRef={ref}
-                  renderInput={(params) => (
-                    <TextField label="Select Partner" {...params} />
-                  )}
                   {...rest}
+                  options={optionsData.partner}
+                  menuPortalTarget={document.body}
+                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
                 />
               </FormControl>
             )}
           />
-          {errors.campus ? (
+          {errors.partner ? (
             <Typography
               style={{
                 paddingLeft: "0.8rem",
@@ -898,7 +945,7 @@ const AddNewStudent = () => {
               variant="caption"
               color="error"
             >
-              Select Campus
+              Select Partner
             </Typography>
           ) : (
             ""

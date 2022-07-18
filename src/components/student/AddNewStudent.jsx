@@ -923,14 +923,75 @@ const AddNewStudent = () => {
             render={({ field: { ref, ...rest } }) => (
               <FormControl fullWidth variant="outlined">
                 <RSelect
-                  label="School Medium"
-                  placeholder="School Medium"
-                  error={!!errors.schoolMedium}
+                  label="Select Partner"
+                  placeholder="Select Partner"
+                  error={!!errors.partner}
                   inputRef={ref}
                   {...rest}
+                  onChange={(partner) =>
+                    setStudentData((prevData) => ({
+                      ...prevData,
+                      partner,
+                    }))
+                  }
                   options={optionsData.partner}
                   menuPortalTarget={document.body}
-                  styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+                  menuPlacement="top"
+                  styles={{
+                    menuPortal: (base) => ({
+                      ...base,
+                      zIndex: 9999,
+                    }),
+                  }}
+                />
+              </FormControl>
+            )}
+          />
+          {errors.partner ? (
+            <Typography
+              style={{
+                paddingLeft: "0.8rem",
+                paddingTop: "0.4rem",
+                paddingBottom: "0.4rem",
+              }}
+              variant="caption"
+              color="error"
+            >
+              Select Partner
+            </Typography>
+          ) : (
+            ""
+          )}
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Controller
+            control={control}
+            name="partner"
+            rules={{ validate: (sm) => sm !== "" }}
+            render={({ field: { ref, ...rest } }) => (
+              <FormControl fullWidth variant="outlined">
+                <RSelect
+                  label="Select Donor"
+                  placeholder="Select Donor"
+                  error={!!errors.donor}
+                  inputRef={ref}
+                  {...rest}
+                  onChange={(partner) =>
+                    setStudentData((prevData) => ({
+                      ...prevData,
+                      partner,
+                    }))
+                  }
+                  options={optionsData.donor}
+                  isMulti
+                  menuPortalTarget={document.body}
+                  menuPlacement="top"
+                  styles={{
+                    menuPortal: (base) => ({
+                      ...base,
+                      zIndex: 9999,
+                    }),
+                  }}
                 />
               </FormControl>
             )}

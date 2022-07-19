@@ -74,7 +74,7 @@ const StageSelect = (props) => {
     const { columnIndex } = rowMetatable;
     const { value, label } = selectedValue;
     axios
-      .post(`${baseUrl}students/chnageStage/${studentId}`, {
+      .post(`${baseUrl}students/changeStage/${studentId}`, {
         stage: value,
         transition_done_by: loggedInUser.user_name,
       })

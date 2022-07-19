@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import {
-  Autocomplete,
+  Button,
   Container,
   Divider,
   FormControl,
@@ -14,10 +14,13 @@ import {
 
 import RSelect from "react-select";
 
+import { Link } from "react-router-dom";
+
 import { DatePicker, LocalizationProvider } from "@mui/lab";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import { Controller, useForm } from "react-hook-form";
 import dayjs from "dayjs";
+import { Box } from "@mui/system";
 import { useSnackbar } from "notistack";
 import axios from "axios";
 import { states } from "../../utils/constants";
@@ -59,6 +62,9 @@ const AddNewStudent = () => {
     religion: "",
     percentageIn10th: "",
     percentageIn12th: "",
+    campus: "",
+    partner: "",
+    donor: "",
   });
 
   const getDistrictFromState = async (state) => {
@@ -100,7 +106,15 @@ const AddNewStudent = () => {
     });
   };
 
-  console.log(optionsData);
+  const onSubmit = (data) => {
+    const finalData = { ...studentData, ...data };
+    console.log(finalData);
+    //axios request
+    // if (finalData === null) {
+    //   enqueueSnackbar("Data entered successfully", { variant: "success" });
+    //   reset();
+    // }
+  };
 
   const addrState = watch("state");
   const qualification = watch("qualification");
@@ -222,6 +236,7 @@ const AddNewStudent = () => {
             control={control}
             rules={{
               required: true,
+              validate: (gender) => gender !== "select gender",
             }}
             name="gender"
             defaultValue={studentData.gender || "select gender"}
@@ -272,7 +287,7 @@ const AddNewStudent = () => {
               variant="caption"
               color="error"
             >
-              Please specify student&apos;s gender
+              Please specify Student&apos;s gender
             </Typography>
           ) : (
             ""
@@ -864,7 +879,7 @@ const AddNewStudent = () => {
             control={control}
             name="campus"
             defaultValue={studentData.campus || ""}
-            rules={{ validate: (sm) => sm !== "" }}
+            // rules={{ validate: (sm) => sm !== "" }}
             render={({ field: { ref, ...rest } }) => (
               <FormControl fullWidth variant="outlined">
                 <InputLabel id="school-medium-label">Select Campus</InputLabel>
@@ -916,37 +931,37 @@ const AddNewStudent = () => {
           )}
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Controller
+          {/* <Controller
             control={control}
             name="partner"
             rules={{ validate: (sm) => sm !== "" }}
-            render={({ field: { ref, ...rest } }) => (
-              <FormControl fullWidth variant="outlined">
-                <RSelect
-                  label="Select Partner"
-                  placeholder="Select Partner"
-                  error={!!errors.partner}
-                  inputRef={ref}
-                  {...rest}
-                  onChange={(partner) =>
-                    setStudentData((prevData) => ({
-                      ...prevData,
-                      partner,
-                    }))
-                  }
-                  options={optionsData.partner}
-                  menuPortalTarget={document.body}
-                  menuPlacement="top"
-                  styles={{
-                    menuPortal: (base) => ({
-                      ...base,
-                      zIndex: 9999,
-                    }),
-                  }}
-                />
-              </FormControl>
-            )}
-          />
+            render={({ field: { ref, ...rest } }) => ( */}
+          <FormControl fullWidth variant="outlined">
+            <RSelect
+              label="Select Partner"
+              placeholder="Select Partner"
+              error={!!errors.partner}
+              // inputRef={ref}
+              // {...rest}
+              onChange={(partner) =>
+                setStudentData((prevData) => ({
+                  ...prevData,
+                  partner,
+                }))
+              }
+              options={optionsData.partner}
+              menuPortalTarget={document.body}
+              menuPlacement="top"
+              styles={{
+                menuPortal: (base) => ({
+                  ...base,
+                  zIndex: 9999,
+                }),
+              }}
+            />
+          </FormControl>
+          {/* )}
+          /> */}
           {errors.partner ? (
             <Typography
               style={{
@@ -964,38 +979,38 @@ const AddNewStudent = () => {
           )}
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Controller
+          {/* <Controller
             control={control}
             name="partner"
             rules={{ validate: (sm) => sm !== "" }}
-            render={({ field: { ref, ...rest } }) => (
-              <FormControl fullWidth variant="outlined">
-                <RSelect
-                  label="Select Donor"
-                  placeholder="Select Donor"
-                  error={!!errors.donor}
-                  inputRef={ref}
-                  {...rest}
-                  onChange={(partner) =>
-                    setStudentData((prevData) => ({
-                      ...prevData,
-                      partner,
-                    }))
-                  }
-                  options={optionsData.donor}
-                  isMulti
-                  menuPortalTarget={document.body}
-                  menuPlacement="top"
-                  styles={{
-                    menuPortal: (base) => ({
-                      ...base,
-                      zIndex: 9999,
-                    }),
-                  }}
-                />
-              </FormControl>
-            )}
-          />
+            render={({ field: { ref, ...rest } }) => ( */}
+          <FormControl fullWidth variant="outlined">
+            <RSelect
+              label="Select Donor"
+              placeholder="Select Donor"
+              error={!!errors.donor}
+              // inputRef={ref}
+              // {...rest}
+              onChange={(donor) =>
+                setStudentData((prevData) => ({
+                  ...prevData,
+                  donor,
+                }))
+              }
+              options={optionsData.donor}
+              isMulti
+              menuPortalTarget={document.body}
+              menuPlacement="top"
+              styles={{
+                menuPortal: (base) => ({
+                  ...base,
+                  zIndex: 9999,
+                }),
+              }}
+            />
+          </FormControl>
+          {/* )}
+          /> */}
           {errors.partner ? (
             <Typography
               style={{
@@ -1013,6 +1028,31 @@ const AddNewStudent = () => {
           )}
         </Grid>
       </Grid>
+      <Box
+        sx={{
+          mt: "1.2rem",
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 2,
+        }}
+      >
+        <Link to="/students">
+          <Button
+            variant="outlined"
+            color="primary"
+            // onClick={handleSubmit(onSubmit)}
+          >
+            Go Back
+          </Button>
+        </Link>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit(onSubmit)}
+        >
+          Add Student Data
+        </Button>
+      </Box>
     </Container>
   );
 };

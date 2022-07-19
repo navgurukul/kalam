@@ -90,21 +90,32 @@ const ProgressMadeForPartner = () => {
     });
   };
 
-  useEffect(() => {
-    axios.get(`${baseURL}partners/${partnerId}`).then((res) => {
-      setState((prevState) => ({
-        ...prevState,
-        partnerName: res.data.data.name,
-      }));
-    });
+  const isPartnerGroup =
+    location.pathname.split("/")[2] === "group" ? "partnerGroup" : "partners";
 
-    axios.get(`${baseURL}partners/progress_made/${partnerId}`).then((res) => {
-      setState((prevState) => ({
-        ...prevState,
-        data: res.data.data,
-      }));
-      whatsAppMessage();
-    });
+  useEffect(() => {
+    axios
+      .get(
+        `${baseURL}${isPartnerGroup}/${partnerId}${
+          isPartnerGroup === "partnerGroup" ? "/name" : ""
+        }`
+      )
+      .then((res) => {
+        setState((prevState) => ({
+          ...prevState,
+          partnerName: res.data.data[0]?.name || res.data.data.name,
+        }));
+      });
+
+    axios
+      .get(`${baseURL}${isPartnerGroup}/progress_made/${partnerId}`)
+      .then((res) => {
+        setState((prevState) => ({
+          ...prevState,
+          data: res.data.data,
+        }));
+        whatsAppMessage();
+      });
   }, []);
 
   const progressMade = () => {
@@ -134,7 +145,7 @@ const ProgressMadeForPartner = () => {
         return (
           <DashboardPage
             displayData={StudentService.columns.partnerData}
-            url={`partners/${partnerId}/students`}
+            url={`${isPartnerGroup}/${partnerId}/students`}
           />
         );
       case 1:
@@ -156,9 +167,17 @@ const ProgressMadeForPartner = () => {
           </Grid>
         );
       case 2:
-        return <GraphPage url={`partners/${partnerId}/students`} />;
+        return (
+          <GraphPage
+            url={`${isPartnerGroup}/graph/progress_made/${partnerId}`}
+          />
+        );
       default:
-        return <GraphPage url={`partners/${partnerId}/students`} />;
+        return (
+          <GraphPage
+            url={`${isPartnerGroup}/graph/progress_made/${partnerId}`}
+          />
+        );
     }
   };
 

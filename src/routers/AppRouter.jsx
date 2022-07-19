@@ -235,6 +235,27 @@ const AppRouter = () => {
                 />
                 <Route path="assessments" element={<ViewAssessments />} />
               </Route>
+              <Route path="group">
+                <Route path=":partnerId">
+                  <Route
+                    index
+                    element={
+                      <React.Suspense fallback={<Loader container />}>
+                        <ProgressMadeForPartner />
+                      </React.Suspense>
+                    }
+                  />
+                  <Route
+                    path="progress"
+                    element={
+                      <React.Suspense fallback={<Loader container />}>
+                        <PartnerStudentsProgressInCampus />
+                      </React.Suspense>
+                    }
+                  />
+                  <Route path="assessments" element={<ViewAssessments />} />
+                </Route>
+              </Route>
             </Route>
 
             <Route path="/partnerLanding/:slug" element={<LandingPage />} />

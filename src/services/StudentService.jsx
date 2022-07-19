@@ -1512,8 +1512,8 @@ const PartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
   ) ? (
     <UpdatePartner
       studentId={rowMeta.rowData[0]}
-      value={value}
-      change={(event) => updateValue(event)}
+      value={value?.name || ""}
+      change={(newValue) => updateValue({ ...value, name: newValue })}
     />
   ) : (
     <p>{value}</p>
@@ -1529,7 +1529,7 @@ const partnerNameColumn = {
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => (
       <PartnerNameColumnWrapper
-        value={value?.name || ""}
+        value={value}
         rowMeta={rowMeta}
         updateValue={updateValue}
       />

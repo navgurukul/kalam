@@ -16,6 +16,10 @@ import NotFoundPage from "../components/layout/NotFoundPage";
 import Loader from "../components/ui/Loader";
 import { changeFetching } from "../store/slices/uiSlice";
 
+// const AddNewStudent = React.lazy(() =>
+//   import("../components/student/AddNewStudent")
+// );
+
 const AssessmentAttempts = React.lazy(() =>
   import("../components/assessment/AssessmentAttempts")
 );
@@ -175,6 +179,17 @@ const AppRouter = () => {
                   </RequireAuth>
                 }
               />
+              {/* <Route
+                path="add"
+                element={
+                  <React.Suspense fallback={<Loader container />}>
+                    <RequireAuth privateRoute>
+                      <AddNewStudent />
+                    </RequireAuth>
+                  </React.Suspense>
+                }
+              /> */}
+
               <Route
                 path=":dataType"
                 component={

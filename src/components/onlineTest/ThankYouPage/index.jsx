@@ -84,6 +84,14 @@ function ThankYouPage({ userID }) {
   const navigate = useNavigate();
   const { lang } = useSelector((state) => state.ui);
   const [totalMarks, setTotalMarks] = useState("");
+
+  const clearTestData = () => {
+    localStorage.removeItem("answerList");
+    localStorage.removeItem("enrollmentKey");
+    localStorage.removeItem("index");
+    localStorage.removeItem("time");
+  };
+
   useEffect(() => {
     fetch(
       `${baseUrl}/on_assessment/Show_testResult/${
@@ -95,6 +103,7 @@ function ThankYouPage({ userID }) {
         setTotalMarks(data.total_marks);
       });
   }, []);
+
   return (
     <Container maxWidth="lg" align="center">
       <div className={classes.root} align="center">
@@ -114,31 +123,26 @@ function ThankYouPage({ userID }) {
           {tutorialSteps.content5[lang]}
         </Typography>
         <Button
-          type="submit"
           fullWidth
           variant="contained"
           color="primary"
           className={classes.button}
           onClick={() => {
-            localStorage.removeItem("answerList");
-            localStorage.removeItem("enrollmentKey");
-            localStorage.removeItem("index");
-            localStorage.removeItem("time");
+            clearTestData();
             navigate(`/bookSlot/${userID}`);
           }}
         >
           {tutorialSteps.bookSlot[lang]}
         </Button>
         <Button
-          type="submit"
           fullWidth
-          variant="contained"
+          variant="outlined"
           color="primary"
           className={classes.button}
-          //   onClick={clickHandler}
+          onClick={clearTestData}
         >
           <a
-            href="http://navgurukul.org/"
+            href="https://www.navgurukul.org/"
             target="_blank"
             rel="noreferrer noopener"
           >
@@ -146,12 +150,11 @@ function ThankYouPage({ userID }) {
           </a>
         </Button>
         <Button
-          type="submit"
           fullWidth
-          variant="contained"
-          color="secondry"
+          variant="outlined"
+          color="primary"
           className={classes.button}
-          //   onClick={clickHandler}
+          onClick={clearTestData}
         >
           <a
             href="https://www.merakilearn.org/"

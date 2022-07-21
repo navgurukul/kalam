@@ -22,12 +22,22 @@ const RequireAuth = ({ children, privateRoute }) => {
     dispatch(logout());
     return <Navigate to="/" replace />;
   }
-  if (!isAuthenticated && privateRoute)
+  if (!isAuthenticated && privateRoute){
+    sessionStorage.setItem("pageBeforeLogin", location.pathname);
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+    
   // if (isAuthenticated && loggedInUser && !loggedInUser.mobile)
   //   return <Navigate to="/user/mobile/number" replace />;
 
   const getRoute = () => {
+    //Forced redirect if any page was visited before login
+    const pageBeforeLogin = sessionStorage.getItem("pageBeforeLogin");
+    if(pageBeforeLogin){
+      sessionStorage.removeItem("pageBeforeLogin");
+      return pageBeforeLogin;
+    }
+
     if (
       roles.some((role) => role.role === "Admin") ||
       privileges.some((priv) => priv.privilege === "ViewDashboard")

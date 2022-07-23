@@ -67,7 +67,7 @@ const OwnerList = () => {
           const canDelete =
             (privileges.some((priv) => priv.privilege === "DeleteOwner") ||
               rowMeta.rowData[1] === user) &&
-            !rowMeta.rowData[3];
+            rowMeta.rowData[4] === 0;
 
           return (
             <div

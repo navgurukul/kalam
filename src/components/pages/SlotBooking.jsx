@@ -7,33 +7,22 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect } from "react";
+import axios from "axios";
 import dayjs from "dayjs";
+import { useParams } from "react-router-dom";
 import { StaticDatePicker } from "@mui/lab";
 import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { useSnackbar } from "notistack";
 import { allStages } from "../../utils/constants";
+import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const SlotBooking = () => {
-  const [slotCanceled, setSlotCancelled] = React.useState(true);
-  const [CurrentTimeId, setCurrentTimeId] = React.useState(null);
-  const [slotBookingDetails, setSlotBookingDetails] = React.useState({});
-  const month = {
-    Jan: `01`,
-    Feb: `02`,
-    Mar: `03`,
-    Apr: `04`,
-    May: `05`,
-    Jun: `06`,
-    Jul: `07`,
-    Aug: `08`,
-    Sep: `09`,
-    Oct: `10`,
-    Nov: `11`,
-    Dec: `12`,
-  };
-  const DefaultTimings = [
+  const { enqueueSnackbar } = useSnackbar();
+  const { studentId } = useParams();
+
+  const defaultTimings = [
     {
       id: 1,
       from: "9:00",
@@ -70,99 +59,85 @@ const SlotBooking = () => {
       to: "16:00",
     },
   ];
+
+  const [loading, setLoading] = React.useState(true);
+  const [slot, setSlot] = React.useState({
+    from: "",
+    to: "",
+    id: null,
+    is_cancelled: true,
+  });
   const [date, setDate] = React.useState(new Date());
-  const [StartTime, setStartTime] = React.useState("");
-  const [EndTime, setEndTime] = React.useState("");
-  const { enqueueSnackbar } = useSnackbar();
-  const studentId = location.pathname.split("/")[2];
   const [studentData, setStudentData] = React.useState({});
-  const [Timings, setTimings] = React.useState(DefaultTimings);
+  const [timings, setTimings] = React.useState(defaultTimings);
 
-  const handleDateChange = (dater) => {
+  const handleDateChange = (newDate) => {
     //console.log(dater);
-    const d = `${new Date(dater)}`.split(" ");
-    d[2] += ",";
-    const DateToSend = [d[3], month[d[1]], d[2]].join("-").replace(",", "");
+    const d = dayjs(newDate);
+    const DateToSend = d.format("YYYY-MM-DD");
     setDate(DateToSend);
-    fetch(`${baseUrl}/slot/interview/check/ondate/${DateToSend}/1`).then(
-      (res) => {
-        //
-        res.json().then((data) => {
-          if (data.data.length > 0) {
-            let FilteredTimings;
-            if (new Date(dater).getDate() === new Date().getDate()) {
-              // console.log(dater);
-              FilteredTimings = data.data.filter((time) => {
-                if (
+    axios
+      .get(`${baseUrl}/slot/interview/check/ondate/${DateToSend}/1`)
+      .then(({ data }) => {
+        if (data.data.length) {
+          const filteredTimings = dayjs().isSame(d, "day")
+            ? data.data.filter(
+                (time) =>
                   time.availiblity &&
-                  new Date().getHours() < time.from.split(":")[0]
-                ) {
-                  return true;
-                }
-                return false;
-              });
-            } else {
-              FilteredTimings = data.data.filter((time) => {
-                if (time.availiblity) {
-                  return true;
-                }
-                return false;
-              });
-            }
-
-            setTimings(FilteredTimings);
-          } else {
-            //console.log(Timings);
-            setTimings(DefaultTimings);
-          }
-        });
-      }
-    );
+                  dayjs().isBefore(dayjs(time.from, "HH:MM"), "hour")
+              )
+            : data.data.filter((time) => time.availiblity);
+          setTimings(filteredTimings);
+        } else setTimings(defaultTimings);
+      });
   };
 
   useEffect(() => {
-    // console.log();
-    fetch(`${baseUrl}slot/interview/${studentId}`).then((res) => {
-      res.json().then((data) => {
-        // console.log(data.data[0]);
-        setSlotBookingDetails(data.data[0]);
-        console.log(data);
-        setSlotCancelled(data.data[0].is_cancelled);
-      });
-    });
-    fetch(`${baseUrl}/students/${studentId}`).then((res) => {
-      res.json().then((data) => {
-        // console.log(data.data[0]);
+    (async () => {
+      const slotData = await axios.get(`${baseUrl}slot/interview/${studentId}`);
+      if (slotData.data?.data?.length) {
+        setSlot(slotData.data?.data[0] || "");
+        // setSlotCancelled(slotData.data[0]?.data?.is_cancelled || true);
+      }
+      const studentRes = await axios.get(`${baseUrl}/students/${studentId}`);
+      if (studentRes.data?.data?.length) {
+        const { name, stage, lastTransition } = studentRes.data?.data[0] || {
+          name: null,
+          stage: null,
+          lastTransition: { id: null },
+        };
         setStudentData({
-          name: data.data[0].name,
-          stage: allStages[data.data[0].stage],
-          transitionID: data.data[0].lastTransition.id,
+          name,
+          stage: allStages[stage],
+          transitionID: lastTransition.id,
         });
-      });
-    });
-    handleDateChange(date);
+        handleDateChange(date);
+        setLoading(false);
+      }
+    })();
   }, []);
 
-  const handelDeleteSlot = () => {
-    fetch(`${baseUrl}slot/interview/stundet/${slotBookingDetails.id}`, {
-      method: "DELETE",
-    }).then((res) => {
-      res.json().then((data) => {
+  const handleDeleteSlot = () => {
+    axios
+      .delete(`${baseUrl}slot/interview/stundet/${slot.id}`)
+      .then(({ data }) => {
         if (data.message === "Successfully inserted slot deleted") {
           enqueueSnackbar("Slot Cancelled", {
             variant: "info",
           });
           handleDateChange(date);
-          setSlotCancelled(true);
+          // setSlotCancelled(true);
+          setSlot({ is_cancelled: true });
         } else {
           enqueueSnackbar("Slot Not Cancelled", {
             variant: "error",
           });
         }
       });
-    });
   };
-  const handelSlotBooking = () => {
+
+  const handleSlotBooking = () => {
+    const { from, to } = slot;
     fetch(`${baseUrl}slot/interview/student`, {
       method: "POST",
       headers: {
@@ -173,8 +148,8 @@ const SlotBooking = () => {
         student_name: studentData.name,
         topic_name: studentData.stage,
         transition_id: studentData.transitionID,
-        start_time: StartTime,
-        end_time_expected: EndTime,
+        start_time: from,
+        end_time_expected: to,
         duration: "1hr",
         on_date: date,
       }),
@@ -189,14 +164,14 @@ const SlotBooking = () => {
             });
             fetch(`${baseUrl}/slot/interview/${studentId}`).then((_res) => {
               _res.json().then((_data) => {
-                setSlotBookingDetails(_data.data[0]);
-                setSlotCancelled(_data.data[0].is_cancelled);
+                setSlot(_data.data[0]);
+                // setSlotCancelled(_data.data[0].is_cancelled);
               });
               fetch(`${baseUrl}/slot/interview/${studentId}`).then(
                 (interviewRes) => {
                   interviewRes.json().then((iData) => {
-                    setSlotBookingDetails(iData.data[0]);
-                    setSlotCancelled(iData.data[0].is_cancelled);
+                    setSlot(iData.data[0]);
+                    // setSlotCancelled(iData.data[0].is_cancelled);
                   });
                 }
               );
@@ -217,11 +192,14 @@ const SlotBooking = () => {
     const startSeconds = Date.parse(yesterday);
     return (_date) => Date.parse(_date) < startSeconds;
   }
-  return [
-    "English Interview Pending (2nd Round)",
-    "Culture Fit Interview Pending (4th Round)",
-    "Pending Culture Fit Re-Interview",
-  ].includes(studentData.stage) ? (
+
+  return loading ? (
+    <Loader />
+  ) : [
+      "English Interview Pending (2nd Round)",
+      "Culture Fit Interview Pending (4th Round)",
+      "Pending Culture Fit Re-Interview",
+    ].includes(studentData.stage) ? (
     <Container
       maxWidth="md"
       sx={{
@@ -231,12 +209,12 @@ const SlotBooking = () => {
         // maxWidth: "500px",
         // minWidth: "200px",
         // transform: "translate(-50%, -50%)",
-        bgcolor: "background.paper",
+        bgcolor: "background.paper  ",
         // border: "1px solid #000",
         p: 4,
       }}
     >
-      {slotCanceled ? (
+      {slot.is_cancelled ? (
         <>
           <Typography variant="h5" fontWeight="medium">
             Book Interview Slot
@@ -249,6 +227,7 @@ const SlotBooking = () => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
+              mb: "1.2rem",
             }}
           >
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -270,33 +249,30 @@ const SlotBooking = () => {
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
-            {Timings.length > 0 ? (
-              <Grid container justify="space-evenly">
-                {Timings.map((item) => (
-                  <Grid
-                    key={item.id}
-                    onClick={() => {
-                      setStartTime(item.from);
-                      setEndTime(item.to);
-                      setCurrentTimeId(item.id);
-                    }}
-                    md={4}
-                    style={{
-                      cursor: "pointer",
-                    }}
-                  >
-                    <Typography
-                      style={{
-                        backgroundColor: `${
-                          CurrentTimeId === item.id ? "#80b84d" : "#f06243"
-                        }`,
-                        margin: "5px",
+            {timings.length > 0 ? (
+              <Grid container justifyContent="center" spacing={2}>
+                {timings.map(({ id, from, to }) => (
+                  <Grid item key={id} sm={6} md={4}>
+                    <Button
+                      color="primary"
+                      fullWidth
+                      variant={slot.id === id ? "contained" : "outlined"}
+                      sx={{
                         padding: "8px",
                         fontSize: "14px",
+                        fontWeight: slot.id !== id && "600",
+                        border: slot.id !== id && "2px solid",
+                      }}
+                      onClick={() => {
+                        setSlot({ id, from, to, is_cancelled: true });
+                        // setStartTime(item.from);
+                        // setEndTime(item.to);
+                        // setCurrentTimeId(item.id);
                       }}
                     >
-                      {item.from} - {item.to}
-                    </Typography>
+                      {dayjs(from, "HH").format("h:mm a")} -{" "}
+                      {dayjs(to, "HH").format("h:mm a")}
+                    </Button>
                   </Grid>
                 ))}
               </Grid>
@@ -310,10 +286,10 @@ const SlotBooking = () => {
           <Button
             variant="contained"
             color="primary"
-            disabled={Timings.length === 0}
+            disabled={timings.length === 0 || !slot.id}
             onClick={() => {
-              handelSlotBooking();
-              setCurrentTimeId(null);
+              handleSlotBooking();
+              // setCurrentTimeId(null);
             }}
           >
             Book Slot
@@ -322,8 +298,7 @@ const SlotBooking = () => {
       ) : (
         <>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Interview Slot Booked For {slotBookingDetails.student_name} For{" "}
-            {slotBookingDetails.topic_name}
+            Interview Slot Booked for {slot.student_name} For {slot.topic_name}
           </Typography>
           <Typography
             component="h3"
@@ -331,19 +306,19 @@ const SlotBooking = () => {
             id="modal-modal-description"
             sx={{ mt: 2 }}
           >
-            On {slotBookingDetails.on_date.split("T")[0]}
+            On {dayjs(slot.on_date).format("D MMM YYYY") || ""}
           </Typography>
           <Typography variant="h6" component="h3">
-            From {slotBookingDetails.start_time} To
-            {slotBookingDetails.end_time_expected}
+            From {dayjs(slot.start_time, "HH").format("h:mm a")} To{" "}
+            {dayjs(slot.end_time_expected, "HH").format("h:mm a")}
           </Typography>
           <Button
             variant="contained"
             color="primary"
             style={{ fontSize: "10px" }}
             onClick={() => {
-              handelDeleteSlot();
-              setCurrentTimeId(null);
+              handleDeleteSlot();
+              // setCurrentTimeId(null);
             }}
           >
             Delete Slot

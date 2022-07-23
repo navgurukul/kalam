@@ -1516,7 +1516,7 @@ const PartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
       change={(newValue) => updateValue({ ...value, name: newValue })}
     />
   ) : (
-    <p>{value}</p>
+    <p>{value?.name || ""}</p>
   );
 };
 

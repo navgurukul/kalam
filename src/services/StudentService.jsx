@@ -532,7 +532,6 @@ const NameColumnWrapper = ({ rowData, rowMeta, updateValue }) => {
 
 const TestMode = ({rowData, rowMeta})=>{
   const last = rowData[rowData.length-1];
-  console.log(last);
   if(last.type_of_test === "onlineTest"){
     return "Online";
   }else if(last.type_of_test === "offlineTest"){
@@ -540,6 +539,7 @@ const TestMode = ({rowData, rowMeta})=>{
   }
   return "N/A";
 }
+
 const nameColumn = {
   name: "name",
   label: "Name",

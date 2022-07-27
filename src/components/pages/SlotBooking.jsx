@@ -18,6 +18,7 @@ import { allStages } from "../../utils/constants";
 import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
+
 const SlotBooking = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { studentId } = useParams();
@@ -72,7 +73,6 @@ const SlotBooking = () => {
   const [timings, setTimings] = React.useState(defaultTimings);
 
   const handleDateChange = (newDate) => {
-    //console.log(dater);
     const d = dayjs(newDate);
     const DateToSend = d.format("YYYY-MM-DD");
     setDate(DateToSend);
@@ -92,16 +92,24 @@ const SlotBooking = () => {
       });
   };
 
+  const fetchSlot = async () => {
+    const slotRes = await axios.get(`${baseUrl}slot/interview/${studentId}`);
+    return slotRes.data?.data[0] ?? null;
+  };
+
+  const fetchStudent = async () => {
+    const studentRes = await axios.get(`${baseUrl}/students/${studentId}`);
+    return studentRes?.data?.data[0] ?? null;
+  };
+
   useEffect(() => {
     (async () => {
-      const slotData = await axios.get(`${baseUrl}slot/interview/${studentId}`);
-      if (slotData.data?.data?.length) {
-        setSlot(slotData.data?.data[0] || "");
-        // setSlotCancelled(slotData.data[0]?.data?.is_cancelled || true);
-      }
-      const studentRes = await axios.get(`${baseUrl}/students/${studentId}`);
-      if (studentRes.data?.data?.length) {
-        const { name, stage, lastTransition } = studentRes.data?.data[0] || {
+      const slotData = await fetchSlot();
+      if (slotData) setSlot(slotData);
+
+      const studentRes = await fetchStudent();
+      if (studentRes) {
+        const { name, stage, lastTransition } = studentRes || {
           name: null,
           stage: null,
           lastTransition: { id: null },
@@ -126,7 +134,6 @@ const SlotBooking = () => {
             variant: "info",
           });
           handleDateChange(date);
-          // setSlotCancelled(true);
           setSlot({ is_cancelled: true });
         } else {
           enqueueSnackbar("Slot Not Cancelled", {
@@ -138,12 +145,8 @@ const SlotBooking = () => {
 
   const handleSlotBooking = () => {
     const { from, to } = slot;
-    fetch(`${baseUrl}slot/interview/student`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    axios
+      .post(`${baseUrl}slot/interview/student`, {
         student_id: studentId,
         student_name: studentData.name,
         topic_name: studentData.stage,
@@ -152,46 +155,35 @@ const SlotBooking = () => {
         end_time_expected: to,
         duration: "1hr",
         on_date: date,
-      }),
-    }).then((res) => {
-      res
-        .json()
-        .then((data) => {
-          //console.log(data);
-          if (data.status === "successfully_scheduled") {
-            enqueueSnackbar("Slot Booked", {
-              variant: "success",
-            });
-            fetch(`${baseUrl}/slot/interview/${studentId}`).then((_res) => {
-              _res.json().then((_data) => {
-                setSlot(_data.data[0]);
-                // setSlotCancelled(_data.data[0].is_cancelled);
+      })
+      .then(({ data }) => {
+        if (data.status === "successfully_scheduled")
+          fetchSlot()
+            .then((slotData) => {
+              if (slotData) setSlot(slotData);
+              enqueueSnackbar("Slot Booked", {
+                variant: "success",
               });
-              fetch(`${baseUrl}/slot/interview/${studentId}`).then(
-                (interviewRes) => {
-                  interviewRes.json().then((iData) => {
-                    setSlot(iData.data[0]);
-                    // setSlotCancelled(iData.data[0].is_cancelled);
-                  });
-                }
-              );
-            });
-          } else {
-            enqueueSnackbar("Cannot Book Slot", {
-              variant: "error",
-            });
-          }
-        })
-        .catch(() => {
-          enqueueSnackbar("Couldn't Book Slot!", { variant: "error" });
-        });
-    });
+            })
+            .catch(() =>
+              enqueueSnackbar("Cannot Book Slot", {
+                variant: "error",
+              })
+            );
+        else
+          enqueueSnackbar("Cannot Book Slot", {
+            variant: "error",
+          });
+      })
+      .catch(() => {
+        enqueueSnackbar("Couldn't Book Slot!", { variant: "error" });
+      });
   };
-  function disablePrevDates() {
+  const disablePrevDates = () => {
     const yesterday = new Date(Date.now() - 86400000);
     const startSeconds = Date.parse(yesterday);
     return (_date) => Date.parse(_date) < startSeconds;
-  }
+  };
 
   return loading ? (
     <Loader />
@@ -203,14 +195,7 @@ const SlotBooking = () => {
     <Container
       maxWidth="md"
       sx={{
-        // position: "absolute",
-        // top: "50%",
-        // left: "50%",
-        // maxWidth: "500px",
-        // minWidth: "200px",
-        // transform: "translate(-50%, -50%)",
         bgcolor: "background.paper  ",
-        // border: "1px solid #000",
         p: 4,
       }}
     >
@@ -263,12 +248,9 @@ const SlotBooking = () => {
                         fontWeight: slot.id !== id && "600",
                         border: slot.id !== id && "2px solid",
                       }}
-                      onClick={() => {
-                        setSlot({ id, from, to, is_cancelled: true });
-                        // setStartTime(item.from);
-                        // setEndTime(item.to);
-                        // setCurrentTimeId(item.id);
-                      }}
+                      onClick={() =>
+                        setSlot({ id, from, to, is_cancelled: true })
+                      }
                     >
                       {dayjs(from, "HH").format("h:mm a")} -{" "}
                       {dayjs(to, "HH").format("h:mm a")}
@@ -287,10 +269,7 @@ const SlotBooking = () => {
             variant="contained"
             color="primary"
             disabled={timings.length === 0 || !slot.id}
-            onClick={() => {
-              handleSlotBooking();
-              // setCurrentTimeId(null);
-            }}
+            onClick={() => handleSlotBooking()}
           >
             Book Slot
           </Button>
@@ -323,12 +302,8 @@ const SlotBooking = () => {
           <Button
             variant="contained"
             color="primary"
-            // style={{ fontSize: "10px" }}
             sx={{ mt: 3 }}
-            onClick={() => {
-              handleDeleteSlot();
-              // setCurrentTimeId(null);
-            }}
+            onClick={() => handleDeleteSlot()}
           >
             Delete Slot
           </Button>

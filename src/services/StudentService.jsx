@@ -530,6 +530,16 @@ const NameColumnWrapper = ({ rowData, rowMeta, updateValue }) => {
   return rowData;
 };
 
+const TestModeWrapper = ({rowData, rowMeta})=>{
+  const last = rowData[rowData.length-1];
+  if(last.type_of_test === "onlineTest"){
+    return "Online";
+  }else if(last.type_of_test === "offlineTest"){
+    return "Offline";
+  }
+  return "N/A";
+}
+
 const nameColumn = {
   name: "name",
   label: "Name",
@@ -605,6 +615,22 @@ const AltNumberColumn = {
     display: false,
   },
 };
+
+const testModeColumn = {
+  name: "enrolmentKey",
+  label: "Test Mode",
+  options: {
+    filter: true,
+    sort: false,
+    display: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => (
+      <TestModeWrapper
+        rowData={rowData}
+        rowMeta={rowMeta}
+      />
+    ),
+  }
+}
 
 const marksColumn = {
   name: "marks",
@@ -1661,6 +1687,7 @@ const StudentService = {
       EmailColumn,
       dashboardGenderColumn,
       stageColumn,
+      testModeColumn,
       addedAtColumn,
       lastUpdatedColumn,
       QualificationColumn,

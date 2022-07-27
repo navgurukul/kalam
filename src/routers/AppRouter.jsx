@@ -413,7 +413,7 @@ const AppRouter = () => {
             />
 
             <Route
-              path="/bookslot/:userId"
+              path="/bookslot/:studentId"
               element={
                 <React.Suspense fallback={<Loader container />}>
                   <SlotBooking />

@@ -297,25 +297,34 @@ const SlotBooking = () => {
         </>
       ) : (
         <>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Interview Slot Booked for {slot.student_name} For {slot.topic_name}
+          <Typography variant="h4" fontWeight="medium">
+            Interview Slot Booked
           </Typography>
-          <Typography
-            component="h3"
-            variant="h6"
-            id="modal-modal-description"
-            sx={{ mt: 2 }}
-          >
-            On {dayjs(slot.on_date).format("D MMM YYYY") || ""}
+          <Typography variant="h5" fontWeight="medium" sx={{ mt: 2 }}>
+            Slot Details
           </Typography>
-          <Typography variant="h6" component="h3">
-            From {dayjs(slot.start_time, "HH").format("h:mm a")} To{" "}
+          <Typography variant="h6" sx={{ mt: 1 }} fontWeight="normal">
+            <span style={{ fontWeight: "500" }}>Student Name:</span>{" "}
+            {slot.student_name}
+          </Typography>
+          <Typography variant="h6" fontWeight="normal">
+            <span style={{ fontWeight: "500" }}>Topic:</span> {slot.topic_name}
+          </Typography>
+          <Typography variant="h6" fontWeight="normal">
+            <span style={{ fontWeight: "500" }}>On:</span>{" "}
+            {dayjs(slot.on_date).format("D MMM YYYY") || ""}
+          </Typography>
+          <Typography variant="h6" fontWeight="normal">
+            <span style={{ fontWeight: "500" }}>From</span>{" "}
+            {dayjs(slot.start_time, "HH").format("h:mm a")}{" "}
+            <span style={{ fontWeight: "500" }}>To</span>{" "}
             {dayjs(slot.end_time_expected, "HH").format("h:mm a")}
           </Typography>
           <Button
             variant="contained"
             color="primary"
-            style={{ fontSize: "10px" }}
+            // style={{ fontSize: "10px" }}
+            sx={{ mt: 3 }}
             onClick={() => {
               handleDeleteSlot();
               // setCurrentTimeId(null);

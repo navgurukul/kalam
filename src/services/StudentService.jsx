@@ -530,7 +530,7 @@ const NameColumnWrapper = ({ rowData, rowMeta, updateValue }) => {
   return rowData;
 };
 
-const TestMode = ({rowData, rowMeta})=>{
+const TestModeWrapper = ({rowData, rowMeta})=>{
   const last = rowData[rowData.length-1];
   if(last.type_of_test === "onlineTest"){
     return "Online";

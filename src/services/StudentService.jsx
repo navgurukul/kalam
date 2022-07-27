@@ -620,11 +620,11 @@ const testModeColumn = {
   name: "enrolmentKey",
   label: "Test Mode",
   options: {
-    filter: false,
+    filter: true,
     sort: false,
     display: true,
     customBodyRender: (rowData, rowMeta, updateValue) => (
-      <TestMode
+      <TestModeWrapper
         rowData={rowData}
         rowMeta={rowMeta}
       />

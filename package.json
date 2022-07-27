@@ -2,7 +2,7 @@
   "name": "kalam",
   "version": "2.0.0",
   "description": "Updated Kalam Repo",
-  "main": "app.jsx",
+  "main": "src/app.jsx",
   "scripts": {
     "clean": "rm -rf node_modules && rm -rf dist",
     "oldbuild": "mkdir dist; cp public/index.html dist/index.html && cp public/favicon.ico dist/favicon.ico && cp public/index.html dist/404.html && NODE_ENV=production ./node_modules/webpack/bin/webpack.js --config webpack.prod.js",

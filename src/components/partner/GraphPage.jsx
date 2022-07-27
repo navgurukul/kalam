@@ -17,7 +17,7 @@ import { allStages } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const GraphPage = () => {
+const GraphPage = ({ url }) => {
   const [state, setState] = React.useState({
     data: null,
     partnerId: window.location.pathname.split("/")[2],
@@ -25,7 +25,8 @@ const GraphPage = () => {
 
   useEffect(() => {
     axios
-      .get(`${baseUrl}partners/graph/progress_made/${state.partnerId}`)
+      // .get(`${baseUrl}partners/graph/progress_made/${state.partnerId}`)
+      .get(`${baseUrl}${url}`)
       .then((response) => {
         const mappedData = response.data.map((item) => ({
           name: allStages[item.name],

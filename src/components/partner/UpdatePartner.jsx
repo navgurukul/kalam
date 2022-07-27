@@ -36,7 +36,7 @@ const UpdatePartner = (props) => {
         change(label);
       })
       .catch((err) => {
-        enqueueSnackbar(err, { variant: "error" });
+        enqueueSnackbar(err.message, { variant: "error" });
       });
   };
   const { value } = props;

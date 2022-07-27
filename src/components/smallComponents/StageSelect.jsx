@@ -14,8 +14,7 @@ import { getColumnIndex } from "../../utils";
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
-const StageSelect = (props) => {
-  const { allStages, stage } = props;
+const StageSelect = ({ allStages, stage, rowMetatable, change }) => {
   const { enqueueSnackbar } = useSnackbar();
   const isCampusPathname = window.location.pathname.indexOf("campus");
   const { loggedInUser } = useSelector((state) => state.auth);
@@ -69,12 +68,11 @@ const StageSelect = (props) => {
   };
 
   const changeStage = (selectedValue) => {
-    const { rowMetatable, change } = props;
     const studentId = rowMetatable.rowData[0];
     const { columnIndex } = rowMetatable;
     const { value, label } = selectedValue;
     axios
-      .post(`${baseUrl}students/chnageStage/${studentId}`, {
+      .post(`${baseUrl}students/changeStage/${studentId}`, {
         stage: value,
         transition_done_by: loggedInUser.user_name,
       })
@@ -94,7 +92,6 @@ const StageSelect = (props) => {
 
   const handleChange = async (selectedValue) => {
     const { value } = selectedValue;
-    const { rowMetatable } = props;
 
     const email =
       rowMetatable.rowData[
@@ -186,20 +183,21 @@ const StageSelect = (props) => {
   //     label: stagess.currentStage,
   //   };
   // }
-  if (stage) {
-    allStagesOptions = nextStage[getKeyByValue(allStages, stage)].map((x) => ({
-      value: x,
-      label: allStages[x],
-    }));
+  if (stage && stage !== "" && getKeyByValue(allStages, stage)) {
+    allStagesOptions = (nextStage[getKeyByValue(allStages, stage)] ?? []).map(
+      (x) => ({
+        value: x,
+        label: allStages[x],
+      })
+    );
   }
 
   let selectedValue = { value: "invalid", label: "Invalid Stage" };
 
-  if (stage)
+  if (stage && getKeyByValue(allStages, stage))
     selectedValue = { value: _.invert(allStages)[stage], label: stage };
 
   useEffect(() => {
-    const { rowMetatable } = props;
     getTransitionStage(rowMetatable.rowData[0]);
   }, []);
   return (
@@ -238,6 +236,7 @@ const StageSelect = (props) => {
         }
         onChange={handleChange}
         options={allStagesOptions}
+        menuPlacement={(rowMetatable.rowIndex + 1) % 10 ? "bottom" : "top"}
         // placeholder={"Select "+props.filter.name+" ..."}
         isClearable={false}
         components={animatedComponents}

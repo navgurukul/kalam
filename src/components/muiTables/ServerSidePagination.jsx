@@ -5,7 +5,6 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { CircularProgress } from "@mui/material";
 import SearchBar from "../smallComponents/SearchBar";
-import StudentService from "../../services/StudentService";
 import Loader from "../ui/Loader";
 import {
   setFilterColumns,
@@ -13,7 +12,7 @@ import {
   setPageNo,
 } from "../../store/slices/studentSlice";
 import { qualificationKeys } from "../../utils/constants";
-import { getColumnIndex } from "../../utils";
+import { dConvert, getColumnIndex } from "../../utils";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -177,7 +176,7 @@ const ServerSidePagination = ({
     const fullStudentData = await response.data.data.results
       .map((student) => {
         // eslint-disable-next-line import/no-named-as-default-member
-        const nStudent = StudentService.dConvert({
+        const nStudent = dConvert({
           ...student,
           qualification: qualificationKeys[student.qualification],
           studentOwner: "",
@@ -194,15 +193,15 @@ const ServerSidePagination = ({
             }",`;
           } else if (colInx === state.newColumns.length - 1)
             body += `"${
-              !student[col.name] || student[col.name] === undefined
+              !nStudent[col.name] || nStudent[col.name] === undefined
                 ? " "
-                : student[col.name]
+                : nStudent[col.name]
             }"`;
           else
             body += `"${
-              !student[col.name] || student[col.name] === undefined
+              !nStudent[col.name] || nStudent[col.name] === undefined
                 ? " "
-                : student[col.name]
+                : nStudent[col.name]
             }",`;
         });
         return body;

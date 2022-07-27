@@ -67,7 +67,9 @@ const LoginDesign = () => {
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/students", { replace: true });
+    if (isAuthenticated){ 
+      navigate("/students", { replace: true }); 
+    }
   }, [isAuthenticated]);
 
   const errr = () => {

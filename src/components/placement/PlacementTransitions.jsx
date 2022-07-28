@@ -84,6 +84,32 @@ const PlacementTransitions = ({
     {
       name: "salary",
       label: "Salary",
+      options: {
+        customBodyRender: React.useCallback((value) => {
+          const salaryPerMonth = value || "N/A";
+          const salaryPerAnnum =
+            salaryPerMonth === "N/A" ? "N/A" : salaryPerMonth * 12;
+          return (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                {salaryPerAnnum === "N/A" ? "" : "₹"}
+                {salaryPerAnnum === "N/A"
+                  ? "Click to Add"
+                  : `${salaryPerMonth}`}
+                {salaryPerAnnum === "N/A" ? "" : "/month"}
+              </div>
+              {salaryPerAnnum === "N/A" ? null : (
+                <div>₹{`${salaryPerAnnum}`}/annum</div>
+              )}
+            </div>
+          );
+        }, []),
+      },
     },
     {
       name: "job_type",
@@ -120,6 +146,7 @@ const PlacementTransitions = ({
               variant="contained"
               endIcon={<VisibilityIcon />}
               onClick={() => setViewLink(value)}
+              disabled={!value}
             >
               View
             </Button>
@@ -139,6 +166,7 @@ const PlacementTransitions = ({
               variant="contained"
               endIcon={<VisibilityIcon />}
               onClick={() => setViewLink(value)}
+              disabled={!value}
             >
               View
             </Button>
@@ -158,6 +186,7 @@ const PlacementTransitions = ({
               variant="contained"
               endIcon={<VisibilityIcon />}
               onClick={() => setViewLink(value)}
+              disabled={!value}
             >
               View
             </Button>

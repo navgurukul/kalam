@@ -313,7 +313,7 @@ const OwnerList = () => {
           </div>
           <OwnerSchedule
             setScheduleOpen={setScheduleOpen}
-            ScheduleOpen={scheduleOpen}
+            scheduleOpen={scheduleOpen}
           />
           <MainLayout
             title="Owners"

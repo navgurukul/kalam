@@ -81,6 +81,20 @@ const StageSelect = (props) => {
     return data?.email || "";
   };
 
+  const handleCampusStatusChange = (e) => {
+    const { rowMetatable } = props;
+    const studentId = rowMetatable.rowData[0];
+    axios
+      .put(`${baseUrl}students/updateDetails/${studentId}`, {
+        campus_status: e.target.value,
+      })
+      .then(() => {
+        setCampusStatus(e.target.value);
+        enqueueSnackbar("Updated Campus Status", { variant: "success" });
+      })
+      .catch(() => enqueueSnackbar("An Error Occurred", { variant: "error" }));
+  };
+
   const changeStage = (selectedValue) => {
     const { rowMetatable, change } = props;
     const studentId = rowMetatable.rowData[0];
@@ -225,7 +239,6 @@ const StageSelect = (props) => {
     teamMember: "Team Member",
   };
 
-  const handleCampusStatusChange = (e) => setCampusStatus(e.target.value);
   return (
     <div
       style={{

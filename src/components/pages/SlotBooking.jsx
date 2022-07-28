@@ -1,42 +1,29 @@
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useEffect } from "react";
-import DatePicker from "@mui/lab/DatePicker";
-import DateFnsUtils from "@mui/lab/AdapterDateFns";
+import axios from "axios";
+import dayjs from "dayjs";
+import { useParams } from "react-router-dom";
+import { StaticDatePicker } from "@mui/lab";
+import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { useSnackbar } from "notistack";
 import { allStages } from "../../utils/constants";
+import Loader from "../ui/Loader";
 
 const baseUrl = import.meta.env.VITE_API_URL;
+
 const SlotBooking = () => {
-  const [slotCanceled, setSlotCancelled] = React.useState(true);
-  const [CurrentTimeId, setCurrentTimeId] = React.useState(null);
-  const [slotBookingDetails, setSlotBookingDetails] = React.useState({});
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    maxWidth: "500px",
-    minWidth: "200px",
-    transform: "translate(-50%, -50%)",
-    bgcolor: "background.paper",
-    border: "1px solid #000",
-    p: 4,
-  };
-  const month = {
-    Jan: `01`,
-    Feb: `02`,
-    Mar: `03`,
-    Apr: `04`,
-    May: `05`,
-    Jun: `06`,
-    Jul: `07`,
-    Aug: `08`,
-    Sep: `09`,
-    Oct: `10`,
-    Nov: `11`,
-    Dec: `12`,
-  };
-  const DefaultTimings = [
+  const { enqueueSnackbar } = useSnackbar();
+  const { studentId } = useParams();
+
+  const defaultTimings = [
     {
       id: 1,
       from: "9:00",
@@ -73,165 +60,164 @@ const SlotBooking = () => {
       to: "16:00",
     },
   ];
+
+  const [loading, setLoading] = React.useState(true);
+  const [slot, setSlot] = React.useState({
+    from: "",
+    to: "",
+    id: null,
+    is_cancelled: true,
+  });
   const [date, setDate] = React.useState(new Date());
-  const [StartTime, setStartTime] = React.useState("");
-  const [EndTime, setEndTime] = React.useState("");
-  const { enqueueSnackbar } = useSnackbar();
-  const studentId = location.pathname.split("/")[2];
   const [studentData, setStudentData] = React.useState({});
-  const [Timings, setTimings] = React.useState(DefaultTimings);
+  const [timings, setTimings] = React.useState(defaultTimings);
 
-  const handleDateChange = (dater) => {
-    //console.log(dater);
-    const d = `${new Date(dater)}`.split(" ");
-    d[2] += ",";
-    const DateToSend = [d[3], month[d[1]], d[2]].join("-").replace(",", "");
+  const handleDateChange = (newDate) => {
+    const d = dayjs(newDate);
+    const DateToSend = d.format("YYYY-MM-DD");
     setDate(DateToSend);
-    fetch(`${baseUrl}/slot/interview/check/ondate/${DateToSend}/1`).then(
-      (res) => {
-        //
-        res.json().then((data) => {
-          if (data.data.length > 0) {
-            let FilteredTimings;
-            if (new Date(dater).getDate() === new Date().getDate()) {
-              // console.log(dater);
-              FilteredTimings = data.data.filter((time) => {
-                if (
+    axios
+      .get(`${baseUrl}/slot/interview/check/ondate/${DateToSend}/1`)
+      .then(({ data }) => {
+        if (data.data.length) {
+          const filteredTimings = dayjs().isSame(d, "day")
+            ? data.data.filter(
+                (time) =>
                   time.availiblity &&
-                  new Date().getHours() < time.from.split(":")[0]
-                ) {
-                  return true;
-                }
-                return false;
-              });
-            } else {
-              FilteredTimings = data.data.filter((time) => {
-                if (time.availiblity) {
-                  return true;
-                }
-                return false;
-              });
-            }
+                  dayjs().isBefore(dayjs(time.from, "HH:MM"), "hour")
+              )
+            : data.data.filter((time) => time.availiblity);
+          setTimings(filteredTimings);
+        } else setTimings(defaultTimings);
+      });
+  };
 
-            setTimings(FilteredTimings);
-          } else {
-            //console.log(Timings);
-            setTimings(DefaultTimings);
-          }
-        });
-      }
-    );
+  const fetchSlot = async () => {
+    const slotRes = await axios.get(`${baseUrl}slot/interview/${studentId}`);
+    return slotRes.data?.data[0] ?? null;
+  };
+
+  const fetchStudent = async () => {
+    const studentRes = await axios.get(`${baseUrl}/students/${studentId}`);
+    return studentRes?.data?.data[0] ?? null;
   };
 
   useEffect(() => {
-    // console.log();
-    fetch(`${baseUrl}/slot/interview/${studentId}`).then((res) => {
-      res.json().then((data) => {
-        // console.log(data.data[0]);
-        setSlotBookingDetails(data.data[0]);
-        setSlotCancelled(data.data[0].is_cancelled);
-      });
-    });
-    fetch(`${baseUrl}/students/${studentId}`).then((res) => {
-      res.json().then((data) => {
-        // console.log(data.data[0]);
+    (async () => {
+      const slotData = await fetchSlot();
+      if (slotData) setSlot(slotData);
+
+      const studentRes = await fetchStudent();
+      if (studentRes) {
+        const { name, stage, lastTransition } = studentRes || {
+          name: null,
+          stage: null,
+          lastTransition: { id: null },
+        };
         setStudentData({
-          name: data.data[0].name,
-          stage: allStages[data.data[0].stage],
-          transitionID: data.data[0].lastTransition.id,
+          name,
+          stage: allStages[stage],
+          transitionID: lastTransition.id,
         });
-      });
-    });
-    handleDateChange(date);
+        handleDateChange(date);
+        setLoading(false);
+      }
+    })();
   }, []);
 
-  const handelDeleteSlot = () => {
-    fetch(`${baseUrl}slot/interview/stundet/${slotBookingDetails.id}`, {
-      method: "DELETE",
-    }).then((res) => {
-      res.json().then((data) => {
+  const handleDeleteSlot = () => {
+    axios
+      .delete(`${baseUrl}slot/interview/stundet/${slot.id}`)
+      .then(({ data }) => {
         if (data.message === "Successfully inserted slot deleted") {
           enqueueSnackbar("Slot Cancelled", {
             variant: "info",
           });
           handleDateChange(date);
-          setSlotCancelled(true);
+          setSlot({ is_cancelled: true });
         } else {
           enqueueSnackbar("Slot Not Cancelled", {
             variant: "error",
           });
         }
       });
-    });
   };
-  const handelSlotBooking = () => {
-    fetch(`${baseUrl}slot/interview/student`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+
+  const handleSlotBooking = () => {
+    const { from, to } = slot;
+    axios
+      .post(`${baseUrl}slot/interview/student`, {
         student_id: studentId,
         student_name: studentData.name,
         topic_name: studentData.stage,
         transition_id: studentData.transitionID,
-        start_time: StartTime,
-        end_time_expected: EndTime,
+        start_time: from,
+        end_time_expected: to,
         duration: "1hr",
         on_date: date,
-      }),
-    }).then((res) => {
-      res
-        .json()
-        .then((data) => {
-          //console.log(data);
-          if (data.status === "successfully_scheduled") {
-            enqueueSnackbar("Slot Booked", {
-              variant: "success",
-            });
-            fetch(`${baseUrl}/slot/interview/${studentId}`).then((_res) => {
-              _res.json().then((_data) => {
-                setSlotBookingDetails(_data.data[0]);
-                setSlotCancelled(_data.data[0].is_cancelled);
+      })
+      .then(({ data }) => {
+        if (data.status === "successfully_scheduled")
+          fetchSlot()
+            .then((slotData) => {
+              if (slotData) setSlot(slotData);
+              enqueueSnackbar("Slot Booked", {
+                variant: "success",
               });
-              fetch(`${baseUrl}/slot/interview/${studentId}`).then(
-                (interviewRes) => {
-                  interviewRes.json().then((iData) => {
-                    setSlotBookingDetails(iData.data[0]);
-                    setSlotCancelled(iData.data[0].is_cancelled);
-                  });
-                }
-              );
-            });
-          } else {
-            enqueueSnackbar("Cannot Book Slot", {
-              variant: "error",
-            });
-          }
-        })
-        .catch(() => {
-          enqueueSnackbar("Couldn't Book Slot!", { variant: "error" });
-        });
-    });
+            })
+            .catch(() =>
+              enqueueSnackbar("Cannot Book Slot", {
+                variant: "error",
+              })
+            );
+        else
+          enqueueSnackbar("Cannot Book Slot", {
+            variant: "error",
+          });
+      })
+      .catch(() => {
+        enqueueSnackbar("Couldn't Book Slot!", { variant: "error" });
+      });
   };
-  function disablePrevDates() {
+  const disablePrevDates = () => {
     const yesterday = new Date(Date.now() - 86400000);
     const startSeconds = Date.parse(yesterday);
     return (_date) => Date.parse(_date) < startSeconds;
-  }
-  return (
-    <Box sx={style}>
-      {slotCanceled ? (
+  };
+
+  return loading ? (
+    <Loader />
+  ) : [
+      "English Interview Pending (2nd Round)",
+      "Culture Fit Interview Pending (4th Round)",
+      "Pending Culture Fit Re-Interview",
+    ].includes(studentData.stage) ? (
+    <Container
+      maxWidth="md"
+      sx={{
+        bgcolor: "background.paper  ",
+        p: 4,
+      }}
+    >
+      {slot.is_cancelled ? (
         <>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Interview Slot Booking
+          <Typography variant="h5" fontWeight="medium">
+            Book Interview Slot
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Slot Booking for {studentData.name}
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Book Interview Slot {studentData.name}
           </Typography>
-          <LocalizationProvider dateAdapter={DateFnsUtils}>
-            <Grid container justify="space-around">
-              <DatePicker
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              mb: "1.2rem",
+            }}
+          >
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <StaticDatePicker
+                displayStaticWrapperAs="desktop"
                 margin="normal"
                 id="date-picker-dialog"
                 format="yyyy-MM-dd"
@@ -247,69 +233,88 @@ const SlotBooking = () => {
                 }}
                 renderInput={(params) => <TextField {...params} />}
               />
-            </Grid>
-          </LocalizationProvider>
-          <Grid container justify="space-evenly">
-            {Timings.length > 0 ? (
-              Timings.map((item) => (
-                <Grid
-                  item
-                  key={item.id}
-                  onClick={() => {
-                    setStartTime(item.from);
-                    setEndTime(item.to);
-                    setCurrentTimeId(item.id);
-                  }}
-                  md={4}
-                  style={{
-                    cursor: "pointer",
-                  }}
-                >
-                  <Typography
-                    style={{
-                      backgroundColor: `${
-                        CurrentTimeId === item.id ? "#80b84d" : "#f06243"
-                      }`,
-                      margin: "5px",
-                      padding: "8px",
-                      fontSize: "14px",
-                    }}
-                    shouldDisableDate={disablePrevDates()}
-                    inputVariant="outlined"
-                    fullWidth
-                    KeyboardButtonProps={{
-                      "aria-label": "change date",
-                    }}
-                  />
-                </Grid>
-              ))
+            </LocalizationProvider>
+            {timings.length > 0 ? (
+              <Grid container justifyContent="center" spacing={2}>
+                {timings.map(({ id, from, to }) => (
+                  <Grid item key={id} sm={6} md={4}>
+                    <Button
+                      color="primary"
+                      fullWidth
+                      variant={slot.id === id ? "contained" : "outlined"}
+                      sx={{
+                        padding: "8px",
+                        fontSize: "14px",
+                        fontWeight: slot.id !== id && "600",
+                        border: slot.id !== id && "2px solid",
+                      }}
+                      onClick={() =>
+                        setSlot({ id, from, to, is_cancelled: true })
+                      }
+                    >
+                      {dayjs(from, "HH").format("h:mm a")} -{" "}
+                      {dayjs(to, "HH").format("h:mm a")}
+                    </Button>
+                  </Grid>
+                ))}
+              </Grid>
             ) : (
-              <Typography>No Slots Available For Selected Date</Typography>
+              <Typography variant="h6" textAlign="center">
+                No Slots Available on {dayjs(date).format("MMM D, YYYY")}
+              </Typography>
             )}
-          </Grid>
+          </Box>
+
           <Button
             variant="contained"
             color="primary"
-            style={{ fontSize: "10px" }}
-            onClick={() => {
-              handelSlotBooking();
-              setCurrentTimeId(null);
-            }}
+            disabled={timings.length === 0 || !slot.id}
+            onClick={() => handleSlotBooking()}
           >
             Book Slot
           </Button>
         </>
       ) : (
-        <Box style={{ display: "flex", justifyContent: "center" }}>
-          <Typography
-            color="primary"
-            variant="h2"
-            style={{ marginTop: "0.4rem" }}
-          >
-            You cannot book slot
+        <>
+          <Typography variant="h4" fontWeight="medium">
+            Interview Slot Booked
           </Typography>
-        </Box>
+          <Typography variant="h5" fontWeight="medium" sx={{ mt: 2 }}>
+            Slot Details
+          </Typography>
+          <Typography variant="h6" sx={{ mt: 1 }} fontWeight="normal">
+            <span style={{ fontWeight: "500" }}>Student Name:</span>{" "}
+            {slot.student_name}
+          </Typography>
+          <Typography variant="h6" fontWeight="normal">
+            <span style={{ fontWeight: "500" }}>Topic:</span> {slot.topic_name}
+          </Typography>
+          <Typography variant="h6" fontWeight="normal">
+            <span style={{ fontWeight: "500" }}>On:</span>{" "}
+            {dayjs(slot.on_date).format("D MMM YYYY") || ""}
+          </Typography>
+          <Typography variant="h6" fontWeight="normal">
+            <span style={{ fontWeight: "500" }}>From</span>{" "}
+            {dayjs(slot.start_time, "HH").format("h:mm a")}{" "}
+            <span style={{ fontWeight: "500" }}>To</span>{" "}
+            {dayjs(slot.end_time_expected, "HH").format("h:mm a")}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ mt: 3 }}
+            onClick={() => handleDeleteSlot()}
+          >
+            Delete Slot
+          </Button>
+        </>
       )}
+    </Container>
+  ) : (
+    <Box style={{ display: "flex", justifyContent: "center" }}>
+      <Typography color="primary" variant="h2" style={{ marginTop: "0.4rem" }}>
+        You cannot book slot
+      </Typography>
     </Box>
   );
 };

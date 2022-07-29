@@ -67,7 +67,6 @@
     "react-spinner-material": "^1.4.0",
     "react-timer-hook": "^3.0.5",
     "react-youtube": "^7.14.0",
-    "redux": "^4.1.2",
     "slick-carousel": "^1.8.1",
     "underscore": "^1.13.2"
   },

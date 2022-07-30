@@ -95,6 +95,7 @@ const AddNewStudent = () => {
       label: donorName,
       value: id,
     }));
+
     const partnerRes = await axios.get(`${baseUrl}partners`);
     const partnerList = partnerRes.data.data.map((partnerItem) => ({
       label: partnerItem.name,
@@ -109,29 +110,19 @@ const AddNewStudent = () => {
   };
 
   const onSubmit = (data) => {
-    // const finalData = { ...studentData, ...data };
-    // console.log(finalData);
-    //axios request
-
     const finalData = {
       name: data.name,
       gender: data.gender,
       dob: data.dob,
       stage: data.stage,
       whatsapp: data.whatsapp,
-      // alt_mobile: data.altMobile,
       state: data.state,
-      // city: data.city,
       district: data.district,
-      // pin_code: data.pinCode,
       qualification: data.qualification,
       current_status: data.currentStatus,
       school_medium: data.schoolMedium,
       caste: data.caste,
       religon: data.religion,
-      // partner_id: 0,
-      // campus: 1,
-      // campus_status: "string",
       donor: studentData.donor.map((donorEl) => donorEl.value),
     };
     if (data.altMobile) finalData.alt_mobile = data.altMobile;
@@ -245,7 +236,6 @@ const AddNewStudent = () => {
             control={control}
             name="altMobile"
             rules={{
-              // required: true,
               minLength: 10,
               maxLength: 10,
             }}
@@ -370,7 +360,6 @@ const AddNewStudent = () => {
             name="dob"
             defaultValue={studentData.dob || null}
             rules={{
-              // required: true,
               validate: (dob) =>
                 parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 17,
             }}
@@ -381,7 +370,6 @@ const AddNewStudent = () => {
               <LocalizationProvider dateAdapter={DateFnsUtils}>
                 <DatePicker
                   disableFuture
-                  // margin="normal"
                   id="dob"
                   label="Date of Birth"
                   inputRef={ref}
@@ -466,7 +454,6 @@ const AddNewStudent = () => {
             control={control}
             name="religion"
             defaultValue={studentData.religion || ""}
-            // rules={{ required: true }}
             render={({ field: { ref, ...rest } }) => (
               <FormControl fullWidth variant="outlined">
                 <InputLabel id="religion-label">Religion</InputLabel>
@@ -530,8 +517,6 @@ const AddNewStudent = () => {
                   inputRef={ref}
                   label="Select State"
                   placeholder="Select State"
-                  // MenuProps={{ classes: { paper: classes.menuPaper } }}
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...rest}
                 >
                   <MenuItem value="" disabled>
@@ -584,11 +569,9 @@ const AddNewStudent = () => {
                   required
                   disabled={addrState === "" && !districts.length}
                   inputRef={ref}
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...rest}
                   label="Select District"
                   placeholder="Select District"
-                  // MenuProps={{ classes: { paper: classes.menuPaper } }}
                 >
                   <MenuItem value="" disabled>
                     Select District
@@ -623,7 +606,6 @@ const AddNewStudent = () => {
             control={control}
             defaultValue={studentData.city}
             name="city"
-            // rules={{ required: "true" }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
                 variant="outlined"
@@ -682,7 +664,6 @@ const AddNewStudent = () => {
           <Controller
             control={control}
             rules={{
-              // required: "true",
               validate: (ct) => ct !== "Select Option",
             }}
             defaultValue={studentData.currentStatus || "Select Option"}
@@ -952,18 +933,12 @@ const AddNewStudent = () => {
         </Grid>
         <Grid item xs={9} />
         <Grid item xs={12} sm={6}>
-          {/* <Controller
-            control={control}
-            name="partner"
-            rules={{ validate: (sm) => sm !== "" }}
-            render={({ field: { ref, ...rest } }) => ( */}
           <FormControl fullWidth variant="outlined">
             <RSelect
               label="Select Partner"
               placeholder="Select Partner"
               error={!!errors.partner}
-              // inputRef={ref}
-              // {...rest}
+              isClearable
               onChange={(partner) =>
                 setStudentData((prevData) => ({
                   ...prevData,
@@ -1000,18 +975,12 @@ const AddNewStudent = () => {
           )}
         </Grid>
         <Grid item xs={12} sm={6}>
-          {/* <Controller
-            control={control}
-            name="partner"
-            rules={{ validate: (sm) => sm !== "" }}
-            render={({ field: { ref, ...rest } }) => ( */}
           <FormControl fullWidth variant="outlined">
             <RSelect
               label="Select Donor"
               placeholder="Select Donor"
               error={!!errors.donor}
-              // inputRef={ref}
-              // {...rest}
+              isClearable
               onChange={(donor) =>
                 setStudentData((prevData) => ({
                   ...prevData,
@@ -1074,17 +1043,6 @@ const AddNewStudent = () => {
                       {campusItem.name}
                     </MenuItem>
                   ))}
-
-                  {/* {Object.entries({
-                    hi: ["Hindi", "हिन्दी"],
-                    en: ["English", "अंग्रेज़ी"],
-                    ma: ["Marathi", "मराठी"],
-                    ur: ["Urdu", "उर्दू"],
-                  }).map(([key, value]) => (
-                    <MenuItem value={key} key={key}>
-                      {value[0]}
-                    </MenuItem>
-                  ))} */}
                 </Select>
               </FormControl>
             )}
@@ -1110,7 +1068,6 @@ const AddNewStudent = () => {
             control={control}
             name="campusStatus"
             defaultValue={studentData.campusStatus || ""}
-            // rules={{ validate: (sm) => sm !== "" }}
             render={({ field: { ref, ...rest } }) => (
               <FormControl
                 fullWidth
@@ -1145,17 +1102,6 @@ const AddNewStudent = () => {
                       {name}
                     </MenuItem>
                   ))}
-
-                  {/* {Object.entries({
-                    hi: ["Hindi", "हिन्दी"],
-                    en: ["English", "अंग्रेज़ी"],
-                    ma: ["Marathi", "मराठी"],
-                    ur: ["Urdu", "उर्दू"],
-                  }).map(([key, value]) => (
-                    <MenuItem value={key} key={key}>
-                      {value[0]}
-                    </MenuItem>
-                  ))} */}
                 </Select>
               </FormControl>
             )}
@@ -1236,11 +1182,7 @@ const AddNewStudent = () => {
         }}
       >
         <Link to="/students">
-          <Button
-            variant="outlined"
-            color="primary"
-            // onClick={handleSubmit(onSubmit)}
-          >
+          <Button variant="outlined" color="primary">
             Go Back
           </Button>
         </Link>

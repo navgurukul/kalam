@@ -137,10 +137,10 @@ const AddNewStudent = () => {
     if (data.altMobile) finalData.alt_mobile = data.altMobile;
     if (data.city) finalData.city = data.city;
     if (data.pinCode) finalData.pin_code = data.pinCode;
-    // if (data.campus) {
-    //   finalData.campus = data.campus;
-    //   if (data.campusStatus) finalData.campus_status = data.campusStatus;
-    // }
+    if (data.campus) {
+      finalData.campus = data.campus;
+      if (data.campusStatus) finalData.campus_status = data.campusStatus;
+    }
     if (studentData.partner) finalData.partner_id = studentData.partner.value;
     axios
       .post(`${baseUrl}students/newStudents`, finalData)

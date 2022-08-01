@@ -530,19 +530,6 @@ const NameColumnWrapper = ({ rowData, rowMeta, updateValue }) => {
   return rowData;
 };
 
-const TestModeWrapper = ({ rowData }) => {
-  const last = rowData[rowData.length - 1];
-  if (!last) return "N/A";
-  switch (last.type_of_test) {
-    case "onlineTest":
-      return "Online";
-    case "offlineTest":
-      return "Offline";
-    default:
-      return "N/A";
-  }
-};
-
 const nameColumn = {
   name: "name",
   label: "Name",
@@ -619,6 +606,18 @@ const AltNumberColumn = {
   },
 };
 
+const TestModeWrapper = ({ value }) => {
+  const last = value[value.length - 1];
+  switch (last?.type_of_test || "") {
+    case "onlineTest":
+      return "Online";
+    case "offlineTest":
+      return "Offline";
+    default:
+      return "N/A";
+  }
+};
+
 const testModeColumn = {
   name: "enrolmentKey",
   label: "Test Mode",
@@ -626,7 +625,7 @@ const testModeColumn = {
     filter: true,
     sort: false,
     display: true,
-    customBodyRender: (rowData) => <TestModeWrapper rowData={rowData} />,
+    customBodyRender: (value) => <TestModeWrapper value={value} />,
   },
 };
 

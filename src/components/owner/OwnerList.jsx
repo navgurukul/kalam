@@ -59,15 +59,15 @@ const OwnerList = () => {
         filter: false,
         sort: false,
         customBodyRender: React.useCallback((value, rowMeta) => {
-          const user = (loggedInUser && loggedInUser.mail_id) || null;
+          const user = loggedInUser?.mail_id || null;
           const canUpdate =
             privileges.some((priv) => priv.privilege === "UpdateOwner") ||
             rowMeta.rowData[1] === user;
-
+          // console.log(privileges);
           const canDelete =
             (privileges.some((priv) => priv.privilege === "DeleteOwner") ||
               rowMeta.rowData[1] === user) &&
-            rowMeta.rowData[3];
+            rowMeta.rowData[4] === 0;
 
           return (
             <div
@@ -136,7 +136,7 @@ const OwnerList = () => {
           if (value === 1) return "Female";
           if (value === 2) return "Male";
           if (value === 3) return "Transgender";
-          return "NA";
+          return "N/A";
         },
       },
     },
@@ -313,7 +313,7 @@ const OwnerList = () => {
           </div>
           <OwnerSchedule
             setScheduleOpen={setScheduleOpen}
-            ScheduleOpen={scheduleOpen}
+            scheduleOpen={scheduleOpen}
           />
           <MainLayout
             title="Owners"

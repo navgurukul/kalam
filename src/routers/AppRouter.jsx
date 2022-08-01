@@ -16,6 +16,10 @@ import NotFoundPage from "../components/layout/NotFoundPage";
 import Loader from "../components/ui/Loader";
 import { changeFetching } from "../store/slices/uiSlice";
 
+// const AddNewStudent = React.lazy(() =>
+//   import("../components/student/AddNewStudent")
+// );
+
 const AssessmentAttempts = React.lazy(() =>
   import("../components/assessment/AssessmentAttempts")
 );
@@ -175,6 +179,17 @@ const AppRouter = () => {
                   </RequireAuth>
                 }
               />
+              {/* <Route
+                path="add"
+                element={
+                  <React.Suspense fallback={<Loader container />}>
+                    <RequireAuth privateRoute>
+                      <AddNewStudent />
+                    </RequireAuth>
+                  </React.Suspense>
+                }
+              /> */}
+
               <Route
                 path=":dataType"
                 component={
@@ -234,6 +249,27 @@ const AppRouter = () => {
                   }
                 />
                 <Route path="assessments" element={<ViewAssessments />} />
+              </Route>
+              <Route path="group">
+                <Route path=":partnerId">
+                  <Route
+                    index
+                    element={
+                      <React.Suspense fallback={<Loader container />}>
+                        <ProgressMadeForPartner />
+                      </React.Suspense>
+                    }
+                  />
+                  <Route
+                    path="progress"
+                    element={
+                      <React.Suspense fallback={<Loader container />}>
+                        <PartnerStudentsProgressInCampus />
+                      </React.Suspense>
+                    }
+                  />
+                  <Route path="assessments" element={<ViewAssessments />} />
+                </Route>
               </Route>
             </Route>
 
@@ -377,7 +413,7 @@ const AppRouter = () => {
             />
 
             <Route
-              path="/bookslot/:userId"
+              path="/bookslot/:studentId"
               element={
                 <React.Suspense fallback={<Loader container />}>
                   <SlotBooking />

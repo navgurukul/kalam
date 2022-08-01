@@ -16,13 +16,22 @@ const PartnerStudentsProgressInCampus = () => {
     dataView: 1,
   });
 
+  const isPartnerGroup =
+    location.pathname.split("/")[2] === "group" ? "partnerGroup" : "partners";
+
   useEffect(() => {
-    axios.get(`${baseUrl}partners/${partnerId}`).then((res) => {
-      setState({
-        ...state,
-        partnerName: res.data.data.name,
+    axios
+      .get(
+        `${baseUrl}${isPartnerGroup}/${partnerId}${
+          isPartnerGroup === "partnerGroup" ? "/name" : ""
+        }`
+      )
+      .then((res) => {
+        setState({
+          ...state,
+          partnerName: res.data.data[0]?.name || res.data.data.name,
+        });
       });
-    });
   }, []);
 
   const progressMade = () => {
@@ -42,20 +51,20 @@ const PartnerStudentsProgressInCampus = () => {
         return (
           <DashboardPage
             displayData={StudentService.CampusData}
-            url={`partners/joined_progress_made/${partnerId}`}
+            url={`${isPartnerGroup}/joined_progress_made/${partnerId}`}
           />
         );
       case 1:
-        return <StudentsProgressCards url={`partners/${partnerId}`} />;
+        return <StudentsProgressCards url={`${isPartnerGroup}/${partnerId}`} />;
 
       case 2:
         return (
           <GraphingPresentationJob
-            url={`/partners/${partnerId}/students/distribution`}
+            url={`/${isPartnerGroup}/${partnerId}/students/distribution`}
           />
         );
       default:
-        return <StudentsProgressCards url={`partners/${partnerId}`} />;
+        return <StudentsProgressCards url={`${isPartnerGroup}/${partnerId}`} />;
     }
   };
   return (

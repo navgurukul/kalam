@@ -530,6 +530,16 @@ const NameColumnWrapper = ({ rowData, rowMeta, updateValue }) => {
   return rowData;
 };
 
+const TestModeWrapper = ({rowData, rowMeta})=>{
+  const last = rowData[rowData.length-1];
+  if(last.type_of_test === "onlineTest"){
+    return "Online";
+  }else if(last.type_of_test === "offlineTest"){
+    return "Offline";
+  }
+  return "N/A";
+}
+
 const nameColumn = {
   name: "name",
   label: "Name",
@@ -557,9 +567,29 @@ const cityColumn = {
   },
 };
 
+const districtColumn = {
+  name: "district",
+  label: "District",
+  options: {
+    filter: true,
+    sort: true,
+    display: false,
+  },
+};
+
 const stateColumn = {
   name: "state",
   label: "State",
+  options: {
+    filter: false,
+    sort: true,
+    display: false,
+  },
+};
+
+const pinCodeColumn = {
+  name: "pin_code",
+  label: "Pin Code",
   options: {
     filter: false,
     sort: true,
@@ -585,6 +615,22 @@ const AltNumberColumn = {
     display: false,
   },
 };
+
+const testModeColumn = {
+  name: "enrolmentKey",
+  label: "Test Mode",
+  options: {
+    filter: true,
+    sort: false,
+    display: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => (
+      <TestModeWrapper
+        rowData={rowData}
+        rowMeta={rowMeta}
+      />
+    ),
+  }
+}
 
 const marksColumn = {
   name: "marks",
@@ -1492,17 +1538,17 @@ const PartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
   ) ? (
     <UpdatePartner
       studentId={rowMeta.rowData[0]}
-      value={value}
-      change={(event) => updateValue(event)}
+      value={value?.name || ""}
+      change={(newValue) => updateValue({ ...value, name: newValue })}
     />
   ) : (
-    <p>{value}</p>
+    <p>{value?.name || ""}</p>
   );
 };
 
 const partnerNameColumn = {
   label: "Partner Name",
-  name: "partner.name",
+  name: "partner",
   options: {
     filter: true,
     filterOptions: { names: JSON.parse(localStorage.getItem("partners")) },
@@ -1632,13 +1678,16 @@ const StudentService = {
       nameColumn,
       setColumn,
       cityColumn,
+      districtColumn,
       stateColumn,
+      pinCodeColumn,
       numberColumn,
       AltNumberColumn,
       marksColumn,
       EmailColumn,
       dashboardGenderColumn,
       stageColumn,
+      testModeColumn,
       addedAtColumn,
       lastUpdatedColumn,
       QualificationColumn,
@@ -1659,7 +1708,9 @@ const StudentService = {
       nameColumn,
       setColumn,
       cityColumn,
+      districtColumn,
       stateColumn,
+      pinCodeColumn,
       numberColumn,
       AltNumberColumn,
       marksColumn,

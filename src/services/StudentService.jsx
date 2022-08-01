@@ -530,15 +530,18 @@ const NameColumnWrapper = ({ rowData, rowMeta, updateValue }) => {
   return rowData;
 };
 
-const TestModeWrapper = ({rowData, rowMeta})=>{
-  const last = rowData[rowData.length-1];
-  if(last.type_of_test === "onlineTest"){
-    return "Online";
-  }else if(last.type_of_test === "offlineTest"){
-    return "Offline";
+const TestModeWrapper = ({ rowData }) => {
+  const last = rowData[rowData.length - 1];
+  if (!last) return "N/A";
+  switch (last.type_of_test) {
+    case "onlineTest":
+      return "Online";
+    case "offlineTest":
+      return "Offline";
+    default:
+      return "N/A";
   }
-  return "N/A";
-}
+};
 
 const nameColumn = {
   name: "name",
@@ -623,14 +626,9 @@ const testModeColumn = {
     filter: true,
     sort: false,
     display: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => (
-      <TestModeWrapper
-        rowData={rowData}
-        rowMeta={rowMeta}
-      />
-    ),
-  }
-}
+    customBodyRender: (rowData) => <TestModeWrapper rowData={rowData} />,
+  },
+};
 
 const marksColumn = {
   name: "marks",

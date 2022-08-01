@@ -224,7 +224,12 @@ const AddNewStudent = () => {
                 error={!!errors.whatsapp}
                 type="text"
                 helperText={
-                  errors.whatsapp ? "Enter Mobile No." : "Ex. 88844xxxxx"
+                  errors.whatsapp
+                    ? errors.whatsapp.type === "minLength" ||
+                      errors.whatsapp.type === "maxLength"
+                      ? "Enter a valid Mobile No."
+                      : "Enter Mobile No."
+                    : "Ex. 88844xxxxx"
                 }
                 {...rest}
               />
@@ -252,7 +257,12 @@ const AddNewStudent = () => {
                 error={!!errors.altMobile}
                 type="text"
                 helperText={
-                  errors.altMobile ? "Enter Alt Mobile No." : "Ex. 88844xxxxx"
+                  errors.altMobile
+                    ? errors.whatsapp.type === "minLength" ||
+                      errors.whatsapp.type === "maxLength"
+                      ? "Enter a valid Mobile No."
+                      : "Enter Alt Mobile No."
+                    : "Ex. 88844xxxxx"
                 }
                 {...rest}
               />
@@ -384,7 +394,7 @@ const AddNewStudent = () => {
                       helperText={
                         errors.dob
                           ? errors.dob.type === "validate"
-                            ? "Age must be between 17 & 28"
+                            ? "Age must be greater than 17"
                             : "Enter Date of Birth"
                           : "Ex. 19/11/2003"
                       }

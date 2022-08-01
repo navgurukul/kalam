@@ -88,6 +88,7 @@ const CampusStudentsData = () => {
       case 0:
         return (
           <DashboardPage
+            isCampus
             displayData={[
               ...StudentService.CampusData,
               EvaluationColumn,
@@ -106,6 +107,7 @@ const CampusStudentsData = () => {
       default:
         return (
           <DashboardPage
+            isCampus
             displayData={[
               ...StudentService.CampusData,
               EvaluationColumn,

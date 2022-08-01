@@ -867,6 +867,7 @@ const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
     <StageSelect
       rowMetatable={rowMeta}
       stage={value}
+      isCampus={isCampusPathname > -1}
       allStages={isCampusPathname > -1 ? campusStageOfLearning : allStages}
       change={(event) => updateValue(event)}
     />

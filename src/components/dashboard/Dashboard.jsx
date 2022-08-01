@@ -28,8 +28,6 @@ import {
 } from "../../store/slices/campusSlice";
 import MainLayout from "../muiTables/MainLayout";
 
-import StudentService from "../../services/StudentService";
-
 // import { setupUsers } from "../store/slices/authSlice";
 import { changeFetching } from "../../store/slices/uiSlice";
 
@@ -39,6 +37,7 @@ import {
   allStages,
 } from "../../utils/constants";
 import EventEmitter from "../../utils/eventEmitter";
+import { dConvert } from "../../utils";
 
 const allStagesOptions = Object.keys(campusStageOfLearning).map((x) => ({
   value: x,
@@ -139,7 +138,7 @@ const columns = [
 ];
 // let filterFns = [];
 
-const DashboardPage = ({ displayData, title, url }) => {
+const DashboardPage = ({ displayData, title, url, isCampus }) => {
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
   const {
@@ -211,7 +210,7 @@ const DashboardPage = ({ displayData, title, url }) => {
       }
     }
 
-    const sData = studentData.map((data) => StudentService.dConvert(data));
+    const sData = studentData.map((data) => dConvert(data, isCampus));
 
     // for (let i = 0; i < studentData.length; i += 1) {
     //   // eslint-disable-next-line no-param-reassign, import/no-named-as-default-member
@@ -479,6 +478,10 @@ const DashboardPage = ({ displayData, title, url }) => {
       />
     </Box>
   );
+};
+
+DashboardPage.defaultProps = {
+  isCampus: false,
 };
 
 export default DashboardPage;

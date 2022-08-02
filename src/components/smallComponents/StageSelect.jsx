@@ -20,6 +20,7 @@ import { nextStage } from "../../services/GlobalService";
 // eslint-disable-next-line import/no-cycle
 import StudentService from "../../services/StudentService";
 import { getColumnIndex } from "../../utils";
+import { campusStatusOptions } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
@@ -228,15 +229,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
 
   // useEffect(() => getTransitionStage(rowMetatable.rowData[0]), []);
 
-  const campusStageOptions = {
-    present: "Present",
-    onLeave: "On Leave",
-    droppedOut: "Dropped Out",
-    gotJobLeftCampus: "Got Job & Left the Campus",
-    alumniInternStayingInCampus: "Alumni/Interns Staying in Campus",
-    teamMember: "Team Member",
-  };
-
   return (
     <div
       style={{
@@ -261,7 +253,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
             <MenuItem value="selectoption" disabled>
               Select an Option
             </MenuItem>
-            {Object.entries(campusStageOptions).map(([key, status]) => (
+            {Object.entries(campusStatusOptions).map(([key, status]) => (
               <MenuItem value={key} key={key}>
                 {status}
               </MenuItem>

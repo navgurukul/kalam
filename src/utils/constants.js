@@ -274,6 +274,19 @@ export const campusStageOfLearning = {
   paidForward: "Paid Forward",
 };
 
+export const campusStatusOptions = {
+  present: "Present",
+  onLeave: "On Leave",
+  droppedOut: "Dropped Out",
+  // gotJobLeftCampus: "Got Job & Left the Campus",
+  inCampusInterns: "In Campus Interns",
+  inJob: "In Job",
+  graphicDesign: "Graphic Design",
+  courseCompleted: "Course Completed",
+  // alumniInternStayingInCampus: "Alumni/Interns Staying in Campus",
+  teamMember: "Team Member",
+};
+
 export const states = {
   AN: "Andaman and Nicobar Islands",
   AP: "Andhra Pradesh",

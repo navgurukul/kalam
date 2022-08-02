@@ -287,6 +287,10 @@ export const campusStatusOptions = {
   teamMember: "Team Member",
 };
 
+export const campusStatusDisplayOptions = Object.keys(
+  campusStatusOptions
+).slice(0, 5);
+
 export const states = {
   AN: "Andaman and Nicobar Islands",
   AP: "Andhra Pradesh",

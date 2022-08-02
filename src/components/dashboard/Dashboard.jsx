@@ -35,6 +35,8 @@ import {
   qualificationKeys,
   campusStageOfLearning,
   allStages,
+  campusStatusOptions,
+  campusStatusDisplayOptions,
 } from "../../utils/constants";
 import EventEmitter from "../../utils/eventEmitter";
 import { dConvert } from "../../utils";
@@ -182,47 +184,32 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
   };
 
   EventEmitter.subscribe("stageChange", stageChangeEvent);
-
   const dataSetup = (studentData) => {
-    const locationCampus = location.pathname.split("/")[1];
-
-    let countDropOut = 0;
-    let countOnLeave = 0;
-    let countInCampus = 0;
-    if (locationCampus === "campus") {
-      if (studentData.length > 0) {
-        studentData.forEach((e) => {
-          if (e.stage === "droppedOut") {
-            countDropOut += 1;
-          } else if (e.stage === "onLeave") {
-            countOnLeave += 1;
-          } else if (
-            e.stage !== "M22" ||
-            e.stage !== "M21" ||
-            e.stage !== "offerLetterSent" ||
-            e.stage !== "inJob" ||
-            e.stage !== "payingForward" ||
-            e.stage !== "paidForward"
-          ) {
-            countInCampus += 1;
-          }
-        });
-      }
+    if (isCampus) {
+      const countObject = campusStatusDisplayOptions.reduce(
+        (allCounts, key) => ({ ...allCounts, [key]: 0 }),
+        {}
+      );
+      const counts = studentData.reduce((allCounts, student) => {
+        if (
+          student.stage.campus_status &&
+          campusStatusDisplayOptions.includes(student.stage.campus_status)
+        )
+          // eslint-disable-next-line no-param-reassign
+          allCounts[student.stage.campus_status] += 1;
+        return allCounts;
+      }, countObject);
+      // setCampusCounts({
+      //   dropoutCount: countDropOut,
+      //   onLeaveCount: countOnLeave,
+      //   inCampusCount: countInCampus,
+      // });
     }
 
     const sData = studentData.map((data) => dConvert(data, isCampus));
 
-    // for (let i = 0; i < studentData.length; i += 1) {
-    //   // eslint-disable-next-line no-param-reassign, import/no-named-as-default-member
-    //   studentData[i] = StudentService.dConvert(studentData[i]);
-    // }
     setStudents(sData);
     setAllStudents(sData);
-    setCampusCounts({
-      dropoutCount: countDropOut,
-      onLeaveCount: countOnLeave,
-      inCampusCount: countInCampus,
-    });
 
     setLoading(false);
   };

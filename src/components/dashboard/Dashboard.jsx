@@ -1,15 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import {
-  Box,
-  Divider,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, Paper, TextField } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/lab";
+import MUIDataTable from "mui-datatables";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import axios from "axios";
 
@@ -28,7 +22,6 @@ import {
 } from "../../store/slices/campusSlice";
 import MainLayout from "../muiTables/MainLayout";
 
-// import { setupUsers } from "../store/slices/authSlice";
 import { changeFetching } from "../../store/slices/uiSlice";
 
 import {
@@ -150,9 +143,7 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
     toDate,
     fromStage,
     toStage,
-    inCampusCount,
-    dropoutCount,
-    onLeaveCount,
+    allStatusCount,
   } = useSelector((state) => state.campus);
 
   const dispatch = useDispatch();
@@ -184,11 +175,12 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
   };
 
   EventEmitter.subscribe("stageChange", stageChangeEvent);
+
   const dataSetup = (studentData) => {
     if (isCampus) {
       const countObject = campusStatusDisplayOptions.reduce(
         (allCounts, key) => ({ ...allCounts, [key]: 0 }),
-        {}
+        { total: 0 }
       );
       const counts = studentData.reduce((allCounts, student) => {
         if (
@@ -199,18 +191,14 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
           allCounts[student.stage.campus_status] += 1;
         return allCounts;
       }, countObject);
-      // setCampusCounts({
-      //   dropoutCount: countDropOut,
-      //   onLeaveCount: countOnLeave,
-      //   inCampusCount: countInCampus,
-      // });
+      counts.total = studentData.length;
+      setCampusCounts(counts);
     }
 
     const sData = studentData.map((data) => dConvert(data, isCampus));
 
     setStudents(sData);
     setAllStudents(sData);
-
     setLoading(false);
   };
 
@@ -276,7 +264,6 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
   };
 
   const filterData = () => {
-    // setStudents(mainData);
     if (allStagesValue.indexOf(fromStage) <= allStagesValue.indexOf(toStage)) {
       const newAllStagesValue = allStagesValue.slice(
         allStagesValue.indexOf(fromStage),
@@ -307,8 +294,6 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
       filterData();
     }
   };
-
-  // const { dropoutCount, onLeaveCount, inCampusCount } = state;
   const locationCampus = location.pathname.split("/")[1];
 
   const showAllStage = parseInt(
@@ -316,11 +301,12 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
     10
   );
 
+  const noFooter = React.useCallback(() => <tbody />, []);
+
   const options = (
     <Grid container spacing={4} sx={{ paddingY: "0.8rem" }}>
       <Grid item xs={12} md={6} lg={3}>
         <Select
-          // className="filterSelectGlobal"
           onChange={onChangeFromStage}
           options={showAllStage ? partnerStages : allStagesOptions}
           placeholder="From Stage"
@@ -333,7 +319,6 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
       </Grid>
       <Grid item xs={12} md={6} lg={3}>
         <Select
-          // className="filterSelectGlobal"
           onChange={onChangeToStage}
           options={showAllStage ? partnerStages : allStagesOptions}
           placeholder="To Stage"
@@ -411,45 +396,25 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
       </Grid>
 
       <Grid item xs={12} md={12} lg={6} xl={6}>
-        <Paper
-          sx={{
-            fontSize: "17px",
-            padding: "0.4rem 0.8rem",
-            fontFamily: "Times New Roman",
-            display: "flex",
-            gap: 8,
-            justifyContent: "center",
+        <MUIDataTable
+          columns={Object.keys(allStatusCount).map((statusKey) => ({
+            name: statusKey,
+            label: campusStatusOptions[statusKey] ?? "Total",
+          }))}
+          title="Campus Counts"
+          data={[allStatusCount]}
+          options={{
+            customFooter: noFooter,
+            filter: false,
+            sort: false,
+            showTitle: false,
+            viewColumns: false,
+            print: false,
+            search: false,
+            selectableRows: "none",
+            toolbar: false,
           }}
-        >
-          <Typography fontWeight="semibold" variant="h6">
-            InCampus : {inCampusCount}
-          </Typography>
-          <Divider
-            orientation="vertical"
-            variant="fullWidth"
-            flexItem
-            sx={{
-              borderRightWidth: 1,
-              borderColor: "black",
-            }}
-          />
-          <Typography fontWeight="normal" variant="h6">
-            {" "}
-            OnLeave : {onLeaveCount}
-          </Typography>
-          <Divider
-            orientation="vertical"
-            variant="fullWidth"
-            flexItem
-            sx={{
-              borderRightWidth: 1,
-              borderColor: "black",
-            }}
-          />
-          <Typography fontWeight="semibold" variant="h6">
-            DropOut : {dropoutCount}{" "}
-          </Typography>
-        </Paper>
+        />
       </Grid>
     </Grid>
   );

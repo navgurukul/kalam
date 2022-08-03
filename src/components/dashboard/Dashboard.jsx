@@ -38,7 +38,6 @@ import {
   campusStageOfLearning,
   allStages,
 } from "../../utils/constants";
-import EventEmitter from "../../utils/eventEmitter";
 
 const allStagesOptions = Object.keys(campusStageOfLearning).map((x) => ({
   value: x,
@@ -169,20 +168,18 @@ const DashboardPage = ({ displayData, title, url }) => {
 
   const [loading, setLoading] = React.useState(true);
 
-  const stageChangeEvent = (iData) => {
-    const rowIds = students.map((x) => x.id);
-    const rowIndex = rowIds.indexOf(iData.rowData.id);
+  // const stageChangeEvent = (iData) => {
+  //   const rowIds = students.map((x) => x.id);
+  //   const rowIndex = rowIds.indexOf(iData.rowData.id);
 
-    const dataElem = students[rowIndex];
-    dataElem.stageTitle = iData.selectedValue.label;
-    dataElem.stage = iData.selectedValue.value;
+  //   const dataElem = students[rowIndex];
+  //   dataElem.stageTitle = iData.selectedValue.label;
+  //   dataElem.stage = iData.selectedValue.value;
 
-    const newData = [...students];
-    newData[rowIndex] = dataElem;
-    setStudents(newData);
-  };
-
-  EventEmitter.subscribe("stageChange", stageChangeEvent);
+  //   const newData = [...students];
+  //   newData[rowIndex] = dataElem;
+  //   setStudents(newData);
+  // };
 
   const dataSetup = (studentData) => {
     const locationCampus = location.pathname.split("/")[1];

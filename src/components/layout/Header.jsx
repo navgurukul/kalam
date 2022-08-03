@@ -32,9 +32,7 @@ import { Link, useLocation } from "react-router-dom";
 import Image from "@jy95/material-ui-image";
 import logo from "../../assets/img/logo.png";
 
-import PublicNavList from "./navs/publicNav";
 import PrivateNavList from "./navs/privateNav";
-import ExpandNavList from "./navs/expandNavs";
 import { logout } from "../../store/slices/authSlice";
 
 import ModalStages from "./ModalStages";
@@ -107,13 +105,7 @@ const Header = () => {
         </Box>
         <div tabIndex={0} role="button">
           <div className="sidelistwrapper">
-            {isAuthenticated ? (
-              <PrivateNavList toggleDrawer={toggleDrawer} />
-            ) : (
-              <>
-                <PublicNavList /> <ExpandNavList />
-              </>
-            )}
+            {isAuthenticated && <PrivateNavList toggleDrawer={toggleDrawer} />}
           </div>
         </div>
       </Drawer>

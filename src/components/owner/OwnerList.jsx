@@ -15,7 +15,6 @@ import MainLayout from "../muiTables/MainLayout";
 import AddOwner from "./AddOwner";
 import OwnerSchedule from "./OwnerSchedule";
 import { closeDialog, showDialog } from "../../store/slices/uiSlice";
-// import AddOwnerSchedule from "./AddOwnerSchedule";
 
 const useStyles = makeStyles(() => ({
   innerTable: {
@@ -204,42 +203,6 @@ const OwnerList = () => {
         sort: true,
       },
     },
-    // {
-    //   name: "schedule",
-    //   label: "Interview Schedule",
-    //   options: {
-    //     filter: false,
-    //     display: false,
-
-    //     sort: false,
-    //     customBodyRender: (value, { rowData }) => {
-    //       const user = window.localStorage.user
-    //         ? JSON.parse(window.localStorage.user).email
-    //         : null;
-
-    //       return (
-    //         <div
-    //           style={{
-    //             display: "flex",
-    //             margin: "10px",
-    //             justifyContent: "space-between",
-    //           }}
-    //         >
-    //           <AddOwnerSchedule
-    //             updateData={updateData}
-    //             ownerId={rowData[0]}
-    //             prevSchedule={value}
-    //             isEdit={value !== undefined}
-    //             disabled={!canUpdate}
-    //           />
-    //           {/* {value?value.from+" "+value.to:<button disabled={!canUpdate}>
-    //           Set Availibility
-    //           </button>} */}
-    //         </div>
-    //       );
-    //     },
-    //   },
-    // },
   ];
 
   useEffect(() => {

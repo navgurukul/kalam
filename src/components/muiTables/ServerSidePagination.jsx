@@ -16,7 +16,13 @@ import { dConvert, getColumnIndex } from "../../utils";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
+const ServerSidePagination = ({
+  columns,
+  showLoader,
+  params,
+  sortChange,
+  customOptions,
+}) => {
   const snackbar = useSnackbar();
   const { filterColumns, studentData, totalData, numberOfRows, page, url } =
     useSelector((state) => state.students);
@@ -324,6 +330,7 @@ const ServerSidePagination = ({ columns, showLoader, params, sortChange }) => {
         ),
       },
     },
+    ...(customOptions || {}),
   };
   return (
     <MUIDataTable

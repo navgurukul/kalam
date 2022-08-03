@@ -3,7 +3,7 @@ import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 
 import HomeIcon from "@mui/icons-material/Home";
 // import ExtensionIcon from "@mui/icons-material/Extension";
-import AssessmentIcon from "@mui/icons-material/Assessment";
+// import AssessmentIcon from "@mui/icons-material/Assessment";
 // import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 // import AssignmentIcon from "@mui/icons-material/Assignment";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
@@ -64,17 +64,17 @@ export default ({ toggleDrawer }) => {
     //   icon: <AssignmentIcon />,
     // },
 
-    {
-      url: "/report/all",
-      name: "Reports",
-      icon: <AssessmentIcon />,
-    },
+    // {
+    //   url: "/report/all",
+    //   name: "Reports",
+    //   icon: <AssessmentIcon />,
+    // },
 
-    {
-      url: "/assign/user",
-      name: "Assigned Users",
-      icon: <GroupIcon />,
-    },
+    // {
+    //   url: "/assign/user",
+    //   name: "Assigned Users",
+    //   icon: <GroupIcon />,
+    // },
     // {
     //   url: "/update/mobile/number",
     //   name: "Update mobile Number",

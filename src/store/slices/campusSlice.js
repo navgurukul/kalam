@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from "@reduxjs/toolkit";
+import { campusStatusDisplayOptions } from "../../utils/constants";
 
 const CampusSlice = createSlice({
   name: "campus",
@@ -10,9 +11,10 @@ const CampusSlice = createSlice({
     toStage: null,
     fromDate: null,
     toDate: null,
-    dropoutCount: null,
-    onLeaveCount: null,
-    inCampusCount: null,
+    allStatusCount: campusStatusDisplayOptions.reduce(
+      (allCounts, key) => ({ ...allCounts, [key]: 0 }),
+      { total: 0 }
+    ),
   },
   reducers: {
     setStudentData: (state, action) => {
@@ -34,10 +36,7 @@ const CampusSlice = createSlice({
       state.toDate = action.payload;
     },
     setCounts: (state, action) => {
-      const { dropoutCount, onLeaveCount, inCampusCount } = action.payload;
-      state.dropoutCount = dropoutCount;
-      state.onLeaveCount = onLeaveCount;
-      state.inCampusCount = inCampusCount;
+      state.allStatusCount = action.payload;
     },
     clearData: (state) => {
       state.students = [];

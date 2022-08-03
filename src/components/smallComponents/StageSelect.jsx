@@ -1,23 +1,35 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { DialogTitle, DialogActions, Dialog, Button } from "@mui/material";
+import {
+  DialogTitle,
+  DialogActions,
+  Dialog,
+  Button,
+  Select as MUISelect,
+  MenuItem,
+  Typography,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import { useSelector } from "react-redux";
 import * as _ from "underscore";
 import { nextStage } from "../../services/GlobalService";
 // eslint-disable-next-line import/no-cycle
 import StudentService from "../../services/StudentService";
 import { getColumnIndex } from "../../utils";
+import { campusStatusOptions } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
-const StageSelect = ({ allStages, stage, rowMetatable, change }) => {
+const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const isCampusPathname = window.location.pathname.indexOf("campus");
+  // const isCampusPathname = window.location.pathname.indexOf("campus");
   const { loggedInUser } = useSelector((state) => state.auth);
+
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
 
@@ -31,45 +43,52 @@ const StageSelect = ({ allStages, stage, rowMetatable, change }) => {
     },
   });
 
-  const [stagess, setStages] = React.useState({
-    currentStage: "",
-    nextStage: "",
-  });
+  // const getTransitionStage = (studentId) => {
+  //   axios
+  //     .get(`${baseUrl}students/transitions/${studentId}`)
+  //     .then((res) => {
+  //       const { data } = res;
 
-  const getTransitionStage = (studentId) => {
-    axios
-      .get(`${baseUrl}students/transitions/${studentId}`)
-      .then((res) => {
-        const { data } = res;
+  //       const beforeStage = data.data[data.data.length - 1].from_stage;
+  //       const afterStage = data.data[data.data.length - 1].to_stage;
 
-        const beforeStage = data.data[data.data.length - 1].from_stage;
-        const afterStage = data.data[data.data.length - 1].to_stage;
+  //       const beforeStageValue = allStages[beforeStage];
+  //       const afterStageValue = allStages[afterStage];
 
-        const beforeStageValue = allStages[beforeStage];
-        const afterStageValue = allStages[afterStage];
-
-        setStages({
-          currentStage: beforeStageValue,
-          nextStage: afterStageValue,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+  //       setStages({
+  //         currentStage: beforeStageValue,
+  //         nextStage: afterStageValue,
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //     });
+  // };
 
   const getPartnerEmail = async (studentId) => {
     const response = await axios.get(
       `${baseUrl}partners/studentId/${studentId}`
     );
     const { data } = response.data;
-    // eslint-disable-next-line no-nested-ternary
     return data?.email || "";
+  };
+
+  const handleCampusStatusChange = (e) => {
+    const studentId = rowMetatable.rowData[0];
+    axios
+      .put(`${baseUrl}students/updateDetails/${studentId}`, {
+        campus_status: e.target.value,
+      })
+      .then(() => {
+        // setCampusStatus(e.target.value);
+        change({ ...stage, campus_status: e.target.value });
+        enqueueSnackbar("Updated Campus Status", { variant: "success" });
+      })
+      .catch(() => enqueueSnackbar("An Error Occurred", { variant: "error" }));
   };
 
   const changeStage = (selectedValue) => {
     const studentId = rowMetatable.rowData[0];
-    const { columnIndex } = rowMetatable;
     const { value, label } = selectedValue;
     axios
       .post(`${baseUrl}students/changeStage/${studentId}`, {
@@ -80,8 +99,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change }) => {
         enqueueSnackbar("stage is successfully changed!", {
           variant: "success",
         });
-        change(label, columnIndex);
-        getTransitionStage(studentId);
+        change(isCampus ? { ...stage, stage: label } : label);
+        // getTransitionStage(studentId);
       })
       .catch(() => {
         enqueueSnackbar("Something is wrong with previous stage!", {
@@ -168,7 +187,11 @@ const StageSelect = ({ allStages, stage, rowMetatable, change }) => {
   };
 
   const { flag } = state;
-  // console.log(stage, getKeyByValue(allStages, stage));
+  // console.log(
+  //   stage,
+  //   getKeyByValue(allStages, stage),
+  //   nextStage[getKeyByValue(allStages, stage)]
+  // );
   let allStagesOptions = [
     {
       value: "enrolmentKeyGenerated",
@@ -183,23 +206,29 @@ const StageSelect = ({ allStages, stage, rowMetatable, change }) => {
   //     label: stagess.currentStage,
   //   };
   // }
-  if (stage && stage !== "" && getKeyByValue(allStages, stage)) {
-    allStagesOptions = (nextStage[getKeyByValue(allStages, stage)] ?? []).map(
-      (x) => ({
-        value: x,
-        label: allStages[x],
-      })
-    );
+
+  if (stage) {
+    allStagesOptions = nextStage[
+      getKeyByValue(
+        allStages,
+        isCampus ? stage?.stage || "enrolmentKeyGenerated" : stage
+      )
+    ].map((x) => ({
+      value: x,
+      label: allStages[x],
+    }));
   }
 
   let selectedValue = { value: "invalid", label: "Invalid Stage" };
 
-  if (stage && getKeyByValue(allStages, stage))
-    selectedValue = { value: _.invert(allStages)[stage], label: stage };
+  if (stage)
+    selectedValue = {
+      value: _.invert(allStages)[isCampus ? stage?.stage || "" : stage],
+      label: isCampus ? stage?.stage || "" : stage,
+    };
 
-  useEffect(() => {
-    getTransitionStage(rowMetatable.rowData[0]);
-  }, []);
+  // useEffect(() => getTransitionStage(rowMetatable.rowData[0]), []);
+
   return (
     <div
       style={{
@@ -207,41 +236,50 @@ const StageSelect = ({ allStages, stage, rowMetatable, change }) => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        gap: "2rem",
       }}
     >
-      {isCampusPathname > -1 && (
-        <Button>
-          {stage === "Dropped Out"
-            ? "Dropped Out"
-            : stage === "On Leave"
-            ? "On Leave"
-            : "Present"}
-        </Button>
+      {isCampus && (
+        <FormControl fullWidth>
+          <InputLabel>Select Campus Status</InputLabel>
+          <MUISelect
+            value={stage?.campus_status || "selectoption"}
+            name="campusStatus"
+            label="Select Campus Status"
+            onChange={handleCampusStatusChange}
+            fullWidth
+            size="small"
+          >
+            <MenuItem value="selectoption" disabled>
+              Select an Option
+            </MenuItem>
+            {Object.entries(campusStatusOptions).map(([key, status]) => (
+              <MenuItem value={key} key={key}>
+                {status}
+              </MenuItem>
+            ))}
+          </MUISelect>
+        </FormControl>
       )}
-      <Select
-        className="filterSelectStage"
-        // defaultValue={selectedValue}
-        value={
-          selectedValue && selectedValue.label === "Dropped Out"
-            ? {
-                value: stagess.currentStage,
-                label: stagess.currentStage,
-              }
-            : selectedValue.label === "On Leave"
-            ? {
-                value: stagess.currentStage,
-                label: stagess.currentStage,
-              }
-            : selectedValue
-        }
-        onChange={handleChange}
-        options={allStagesOptions}
-        menuPlacement={(rowMetatable.rowIndex + 1) % 10 ? "bottom" : "top"}
-        // placeholder={"Select "+props.filter.name+" ..."}
-        isClearable={false}
-        components={animatedComponents}
-        closeMenuOnSelect
-      />
+      <div>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label>
+          <Typography variant="caption">
+            Select {isCampus && "Academic"} Stage
+          </Typography>
+        </label>
+        <Select
+          className="filterSelectStage"
+          // defaultValue={selectedValue}
+          value={selectedValue}
+          onChange={handleChange}
+          options={allStagesOptions}
+          // placeholder={"Select "+props.filter.name+" ..."}
+          isClearable={false}
+          components={animatedComponents}
+          closeMenuOnSelect
+        />
+      </div>
       <Dialog
         open={flag}
         keepMounted
@@ -264,6 +302,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change }) => {
       </Dialog>
     </div>
   );
+};
+
+StageSelect.defaultProps = {
+  isCampus: false,
 };
 
 export default StageSelect;

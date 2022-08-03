@@ -371,8 +371,20 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
   );
 
   const options2 = allStudents.length > 0 && (
-    <Grid container spacing={4} sx={{ paddingY: "0.8rem" }}>
-      <Grid item xs={12} md={6} lg={3}>
+    <Grid container spacing={3} sx={{ paddingY: "0.8rem" }}>
+      <Grid
+        item
+        container
+        xs={12}
+        md={6}
+        lg={3}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
         <Select
           onChange={onChangeFromStage}
           options={showAllStage ? partnerStages : allStagesOptions}
@@ -383,7 +395,18 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
           styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
         />
       </Grid>
-      <Grid item xs={12} md={6} lg={3}>
+      <Grid
+        item
+        xs={12}
+        md={6}
+        lg={3}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
         <Select
           onChange={onChangeToStage}
           options={showAllStage ? partnerStages : allStagesOptions}
@@ -395,7 +418,7 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
         />
       </Grid>
 
-      <Grid item xs={12} md={12} lg={6} xl={6}>
+      <Grid item xs={12} md={12} lg={6}>
         <MUIDataTable
           columns={Object.keys(allStatusCount).map((statusKey) => ({
             name: statusKey,

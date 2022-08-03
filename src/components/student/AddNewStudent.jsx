@@ -45,10 +45,10 @@ const AddNewStudent = () => {
   });
 
   const [studentData, setStudentData] = React.useState({
-    fullName: "",
-    email: "",
-    number: "",
-    alternateNumber: "",
+    name: "",
+    // email: "",
+    whatsapp: "",
+    altMobile: "",
     gender: "",
     dob: "",
     district: "",
@@ -60,11 +60,13 @@ const AddNewStudent = () => {
     schoolMedium: "",
     caste: "",
     religion: "",
-    percentageIn10th: "",
-    percentageIn12th: "",
+    // percentageIn10th: "",
+    // percentageIn12th: "",
     campus: "",
-    partner: "",
-    donor: "",
+    campusStatus: "",
+    partner: null,
+    donor: [],
+    stage: null,
   });
 
   const getDistrictFromState = async (state) => {
@@ -93,6 +95,7 @@ const AddNewStudent = () => {
       label: donorName,
       value: id,
     }));
+
     const partnerRes = await axios.get(`${baseUrl}partners`);
     const partnerList = partnerRes.data.data.map((partnerItem) => ({
       label: partnerItem.name,
@@ -107,17 +110,45 @@ const AddNewStudent = () => {
   };
 
   const onSubmit = (data) => {
-    const finalData = { ...studentData, ...data };
-    console.log(finalData);
-    //axios request
-    // if (finalData === null) {
-    //   enqueueSnackbar("Data entered successfully", { variant: "success" });
-    //   reset();
-    // }
+    const finalData = {
+      name: data.name,
+      gender: data.gender,
+      dob: data.dob,
+      stage: data.stage,
+      whatsapp: data.whatsapp,
+      state: data.state,
+      district: data.district,
+      qualification: data.qualification,
+      current_status: data.currentStatus,
+      school_medium: data.schoolMedium,
+      caste: data.caste,
+      religon: data.religion,
+      donor: studentData.donor.map((donorEl) => donorEl.value),
+    };
+    if (data.altMobile) finalData.alt_mobile = data.altMobile;
+    if (data.city) finalData.city = data.city;
+    if (data.pinCode) finalData.pin_code = data.pinCode;
+    if (data.campus) {
+      finalData.campus = data.campus;
+      if (data.campusStatus) finalData.campus_status = data.campusStatus;
+    }
+    if (studentData.partner) finalData.partner_id = studentData.partner.value;
+    axios
+      .post(`${baseUrl}students/newStudents`, finalData)
+      .then(() => {
+        enqueueSnackbar("Data entered successfully", { variant: "success" });
+        reset();
+      })
+      .catch((err) =>
+        enqueueSnackbar(`An Error Occurred : ${err.message}}`, {
+          variant: "error",
+        })
+      );
   };
 
   const addrState = watch("state");
-  const qualification = watch("qualification");
+  // const qualification = watch("qualification");
+  const campus = watch("campus");
 
   useEffect(() => {
     (async () => {
@@ -151,7 +182,7 @@ const AddNewStudent = () => {
             rules={{
               required: true,
             }}
-            defaultValue={studentData.fullName}
+            defaultValue={studentData.name}
             render={({ field: { ref, ...rest } }) => (
               <TextField
                 fullWidth
@@ -170,35 +201,75 @@ const AddNewStudent = () => {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <Controller
             control={control}
-            name="number"
+            name="whatsapp"
             rules={{
               required: true,
+              minLength: 10,
+              maxLength: 10,
             }}
-            defaultValue={studentData.number}
+            defaultValue={studentData.whatsapp}
             render={({ field: { ref, ...rest } }) => (
               <TextField
                 fullWidth
                 required
                 variant="outlined"
-                id="number"
+                id="whatsapp"
                 inputRef={ref}
                 label="Mobile No."
                 placeholder="Mobile No."
                 autoComplete="off"
-                error={!!errors.number}
+                error={!!errors.whatsapp}
                 type="text"
                 helperText={
-                  errors.number ? "Enter Mobile No." : "Ex. 88844xxxxx"
+                  errors.whatsapp
+                    ? errors.whatsapp.type === "minLength" ||
+                      errors.whatsapp.type === "maxLength"
+                      ? "Enter a valid Mobile No."
+                      : "Enter Mobile No."
+                    : "Ex. 88844xxxxx"
                 }
                 {...rest}
               />
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
+          <Controller
+            control={control}
+            name="altMobile"
+            rules={{
+              minLength: 10,
+              maxLength: 10,
+            }}
+            defaultValue={studentData.altMobile}
+            render={({ field: { ref, ...rest } }) => (
+              <TextField
+                fullWidth
+                variant="outlined"
+                id="altMobile"
+                inputRef={ref}
+                label="Alt Mobile No."
+                placeholder="Alt Mobile No."
+                autoComplete="off"
+                error={!!errors.altMobile}
+                type="text"
+                helperText={
+                  errors.altMobile
+                    ? errors.whatsapp.type === "minLength" ||
+                      errors.whatsapp.type === "maxLength"
+                      ? "Enter a valid Mobile No."
+                      : "Enter Alt Mobile No."
+                    : "Ex. 88844xxxxx"
+                }
+                {...rest}
+              />
+            )}
+          />
+        </Grid>
+        {/* <Grid item xs={12}>
           <Controller
             control={control}
             defaultValue={studentData.email}
@@ -230,7 +301,7 @@ const AddNewStudent = () => {
               />
             )}
           />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <Controller
             control={control}
@@ -299,7 +370,6 @@ const AddNewStudent = () => {
             name="dob"
             defaultValue={studentData.dob || null}
             rules={{
-              // required: true,
               validate: (dob) =>
                 parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 17,
             }}
@@ -310,7 +380,6 @@ const AddNewStudent = () => {
               <LocalizationProvider dateAdapter={DateFnsUtils}>
                 <DatePicker
                   disableFuture
-                  // margin="normal"
                   id="dob"
                   label="Date of Birth"
                   inputRef={ref}
@@ -325,7 +394,7 @@ const AddNewStudent = () => {
                       helperText={
                         errors.dob
                           ? errors.dob.type === "validate"
-                            ? "Age must be between 17 & 28"
+                            ? "Age must be greater than 17"
                             : "Enter Date of Birth"
                           : "Ex. 19/11/2003"
                       }
@@ -395,7 +464,6 @@ const AddNewStudent = () => {
             control={control}
             name="religion"
             defaultValue={studentData.religion || ""}
-            // rules={{ required: true }}
             render={({ field: { ref, ...rest } }) => (
               <FormControl fullWidth variant="outlined">
                 <InputLabel id="religion-label">Religion</InputLabel>
@@ -459,8 +527,6 @@ const AddNewStudent = () => {
                   inputRef={ref}
                   label="Select State"
                   placeholder="Select State"
-                  // MenuProps={{ classes: { paper: classes.menuPaper } }}
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...rest}
                 >
                   <MenuItem value="" disabled>
@@ -501,17 +567,21 @@ const AddNewStudent = () => {
               validate: (district) => district !== "",
             }}
             render={({ field: { ref, ...rest } }) => (
-              <FormControl fullWidth variant="outlined" required>
+              <FormControl
+                fullWidth
+                variant="outlined"
+                required
+                disabled={addrState === "" && !districts.length}
+              >
                 <InputLabel id="district-label">Select District</InputLabel>
                 <Select
                   error={!!errors.district}
                   required
+                  disabled={addrState === "" && !districts.length}
                   inputRef={ref}
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   {...rest}
                   label="Select District"
                   placeholder="Select District"
-                  // MenuProps={{ classes: { paper: classes.menuPaper } }}
                 >
                   <MenuItem value="" disabled>
                     Select District
@@ -546,7 +616,6 @@ const AddNewStudent = () => {
             control={control}
             defaultValue={studentData.city}
             name="city"
-            // rules={{ required: "true" }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
                 variant="outlined"
@@ -605,7 +674,6 @@ const AddNewStudent = () => {
           <Controller
             control={control}
             rules={{
-              // required: "true",
               validate: (ct) => ct !== "Select Option",
             }}
             defaultValue={studentData.currentStatus || "Select Option"}
@@ -697,7 +765,7 @@ const AddNewStudent = () => {
             ""
           )}
         </Grid>
-        {qualification === "class10th" ? (
+        {/* {qualification === "class10th" ? (
           <Grid item xs={12} sm={12}>
             <Controller
               control={control}
@@ -816,7 +884,7 @@ const AddNewStudent = () => {
               />
             </Grid>
           </>
-        ) : null}
+        ) : null} */}
         <Grid item xs={12}>
           <Controller
             control={control}
@@ -875,74 +943,12 @@ const AddNewStudent = () => {
         </Grid>
         <Grid item xs={9} />
         <Grid item xs={12} sm={6}>
-          <Controller
-            control={control}
-            name="campus"
-            defaultValue={studentData.campus || ""}
-            // rules={{ validate: (sm) => sm !== "" }}
-            render={({ field: { ref, ...rest } }) => (
-              <FormControl fullWidth variant="outlined">
-                <InputLabel id="school-medium-label">Select Campus</InputLabel>
-                <Select
-                  label="Select Campus"
-                  placeholder="Select Campus"
-                  error={!!errors.campus}
-                  inputRef={ref}
-                  {...rest}
-                >
-                  <MenuItem value="" disabled>
-                    Select Campus
-                  </MenuItem>
-
-                  {optionsData.campus.map((campusItem) => (
-                    <MenuItem value={campusItem.id} key={campusItem.id}>
-                      {campusItem.name}
-                    </MenuItem>
-                  ))}
-
-                  {/* {Object.entries({
-                    hi: ["Hindi", "हिन्दी"],
-                    en: ["English", "अंग्रेज़ी"],
-                    ma: ["Marathi", "मराठी"],
-                    ur: ["Urdu", "उर्दू"],
-                  }).map(([key, value]) => (
-                    <MenuItem value={key} key={key}>
-                      {value[0]}
-                    </MenuItem>
-                  ))} */}
-                </Select>
-              </FormControl>
-            )}
-          />
-          {errors.campus ? (
-            <Typography
-              style={{
-                paddingLeft: "0.8rem",
-                paddingTop: "0.4rem",
-                paddingBottom: "0.4rem",
-              }}
-              variant="caption"
-              color="error"
-            >
-              Select Campus
-            </Typography>
-          ) : (
-            ""
-          )}
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          {/* <Controller
-            control={control}
-            name="partner"
-            rules={{ validate: (sm) => sm !== "" }}
-            render={({ field: { ref, ...rest } }) => ( */}
           <FormControl fullWidth variant="outlined">
             <RSelect
               label="Select Partner"
               placeholder="Select Partner"
               error={!!errors.partner}
-              // inputRef={ref}
-              // {...rest}
+              isClearable
               onChange={(partner) =>
                 setStudentData((prevData) => ({
                   ...prevData,
@@ -979,18 +985,12 @@ const AddNewStudent = () => {
           )}
         </Grid>
         <Grid item xs={12} sm={6}>
-          {/* <Controller
-            control={control}
-            name="partner"
-            rules={{ validate: (sm) => sm !== "" }}
-            render={({ field: { ref, ...rest } }) => ( */}
           <FormControl fullWidth variant="outlined">
             <RSelect
               label="Select Donor"
               placeholder="Select Donor"
               error={!!errors.donor}
-              // inputRef={ref}
-              // {...rest}
+              isClearable
               onChange={(donor) =>
                 setStudentData((prevData) => ({
                   ...prevData,
@@ -1027,6 +1027,161 @@ const AddNewStudent = () => {
             ""
           )}
         </Grid>
+        <Grid item xs={12} sm={6}>
+          <Controller
+            control={control}
+            name="campus"
+            defaultValue={studentData.campus || ""}
+            rules={{ required: true, validate: (sm) => sm !== "" }}
+            render={({ field: { ref, ...rest } }) => (
+              <FormControl fullWidth variant="outlined" required>
+                <InputLabel id="school-medium-label">Select Campus</InputLabel>
+                <Select
+                  label="Select Campus"
+                  placeholder="Select Campus"
+                  error={!!errors.campus}
+                  required
+                  inputRef={ref}
+                  {...rest}
+                >
+                  <MenuItem value="" disabled>
+                    Select Campus
+                  </MenuItem>
+
+                  {optionsData.campus.map((campusItem) => (
+                    <MenuItem value={campusItem.id} key={campusItem.id}>
+                      {campusItem.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          />
+          {errors.campus ? (
+            <Typography
+              style={{
+                paddingLeft: "0.8rem",
+                paddingTop: "0.4rem",
+                paddingBottom: "0.4rem",
+              }}
+              variant="caption"
+              color="error"
+            >
+              Select Campus
+            </Typography>
+          ) : (
+            ""
+          )}
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Controller
+            control={control}
+            name="campusStatus"
+            defaultValue={studentData.campusStatus || ""}
+            render={({ field: { ref, ...rest } }) => (
+              <FormControl
+                fullWidth
+                variant="outlined"
+                disabled={campus === ""}
+              >
+                <InputLabel id="school-medium-label">
+                  Select Campus Status
+                </InputLabel>
+                <Select
+                  label="Select Campus Status"
+                  placeholder="Select Campus Status"
+                  error={!!errors.campusStatus}
+                  disabled={campus === ""}
+                  inputRef={ref}
+                  {...rest}
+                >
+                  <MenuItem value="" disabled>
+                    Select Campus Status
+                  </MenuItem>
+
+                  {Object.entries({
+                    present: "Present",
+                    onLeave: "On Leave",
+                    droppedOut: "Dropped Out",
+                    gotJobLeftCampus: "Got Job & Left the Campus",
+                    alumniInternStayingInCampus:
+                      "Alumni/Interns Staying in Campus",
+                    teamMember: "Team Member",
+                  }).map(([id, name]) => (
+                    <MenuItem value={id} key={id}>
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          />
+          {errors.campusStatus ? (
+            <Typography
+              style={{
+                paddingLeft: "0.8rem",
+                paddingTop: "0.4rem",
+                paddingBottom: "0.4rem",
+              }}
+              variant="caption"
+              color="error"
+            >
+              Select Campus Status
+            </Typography>
+          ) : (
+            ""
+          )}
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <Controller
+            control={control}
+            name="stage"
+            defaultValue={studentData.stage || ""}
+            rules={{ required: true, validate: (sm) => sm !== "" }}
+            render={({ field: { ref, ...rest } }) => (
+              <FormControl fullWidth variant="outlined" required>
+                <InputLabel id="school-medium-label">Select Stage</InputLabel>
+                <Select
+                  label="Select Stage"
+                  placeholder="Select Stage"
+                  required
+                  error={!!errors.stage}
+                  inputRef={ref}
+                  {...rest}
+                >
+                  <MenuItem value="" disabled>
+                    Select Stage
+                  </MenuItem>
+
+                  {Object.entries({
+                    finallyJoined: "Joined",
+                    inJob: "In Job",
+                  }).map(([id, name]) => (
+                    <MenuItem value={id} key={id}>
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          />
+          {errors.stage ? (
+            <Typography
+              style={{
+                paddingLeft: "0.8rem",
+                paddingTop: "0.4rem",
+                paddingBottom: "0.4rem",
+              }}
+              variant="caption"
+              color="error"
+            >
+              Select Stage
+            </Typography>
+          ) : (
+            ""
+          )}
+        </Grid>
       </Grid>
       <Box
         sx={{
@@ -1037,11 +1192,7 @@ const AddNewStudent = () => {
         }}
       >
         <Link to="/students">
-          <Button
-            variant="outlined"
-            color="primary"
-            // onClick={handleSubmit(onSubmit)}
-          >
+          <Button variant="outlined" color="primary">
             Go Back
           </Button>
         </Link>

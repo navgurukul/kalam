@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import { makeStyles, ThemeProvider } from "@mui/styles";
 import Select from "react-select";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import axios from "axios";
 import Box from "@mui/material/Box";
@@ -16,6 +16,7 @@ import { LocalizationProvider, DatePicker } from "@mui/lab";
 import StudentService from "../../services/StudentService";
 import ServerSidePagination from "../muiTables/ServerSidePagination";
 import theme from "../../theme";
+import ToolbarAddButton from "../admin/ToolbarAddButton";
 import { fetchOwners as fetchOwnersAction } from "../../store/slices/dataSlice";
 import {
   setFromDate,
@@ -59,6 +60,7 @@ const useStyles = makeStyles(() => ({
 
 const AdmissionsDash = (props) => {
   const classes = useStyles();
+  const navigate = useNavigate();
   const { dataType: paramDataType } = useParams();
   const { loggedInUser, privileges } = useSelector((state) => state.auth);
   const {
@@ -417,6 +419,15 @@ const AdmissionsDash = (props) => {
 
   const { loading } = state;
 
+  const tableOptions = {
+    selectableRows: "none",
+    responsive: "vertical",
+    customToolbar: React.useCallback(
+      () => <ToolbarAddButton handleOpen={() => navigate("/students/add")} />,
+      []
+    ),
+  };
+
   if (fetchPendingInterviewDetails) {
     return (
       <ServerSidePagination
@@ -460,6 +471,11 @@ const AdmissionsDash = (props) => {
           }}
           stages={value}
           sortChange={sortChange}
+          customOptions={
+            privileges.some((priv) => priv.privilege === "AddNewStudent")
+              ? tableOptions
+              : {}
+          }
         />
       </ThemeProvider>
     </Box>

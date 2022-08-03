@@ -152,6 +152,7 @@ export const permissions = {
 export const allStages = {
   // related to the mcq test
   enrolmentKeyGenerated: "Enrolment Key Generated",
+  createdStudentWithoutExam: "Created Student Without Exam",
   basicDetailsEntered: "Basic Details Entered",
   // english interviews
   pendingEnglishInterview: "English Interview Pending (2nd Round)",
@@ -273,6 +274,23 @@ export const campusStageOfLearning = {
   payingForward: "Paying Forward",
   paidForward: "Paid Forward",
 };
+
+export const campusStatusOptions = {
+  present: "Present",
+  onLeave: "On Leave",
+  droppedOut: "Dropped Out",
+  // gotJobLeftCampus: "Got Job & Left the Campus",
+  inCampusInterns: "In Campus Interns",
+  inJob: "In Job",
+  graphicDesign: "Graphic Design",
+  courseCompleted: "Course Completed",
+  // alumniInternStayingInCampus: "Alumni/Interns Staying in Campus",
+  teamMember: "Team Member",
+};
+
+export const campusStatusDisplayOptions = Object.keys(
+  campusStatusOptions
+).slice(0, 5);
 
 export const states = {
   AN: "Andaman and Nicobar Islands",

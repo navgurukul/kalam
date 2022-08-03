@@ -22,18 +22,18 @@ const RequireAuth = ({ children, privateRoute }) => {
     dispatch(logout());
     return <Navigate to="/" replace />;
   }
-  if (!isAuthenticated && privateRoute){
+  if (!isAuthenticated && privateRoute) {
     sessionStorage.setItem("pageBeforeLogin", location.pathname);
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-    
+
   // if (isAuthenticated && loggedInUser && !loggedInUser.mobile)
   //   return <Navigate to="/user/mobile/number" replace />;
 
   const getRoute = () => {
     //Forced redirect if any page was visited before login
     const pageBeforeLogin = sessionStorage.getItem("pageBeforeLogin");
-    if(pageBeforeLogin){
+    if (pageBeforeLogin) {
       sessionStorage.removeItem("pageBeforeLogin");
       return pageBeforeLogin;
     }
@@ -97,6 +97,19 @@ const RequireAuth = ({ children, privateRoute }) => {
         </div>
       );
     case "students":
+      if (location.pathname.split("/")[2] === "add") {
+        return (
+          <div className="bodyComponent">
+            {privileges.some((priv) => priv.privilege === "AddNewStudent") ? (
+              children
+            ) : isFetching ? (
+              <Loader container />
+            ) : (
+              <NotHaveAccess />
+            )}
+          </div>
+        );
+      }
       return (
         <div className="bodyComponent">
           {privileges.some((priv) => priv.privilege === "ViewDashboard") ? (

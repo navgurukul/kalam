@@ -530,16 +530,6 @@ const NameColumnWrapper = ({ rowData, rowMeta, updateValue }) => {
   return rowData;
 };
 
-const TestModeWrapper = ({rowData, rowMeta})=>{
-  const last = rowData[rowData.length-1];
-  if(last.type_of_test === "onlineTest"){
-    return "Online";
-  }else if(last.type_of_test === "offlineTest"){
-    return "Offline";
-  }
-  return "N/A";
-}
-
 const nameColumn = {
   name: "name",
   label: "Name",
@@ -616,6 +606,18 @@ const AltNumberColumn = {
   },
 };
 
+const TestModeWrapper = ({ value }) => {
+  const last = value[value.length - 1];
+  switch (last?.type_of_test || "") {
+    case "onlineTest":
+      return "Online";
+    case "offlineTest":
+      return "Offline";
+    default:
+      return "N/A";
+  }
+};
+
 const testModeColumn = {
   name: "enrolmentKey",
   label: "Test Mode",
@@ -623,14 +625,9 @@ const testModeColumn = {
     filter: true,
     sort: false,
     display: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => (
-      <TestModeWrapper
-        rowData={rowData}
-        rowMeta={rowMeta}
-      />
-    ),
-  }
-}
+    customBodyRender: (value) => <TestModeWrapper value={value} />,
+  },
+};
 
 const marksColumn = {
   name: "marks",
@@ -867,6 +864,7 @@ const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
     <StageSelect
       rowMetatable={rowMeta}
       stage={value}
+      isCampus={isCampusPathname > -1}
       allStages={isCampusPathname > -1 ? campusStageOfLearning : allStages}
       change={(event) => updateValue(event)}
     />

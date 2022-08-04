@@ -9,7 +9,7 @@ import DetailsIcon from "@mui/icons-material/Details";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
 import theme from "../../theme";
-import GlobalService from "../../services/GlobalService";
+import { tableIcons } from "../../services/GlobalService";
 
 dayjs.extend(customParseFormat);
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -125,7 +125,7 @@ const StageTransitionsStudentStatus = (props) => {
           <MUIDataTable
             columns={columns}
             data={rowData}
-            icons={GlobalService.tableIcons}
+            icons={tableIcons}
             options={{
               headerStyle: {
                 color: theme.palette.primary.main,

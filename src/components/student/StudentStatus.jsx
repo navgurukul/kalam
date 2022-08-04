@@ -4,7 +4,7 @@ import MUIDataTable from "mui-datatables";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import GlobalService from "../../services/GlobalService";
+import { tableIcons } from "../../services/GlobalService";
 import StudentService from "../../services/StudentService";
 
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -70,7 +70,7 @@ const StudentStatus = () => {
       <MUIDataTable
         columns={StudentService.columns.columnStudentStatus}
         data={data}
-        icons={GlobalService.tableIcons}
+        icons={tableIcons}
         options={{
           exportButton: true,
           pageSize: 100,

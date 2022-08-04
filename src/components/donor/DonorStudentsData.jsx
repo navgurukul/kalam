@@ -10,24 +10,15 @@ import { donor } from "../../utils/constants";
 
 const DonorStudentsData = () => {
   const { donorId } = useParams();
-  const [state, setState] = React.useState({
-    dataView: 0,
-    donorName: donor.find((x) => x.id === parseInt(donorId, 10)).name,
-  });
+  const [dataView, setDataView] = React.useState(0);
 
-  const progressMade = () => {
-    setState({ ...state, dataView: 1 });
-  };
+  const donorName = donor.find((x) => x.id === parseInt(donorId, 10)).name;
 
-  const tabularData = () => {
-    setState({ ...state, dataView: 0 });
-  };
+  const progressMade = () => setDataView(1);
 
-  const showGraphData = () => {
-    setState({ ...state, dataView: 2 });
-  };
+  const tabularData = () => setDataView(0);
 
-  const { donorName, dataView } = state;
+  const showGraphData = () => setDataView(2);
 
   const getView = (viewNo) => {
     switch (viewNo) {

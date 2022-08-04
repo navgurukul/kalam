@@ -777,11 +777,11 @@ const campusColumn = {
 
 const DashboardDonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
-  return privileges.some((priv) => priv.privilege === "updateStudentDonor") ? (
+  return privileges.some((priv) => priv.privilege === "UpdateStudentDonor") ? (
     <UpdateDonor
       allOptions={donor}
       value={value}
-      rowMetatable={rowMeta}
+      studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
     />
   ) : value ? (
@@ -831,7 +831,7 @@ const DonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
     <UpdateDonor
       allOptions={donor}
       value={value}
-      rowMetatable={rowMeta}
+      studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
     />
   ) : value ? (

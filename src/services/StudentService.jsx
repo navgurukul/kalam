@@ -241,10 +241,10 @@ const OtherActivitiesColumn = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => (
+    customBodyRender: (value, rowMeta, updateValue) => (
       <OtherActivities
-        rowMetaTable={rowMeta}
-        otherActivities={rowData}
+        studentId={rowMeta.rowData[0]}
+        value={value}
         change={(event) => updateValue(event)}
       />
     ),
@@ -699,7 +699,7 @@ const DashboardCampusColumnWrapper = ({ value, rowMeta, updateValue }) => {
     <UpdateCampus
       allOptions={campus}
       value={value || "No Campus Assigned"}
-      rowMetatable={rowMeta}
+      studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
     />
   ) : (
@@ -749,7 +749,7 @@ const CampusColumnWrapper = ({ value, rowMeta, updateValue }) => {
     <UpdateCampus
       allOptions={campus}
       value={value || "No Campus Assigned"}
-      rowMetatable={rowMeta}
+      studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
     />
   ) : (

@@ -2,7 +2,7 @@
 
 import { allStages, caste } from "./constants";
 
-export const dConvert = (data) => {
+export const dConvert = (data, isCampus) => {
   const x = { ...data };
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
@@ -15,7 +15,7 @@ export const dConvert = (data) => {
   x.altNumber = x.contacts[0]?.alt_mobile || "";
   x.gender =
     x.gender === 1 ? "Female" : x.gender === 2 ? "Male" : "Transgender";
-  x.stage = allStages[x.stage];
+  x.stage = isCampus ? { ...x.stage, stage: allStages[x.stage.stage] }: allStages[x.stage];
   x.marks = x.enrolmentKey.length
     ? parseInt(x.enrolmentKey[0].total_marks, 10)
     : null;

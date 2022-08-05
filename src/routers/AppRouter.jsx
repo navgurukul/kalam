@@ -16,9 +16,9 @@ import NotFoundPage from "../components/layout/NotFoundPage";
 import Loader from "../components/ui/Loader";
 import { changeFetching } from "../store/slices/uiSlice";
 
-// const AddNewStudent = React.lazy(() =>
-//   import("../components/student/AddNewStudent")
-// );
+const AddNewStudent = React.lazy(() =>
+  import("../components/student/AddNewStudent")
+);
 
 const AssessmentAttempts = React.lazy(() =>
   import("../components/assessment/AssessmentAttempts")
@@ -64,13 +64,6 @@ const UpdateMobileNumber = React.lazy(() =>
   import("../components/contact/UpdateMobileNumber")
 );
 
-const StageWiseDanglingReport = React.lazy(() =>
-  import("../components/report/StageWiseDanglingReport")
-);
-const ReportContainer = React.lazy(() =>
-  import("../components/report/ReportContainer")
-);
-
 const OutreachDetails = React.lazy(() =>
   import("../components/outreach/OutreachDetails")
 );
@@ -79,8 +72,6 @@ const StudentStatus = React.lazy(() =>
   import("../components/student/StudentStatus")
 );
 
-const MyTaskReport = React.lazy(() => import("../components/pages/MyTask"));
-const MyAssignReport = React.lazy(() => import("../components/pages/MyAssign"));
 const LoginDesign = React.lazy(() => import("../components/pages/LoginDesign"));
 const AdminPage = React.lazy(() => import("../components/admin/AdminPage"));
 const CreateRP = React.lazy(() => import("../components/admin/CreateRP"));
@@ -131,14 +122,6 @@ const AppRouter = () => {
         <Header />
         <div style={{ marginTop: "2.4rem", flexGrow: 1 }}>
           <Routes>
-            {/* <Route
-          path="/"
-          element={
-            <RequireAuth privateRoute>
-              <UpdateMobileNumber />
-            </RequireAuth>
-          }
-        /> */}
             <Route
               path="/"
               element={
@@ -179,7 +162,7 @@ const AppRouter = () => {
                   </RequireAuth>
                 }
               />
-              {/* <Route
+              <Route
                 path="add"
                 element={
                   <React.Suspense fallback={<Loader container />}>
@@ -188,7 +171,7 @@ const AppRouter = () => {
                     </RequireAuth>
                   </React.Suspense>
                 }
-              /> */}
+              />
 
               <Route
                 path=":dataType"
@@ -355,48 +338,6 @@ const AppRouter = () => {
                 <React.Suspense fallback={<Loader container />}>
                   <RequireAuth privateRoute>
                     <OutreachDetails />
-                  </RequireAuth>
-                </React.Suspense>
-              }
-            />
-            <Route
-              path="/tasks"
-              element={
-                <React.Suspense fallback={<Loader container />}>
-                  <RequireAuth privateRoute>
-                    <MyTaskReport />
-                  </RequireAuth>
-                </React.Suspense>
-              }
-            />
-            <Route path="/report">
-              <Route
-                path="dangling" // report/dangling
-                component={
-                  <React.Suspense fallback={<Loader container />}>
-                    <RequireAuth privateRoute>
-                      <StageWiseDanglingReport />
-                    </RequireAuth>
-                  </React.Suspense>
-                }
-              />
-              <Route
-                path="all" // report/all
-                element={
-                  <React.Suspense fallback={<Loader container />}>
-                    <RequireAuth privateRoute>
-                      <ReportContainer />
-                    </RequireAuth>
-                  </React.Suspense>
-                }
-              />
-            </Route>
-            <Route
-              path="/assign/user"
-              element={
-                <React.Suspense fallback={<Loader container />}>
-                  <RequireAuth privateRoute>
-                    <MyAssignReport />
                   </RequireAuth>
                 </React.Suspense>
               }

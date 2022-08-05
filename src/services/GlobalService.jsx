@@ -49,6 +49,7 @@ export default GlobalService;
 
 export const nextStage = {
   enrolmentKeyGenerated: ["basicDetailsEntered"],
+  createdStudentWithoutExam: [],
   basicDetailsEntered: ["pendingEnglishInterview", "testFailed"],
   testFailed: ["enrolmentKeyGenerated"],
   pendingEnglishInterview: [

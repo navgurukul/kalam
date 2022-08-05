@@ -1,15 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import {
-  Box,
-  Divider,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, TextField } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/lab";
+import MUIDataTable from "mui-datatables";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import axios from "axios";
 
@@ -28,17 +22,16 @@ import {
 } from "../../store/slices/campusSlice";
 import MainLayout from "../muiTables/MainLayout";
 
-import StudentService from "../../services/StudentService";
-
-// import { setupUsers } from "../store/slices/authSlice";
 import { changeFetching } from "../../store/slices/uiSlice";
 
 import {
   qualificationKeys,
   campusStageOfLearning,
   allStages,
+  campusStatusOptions,
+  campusStatusDisplayOptions,
 } from "../../utils/constants";
-import EventEmitter from "../../utils/eventEmitter";
+import { dConvert } from "../../utils";
 
 const allStagesOptions = Object.keys(campusStageOfLearning).map((x) => ({
   value: x,
@@ -139,7 +132,7 @@ const columns = [
 ];
 // let filterFns = [];
 
-const DashboardPage = ({ displayData, title, url }) => {
+const DashboardPage = ({ displayData, title, url, isCampus }) => {
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
   const {
@@ -149,9 +142,7 @@ const DashboardPage = ({ displayData, title, url }) => {
     toDate,
     fromStage,
     toStage,
-    inCampusCount,
-    dropoutCount,
-    onLeaveCount,
+    allStatusCount,
   } = useSelector((state) => state.campus);
 
   const dispatch = useDispatch();
@@ -169,62 +160,42 @@ const DashboardPage = ({ displayData, title, url }) => {
 
   const [loading, setLoading] = React.useState(true);
 
-  const stageChangeEvent = (iData) => {
-    const rowIds = students.map((x) => x.id);
-    const rowIndex = rowIds.indexOf(iData.rowData.id);
+  // const stageChangeEvent = (iData) => {
+  //   const rowIds = students.map((x) => x.id);
+  //   const rowIndex = rowIds.indexOf(iData.rowData.id);
 
-    const dataElem = students[rowIndex];
-    dataElem.stageTitle = iData.selectedValue.label;
-    dataElem.stage = iData.selectedValue.value;
+  //   const dataElem = students[rowIndex];
+  //   dataElem.stageTitle = iData.selectedValue.label;
+  //   dataElem.stage = iData.selectedValue.value;
 
-    const newData = [...students];
-    newData[rowIndex] = dataElem;
-    setStudents(newData);
-  };
-
-  EventEmitter.subscribe("stageChange", stageChangeEvent);
+  //   const newData = [...students];
+  //   newData[rowIndex] = dataElem;
+  //   setStudents(newData);
+  // };
 
   const dataSetup = (studentData) => {
-    const locationCampus = location.pathname.split("/")[1];
-
-    let countDropOut = 0;
-    let countOnLeave = 0;
-    let countInCampus = 0;
-    if (locationCampus === "campus") {
-      if (studentData.length > 0) {
-        studentData.forEach((e) => {
-          if (e.stage === "droppedOut") {
-            countDropOut += 1;
-          } else if (e.stage === "onLeave") {
-            countOnLeave += 1;
-          } else if (
-            e.stage !== "M22" ||
-            e.stage !== "M21" ||
-            e.stage !== "offerLetterSent" ||
-            e.stage !== "inJob" ||
-            e.stage !== "payingForward" ||
-            e.stage !== "paidForward"
-          ) {
-            countInCampus += 1;
-          }
-        });
-      }
+    if (isCampus) {
+      const countObject = campusStatusDisplayOptions.reduce(
+        (allCounts, key) => ({ ...allCounts, [key]: 0 }),
+        { total: 0 }
+      );
+      const counts = studentData.reduce((allCounts, student) => {
+        if (
+          student.stage.campus_status &&
+          campusStatusDisplayOptions.includes(student.stage.campus_status)
+        )
+          // eslint-disable-next-line no-param-reassign
+          allCounts[student.stage.campus_status] += 1;
+        return allCounts;
+      }, countObject);
+      counts.total = studentData.length;
+      setCampusCounts(counts);
     }
 
-    const sData = studentData.map((data) => StudentService.dConvert(data));
+    const sData = studentData.map((data) => dConvert(data, isCampus));
 
-    // for (let i = 0; i < studentData.length; i += 1) {
-    //   // eslint-disable-next-line no-param-reassign, import/no-named-as-default-member
-    //   studentData[i] = StudentService.dConvert(studentData[i]);
-    // }
     setStudents(sData);
     setAllStudents(sData);
-    setCampusCounts({
-      dropoutCount: countDropOut,
-      onLeaveCount: countOnLeave,
-      inCampusCount: countInCampus,
-    });
-
     setLoading(false);
   };
 
@@ -290,7 +261,6 @@ const DashboardPage = ({ displayData, title, url }) => {
   };
 
   const filterData = () => {
-    // setStudents(mainData);
     if (allStagesValue.indexOf(fromStage) <= allStagesValue.indexOf(toStage)) {
       const newAllStagesValue = allStagesValue.slice(
         allStagesValue.indexOf(fromStage),
@@ -321,8 +291,6 @@ const DashboardPage = ({ displayData, title, url }) => {
       filterData();
     }
   };
-
-  // const { dropoutCount, onLeaveCount, inCampusCount } = state;
   const locationCampus = location.pathname.split("/")[1];
 
   const showAllStage = parseInt(
@@ -330,11 +298,12 @@ const DashboardPage = ({ displayData, title, url }) => {
     10
   );
 
+  const noFooter = React.useCallback(() => <tbody />, []);
+
   const options = (
     <Grid container spacing={4} sx={{ paddingY: "0.8rem" }}>
       <Grid item xs={12} md={6} lg={3}>
         <Select
-          // className="filterSelectGlobal"
           onChange={onChangeFromStage}
           options={showAllStage ? partnerStages : allStagesOptions}
           placeholder="From Stage"
@@ -347,7 +316,6 @@ const DashboardPage = ({ displayData, title, url }) => {
       </Grid>
       <Grid item xs={12} md={6} lg={3}>
         <Select
-          // className="filterSelectGlobal"
           onChange={onChangeToStage}
           options={showAllStage ? partnerStages : allStagesOptions}
           placeholder="To Stage"
@@ -400,8 +368,20 @@ const DashboardPage = ({ displayData, title, url }) => {
   );
 
   const options2 = allStudents.length > 0 && (
-    <Grid container spacing={4} sx={{ paddingY: "0.8rem" }}>
-      <Grid item xs={12} md={6} lg={3}>
+    <Grid container spacing={3} sx={{ paddingY: "0.8rem" }}>
+      <Grid
+        item
+        container
+        xs={12}
+        md={6}
+        lg={3}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
         <Select
           onChange={onChangeFromStage}
           options={showAllStage ? partnerStages : allStagesOptions}
@@ -412,7 +392,18 @@ const DashboardPage = ({ displayData, title, url }) => {
           styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
         />
       </Grid>
-      <Grid item xs={12} md={6} lg={3}>
+      <Grid
+        item
+        xs={12}
+        md={6}
+        lg={3}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
         <Select
           onChange={onChangeToStage}
           options={showAllStage ? partnerStages : allStagesOptions}
@@ -424,46 +415,26 @@ const DashboardPage = ({ displayData, title, url }) => {
         />
       </Grid>
 
-      <Grid item xs={12} md={12} lg={6} xl={6}>
-        <Paper
-          sx={{
-            fontSize: "17px",
-            padding: "0.4rem 0.8rem",
-            fontFamily: "Times New Roman",
-            display: "flex",
-            gap: 8,
-            justifyContent: "center",
+      <Grid item xs={12} md={12} lg={6}>
+        <MUIDataTable
+          columns={Object.keys(allStatusCount).map((statusKey) => ({
+            name: statusKey,
+            label: campusStatusOptions[statusKey] ?? "Total",
+          }))}
+          title="Campus Counts"
+          data={[allStatusCount]}
+          options={{
+            customFooter: noFooter,
+            filter: false,
+            sort: false,
+            showTitle: false,
+            viewColumns: false,
+            print: false,
+            search: false,
+            selectableRows: "none",
+            toolbar: false,
           }}
-        >
-          <Typography fontWeight="semibold" variant="h6">
-            InCampus : {inCampusCount}
-          </Typography>
-          <Divider
-            orientation="vertical"
-            variant="fullWidth"
-            flexItem
-            sx={{
-              borderRightWidth: 1,
-              borderColor: "black",
-            }}
-          />
-          <Typography fontWeight="normal" variant="h6">
-            {" "}
-            OnLeave : {onLeaveCount}
-          </Typography>
-          <Divider
-            orientation="vertical"
-            variant="fullWidth"
-            flexItem
-            sx={{
-              borderRightWidth: 1,
-              borderColor: "black",
-            }}
-          />
-          <Typography fontWeight="semibold" variant="h6">
-            DropOut : {dropoutCount}{" "}
-          </Typography>
-        </Paper>
+        />
       </Grid>
     </Grid>
   );
@@ -479,6 +450,10 @@ const DashboardPage = ({ displayData, title, url }) => {
       />
     </Box>
   );
+};
+
+DashboardPage.defaultProps = {
+  isCampus: false,
 };
 
 export default DashboardPage;

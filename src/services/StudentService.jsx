@@ -941,7 +941,7 @@ const AddedAtColumnCampusWrapper = ({ value, rowMeta }) => {
     return <p>{dayjs(value).format("D MMM YYYY")}</p>;
   }
   if (
-    privileges.some((priv) => priv.privilege === "UpdateStudentStage") &&
+    privileges.some((priv) => priv.privilege === "UpdateTransition") &&
     (rowMeta.rowData[0].indexOf("Joined") > -1 ||
       keysCampusStageOfLearning.indexOf(rowMeta.rowData[0]) > -1)
   ) {

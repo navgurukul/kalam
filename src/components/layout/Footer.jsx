@@ -21,25 +21,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const lang = {
+const langOptions = {
   Footer: {
     en: "For more queries, write at hi@navgurukul.org",
     hi: "अधिक जानकारी के लिए ईमेल करे: hi@navgurukul.org",
+    ma: "अधिक प्रश्नांसाठी, hi@navgurukul.org वर लिहा",
   },
 };
 
 export default () => {
   const classes = useStyles();
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { lang } = useSelector((state) => state.ui);
   return (
-    <div className={classes.dummySpace}>
-      <Box className={classes.root}>
-        <Typography variant="body1" gutterBottom>
-          {isAuthenticated
-            ? "Managed and run by NavGurukul Students"
-            : lang.Footer.en}
-        </Typography>
-      </Box>
-    </div>
+    <Box className={classes.root}>
+      <Typography variant="body1" gutterBottom>
+        {isAuthenticated
+          ? "Managed and run by NavGurukul Students"
+          : langOptions.Footer[lang]}
+      </Typography>
+    </Box>
   );
 };

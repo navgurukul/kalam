@@ -454,6 +454,12 @@ export const states = {
   WB: "West Bengal",
 };
 
+export const genders = {
+  1: "Female",
+  2: "Male",
+  3: "Transgender",
+};
+
 export const campus = [
   { id: 1, name: "Pune" },
   { id: 2, name: "Dharamshala" },

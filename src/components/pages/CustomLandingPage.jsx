@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { Divider, List, ListItem } from "@mui/material";
+import { Divider, List, ListItem, Container } from "@mui/material";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +16,7 @@ import { changeFetching } from "../../store/slices/uiSlice";
 import VideoSlider from "../ui/VideoSlider";
 import theme from "../../theme";
 import { decryptText, encryptText } from "../../utils";
+import { testClosed } from "../../utils/constants";
 import Carousel from "../ui/Carousel";
 import akansha1 from "../../assets/img/akansha/1.jpg";
 import akansha2 from "../../assets/img/akansha/2.jpg";
@@ -657,14 +658,14 @@ const CustomLandingPage = () => {
     await isDuplicate();
   };
 
-  // if (slug && testClosed.includes(slug))
-  //   return (
-  //     <Container sx={{ display: "flex", justifyContent: "center" }}>
-  //       <Typography color="error" variant="h4">
-  //         Tests will open on 10th July
-  //       </Typography>
-  //     </Container>
-  //   );
+  if (slug && testClosed.partners.includes(slug))
+    return (
+      <Container sx={{ display: "flex", justifyContent: "center" }}>
+        <Typography color="error" variant="h4">
+          {testClosed.message}
+        </Typography>
+      </Container>
+    );
 
   const { mobileNumber, firstName, middleName, lastName, mobile } = state;
 

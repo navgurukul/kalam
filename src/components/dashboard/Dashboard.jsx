@@ -419,7 +419,10 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
         <MUIDataTable
           columns={Object.keys(allStatusCount).map((statusKey) => ({
             name: statusKey,
-            label: campusStatusOptions[statusKey] ?? "Total",
+            label: campusStatusOptions[statusKey]?.label ?? "Total",
+            options: {
+              display: campusStatusOptions[statusKey]?.display ?? true,
+            },
           }))}
           title="Campus Counts"
           data={[allStatusCount]}
@@ -428,7 +431,7 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
             filter: false,
             sort: false,
             showTitle: false,
-            viewColumns: false,
+            viewColumns: true,
             print: false,
             search: false,
             selectableRows: "none",

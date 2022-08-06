@@ -16,11 +16,10 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import * as _ from "underscore";
-import { nextStage } from "../../services/GlobalService";
 // eslint-disable-next-line import/no-cycle
 import StudentService from "../../services/StudentService";
 import { getColumnIndex } from "../../utils";
-import { campusStatusOptions } from "../../utils/constants";
+import { campusStatusOptions, nextStage } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
@@ -255,7 +254,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
             </MenuItem>
             {Object.entries(campusStatusOptions).map(([key, status]) => (
               <MenuItem value={key} key={key}>
-                {status}
+                {status.label}
               </MenuItem>
             ))}
           </MUISelect>

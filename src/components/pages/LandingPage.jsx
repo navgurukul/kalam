@@ -22,7 +22,7 @@ import {
   setPartner,
   setStudentData,
 } from "../../store/slices/onlineTestSlice";
-// import { customPartner } from "../../utils/constants";
+import { testClosed } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -122,7 +122,6 @@ const LandingPage = () => {
     enrollmentKey: "",
   });
   // const [goToTest, setGoToTest] = React.useState(false);
-  const testClosed = [];
   const lang = {
     Heading: {
       en: "Software Engineering Scholarship",
@@ -334,11 +333,11 @@ const LandingPage = () => {
     await isDuplicate();
   };
 
-  if (slug && testClosed.includes(slug))
+  if (slug && testClosed.partners.includes(slug))
     return (
       <Container sx={{ display: "flex", justifyContent: "center" }}>
         <Typography color="error" variant="h4">
-          Tests will open at 1PM Today!
+          {testClosed.message}
         </Typography>
         ``
       </Container>

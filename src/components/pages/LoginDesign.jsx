@@ -67,8 +67,8 @@ const LoginDesign = () => {
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated){ 
-      navigate("/students", { replace: true }); 
+    if (isAuthenticated) {
+      navigate("/students", { replace: true });
     }
   }, [isAuthenticated]);
 
@@ -76,7 +76,7 @@ const LoginDesign = () => {
     alert("There was some issue with Google Login. Contact the admin.");
   };
 
-  const getQuote = () => {
+  const getQuote = React.useCallback(() => {
     const QUOTES = [
       {
         quote:
@@ -105,9 +105,9 @@ const LoginDesign = () => {
     ];
     const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
     return quote;
-  };
+  }, []);
   // console.log(classes);
-  const quote = getQuote();
+  const { quote, author } = getQuote();
 
   return (
     <Grid
@@ -148,14 +148,14 @@ const LoginDesign = () => {
           <Box style={{ height: theme.spacing(7) }} />
           <Box className={classes.quoteContainer}>
             <Box className={classes.quoteText}>
-              <Typography variant="body1">{quote.quote}</Typography>
+              <Typography variant="body1">{quote}</Typography>
             </Box>
             <Box className={classes.quoteAuthor}>
               <Typography
                 variant="body2"
                 style={{ textAlign: "right", fontWeight: "bold" }}
               >
-                {quote.author}
+                {`- ${author}`}
               </Typography>
             </Box>
           </Box>

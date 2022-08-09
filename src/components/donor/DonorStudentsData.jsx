@@ -4,7 +4,7 @@ import StudentService from "../../services/StudentService";
 import DashboardPage from "../dashboard/Dashboard";
 import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
 import StudentsProgressCards from "../student/StudentsProgressCards";
-import GraphingPresentationJob from "../partner/GraphingPresentationJob";
+import PieRechartReport from "../partner/PieRechartReport";
 
 import { donor } from "../../utils/constants";
 
@@ -33,9 +33,7 @@ const DonorStudentsData = () => {
         return <StudentsProgressCards url={`donor/${donorId}`} />;
       case 2:
         return (
-          <GraphingPresentationJob
-            url={`/donor/${donorId}/students/distribution`}
-          />
+          <PieRechartReport url={`/donor/${donorId}/students/distribution`} />
         );
       default:
         return (

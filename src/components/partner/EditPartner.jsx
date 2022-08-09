@@ -3,9 +3,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Dialog, IconButton } from "@mui/material";
 import { useSelector } from "react-redux";
 import DialogContent from "@mui/material/DialogContent";
-import AddPartner from "../partner/AddPartner";
+import AddPartner from "./AddPartner";
 
-const EditPartnerDetails = (props) => {
+const EditPartner = (props) => {
   const { privileges } = useSelector((state) => state.auth);
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -33,4 +33,4 @@ const EditPartnerDetails = (props) => {
   );
 };
 
-export default EditPartnerDetails;
+export default EditPartner;

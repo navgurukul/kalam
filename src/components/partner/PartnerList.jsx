@@ -7,11 +7,10 @@ import { useSelector } from "react-redux";
 import theme from "../../theme";
 import ViewAssessments from "../assessment/ViewAssessments";
 import PartnerLink from "./PartnerLink";
-import EditPartner from "./EditPartner";
-// eslint-disable-next-line import/no-named-as-default
+import AddSlug from "./AddSlug";
 import CreateAssessment from "../assessment/CreateAssessment";
 import AddMerakiLink from "../smallComponents/AddMerakiLink";
-import EditPartnerDetails from "../smallComponents/EditIcon";
+import EditPartner from "./EditPartner";
 import MainLayout from "../muiTables/MainLayout";
 import ReportSend from "../report/ReportSend";
 import ToolbarAddButton from "../admin/ToolbarAddButton";
@@ -45,7 +44,7 @@ const columns = [
     options: {
       filter: true,
       sort: true,
-      customBodyRender: (value) => <EditPartnerDetails value={value} />,
+      customBodyRender: (value) => <EditPartner value={value} />,
     },
   },
   {
@@ -129,7 +128,7 @@ const columns = [
           );
         }
         return (
-          <EditPartner
+          <AddSlug
             columnIndex={rowMeta.columnIndex}
             partnerId={rowMeta.rowData[0]}
             name={rowMeta.rowData[3]}

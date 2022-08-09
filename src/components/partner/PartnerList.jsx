@@ -49,7 +49,7 @@ const columns = [
     },
   },
   {
-    name: "id",
+    name: "name",
     label: "Name",
     options: {
       filter: true,

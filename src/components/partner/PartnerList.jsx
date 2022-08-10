@@ -12,7 +12,7 @@ import CreateAssessment from "../assessment/CreateAssessment";
 import AddMerakiLink from "../smallComponents/AddMerakiLink";
 import EditPartner from "./EditPartner";
 import MainLayout from "../muiTables/MainLayout";
-import ReportSend from "../report/ReportSend";
+import ReportSend from "./ReportSend";
 import ToolbarAddButton from "../admin/ToolbarAddButton";
 
 const baseUrl = import.meta.env.VITE_API_URL;

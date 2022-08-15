@@ -131,9 +131,10 @@ window.mobileAndTabletCheck = function mobileAndTabletCheck() {
 
 const VideoSlider = ({ language, customLinks }) => {
   const classes = useStyles();
-  const [state, setState] = React.useState({
-    activeStep: 0,
+  const [videoDialog, setVideoDialog] = React.useState({
     open: false,
+    selectedVideoID: null,
+    selectedHeadline: null,
   });
 
   const handleClickOpen = (event) => {
@@ -142,8 +143,7 @@ const VideoSlider = ({ language, customLinks }) => {
         `https://www.youtube.com/watch?v=${event.currentTarget.dataset.video_id}`
       );
     } else {
-      setState({
-        ...state,
+      setVideoDialog({
         open: true,
         selectedVideoID: event.currentTarget.dataset.video_id,
         selectedHeadline: event.currentTarget.dataset.video_headline,
@@ -152,9 +152,10 @@ const VideoSlider = ({ language, customLinks }) => {
   };
 
   const handleClickClose = () => {
-    setState({
-      ...state,
+    setVideoDialog({
       open: false,
+      selectedHeadline: null,
+      selectedVideoID: null,
     });
   };
 
@@ -218,7 +219,7 @@ const VideoSlider = ({ language, customLinks }) => {
       </Slider>
       <Dialog
         fullScreen
-        open={state.open}
+        open={videoDialog.open}
         onClose={handleClickClose}
         TransitionComponent={Transition}
         classes={{ paper: classes.paper }}
@@ -247,14 +248,14 @@ const VideoSlider = ({ language, customLinks }) => {
                   </Typography>
                 </Box>
                 <Typography variant="h6" className={classes.title}>
-                  {state.selectedHeadline}
+                  {videoDialog.selectedHeadline}
                 </Typography>
               </Box>
             </Toolbar>
           </AppBar>
           <Box style={{ margin: "0 auto" }}>
             <YouTube
-              videoId={state.selectedVideoID}
+              videoId={videoDialog.selectedVideoID}
               opts={opts}
               onReady={onReady}
             />

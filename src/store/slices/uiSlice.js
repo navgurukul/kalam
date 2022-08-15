@@ -10,7 +10,6 @@ const UISlice = createSlice({
     dialogOpen: false,
     dialogProps: {},
     dialogTitle: null,
-    dialogContent: null,
     dialogActions: null,
     snackbars: [],
   },
@@ -27,18 +26,16 @@ const UISlice = createSlice({
       state.isFetching = action.payload;
     },
     showDialog: (state, action) => {
-      const { title, props, content, actions } = action.payload;
+      const { title, props, actions } = action.payload;
       state.dialogOpen = true;
       state.dialogProps = props || null;
       state.dialogTitle = title;
-      state.dialogContent = content;
       state.dialogActions = actions;
     },
     closeDialog: (state) => {
       state.dialogOpen = false;
       state.dialogProps = {};
       state.dialogTitle = null;
-      state.dialogContent = null;
       state.dialogActions = null;
     },
     enqueueSnackbar: (state, action) => {

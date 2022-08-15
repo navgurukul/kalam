@@ -2,7 +2,6 @@ import {
   Button,
   Dialog,
   DialogActions,
-  DialogContent,
   DialogTitle,
   Grow,
 } from "@mui/material";
@@ -17,8 +16,9 @@ const Transition = React.forwardRef((props, ref) => (
 
 const AlertDialog = () => {
   const dispatch = useDispatch();
-  const { dialogOpen, dialogProps, dialogTitle, dialogContent, dialogActions } =
-    useSelector((state) => state.ui);
+  const { dialogOpen, dialogProps, dialogTitle, dialogActions } = useSelector(
+    (state) => state.ui
+  );
   const handleClose = (ev, reason) => {
     if (reason === "clickaway") return;
     dispatch(closeDialog());
@@ -37,7 +37,6 @@ const AlertDialog = () => {
       {...(dialogProps || {})}
     >
       <DialogTitle id="title">{dialogTitle}</DialogTitle>
-      <DialogContent>{dialogContent}</DialogContent>
       <DialogActions>
         {dialogActions}
         <Button color="primary" variant="outlined" onClick={handleClose}>

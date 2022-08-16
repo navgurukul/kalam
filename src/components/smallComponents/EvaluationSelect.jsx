@@ -7,13 +7,11 @@ import { useSnackbar } from "notistack";
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
-const Evaluation = (props) => {
+const Evaluation = ({ evaluation, rowMetatable, change }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const changeEvaluation = (selectedValue) => {
-    const { rowMetatable, change } = props;
     const studentId = rowMetatable.rowData[0];
-    const { columnIndex } = rowMetatable;
     const { value, label } = selectedValue;
     axios
       .put(`${baseUrl}students/${studentId}`, {
@@ -23,7 +21,7 @@ const Evaluation = (props) => {
         enqueueSnackbar("evaluation is successfully added!", {
           variant: "success",
         });
-        change(label, columnIndex);
+        change(label);
       })
       .catch(() => {
         enqueueSnackbar("Something went wrong!", {
@@ -38,7 +36,6 @@ const Evaluation = (props) => {
     }
   };
 
-  const { evaluation } = props;
   const evaluationList = ["Struggling", "Manageable", "Good", "Excellent"];
 
   const evaluationOptions = evaluationList.map((item) => ({
@@ -52,17 +49,15 @@ const Evaluation = (props) => {
   };
 
   return (
-    <div>
-      <Select
-        className="filterSelectStage"
-        value={selectedValue}
-        onChange={handleChange}
-        options={evaluationOptions}
-        isClearable={false}
-        components={animatedComponents}
-        closeMenuOnSelect
-      />
-    </div>
+    <Select
+      className="filterSelectStage"
+      value={selectedValue}
+      onChange={handleChange}
+      options={evaluationOptions}
+      isClearable={false}
+      components={animatedComponents}
+      closeMenuOnSelect
+    />
   );
 };
 

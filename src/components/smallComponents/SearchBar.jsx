@@ -2,9 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import TextField from "@mui/material/TextField";
 import { debounce } from "lodash";
 
-const SearchBar = (props) => {
-  // const [name, setName] = React.useState("");
-
+const SearchBar = ({ searchByName }) => {
   const validInput = (value) => {
     if (value.match(/^[A-Za-z\s]+$/)) {
       return "letter";
@@ -15,8 +13,6 @@ const SearchBar = (props) => {
   };
 
   const onSearchText = (input) => {
-    // setName(input);
-    const { searchByName } = props;
     const isValidInput = validInput(input);
     if (input.length >= 2 && isValidInput === "letter") {
       return searchByName("name", input);
@@ -42,7 +38,7 @@ const SearchBar = (props) => {
       size="small"
       error={false}
       id="standard-basic"
-      label="Search name or number"
+      label="Search Name or Number"
       onChange={(event) => onChange(event.target.value)}
     />
   );

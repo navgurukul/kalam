@@ -56,27 +56,30 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProgressCard = ({ title, detailsData, index, message }) => {
-  const snackbar = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
-  const icons = [
-    {
-      icon: <AccountBalanceIcon className={classes.image} />,
-    },
-    {
-      icon: <AnnouncementIcon className={classes.image} />,
-    },
-    {
-      icon: <HelpIcon className={classes.image} />,
-    },
-    {
-      icon: <CancelIcon className={classes.image} />,
-    },
-  ];
+  const icons = React.useMemo(
+    () => [
+      {
+        icon: <AccountBalanceIcon className={classes.image} />,
+      },
+      {
+        icon: <AnnouncementIcon className={classes.image} />,
+      },
+      {
+        icon: <HelpIcon className={classes.image} />,
+      },
+      {
+        icon: <CancelIcon className={classes.image} />,
+      },
+    ],
+    []
+  );
   const copyClipBoard = (copyMessage) => (
     <CopyToClipboard
       text={copyMessage}
       onCopy={() => {
-        snackbar.enqueueSnackbar("Message copied!", {
+        enqueueSnackbar("Message copied!", {
           variant: "success",
         });
       }}

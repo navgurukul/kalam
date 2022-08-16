@@ -1561,37 +1561,6 @@ const partnerNameColumn = {
   },
 };
 
-// const CampusStatusColumnWrapper = ({ value, rowMeta, updateValue }) => {
-//   const { privileges } = useSelector((state) => state.auth);
-//   return privileges?.some((priv) => priv.privilege === "UpdateStage") ? (
-//     <CampusStatusDropdown
-//       // studentId={rowMeta.rowData[0]}
-//       rowMeta={rowMeta}
-//       value={value}
-//       change={(event) => updateValue(event)}
-//       S
-//     />
-//   ) : (
-//     <p>{value}</p>
-//   );
-// };
-
-// const CampusStatus = {
-//   name: "campusStatus",
-//   label: "Campus Status",
-//   options: {
-//     filter: false,
-//     sort: false,
-//     customBodyRender: (value, rowMeta, updateValue) => (
-//       <CampusStatusColumnWrapper
-//         rowMeta={rowMeta}
-//         value={value}
-//         updateValue={updateValue}
-//       />
-//     ),
-//   },
-// };
-
 export const navGurukulSurveyForm = {
   label: "Survey Form",
   name: "partnerName",
@@ -1815,7 +1784,6 @@ const StudentService = {
     joinedDate,
     stageColumn,
     JobKabLagegiColumn,
-    // CampusStatus,
     ColumnUpload,
     daysPassedColumn,
     kitneAurDin,

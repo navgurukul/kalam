@@ -81,10 +81,8 @@ const getColumns = (partnerList) => [
       },
 
       customBodyRender: (value, rowMeta) => {
-        const name = rowMeta.rowData[3];
-        return (
-          <PartnerLink url={`/partner/${value}`} text={name} name={name} />
-        );
+        const id = rowMeta.rowData[0];
+        return <PartnerLink url={`/partner/${id}`} text={value} name={value} />;
       },
     },
   },

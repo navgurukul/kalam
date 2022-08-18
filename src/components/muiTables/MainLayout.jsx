@@ -32,6 +32,7 @@ const MainLayout = ({
   options,
   title,
   showLoader,
+  onDownload,
   tableBodyMaxHeight,
 }) => {
   const classes = useStyles();
@@ -57,6 +58,7 @@ const MainLayout = ({
             // filter: true,
             // filterType: "dropdown",
             responsive: "vertical",
+            onDownload: onDownload || null,
             tableBodyMaxHeight: tableBodyMaxHeight || "64vh",
             textLabels: {
               body: {

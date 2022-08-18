@@ -409,7 +409,7 @@ const AudioPlayer = {
             <AudiofileUpload
               studentId={rowMeta.rowData[5]}
               userId={rowMeta.rowData[8] ? rowMeta.rowData[8].id : "guest_id"}
-              student_stage={rowMeta.rowData[0]}
+              studentStage={rowMeta.rowData[0]}
               change={(event) => updateValue(event)}
               columnIndex={rowMeta.columnIndex}
             />

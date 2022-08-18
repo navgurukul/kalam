@@ -1,9 +1,10 @@
 import React from "react";
 import { makeStyles } from "@mui/styles";
-import { Chip, Paper, Grid, Menu, MenuItem, Fab } from "@mui/material";
+import { Chip, Paper, Grid, Menu, MenuItem, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
 import { allTagsForOnlineClass } from "../../utils/constants";
+import { toTitleCase } from "../../utils";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -30,8 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChipsArray = (props) => {
-  const { allTags } = props;
+const ChipsArray = ({ allTags, studentId, change }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -40,20 +40,14 @@ const ChipsArray = (props) => {
   };
 
   const addTags = (newData) => {
-    const { studentId, rowMetatable, change } = props;
-    const { columnIndex } = rowMetatable;
-
-    const tag = [];
-    newData.map((data) => tag.push(data.label));
-    const tags = tag.join(", ");
-
+    const tag = newData.map((data) => data.label).join(", ");
     axios.post(`${baseUrl}students/tag/${studentId}`, {
-      tag: tags,
+      tag,
     });
-    change(tags, columnIndex);
+    change(tag);
   };
 
-  const handleClose = (value) => async () => {
+  const handleClose = async (value) => {
     if (value) {
       const newData = allTags;
       newData.push({ key: newData.length - 1, label: value });
@@ -89,19 +83,19 @@ const ChipsArray = (props) => {
           ))}
         </Paper>
       ) : null}
-      <Fab color="primary" className={classes.fab} onClick={handleClick}>
+      <IconButton color="primary" className={classes.fab} onClick={handleClick}>
         <AddIcon />
-      </Fab>
+      </IconButton>
       <Menu
         id="simple-menu"
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
-        onClose={handleClose(null)}
+        onClose={() => handleClose(null)}
       >
         {allTagsForOnlineClass.map((data) => (
-          <MenuItem value={data} onClick={handleClose(data)} key={data}>
-            {(data.charAt(0).toUpperCase() + data.slice(1))
+          <MenuItem value={data} onClick={() => handleClose(data)} key={data}>
+            {toTitleCase(data)
               .match(/[A-Z][a-z]+/g)
               .join(" ")}
           </MenuItem>

@@ -1,6 +1,10 @@
 export const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
 export const customPartner = ["amravati", "lahia"];
+export const testClosed = {
+  partners: ["amravati", "lahia"],
+  message: "Tests have now been closed!",
+};
 
 export const permissions = {
   permissionsView: ["kirithiv@navgurukul.org", "vaibhavmagar@navgurukul.org"],
@@ -346,28 +350,28 @@ export const nextStage = {
   ],
   becameDisIntersested: [],
   finallyJoined: ["M1"],
-  M1: ["M2", "droppedOut", "onLeave"],
-  M2: ["M3", "droppedOut", "onLeave"],
-  M3: ["M4", "droppedOut", "onLeave"],
-  M4: ["M5", "droppedOut", "onLeave"],
-  M5: ["M6", "droppedOut", "onLeave"],
-  M6: ["M7", "droppedOut", "onLeave", "inJob"],
-  M7: ["M8", "droppedOut", "onLeave", "inJob"],
-  M8: ["M9", "droppedOut", "onLeave", "inJob"],
-  M9: ["M10", "droppedOut", "onLeave", "inJob"],
-  M10: ["M11", "M12", "droppedOut", "onLeave", "inJob"],
-  M11: ["M13", "droppedOut", "onLeave", "inJob"],
-  M13: ["M15", "droppedOut", "onLeave", "inJob"],
-  M15: ["M17", "droppedOut", "onLeave", "inJob"],
-  M17: ["M19", "droppedOut", "onLeave", "inJob"],
-  M12: ["M14", "droppedOut", "onLeave", "inJob"],
-  M14: ["M16", "droppedOut", "onLeave", "inJob"],
-  M16: ["M18", "droppedOut", "onLeave", "inJob"],
-  M18: ["M19", "droppedOut", "onLeave", "inJob"],
-  M19: ["M20", "droppedOut", "onLeave", "inJob"],
-  M20: ["M21", "droppedOut", "onLeave", "inJob"],
-  M21: ["M22", "droppedOut", "onLeave", "inJob"],
-  M22: ["inJob", "droppedOut", "onLeave"],
+  M1: ["M2"],
+  M2: ["M3"],
+  M3: ["M4"],
+  M4: ["M5"],
+  M5: ["M6"],
+  M6: ["M7", "inJob"],
+  M7: ["M8", "inJob"],
+  M8: ["M9", "inJob"],
+  M9: ["M10", "inJob"],
+  M10: ["M11", "M12", "inJob"],
+  M11: ["M13", "inJob"],
+  M13: ["M15", "inJob"],
+  M15: ["M17", "inJob"],
+  M17: ["M19", "inJob"],
+  M12: ["M14", "inJob"],
+  M14: ["M16", "inJob"],
+  M16: ["M18", "inJob"],
+  M18: ["M19", "inJob"],
+  M19: ["M20", "inJob"],
+  M20: ["M21", "inJob"],
+  M21: ["M22", "inJob"],
+  M22: ["inJob"],
   onLeave: [
     "M1",
     "M2",
@@ -399,21 +403,20 @@ export const nextStage = {
 };
 
 export const campusStatusOptions = {
-  present: "Present",
-  onLeave: "On Leave",
-  droppedOut: "Dropped Out",
+  present: { label: "Present", display: true },
+  onLeave: { label: "On Leave", display: true },
+  droppedOut: { label: "Dropped Out", display: true },
   // gotJobLeftCampus: "Got Job & Left the Campus",
-  inCampusInterns: "In Campus Interns",
-  inJob: "In Job",
-  graphicDesign: "Graphic Design",
-  courseCompleted: "Course Completed",
+  inCampusInterns: { label: "In Campus Interns", display: true },
+  inJob: { label: "In Job", display: true },
+  som: { label: "SOM", display: false },
+  graphicDesign: { label: "Graphic Design", display: false },
+  courseCompleted: { label: "Course Completed", display: false },
   // alumniInternStayingInCampus: "Alumni/Interns Staying in Campus",
-  teamMember: "Team Member",
+  teamMember: { label: "Team Member", display: false },
 };
 
-export const campusStatusDisplayOptions = Object.keys(
-  campusStatusOptions
-).slice(0, 5);
+export const campusStatusDisplayOptions = Object.keys(campusStatusOptions);
 
 export const states = {
   AN: "Andaman and Nicobar Islands",

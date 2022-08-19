@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { ThemeProvider, makeStyles } from "@mui/styles";
 import axios from "axios";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import theme from "../../theme";
@@ -37,27 +37,50 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const columns = [
+const getColumns = (partnerList) => [
   {
     name: "id",
     label: "Edit Partner Details",
     options: {
-      filter: true,
+      filter: false,
       sort: true,
       customBodyRender: (value) => <EditPartner value={value} />,
     },
   },
   {
-    name: "id",
+    name: "name",
     label: "Name",
     options: {
       filter: true,
       sort: true,
+      filterType: "custom",
+      filterOptions: {
+        logic: (location, filters) =>
+          filters[0] === "All" || filters[0] === undefined
+            ? false
+            : !filters.includes(location),
+        display: (filterlist, onChange, index, column) => (
+          <>
+            <Typography variant="caption">Name</Typography>
+            <SelectReact
+              options={[{ name: "All" }, ...partnerList].map(({ name }) => ({
+                value: name,
+                label: name,
+              }))}
+              filterList={filterlist}
+              onChange={onChange}
+              index={index}
+              column={column}
+              value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+            />
+          </>
+        ),
+        fullWidth: true,
+      },
+
       customBodyRender: (value, rowMeta) => {
-        const name = rowMeta.rowData[3];
-        return (
-          <PartnerLink url={`/partner/${value}`} text={name} name={name} />
-        );
+        const id = rowMeta.rowData[0];
+        return <PartnerLink url={`/partner/${id}`} text={value} name={value} />;
       },
     },
   },
@@ -215,7 +238,7 @@ const PartnerList = () => {
         <div className={classes.innerTable}>
           <MainLayout
             title="Partners"
-            columns={columns}
+            columns={getColumns(partnerList)}
             data={partnerList}
             options={options}
             tableBodyMaxHeight="74vh"

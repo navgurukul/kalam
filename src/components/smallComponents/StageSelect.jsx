@@ -254,7 +254,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
             </MenuItem>
             {Object.entries(campusStatusOptions).map(([key, status]) => (
               <MenuItem value={key} key={key}>
-                {status}
+                {status.label}
               </MenuItem>
             ))}
           </MUISelect>

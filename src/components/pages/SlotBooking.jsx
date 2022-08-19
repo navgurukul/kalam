@@ -179,11 +179,6 @@ const SlotBooking = () => {
         enqueueSnackbar("Couldn't Book Slot!", { variant: "error" });
       });
   };
-  const disablePrevDates = () => {
-    const yesterday = new Date(Date.now() - 86400000);
-    const startSeconds = Date.parse(yesterday);
-    return (_date) => Date.parse(_date) < startSeconds;
-  };
 
   return loading ? (
     <Loader />
@@ -225,7 +220,13 @@ const SlotBooking = () => {
                 onChange={(dates) => {
                   handleDateChange(dates);
                 }}
-                shouldDisableDate={disablePrevDates()}
+                // shouldDisableDate={disablePrevDates()}
+                shouldDisableDate={(currentDate) =>
+                  dayjs(currentDate).isAfter(
+                    dayjs().set("date", dayjs().get("date") + 7)
+                  )
+                }
+                disablePast
                 inputVariant="outlined"
                 fullWidth
                 KeyboardButtonProps={{

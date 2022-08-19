@@ -11,7 +11,7 @@ import { changeFetching } from "../../store/slices/uiSlice";
 import DashboardPage from "../dashboard/Dashboard";
 import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
 import StudentsProgressCards from "../student/StudentsProgressCards";
-import GraphingPresentationJob from "../partner/GraphingPresentationJob";
+import PieRechartReport from "../partner/PieRechartReport";
 import EvaluationSelect from "../smallComponents/EvaluationSelect";
 
 import { campus } from "../../utils/constants";
@@ -109,9 +109,7 @@ const CampusStudentsData = () => {
         return <StudentsProgressCards url={`campus/${campusId}`} />;
       case 2:
         return (
-          <GraphingPresentationJob
-            url={`/campus/${campusId}/students/distribution`}
-          />
+          <PieRechartReport url={`/campus/${campusId}/students/distribution`} />
         );
       default:
         return (

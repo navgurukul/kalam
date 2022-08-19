@@ -40,21 +40,13 @@ const getModalStyle = () => ({
   padding: "20px",
 });
 
-const CsvUpload = (props) => {
+const CsvUpload = ({ partnerId, assessmentId }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const [state, setState] = React.useState({
-    modalOpen: false,
-    errors: "",
-    file: "",
-    loading: false,
-  });
-  // this.onFormSubmit = this.onFormSubmit.bind(this)
-  // this.onChange = this.onChange.bind(this)
-  // this.fileUpload = this.fileUpload.bind(this)
+  const [loading, setLoading] = React.useState(false);
+  const [errors, setErrors] = React.useState(null);
 
   const addAttempts = async (fileUrl) => {
-    const { partnerId, assessmentId } = props;
     try {
       if (fileUrl) {
         const url = `${baseUrl}partners/${partnerId}/assessments/${assessmentId}/attempts`;
@@ -62,21 +54,13 @@ const CsvUpload = (props) => {
           csvUrl: fileUrl,
         });
         if (response.data.errors !== undefined) {
-          setState({
-            ...state,
-            errors: response.data,
-            loading: false,
-          });
+          setErrors(response.data);
+        } else {
           enqueueSnackbar("successfully uploaded csv file!", {
             variant: "success",
           });
-        } else {
-          setState({
-            ...state,
-            errors: "sucess",
-            loading: false,
-          });
         }
+        setLoading(false);
       }
     } catch (e) {
       enqueueSnackbar("Internal Server Error", { variant: "error" });
@@ -84,21 +68,16 @@ const CsvUpload = (props) => {
   };
 
   const errorHandler = () => {
-    if (typeof state.errors === "object") {
+    if (typeof errors === "object") {
       return (
         <div>
           <h3 style={{ color: "green", textAlign: "center" }}>
             Please coreect your csv file according to the detailsErrors and
             answerErrors using following instructions.
           </h3>
-          <ReactJson src={state.errors} />
+          <ReactJson src={errors} />
         </div>
       );
-    }
-    if (state.errors === "sucess") {
-      return enqueueSnackbar("successfully uploaded csv file!", {
-        variant: "success",
-      });
     }
   };
 
@@ -123,30 +102,23 @@ const CsvUpload = (props) => {
           alert("It is enternal server error please refresh the page.");
         }
       } catch (err) {
-        // eslint-disable-next-line no-console
         console.error(err);
       }
     });
   };
 
   const onChange = async (e) => {
-    e.preventDefault();
-    setState({ ...state, file: e.target.files[0], loading: true });
+    // setState({ ...state, file: e.target.files[0] });
+    setLoading(true);
     await onFormSubmit(e.target.files[0]);
   };
 
-  const handleClose = () => {
-    setState({
-      ...state,
-      modalOpen: false,
-    });
-  };
+  const handleClose = () => setErrors(null);
 
   const modalStyle = getModalStyle();
-  const { loading } = state;
   return (
-    <div>
-      <form style={{ padding: "10px" }}>
+    <>
+      <div style={{ padding: "10px" }}>
         <h3>File Upload</h3>
         <input
           type="file"
@@ -161,13 +133,13 @@ const CsvUpload = (props) => {
           visible={loading}
           style={{ padding: "10px" }}
         />
-      </form>
-      <Modal open={state.modalOpen} onClose={handleClose}>
+      </div>
+      <Modal open={!!errors} onClose={handleClose}>
         <div style={modalStyle} className={classes.errors}>
           {errorHandler()}
         </div>
       </Modal>
-    </div>
+    </>
   );
 };
 

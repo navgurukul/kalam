@@ -27,9 +27,6 @@ const RequireAuth = ({ children, privateRoute }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // if (isAuthenticated && loggedInUser && !loggedInUser.mobile)
-  //   return <Navigate to="/user/mobile/number" replace />;
-
   const getRoute = () => {
     //Forced redirect if any page was visited before login
     const pageBeforeLogin = sessionStorage.getItem("pageBeforeLogin");

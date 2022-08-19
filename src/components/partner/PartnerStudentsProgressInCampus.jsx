@@ -5,16 +5,14 @@ import StudentService from "../../services/StudentService";
 import DashboardPage from "../dashboard/Dashboard";
 import StudentsProgressCards from "../student/StudentsProgressCards";
 import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
-import GraphingPresentationJob from "./GraphingPresentationJob";
+import PieRechartReport from "./PieRechartReport";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
 const PartnerStudentsProgressInCampus = () => {
   const { partnerId } = useParams();
-  const [state, setState] = React.useState({
-    partnerName: "",
-    dataView: 1,
-  });
+  const [partnerName, setPartnerName] = React.useState("");
+  const [dataView, setDataView] = React.useState(1);
 
   const isPartnerGroup =
     location.pathname.split("/")[2] === "group" ? "partnerGroup" : "partners";
@@ -27,23 +25,15 @@ const PartnerStudentsProgressInCampus = () => {
         }`
       )
       .then((res) => {
-        setState({
-          ...state,
-          partnerName: res.data.data[0]?.name || res.data.data.name,
-        });
+        setPartnerName(res.data.data[0]?.name || res.data.data.name);
       });
   }, []);
 
-  const progressMade = () => {
-    setState({ ...state, dataView: 1 });
-  };
-  const tabularData = () => {
-    setState({ ...state, dataView: 0 });
-  };
-  const showGraphData = () => {
-    setState({ ...state, dataView: 2 });
-  };
-  const { partnerName, dataView } = state;
+  const progressMade = () => setDataView(1);
+
+  const tabularData = () => setDataView(0);
+
+  const showGraphData = () => setDataView(2);
 
   const getView = (viewNo) => {
     switch (viewNo) {
@@ -59,7 +49,7 @@ const PartnerStudentsProgressInCampus = () => {
 
       case 2:
         return (
-          <GraphingPresentationJob
+          <PieRechartReport
             url={`/${isPartnerGroup}/${partnerId}/students/distribution`}
           />
         );

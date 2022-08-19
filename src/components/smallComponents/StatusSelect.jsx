@@ -7,43 +7,39 @@ import { useSnackbar } from "notistack";
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
-const StatusSelect = (props) => {
-  const snackbar = useSnackbar();
+const StatusSelect = ({
+  change,
+  rowMetaTable,
+  state,
+  feedbackableStagesData,
+}) => {
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleChange = (selectedValue) => {
-    try {
-      const { change, rowMetaTable } = props;
-      let studentId;
-      if (window.location.pathname.includes("/campus"))
-        // eslint-disable-next-line prefer-destructuring
-        studentId = rowMetaTable.rowData[7];
-      // eslint-disable-next-line prefer-destructuring
-      else studentId = rowMetaTable.rowData[5];
+    const studentId = window.location.pathname.includes("/campus")
+      ? rowMetaTable.rowData[7]
+      : rowMetaTable.rowData[5];
 
-      const { columnIndex } = rowMetaTable;
-      const stage = rowMetaTable.rowData[0];
-      const { value } = selectedValue;
-      const dataURL = `${baseUrl}students/feedback/${studentId}`;
-      axios
-        .put(dataURL, { student_stage: stage, state: value })
-        .then(() => {
-          snackbar.enqueueSnackbar("state is successfully changed!", {
-            variant: "success",
-          });
-          change(value, columnIndex);
-        })
-        .catch(() => {
-          snackbar.enqueueSnackbar(
-            "Please fill feedback first and try again!",
-            { variant: "error" }
-          );
+    const { columnIndex } = rowMetaTable;
+    const stage = rowMetaTable.rowData[0];
+    const { value } = selectedValue;
+    const dataURL = `${baseUrl}students/feedback/${studentId}`;
+    axios
+      .put(dataURL, { student_stage: stage, state: value })
+      .then(() => {
+        enqueueSnackbar("state is successfully changed!", {
+          variant: "success",
         });
-    } catch (e) {
-      snackbar.enqueueSnackbar(e, { variant: "error" });
-    }
+        change(value, columnIndex);
+      })
+      .catch((e) => {
+        enqueueSnackbar(
+          `Please fill feedback first and try again!${e.message}`,
+          { variant: "error" }
+        );
+      });
   };
 
-  const { state, feedbackableStagesData, rowMetaTable } = props;
   const stage = rowMetaTable.rowData[0];
 
   const allstatus = feedbackableStagesData[stage].status;
@@ -62,11 +58,9 @@ const StatusSelect = (props) => {
   return (
     <Select
       className="filterSelectStage"
-      // defaultValue={selectedValue}
       value={selectedValue}
       onChange={handleChange}
       options={allStatusOptions}
-      // placeholder={"Select "+props.filter.name+" ..."}
       isClearable={false}
       components={animatedComponents}
       closeMenuOnSelect

@@ -5,7 +5,7 @@ import axios from "axios";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const EditText = ({ name, type, value, studentId, change }) => {
+const EditText = ({ name, label, type, value, id, studentId, change }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleUpdate = (newValue) => {
@@ -18,19 +18,20 @@ const EditText = ({ name, type, value, studentId, change }) => {
     if (newValue === value) {
       return;
     }
+    // console.log(label, id);
     axios
-      .put(`${baseUrl}students/jobDetails`, {
+      .put(`${baseUrl}students/jobDetails/${id}`, {
         [name]: newValue,
         student_id: studentId,
       })
       .then(() => {
-        enqueueSnackbar(`${name} successfully updated !`, {
+        enqueueSnackbar(`${label} successfully updated !`, {
           variant: "success",
         });
         change({ [name]: newValue });
       })
       .catch(() => {
-        enqueueSnackbar(`Error in updating ${name}`, {
+        enqueueSnackbar(`Error in updating ${label}`, {
           variant: "error",
         });
       });

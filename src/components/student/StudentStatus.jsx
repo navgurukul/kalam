@@ -4,7 +4,7 @@ import MUIDataTable from "mui-datatables";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import GlobalService from "../../services/GlobalService";
+import { tableIcons } from "../../services/GlobalService";
 import StudentService from "../../services/StudentService";
 
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -29,10 +29,7 @@ const baseUrl = import.meta.env.VITE_API_URL;
 const StudentStatus = () => {
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
-  const [state, setState] = React.useState({
-    modalOpen: false,
-    data: [],
-  });
+  const [status, setStatus] = React.useState([]);
 
   const fetchStatus = async () => {
     let mobile;
@@ -43,7 +40,7 @@ const StudentStatus = () => {
     }
     try {
       const response = await axios.get(`${baseUrl}students/status/${mobile}`);
-      setState((prevState) => ({ ...prevState, data: response.data.data }));
+      setStatus(response.data.data);
     } catch (e) {
       enqueueSnackbar("Please Enter Registered Mobile Number!", {
         variant: "error",
@@ -56,11 +53,8 @@ const StudentStatus = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => fetchStatus();
-    fetchData();
+    (async () => fetchStatus())();
   }, []);
-
-  const { data } = state;
   return (
     <div>
       <Typography variant="h5" id="modal-title">
@@ -69,8 +63,8 @@ const StudentStatus = () => {
       </Typography>
       <MUIDataTable
         columns={StudentService.columns.columnStudentStatus}
-        data={data}
-        icons={GlobalService.tableIcons}
+        data={status}
+        icons={tableIcons}
         options={{
           exportButton: true,
           pageSize: 100,

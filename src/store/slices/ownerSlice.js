@@ -5,6 +5,15 @@ import { changeFetching, enqueueSnackbar } from "./uiSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
+export const fetchUsers = createAsyncThunk("owners/fetch/users", async () => {
+  try {
+    const res = await axios.get(`${baseUrl}users/getall`);
+    return res.data.data;
+  } catch (e) {
+    console.error(e.message);
+  }
+});
+
 export const fetchOwners = createAsyncThunk(
   "owners/fetch",
   async (args, thunkAPI) => {
@@ -16,7 +25,7 @@ export const fetchOwners = createAsyncThunk(
       return data;
     } catch (err) {
       thunkAPI.dispatch(changeFetching(false));
-      throw Error(err.message);
+      console.error(err.message);
     }
   }
 );
@@ -40,7 +49,7 @@ export const deleteOwner = createAsyncThunk(
       return newOwnerData;
     } catch (err) {
       thunkAPI.dispatch(changeFetching(false));
-      throw Error(err.message);
+      console.error(err.message);
     }
   }
 );
@@ -68,6 +77,7 @@ const OwnerSlice = createSlice({
   initialState: {
     ownerData: [],
     ownerMailList: [], // only mail_ids
+    users: [],
   },
   reducers: {
     setOwnerData: (state, action) => {
@@ -75,6 +85,9 @@ const OwnerSlice = createSlice({
     },
   },
   extraReducers: {
+    [fetchUsers.fulfilled]: (state, action) => {
+      state.users = action.payload;
+    },
     [fetchOwners.fulfilled]: (state, action) => {
       state.ownerData = action.payload;
     },

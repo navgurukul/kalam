@@ -167,40 +167,25 @@ function Questions() {
       {}
     );
 
-    fetch(`${baseUrl}on_assessment/questions/${enrollmentKey}/answers`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(decryptedAnsList),
-    })
+    axios
+      .post(
+        `${baseUrl}on_assessment/questions/${enrollmentKey}/answers`,
+        JSON.stringify(decryptedAnsList)
+      )
       .then(() => {
-        fetch(`${baseUrl}on_assessment/Show_testResult/${enrollmentKey}`, {
-          method: "GET",
-        }).then((res) => {
-          res.json().then((data) => {
+        axios
+          .get(`${baseUrl}on_assessment/Show_testResult/${enrollmentKey}`)
+          .then(({ data }) => {
             setResult({
               ...result,
               total_marks: data.total_marks,
+              done: true,
+              success: data.Result !== "Failed",
             });
-            if (data.Result === "Failed") {
-              setResult({
-                ...result,
-                done: true,
-                success: false,
-              });
-            } else {
-              setResult({
-                ...result,
-                done: true,
-                success: true,
-              });
-            }
           });
-        });
       })
-      .catch(() => {
-        //console.log("error", err);
+      .catch((err) => {
+        console.error(err);
       });
   };
 

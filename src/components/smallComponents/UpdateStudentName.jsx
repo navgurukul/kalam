@@ -5,29 +5,26 @@ import { useSnackbar } from "notistack";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const UpdateStudentName = (props) => {
+const UpdateStudentName = ({ name, rowMetatable, change }) => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleUpdate = (name) => {
-    const { rowMetatable, change } = props;
+  const handleUpdate = (newName) => {
     const studentId = rowMetatable.rowData[0];
     axios
-      .put(`${baseUrl}students/${studentId}`, { name })
+      .put(`${baseUrl}students/${studentId}`, { name: newName })
       .then(() => {
         //console.log("Success");
         enqueueSnackbar("Name updated successfully!", {
           variant: "success",
         });
-        change(name);
+        change(newName);
       })
       .catch(() => {
-        //console.log("Failed");
         enqueueSnackbar("Couldn't update name !", {
           variant: "error",
         });
       });
   };
-  const { name } = props;
   return (
     <EasyEdit
       type="text"

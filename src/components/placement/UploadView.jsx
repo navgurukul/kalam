@@ -35,7 +35,14 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const UploadView = ({ label, type, docLink, studentId, change }) => {
+const UploadView = ({
+  name,
+  label,
+  docLink,
+  change,
+  isVideo = false,
+  update,
+}) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const { isFetching } = useSelector((state) => state.ui);
@@ -44,12 +51,10 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
   const fetchingFinish = () => dispatch(changeFetching(false));
 
   const [link, setLink] = React.useState(docLink || "");
-
-  const [edit, setEdit] = React.useState(false);
-
+  const [edit, setEdit] = React.useState(!docLink);
   const [view, setView] = React.useState(false);
 
-  const limitFileSize = (file) => file.size <= 1000000;
+  const limitFileSize = React.useCallback((file) => file.size <= 1000000, []);
 
   const generateLink = (e) => {
     e.preventDefault();
@@ -108,33 +113,29 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
     if (isFetching) return;
     fetchingStart();
 
-    const linkResumePhoto = link.includes("drive.google.com")
-      ? convertDriveLink(link)
-      : link;
-    const linkVideo = link.includes("drive.google.com")
-      ? convertDriveLink(link)
-      : link.includes("youtu")
-      ? embeddedURL(link)
-      : link;
+    let linkDoc;
+    if (isVideo) {
+      linkDoc = link.includes("drive.google.com")
+        ? convertDriveLink(link)
+        : link.includes("youtu")
+        ? embeddedURL(link)
+        : link;
+    } else {
+      linkDoc = link.includes("drive.google.com")
+        ? convertDriveLink(link)
+        : link;
+    }
 
-    const linkDoc =
-      label === "resume" || label === "photo_link"
-        ? linkResumePhoto
-        : linkVideo;
-
+    //Demo Link
     //https://s3.ap-south-1.amazonaws.com/chanakya-dev/students_documents/e24753e8-49e2-45bb-bcd9-3750f6b96a07-Test_Doc.pdf
 
-    axios
-      .put(`${baseUrl}students/jobDetails`, {
-        student_id: studentId,
-        [label]: linkDoc,
-      })
+    update(name, linkDoc)
       .then((res) => {
         if (res.status === 200) {
-          enqueueSnackbar(`${type} uploaded successfully`, {
+          enqueueSnackbar(`${label} uploaded successfully`, {
             variant: "success",
           });
-          change({ [label]: linkDoc });
+          change({ [name]: linkDoc });
           setEdit(false);
           fetchingFinish();
         }
@@ -190,10 +191,10 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
         aria-describedby="modal to view"
       >
         <Box className={classes.viewModal}>
-          {label === "resume" || label === "photo_link" ? (
+          {!isVideo ? (
             <embed
               src={link}
-              alt="Resume"
+              alt={label}
               style={{
                 width: "100%",
                 height: "100%",
@@ -220,7 +221,7 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
         flexDirection: "column",
       }}
     >
-      {label !== "video_link" && (
+      {!isVideo && (
         <label htmlFor="resume-input">
           <Button
             variant="contained"
@@ -237,8 +238,8 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
       )}
       <Input
         inputProps={{ type: "file", accept: "image/*,.pdf" }}
-        id="resume-input"
-        name="resume-input"
+        id={`${name}-input`}
+        name={`${name}-input`}
         type="file"
         style={{
           display: "none",
@@ -263,7 +264,7 @@ const UploadView = ({ label, type, docLink, studentId, change }) => {
           marginTop: "0.2rem",
         }}
         disabled={link === ""}
-        onClick={(e) => uploadLink(e, studentId)}
+        onClick={(e) => uploadLink(e)}
       >
         {isFetching ? <HalfCircleSpinner size={24} /> : "Upload"}
       </Button>

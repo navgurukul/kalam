@@ -41,6 +41,7 @@ const UploadView = ({
   docLink,
   change,
   isVideo = false,
+  editOnLoad = false,
   update,
 }) => {
   const classes = useStyles();
@@ -51,7 +52,7 @@ const UploadView = ({
   const fetchingFinish = () => dispatch(changeFetching(false));
 
   const [link, setLink] = React.useState(docLink || "");
-  const [edit, setEdit] = React.useState(!docLink);
+  const [edit, setEdit] = React.useState(!docLink && editOnLoad);
   const [view, setView] = React.useState(false);
 
   const limitFileSize = React.useCallback((file) => file.size <= 1000000, []);
@@ -181,7 +182,7 @@ const UploadView = ({
           addNew();
         }}
       >
-        Add
+        {viewButtonCondition ? "Update" : "Add"}
       </Button>
 
       <Modal

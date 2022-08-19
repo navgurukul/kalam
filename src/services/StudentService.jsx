@@ -107,14 +107,19 @@ const deleteStudentColumn = {
 const ColumnUpload = {
   //get the object of the column
   name: "studentDocuments",
-  label: "Upload Document",
+  label: "Upload Documents",
   options: {
     filter: false,
     sort: false,
-    customBodyRender: (value, rowMeta) => (
+    customBodyRender: (value, rowMeta, updateValue) => (
       //modal for uploading documents
 
-      <UploadDocuments rowMeta={rowMeta} value={value} />
+      <UploadDocuments
+        studentId={rowMeta.rowData[0]}
+        studentName={rowMeta.rowData[1]}
+        currentDocuments={value}
+        change={(newVal) => updateValue({ ...value, ...newVal })}
+      />
     ),
   },
 };

@@ -57,13 +57,14 @@ const baseUrl = import.meta.env.VITE_API_URL;
 
 const PlacementStudentsData = () => {
   const { enqueueSnackbar } = useSnackbar();
-
   const [studentData, setStudentData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [selectedStudent, setSelectedStudent] = React.useState({
     studentId: null,
     studentName: null,
   });
+
+  const getUpdateUrl = (id) => `${baseUrl}students/jobDetails/${id}`;
 
   const getJobDetails = async () => {
     try {
@@ -223,7 +224,7 @@ const PlacementStudentsData = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: React.useCallback((value, rowMeta, change) => {
+        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const studentId = rowMeta.rowData[0];
           if (Object.keys(value).length === 0 || value.id === undefined)
             return (
@@ -233,12 +234,16 @@ const PlacementStudentsData = () => {
             );
           return (
             <UploadView
-              label="resume"
-              type="Resume"
-              id={value?.id}
+              name="resume"
+              label="Resume"
+              update={async (document, url) =>
+                axios.put(getUpdateUrl(value?.id), {
+                  student_id: studentId,
+                  [document]: url,
+                })
+              }
               docLink={value?.resume}
-              studentId={studentId}
-              change={change}
+              change={(newVal) => updateValue({ ...value, ...newVal })}
             />
           );
         }, []),
@@ -251,7 +256,7 @@ const PlacementStudentsData = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: React.useCallback((value, rowMeta, change) => {
+        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const studentId = rowMeta.rowData[0];
           if (Object.keys(value).length === 0 || value.id === undefined)
             return (
@@ -261,12 +266,16 @@ const PlacementStudentsData = () => {
             );
           return (
             <UploadView
-              label="photo_link"
-              type="Photo Link"
-              id={value?.id}
+              name="photo_link"
+              label="Photo Link"
+              update={async (document, url) =>
+                axios.put(getUpdateUrl(value?.id), {
+                  student_id: studentId,
+                  [document]: url,
+                })
+              }
               docLink={value?.photo_link}
-              studentId={studentId}
-              change={change}
+              change={(newVal) => updateValue({ ...value, ...newVal })}
             />
           );
         }, []),
@@ -279,7 +288,7 @@ const PlacementStudentsData = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: React.useCallback((value, rowMeta, change) => {
+        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const studentId = rowMeta.rowData[0];
           if (Object.keys(value).length === 0 || value.id === undefined)
             return (
@@ -289,12 +298,17 @@ const PlacementStudentsData = () => {
             );
           return (
             <UploadView
-              label="video_link"
-              type="Video Link"
-              id={value?.id}
+              name="video_link"
+              label="Video Link"
+              update={async (document, url) =>
+                axios.put(getUpdateUrl(value?.id), {
+                  student_id: studentId,
+                  [document]: url,
+                })
+              }
+              isVideo
               docLink={value?.video_link}
-              studentId={studentId}
-              change={change}
+              change={(newVal) => updateValue({ ...value, ...newVal })}
             />
           );
         }, []),

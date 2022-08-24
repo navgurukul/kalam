@@ -57,9 +57,6 @@ const ProgressMadeForPartner = React.lazy(() =>
   import("../components/partner/progressMade")
 );
 
-const UserMoblieNumber = React.lazy(() =>
-  import("../components/contact/UserMoblieNumber")
-);
 const UpdateMobileNumber = React.lazy(() =>
   import("../components/contact/UpdateMobileNumber")
 );
@@ -338,16 +335,6 @@ const AppRouter = () => {
                 <React.Suspense fallback={<Loader container />}>
                   <RequireAuth privateRoute>
                     <OutreachDetails />
-                  </RequireAuth>
-                </React.Suspense>
-              }
-            />
-            <Route
-              path="/user/mobile/number"
-              element={
-                <React.Suspense fallback={<Loader container />}>
-                  <RequireAuth>
-                    <UserMoblieNumber />
                   </RequireAuth>
                 </React.Suspense>
               }

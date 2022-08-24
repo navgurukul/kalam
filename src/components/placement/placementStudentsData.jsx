@@ -1,6 +1,15 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect } from "react";
-import { Select, MenuItem, Chip, Box } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  Chip,
+  Box,
+  Tooltip,
+  IconButton,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/AddCircle";
+import ChangeHistoryIcon from "@mui/icons-material/ChangeHistory";
 // import Select from "react-select";
 import axios from "axios";
 
@@ -12,6 +21,8 @@ import MainLayout from "../muiTables/MainLayout";
 import EditText from "./EditText";
 import CustomDatePicker from "./CustomDatePicker";
 import UploadView from "./UploadView";
+import PlacementTransitions from "./PlacementTransitions";
+import AddPlacementsEntry from "./AddPlacementsEntry";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -46,9 +57,14 @@ const baseUrl = import.meta.env.VITE_API_URL;
 
 const PlacementStudentsData = () => {
   const { enqueueSnackbar } = useSnackbar();
-
   const [studentData, setStudentData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const [selectedStudent, setSelectedStudent] = React.useState({
+    studentId: null,
+    studentName: null,
+  });
+
+  const getUpdateUrl = (id) => `${baseUrl}students/jobDetails/${id}`;
 
   const getJobDetails = async () => {
     try {
@@ -59,9 +75,9 @@ const PlacementStudentsData = () => {
     }
   };
 
-  const changeJobType = (val, studentId, change) => {
+  const changeJobType = (val, id, studentId, change) => {
     axios
-      .put(`${baseUrl}students/jobDetails`, {
+      .put(`${baseUrl}students/jobDetails/${id}`, {
         student_id: studentId,
         job_type: val,
       })
@@ -81,10 +97,58 @@ const PlacementStudentsData = () => {
   const columns = [
     {
       name: "student_id",
+      label: "Actions",
       options: {
-        display: false,
-        viewColumns: false,
+        display: true,
+        viewColumns: true,
         filter: false,
+        sort: false,
+        customBodyRender: React.useCallback(
+          (value, { rowData, rowIndex }) => (
+            <>
+              {/* <AddPlacementsEntry studentId={value} studentName={rowData[1]} />
+               */}
+              <Tooltip title="Add New Entry" placement="top">
+                <IconButton
+                  onClick={() => {
+                    setSelectedStudent({
+                      action: "addNewEntry",
+                      studentId: value,
+                      studentName: rowData[1],
+                      rowIndex,
+                    });
+                  }}
+                >
+                  <AddIcon fontSize="medium" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="View Transitions" placement="top">
+                <IconButton
+                  color="primary"
+                  onClick={() => {
+                    // console.log(studentData[rowIndex]);
+                    setSelectedStudent({
+                      action: "viewTransition",
+                      studentId: value,
+                      studentName: rowData[1],
+                      transitions:
+                        studentData[rowIndex].student_job_details_all,
+                    });
+                  }}
+                >
+                  <ChangeHistoryIcon
+                    sx={{
+                      transitionIcon: {
+                        transform: "rotate(-180deg)",
+                      },
+                    }}
+                  />
+                </IconButton>
+              </Tooltip>
+            </>
+          ),
+          [studentData]
+        ),
       },
     },
     {
@@ -156,18 +220,30 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details",
       label: "Resume",
+      key: "resume",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: React.useCallback((value, rowMeta, change) => {
+        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const studentId = rowMeta.rowData[0];
+          if (Object.keys(value).length === 0 || value.id === undefined)
+            return (
+              <div>
+                Press <AddIcon fontSize="8" /> to Add New Entry
+              </div>
+            );
           return (
             <UploadView
-              label="resume"
-              type="Resume"
+              name="resume"
+              label="Resume"
+              update={async (document, url) =>
+                axios.put(getUpdateUrl(value?.id), {
+                  student_id: studentId,
+                  [document]: url,
+                })
+              }
               docLink={value?.resume}
-              studentId={studentId}
-              change={change}
+              change={(newVal) => updateValue({ ...value, ...newVal })}
             />
           );
         }, []),
@@ -176,18 +252,30 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details",
       label: "Photo Link",
+      key: "photo_link",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: React.useCallback((value, rowMeta, change) => {
+        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const studentId = rowMeta.rowData[0];
+          if (Object.keys(value).length === 0 || value.id === undefined)
+            return (
+              <div>
+                Press <AddIcon fontSize="8" /> to Add New Entry
+              </div>
+            );
           return (
             <UploadView
-              label="photo_link"
-              type="Photo Link"
+              name="photo_link"
+              label="Photo Link"
+              update={async (document, url) =>
+                axios.put(getUpdateUrl(value?.id), {
+                  student_id: studentId,
+                  [document]: url,
+                })
+              }
               docLink={value?.photo_link}
-              studentId={studentId}
-              change={change}
+              change={(newVal) => updateValue({ ...value, ...newVal })}
             />
           );
         }, []),
@@ -196,18 +284,31 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details",
       label: "Video Link",
+      key: "video_link",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: React.useCallback((value, rowMeta, change) => {
+        customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const studentId = rowMeta.rowData[0];
+          if (Object.keys(value).length === 0 || value.id === undefined)
+            return (
+              <div>
+                Press <AddIcon fontSize="8" /> to Add New Entry
+              </div>
+            );
           return (
             <UploadView
-              label="video_link"
-              type="Video Link"
+              name="video_link"
+              label="Video Link"
+              update={async (document, url) =>
+                axios.put(getUpdateUrl(value?.id), {
+                  student_id: studentId,
+                  [document]: url,
+                })
+              }
+              isVideo
               docLink={value?.video_link}
-              studentId={studentId}
-              change={change}
+              change={(newVal) => updateValue({ ...value, ...newVal })}
             />
           );
         }, []),
@@ -276,6 +377,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details", // Select Input options male,female
       label: "Date of Offer Letter",
+      key: "offer_letter_date",
       options: {
         filter: false,
         sort: false,
@@ -285,9 +387,17 @@ const PlacementStudentsData = () => {
             ? dayjs(value.offer_letter_date)
             : null;
 
+          if (Object.keys(value).length === 0 || value.id === undefined)
+            return (
+              <div>
+                Press <AddIcon fontSize="8" /> to Add New Entry
+              </div>
+            );
+
           return (
             <CustomDatePicker
               offerLetterDate={offerLetterDate}
+              id={value?.id}
               studentId={studentId}
               change={change}
             />
@@ -298,17 +408,25 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details", //Textfield
       label: "Job Designation",
+      key: "job_designation",
       options: {
         filter: false,
         sort: false,
         customBodyRender: React.useCallback((value, rowMeta, updateValue) => {
           const jobDesignation = value?.job_designation || "Click to Add";
           const studentId = rowMeta.rowData[0];
+          if (Object.keys(value).length === 0 || value.id === undefined)
+            return (
+              <div>
+                Press <AddIcon fontSize="8" /> to Add New Entry
+              </div>
+            );
           return (
             <EditText
               name="job_designation"
               label={rowMeta.columnData.label}
               type="text"
+              id={value?.id}
               value={jobDesignation}
               change={(val) => updateValue(val)}
               studentId={studentId}
@@ -320,6 +438,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details", // Select input
       label: "Job Location",
+      key: "job_location",
       options: {
         filter: false,
         sort: false,
@@ -327,11 +446,18 @@ const PlacementStudentsData = () => {
           const studentId = rowMeta.rowData[0]; //set id
           const jobLocation = value?.job_location || "Click to Add";
           // const { label } = rowMeta.columnData;
+          if (Object.keys(value).length === 0 || value.id === undefined)
+            return (
+              <div>
+                Press <AddIcon fontSize="8" /> to Add New Entry
+              </div>
+            );
           return (
             <EditText
               name="job_location"
               label={rowMeta.columnData.label}
               type="text"
+              id={value?.id}
               value={jobLocation}
               change={(val) => updateValue(val)}
               studentId={studentId}
@@ -343,6 +469,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details", // Select Input options offline, WFH
       label: "Job Type",
+      key: "job_type",
       options: {
         filter: false,
         sort: false,
@@ -376,6 +503,13 @@ const PlacementStudentsData = () => {
             },
           ];
 
+          if (Object.keys(value).length === 0 || value.id === undefined)
+            return (
+              <div>
+                Press <AddIcon fontSize="8" /> to Add New Entry
+              </div>
+            );
+
           return (
             <Select
               variant="outlined"
@@ -383,7 +517,7 @@ const PlacementStudentsData = () => {
               value={jobValue.value}
               // options={modes}
               onChange={(e) =>
-                changeJobType(e.target.value, studentId, updateValue)
+                changeJobType(e.target.value, value?.id, studentId, updateValue)
               }
               // styles={{
               //   menuList: (base) => ({
@@ -411,6 +545,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details", // Textfield no. input
       label: "Salary",
+      key: "salary",
       options: {
         filter: false,
         sort: false,
@@ -421,16 +556,14 @@ const PlacementStudentsData = () => {
           const salaryPerAnnum =
             salaryPerMonth === "N/A" ? "N/A" : salaryPerMonth * 12;
 
-          return salaryPerAnnum === "N/A" ? (
-            <EditText
-              name="salary"
-              label={rowMeta.columnData.label}
-              type="text"
-              change={(val) => updateValue(val)}
-              studentId={studentId}
-              // getJobDetails={getJobDetails}
-            />
-          ) : (
+          if (Object.keys(value).length === 0 || value.id === undefined)
+            return (
+              <div>
+                Press <AddIcon fontSize="8" /> to Add New Entry
+              </div>
+            );
+
+          return (
             <div
               style={{
                 display: "flex",
@@ -438,21 +571,42 @@ const PlacementStudentsData = () => {
               }}
             >
               <div style={{ display: "flex", flexDirection: "row" }}>
-                ₹
+                {salaryPerAnnum === "N/A" ? "" : "₹"}
                 <EditText
                   name="salary"
                   label={rowMeta.columnData.label}
                   type="text"
-                  value={`${salaryPerMonth}`}
+                  id={value?.id}
+                  value={
+                    salaryPerAnnum === "N/A"
+                      ? "Click to Add"
+                      : `${salaryPerMonth}`
+                  }
                   change={(val) => updateValue(val)}
                   studentId={studentId}
                   // getJobDetails={getJobDetails}
                 />
-                {/* &nbsp; */}/month
+                {salaryPerAnnum === "N/A" ? "" : "/month"}
               </div>
-              <div>₹{`${salaryPerAnnum}`}/annum</div>
+              {salaryPerAnnum === "N/A" ? null : (
+                <div>₹{`${salaryPerAnnum}`}/annum</div>
+              )}
             </div>
           );
+
+          // return salaryPerAnnum === "N/A" ? (
+          //   <EditText
+          //     name="salary"
+          //     label={rowMeta.columnData.label}
+          //     type="text"
+          //     id={value?.id}
+          //     change={(val) => updateValue(val)}
+          //     studentId={studentId}
+          //     // getJobDetails={getJobDetails}
+          //   />
+          // ) : (
+
+          // );
         }, []),
         // customBodyRender: (value) => `${value} `,
       },
@@ -460,6 +614,7 @@ const PlacementStudentsData = () => {
     {
       name: "student_job_details", //Textfield
       label: "Employer",
+      key: "employer",
       options: {
         filter: false,
         sort: false,
@@ -467,11 +622,19 @@ const PlacementStudentsData = () => {
           const employer = value?.employer || "Click to Add";
           const studentId = rowMeta.rowData[0]; //set id
 
+          if (Object.keys(value).length === 0 || value.id === undefined)
+            return (
+              <div>
+                Press <AddIcon fontSize="8" /> to Add New Entry
+              </div>
+            );
+
           return (
             <EditText
               name="employer"
               label={rowMeta.columnData.label}
               type="text"
+              id={value?.id}
               value={employer}
               change={(val) => updateValue(val)}
               studentId={studentId}
@@ -491,16 +654,84 @@ const PlacementStudentsData = () => {
     })();
   }, []);
 
+  const updateJobData = (index, jobData) => {
+    const newStudentData = [...studentData];
+    const newStudent = newStudentData[index];
+    newStudent.student_job_details_all.push(jobData);
+    newStudent.student_job_details = jobData;
+    newStudentData[index] = newStudent;
+    setStudentData(newStudentData);
+  };
+
+  const onDownload = (buildHead, buildBody, downloadColumns, data) => {
+    const newData = data.map(({ data: student }) => ({
+      data: student.map((col, inx) => {
+        switch (columns[inx].name) {
+          case "partner":
+            return col?.name || "";
+          case "campus":
+            return col[0]?.campus || "";
+          case "joinDate":
+            return dayjs(col).format("D MMM YYYY");
+          case "student_job_details":
+            return columns[inx].label === "Date of Offer Letter"
+              ? dayjs(col[columns[inx].key]).format("D MMM YYYY")
+              : col[columns[inx].key];
+          case "gender":
+            return col === 1 ? "Female" : col === 2 ? "Male" : "Transgender";
+          case "studentDonor":
+            return `${
+              donor
+                ?.filter((donorEl) => col?.donor_id?.includes(`${donorEl.id}`))
+                .map((donorEl) => donorEl.name)
+                .join(",") || ""
+            }`;
+          case "qualification":
+            return qualificationKeys[col];
+          case "contacts":
+            return `${col?.map((contact) => contact.mobile).join(",") || ""}`;
+          default:
+            return col;
+        }
+      }),
+    }));
+
+    return `\uFEFF${buildHead(downloadColumns)}${buildBody(newData)}`;
+  };
+
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
-      (
       <MainLayout
         title="Placement Data"
         data={studentData}
         columns={columns}
+        onDownload={onDownload}
         showLoader={loading}
       />
-      )
+      <AddPlacementsEntry
+        closeDialog={() =>
+          setSelectedStudent({
+            action: null,
+            studentId: null,
+            studentName: null,
+          })
+        }
+        updateJobEntry={(jobData) =>
+          updateJobData(selectedStudent.rowIndex, jobData)
+        }
+        dialogOpen={selectedStudent.action === "addNewEntry"}
+        studentId={selectedStudent.studentId}
+        studentName={selectedStudent.studentName}
+      />
+      <PlacementTransitions
+        studentId={selectedStudent.studentId}
+        studentTransitions={selectedStudent.transitions}
+        studentName={selectedStudent.studentName}
+        modalOpen={selectedStudent.action === "viewTransition"}
+        closeModal={() =>
+          setSelectedStudent({ studentId: null, studentName: null })
+        }
+      />
     </Box>
   );
 };

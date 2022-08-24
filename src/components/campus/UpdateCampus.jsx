@@ -7,35 +7,24 @@ import { useSnackbar } from "notistack";
 const baseURL = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
-const UpdateDonorOrCampus = ({ change, rowMetatable, allOptions, value }) => {
+const UpdateCampus = ({ change, studentId, allOptions, value }) => {
   const { enqueueSnackbar } = useSnackbar();
+
   const handleChange = (event) => {
-    // eslint-disable-next-line camelcase
-    const student_id = rowMetatable.rowData[0];
-    const field = rowMetatable.columnData.name;
-    const { value: evValue } = event;
-    const data = {};
-    data[field] = evValue;
     axios
       // eslint-disable-next-line camelcase
-      .put(`${baseURL}students/${student_id}`, data)
+      .put(`${baseURL}students/${studentId}`, { campus: event.value })
       .then(() => {
-        enqueueSnackbar(
-          `${field[0].toUpperCase() + field.slice(1)} successfully updated !`,
-          {
-            variant: "success",
-          }
-        );
-        change(value);
+        enqueueSnackbar(`Campus successfully updated !`, {
+          variant: "success",
+        });
+        change(event.value);
       })
-      .catch(() => {
-        enqueueSnackbar(
-          `Error in updating ${field[0].toUpperCase() + field.slice(1)}`,
-          {
-            variant: "unsuccess!",
-          }
-        );
-      });
+      .catch(() =>
+        enqueueSnackbar(`Error in updating Campus`, {
+          variant: "error",
+        })
+      );
   };
 
   const selectedValue = { value, label: value };
@@ -56,4 +45,4 @@ const UpdateDonorOrCampus = ({ change, rowMetatable, allOptions, value }) => {
   );
 };
 
-export default UpdateDonorOrCampus;
+export default UpdateCampus;

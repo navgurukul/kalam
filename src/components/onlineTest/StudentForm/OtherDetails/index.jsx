@@ -12,6 +12,7 @@ import {
   FormControl,
   Select,
 } from "@mui/material";
+import axios from "axios";
 import { Controller } from "react-hook-form";
 import { states, customPartner } from "../../../../utils/constants";
 
@@ -257,20 +258,19 @@ function OtherDetails(props) {
       setDistricts(newDistricts);
       return;
     }
-    fetch(
-      `https://api.countrystatecity.in/v1/countries/IN/states/${_state}/cities`, //API URL
-      {
-        headers: {
-          accept: "application/json",
-          "X-CSCAPI-KEY":
-            "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
-        },
-      }
-    ).then((response) => {
-      response.json().then((data) => {
+    axios
+      .get(
+        `https://api.countrystatecity.in/v1/countries/IN/states/${_state}/cities`, //API URL
+        {
+          headers: {
+            "X-CSCAPI-KEY":
+              "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
+          },
+        }
+      )
+      .then(({ data }) => {
         setDistricts(data);
       });
-    });
   }
 
   const addrState = watch("state");

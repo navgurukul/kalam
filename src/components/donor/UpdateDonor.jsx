@@ -8,62 +8,44 @@ import { Button } from "@mui/material";
 const baseURL = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
-const UpdateDonor = (props) => {
-  const { value } = props;
+const UpdateDonor = ({ value, studentId, change, allOptions }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [state, setState] = React.useState({
-    data: null,
-    defaultData: value,
-  });
+  const [selectedDonors, setSelectedDonors] = React.useState(value);
 
-  const getDonorsId = (data) => {
-    const result = data.map((item) => item.value);
-    return result;
-  };
-
-  const updateDonor = () => {
-    const { rowMetatable } = props;
-    const data = getDonorsId(state.data);
-    // eslint-disable-next-line camelcase
-    const student_id = rowMetatable.rowData[0];
+  const updateDonor = () =>
     axios
-      // eslint-disable-next-line camelcase
-      .put(`${baseURL}students/${student_id}`, { donor: data })
+      .put(`${baseURL}students/${studentId}`, {
+        donor: selectedDonors.map((item) => item.id),
+      })
       .then((res) => {
+        change(selectedDonors ?? []);
         enqueueSnackbar(res.data.data, {
           variant: "success",
         });
       })
       .catch(() => {
-        enqueueSnackbar(`Error in updating donor`, {
-          variant: "unsuccess!",
+        enqueueSnackbar(`Error in Updating Donor`, {
+          variant: "error",
         });
       });
-  };
 
-  const handleChange = (event) => {
-    const { change } = props;
-    let rename = [];
-    if (event) {
-      rename = event.map((item) => ({ id: item.value, donor: item.label }));
-    }
-    if (value && event === null) {
-      setState({ ...state, data: [] });
-    } else {
-      setState({ ...state, data: event });
-    }
-    change(rename);
-  };
+  const handleChange = (event) =>
+    setSelectedDonors(
+      value && event === null
+        ? []
+        : event.map((item) => ({ id: item.value, donor: item.label }))
+    );
 
-  const { allOptions } = props;
   return (
-    <div>
+    <>
       <Select
         className="filterSelectStage"
         components={{ animatedComponents }}
         isMulti
         value={
-          value ? value.map((x) => ({ value: x.id, label: x.donor })) : value
+          selectedDonors
+            ? selectedDonors.map((x) => ({ value: x.id, label: x.donor }))
+            : selectedDonors
         }
         onChange={handleChange}
         options={allOptions.map((x) => ({ value: x.id, label: x.name }))}
@@ -71,12 +53,12 @@ const UpdateDonor = (props) => {
       />
       <Button
         color="primary"
-        disabled={JSON.stringify(state.defaultData) === JSON.stringify(value)}
+        disabled={JSON.stringify(selectedDonors) === JSON.stringify(value)}
         onClick={updateDonor}
       >
         Update
       </Button>
-    </div>
+    </>
   );
 };
 

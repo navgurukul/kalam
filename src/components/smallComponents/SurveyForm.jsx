@@ -19,11 +19,11 @@ const formColor = [
     link: "https://docs.google.com/forms/d/e/1FAIpQLSetOkINBkhw4DKDAW81HajHvSr4vAGKa6epcFKN-4CmvUhsyA/viewform?usp=pp_url&entry.1823157052=",
   },
 ];
-const SurveyForm = (props) => {
+
+const SurveyForm = ({ data }) => {
   const [url, setUrl] = React.useState("");
 
   const check = (a) => {
-    const { data } = props;
     const hashValue = hash(data);
     setUrl(`${a}${hashValue}`);
   };

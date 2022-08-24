@@ -58,22 +58,13 @@ const useStyles = makeStyles((theme) => ({
 const ProgressMadeForPartner = () => {
   const { partnerId } = useParams();
   const classes = useStyles();
-  const [state, setState] = React.useState({
-    data: {},
-    partnerName: "",
-    dataView: 2,
-    "Selected for Navgurukul One-year Fellowship": "",
-    "Need Action": "",
-    "Need Your Help": "",
-    "Failed Students": "",
-  });
+  const [dataView, setDataView] = React.useState(2);
+  const [partnerName, setPartnerName] = React.useState("");
+  const [cardData, setCardData] = React.useState({});
 
-  const { partnerName, data } = state;
-
-  const whatsAppMessage = () => {
-    Object.entries(state.data).forEach(([key, detailsData]) => {
-      let text = "";
-      text = `${text}*${key}*\n\n`;
+  const whatsAppMessage = (data) => {
+    Object.entries(data).forEach(([key, detailsData]) => {
+      let text = `*${key}*\n\n`;
       Object.entries(detailsData).forEach(([key1, studentDetails]) => {
         if (studentDetails.length > 0) {
           text = `${text}\n_${allStages[key1]} (${studentDetails.length})_\n`;
@@ -83,10 +74,11 @@ const ProgressMadeForPartner = () => {
         }
       });
       text = `${text}\nFor more information visit\nhttp://admissions.navgurukul.org/partner/${partnerId}`;
-      setState({
-        ...state,
-        [key]: text,
-      });
+
+      setCardData((prevData) => ({
+        ...prevData,
+        [key]: { detailsData, message: text },
+      }));
     });
   };
 
@@ -100,44 +92,20 @@ const ProgressMadeForPartner = () => {
           isPartnerGroup === "partnerGroup" ? "/name" : ""
         }`
       )
-      .then((res) => {
-        setState((prevState) => ({
-          ...prevState,
-          partnerName: res.data.data[0]?.name || res.data.data.name,
-        }));
-      });
+      .then((res) =>
+        setPartnerName(res.data.data[0]?.name || res.data.data.name)
+      );
 
     axios
       .get(`${baseURL}${isPartnerGroup}/progress_made/${partnerId}`)
-      .then((res) => {
-        setState((prevState) => ({
-          ...prevState,
-          data: res.data.data,
-        }));
-        whatsAppMessage();
-      });
+      .then((res) => whatsAppMessage(res.data.data));
   }, []);
 
-  const progressMade = () => {
-    setState({
-      ...state,
-      dataView: 1,
-    });
-  };
+  const progressMade = () => setDataView(1);
 
-  const tabularData = () => {
-    setState({
-      ...state,
-      dataView: 0,
-    });
-  };
+  const tabularData = () => setDataView(0);
 
-  const graphData = () => {
-    setState({
-      ...state,
-      dataView: 2,
-    });
-  };
+  const graphData = () => setDataView(2);
 
   const getView = (viewNo) => {
     switch (viewNo) {
@@ -159,11 +127,18 @@ const ProgressMadeForPartner = () => {
             alignItems="flex-start"
             style={{ marginTop: 10, justifyContent: "center" }}
           >
-            {Object.entries(data).map((entry, index) => (
-              <Grid item xs={12} sm={6} md={3} key={entry.key}>
-                <ProgressCard data={entry} index={index} state={state} />
-              </Grid>
-            ))}
+            {Object.entries(cardData).map(
+              ([key, { detailsData, message }], index) => (
+                <Grid item xs={12} sm={6} md={3} key={key}>
+                  <ProgressCard
+                    title={key}
+                    detailsData={detailsData}
+                    index={index}
+                    message={message}
+                  />
+                </Grid>
+              )
+            )}
           </Grid>
         );
       case 2:
@@ -193,9 +168,9 @@ const ProgressMadeForPartner = () => {
           tabularData={{ label: "Tabular Data", action: tabularData }}
           showGraphData={{ label: "Graph Data", action: graphData }}
           selected={
-            state.dataView === 0
+            dataView === 0
               ? "tabularData"
-              : state.dataView === 1
+              : dataView === 1
               ? "progressMade"
               : "showGraphData"
           }
@@ -212,7 +187,7 @@ const ProgressMadeForPartner = () => {
           </ButtonGroup>
         </Grid> */}
         {/* <br /> */}
-        {getView(state.dataView)}
+        {getView(dataView)}
       </Container>
     </>
   );

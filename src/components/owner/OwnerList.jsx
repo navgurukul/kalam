@@ -7,6 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, IconButton } from "@mui/material";
 import theme from "../../theme";
 import {
+  fetchUsers as fetchUsersAction,
   fetchOwners as fetchOwnersAction,
   setOwnerData,
   deleteOwner as deleteOwnerAction,
@@ -80,7 +81,7 @@ const OwnerList = () => {
                 ownerId={value}
                 isEdit
                 disabled={!canUpdate}
-                getUpdatedData={getUpdatedData}
+                updateOwners={updateOwners}
               />
 
               <IconButton
@@ -206,23 +207,21 @@ const OwnerList = () => {
   ];
 
   useEffect(() => {
-    const fetchData = async () => dispatch(fetchOwnersAction());
-    fetchData();
+    dispatch(fetchOwnersAction());
+    dispatch(fetchUsersAction());
   }, []);
 
-  const getUpdatedData = (data, isEdit) => {
-    let newData = [...ownerData];
+  const updateOwners = (data, isEdit) => {
     if (isEdit) {
-      newData = newData.map((x) => {
-        const nUser = { ...x };
-        if (x.user.mail_id === data.user.mail_id) {
-          nUser.available = data.available;
-          nUser.type = data.type;
-          nUser.max_limit = data.max_limit;
-          nUser.gender = data.gender;
-        }
-        return nUser;
-      });
+      const newData = [...ownerData];
+      const updatedOwnerInd = newData.findIndex((x) => x.id === data.id);
+      const updatedOwner = { ...newData[updatedOwnerInd] };
+
+      updatedOwner.available = data.available;
+      updatedOwner.type = data.type;
+      updatedOwner.max_limit = data.max_limit;
+      updatedOwner.gender = data.gender;
+      newData[updatedOwnerInd] = updatedOwner;
       // setState({
       //   ...state,
       //   data: newData,
@@ -233,7 +232,7 @@ const OwnerList = () => {
       //   ...state,
       //   data: [data, ...state.data],
       // });
-      dispatch(setOwnerData([data, ownerData]));
+      dispatch(setOwnerData([data, ...ownerData]));
     }
   };
 
@@ -262,7 +261,7 @@ const OwnerList = () => {
               disabled={
                 !privileges.some((priv) => priv.privilege === "AddOwner")
               }
-              getUpdatedData={getUpdatedData}
+              updateOwners={updateOwners}
               ownerData={ownerData}
             />
             <Button

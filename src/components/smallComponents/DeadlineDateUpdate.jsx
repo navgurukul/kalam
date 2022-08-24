@@ -3,7 +3,7 @@ import { DatePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import Axios from "axios";
 import { useSnackbar } from "notistack";
-import { TextField } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 
 const baseURL = import.meta.env.VITE_API_URL;
 function DeadLineDateUpdate(props) {
@@ -11,7 +11,7 @@ function DeadLineDateUpdate(props) {
   const [value, setValue] = useState(pValue);
   const { rowData } = props;
   const [dateToSend, setDateToSend] = React.useState(value);
-  const snackBar = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   if (value) {
     return (
       <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -30,7 +30,7 @@ function DeadLineDateUpdate(props) {
               }
             ).then((res) => {
               if (res.data) {
-                snackBar.enqueueSnackbar("Deadline Updated", {
+                enqueueSnackbar("Deadline Updated", {
                   variant: "success",
                 });
                 setDateToSend(date);
@@ -47,8 +47,8 @@ function DeadLineDateUpdate(props) {
   }
   if (rowData.rowData[4]) {
     return (
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-      <p
+      <Button
+        variant="text"
         onKeyUp={(e) => {
           if (e.key === "Enter") setValue(Date.now());
         }}
@@ -57,7 +57,7 @@ function DeadLineDateUpdate(props) {
         }}
       >
         Update Date
-      </p>
+      </Button>
     );
   }
   return null;

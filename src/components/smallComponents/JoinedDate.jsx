@@ -6,48 +6,40 @@ import { useSnackbar } from "notistack";
 import axios from "axios";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
-import { TextField } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 
 dayjs.extend(customParseFormat);
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-const JoinedDate = (props) => {
-  const { value } = props;
-  const snackbar = useSnackbar();
-  const [state, setState] = React.useState({
-    currentDate: value,
-    isShowDatePicker: false,
-  });
+const JoinedDate = ({ value, transitionId }) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const [showDatePicker, setShowDatePicker] = React.useState(false);
+  const [currentDate, setCurrentDate] = React.useState(value);
+
+  const toggleShowDatePicker = () => setShowDatePicker((prev) => !prev);
 
   const changeDate = (date) => {
-    const { transitionId } = props;
     const formateddate = dayjs(date).format("YYYY-MM-DD");
     axios
       .put(`${baseURL}students/transition/${transitionId}`, {
         when: formateddate,
       })
       .then(() => {
-        snackbar.enqueueSnackbar(`Joining successfully updated !`, {
+        enqueueSnackbar(`Joining successfully updated !`, {
           variant: "success",
         });
       })
       .catch(() => {
-        snackbar.enqueueSnackbar(`Something went wrong`, {
-          variant: "unsuccess!",
+        enqueueSnackbar(`Something went wrong`, {
+          variant: "error",
         });
       });
-    setState({
-      currentDate: date,
-      isShowDatePicker: !state.isShowDatePicker,
-    });
+    setCurrentDate(date);
+    toggleShowDatePicker();
   };
 
-  const showDatePicker = () =>
-    setState({ ...state, isShowDatePicker: !state.isShowDatePicker });
-
-  const { currentDate, isShowDatePicker } = state;
-  if (isShowDatePicker) {
+  if (showDatePicker) {
     return (
       <LocalizationProvider dateAdapter={DateFnsUtils}>
         <DatePicker
@@ -67,12 +59,14 @@ const JoinedDate = (props) => {
     );
   }
   return (
-    <div>
+    <>
       <p style={{ marginRight: 10 }}>
         {dayjs(currentDate).format("D MMM YYYY")}
       </p>
-      <EditIcon onClick={showDatePicker} style={{ cursor: "pointer" }} />
-    </div>
+      <IconButton onClick={showDatePicker}>
+        <EditIcon />
+      </IconButton>
+    </>
   );
 };
 

@@ -431,7 +431,7 @@ const AdmissionsDash = (props) => {
   if (fetchPendingInterviewDetails) {
     return (
       <ServerSidePagination
-        columns={StudentService.columns[dataType]}
+        defaultColumns={StudentService.columns[dataType]}
         data={sData || studentData}
         showLoader={loading}
         params={{
@@ -457,7 +457,7 @@ const AdmissionsDash = (props) => {
         {fetchPendingInterviewDetails ? null : options}
         <div className={classes.clear} />
         <ServerSidePagination
-          columns={StudentService.columns[dataType]}
+          defaultColumns={StudentService.columns[dataType]}
           data={sData || studentData}
           showLoader={loading}
           // fun={fetchStudents}

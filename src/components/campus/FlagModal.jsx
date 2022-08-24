@@ -1,7 +1,8 @@
 import React from "react";
 import { makeStyles } from "@mui/styles";
 import TextField from "@mui/material/TextField";
-import { Dialog, Box } from "@mui/material";
+import { Dialog, IconButton, Typography } from "@mui/material";
+import { Box } from "@mui/system";
 import FlagIcon from "@mui/icons-material/Flag";
 
 const useStyles = makeStyles((theme) => ({
@@ -21,94 +22,58 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const RedFlag = (props) => {
+const RedFlag = ({ comment }) => {
   const classes = useStyles();
-  const { comment } = props;
-  const [state, setState] = React.useState({
-    redflag: "",
-    dialogOpen: false,
-    flagComment: comment,
-    flagColorToggle: comment,
-  });
 
-  const handleChange = () => (event) => {
-    if (event.target.value.length === 0) {
-      setState({ ...state, flagComment: "" });
-    } else {
-      setState({ ...state, flagComment: event.target.value });
-    }
-  };
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [flagComment, setFlagComment] = React.useState(comment);
 
-  const handleClose = () => {
-    setState({
-      ...state,
-      dialogOpen: false,
-    });
-  };
+  const handleChange = (event) =>
+    setFlagComment(event.target.value.length === 0 ? event.target.value : "");
 
-  const handleOpen = () => {
-    setState({
-      ...state,
-      dialogOpen: true,
-    });
+  const toggleDialog = () => {
+    setDialogOpen((prev) => !prev);
   };
 
   return (
     <>
-      <Box onClick={handleOpen}>
-        {state.flagColorToggle ? (
-          <FlagIcon
-            style={{
-              cursor: "pointer",
-              color: "red",
-            }}
-          />
-        ) : (
-          <FlagIcon
-            style={{
-              cursor: "pointer",
-              color: "green",
-            }}
-          />
-        )}
-      </Box>
-      <Dialog open={state.dialogOpen} onClose={handleClose}>
-        <form className={classes.container}>
-          <h1
-            style={{
-              color: "#f05f40",
-              textAlign: "center",
-              marginTop: "0px",
-              position: "relative",
-              bottom: "20px",
+      <IconButton onClick={toggleDialog}>
+        <FlagIcon
+          sx={{
+            color: `${comment ? "red" : "green"}`,
+          }}
+        />
+      </IconButton>
+      <Dialog open={dialogOpen} onClose={toggleDialog}>
+        <Box sx={{ py: "0.6rem", px: "0.2rem" }}>
+          <Typography
+            variant="h4"
+            fontWeight="medium"
+            color="primary"
+            textAlign="center"
+            sx={{
+              my: "0.2rem",
             }}
           >
             Raised Flag
-          </h1>
+          </Typography>
           <TextField
-            style={{
-              position: "relative",
-              bottom: "20px",
-            }}
+            focused
             id="outlined-multiline-static"
-            label="raised flag"
-            placeholder="no red flag raised"
+            label="Raised Flag Comments"
+            placeholder="No Red Flag Raised"
             multiline
-            readOnly="true"
+            readOnly
             rows="4"
             name="redFlag"
-            defaultValue={
-              state.flagComment === null
-                ? "no red flag raised"
-                : state.flagComment
-            }
-            onChange={handleChange()}
+            defaultValue={flagComment ?? "No Red Flag Raised"}
+            onChange={handleChange}
             className={classes.textField}
             margin="normal"
             variant="outlined"
             inputProps={{ readOnly: true }}
           />
-        </form>
+        </Box>
       </Dialog>
     </>
   );

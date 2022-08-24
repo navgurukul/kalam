@@ -39,15 +39,13 @@ const ModalStages = () => {
   const classes = useStyles();
   const [modalOpen, setModalOpen] = React.useState(false);
 
-  const handleClose = () => setModalOpen(false);
-
-  const handleOpen = () => setModalOpen(true);
+  const toggleModal = () => setModalOpen((prev) => !prev);
 
   const modalStyle = getModalStyle();
 
   return (
     <div>
-      <Button color="primary" align="right" onClick={handleOpen}>
+      <Button color="primary" align="right" onClick={toggleModal}>
         <HelpIcon color="primary" />
         &nbsp;&nbsp;
         <Typography
@@ -58,7 +56,7 @@ const ModalStages = () => {
           Instructions
         </Typography>
       </Button>
-      <Modal open={modalOpen} onClose={handleClose}>
+      <Modal open={modalOpen} onClose={toggleModal}>
         <div style={modalStyle} className={classes.paper}>
           <Typography variant="h5" id="modal-title">
             NavGurukul admission process has 4 main stages. <br />

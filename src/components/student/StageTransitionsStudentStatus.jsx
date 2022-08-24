@@ -9,7 +9,7 @@ import DetailsIcon from "@mui/icons-material/Details";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
 import theme from "../../theme";
-import GlobalService from "../../services/GlobalService";
+import { tableIcons } from "../../services/GlobalService";
 
 dayjs.extend(customParseFormat);
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -52,32 +52,31 @@ const useStyles = makeStyles((_theme) => ({
   },
 }));
 
-const StageTransitionsStudentStatus = (props) => {
-  const { allStages } = props;
+const StageTransitionsStudentStatus = ({ rowData, allStages }) => {
   const classes = useStyles();
-  const [state, setState] = React.useState({
-    data: [],
-    modalOpen: false,
-  });
-  const columns = [
-    {
-      label: "Stage",
-      name: "to_stage",
-      options: {
-        customBodyRender: (value) => allStages[value],
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const columns = React.useMemo(
+    () => [
+      {
+        label: "Stage",
+        name: "to_stage",
+        options: {
+          customBodyRender: (value) => allStages[value],
+        },
       },
-    },
-    {
-      label: "When?",
-      name: "created_at",
-      options: {
-        customBodyRender: React.useCallback(
-          (value) => <p>{dayjs(value).format("D MMM YYYY")}</p>,
-          []
-        ),
+      {
+        label: "When?",
+        name: "created_at",
+        options: {
+          customBodyRender: React.useCallback(
+            (value) => <p>{dayjs(value).format("D MMM YYYY")}</p>,
+            []
+          ),
+        },
       },
-    },
-  ];
+    ],
+    []
+  );
 
   const getMuiTheme = () =>
     createTheme({
@@ -92,22 +91,14 @@ const StageTransitionsStudentStatus = (props) => {
     });
 
   const handleClose = () => {
-    setState({
-      ...state,
-      modalOpen: false,
-    });
+    setModalOpen(false);
   };
 
   const handleOpen = () => {
-    setState({
-      ...state,
-      modalOpen: true,
-    });
+    setModalOpen(true);
   };
-
-  const { rowData } = props;
   const modalStyle = getModalStyle();
-  return !state.modalOpen ? (
+  return !modalOpen ? (
     <div>
       <Button color="primary" align="right" onClick={handleOpen}>
         <DetailsIcon color="primary" />
@@ -115,7 +106,7 @@ const StageTransitionsStudentStatus = (props) => {
       </Button>
     </div>
   ) : (
-    <Modal open={state.modalOpen} onClose={handleClose}>
+    <Modal open={modalOpen} onClose={handleClose}>
       <Box style={modalStyle} className={classes.paper}>
         <ThemeProvider theme={getMuiTheme()}>
           <Typography variant="h5" id="modal-title">
@@ -125,7 +116,7 @@ const StageTransitionsStudentStatus = (props) => {
           <MUIDataTable
             columns={columns}
             data={rowData}
-            icons={GlobalService.tableIcons}
+            icons={tableIcons}
             options={{
               headerStyle: {
                 color: theme.palette.primary.main,

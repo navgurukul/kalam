@@ -3,6 +3,7 @@ import { makeStyles } from "@mui/styles";
 import { Container, Paper, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const tutorialSteps = {
@@ -73,15 +74,13 @@ function SorryPage({ redirect }) {
   const [totalMarks, setTotalMarks] = useState("");
   const { lang } = useSelector((state) => state.ui);
   useEffect(() => {
-    fetch(
-      `${baseUrl}/on_assessment/Show_testResult/${
-        location.pathname.split("/")[2]
-      }`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setTotalMarks(data.total_marks);
-      });
+    axios
+      .get(
+        `${baseUrl}/on_assessment/Show_testResult/${
+          location.pathname.split("/")[2]
+        }`
+      )
+      .then(({ data }) => setTotalMarks(data.total_marks));
   }, []);
   //console.log(marks);
   return (

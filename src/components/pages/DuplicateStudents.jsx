@@ -7,7 +7,6 @@ import { useSnackbar } from "notistack";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { changeFetching } from "../../store/slices/uiSlice";
-import SlotBooking from "./SlotBooking";
 import { allStages } from "../../utils/constants";
 import {
   setEnrollmentKey,
@@ -43,18 +42,14 @@ const DuplicateStudents = () => {
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const { lang } = useSelector((state) => state.ui);
-  const [state, setState] = React.useState({
-    partnerId: "",
+  const [partnerId, setPartnerId] = React.useState(null);
+  const [test, setTest] = React.useState({
     data: [],
     pendingInterviewStage: "checking",
-    response: {},
-    slotBooking: false,
-    slotBookingData: {},
   });
 
   const generateTestLink = async (studentId) => {
     try {
-      const partnerId = state.partnerId ? state.partnerId : null;
       const mobile = `0${number}`;
       fetchingStart();
       const dataURL = `${baseUrl}helpline/register_exotel_call`;
@@ -87,9 +82,9 @@ const DuplicateStudents = () => {
       options: {
         filter: false,
         customBodyRender: React.useCallback(
-          (value, rowData) => (
+          (value, rowMeta) => (
             <Button
-              disabled={rowData.rowData[1] === "pendingEnglishInterview"}
+              disabled={rowMeta.rowData[1] === "pendingEnglishInterview"}
               variant="contained"
               color="primary"
               style={{ fontSize: "10px" }}
@@ -106,21 +101,10 @@ const DuplicateStudents = () => {
                 );
                 dispatch(setEnrollmentKey(response.data.key));
                 dispatch(setStudentId(value));
-                navigate(`/test/instructions`, {
-                  // state: {
-                  //   enrollmentKey: response.data.key,
-                  //   studentId: value,
-                  //   number,
-                  //   firstName,
-                  //   middleName,
-                  //   lastName,
-                  //   mobileNumber: number,
-                  // },
-                });
+                navigate(`/test/instructions`);
                 fetchingFinish();
               }}
             >
-              {/* {console.log(value)} */}
               Re-Test
             </Button>
           ),
@@ -142,15 +126,15 @@ const DuplicateStudents = () => {
       options: {
         filter: false,
         customBodyRender: React.useCallback(
-          (_, rowData) => (
+          (_, rowMeta) => (
             <Button
-              disabled={rowData.rowData[1] !== "pendingEnglishInterview"}
+              disabled={rowMeta.rowData[1] !== "pendingEnglishInterview"}
               variant="contained"
               color="primary"
               style={{ fontSize: "10px" }}
               onClick={() => {
                 navigate({
-                  pathname: `/bookSlot/${rowData.rowData[0]}`,
+                  pathname: `/bookSlot/${rowMeta.rowData[0]}`,
                 });
               }}
             >
@@ -166,10 +150,10 @@ const DuplicateStudents = () => {
       label: "Marks",
       options: {
         filter: false,
-        customBodyRender: (rowData, rowMeta) =>
-          rowMeta.rowData[1] === "enrolmentKeyGenerated" && rowData === null
+        customBodyRender: (value, rowMeta) =>
+          rowMeta.rowData[1] === "enrolmentKeyGenerated" && value === null
             ? "Last Test Not Submitted"
-            : rowData,
+            : value,
       },
     },
 
@@ -186,10 +170,10 @@ const DuplicateStudents = () => {
   const message = {
     stageMessage: {
       en: `Your  ${
-        allStages[state.pendingInterviewStage]
+        allStages[test.pendingInterviewStage]
       } is still pending. You’re not required to give the online test now. We will soon complete your admission process.`,
       hi: `आपका  ${
-        allStages[state.pendingInterviewStage]
+        allStages[test.pendingInterviewStage]
       }  अभी भी चल रहा हैं। अभी आपको ऑनलाइन परीक्षा देने की आवश्यकता नहीं है। हम जल्द ही आपकी प्रवेश प्रक्रिया (एडमिशन प्रोसेस) पूरी कर देंगे।`,
     },
     testFailedMessage: {
@@ -214,29 +198,18 @@ const DuplicateStudents = () => {
         const response = data.data.data;
 
         if (response.alreadyGivenTest) {
-          setState({
-            ...state,
-            response,
+          setTest({
+            ...test,
             data: response.data,
             pendingInterviewStage: response.data[0].stage,
           });
-        } else {
-          setState({
-            ...state,
-            response,
-          });
         }
-
-        return response;
       });
   };
   const partnerFetch = async (slug) => {
     try {
       const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
-      setState({
-        ...state,
-        partnerId: response.data.data.id,
-      });
+      setPartnerId(response.data.data.id);
     } catch (e) {
       navigate("/notFound");
     }
@@ -250,66 +223,52 @@ const DuplicateStudents = () => {
     isDuplicate();
   }, []);
 
-  const { data } = state;
+  const { data } = test;
   const selectedLang = lang;
   let firstName;
   let middleName = "";
   let lastName;
   // const splitedName = name.match(/[A-Z][a-z]+/g);
   const splittedName = name.split("_");
-  const { pendingInterviewStage } = state;
+  const { pendingInterviewStage } = test;
   if (splittedName.length === 3) {
     [firstName, middleName, lastName] = splittedName;
   } else {
     [firstName, lastName] = splittedName;
   }
-  const closeModal = () => {
-    setState({ ...state, slotBooking: false });
-  };
+
   return (
     <>
-      <div>
-        <Typography variant="h5" id="modal-title">
-          Student Status
-          <br />
-        </Typography>
-        <MUIDataTable
-          title={
-            pendingInterviewStage === "enrolmentKeyGenerated" ||
-            pendingInterviewStage === "testFailed"
-              ? `${firstName.concat(" ", middleName, " ", lastName)}
+      <Typography variant="h5" id="modal-title">
+        Student Status
+        <br />
+      </Typography>
+      <MUIDataTable
+        title={
+          pendingInterviewStage === "enrolmentKeyGenerated" ||
+          pendingInterviewStage === "testFailed"
+            ? `${firstName.concat(" ", middleName, " ", lastName)}
             ${message.testFailedMessage[selectedLang]}`
-              : `${firstName.concat(" ", middleName, " ", lastName)}${
-                  message.stageMessage[selectedLang]
-                }`
-          }
-          columns={columns}
-          data={data}
-          options={{
-            viewColumns: false,
-            print: false,
-            download: false,
-            exportButton: true,
-            pageSize: 100,
-            selectableRows: "none",
-            rowsPerPage: 20,
-            rowsPerPageOptions: [20, 40, 60],
-            toolbar: false,
-            filter: false,
-            responsive: "vertical",
-          }}
-        />
-      </div>
-      {state.slotBooking ? (
-        <SlotBooking
-          slotBookingData={state.slotBookingData}
-          name={firstName.concat(" ", middleName, " ", lastName)}
-          closeModal={closeModal}
-        />
-      ) : (
-        // eslint-disable-next-line prettier/prettier
-        <div />
-      )}
+            : `${firstName.concat(" ", middleName, " ", lastName)}${
+                message.stageMessage[selectedLang]
+              }`
+        }
+        columns={columns}
+        data={data}
+        options={{
+          viewColumns: false,
+          print: false,
+          download: false,
+          exportButton: true,
+          pageSize: 100,
+          selectableRows: "none",
+          rowsPerPage: 20,
+          rowsPerPageOptions: [20, 40, 60],
+          toolbar: false,
+          filter: false,
+          responsive: "vertical",
+        }}
+      />
     </>
   );
 };

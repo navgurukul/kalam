@@ -7,8 +7,7 @@ const CampusSlice = createSlice({
   initialState: {
     students: [],
     allStudents: [],
-    fromStage: null,
-    toStage: null,
+    stageFilter: null,
     fromDate: null,
     toDate: null,
     allStatusCount: campusStatusDisplayOptions.reduce(
@@ -23,8 +22,8 @@ const CampusSlice = createSlice({
     setAllStudentData: (state, action) => {
       state.allStudents = action.payload;
     },
-    setFromStage: (state, action) => {
-      state.fromStage = action.payload;
+    setStageFilter: (state, action) => {
+      state.stageFilter = action.payload;
     },
     setToStage: (state, action) => {
       state.toStage = action.payload;
@@ -41,8 +40,7 @@ const CampusSlice = createSlice({
     clearData: (state) => {
       state.students = [];
       state.allStudents = [];
-      state.fromStage = null;
-      state.toStage = null;
+      state.stageFilter = null;
       state.fromDate = null;
       state.toDate = null;
       state.dropoutCount = null;
@@ -56,8 +54,7 @@ export const {
   clearData,
   setStudentData,
   setAllStudentData,
-  setFromStage,
-  setToStage,
+  setStageFilter,
   setFromDate,
   setToDate,
   setCounts,

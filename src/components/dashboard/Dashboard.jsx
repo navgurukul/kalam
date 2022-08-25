@@ -10,12 +10,10 @@ import axios from "axios";
 
 import { useLocation } from "react-router-dom";
 import Select from "react-select";
-import { useSnackbar } from "notistack";
 import {
   setAllStudentData,
   setCounts,
-  setFromStage as setFromStageAction,
-  setToStage as setToStageAction,
+  setStageFilter as setStageFilterAction,
   setFromDate as setFromDateAction,
   setToDate as setToDateAction,
   setStudentData,
@@ -34,17 +32,18 @@ import {
 } from "../../utils/constants";
 import { dConvert } from "../../utils";
 
-const allStagesOptions = Object.keys(campusStageOfLearning).map((x) => ({
-  value: x,
-  label: campusStageOfLearning[x],
+const allStagesOptions = Object.entries(campusStageOfLearning).map(
+  ([value, label]) => ({
+    value,
+    label,
+  })
+);
+
+const partnerStages = Object.entries(allStages).map(([value, label]) => ({
+  value,
+  label,
 }));
 
-const partnerStages = Object.keys(allStages).map((x) => ({
-  value: x,
-  label: allStages[x],
-}));
-
-const allStagesValue = Object.values(allStages);
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -134,22 +133,14 @@ const columns = [
 // let filterFns = [];
 
 const DashboardPage = ({ displayData, title, url, isCampus }) => {
-  const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
-  const {
-    students,
-    allStudents,
-    fromDate,
-    toDate,
-    fromStage,
-    toStage,
-    allStatusCount,
-  } = useSelector((state) => state.campus);
+  const { students, allStudents, fromDate, toDate, allStatusCount } =
+    useSelector((state) => state.campus);
 
   const dispatch = useDispatch();
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const setFromStage = (from) => dispatch(setFromStageAction(from));
-  const setToStage = (to) => dispatch(setToStageAction(to));
+  const setStageFilter = (filterSt) => dispatch(setStageFilterAction(filterSt));
+  // const setToStage = (to) => dispatch(setToStageAction(to));
   const setFromDate = (from) =>
     dispatch(setFromDateAction(dayjs(from).format("YYYY-MM-DD")));
   const setToDate = (to) =>
@@ -162,19 +153,6 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
   const clearStudents = () => dispatch(clearData());
 
   const [loading, setLoading] = React.useState(true);
-
-  // const stageChangeEvent = (iData) => {
-  //   const rowIds = students.map((x) => x.id);
-  //   const rowIndex = rowIds.indexOf(iData.rowData.id);
-
-  //   const dataElem = students[rowIndex];
-  //   dataElem.stageTitle = iData.selectedValue.label;
-  //   dataElem.stage = iData.selectedValue.value;
-
-  //   const newData = [...students];
-  //   newData[rowIndex] = dataElem;
-  //   setStudents(newData);
-  // };
 
   const dataSetup = (studentData) => {
     if (isCampus) {
@@ -263,37 +241,18 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
     fetchStudents();
   };
 
-  const filterData = () => {
-    if (allStagesValue.indexOf(fromStage) <= allStagesValue.indexOf(toStage)) {
-      const newAllStagesValue = allStagesValue.slice(
-        allStagesValue.indexOf(fromStage),
-        allStagesValue.indexOf(toStage) + 1
-      );
-      const newData = allStudents.filter(
-        (element) => newAllStagesValue.indexOf(element.stage) > -1
-      );
-      setStudents(newData);
-    } else {
-      setStudents([]);
-      enqueueSnackbar(`Stage inputs not correct. Please check once.`, {
-        variant: "error",
-      });
-    }
+  const filterData = (filterLabel) => {
+    const newData = allStudents.filter(
+      (element) => element.stage === filterLabel
+    );
+    setStudents(newData);
+  };
+  const onChangeStageFilter = async (event) => {
+    setStageFilter(event);
+
+    filterData(event.label);
   };
 
-  const onChangeFromStage = async (event) => {
-    setFromStage(event.label);
-    if (fromStage && toStage) {
-      filterData();
-    }
-  };
-
-  const onChangeToStage = async (event) => {
-    setToStage(event.label);
-    if (fromStage && toStage) {
-      filterData();
-    }
-  };
   const locationCampus = location.pathname.split("/")[1];
 
   const showAllStage = parseInt(
@@ -307,24 +266,11 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
     <Grid container spacing={4} sx={{ paddingY: "0.8rem" }}>
       <Grid item xs={12} md={6} lg={3}>
         <Select
-          onChange={onChangeFromStage}
+          onChange={onChangeStageFilter}
           options={showAllStage ? partnerStages : allStagesOptions}
-          placeholder="From Stage"
-          isClearable={false}
+          placeholder="Filter Stage"
+          isClearable
           closeMenuOnSelect
-          value={fromStage}
-          menuPortalTarget={document.body}
-          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-        />
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <Select
-          onChange={onChangeToStage}
-          options={showAllStage ? partnerStages : allStagesOptions}
-          placeholder="To Stage"
-          isClearable={false}
-          closeMenuOnSelect
-          value={toStage}
           menuPortalTarget={document.body}
           styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
         />
@@ -386,32 +332,10 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
         }}
       >
         <Select
-          onChange={onChangeFromStage}
+          onChange={onChangeStageFilter}
           options={showAllStage ? partnerStages : allStagesOptions}
-          placeholder="From Stage"
-          isClearable={false}
-          closeMenuOnSelect
-          menuPortalTarget={document.body}
-          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-        />
-      </Grid>
-      <Grid
-        item
-        xs={12}
-        md={6}
-        lg={3}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          width: "100%",
-        }}
-      >
-        <Select
-          onChange={onChangeToStage}
-          options={showAllStage ? partnerStages : allStagesOptions}
-          placeholder="To Stage"
-          isClearable={false}
+          placeholder="Filter Stage"
+          isClearable
           closeMenuOnSelect
           menuPortalTarget={document.body}
           styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}

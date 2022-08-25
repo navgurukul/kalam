@@ -5,6 +5,7 @@ import { Box, Grid, TextField } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/lab";
 import MUIDataTable from "mui-datatables";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
+import dayjs from "dayjs";
 import axios from "axios";
 
 import { useLocation } from "react-router-dom";
@@ -149,8 +150,10 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
   const fetchingFinish = () => dispatch(changeFetching(false));
   const setFromStage = (from) => dispatch(setFromStageAction(from));
   const setToStage = (to) => dispatch(setToStageAction(to));
-  const setFromDate = (from) => dispatch(setFromDateAction(from));
-  const setToDate = (to) => dispatch(setToDateAction(to));
+  const setFromDate = (from) =>
+    dispatch(setFromDateAction(dayjs(from).format("YYYY-MM-DD")));
+  const setToDate = (to) =>
+    dispatch(setToDateAction(dayjs(to).format("YYYY-MM-DD")));
   const setCampusCounts = (counts) => dispatch(setCounts(counts));
   const setStudents = (studentData) => dispatch(setStudentData(studentData));
   const setAllStudents = (studentData) =>

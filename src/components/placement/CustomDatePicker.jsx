@@ -9,9 +9,34 @@ import { Box } from "@mui/system";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const CustomDatePicker = ({ offerLetterDate, studentId, change }) => {
+const CustomDatePicker = ({ offerLetterDate, id, studentId, change }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [isPickerVisible, setPickerVisible] = React.useState(false);
+
+  const updateDate = (newValue) => {
+    if (dayjs(newValue).diff(offerLetterDate, "date") === 0) return;
+    // console.log(
+    //   newValue,
+    //   dayjs(newValue).diff(value.offer_letter_date, "date")
+    // );
+    axios
+      .put(`${baseUrl}students/jobDetails/${id}`, {
+        offer_letter_date: newValue,
+        student_id: studentId,
+      })
+      .then(() => {
+        enqueueSnackbar(`${name} successfully updated !`, {
+          variant: "success",
+        });
+        change({ offer_letter_date: newValue });
+        setPickerVisible(false);
+      })
+      .catch(() => {
+        enqueueSnackbar(`Error in updating ${name}`, {
+          variant: "error",
+        });
+      });
+  };
 
   return (
     <Box sx={{ minWidth: "10rem" }}>
@@ -23,30 +48,7 @@ const CustomDatePicker = ({ offerLetterDate, studentId, change }) => {
             id="offer_letter_date"
             label="Date of Offer Letter"
             value={offerLetterDate}
-            onChange={(newValue) => {
-              if (dayjs(newValue).diff(offerLetterDate, "date") === 0) return;
-              // console.log(
-              //   newValue,
-              //   dayjs(newValue).diff(value.offer_letter_date, "date")
-              // );
-              axios
-                .put(`${baseUrl}students/jobDetails`, {
-                  offer_letter_date: newValue,
-                  student_id: studentId,
-                })
-                .then(() => {
-                  enqueueSnackbar(`${name} successfully updated !`, {
-                    variant: "success",
-                  });
-                  change({ offer_letter_date: newValue });
-                  setPickerVisible(false);
-                })
-                .catch(() => {
-                  enqueueSnackbar(`Error in updating ${name}`, {
-                    variant: "error",
-                  });
-                });
-            }}
+            onChange={updateDate}
             inputFormat="dd/MM/yyyy"
             inputVariant="outlined"
             renderInput={(params) => <TextField fullWidth {...params} />}

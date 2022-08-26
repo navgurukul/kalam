@@ -46,18 +46,19 @@ const useStyles = makeStyles(() => ({
 const StudentsProgressCards = (props) => {
   const classes = useStyles();
   const snackbar = useSnackbar();
-  const [state, setState] = React.useState({
-    data: {},
-    Python: "",
-    JS: "",
-    "Node JS": "",
-    "React JS": "",
-    "Interview preperation": "",
-    "Pay forwad": "",
-    "Got job": "",
-    onLeave: "",
-    "Drop out": "",
-  });
+  // const [state, setState] = React.useState({
+  //   data: {},
+  //   Python: "",
+  //   JS: "",
+  //   "Node JS": "",
+  //   "React JS": "",
+  //   "Interview preperation": "",
+  //   "Pay forwad": "",
+  //   "Got job": "",
+  //   onLeave: "",
+  //   "Drop out": "",
+  // });
+  const [cardData, setCardData] = React.useState({});
   const icons = [
     {
       icon: <img alt="python" src={Python} className={classes.image} />,
@@ -92,10 +93,9 @@ const StudentsProgressCards = (props) => {
 
   const { url } = props;
 
-  const whatsAppMessage = () => {
-    Object.entries(state.data).forEach(([key, detailsData]) => {
-      let text = "";
-      text = `${text}*${key}*\n\n`;
+  const whatsAppMessage = (data) => {
+    Object.entries(data).forEach(([key, detailsData]) => {
+      let text = `*${key}*\n\n`;
       Object.entries(detailsData).forEach(([key1, studentDetails]) => {
         if (studentDetails.length > 0) {
           text = `${text}\n_${allStages[key1]} (${studentDetails.length})_\n`;
@@ -105,10 +105,10 @@ const StudentsProgressCards = (props) => {
         }
       });
       text = `${text}\nFor more information visit\nhttp://admissions.navgurukul.org/partner/${url}`;
-      setState({
-        ...state,
-        [key]: text,
-      });
+      setCardData((prevData) => ({
+        ...prevData,
+        [key]: { detailsData, message: text },
+      }));
     });
   };
 
@@ -116,11 +116,7 @@ const StudentsProgressCards = (props) => {
     axios
       .get(`${baseURL}${url}/students/progress_made_card`)
       .then((response) => {
-        setState({
-          ...state,
-          data: response.data.data,
-        });
-        whatsAppMessage();
+        whatsAppMessage(response.data.data);
       });
   }, []);
 
@@ -140,7 +136,7 @@ const StudentsProgressCards = (props) => {
       </Tooltip>
     </CopyToClipboard>
   );
-  const { data } = state;
+
   return (
     <Grid
       container
@@ -150,42 +146,46 @@ const StudentsProgressCards = (props) => {
       alignItems="flex-start"
       style={{ marginTop: 10, justifyContent: "center", width: "100% " }}
     >
-      {data ? (
-        Object.entries(data).map(([key, detailsData], index) => (
-          <Grid item xs={12} sm={6} md={3} key={key}>
-            <Card className={classes.root}>
-              <CardContent>
-                <div style={{ marginBottom: 50 }}>
-                  <Grid
-                    container
-                    direction="row"
-                    justify="flex-end"
-                    alignItems="center"
-                  >
-                    {copyClipBoard(state[key])}
-                  </Grid>
-                  <br />
-                  <center>{icons[index].icon}</center>
-                  <br />
-                  <center>
-                    <Typography variant="h5">{key}</Typography>
-                  </center>
-                </div>
-                {Object.entries(detailsData).map(([stage, studentDetails]) => (
-                  <div key={`${key}${stage}`}>
-                    <div>
-                      <CollapseStudentData
-                        classes={classes}
-                        details={studentDetails}
-                        stage={stage}
-                      />
-                    </div>
+      {cardData ? (
+        Object.entries(cardData).map(
+          ([key, { detailsData, message }], index) => (
+            <Grid item xs={12} sm={6} md={3} key={key}>
+              <Card className={classes.root}>
+                <CardContent>
+                  <div style={{ marginBottom: 50 }}>
+                    <Grid
+                      container
+                      direction="row"
+                      justify="flex-end"
+                      alignItems="center"
+                    >
+                      {copyClipBoard(message)}
+                    </Grid>
+                    <br />
+                    <center>{icons[index].icon}</center>
+                    <br />
+                    <center>
+                      <Typography variant="h5">{key}</Typography>
+                    </center>
                   </div>
-                ))}
-              </CardContent>
-            </Card>
-          </Grid>
-        ))
+                  {Object.entries(detailsData).map(
+                    ([stage, studentDetails]) => (
+                      <div key={`${key}${stage}`}>
+                        <div>
+                          <CollapseStudentData
+                            classes={classes}
+                            details={studentDetails}
+                            stage={stage}
+                          />
+                        </div>
+                      </div>
+                    )
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+          )
+        )
       ) : (
         <Loader />
       )}

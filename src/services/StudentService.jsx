@@ -107,14 +107,19 @@ const deleteStudentColumn = {
 const ColumnUpload = {
   //get the object of the column
   name: "studentDocuments",
-  label: "Upload Document",
+  label: "Upload Documents",
   options: {
     filter: false,
     sort: false,
-    customBodyRender: (value, rowMeta) => (
+    customBodyRender: (value, rowMeta, updateValue) => (
       //modal for uploading documents
 
-      <UploadDocuments rowMeta={rowMeta} value={value} />
+      <UploadDocuments
+        studentId={rowMeta.rowData[0]}
+        studentName={rowMeta.rowData[1]}
+        currentDocuments={value}
+        change={(newVal) => updateValue({ ...value, ...newVal })}
+      />
     ),
   },
 };
@@ -241,10 +246,10 @@ const OtherActivitiesColumn = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => (
+    customBodyRender: (value, rowMeta, updateValue) => (
       <OtherActivities
-        rowMetaTable={rowMeta}
-        otherActivities={rowData}
+        studentId={rowMeta.rowData[0]}
+        value={value}
         change={(event) => updateValue(event)}
       />
     ),
@@ -409,7 +414,7 @@ const AudioPlayer = {
             <AudiofileUpload
               studentId={rowMeta.rowData[5]}
               userId={rowMeta.rowData[8] ? rowMeta.rowData[8].id : "guest_id"}
-              student_stage={rowMeta.rowData[0]}
+              studentStage={rowMeta.rowData[0]}
               change={(event) => updateValue(event)}
               columnIndex={rowMeta.columnIndex}
             />
@@ -699,7 +704,7 @@ const DashboardCampusColumnWrapper = ({ value, rowMeta, updateValue }) => {
     <UpdateCampus
       allOptions={campus}
       value={value || "No Campus Assigned"}
-      rowMetatable={rowMeta}
+      studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
     />
   ) : (
@@ -749,7 +754,7 @@ const CampusColumnWrapper = ({ value, rowMeta, updateValue }) => {
     <UpdateCampus
       allOptions={campus}
       value={value || "No Campus Assigned"}
-      rowMetatable={rowMeta}
+      studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
     />
   ) : (
@@ -777,11 +782,11 @@ const campusColumn = {
 
 const DashboardDonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
-  return privileges.some((priv) => priv.privilege === "updateStudentDonor") ? (
+  return privileges.some((priv) => priv.privilege === "UpdateStudentDonor") ? (
     <UpdateDonor
       allOptions={donor}
       value={value}
-      rowMetatable={rowMeta}
+      studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
     />
   ) : value ? (
@@ -831,7 +836,7 @@ const DonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
     <UpdateDonor
       allOptions={donor}
       value={value}
-      rowMetatable={rowMeta}
+      studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
     />
   ) : value ? (
@@ -1561,37 +1566,6 @@ const partnerNameColumn = {
   },
 };
 
-// const CampusStatusColumnWrapper = ({ value, rowMeta, updateValue }) => {
-//   const { privileges } = useSelector((state) => state.auth);
-//   return privileges?.some((priv) => priv.privilege === "UpdateStage") ? (
-//     <CampusStatusDropdown
-//       // studentId={rowMeta.rowData[0]}
-//       rowMeta={rowMeta}
-//       value={value}
-//       change={(event) => updateValue(event)}
-//       S
-//     />
-//   ) : (
-//     <p>{value}</p>
-//   );
-// };
-
-// const CampusStatus = {
-//   name: "campusStatus",
-//   label: "Campus Status",
-//   options: {
-//     filter: false,
-//     sort: false,
-//     customBodyRender: (value, rowMeta, updateValue) => (
-//       <CampusStatusColumnWrapper
-//         rowMeta={rowMeta}
-//         value={value}
-//         updateValue={updateValue}
-//       />
-//     ),
-//   },
-// };
-
 export const navGurukulSurveyForm = {
   label: "Survey Form",
   name: "partnerName",
@@ -1815,7 +1789,6 @@ const StudentService = {
     joinedDate,
     stageColumn,
     JobKabLagegiColumn,
-    // CampusStatus,
     ColumnUpload,
     daysPassedColumn,
     kitneAurDin,

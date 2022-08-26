@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import MUIDataTable from "mui-datatables";
 import { ThemeProvider } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
-import GlobalService from "../../services/GlobalService";
+import { tableIcons } from "../../services/GlobalService";
 import Loader from "../ui/Loader";
 import theme from "../../theme";
 
@@ -32,6 +32,7 @@ const MainLayout = ({
   options,
   title,
   showLoader,
+  onDownload,
   tableBodyMaxHeight,
 }) => {
   const classes = useStyles();
@@ -43,7 +44,7 @@ const MainLayout = ({
           title={title}
           columns={columns}
           data={data}
-          icons={GlobalService.tableIcons}
+          icons={tableIcons}
           options={{
             headerStyle: {
               color: theme.palette.primary.main,
@@ -57,6 +58,7 @@ const MainLayout = ({
             // filter: true,
             // filterType: "dropdown",
             responsive: "vertical",
+            onDownload: onDownload || null,
             tableBodyMaxHeight: tableBodyMaxHeight || "64vh",
             textLabels: {
               body: {

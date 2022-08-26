@@ -6,13 +6,11 @@ import { useSelector } from "react-redux";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const UpdateEmail = (props) => {
+const UpdateEmail = ({ email, rowMetatable, change }) => {
   const { privileges } = useSelector((state) => state.auth);
-  const { email } = props;
   const { enqueueSnackbar } = useSnackbar();
 
   const handleUpdate = (newEmail) => {
-    const { rowMetatable, change } = props;
     const studentId = rowMetatable.rowData[0];
     // const columnIndex = rowMetatable.columnIndex;
     axios
@@ -38,7 +36,7 @@ const UpdateEmail = (props) => {
       <EasyEdit
         type="text"
         value={email}
-        onSave={(_email) => handleUpdate(_email)}
+        onSave={(newEmail) => handleUpdate(newEmail)}
         saveButtonLabel="✔"
         cancelButtonLabel="✖"
         validationMessage="Please Provide Valid Email"

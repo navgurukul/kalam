@@ -24,6 +24,18 @@ export const loginWithGoogle = createAsyncThunk(
         rolesData.data.length > 0
           ? setupUser(rolesData.data[0])
           : { roles: [], privileges: [] };
+      const isAdmin = roles.some(
+        (role) => role.role === "Admin" || role.role === "FullDashboardAccess"
+      );
+      const newPrivs = isAdmin
+        ? [
+            ...privileges,
+            ...(await fetchAllPrivileges()).map((priv) => ({
+              ...priv,
+              privilege: toTitleCase(priv.privilege),
+            })),
+          ]
+        : privileges;
       if (
         response.profileObj.email.includes("@navgurukul.org") ||
         privileges.some((priv) => priv.privilege === "SpecialLogin")
@@ -32,9 +44,6 @@ export const loginWithGoogle = createAsyncThunk(
           idToken: response.tokenObj.id_token,
         });
         const { userToken, user } = userData.data;
-        // const rolesData = await axios.get(
-        //   `${baseUrl}rolebaseaccess/mail/${user.email}`
-        // );
 
         localStorage.setItem("jwt", userToken);
         localStorage.setItem("userId", encryptText(`${user.id}`));
@@ -46,7 +55,7 @@ export const loginWithGoogle = createAsyncThunk(
           })
         );
         thunkAPI.dispatch(changeFetching(false));
-        return { isAuthenticated: true, user, roles, privileges };
+        return { isAuthenticated: true, user, roles, privileges: newPrivs };
       }
       thunkAPI.dispatch(
         enqueueSnackbar({
@@ -81,7 +90,7 @@ export const fetchCurrentUser = createAsyncThunk(
         const rolesData = await axios.get(
           `${baseUrl}rolebaseaccess/mail/${data.email}`
         );
-        // const rolesData = { data: [] };
+
         const { roles, privileges } =
           rolesData.data.length > 0
             ? setupUser(rolesData.data[0])

@@ -17,7 +17,7 @@ import Spinner from "react-spinner-material";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-export const CreateAssessment = (props) => {
+const CreateAssessment = (props) => {
   const snackbar = useSnackbar();
   const [state, setState] = React.useState({
     dialogOpen: false,

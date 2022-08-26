@@ -12,7 +12,6 @@ import {
   IconButton,
   Paper,
   Icon,
-  Divider,
 } from "@mui/material";
 import { AddCircle, DeleteForeverRounded } from "@mui/icons-material";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
@@ -56,7 +55,7 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const [stateList, setStateList] = React.useState([]);
+  // const [stateList, setStateList] = React.useState([]);
   const [formData, setFormData] = React.useState({
     name: "",
     email: "",
@@ -93,30 +92,30 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
     name: "districts",
   });
 
-  const getStateList = async () => {
-    const response = await axios.get(
-      "https://api.countrystatecity.in/v1/countries/IN/states",
-      {
-        headers: {
-          "X-CSCAPI-KEY":
-            "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
-        },
-      }
-    );
-    const newData = response.data.sort((a, b) => {
-      const fa = a.name.toLowerCase();
-      const fb = b.name.toLowerCase();
+  // const getStateList = async () => {
+  //   const response = await axios.get(
+  //     "https://api.countrystatecity.in/v1/countries/IN/states",
+  //     {
+  //       headers: {
+  //         "X-CSCAPI-KEY":
+  //           "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
+  //       },
+  //     }
+  //   );
+  //   const newData = response.data.sort((a, b) => {
+  //     const fa = a.name.toLowerCase();
+  //     const fb = b.name.toLowerCase();
 
-      if (fa < fb) {
-        return -1;
-      }
-      if (fa > fb) {
-        return 1;
-      }
-      return 0;
-    });
-    setStateList(newData);
-  };
+  //     if (fa < fb) {
+  //       return -1;
+  //     }
+  //     if (fa > fb) {
+  //       return 1;
+  //     }
+  //     return 0;
+  //   });
+  //   // setStateList(newData);
+  // };
 
   useEffect(() => {
     if (partnerId) {
@@ -152,15 +151,14 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
         districts: [""],
       });
     }
-    getStateList();
+    // getStateList();
   }, []);
 
   const addPartner = async (data) => {
-    const { name, email, notes, slug, partnerUsers, districts, state } = data;
+    const { name, email, notes, slug, partnerUsers, districts } = data;
     const removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
-    console.log(formData);
     try {
       fetchingStart();
       const dataURL = ` ${baseUrl}partners`;
@@ -202,8 +200,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
     const removeExtraDistricts = districts.filter(
       (district) => district.length > 0
     );
-
-    console.log(data);
 
     axios
       .put(`${baseUrl}partners/${partnerId}`, {

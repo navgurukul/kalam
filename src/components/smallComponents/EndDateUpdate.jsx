@@ -3,13 +3,11 @@ import { DatePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import Axios from "axios";
 import { useSnackbar } from "notistack";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 
 const baseURL = import.meta.env.VITE_API_URL;
-function EndDateUpdate(props) {
-  const { value: pValue } = props;
+function EndDateUpdate({ value: pValue, rowData }) {
   const [value, setValue] = React.useState(pValue);
-  const { rowData } = props;
   const [dateToSend, setDateToSend] = React.useState(value);
   const snackBar = useSnackbar();
   if (value) {
@@ -47,8 +45,8 @@ function EndDateUpdate(props) {
   }
   if (rowData.rowData[4]) {
     return (
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-      <p
+      <Button
+        variant="text"
         onKeyDown={(e) => {
           if (e.key === "Enter") setValue(Date.now());
         }}
@@ -57,7 +55,7 @@ function EndDateUpdate(props) {
         }}
       >
         Update Date
-      </p>
+      </Button>
     );
   }
   return null;

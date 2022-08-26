@@ -50,7 +50,7 @@ body:
       multiple: true
       options:
         - Desktop/Laptop
-        = Smartphone
+        - Smartphone
         - Tablet
     validations:
       required: true

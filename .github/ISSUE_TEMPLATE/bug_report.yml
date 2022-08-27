@@ -64,6 +64,8 @@ body:
         - Windows
         - Linux
         - Mac
+        - Android
+        - iOS
     validations:
       required: true
   - type: dropdown

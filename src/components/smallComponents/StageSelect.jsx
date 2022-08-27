@@ -170,6 +170,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         enqueueSnackbar(`Something went wrong`, {
           variant: "error",
         });
+        setState({
+          ...state,
+          flag: false,
+        });
       });
   };
 

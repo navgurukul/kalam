@@ -14,12 +14,17 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as _ from "underscore";
 // eslint-disable-next-line import/no-cycle
 import StudentService from "../../services/StudentService";
 import { getColumnIndex } from "../../utils";
-import { campusStatusOptions, nextStage } from "../../utils/constants";
+import {
+  campusStatusDisplayOptions,
+  campusStatusOptions,
+  nextStage,
+} from "../../utils/constants";
+import { setCounts } from "../../store/slices/campusSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
@@ -27,7 +32,10 @@ const animatedComponents = makeAnimated();
 const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const { enqueueSnackbar } = useSnackbar();
   // const isCampusPathname = window.location.pathname.indexOf("campus");
+  const dispatch = useDispatch();
+  const setCampusCounts = (counts) => dispatch(setCounts(counts));
   const { loggedInUser } = useSelector((state) => state.auth);
+  const { allStatusCount } = useSelector((state) => state.campus);
 
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
@@ -74,12 +82,19 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
 
   const handleCampusStatusChange = (e) => {
     const studentId = rowMetatable.rowData[0];
+    const currentStatus = stage.campus_status;
     axios
       .put(`${baseUrl}students/updateDetails/${studentId}`, {
         campus_status: e.target.value,
       })
       .then(() => {
-        // setCampusStatus(e.target.value);
+        const updatedCount = { ...allStatusCount };
+        if (campusStatusDisplayOptions.includes(currentStatus))
+          updatedCount[currentStatus] -= 1;
+        updatedCount[e.target.value] = updatedCount[e.target.value]
+          ? updatedCount[e.target.value] + 1
+          : 1;
+        setCampusCounts(updatedCount);
         change({ ...stage, campus_status: e.target.value });
         enqueueSnackbar("Updated Campus Status", { variant: "success" });
       })

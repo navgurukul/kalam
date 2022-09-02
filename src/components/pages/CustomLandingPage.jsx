@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { Divider, List, ListItem, Container } from "@mui/material";
+import { Divider, List, ListItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +26,7 @@ import akansha5 from "../../assets/img/akansha/5.jpg";
 import mhGovtLogo from "../../assets/img/akansha/mh-govt-logo.jpg";
 import MSSDSLogo from "../../assets/img/akansha/MSSDS-logo.jpg";
 import sdeedLogo from "../../assets/img/akansha/sdeed-logo.png";
+import amravatiSelectionList from "../../assets/amravati/Amravati_Selection_List.pdf";
 import {
   setEnrollmentKey,
   setPartner,
@@ -658,14 +659,14 @@ const CustomLandingPage = () => {
     await isDuplicate();
   };
 
-  if (slug && testClosed.partners.includes(slug))
-    return (
-      <Container sx={{ display: "flex", justifyContent: "center" }}>
-        <Typography color="error" variant="h4">
-          {testClosed.message}
-        </Typography>
-      </Container>
-    );
+  // if (slug && testClosed.partners.includes(slug))
+  //   return (
+  //     <Container sx={{ display: "flex", justifyContent: "center" }}>
+  //       <Typography color="error" variant="h4">
+  //         {testClosed.message}
+  //       </Typography>
+  //     </Container>
+  //   );
 
   const { mobileNumber, firstName, middleName, lastName, mobile } = state;
 
@@ -700,6 +701,28 @@ const CustomLandingPage = () => {
         ) : null} */}
 
         <Grid container sx={{ mt: "2rem" }} spacing={2} justifyContent="center">
+          <Grid
+            item
+            xs={10}
+            sx={{ display: "flex", justifyContent: "center", mb: "3rem" }}
+          >
+            <a
+              href={amravatiSelectionList}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              <Button
+                variant="outlined"
+                color="primary"
+                sx={{ borderWidth: 3, ":hover": { borderWidth: 3 } }}
+              >
+                {" "}
+                <Typography variant="h5" color="primary" fontWeight={500}>
+                  Results are now Available!! Click Here
+                </Typography>
+              </Button>
+            </a>
+          </Grid>
           <Grid
             item
             xs={10}
@@ -941,161 +964,163 @@ const CustomLandingPage = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid container spacing={2} sx={{ mt: "1.2rem" }}>
-          <Grid
-            item
-            xs={12}
-            md={12}
-            className={classes.loginContainer}
-            component="section"
-            id="online-form"
-          >
-            {/* <Paper className={classes.loginContainer}> */}
-            <Box>
-              <Typography variant="h5" component="h4">
-                {lang.AdmisssionTitle[selectedLang]}
-              </Typography>
-            </Box>
-            <Box style={{ height: theme.spacing(2) }} />
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-              }}
+        {slug && !testClosed.partners.includes(slug) && (
+          <Grid container spacing={2} sx={{ mt: "1.2rem" }}>
+            <Grid
+              item
+              xs={12}
+              md={12}
+              className={classes.loginContainer}
+              component="section"
+              id="online-form"
             >
-              <TextField
-                required
-                id="filled-full-width"
-                margin="normal"
-                style={{ margin: 8 }}
-                label={lang.firstName[selectedLang]}
-                name="firstName"
-                value={firstName}
-                placeholder={`${lang.firstName[selectedLang]}...`}
-                onChange={onChangeEvent}
-                InputLabelProps={{
-                  shrink: true,
+              {/* <Paper className={classes.loginContainer}> */}
+              <Box>
+                <Typography variant="h5" component="h4">
+                  {lang.AdmisssionTitle[selectedLang]}
+                </Typography>
+              </Box>
+              <Box style={{ height: theme.spacing(2) }} />
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
                 }}
-                variant="outlined"
-              />
+              >
+                <TextField
+                  required
+                  id="filled-full-width"
+                  margin="normal"
+                  style={{ margin: 8 }}
+                  label={lang.firstName[selectedLang]}
+                  name="firstName"
+                  value={firstName}
+                  placeholder={`${lang.firstName[selectedLang]}...`}
+                  onChange={onChangeEvent}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  variant="outlined"
+                />
 
-              <TextField
-                id="filled-full-width"
-                margin="normal"
-                style={{ margin: 8 }}
-                name="middleName"
-                label={`${lang.firstName[selectedLang]}`}
-                value={middleName}
-                placeholder={`${lang.middleName[selectedLang]}...`}
-                onChange={onChangeEvent}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-              />
-            </Box>
-            <div
-              style={{
-                display: "flex",
-              }}
-            >
-              <TextField
-                required
-                id="filled-full-width"
-                margin="normal"
-                name="lastName"
-                style={{ margin: 8 }}
-                label={`${lang.lastName[selectedLang]}...`}
-                value={lastName}
-                placeholder={`${lang.lastName[selectedLang]}...`}
-                onChange={onChangeEvent}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-              />
-
-              <TextField
-                required
-                id="filled-full-width"
-                margin="normal"
+                <TextField
+                  id="filled-full-width"
+                  margin="normal"
+                  style={{ margin: 8 }}
+                  name="middleName"
+                  label={`${lang.firstName[selectedLang]}`}
+                  value={middleName}
+                  placeholder={`${lang.middleName[selectedLang]}...`}
+                  onChange={onChangeEvent}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  variant="outlined"
+                />
+              </Box>
+              <div
                 style={{
-                  margin: 8,
-                }}
-                type="number"
-                name="mobileNumber"
-                label={lang.mobNoField[selectedLang]}
-                value={mobileNumber}
-                placeholder={lang.mobNoField[selectedLang]}
-                onChange={onChangeEvent}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-              />
-            </div>
-            <div className={classes.root}>
-              <Button variant="contained" onClick={giveTest} color="primary">
-                {lang.TestButton[selectedLang]}
-              </Button>
-            </div>
-          </Grid>
-          <Box style={{ height: theme.spacing(6) }} />
-          <Grid
-            item
-            xs={12}
-            md={12}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Box
-              display="flex"
-              alignItems="center"
-              flexDirection="column"
-              px={4}
-              sx={{ textAlign: "center", mb: "0.8rem" }}
-            >
-              <Typography
-                className={classes.typography}
-                variant="h5"
-                component="h3"
-              >
-                {lang.Status[selectedLang]}
-              </Typography>
-            </Box>
-            <Box>
-              <TextField
-                id="filled-full-width"
-                margin="normal"
-                style={{ margin: 8 }}
-                label={lang.mobNoField[selectedLang]}
-                value={state.mobile}
-                placeholder={lang.mobNoField[selectedLang]}
-                onChange={onChangeEventStatus}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-              />
-            </Box>
-            <div className={classes.root} style={{ marginBottom: "1.2rem" }}>
-              <Link
-                to={{
-                  pathname: `/status/${mobile}`,
-                  state: { mobile },
+                  display: "flex",
                 }}
               >
-                <Button variant="contained" color="primary">
-                  {lang.StatusButton[selectedLang]}
+                <TextField
+                  required
+                  id="filled-full-width"
+                  margin="normal"
+                  name="lastName"
+                  style={{ margin: 8 }}
+                  label={`${lang.lastName[selectedLang]}...`}
+                  value={lastName}
+                  placeholder={`${lang.lastName[selectedLang]}...`}
+                  onChange={onChangeEvent}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  variant="outlined"
+                />
+
+                <TextField
+                  required
+                  id="filled-full-width"
+                  margin="normal"
+                  style={{
+                    margin: 8,
+                  }}
+                  type="number"
+                  name="mobileNumber"
+                  label={lang.mobNoField[selectedLang]}
+                  value={mobileNumber}
+                  placeholder={lang.mobNoField[selectedLang]}
+                  onChange={onChangeEvent}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  variant="outlined"
+                />
+              </div>
+              <div className={classes.root}>
+                <Button variant="contained" onClick={giveTest} color="primary">
+                  {lang.TestButton[selectedLang]}
                 </Button>
-              </Link>
-            </div>
+              </div>
+            </Grid>
+            <Box style={{ height: theme.spacing(6) }} />
+            <Grid
+              item
+              xs={12}
+              md={12}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                display="flex"
+                alignItems="center"
+                flexDirection="column"
+                px={4}
+                sx={{ textAlign: "center", mb: "0.8rem" }}
+              >
+                <Typography
+                  className={classes.typography}
+                  variant="h5"
+                  component="h3"
+                >
+                  {lang.Status[selectedLang]}
+                </Typography>
+              </Box>
+              <Box>
+                <TextField
+                  id="filled-full-width"
+                  margin="normal"
+                  style={{ margin: 8 }}
+                  label={lang.mobNoField[selectedLang]}
+                  value={state.mobile}
+                  placeholder={lang.mobNoField[selectedLang]}
+                  onChange={onChangeEventStatus}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  variant="outlined"
+                />
+              </Box>
+              <div className={classes.root} style={{ marginBottom: "1.2rem" }}>
+                <Link
+                  to={{
+                    pathname: `/status/${mobile}`,
+                    state: { mobile },
+                  }}
+                >
+                  <Button variant="contained" color="primary">
+                    {lang.StatusButton[selectedLang]}
+                  </Button>
+                </Link>
+              </div>
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </ThemeProvider>
       {/* <Box style={{ height: theme.spacing(6) }} /> */}
     </div>

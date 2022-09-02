@@ -52,9 +52,14 @@ const useStyles = makeStyles((_theme) => ({
   },
 }));
 
+const createdAtComponent = (value) => (
+  <p>{dayjs(value).format("D MMM YYYY")}</p>
+);
+
 const StageTransitionsStudentStatus = ({ rowData, allStages }) => {
   const classes = useStyles();
   const [modalOpen, setModalOpen] = React.useState(false);
+
   const columns = React.useMemo(
     () => [
       {
@@ -68,10 +73,7 @@ const StageTransitionsStudentStatus = ({ rowData, allStages }) => {
         label: "When?",
         name: "created_at",
         options: {
-          customBodyRender: React.useCallback(
-            (value) => <p>{dayjs(value).format("D MMM YYYY")}</p>,
-            []
-          ),
+          customBodyRender: createdAtComponent,
         },
       },
     ],

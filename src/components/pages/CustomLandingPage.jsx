@@ -964,8 +964,8 @@ const CustomLandingPage = () => {
             </Grid>
           </Grid>
         </Grid>
-        {slug && !testClosed.partners.includes(slug) && (
-          <Grid container spacing={2} sx={{ mt: "1.2rem" }}>
+        <Grid container spacing={2} sx={{ mt: "1.2rem" }}>
+          {slug && !testClosed.partners.includes(slug) && (
             <Grid
               item
               xs={12}
@@ -1065,62 +1065,62 @@ const CustomLandingPage = () => {
                 </Button>
               </div>
             </Grid>
-            <Box style={{ height: theme.spacing(6) }} />
-            <Grid
-              item
-              xs={12}
-              md={12}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
+          )}
+          <Box style={{ height: theme.spacing(6) }} />
+          <Grid
+            item
+            xs={12}
+            md={12}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Box
+              display="flex"
+              alignItems="center"
+              flexDirection="column"
+              px={4}
+              sx={{ textAlign: "center", mb: "0.8rem" }}
             >
-              <Box
-                display="flex"
-                alignItems="center"
-                flexDirection="column"
-                px={4}
-                sx={{ textAlign: "center", mb: "0.8rem" }}
+              <Typography
+                className={classes.typography}
+                variant="h5"
+                component="h3"
               >
-                <Typography
-                  className={classes.typography}
-                  variant="h5"
-                  component="h3"
-                >
-                  {lang.Status[selectedLang]}
-                </Typography>
-              </Box>
-              <Box>
-                <TextField
-                  id="filled-full-width"
-                  margin="normal"
-                  style={{ margin: 8 }}
-                  label={lang.mobNoField[selectedLang]}
-                  value={state.mobile}
-                  placeholder={lang.mobNoField[selectedLang]}
-                  onChange={onChangeEventStatus}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                />
-              </Box>
-              <div className={classes.root} style={{ marginBottom: "1.2rem" }}>
-                <Link
-                  to={{
-                    pathname: `/status/${mobile}`,
-                    state: { mobile },
-                  }}
-                >
-                  <Button variant="contained" color="primary">
-                    {lang.StatusButton[selectedLang]}
-                  </Button>
-                </Link>
-              </div>
-            </Grid>
+                {lang.Status[selectedLang]}
+              </Typography>
+            </Box>
+            <Box>
+              <TextField
+                id="filled-full-width"
+                margin="normal"
+                style={{ margin: 8 }}
+                label={lang.mobNoField[selectedLang]}
+                value={state.mobile}
+                placeholder={lang.mobNoField[selectedLang]}
+                onChange={onChangeEventStatus}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+              />
+            </Box>
+            <div className={classes.root} style={{ marginBottom: "1.2rem" }}>
+              <Link
+                to={{
+                  pathname: `/status/${mobile}`,
+                  state: { mobile },
+                }}
+              >
+                <Button variant="contained" color="primary">
+                  {lang.StatusButton[selectedLang]}
+                </Button>
+              </Link>
+            </div>
           </Grid>
-        )}
+        </Grid>
       </ThemeProvider>
       {/* <Box style={{ height: theme.spacing(6) }} /> */}
     </div>

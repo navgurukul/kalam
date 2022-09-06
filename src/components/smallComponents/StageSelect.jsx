@@ -3,6 +3,7 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { HalfCircleSpinner } from "react-epic-spinners";
 import {
   DialogTitle,
   DialogActions,
@@ -49,6 +50,9 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       cc: "",
     },
   });
+  const [loading, setLoading] = React.useState(false);
+
+  const toggleLoading = () => setLoading((prev) => !prev);
 
   // const getTransitionStage = (studentId) => {
   //   axios
@@ -110,7 +114,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         transition_done_by: loggedInUser.user_name,
       })
       .then(() => {
-        enqueueSnackbar("stage is successfully changed!", {
+        enqueueSnackbar("Stage Updated!", {
           variant: "success",
         });
         change(isCampus ? { ...stage, stage: label } : label);
@@ -160,6 +164,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   };
 
   const sendOfferLetter = () => {
+    toggleLoading();
     axios
       .post(
         `https://connect.merakilearn.org/api/offerLetter/admissions`,
@@ -167,11 +172,12 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       )
       .then(() => {
         enqueueSnackbar(
-          `Joining letter  successfully sent to ${state.payload.name} at ${state.payload.receiverEmail} email id`,
+          `Joining letter successfully sent to ${state.payload.receiverEmail}`,
           {
             variant: "success",
           }
         );
+        toggleLoading();
         setState({
           ...state,
           flag: false,
@@ -185,6 +191,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         enqueueSnackbar(`Something went wrong`, {
           variant: "error",
         });
+        toggleLoading();
         setState({
           ...state,
           flag: false,
@@ -194,6 +201,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
 
   const handleClose = (e, clickaway) => {
     if (clickaway) return;
+    toggleLoading();
     setState({
       ...state,
       flag: false,
@@ -310,11 +318,11 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           Do you want to send Joining letter ?
         </DialogTitle>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button disabled={loading} onClick={handleClose} color="primary">
             NO
           </Button>
-          <Button onClick={sendOfferLetter} color="primary">
-            YES
+          <Button disabled={loading} onClick={sendOfferLetter} color="primary">
+            {loading ? <HalfCircleSpinner size={24} color="#f05f40" /> : "YES"}
           </Button>
         </DialogActions>
       </Dialog>

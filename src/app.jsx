@@ -13,7 +13,7 @@ const App = () => (
   <Provider store={store}>
     <ThemeProvider theme={theme}>
       <AlertDialog />
-      <SnackbarProvider maxSnack={1}>
+      <SnackbarProvider maxSnack={2}>
         <AppRouter />
       </SnackbarProvider>
     </ThemeProvider>

@@ -170,7 +170,7 @@ function Questions() {
     axios
       .post(
         `${baseUrl}on_assessment/questions/${enrollmentKey}/answers`,
-        JSON.stringify(decryptedAnsList)
+        decryptedAnsList
       )
       .then(() => {
         axios

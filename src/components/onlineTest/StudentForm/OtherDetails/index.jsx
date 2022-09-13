@@ -602,8 +602,8 @@ function OtherDetails(props) {
                     inputRef={ref}
                     {...rest}
                     fullWidth
-                    label={langOptions.percentage_in10th[lang]}
-                    placeholder={langOptions.percentage_in10th[lang]}
+                    label={langOptions.class10th[lang]}
+                    placeholder={langOptions.class10th[lang]}
                     type="number"
                     autoComplete="off"
                     error={!!errors.percentage_in10th}
@@ -611,8 +611,8 @@ function OtherDetails(props) {
                       errors.percentage_in10th
                         ? errors.percentage_in10th.type === "max" ||
                           errors.percentage_in10th.type === "min"
-                          ? langOptions.percentage_in10th.error.max[lang]
-                          : langOptions.percentage_in10th.error[lang]
+                          ? langOptions.class10th.error.max[lang]
+                          : langOptions.class10th.error[lang]
                         : "Ex. 86.40"
                     }
                   />

@@ -15,7 +15,9 @@ export const dConvert = (data, isCampus) => {
   x.altNumber = x.contacts[0]?.alt_mobile || "";
   x.gender =
     x.gender === 1 ? "Female" : x.gender === 2 ? "Male" : "Transgender";
-  x.stage = isCampus ? { ...x.stage, stage: allStages[x.stage.stage] }: allStages[x.stage];
+  x.stage = isCampus
+    ? { ...x.stage, stage: allStages[x.stage.stage] }
+    : allStages[x.stage];
   x.marks = x.enrolmentKey.length
     ? parseInt(x.enrolmentKey[0].total_marks, 10)
     : null;

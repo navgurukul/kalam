@@ -45,10 +45,10 @@ const OwnerSelect = ({ value, change, rowMetaTable, studentId }) => {
           student_id: studentId,
         })
         .then(() => {
+          change(selectedValue.value);
           enqueueSnackbar(`successfully Assigned work for ${value}`, {
             variant: "success",
           });
-          change(value);
         });
     } catch (e) {
       enqueueSnackbar(e.message, { variant: "error" });

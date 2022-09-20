@@ -627,7 +627,7 @@ const testModeColumn = {
   name: "enrolmentKey",
   label: "Test Mode",
   options: {
-    filter: false,
+    filter: true,
     sort: false,
     display: true,
     customBodyRender: (value) => <TestModeWrapper value={value} />,

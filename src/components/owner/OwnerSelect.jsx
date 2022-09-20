@@ -22,7 +22,7 @@ const OwnerSelect = ({ value, change, rowMetaTable, studentId }) => {
       const newData = data
         .filter((el) => el.available)
         .map((el) => ({
-          value: el.user.user_name,
+          value: el.user.mail_id,
           label: el.user.user_name,
           available: el.available,
         }));
@@ -45,10 +45,10 @@ const OwnerSelect = ({ value, change, rowMetaTable, studentId }) => {
           student_id: studentId,
         })
         .then(() => {
+          change(selectedValue.value);
           enqueueSnackbar(`successfully Assigned work for ${value}`, {
             variant: "success",
           });
-          change(value);
         });
     } catch (e) {
       enqueueSnackbar(e.message, { variant: "error" });

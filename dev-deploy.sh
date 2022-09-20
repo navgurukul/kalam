@@ -20,7 +20,7 @@ git branch -M gh-pages
 
 git add -A .
 
-git commit -a -m 'gh-pages update'
+git commit -a -m 'gh-pages update' --no-verify
 
 git push origin gh-pages --force
 

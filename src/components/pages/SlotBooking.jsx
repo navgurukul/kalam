@@ -71,6 +71,7 @@ const SlotBooking = () => {
   const [date, setDate] = React.useState(new Date());
   const [studentData, setStudentData] = React.useState({});
   const [timings, setTimings] = React.useState(defaultTimings);
+  const allowedSlotBookingDays = 15;
 
   const handleDateChange = (newDate) => {
     const d = dayjs(newDate);
@@ -223,7 +224,10 @@ const SlotBooking = () => {
                 // shouldDisableDate={disablePrevDates()}
                 shouldDisableDate={(currentDate) =>
                   dayjs(currentDate).isAfter(
-                    dayjs().set("date", dayjs().get("date") + 7)
+                    dayjs().set(
+                      "date",
+                      dayjs().get("date") + allowedSlotBookingDays
+                    )
                   )
                 }
                 disablePast

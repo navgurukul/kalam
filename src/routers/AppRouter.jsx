@@ -50,6 +50,11 @@ const AddPartner = React.lazy(() => import("../components/partner/AddPartner"));
 const PartnerList = React.lazy(() =>
   import("../components/partner/PartnerList")
 );
+
+const PartnerGroupList = React.lazy(() =>
+  import("../components/partner/PartnerGroupList")
+);
+
 const PartnerStudentsProgressInCampus = React.lazy(() =>
   import("../components/partner/PartnerStudentsProgressInCampus")
 );
@@ -197,6 +202,16 @@ const AppRouter = () => {
                   <React.Suspense fallback={<Loader container />}>
                     <RequireAuth privateRoute>
                       <AddPartner />
+                    </RequireAuth>
+                  </React.Suspense>
+                }
+              />
+              <Route
+                path="groups"
+                element={
+                  <React.Suspense fallback={<Loader container />}>
+                    <RequireAuth privateRoute>
+                      <PartnerGroupList />
                     </RequireAuth>
                   </React.Suspense>
                 }

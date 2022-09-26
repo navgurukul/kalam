@@ -132,7 +132,7 @@ const columns = [
 ];
 // let filterFns = [];
 
-const DashboardPage = ({ displayData, title, url, isCampus }) => {
+const DashboardPage = ({ displayData, title, url, isCampus = false }) => {
   const location = useLocation();
   const { students, allStudents, fromDate, toDate, allStatusCount } =
     useSelector((state) => state.campus);
@@ -260,6 +260,27 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
     10
   );
 
+  const onDownload = (buildHead, buildBody, downloadColumns, data) => {
+    // console.log();
+    // const newColums = [...]
+    const newData = data.map(({ data: student }) => ({
+      data: student.map((col, inx) => {
+        switch (displayData[inx]?.name || "DEFAULT") {
+          case "enrolmentKey":
+            return {
+              onlineTest: "Online Test",
+              offlineTest: "Offline Test",
+              "N/A": "N/A",
+            }[col[col.length - 1].type_of_test];
+          default:
+            return col;
+        }
+      }),
+    }));
+
+    return `\uFEFF${buildHead(downloadColumns)}${buildBody(newData)}`;
+  };
+
   const noFooter = React.useCallback(() => <tbody />, []);
 
   const options = (
@@ -375,15 +396,11 @@ const DashboardPage = ({ displayData, title, url, isCampus }) => {
         tableBodyMaxHeight="56vh"
         title={title}
         columns={[...displayData, ...columns]}
+        onDownload={onDownload}
         data={students}
         showLoader={loading}
       />
     </Box>
   );
 };
-
-DashboardPage.defaultProps = {
-  isCampus: false,
-};
-
 export default DashboardPage;

@@ -8,10 +8,11 @@ const SelectReact = ({
   filterList,
   index,
   column,
+  label,
 }) => {
   const [selectedOption, setSelectedOption] = React.useState({
     value,
-    label: value,
+    label: label ?? value,
   });
 
   return (

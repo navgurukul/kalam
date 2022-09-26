@@ -633,6 +633,56 @@ const testModeColumn = {
     customBodyRender: (value) => <TestModeWrapper value={value} />,
   },
 };
+const testModePartnerColumn = {
+  name: "enrolmentKey",
+  label: "Test Mode",
+  options: {
+    filter: true,
+    sort: false,
+    display: true,
+    filterType: "custom",
+    filterOptions: {
+      logic: (location, filters) => {
+        if (filters.includes("All")) return false;
+        if (filters.length)
+          return !filters.includes(location[location.length - 1]?.type_of_test);
+        return false;
+      },
+      display: (filterlist, onChange, index, column) => {
+        const options = {
+          All: "All",
+          onlineTest: "Online Test",
+          offlineTest: "Offline Test",
+        };
+        return (
+          <div>
+            <label style={Lables}>Test Mode</label>
+            <SelectReact
+              options={Object.entries(options).map(([value, label]) => ({
+                value,
+                label,
+              }))}
+              filterList={filterlist}
+              onChange={onChange}
+              index={index}
+              column={column}
+              value={
+                filterlist[index].length === 0 ? "All" : filterlist[index][0]
+              }
+              label={
+                filterlist[index].length === 0
+                  ? "All"
+                  : options[filterlist[index][0]]
+              }
+            />
+          </div>
+        );
+      },
+    },
+
+    customBodyRender: (value) => <TestModeWrapper value={value} />,
+  },
+};
 
 const marksColumn = {
   name: "marks",
@@ -1689,6 +1739,7 @@ const StudentService = {
       EmailColumn,
       genderColumn,
       stageColumn,
+      testModePartnerColumn,
       addedAtColumn,
       lastUpdatedColumn,
       QualificationColumn,

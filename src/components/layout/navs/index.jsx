@@ -30,6 +30,11 @@ const NavLinks = ({ toggleDrawer }) => {
         name: "Partners",
         icon: <GroupIcon />,
       },
+      privileges.some((priv) => priv.privilege === "ViewPartners") && {
+        url: "/partner/groups",
+        name: "Partner Groups",
+        icon: <GroupIcon />,
+      },
       {
         url: "/donors",
         name: "Donors",

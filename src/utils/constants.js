@@ -2,7 +2,7 @@ export const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
 export const customPartner = ["amravati", "lahia"];
 export const testClosed = {
-  partners: ["amravati", "lahia"],
+  partners: ["lahia"],
   message: "Tests have now been closed!",
 };
 

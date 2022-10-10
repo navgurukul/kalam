@@ -136,6 +136,7 @@ const CustomLandingPage = () => {
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const { lang: selectedLang } = useSelector((state) => state.ui);
+  const showResults = false;
   const [state, setState] = React.useState({
     mobileNumber: "",
     firstName: "",
@@ -701,28 +702,30 @@ const CustomLandingPage = () => {
         ) : null} */}
 
         <Grid container sx={{ mt: "2rem" }} spacing={2} justifyContent="center">
-          <Grid
-            item
-            xs={10}
-            sx={{ display: "flex", justifyContent: "center", mb: "3rem" }}
-          >
-            <a
-              href={amravatiSelectionList}
-              target="_blank"
-              rel="noreferrer noopener"
+          {showResults && (
+            <Grid
+              item
+              xs={10}
+              sx={{ display: "flex", justifyContent: "center", mb: "3rem" }}
             >
-              <Button
-                variant="outlined"
-                color="primary"
-                sx={{ borderWidth: 3, ":hover": { borderWidth: 3 } }}
+              <a
+                href={amravatiSelectionList}
+                target="_blank"
+                rel="noreferrer noopener"
               >
-                {" "}
-                <Typography variant="h5" color="primary" fontWeight={500}>
-                  Results are now Available!! Click Here
-                </Typography>
-              </Button>
-            </a>
-          </Grid>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  sx={{ borderWidth: 3, ":hover": { borderWidth: 3 } }}
+                >
+                  {" "}
+                  <Typography variant="h5" color="primary" fontWeight={500}>
+                    Results are now Available!! Click Here
+                  </Typography>
+                </Button>
+              </a>
+            </Grid>
+          )}
           <Grid
             item
             xs={10}

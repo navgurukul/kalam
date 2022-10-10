@@ -14,6 +14,7 @@ import EditPartner from "./EditPartner";
 import MainLayout from "../muiTables/MainLayout";
 import ReportSend from "./ReportSend";
 import ToolbarAddButton from "../admin/ToolbarAddButton";
+import SelectReact from "../smallComponents/SelectReact";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

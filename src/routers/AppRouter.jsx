@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import ReactGA from "react-ga";
 import useCustomNotifier from "../utils/useCustomNotifier";
 import theme from "../theme";
 import RequireAuth from "./RequireAuth";
@@ -15,6 +16,9 @@ import AdmissionsDash from "../components/dashboard/AdmissionsDash";
 import NotFoundPage from "../components/layout/NotFoundPage";
 import Loader from "../components/ui/Loader";
 import { changeFetching } from "../store/slices/uiSlice";
+// const TrackingId = process.env.REACT_APP_GA_TRACKING_ID;
+const TrackingId = "UA-193000000-1";
+ReactGA.initialize(TrackingId);
 
 const AddNewStudent = React.lazy(() =>
   import("../components/student/AddNewStudent")

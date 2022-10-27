@@ -4,10 +4,14 @@ import { ThemeProvider } from "@mui/material/styles";
 import { SnackbarProvider } from "notistack";
 import { Provider } from "react-redux";
 import "./styles/styles.css";
+import ReactGA from "react-ga";
 import theme from "./theme";
 import store from "./store/store";
 import AppRouter from "./routers/AppRouter";
 import AlertDialog from "./components/ui/AlertDialog";
+// const TrackingId = process.env.REACT_APP_GA_TRACKING_ID;
+const TrackingId = "UA-193000000-1";
+ReactGA.initialize(TrackingId);
 
 const App = () => (
   <Provider store={store}>

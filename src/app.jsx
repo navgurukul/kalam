@@ -10,7 +10,7 @@ import store from "./store/store";
 import AppRouter from "./routers/AppRouter";
 import AlertDialog from "./components/ui/AlertDialog";
 // const TrackingId = process.env.REACT_APP_GA_TRACKING_ID;
-const TrackingId = "UA-193000000-1";
+const TrackingId = "G-CZYKER401E";
 ReactGA.initialize(TrackingId);
 
 const App = () => (

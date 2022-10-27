@@ -17,7 +17,7 @@ import NotFoundPage from "../components/layout/NotFoundPage";
 import Loader from "../components/ui/Loader";
 import { changeFetching } from "../store/slices/uiSlice";
 // const TrackingId = process.env.REACT_APP_GA_TRACKING_ID;
-const TrackingId = "UA-193000000-1";
+const TrackingId = "G-CZYKER401E";
 ReactGA.initialize(TrackingId);
 
 const AddNewStudent = React.lazy(() =>

@@ -25,31 +25,25 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const baseUrl = import.meta.env.VITE_API_URL;
+
 const OutreachDetails = () => {
   const classes = useStyles();
-  const [state, setState] = React.useState({
-    outreachDetails: [],
-    listOfOutreachTeam: [],
+  const [outreachDetails, setOutReachDetails] = React.useState({
+    details: [],
+    teamList: [],
   });
 
   useEffect(() => {
     axios
-      .get("https://join.navgurukul.org/api/outreach/records")
-      .then((Response) => {
-        setState((prevState) => ({
-          ...prevState,
-          outreachDetails: Response.data,
-        }));
-        if (state.outreachDetails) {
-          setState((prevState) => ({
-            ...prevState,
-            listOfOutreachTeam: Object.keys(prevState.outreachDetails),
-          }));
-        }
+      .get(`${baseUrl}outreach/records`)
+      .then((res) => {
+        setOutReachDetails({
+          outreachDetails: res.data,
+          listOfOutreachTeam: Object.keys(res.data),
+        });
       })
-      .catch(() => {
-        // console.error(error);
-      });
+      .catch((err) => console.error(err));
   }, []);
 
   return (
@@ -72,14 +66,14 @@ const OutreachDetails = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {state.listOfOutreachTeam.map((item) => (
+            {outreachDetails.teamList.map((item) => (
               <TableRow key={item}>
                 <TableCell className={classes.tableCell}>{item}</TableCell>
                 <TableCell className={classes.tableCell}>
-                  {state.outreachDetails[item].partners.length}
+                  {outreachDetails.details[item].partners.length}
                 </TableCell>
                 <TableCell className={classes.tableCell}>
-                  {state.outreachDetails[item].partners.reduce(
+                  {outreachDetails.details[item].partners.reduce(
                     (acc, curr) => acc + Object.values(curr)[0],
                     0
                   )}

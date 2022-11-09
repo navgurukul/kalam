@@ -50,6 +50,11 @@ const AddPartner = React.lazy(() => import("../components/partner/AddPartner"));
 const PartnerList = React.lazy(() =>
   import("../components/partner/PartnerList")
 );
+
+const PartnerGroupList = React.lazy(() =>
+  import("../components/partner/PartnerGroupList")
+);
+
 const PartnerStudentsProgressInCampus = React.lazy(() =>
   import("../components/partner/PartnerStudentsProgressInCampus")
 );
@@ -57,9 +62,6 @@ const ProgressMadeForPartner = React.lazy(() =>
   import("../components/partner/progressMade")
 );
 
-const UserMoblieNumber = React.lazy(() =>
-  import("../components/contact/UserMoblieNumber")
-);
 const UpdateMobileNumber = React.lazy(() =>
   import("../components/contact/UpdateMobileNumber")
 );
@@ -205,6 +207,16 @@ const AppRouter = () => {
                 }
               />
               <Route
+                path="groups"
+                element={
+                  <React.Suspense fallback={<Loader container />}>
+                    <RequireAuth privateRoute>
+                      <PartnerGroupList />
+                    </RequireAuth>
+                  </React.Suspense>
+                }
+              />
+              <Route
                 path=":partnerId/assessments/:assessmentId"
                 element={
                   <React.Suspense fallback={<Loader container />}>
@@ -338,16 +350,6 @@ const AppRouter = () => {
                 <React.Suspense fallback={<Loader container />}>
                   <RequireAuth privateRoute>
                     <OutreachDetails />
-                  </RequireAuth>
-                </React.Suspense>
-              }
-            />
-            <Route
-              path="/user/mobile/number"
-              element={
-                <React.Suspense fallback={<Loader container />}>
-                  <RequireAuth>
-                    <UserMoblieNumber />
                   </RequireAuth>
                 </React.Suspense>
               }

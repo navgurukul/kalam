@@ -9,7 +9,7 @@ import StudentService, {
 import DashboardPage from "../dashboard/Dashboard";
 import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
 import StudentsProgressCards from "../student/StudentsProgressCards";
-import GraphingPresentationJob from "../partner/GraphingPresentationJob";
+import PieRechartReport from "../partner/PieRechartReport";
 
 import EvaluationSelect from "../smallComponents/EvaluationSelect";
 import RedFlag from "./FlagModal";
@@ -101,9 +101,7 @@ const CampusStudentsData = () => {
       case 1:
         return <StudentsProgressCards url="allcampus" />;
       case 2:
-        return (
-          <GraphingPresentationJob url="/allcampus/students/distribution" />
-        );
+        return <PieRechartReport url="/allcampus/students/distribution" />;
       default:
         return (
           <DashboardPage

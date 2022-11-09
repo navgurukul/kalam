@@ -22,12 +22,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddMerakiLink = (props) => {
-  const { isValue, studentId } = props;
+const AddMerakiLink = ({ isValue, studentId, updateValue }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const creatMerakiLink = async () => {
-    const { updateValue } = props;
     axios({
       method: "put",
       url: `${baseUrl}partners/${studentId}/merakiLink`,

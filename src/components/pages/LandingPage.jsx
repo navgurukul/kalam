@@ -13,6 +13,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import Grid from "@mui/material/Grid";
 import { makeStyles, ThemeProvider } from "@mui/styles";
+import ReactGA from "react-ga";
 import { changeFetching } from "../../store/slices/uiSlice";
 import VideoSlider from "../ui/VideoSlider";
 import theme from "../../theme";
@@ -229,6 +230,11 @@ const LandingPage = () => {
         localStorage.removeItem("testStarted");
       }
     }
+  }, []);
+
+  useEffect(() => {
+    // non interaction event
+    ReactGA.pageview(window.location.pathname);
   }, []);
 
   const onChangeEvent = (e) => {

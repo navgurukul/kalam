@@ -55,28 +55,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProgressCard = ({ data: [key, detailsData], index, state }) => {
-  const snackbar = useSnackbar();
+const ProgressCard = ({ title, detailsData, index, message }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
-  const icons = [
-    {
-      icon: <AccountBalanceIcon className={classes.image} />,
-    },
-    {
-      icon: <AnnouncementIcon className={classes.image} />,
-    },
-    {
-      icon: <HelpIcon className={classes.image} />,
-    },
-    {
-      icon: <CancelIcon className={classes.image} />,
-    },
-  ];
-  const copyClipBoard = (_key) => (
+  const icons = React.useMemo(
+    () => [
+      {
+        icon: <AccountBalanceIcon className={classes.image} />,
+      },
+      {
+        icon: <AnnouncementIcon className={classes.image} />,
+      },
+      {
+        icon: <HelpIcon className={classes.image} />,
+      },
+      {
+        icon: <CancelIcon className={classes.image} />,
+      },
+    ],
+    []
+  );
+  const copyClipBoard = (copyMessage) => (
     <CopyToClipboard
-      text={_key}
+      text={copyMessage}
       onCopy={() => {
-        snackbar.enqueueSnackbar("Message copied!", {
+        enqueueSnackbar("Message copied!", {
           variant: "success",
         });
       }}
@@ -103,11 +106,11 @@ const ProgressCard = ({ data: [key, detailsData], index, state }) => {
               justify="flex-end"
               alignItems="center"
             >
-              {copyClipBoard(state[key])}
+              {copyClipBoard(message)}
               <br />
               <Tooltip title="Share Details on WhatsApp">
                 <a
-                  href={`https://api.whatsapp.com/send?text=${state[key]}`}
+                  href={`https://api.whatsapp.com/send?text=${message}`}
                   data-action="share/whatsapp/share"
                 >
                   <Avatar
@@ -127,14 +130,14 @@ const ProgressCard = ({ data: [key, detailsData], index, state }) => {
               justify="flex-end"
               alignItems="center"
             >
-              {copyClipBoard(state[key])}
+              {copyClipBoard(message)}
             </Grid>
           )}
           <br />
           <center>{icons[index].icon}</center>
           <br />
           <center>
-            <Typography variant="h5">{key}</Typography>
+            <Typography variant="h5">{title}</Typography>
           </center>
         </div>
         {Object.entries(detailsData).map(([stage, studentDetails]) => (

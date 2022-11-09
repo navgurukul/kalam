@@ -32,7 +32,7 @@ import { Link, useLocation } from "react-router-dom";
 import Image from "@jy95/material-ui-image";
 import logo from "../../assets/img/logo.png";
 
-import PrivateNavList from "./navs/privateNav";
+import NavList from "./navs";
 import { logout } from "../../store/slices/authSlice";
 
 import ModalStages from "./ModalStages";
@@ -46,7 +46,10 @@ const Header = () => {
   const { isFetching, drawerOpen, lang } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
   const startLogout = () => dispatch(logout());
-  const toggleDrawer = () => dispatch(toggleDrawerAction());
+  const toggleDrawer = React.useCallback(
+    () => dispatch(toggleDrawerAction()),
+    []
+  );
   const onLangChange = (e) => dispatch(changeLanguage(e.target.value));
   const location = useLocation();
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -66,8 +69,10 @@ const Header = () => {
     }
   };
 
-  const renderProgressBar = () =>
-    isFetching ? <LinearProgress color="primary" /> : <span />;
+  const renderProgressBar = React.useCallback(
+    () => isFetching && <LinearProgress color="primary" />,
+    [isFetching]
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -84,11 +89,13 @@ const Header = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   return (
     <>
       <Drawer
         open={drawerOpen}
         onClose={toggleDrawer}
+        keepMounted
         style={{ display: "flex", flexDirection: "column" }}
       >
         <Box
@@ -105,7 +112,7 @@ const Header = () => {
         </Box>
         <div tabIndex={0} role="button">
           <div className="sidelistwrapper">
-            {isAuthenticated && <PrivateNavList toggleDrawer={toggleDrawer} />}
+            {isAuthenticated && <NavList toggleDrawer={toggleDrawer} />}
           </div>
         </div>
       </Drawer>
@@ -114,7 +121,6 @@ const Header = () => {
           id="appheader"
           position="fixed"
           color="default"
-          // onScroll={handleScroll()}
           style={{
             boxShadow: !appBarScroll && "none",
             backgroundColor: !appBarScroll && "white",
@@ -123,7 +129,7 @@ const Header = () => {
           {renderProgressBar()}
           <Toolbar style={{ display: "flex" }}>
             {/* <Box style={{ display: "flex" }}> */}
-            {!isAuthenticated ? null : (
+            {isAuthenticated && (
               <IconButton
                 className="iconbuttonsyle"
                 size="large"

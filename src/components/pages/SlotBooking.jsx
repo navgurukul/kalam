@@ -71,6 +71,7 @@ const SlotBooking = () => {
   const [date, setDate] = React.useState(new Date());
   const [studentData, setStudentData] = React.useState({});
   const [timings, setTimings] = React.useState(defaultTimings);
+  const allowedSlotBookingDays = 15;
 
   const handleDateChange = (newDate) => {
     const d = dayjs(newDate);
@@ -179,11 +180,6 @@ const SlotBooking = () => {
         enqueueSnackbar("Couldn't Book Slot!", { variant: "error" });
       });
   };
-  const disablePrevDates = () => {
-    const yesterday = new Date(Date.now() - 86400000);
-    const startSeconds = Date.parse(yesterday);
-    return (_date) => Date.parse(_date) < startSeconds;
-  };
 
   return loading ? (
     <Loader />
@@ -225,7 +221,16 @@ const SlotBooking = () => {
                 onChange={(dates) => {
                   handleDateChange(dates);
                 }}
-                shouldDisableDate={disablePrevDates()}
+                // shouldDisableDate={disablePrevDates()}
+                shouldDisableDate={(currentDate) =>
+                  dayjs(currentDate).isAfter(
+                    dayjs().set(
+                      "date",
+                      dayjs().get("date") + allowedSlotBookingDays
+                    )
+                  )
+                }
+                disablePast
                 inputVariant="outlined"
                 fullWidth
                 KeyboardButtonProps={{

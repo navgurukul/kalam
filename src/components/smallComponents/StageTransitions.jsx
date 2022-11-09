@@ -13,7 +13,7 @@ import { useLocation } from "react-router-dom";
 import theme from "../../theme";
 import { changeFetching } from "../../store/slices/uiSlice";
 import { setSelectedStudent } from "../../store/slices/studentSlice";
-import GlobalService from "../../services/GlobalService";
+import { tableIcons } from "../../services/GlobalService";
 // eslint-disable-next-line import/no-cycle
 import StudentService from "../../services/StudentService";
 import StudentContact from "../contact/StudentContact";
@@ -261,7 +261,7 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
           <MUIDataTable
             columns={StudentService.columns[dataType]}
             data={selectedStudent?.transitions || []}
-            icons={GlobalService.tableIcons}
+            icons={tableIcons}
             options={options}
           />
         </Box>

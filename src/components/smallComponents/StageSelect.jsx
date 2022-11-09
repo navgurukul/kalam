@@ -3,6 +3,7 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { HalfCircleSpinner } from "react-epic-spinners";
 import {
   DialogTitle,
   DialogActions,
@@ -14,12 +15,17 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as _ from "underscore";
 // eslint-disable-next-line import/no-cycle
 import StudentService from "../../services/StudentService";
 import { getColumnIndex } from "../../utils";
-import { campusStatusOptions, nextStage } from "../../utils/constants";
+import {
+  campusStatusDisplayOptions,
+  campusStatusOptions,
+  nextStage,
+} from "../../utils/constants";
+import { setCounts } from "../../store/slices/campusSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
@@ -27,7 +33,10 @@ const animatedComponents = makeAnimated();
 const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const { enqueueSnackbar } = useSnackbar();
   // const isCampusPathname = window.location.pathname.indexOf("campus");
+  const dispatch = useDispatch();
+  const setCampusCounts = (counts) => dispatch(setCounts(counts));
   const { loggedInUser } = useSelector((state) => state.auth);
+  const { allStatusCount } = useSelector((state) => state.campus);
 
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
@@ -41,6 +50,9 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       cc: "",
     },
   });
+  const [loading, setLoading] = React.useState(false);
+
+  const toggleLoading = () => setLoading((prev) => !prev);
 
   // const getTransitionStage = (studentId) => {
   //   axios
@@ -74,12 +86,19 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
 
   const handleCampusStatusChange = (e) => {
     const studentId = rowMetatable.rowData[0];
+    const currentStatus = stage.campus_status;
     axios
       .put(`${baseUrl}students/updateDetails/${studentId}`, {
         campus_status: e.target.value,
       })
       .then(() => {
-        // setCampusStatus(e.target.value);
+        const updatedCount = { ...allStatusCount };
+        if (campusStatusDisplayOptions.includes(currentStatus))
+          updatedCount[currentStatus] -= 1;
+        updatedCount[e.target.value] = updatedCount[e.target.value]
+          ? updatedCount[e.target.value] + 1
+          : 1;
+        setCampusCounts(updatedCount);
         change({ ...stage, campus_status: e.target.value });
         enqueueSnackbar("Updated Campus Status", { variant: "success" });
       })
@@ -95,7 +114,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         transition_done_by: loggedInUser.user_name,
       })
       .then(() => {
-        enqueueSnackbar("stage is successfully changed!", {
+        enqueueSnackbar("Stage Updated!", {
           variant: "success",
         });
         change(isCampus ? { ...stage, stage: label } : label);
@@ -145,6 +164,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   };
 
   const sendOfferLetter = () => {
+    toggleLoading();
     axios
       .post(
         `https://connect.merakilearn.org/api/offerLetter/admissions`,
@@ -152,11 +172,12 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       )
       .then(() => {
         enqueueSnackbar(
-          `Joining letter  successfully sent to ${state.payload.name} at ${state.payload.receiverEmail} email id`,
+          `Joining letter successfully sent to ${state.payload.receiverEmail}`,
           {
             variant: "success",
           }
         );
+        toggleLoading();
         setState({
           ...state,
           flag: false,
@@ -170,11 +191,17 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         enqueueSnackbar(`Something went wrong`, {
           variant: "error",
         });
+        toggleLoading();
+        setState({
+          ...state,
+          flag: false,
+        });
       });
   };
 
   const handleClose = (e, clickaway) => {
     if (clickaway) return;
+    toggleLoading();
     setState({
       ...state,
       flag: false,
@@ -291,11 +318,11 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           Do you want to send Joining letter ?
         </DialogTitle>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button disabled={loading} onClick={handleClose} color="primary">
             NO
           </Button>
-          <Button onClick={sendOfferLetter} color="primary">
-            YES
+          <Button disabled={loading} onClick={sendOfferLetter} color="primary">
+            {loading ? <HalfCircleSpinner size={24} color="#f05f40" /> : "YES"}
           </Button>
         </DialogActions>
       </Dialog>

@@ -2,7 +2,7 @@ export const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
 export const customPartner = ["amravati", "lahia"];
 export const testClosed = {
-  partners: ["amravati", "lahia"],
+  partners: [],
   message: "Tests have now been closed!",
 };
 
@@ -457,6 +457,12 @@ export const states = {
   WB: "West Bengal",
 };
 
+export const genders = {
+  1: "Female",
+  2: "Male",
+  3: "Transgender",
+};
+
 export const campus = [
   { id: 1, name: "Pune" },
   { id: 2, name: "Dharamshala" },
@@ -464,7 +470,7 @@ export const campus = [
   { id: 4, name: "Sarjapura" },
   { id: 5, name: "Tripura" },
   { id: 6, name: "Delhi" },
-  // { id: 7, name: "Punjab" },
+  { id: 7, name: "Amravati" },
 ];
 
 export const donor = [

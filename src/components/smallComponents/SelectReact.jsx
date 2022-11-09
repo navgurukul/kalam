@@ -1,21 +1,28 @@
 import React from "react";
 import Select from "react-select";
 
-const SelectReact = (props) => {
-  const { value } = props;
+const SelectReact = ({
+  value,
+  options,
+  onChange,
+  filterList,
+  index,
+  column,
+  label,
+}) => {
   const [selectedOption, setSelectedOption] = React.useState({
     value,
-    label: value,
+    label: label ?? value,
   });
-  const { options, onChange, filterList, index, column } = props;
 
   return (
     <Select
       value={selectedOption}
       onChange={(event) => {
-        filterList[index] = [event.value];
+        const newFilterList = [...filterList];
+        newFilterList[index] = [event.value];
         setSelectedOption(event);
-        onChange(filterList[index], index, column);
+        onChange(newFilterList[index], index, column);
       }}
       options={options}
       styles={{

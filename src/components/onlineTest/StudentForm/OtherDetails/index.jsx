@@ -12,6 +12,7 @@ import {
   FormControl,
   Select,
 } from "@mui/material";
+import axios from "axios";
 import { Controller } from "react-hook-form";
 import { states, customPartner } from "../../../../utils/constants";
 
@@ -257,20 +258,19 @@ function OtherDetails(props) {
       setDistricts(newDistricts);
       return;
     }
-    fetch(
-      `https://api.countrystatecity.in/v1/countries/IN/states/${_state}/cities`, //API URL
-      {
-        headers: {
-          accept: "application/json",
-          "X-CSCAPI-KEY":
-            "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
-        },
-      }
-    ).then((response) => {
-      response.json().then((data) => {
+    axios
+      .get(
+        `https://api.countrystatecity.in/v1/countries/IN/states/${_state}/cities`, //API URL
+        {
+          headers: {
+            "X-CSCAPI-KEY":
+              "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
+          },
+        }
+      )
+      .then(({ data }) => {
         setDistricts(data);
       });
-    });
   }
 
   const addrState = watch("state");
@@ -602,8 +602,8 @@ function OtherDetails(props) {
                     inputRef={ref}
                     {...rest}
                     fullWidth
-                    label={langOptions.percentage_in10th[lang]}
-                    placeholder={langOptions.percentage_in10th[lang]}
+                    label={langOptions.class10th[lang]}
+                    placeholder={langOptions.class10th[lang]}
                     type="number"
                     autoComplete="off"
                     error={!!errors.percentage_in10th}
@@ -611,8 +611,8 @@ function OtherDetails(props) {
                       errors.percentage_in10th
                         ? errors.percentage_in10th.type === "max" ||
                           errors.percentage_in10th.type === "min"
-                          ? langOptions.percentage_in10th.error.max[lang]
-                          : langOptions.percentage_in10th.error[lang]
+                          ? langOptions.class10th.error.max[lang]
+                          : langOptions.class10th.error[lang]
                         : "Ex. 86.40"
                     }
                   />

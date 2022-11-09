@@ -1,12 +1,13 @@
 import React from "react";
-import { Button, Typography, Modal } from "@mui/material";
+import { Button, Modal } from "@mui/material";
+import { Box } from "@mui/system";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import { makeStyles } from "@mui/styles";
 import MUIDataTable from "mui-datatables";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import CsvUpload from "../smallComponents/Uploadcsv";
-import GlobalService from "../../services/GlobalService";
+import { tableIcons } from "../../services/GlobalService";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -41,14 +42,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ModalStages = (props) => {
-  const { partnerId } = props;
+const ModalStages = ({ partnerId }) => {
   const classes = useStyles();
-  const [state, setState] = React.useState({
-    modalOpen: false,
-    data: [],
-    partnerId: null,
-  });
+  const [assesstmentData, setAssessmentData] = React.useState([]);
+  const [modalOpen, setModalOpen] = React.useState(false);
   const columns = [
     {
       label: "ID",
@@ -140,17 +137,13 @@ const ModalStages = (props) => {
     },
   ];
 
-  const handleClose = () => {
-    setState((prevState) => ({
-      ...prevState,
-      modalOpen: false,
-    }));
-  };
+  const toggleModal = () => setModalOpen((prev) => !prev);
+
   const fetchAssessments = async () => {
     try {
       const dataURL = `${baseUrl}partners/${partnerId}/assessments`;
       const response = await axios.get(dataURL);
-      setState((prevState) => ({ ...prevState, data: response.data.data }));
+      setAssessmentData(response.data.data);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error(e);
@@ -159,36 +152,33 @@ const ModalStages = (props) => {
 
   const handleOpen = () => {
     fetchAssessments();
-    setState((prevState) => ({
-      ...prevState,
-      modalOpen: true,
-    }));
-    // props.modalOpen = true
+    toggleModal();
   };
 
   const modalStyle = getModalStyle();
 
-  return !state.modalOpen ? (
+  return !modalOpen ? (
     <Button color="primary" align="right" onClick={handleOpen}>
       <AssessmentIcon color="primary" />
       &nbsp;&nbsp;
     </Button>
   ) : (
-    <Modal open={state.modalOpen} onClose={handleClose}>
-      <div style={modalStyle} className={classes.paper}>
-        <Typography
+    <Modal open={modalOpen} onClose={toggleModal}>
+      <Box style={modalStyle} className={classes.paper}>
+        {/* <Typography
           variant="h5"
           id="modal-title"
-          style={{ backgroundColor: "red" }}
+          // style={{ backgroundColor: "red" }}
         >
           View Assessments
           <br />
-        </Typography>
+        </Typography> */}
 
         <MUIDataTable
+          title="View Assessments"
           columns={columns}
-          data={state.data}
-          icons={GlobalService.tableIcons}
+          data={assesstmentData}
+          icons={tableIcons}
           options={{
             exportButton: true,
             pageSize: 100,
@@ -202,7 +192,7 @@ const ModalStages = (props) => {
           }}
           style={{ maxWidth: "90%", margin: "0 auto", marginTop: 25 }}
         />
-      </div>
+      </Box>
     </Modal>
   );
 };

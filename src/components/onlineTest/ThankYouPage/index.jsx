@@ -3,6 +3,7 @@ import { makeStyles } from "@mui/styles";
 import { Typography, Button, Link, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -93,15 +94,13 @@ function ThankYouPage({ userID }) {
   };
 
   useEffect(() => {
-    fetch(
-      `${baseUrl}/on_assessment/Show_testResult/${
-        location.pathname.split("/")[2]
-      }`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setTotalMarks(data.total_marks);
-      });
+    axios
+      .get(
+        `${baseUrl}/on_assessment/Show_testResult/${
+          location.pathname.split("/")[2]
+        }`
+      )
+      .then(({ data }) => setTotalMarks(data.total_marks));
   }, []);
 
   return (

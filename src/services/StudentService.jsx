@@ -1,6 +1,5 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React from "react";
 import dayjs from "dayjs";
 import { Avatar } from "@mui/material";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -44,10 +43,12 @@ import UploadDocuments from "../components/smallComponents/UploadDocuments";
 import OtherActivities from "../components/campus/OtherActivities";
 import DeleteStudent from "../components/smallComponents/DeleteStudent";
 import { getColumnIndex } from "../utils";
+import axios from "axios";
+import StageMarks from "../components/smallComponents/StageMarks";
 
 dayjs.extend(customParseFormat);
 
-// const baseURL = import.meta.env.VITE_API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const keysCampusStageOfLearning = Object.keys(campusStageOfLearning);
 // const allStagesOptions = Object.keys(allStages).map((x) => {
@@ -72,16 +73,16 @@ const ColumnTransitions = {
     filter: false,
     sort: false,
     customBodyRender: (value, rowMeta) => (
-      <StageTransitions
-        studentId={value}
-        studentName={
-          rowMeta.rowData[
-            // eslint-disable-next-line no-use-before-define
-            getColumnIndex(StudentService.columns.softwareCourse, "name")
-          ]
-        }
-        dataType="columnTransition"
-      />
+        <StageTransitions
+          studentId={value}
+          studentName={
+            rowMeta.rowData[
+              // eslint-disable-next-line no-use-before-define
+              getColumnIndex(StudentService.columns.softwareCourse, "name")
+            ]
+          }
+          dataType="columnTransition"
+        />
     ),
   },
 };
@@ -690,6 +691,14 @@ const marksColumn = {
   options: {
     filter: false,
     sort: true,
+    customBodyRender: (value) => {
+      return (
+        <>
+        <StageMarks value={value}/> 
+        {value.marks}
+        </>
+      );
+    },
   },
 };
 
@@ -1661,6 +1670,8 @@ const profileImage = {
   },
 };
 
+
+
 const dConvert = (data) => {
   const x = { ...data };
   const getKeyByValue = (object, value) =>
@@ -1678,6 +1689,7 @@ const dConvert = (data) => {
     ? parseInt(x.enrolmentKey[x.enrolmentKey.length - 1].total_marks, 10)
     : null;
   x.marks = isNaN(x.marks) ? null : x.marks;
+
   x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;
   x.age = x.dob ? new Date().getFullYear() - +x.dob.slice(0, 4) : "NA";
   x.studentOwner = x.feedbacks ? x.feedbacks.to_assign : x.to_assign;

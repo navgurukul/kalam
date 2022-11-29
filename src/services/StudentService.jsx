@@ -693,10 +693,12 @@ const marksColumn = {
     sort: true,
     customBodyRender: (value) => {
       return (
-        <>
-        <StageMarks value={value}/> 
+        
+        <div style={{display:"flex",alignItems:"center" }}>
         {value.marks}
-        </>
+        <StageMarks value={value}/> 
+        </div>
+        
       );
     },
   },

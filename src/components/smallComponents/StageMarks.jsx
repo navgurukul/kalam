@@ -2,17 +2,15 @@ import * as React from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import { IconButton } from "@mui/material";
-import FeedOutlinedIcon from "@mui/icons-material/FeedOutlined";
-import CancelSharpIcon from '@mui/icons-material/CancelSharp';
+import CancelSharpIcon from "@mui/icons-material/CancelSharp";
+import InfoIcon from "@mui/icons-material/Info";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
 const StageMarks = ({ value }) => {
   const [open, setOpen] = React.useState(false);
-  const theme = useTheme();
   const [DBdata, setDBdata] = React.useState(null);
 
   const handleClickOpen = async () => {
@@ -21,28 +19,29 @@ const StageMarks = ({ value }) => {
         `${baseURL}/questions/attempts/${value.id.id}`
       );
       // console.log(data, ">>>>>>>>>>>>>>>>>");
-      // console.log(data);
       setDBdata(data);
       setOpen(true);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
+      setDBdata(null);
+      setOpen(true);
     }
   };
 
   const handleClose = () => {
     setOpen(false);
   };
-
   return (
     <>
       {!open ? (
-        <button onClick={handleClickOpen}>
-          <FeedOutlinedIcon />
-        </button>
+        <InfoIcon
+          onClick={handleClickOpen}
+          style={{ width: "2rem", marginLeft: ".2rem", cursor: "pointer" }}
+        />
       ) : (
-        <div >
+        <div>
           <Dialog
-          sx={{ pt: 6 , m:7 ,w:72 }}
+            sx={{ pt: 6, m: 15, w: 72 }}
             size="small"
             fullScreen
             open={open}
@@ -55,25 +54,52 @@ const StageMarks = ({ value }) => {
               onClick={handleClose}
               aria-label="close"
             >
-              <CancelSharpIcon/>
+              <CancelSharpIcon />
             </IconButton>
-            <h1
-            sx={{ px:7 }}
-            >Questions and Answers</h1>
-            <DialogContent 
-            >
-              {DBdata.map((el) => {
-                return (
-                  <>
-                    <DialogContentText>
-                      <p><strong>  {el[1][0].en_text.replace(/\<p>/gi,"")}</strong></p>
-                    </DialogContentText>
-                      <p>{el[0].text_answer}</p>
-                  </>
-                );
-              })}
+            <span style={{ display: "flex", alignItems: "center" }}>
+              <img
+                style={{ marginLeft: "2rem" }}
+                src="https://emojipedia-us.s3.amazonaws.com/source/microsoft-teams/337/brain_1f9e0.png"
+                alt="brainIcon"
+                width={100}
+              />
+              <h1 style={{ marginLeft: "2rem" }}>Questions and Answers</h1>
+            </span>
+            <DialogContent>
+              {DBdata ? (
+                <>
+                  {DBdata.map((el, index) => {
+                    return (
+                      <div key={index} >
+                        <DialogContentText  mt={8}>
+                          <strong>
+                            Question {index + 1}) &nbsp;{" "}
+                            {el[1][0].en_text
+                              .replace(/\<p>/gi, "")
+                              .replace("</p>", "")}
+                          </strong>
+
+                          <p
+                            dangerouslySetInnerHTML={{
+                              __html: el[1][0].common_text,
+                            }}
+                          ></p>
+                          <p>
+                            <strong>Answer - </strong> {el[0].text_answer || el[0].selected_option_id}
+                          </p>
+                        </DialogContentText>
+                      </div>
+                    );
+                  })}
+                </>
+              ) : (
+                <DialogContentText >
+                  <h1 align="center" > No Data Found</h1>
+                  </DialogContentText>
+              )}
             </DialogContent>
           </Dialog>
+
         </div>
       )}
     </>

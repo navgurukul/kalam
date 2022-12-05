@@ -143,7 +143,7 @@ const LoginDesign = () => {
               onSuccess={handleLogin}
               onFailure={errr}
               scope="profile email"
-            />
+            />        
           </Box>
           <Box style={{ height: theme.spacing(7) }} />
           <Box className={classes.quoteContainer}>

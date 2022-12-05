@@ -14,8 +14,10 @@ import {
 } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useSnackbar } from "notistack";
-import { DatePicker, LocalizationProvider } from "@mui/lab";
+import { DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import DateFnsUtils from "@mui/lab/AdapterDateFns";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { makeStyles } from "@mui/styles";
 import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
@@ -178,6 +180,7 @@ const BasicDetails = ({
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const [value, setValue] = React.useState(null);
   const uploadProfilePhoto = (e) => {
     const file = e.target.files[0];
     //check if file size is greater than 1mb
@@ -346,8 +349,8 @@ const BasicDetails = ({
               field: { ref, ...rest },
               fieldState: { isTouched },
             }) => (
-              <LocalizationProvider dateAdapter={DateFnsUtils}>
-                <DatePicker
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                {/* <DatePicker
                   disableFuture
                   disabled={inputDisabled && formData.dob !== null}
                   // margin="normal"
@@ -375,7 +378,15 @@ const BasicDetails = ({
                   placeholder={langOptions.dob[lang]}
                   error={!!errors.dob}
                   {...rest}
-                />
+                /> */}
+                <DatePicker
+                  label="Basic example"
+                  value={value}
+                  onChange={(newValue) => {
+                    setValue(newValue);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+              />
               </LocalizationProvider>
             )}
           />

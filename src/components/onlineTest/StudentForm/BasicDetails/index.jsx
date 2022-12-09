@@ -182,7 +182,7 @@ const BasicDetails = ({
   const uploadProfilePhoto = (e) => {
     const file = e.target.files[0];
     //check if file size is greater than 1mb
-    if (file.size > 1000000) {
+    if (file.size > 5000000) {
       enqueueSnackbar("File size should not exceed 1MB", { variant: "error" });
       return;
     }

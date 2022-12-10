@@ -22,7 +22,7 @@ export const dConvert = (data, isCampus) => {
     ? parseInt(x.enrolmentKey[0].total_marks, 10)
     // ?  { marks:parseInt(x.enrolmentKey[0].total_marks, 10),id:x.enrolmentKey[0]}
     : null;
-    x.marks = isNaN(x.marks) ? {marks:"N/A",id:x.enrolmentKey[0]} : {marks:x.marks,id:x.enrolmentKey[0]};
+    x.marks = isNaN(x.marks) ? {marks:"N/A",id:x.enrolmentKey} : {marks:x.marks,id:x.enrolmentKey};
   // x.marks = isNaN(x.marks) ? "N/A" : x.marks;
   x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;
   x.age = x.dob ? new Date().getFullYear() - +x.dob.slice(0, 4) : "NA";

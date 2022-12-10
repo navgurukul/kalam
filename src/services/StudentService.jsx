@@ -45,6 +45,7 @@ import DeleteStudent from "../components/smallComponents/DeleteStudent";
 import { getColumnIndex } from "../utils";
 import axios from "axios";
 import StageMarks from "../components/smallComponents/StageMarks";
+import TestAttemptModel from "../components/smallComponents/TestAttemptModel";
 
 dayjs.extend(customParseFormat);
 
@@ -73,16 +74,16 @@ const ColumnTransitions = {
     filter: false,
     sort: false,
     customBodyRender: (value, rowMeta) => (
-        <StageTransitions
-          studentId={value}
-          studentName={
-            rowMeta.rowData[
-              // eslint-disable-next-line no-use-before-define
-              getColumnIndex(StudentService.columns.softwareCourse, "name")
-            ]
-          }
-          dataType="columnTransition"
-        />
+      <StageTransitions
+        studentId={value}
+        studentName={
+          rowMeta.rowData[
+            // eslint-disable-next-line no-use-before-define
+            getColumnIndex(StudentService.columns.softwareCourse, "name")
+          ]
+        }
+        dataType="columnTransition"
+      />
     ),
   },
 };
@@ -692,17 +693,19 @@ const marksColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
+    let CheckAttempt = value.id.filter(marks=>{return marks.total_marks})
       return (
-        
-        <div style={{display:"flex",alignItems:"center" }}>
-        {value.marks}
-        <StageMarks value={value}/> 
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {CheckAttempt.length >0 ? 
+          <TestAttemptModel value={CheckAttempt}/>:"N/A"
+        }
         </div>
-        
       );
     },
   },
 };
+
+
 
 const ageColumn = {
   name: "age",
@@ -1671,8 +1674,6 @@ const profileImage = {
       ),
   },
 };
-
-
 
 const dConvert = (data) => {
   const x = { ...data };

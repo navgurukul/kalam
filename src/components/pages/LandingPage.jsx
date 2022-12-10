@@ -145,7 +145,7 @@ const LandingPage = () => {
       ma: "प्रवेश परीक्षा सुरू करा",
     },
     TestButton: {
-      en: "GIVE TEST",
+      en: "GIVE TEST / CHECK RESULT",
       hi: "परीक्षा दे।",
       ma: "परीक्षा द्या.",
     },

@@ -158,7 +158,7 @@ const langOptions = {
         ma: "लिंग निवडा",
       },
       { key: "female", en: "Female", hi: "महिला", ma: "स्त्री" },
-      {key:"male", en: "Male", hi: "पुरुष", ma: "पुरुष" },
+      // {key:"male", en: "Male", hi: "पुरुष", ma: "पुरुष" },
       // {key:"other", en: "Other", hi: "अन्य", ma: "इतर" },
       { key: "trans", en: "Transwomen", hi: "ट्रांसवुमेन", ma: "ट्रांसवुमेन" },
     ],
@@ -504,8 +504,8 @@ const BasicDetails = ({
                 if (
                   gender === "female" ||
                   gender === "other" ||
-                  gender === "trans"||
-                  gender === "male"
+                  gender === "trans"
+                  // gender === "male"
                 )
                   return true;
                 enqueueSnackbar("Currently, Males cannot appear for the Test", {

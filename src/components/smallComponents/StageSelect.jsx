@@ -31,6 +31,7 @@ const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
 const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
+  //console.log("TYPE--",typeof(stage));
   const { enqueueSnackbar } = useSnackbar();
   // const isCampusPathname = window.location.pathname.indexOf("campus");
   const dispatch = useDispatch();

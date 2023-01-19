@@ -27,6 +27,7 @@ import SelectReact from "../components/smallComponents/SelectReact";
 
 import SurveyForm from "../components/smallComponents/SurveyForm";
 import UpdatePartner from "../components/partner/UpdatePartner";
+import UpdateSchool from "../components/student/UpdateSchool";
 import DeadLineDateUpdate from "../components/smallComponents/DeadlineDateUpdate";
 import EndDateUpdate from "../components/smallComponents/EndDateUpdate";
 import {
@@ -406,7 +407,6 @@ const AudioPlayer = {
       const ifExistingFeedback =
         rowMeta.rowData[2] ||
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
-      // console.log(value);
       return (
         <div style={{ width: "100%" }}>
           {!ifExistingFeedback && !value ? (
@@ -927,6 +927,7 @@ const donorColumn = {
 };
 
 const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
+  //console.log("STAGE Value---",value);
   const { privileges } = useSelector((state) => state.auth);
   const isCampusPathname = window.location.pathname.indexOf("campus");
   return privileges?.some((priv) => priv.privilege === "UpdateStage") ? (
@@ -937,6 +938,7 @@ const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
       allStages={isCampusPathname > -1 ? campusStageOfLearning : allStages}
       change={(event) => updateValue(event)}
     />
+
   ) : (
     <p>{value}</p>
   );
@@ -1544,6 +1546,68 @@ const ColumnTransitionsStatus = {
     ),
   },
 };
+//---------------------------------------------SCHOOL START---------------
+
+const DashboardSchoolColumnWrapper = ({ value, rowMeta, updateValue}) => {
+  //console.log("School value--", value);
+  const { privileges } = useSelector((state) => state.auth);
+  return privileges.some(
+    (priv) => priv.privilege === "UpdateStudentPartner" 
+  ) ? (
+    <UpdateSchool
+      studentId={rowMeta.rowData[0]}
+      value={value}
+      rowMeta={rowMeta}
+      change={(event) => updateValue(event)}
+    />
+  ) : (
+    <p>{value}</p>
+  );
+};
+
+const dashboardSchoolColumn = {
+  label: "School",
+  name: "school",
+  options: {
+    filter: true,
+    sort: true,
+    filterType: "custom",
+    filterOptions: {
+      display: (filterlist, onChange, index, column) => (
+        <div>
+          <label style={Lables}>School</label>
+          <SelectReact
+            // options={[
+            //   "All",
+            //   ...JSON.parse(localStorage.getItem("schools")),
+            // ].map((school) => ({
+            //   value: school,
+            //   label: school,
+            // }))}
+            filterList={filterlist}
+            onChange={onChange}
+            index={index}
+            column={column}
+            value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+          />
+        
+        </div>
+      ),
+    },
+    customBodyRender: (value, rowMeta, updateValue) => 
+    (
+      <DashboardSchoolColumnWrapper
+        value={value}
+        rowMeta={rowMeta}
+        updateValue={updateValue}
+      />
+    ),
+    // {
+    //   console.log("rowMeta data",rowMeta);
+    // }
+  },
+}; 
+
 
 const DashboardPartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
@@ -1560,6 +1624,7 @@ const DashboardPartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
   );
 };
 
+// this
 const dashboardPartnerNameColumn = {
   label: "Partner Name",
   name: "partnerName",
@@ -1659,7 +1724,8 @@ const profileImage = {
     sort: false,
     customBodyRender: (value, rowMeta) =>
       value !== null ? (
-        <Avatar
+        <> 
+          <Avatar
           src={value}
           alt={rowMeta.rowData[2]}
           style={{
@@ -1669,6 +1735,8 @@ const profileImage = {
             // objectFit: "cover",
           }}
         />
+        </>
+      
       ) : (
         <p> </p>
       ),
@@ -1734,6 +1802,7 @@ const StudentService = {
       dashboardOwnerColumnMyreport,
       dashboardStatusColumn,
       deadlineColumn,
+      dashboardSchoolColumn, // added now
       dashboardPartnerNameColumn,
       onlineClassColumn,
       ageColumn,
@@ -1843,6 +1912,7 @@ const StudentService = {
     kitneAurDin,
     kitneDinLagenge,
     QualificationColumn,
+    //schoolColumn,  // added now
     partnerNameColumn,
     campusColumn,
   ],

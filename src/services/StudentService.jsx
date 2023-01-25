@@ -1047,7 +1047,7 @@ const lastUpdatedColumn = {
 
 const JobKabLagegiColumn = {
   name: "jobKabLagega",
-  label: "Job Kab Lagegi",
+  label: "Job Kab Lagegi..",
   options: {
     filter: false,
     sort: true,

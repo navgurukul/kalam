@@ -132,7 +132,7 @@ const columns = [
 ];
 // let filterFns = [];
 
-const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
+const OverviewData = ({ displayData, title, url, isCampus = false}) => {
   const location = useLocation();
   const { students, allStudents, fromDate, toDate, allStatusCount } =
     useSelector((state) => state.campus);
@@ -363,7 +363,10 @@ const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
         />
       </Grid>
 
-      {/* <Grid item xs={12} md={12} lg={6}>
+
+      {/* CAMPUS COUNT */}
+
+      <Grid item xs={12} md={12} lg={6}>
         <MUIDataTable
           columns={Object.keys(allStatusCount).map((statusKey) => ({
             name: statusKey,
@@ -372,7 +375,7 @@ const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
               display: campusStatusOptions[statusKey]?.display ?? true,
             },
           }))}
-          title="Campus Counts"
+          title="Campus Counts overview.."
           data={[allStatusCount]}
           options={{
             customFooter: noFooter,
@@ -386,7 +389,7 @@ const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
             toolbar: false,
           }}
         />
-      </Grid> */}
+      </Grid>
     </Grid>
   );
   return (
@@ -395,13 +398,12 @@ const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
       <MainLayout
         tableBodyMaxHeight="56vh"
         title={title}
-        columns={[...displayData, ...columns]}
+       columns={[...displayData, ...columns]}
         onDownload={onDownload}
         data={students}
         showLoader={loading}
-        options={options}
       />
     </Box>
   );
 };
-export default DashboardPage;
+export default OverviewData;

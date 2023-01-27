@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useSelector } from "react-redux";
 import MainLayout from "../muiTables/MainLayout";
-import ToolbarAddCampuses from "./ToolbarAddCampuses";
+import ToolbarAddButtonSchool from "./ToolbarAddButtonSchool";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState } from "react";
 import {
   Button,
   Dialog,
   DialogContent,
+  DialogActions,
   Container,
   Select as MUISelect,
   TextField,
@@ -31,17 +31,14 @@ const columns = [
     },
   },
   {
-    name: "campus",
-    label: "Name",
+    name: "name",
+    label: "Schools",
     options: {
       filter: true,
       sort: true,
       customBodyRender: (value, rowMeta) => {
         const id = rowMeta.rowData[0];
-        const url =
-          value === "All"
-            ? `/campus/allcampus/`
-            : `/campus/${id}/students`;
+        const url = `/school/${id}/school-stages`;
         return (
           <Link to={url} style={{ color: "#f05f40" }}>
             {value}
@@ -52,26 +49,23 @@ const columns = [
   },
 ];
 
-const CampusList = () => {
+const SchoolData = () => {
   const { loggedInUser, roles } = useSelector((state) => state.auth);
-
-  const [campusList, setCampusList] = React.useState([]);
+  const [schoolList, setSchoolList] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-  const [campusDialog, setCampusDialog] = useState(false);
-  const [inputData, setInputData] = useState({ campus: "", address: "" });
+  const [schoolDialog, setSchoolDialog] = useState(false);
+  const [inputData, setInputData] = useState("");
 
   const handleOpenSubmit = async () => {
-    if (inputData.campus && inputData.address) {
-      const dataURL = `${baseUrl}campus`;
-      await axios.post(dataURL, inputData);
-      setInputData("");
-      fetchCampus();
-      setCampusDialog(false);
-    }
+    const dataURL = `${baseUrl}school`;
+    await axios.post(dataURL, { name: inputData });
+    setInputData("");
+    fetchSchool();
+    setSchoolDialog(false);
   };
 
-  const openCampusesDialog = () => {
-    setCampusDialog(true);
+  const openSchoolDialog = () => {
+    setSchoolDialog(true);
   };
 
   const options = {
@@ -79,55 +73,52 @@ const CampusList = () => {
     responsive: "vertical",
     filter: false,
     customToolbar: React.useCallback(
-      () => <ToolbarAddCampuses handleOpen={openCampusesDialog} />,
+      () => <ToolbarAddButtonSchool handleOpen={openSchoolDialog} />,
       []
     ),
   };
 
-  const fetchCampus = async () => {
+  const fetchSchool = async () => {
     try {
       const adminRole = roles.findIndex(
         (roleItem) => roleItem.role === "Admin"
       );
-      const role = roles.find((roleItem) => roleItem.role === "Campus");
+      const role = roles.find((roleItem) => roleItem.role === "school");
       const access = role?.access?.map((accessItem) => accessItem.access) || [];
-      const dataURL = `${baseUrl}campus`;
+      const dataURL = `${baseUrl}school`;
       const response = await axios.get(dataURL);
-      setCampusList(
+      setSchoolList(
         adminRole !== -1
-          ? [...response.data.data, { campus: "All" }]
+          ? [...response.data]
           : [
-              ...response.data.data.filter((campusItem) =>
-                access.includes(campusItem.id)
+              ...response.data.data.filter((schoolItem) =>
+                access.includes(schoolItem.id)
               ),
             ]
       );
       setLoading(false);
-    } catch (e) {
-      // console.error(e);
-    }
+    } catch (e) {}
   };
 
   useEffect(() => {
     (async () => {
-      // await fetchAccess();
-      await fetchCampus();
+      await fetchSchool();
     })();
   }, [loggedInUser]);
 
   return (
     <Container maxWidth="sm">
       <MainLayout
-        title="Campuses Name"
+        title="School Name"
         columns={columns}
-        data={campusList}
+        data={schoolList}
         showLoader={loading}
         options={options}
       />
       <Dialog
         fullWidth
-        open={campusDialog}
-        onClose={() => setCampusDialog(false)}
+        open={schoolDialog}
+        onClose={() => setSchoolDialog(false)}
       >
         <section style={{ padding: "0rem 1rem 1rem 1rem" }}>
           <DialogContent>
@@ -138,46 +129,40 @@ const CampusList = () => {
                 alignItems: "center",
               }}
             >
-              <p style={{ fontSize: "24px" }}>New Campus Details</p>
-              <CloseIcon style={{cursor:"pointer"}} onClick={()=>setCampusDialog(false)} />
+              <p style={{fontSize:"24px"}}>Create School</p>
+              <CloseIcon style={{cursor:"pointer"}} onClick={()=>setSchoolDialog(false)}/>
             </div>
             <TextField
               fullWidth
               autoFocus
-              label="Campus Name"
-              placeholder="Enter Campus"
+              label="School Name"
+              placeholder="Enter School"
               variant="outlined"
               sx={{ mt: "0.4rem" }}
               onChange={(e) => {
-                setInputData({ ...inputData, campus: e.target.value });
+                setInputData(e.target.value);
               }}
             />
-            <TextField
-            style={{marginTop:"2rem"}}
-              fullWidth
-              // maxWidth="md"
-              autoFocus
-              label="Address"
-              placeholder="Write address"
-              variant="outlined"
-              sx={{ mt: "0.4rem" }}
-              onChange={(e) => {
-                setInputData({ ...inputData, address: e.target.value });
-              }}
-            />
+          </DialogContent>
+          <DialogActions
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
             <Button
               variant="contained"
               color="primary"
-              style={{ width: "100%", padding: "0.7rem",marginTop:"2rem" }}
+              style={{ width: "94%",padding:".5rem" }}
               onClick={handleOpenSubmit}
             >
-              Add New Campus
+              Create NEW School
             </Button>
-          </DialogContent>
+          </DialogActions>
         </section>
       </Dialog>
     </Container>
   );
 };
 
-export default CampusList;
+export default SchoolData;

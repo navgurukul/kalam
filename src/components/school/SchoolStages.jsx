@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import MainLayout from "../muiTables/MainLayout";
-import ToolbarAddButtonSchool from "./ToolbarAddButtonSchool";
 import CloseIcon from "@mui/icons-material/Close";
+import ToolbarAddButtonSchoolStages from "./ToolbarAddButtonSchoolStages";
 import {
   Button,
   Dialog,
@@ -14,6 +14,12 @@ import {
   Select as MUISelect,
   TextField,
 } from "@mui/material";
+
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -31,14 +37,26 @@ const columns = [
     },
   },
   {
+    name: "id",
+    label: "Type",
+    options: {
+      filter: true,
+      sort: true,
+      customBodyRender: (value, rowMeta) => {
+        const index = rowMeta.rowIndex[0];
+        return index;
+      },
+    },
+  },
+  {
     name: "name",
-    label: "Schools",
+    label: "Stage Name",
     options: {
       filter: true,
       sort: true,
       customBodyRender: (value, rowMeta) => {
         const id = rowMeta.rowData[0];
-        const url = `/school/${id}/school-stages`;
+          const url = `/stage/${id}`;
         return (
           <Link to={url} style={{ color: "#f05f40" }}>
             {value}
@@ -49,23 +67,24 @@ const columns = [
   },
 ];
 
-const SchoolData = () => {
+const SchoolStages = () => {
   const { loggedInUser, roles } = useSelector((state) => state.auth);
-  const [schoolList, setSchoolList] = React.useState([]);
+  const [schoolStageList, setSchoolStageList] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-  const [schoolDialog, setSchoolDialog] = useState(false);
   const [inputData, setInputData] = useState("");
+  const [schoolStageDialog, setSchoolStageDialog] = useState(false);
 
   const handleOpenSubmit = async () => {
-    const dataURL = `${baseUrl}school`;
-    await axios.post(dataURL, { name: inputData });
+    const dataURL = `${baseUrl}stage`;
+    await axios.post(dataURL, { StageName});
     setInputData("");
-    fetchSchool();
+    fetchStageSchool();
     setSchoolDialog(false);
   };
+  //   console.log(dataURL,"..........")
 
-  const openSchoolDialog = () => {
-    setSchoolDialog(true);
+  const openSchoolStageDialog = () => {
+    setSchoolStageDialog(true);
   };
 
   const options = {
@@ -73,26 +92,27 @@ const SchoolData = () => {
     responsive: "vertical",
     filter: false,
     customToolbar: React.useCallback(
-      () => <ToolbarAddButtonSchool handleOpen={openSchoolDialog} />,
+      () => <ToolbarAddButtonSchoolStages handleOpen={openSchoolStageDialog} />,
       []
     ),
   };
 
-  const fetchSchool = async () => {
+  const fetchStageSchool = async () => {
     try {
       const adminRole = roles.findIndex(
         (roleItem) => roleItem.role === "Admin"
       );
-      const role = roles.find((roleItem) => roleItem.role === "school");
+      const role = roles.find((roleItem) => roleItem.role === "stage");
       const access = role?.access?.map((accessItem) => accessItem.access) || [];
-      const dataURL = `${baseUrl}school`;
+      const dataURL = `${baseUrl}stage`;
       const response = await axios.get(dataURL);
-      setSchoolList(
+      console.log(response, ".................");
+      setSchoolStageList(
         adminRole !== -1
           ? [...response.data]
           : [
-              ...response.data.data.filter((schoolItem) =>
-                access.includes(schoolItem.id)
+              ...response.data.data.filter((schoolStageItem) =>
+                access.includes(schoolStageItem.id)
               ),
             ]
       );
@@ -102,23 +122,23 @@ const SchoolData = () => {
 
   useEffect(() => {
     (async () => {
-      await fetchSchool();
+      await fetchStageSchool();
     })();
   }, [loggedInUser]);
 
   return (
     <Container maxWidth="sm">
       <MainLayout
-        title="School Name"
+        title="Admission Stages"
         columns={columns}
-        data={schoolList}
+        data={schoolStageList}
         showLoader={loading}
         options={options}
       />
       <Dialog
         fullWidth
-        open={schoolDialog}
-        onClose={() => setSchoolDialog(false)}
+        open={schoolStageDialog}
+        onClose={() => setSchoolStageDialog(false)}
       >
         <section style={{ padding: "0rem 1rem 1rem 1rem" }}>
           <DialogContent>
@@ -129,14 +149,30 @@ const SchoolData = () => {
                 alignItems: "center",
               }}
             >
-              <p style={{fontSize:"24px"}}>Create School</p>
-              <CloseIcon style={{cursor:"pointer"}} onClick={()=>setSchoolDialog(false)}/>
+              <p style={{ fontSize: "24px" }}>Admission Stage</p>
+              <CloseIcon
+                style={{ cursor: "pointer" }}
+                //    onClick={()=>setSchoolDialog(false)}
+              />
             </div>
+
+            <FormControl>
+            <FormLabel>Stage Type</FormLabel>
+            <RadioGroup row>
+              <FormControlLabel value="Test" control={<Radio />} label="Test" />
+              <FormControlLabel
+                value="Interview"
+                control={<Radio />}
+                label="Interview"
+              />
+            </RadioGroup>
+          </FormControl>
             <TextField
+            style={{marginTop:"1rem"}}
               fullWidth
               autoFocus
-              label="School Name"
-              placeholder="Enter School"
+              label="Stage Name"
+              placeholder="Enter Stage"
               variant="outlined"
               sx={{ mt: "0.4rem" }}
               onChange={(e) => {
@@ -144,6 +180,7 @@ const SchoolData = () => {
               }}
             />
           </DialogContent>
+
           <DialogActions
             style={{
               display: "flex",
@@ -153,10 +190,10 @@ const SchoolData = () => {
             <Button
               variant="contained"
               color="primary"
-              style={{ width: "94%",padding:".5rem" }}
-              onClick={handleOpenSubmit}
+              style={{ width: "94%", padding: ".5rem" }}
+                onClick={handleOpenSubmit}
             >
-              Create NEW School
+              Add Admission Stage
             </Button>
           </DialogActions>
         </section>
@@ -165,4 +202,4 @@ const SchoolData = () => {
   );
 };
 
-export default SchoolData;
+export default SchoolStages;

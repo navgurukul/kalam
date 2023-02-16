@@ -56,6 +56,7 @@ const SchoolStages = () => {
           },
         },
       },
+    
       {
         name: "stageName",
         label: "Stage Name",
@@ -89,12 +90,8 @@ const SchoolStages = () => {
       },
     ];
     
-const SchoolStages = () => {
-  const { loggedInUser, roles } = useSelector((state) => state.auth);
-  const [schoolStageList, setSchoolStageList] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
   const [inputData, setInputData] = useState("");
-  const [schoolStageDialog, setSchoolStageDialog] = useState(false);
+  console.log(inputData)
 
   let location = useLocation();
   let id = location.pathname.split("/")[2];
@@ -144,7 +141,7 @@ const SchoolStages = () => {
 
   return (
     <Container maxWidth="md">
-  
+                {/* <h1>School/School of programing</h1> */}
 
       <MainLayout
         title="Admission Stage"

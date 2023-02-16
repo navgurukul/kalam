@@ -43,6 +43,7 @@ import UploadDocuments from "../components/smallComponents/UploadDocuments";
 // import CampusStatusDropdown from "../components/smallComponents/CampusStatus";
 import OtherActivities from "../components/campus/OtherActivities";
 import DeleteStudent from "../components/smallComponents/DeleteStudent";
+import ProfileImage from "../components/smallComponents/ProfileImage";
 import { getColumnIndex } from "../utils";
 
 dayjs.extend(customParseFormat);
@@ -1644,21 +1645,11 @@ const profileImage = {
     filter: false,
     sort: false,
     customBodyRender: (value, rowMeta) =>
-      value !== null ? (
-        <Avatar
-          src={value}
-          alt={rowMeta.rowData[2]}
-          style={{
-            width: "60px",
-            height: "60px",
-            // borderRadius: "50%",
-            // objectFit: "cover",
-          }}
-        />
-      ) : (
-        <p> </p>
-      ),
-  },
+      <ProfileImage
+        value={value}
+        rowMeta={rowMeta}
+      />
+  }
 };
 
 const dConvert = (data) => {

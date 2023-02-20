@@ -43,7 +43,7 @@ import UploadDocuments from "../components/smallComponents/UploadDocuments";
 // import CampusStatusDropdown from "../components/smallComponents/CampusStatus";
 import OtherActivities from "../components/campus/OtherActivities";
 import DeleteStudent from "../components/smallComponents/DeleteStudent";
-import ProfileImage from "../components/smallComponents/ProfileImage";
+import ProfilePhoto from "../components/smallComponents/ProfilePhoto";
 import { getColumnIndex } from "../utils";
 
 dayjs.extend(customParseFormat);
@@ -1645,7 +1645,7 @@ const profileImage = {
     filter: false,
     sort: false,
     customBodyRender: (value, rowMeta) =>
-      <ProfileImage
+      <ProfilePhoto
         value={value}
         rowMeta={rowMeta}
       />

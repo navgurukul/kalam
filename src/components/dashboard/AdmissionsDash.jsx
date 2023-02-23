@@ -2,17 +2,18 @@
 import "date-fns";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import DateFnsUtils from "@mui/lab/AdapterDateFns";
+// import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import { makeStyles, ThemeProvider } from "@mui/styles";
 import Select from "react-select";
 import { useNavigate, useParams } from "react-router-dom";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import axios from "axios";
 import Box from "@mui/material/Box";
 import makeAnimated from "react-select/animated";
 import { Grid, TextField } from "@mui/material";
 import _ from "lodash";
-import { LocalizationProvider, DatePicker } from "@mui/lab";
 import StudentService from "../../services/StudentService";
 import ServerSidePagination from "../muiTables/ServerSidePagination";
 import theme from "../../theme";
@@ -377,7 +378,7 @@ const AdmissionsDash = (props) => {
         />
       </Grid>
       <Grid item xs={6} md={6} lg={3} sx={{ marginTop: "0.8rem" }}>
-        <LocalizationProvider dateAdapter={DateFnsUtils}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             margin="dense"
             style={{ marginLeft: 16, maxWidth: "40%" }}
@@ -396,7 +397,7 @@ const AdmissionsDash = (props) => {
         </LocalizationProvider>
       </Grid>
       <Grid item xs={6} md={6} lg={3} sx={{ marginTop: "0.8rem" }}>
-        <LocalizationProvider dateAdapter={DateFnsUtils}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             margin="dense"
             style={{ marginLeft: 16, maxWidth: "40%" }}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Modal, TextField, Typography } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/lab";
-import AdapterDayjs from "@mui/lab/AdapterDayjs";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
 import dayjs from "dayjs";
 import { Box } from "@mui/system";
@@ -126,7 +126,9 @@ function OwnerSchedule(props) {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 margin="normal"
-                format="YYYY-MM-DD"
+                format="MM/dd/yyyy"
+                id="date-picker-dialog"
+                label="From Date"
                 value={date}
                 onChange={(newDate) => handleDateChange(newDate)}
                 inputVariant="outlined"

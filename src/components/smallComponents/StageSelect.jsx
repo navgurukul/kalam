@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
@@ -30,6 +30,36 @@ import { setCounts } from "../../store/slices/campusSlice";
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
+const schoolList = [
+  "School of Programming",
+  "School of Design",
+  "School of Finance",
+  "School of Management",
+  "School of Education",
+];
+
+function getSchoolId(currentSchool){
+  if(typeof currentSchool === "string"){
+      const idx = schoolList.findIndex(val=>currentSchool === val);
+      return idx + 1;
+  }else if(currentSchool instanceof Array){
+      if(currentSchool.length === 0) return -1;
+      return currentSchool[0].id;
+  }
+  return -1;
+}
+
+function findStageByName(stageName, stages){
+    let current;
+    stages.forEach((stage)=>{
+        if(stageName === stage.label){
+            current = stage;
+            return stage;
+        }
+    });
+    return current;
+}
+
 const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   //console.log("TYPE--",typeof(stage));
   const { enqueueSnackbar } = useSnackbar();
@@ -38,7 +68,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const setCampusCounts = (counts) => dispatch(setCounts(counts));
   const { loggedInUser } = useSelector((state) => state.auth);
   const { allStatusCount } = useSelector((state) => state.campus);
-
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
 
@@ -51,9 +80,41 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       cc: "",
     },
   });
+
+  /*Stages for schools other than School of Programming */
+  const [schoolStages, setSchoolStages] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
 
   const toggleLoading = () => setLoading((prev) => !prev);
+
+  const currentSchool = rowMetatable.rowData[25];
+  const schoolId = getSchoolId(currentSchool);
+  const isProgrammingSchool = schoolId === 1;
+
+  //if(schoolStages) console.log(rowMetatable.rowIndex, schoolStages, stage);
+
+  useEffect(()=>{
+
+    if(isProgrammingSchool || !currentSchool) return;
+
+    if(schoolId === -1) return;
+
+    (async ()=>{
+        try{
+            const response = await axios.get(`${baseUrl}stage/${schoolId}`);
+
+            const data = response.data.map(element=>{
+                const obj = {value: element.id, label: element.stageName };
+                return obj;
+            });
+
+            setSchoolStages(data);
+        }catch(e){
+            console.error("Failed Fetching School Stages ", e);
+        }
+    })();
+
+  }, [currentSchool]);
 
   // const getTransitionStage = (studentId) => {
   //   axios
@@ -128,6 +189,27 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       });
   };
 
+  const changeStageChangeOther = async (selectedValue)=>{
+      const studentId = rowMetatable.rowData[0];
+      const { value , label } = selectedValue;
+
+      try{
+          const response = await axios.post(`${baseUrl}stage/students`, {
+            student_id: studentId,
+            "stage_id": value,
+            "student_stage": label
+          });
+          
+          change(isCampus ? { ...stage, stage: label } : label);
+          console.log("<----RESPONSE---->", response, label, stage);
+      }catch(e){
+          console.log(e)
+          enqueueSnackbar("Something is wrong with previous stage!", {
+            variant: "error",
+          });
+      }
+  }
+
   const handleChange = async (selectedValue) => {
     const { value } = selectedValue;
 
@@ -156,7 +238,11 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         },
       });
     } else if (value !== "offerLetterSent") {
-      changeStage(selectedValue);
+      if(isProgrammingSchool){
+          changeStage(selectedValue);
+      }else{
+          changeStageChangeOther(selectedValue);
+      }
     } else {
       enqueueSnackbar("Please update email or campus!", {
         variant: "error",
@@ -235,27 +321,43 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   // }
 
   if (stage) {
-    allStagesOptions = nextStage[
-      getKeyByValue(
-        allStages,
-        isCampus ? stage?.stage || "enrolmentKeyGenerated" : stage
-      )
-    ].map((x) => ({
-      value: x,
-      label: allStages[x],
-    }));
+    if(isProgrammingSchool){
+      allStagesOptions = nextStage[
+        getKeyByValue(
+          allStages,
+          isCampus ? stage?.stage || "enrolmentKeyGenerated" : stage
+        )
+      ].map((x) => ({
+        value: x,
+        label: allStages[x],
+      }));
+    }
   }
-
   let selectedValue = { value: "invalid", label: "Invalid Stage" };
 
-  if (stage)
-    selectedValue = {
-      value: _.invert(allStages)[isCampus ? stage?.stage || "" : stage],
-      label: isCampus ? stage?.stage || "" : stage,
-    };
+  if (stage){
+      if(isProgrammingSchool || stage === "Test Failed"){
+          selectedValue = {
+            value: _.invert(allStages)[isCampus ? stage?.stage || "" : stage],
+            label: isCampus ? stage?.stage || "" : stage,
+          };
+      }else{
+          selectedValue = findStageByName(stage, schoolStages);
+          // if(!selectedValue){
+          //   // selectedValue = {
+          //   //   value: stage,
+          //   //   label: stage,
+          //   // };
+          //   selectedValue = schoolStages[0];
+          // }
+
+          // selectedValue = schoolStages[0];
+          console.log(rowMetatable.rowIndex, selectedValue, stage)
+      }
+  }
+
 
   // useEffect(() => getTransitionStage(rowMetatable.rowData[0]), []);
-
   return (
     <div
       style={{
@@ -300,7 +402,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           // defaultValue={selectedValue}
           value={selectedValue}
           onChange={handleChange}
-          options={allStagesOptions}
+          options={isProgrammingSchool ? allStagesOptions : schoolStages}
           // placeholder={"Select "+props.filter.name+" ..."}
           isClearable={false}
           components={animatedComponents}

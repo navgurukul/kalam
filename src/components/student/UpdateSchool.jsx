@@ -79,7 +79,7 @@ const UpdateSchool = (props) => {
   }
   const selectedValue = { value: value.id, label: value.name };
 
-  console.log([selectedValue])
+  //console.log([selectedValue]);
   return  (
     <Select
       className="filterSelectStage"

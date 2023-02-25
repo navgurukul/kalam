@@ -70,7 +70,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const { allStatusCount } = useSelector((state) => state.campus);
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
-
+  //console.log(rowMetatable)
   const [state, setState] = React.useState({
     flag: false,
     payload: {
@@ -200,7 +200,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
             "student_stage": label
           });
           
-          change(isCampus ? { ...stage, stage: label } : label);
+          change(isCampus ? { ...stage, stage: label } : selectedValue);
           console.log("<----RESPONSE---->", response, label, stage);
       }catch(e){
           console.log(e)
@@ -336,13 +336,14 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   let selectedValue = { value: "invalid", label: "Invalid Stage" };
 
   if (stage){
-      if(isProgrammingSchool || stage === "Test Failed"){
+      if(isProgrammingSchool || typeof stage === 'string'){
           selectedValue = {
             value: _.invert(allStages)[isCampus ? stage?.stage || "" : stage],
             label: isCampus ? stage?.stage || "" : stage,
           };
       }else{
-          selectedValue = findStageByName(stage, schoolStages);
+          selectedValue = stage;
+          
           // if(!selectedValue){
           //   // selectedValue = {
           //   //   value: stage,
@@ -352,7 +353,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           // }
 
           // selectedValue = schoolStages[0];
-          console.log(rowMetatable.rowIndex, selectedValue, stage)
+          //console.log(rowMetatable.rowIndex, selectedValue, stage)
       }
   }
 

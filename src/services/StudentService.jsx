@@ -1741,7 +1741,7 @@ const dConvert = (data) => {
 
   x.gender =
     x.gender === 1 ? "Female" : x.gender === 2 ? "Male" : "Transgender";
-  x.stage = allStages[x.stage];
+  // x.stage = allStages[x.stage];
   x.marks = x.enrolmentKey[x.enrolmentKey.length - 1]
     ? parseInt(x.enrolmentKey[x.enrolmentKey.length - 1].total_marks, 10)
     : null;

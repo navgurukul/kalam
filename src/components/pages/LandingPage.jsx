@@ -145,7 +145,7 @@ const LandingPage = () => {
       ma: "प्रवेश परीक्षा सुरू करा",
     },
     TestButton: {
-      en: "GIVE TEST",
+      en: "GIVE TEST / CHECK RESULT",
       hi: "परीक्षा दे।",
       ma: "परीक्षा द्या.",
     },
@@ -486,7 +486,9 @@ const LandingPage = () => {
               </Paper>
             </Grid>
             <Box style={{ height: theme.spacing(6) }} />
-            <Grid item>
+
+            {/* ---------------------------CHECK YOUR RESULT----------------------- */}
+            {/* <Grid item>
               <Box
                 display="flex"
                 alignItems="center"
@@ -502,8 +504,10 @@ const LandingPage = () => {
                   {lang.Status[selectedLang]}
                 </Typography>
               </Box>
-            </Grid>
-            <Grid item>
+            </Grid> */}
+
+            {/* -----------------------MOBILE NUMBER AND LINK-------------------------- */}
+            {/* <Grid item>
               <Paper className={classes.loginContainer}>
                 <Box>
                   <TextField
@@ -533,7 +537,7 @@ const LandingPage = () => {
                   </Link>
                 </div>
               </Paper>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
       </ThemeProvider>

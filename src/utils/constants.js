@@ -474,11 +474,42 @@ export const campus = [
 ];
 
 export const donor = [
-  { id: 1, name: "Accenture C1" },
-  { id: 2, name: "Accenture C2" },
-  { id: 3, name: "Accenture C3" },
-  { id: 4, name: "Microsoft C1" },
-  { id: 5, name: "KPMG C1" },
+  {
+    id: 1,
+    name: "Accenture C1",
+  },
+  {
+    id: 2,
+    name: "Accenture C2",
+  },
+  {
+    id: 3,
+    name: "Accenture C3",
+  },
+  {
+    id: 4,
+    name: "Microsoft C1",
+  },
+  {
+    id: 5,
+    name: "KPMG C1",
+  },
+  {
+    id: 6,
+    name: "LTI",
+  },
+  {
+    id: 7,
+    name: "DxC ( EIT)",
+  },
+  {
+    id: 8,
+    name: "ACL",
+  },
+  {
+    id: 9,
+    name: "Macquarie",
+  },
 ];
 
 export const contactType = ["whatsapp", "primary", "other"];

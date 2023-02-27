@@ -5,24 +5,22 @@ import DialogContentText from "@mui/material/DialogContentText";
 import axios from "axios";
 import { IconButton } from "@mui/material";
 import CancelSharpIcon from "@mui/icons-material/CancelSharp";
-import InfoIcon from "@mui/icons-material/Info";
+import Button from "@mui/material/Button";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-const StageMarks = ({ value }) => {
+const StageMarks = ({ value, name, marks }) => {
   const [open, setOpen] = React.useState(false);
   const [DBdata, setDBdata] = React.useState(null);
 
   const handleClickOpen = async () => {
     try {
       const { data } = await axios.get(
-        `${baseURL}/questions/attempts/${value.id.id}`
+        `${baseURL}/questions/attempts/${value.id}`
       );
-      // console.log(data, ">>>>>>>>>>>>>>>>>");
       setDBdata(data);
       setOpen(true);
     } catch (err) {
-      // console.log(err);
       setDBdata(null);
       setOpen(true);
     }
@@ -34,10 +32,12 @@ const StageMarks = ({ value }) => {
   return (
     <>
       {!open ? (
-        <InfoIcon
+        <Button
           onClick={handleClickOpen}
           style={{ width: "2rem", marginLeft: ".2rem", cursor: "pointer" }}
-        />
+        >
+          {name} Attempt:- {marks ? marks : "N/A"}
+        </Button>
       ) : (
         <div>
           <Dialog
@@ -78,7 +78,6 @@ const StageMarks = ({ value }) => {
                               .replace(/\<p>/gi, "")
                               .replace("</p>", "")}
                           </strong>
-
                           <p
                             dangerouslySetInnerHTML={{
                               __html: el[1][0].common_text,
@@ -105,5 +104,4 @@ const StageMarks = ({ value }) => {
     </>
   );
 };
-
 export default StageMarks;

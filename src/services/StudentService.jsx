@@ -45,6 +45,7 @@ import DeleteStudent from "../components/smallComponents/DeleteStudent";
 import { getColumnIndex } from "../utils";
 import axios from "axios";
 import StageMarks from "../components/smallComponents/StageMarks";
+import TestAttemptModel from "../components/smallComponents/TestAttemptModel";
 
 dayjs.extend(customParseFormat);
 
@@ -692,10 +693,16 @@ const marksColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
+      let CheckAttempt = value.id.filter((marks) => {
+        return marks.total_marks;
+      });
       return (
         <div style={{ display: "flex", alignItems: "center" }}>
-          {value.marks}
-          <StageMarks value={value} />
+          {CheckAttempt.length > 0 ? (
+            <TestAttemptModel value={CheckAttempt} />
+          ) : (
+            "N/A"
+          )}
         </div>
       );
     },

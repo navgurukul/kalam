@@ -506,6 +506,7 @@ const BasicDetails = ({
                   gender === "female" ||
                   gender === "other" ||
                   gender === "trans"
+                  // || gender === "male"
                 )
                   return true;
                 enqueueSnackbar("Currently, Males cannot appear for the Test", {

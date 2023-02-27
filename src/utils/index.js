@@ -20,9 +20,12 @@ export const dConvert = (data, isCampus) => {
     : allStages[x.stage];
   x.marks = x.enrolmentKey.length
     ? parseInt(x.enrolmentKey[0].total_marks, 10)
-    : null;
-  x.enrolmentKey = x.enrolmentKey.length ? x.enrolmentKey[0].key : null;
-  x.marks = isNaN(x.marks) ? "N/A" : x.marks;
+    : // ?  { marks:parseInt(x.enrolmentKey[0].total_marks, 10),id:x.enrolmentKey[0]}
+      null;
+  x.marks = isNaN(x.marks)
+    ? { marks: "N/A", id: x.enrolmentKey }
+    : { marks: x.marks, id: x.enrolmentKey };
+  // x.marks = isNaN(x.marks) ? "N/A" : x.marks;
   x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;
   x.age = x.dob ? new Date().getFullYear() - +x.dob.slice(0, 4) : "NA";
   x.studentOwner = x.feedbacks ? x.feedbacks.to_assign : x.to_assign;

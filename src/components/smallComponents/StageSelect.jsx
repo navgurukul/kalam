@@ -201,9 +201,9 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           });
           
           change(isCampus ? { ...stage, stage: label } : selectedValue);
-          console.log("<----RESPONSE---->", response, label, stage);
+          //console.log("<----RESPONSE---->", response, label, stage);
       }catch(e){
-          console.log(e)
+          //console.log(e)
           enqueueSnackbar("Something is wrong with previous stage!", {
             variant: "error",
           });

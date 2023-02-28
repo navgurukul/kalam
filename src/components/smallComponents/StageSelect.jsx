@@ -336,7 +336,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   let selectedValue = { value: "invalid", label: "Invalid Stage" };
 
   if (stage){
-      if(isProgrammingSchool || typeof stage === 'string'){
+      if(isProgrammingSchool){
           selectedValue = {
             value: _.invert(allStages)[isCampus ? stage?.stage || "" : stage],
             label: isCampus ? stage?.stage || "" : stage,

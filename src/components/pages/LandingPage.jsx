@@ -272,7 +272,7 @@ const LandingPage = () => {
         const response = data.data.data;
         if (response.alreadyGivenTest) {
           navigate(
-            `/check_duplicate/name=${first_name}_${middle_name}_${last_name}&number=${mobileNumber}&stage=${response.pendingInterviewStage}`,
+            `/check_duplicate?name=${first_name}_${middle_name}_${last_name}&number=${mobileNumber}&stage=${response.pendingInterviewStage}`,
             {
               state: {
                 ...state,
@@ -538,9 +538,6 @@ const LandingPage = () => {
                 </div>
               </Paper>
             </Grid> */}
-
-
-
           </Grid>
         </Grid>
       </ThemeProvider>

@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import MUIDataTable from "mui-datatables";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { changeFetching } from "../../store/slices/uiSlice";
 import { allStages } from "../../utils/constants";
@@ -16,28 +16,9 @@ import {
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-// const useStyles = makeStyles((theme) => ({
-//   paper: {
-//     position: "absolute",
-//     marginLeft: "3vw",
-//     marginRight: "3vw",
-//     width: "94vw",
-//     [theme.breakpoints.up("md")]: {
-//       margin: "auto",
-//       width: "50%",
-//     },
-//     backgroundColor: theme.palette.background.paper,
-//     boxShadow: theme.shadows[5],
-//     padding: theme.spacing(4),
-//     outline: "none",
-//   },
-// }));
-
 const DuplicateStudents = () => {
-  // const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const { name, number } = useParams();
   const dispatch = useDispatch();
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
@@ -47,6 +28,10 @@ const DuplicateStudents = () => {
     data: [],
     pendingInterviewStage: "checking",
   });
+  const { search } = useLocation();
+
+  const name = search.split("=")[1].split("&")[0];
+  const number = search.split("=")[2].split("&")[0];
 
   const generateTestLink = async (studentId) => {
     try {
@@ -182,6 +167,8 @@ const DuplicateStudents = () => {
     },
   };
 
+  // console.log("useQuery", useQuery());
+
   const isDuplicate = () => {
     // const details = window.location.href.split("Name=")[1];
     // const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
@@ -233,9 +220,12 @@ const DuplicateStudents = () => {
   const { pendingInterviewStage } = test;
   if (splittedName.length === 3) {
     [firstName, middleName, lastName] = splittedName;
+    console.log("Middle name", middleName);
   } else {
     [firstName, lastName] = splittedName;
   }
+
+  console.log("Is this page is coming?");
 
   return (
     <>

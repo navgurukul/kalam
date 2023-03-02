@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Box, Grid, TextField } from "@mui/material";
-import { LocalizationProvider, DatePicker } from "@mui/lab";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import MUIDataTable from "mui-datatables";
-import DateFnsUtils from "@mui/lab/AdapterDateFns";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import axios from "axios";
 
@@ -297,7 +297,7 @@ const DashboardPage = ({ displayData, title, url, isCampus = false }) => {
         />
       </Grid>
       <Grid item xs={12} md={6} lg={3}>
-        <LocalizationProvider dateAdapter={DateFnsUtils}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             margin="dense"
             style={{ marginLeft: 16, maxWidth: "40%" }}
@@ -316,7 +316,7 @@ const DashboardPage = ({ displayData, title, url, isCampus = false }) => {
         </LocalizationProvider>
       </Grid>
       <Grid item xs={12} md={6} lg={3}>
-        <LocalizationProvider dateAdapter={DateFnsUtils}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             margin="dense"
             style={{ marginLeft: 16, maxWidth: "40%" }}

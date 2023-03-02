@@ -410,7 +410,7 @@ const AppRouter = () => {
             />
             {/* <AnyRoute path="/check_duplicate" component={<DuplicateStudents/>} /> */}
             <Route
-              path="/check_duplicate/name=:name&number=:number&stage=:stage"
+              path="/check_duplicate"
               element={
                 <React.Suspense fallback={<Loader container />}>
                   <DuplicateStudents />

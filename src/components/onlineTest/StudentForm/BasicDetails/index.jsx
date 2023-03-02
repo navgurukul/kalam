@@ -160,7 +160,7 @@ const langOptions = {
       { key: "female", en: "Female", hi: "महिला", ma: "स्त्री" },
       { key: "male", en: "Male", hi: "पुरुष", ma: "पुरुष" },
       // {key:"other", en: "Other", hi: "अन्य", ma: "इतर" },
-      { key: "trans", en: "Transwomen", hi: "ट्रांसवुमेन", ma: "ट्रांसवुमेन" },
+      { key: "trans", en: "Transgender", hi: "ट्रांसवुमेन", ma: "ट्रांसवुमेन" },
     ],
     error: {
       en: "Please specify your gender",

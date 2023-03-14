@@ -52,7 +52,8 @@ const PhotoUploadModal = ({
 
   const savePhoto = async () => {
     try {
-      if (!enrollmentKey) {
+      
+      if (!enrollmentKey[0]?.key) {
         enqueueSnackbar("Enrollment key no available", {
           variant: "error",
         });
@@ -63,7 +64,7 @@ const PhotoUploadModal = ({
 
       tempFormdata.append("file", updatedPhoto);
 
-      const dataURL = `${baseUrl}on_assessment/details/photo/${enrollmentKey}`;
+      const dataURL = `${baseUrl}on_assessment/details/photo/${enrollmentKey[0]?.key}`;
 
       const response = await axios.post(dataURL, tempFormdata);
       setLoading(false);

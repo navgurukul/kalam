@@ -42,6 +42,7 @@ import UploadDocuments from "../components/smallComponents/UploadDocuments";
 // import CampusStatusDropdown from "../components/smallComponents/CampusStatus";
 import OtherActivities from "../components/campus/OtherActivities";
 import DeleteStudent from "../components/smallComponents/DeleteStudent";
+import ProfilePhoto from "../components/smallComponents/ProfilePhoto";
 import { getColumnIndex } from "../utils";
 import axios from "axios";
 import StageMarks from "../components/smallComponents/StageMarks";
@@ -1659,21 +1660,9 @@ const profileImage = {
   options: {
     filter: false,
     sort: false,
-    customBodyRender: (value, rowMeta) =>
-      value !== null ? (
-        <Avatar
-          src={value}
-          alt={rowMeta.rowData[2]}
-          style={{
-            width: "60px",
-            height: "60px",
-            // borderRadius: "50%",
-            // objectFit: "cover",
-          }}
-        />
-      ) : (
-        <p> </p>
-      ),
+    customBodyRender: (value, rowMeta) => (
+      <ProfilePhoto value={value} rowMeta={rowMeta} />
+    ),
   },
 };
 

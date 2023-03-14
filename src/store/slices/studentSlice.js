@@ -17,8 +17,7 @@ export const fetchStudents = createAsyncThunk(
       globalState.students;
     // const { numberOfRows } = state;
     const concatinateStage = stage.length === 0 ? null : stage.join(",");
-    const querySchool = school === "default" ? null : school;
-    console.log(querySchool)
+    const querySchool = school === "" ? null : school;
     try {
       thunkAPI.dispatch(changeFetching(true)); // startFetching
       let response;
@@ -53,17 +52,18 @@ export const fetchStudents = createAsyncThunk(
                     stage: concatinateStage,
                     from: fromDate,
                     to: toDate,
+                    school: querySchool
                   },
                 }
               );
-              console.log(response)
         // eslint-disable-next-line no-use-before-define
         thunkAPI.dispatch(setUrl(url));
       }
+      let results = (school === "") ? response.data.data.results : response.data.data;
       const studentData =
         // response.data &&
         // response.data.data &&
-        response.data.data.results.map((student) => {
+        results.map((student) => {
           const contacts = student.contacts[student.contacts.length - 1];
           return {
             ...student,
@@ -74,7 +74,6 @@ export const fetchStudents = createAsyncThunk(
             altNumber: contacts ? contacts.alt_mobile : contacts,
           };
         });
-      console.log("<----STUDENT-DATA---->", studentData)
       thunkAPI.dispatch(changeFetching(false));
       return dataSetup(
         studentData,

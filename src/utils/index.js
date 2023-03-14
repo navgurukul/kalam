@@ -42,7 +42,6 @@ export const dataSetup = (data, totalData, loggedInUser) => {
       ...dConvert(v),
       loggedInUser,
     }));
-    console.log("<----NEW-DATA---->", newData)
     return { data: newData, totalData };
   }
   return { data: [], totalData: 0 };

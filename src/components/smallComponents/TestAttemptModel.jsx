@@ -39,7 +39,7 @@ export default function TestAttemptModel({ value }) {
             {value.map((el, i) => {
               return (
                 <>
-                  <MenuItem value={el}>
+                  <MenuItem key={i} value={el}>
                     <Button>
                       <StageMarks
                         value={el}

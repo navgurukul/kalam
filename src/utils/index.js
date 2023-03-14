@@ -22,6 +22,8 @@ export const dConvert = (data, isCampus) => {
     ? parseInt(x.enrolmentKey[0].total_marks, 10)
     : // ?  { marks:parseInt(x.enrolmentKey[0].total_marks, 10),id:x.enrolmentKey[0]}
       null;
+  // x.enrolmentKey = x.enrolmentKey.length ? x.enrolmentKey[0].key : null;
+  // x.marks = isNaN(x.marks) ? "N/A" : x.marks;
   x.marks = isNaN(x.marks)
     ? { marks: "N/A", id: x.enrolmentKey }
     : { marks: x.marks, id: x.enrolmentKey };

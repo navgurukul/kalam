@@ -13,10 +13,12 @@ export const fetchStudents = createAsyncThunk(
   async ({ fetchPendingInterviewDetails, dataType }, thunkAPI) => {
     const globalState = thunkAPI.getState();
     const { loggedInUser } = globalState.auth;
-    const { stage, filterColumns, page, numberOfRows, fromDate, toDate } =
+    const { stage, filterColumns, page, numberOfRows, fromDate, toDate, school } =
       globalState.students;
     // const { numberOfRows } = state;
     const concatinateStage = stage.length === 0 ? null : stage.join(",");
+    const querySchool = school === "default" ? null : school;
+    console.log(querySchool)
     try {
       thunkAPI.dispatch(changeFetching(true)); // startFetching
       let response;
@@ -54,7 +56,7 @@ export const fetchStudents = createAsyncThunk(
                   },
                 }
               );
-
+              console.log(response)
         // eslint-disable-next-line no-use-before-define
         thunkAPI.dispatch(setUrl(url));
       }
@@ -72,6 +74,7 @@ export const fetchStudents = createAsyncThunk(
             altNumber: contacts ? contacts.alt_mobile : contacts,
           };
         });
+      console.log("<----STUDENT-DATA---->", studentData)
       thunkAPI.dispatch(changeFetching(false));
       return dataSetup(
         studentData,
@@ -96,6 +99,7 @@ const StudentSlice = createSlice({
     numberOfRows: 10,
     page: 0,
     stage: [],
+    school: "",
     selectedStudent: { studentId: null, transitions: [] },
   },
   reducers: {
@@ -126,6 +130,9 @@ const StudentSlice = createSlice({
     setStage: (state, action) => {
       state.stage = action.payload;
     },
+    setSchool: (state, action) => {
+      state.school = action.payload;
+    },
     setSelectedStudent: (state, action) => {
       state.selectedStudent = action.payload;
     },
@@ -146,6 +153,7 @@ export const {
   setNoOfRows,
   setPageNo,
   setStage,
+  setSchool,
   setUrl,
   setSelectedStudent,
 } = StudentSlice.actions; // actions auto generated from above reducers

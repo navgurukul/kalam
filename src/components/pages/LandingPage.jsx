@@ -171,6 +171,8 @@ const LandingPage = () => {
     },
   };
 
+  sessionStorage.removeItem('formData')
+
   const getTestData = () => ({
     enrollmentKey: localStorage.getItem("enrollmentKey"),
     time: localStorage.getItem("time"),
@@ -466,7 +468,7 @@ const LandingPage = () => {
                     style={{
                       margin: 8,
                     }}
-                    type="number"
+                    type="text"
                     name="mobileNumber"
                     label="Mobile Number"
                     value={mobileNumber}

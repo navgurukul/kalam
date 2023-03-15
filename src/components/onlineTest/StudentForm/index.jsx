@@ -79,6 +79,10 @@ const StudentForm = () => {
   const [activeStep, setActiveStep] = useState(0);
   // const [date, setDate] = useState();
   const { enqueueSnackbar } = useSnackbar();
+
+  //State for disabled form input field on Page Refresh
+  const [formDisabled, setformDisabled] = useState(false) 
+
   const [formData, setFormData] = useState({
     ProfileImage: "",
     FirstName: firstName || "",
@@ -172,6 +176,66 @@ const StudentForm = () => {
     // setEnrolmentKey(enrkey);
   }, []);
 
+ // To Persist Data on Page Refresh..
+ useEffect(()=>{
+  const PrevDatas = JSON.parse(window.sessionStorage.getItem('formData'))
+  let formDataObj=  window.sessionStorage.getItem('formData')|| {};
+  if(Object.keys(formDataObj).length>0){ 
+  setformDisabled(true)
+  setFormData({
+    ...formData,
+    PrevImage: PrevDatas.image_url,
+    FirstName: PrevDatas.name.split(" ")[0],
+    MiddleName: PrevDatas.name.split(" ")[1],
+    LastName: PrevDatas.name.split(" ")[2],
+    email: PrevDatas.email,
+    whatsapp: PrevDatas.contacts[0].mobile,
+    AlternateNumber:
+      PrevDatas.contacts[1] && PrevDatas.contacts[1].alt_mobile,
+    dob: PrevDatas.dob,
+    gender: gender[PrevDatas.gender],
+    district: PrevDatas.district,
+    pin_code: PrevDatas.pin_code,
+    state: PrevDatas.state,
+    city: PrevDatas.city,
+    current_status: CurrentStatusOptions[PrevDatas.current_status],
+    qualification: qualificationOptions[PrevDatas.qualification],
+    school_medium: schoolMediumOptions[PrevDatas.school_medium],
+    caste: casteOptions[PrevDatas.caste],
+    religion: religionOptions[PrevDatas.religon],
+    math_marks_in10th: PrevDatas.math_marks_in10th,
+    percentage_in10th: PrevDatas.percentage_in10th,
+    math_marks_in12th: PrevDatas.math_marks_in12th,
+    percentage_in12th: PrevDatas.percentage_in12th,
+  });
+  reset({
+    PrevImage: PrevDatas.image_url,
+    FirstName: PrevDatas.name.split(" ")[0],
+    MiddleName: PrevDatas.name.split(" ")[1],
+    LastName: PrevDatas.name.split(" ")[2],
+    email: PrevDatas.email,
+    whatsapp: PrevDatas.contacts[0].mobile,
+    AlternateNumber:
+      PrevDatas.contacts[1] && PrevDatas.contacts[1].alt_mobile,
+    dob: PrevDatas.dob,
+    gender: gender[PrevDatas.gender],
+    district: PrevDatas.district,
+    pin_code: PrevDatas.pin_code,
+    state: PrevDatas.state,
+    city: PrevDatas.city,
+    current_status: CurrentStatusOptions[PrevDatas.current_status],
+    qualification: qualificationOptions[PrevDatas.qualification],
+    school_medium: schoolMediumOptions[PrevDatas.school_medium],
+    caste: casteOptions[PrevDatas.caste],
+    religion: religionOptions[PrevDatas.religon],
+    math_marks_in10th: PrevDatas.math_marks_in10th,
+    percentage_in10th: PrevDatas.percentage_in10th,
+    math_marks_in12th: PrevDatas.math_marks_in12th,
+    percentage_in12th: PrevDatas.percentage_in12th,
+  });  
+  }  
+},[])
+
   useEffect(() => {
     if (studentId) {
       axios.get(`${baseUrl}/students/${studentId}`).then((res) => {
@@ -181,6 +245,8 @@ const StudentForm = () => {
           // setPrevData(PrevDatas);
           setAlreadyAUser(true);
           // setInputDisabled(true);
+          // Storing the data in session storage..
+          window.sessionStorage.setItem('formData',JSON.stringify(PrevDatas))
           setFormData({
             ...formData,
             PrevImage: PrevDatas.image_url,
@@ -372,7 +438,7 @@ const StudentForm = () => {
               formData={formData}
               // handleChange={handleChange}
               reactForm={{ register, errors, control }}
-              inputDisabled={alreadyAUser}
+              inputDisabled={alreadyAUser  || formDisabled}
               pfpCompulsion={!customPartner.includes(partner?.slug)}
               setProfileImage={setProfileImage}
             />
@@ -394,7 +460,7 @@ const StudentForm = () => {
               // prevFilledData={prevData}
               alreadyAUser={alreadyAUser}
               partnerSlug={partner?.slug}
-              inputDisabled={alreadyAUser}
+              inputDisabled={alreadyAUser  || formDisabled}
             />
           </React.Suspense>
         );

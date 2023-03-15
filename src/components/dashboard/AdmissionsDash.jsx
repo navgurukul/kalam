@@ -410,22 +410,6 @@ const AdmissionsDash = (props) => {
           closeMenuOnSelect
         />
       </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <label className={classes.label}>Filter by School</label>
-        <Select
-          // className="filterSelectGlobal"
-          id="schoolSelect"
-          value={selectedSchool}
-          onChange={changeSchool}
-          options={allSchoolOptions}
-          placeholder="Get Student Details By School"
-          isClearable={false}
-          menuPortalTarget={document.body}
-          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-          // components={animatedComponents}
-          closeMenuOnSelect
-        />
-      </Grid>
       <Grid item xs={6} md={6} lg={3} sx={{ marginTop: "0.8rem" }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
@@ -463,6 +447,22 @@ const AdmissionsDash = (props) => {
             )}
           />
         </LocalizationProvider>
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <label className={classes.label}>Filter by School</label>
+        <Select
+          // className="filterSelectGlobal"
+          id="schoolSelect"
+          value={selectedSchool}
+          onChange={changeSchool}
+          options={allSchoolOptions}
+          placeholder="Get Student Details By School"
+          isClearable={false}
+          menuPortalTarget={document.body}
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+          // components={animatedComponents}
+          closeMenuOnSelect
+        />
       </Grid>
     </Grid>
   );

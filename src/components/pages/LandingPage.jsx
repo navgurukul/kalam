@@ -171,6 +171,8 @@ const LandingPage = () => {
     },
   };
 
+  sessionStorage.removeItem('formData')
+
   const getTestData = () => ({
     enrollmentKey: localStorage.getItem("enrollmentKey"),
     time: localStorage.getItem("time"),

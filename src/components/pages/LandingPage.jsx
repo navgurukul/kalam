@@ -125,7 +125,7 @@ const LandingPage = () => {
   // const [goToTest, setGoToTest] = React.useState(false);
   const lang = {
     Heading: {
-      en: "Software Engineering Scholarship",
+      en: "Software Engineering Scholarship Test",
       hi: "Software Engineering Scholarship",
       ma: "Software Engineering Scholarship",
     },
@@ -140,12 +140,12 @@ const LandingPage = () => {
       ma: "तुम्ही ज्या क्रमांकावरून चाचणी दिली होती ती क्रमांक टाकून तुमचा चाचणी निकाल तपासा",
     },
     AdmisssionTitle: {
-      en: "Start Admisssion Test",
+      // en: "Start Admisssion Test",
       hi: "परीक्षा शुरू करें",
       ma: "प्रवेश परीक्षा सुरू करा",
     },
     TestButton: {
-      en: "GIVE TEST / CHECK RESULT",
+      en: "TAKE THE TEST / CHECK RESULT",
       hi: "परीक्षा दे।",
       ma: "परीक्षा द्या.",
     },
@@ -392,7 +392,7 @@ const LandingPage = () => {
             <Grid item xs={12}>
               <Box style={{ height: theme.spacing(2) }} />
             </Grid>
-            <Grid item>
+            <Grid item style={{marginTop:"3rem"}}>
               <Paper className={classes.loginContainer}>
                 <Box>
                   <Grid item xs={12}>

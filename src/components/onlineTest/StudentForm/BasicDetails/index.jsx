@@ -14,8 +14,9 @@ import {
 } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useSnackbar } from "notistack";
-import { DatePicker, LocalizationProvider } from "@mui/lab";
-import DateFnsUtils from "@mui/lab/AdapterDateFns";
+import { DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { makeStyles } from "@mui/styles";
 import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
@@ -157,9 +158,9 @@ const langOptions = {
         ma: "लिंग निवडा",
       },
       { key: "female", en: "Female", hi: "महिला", ma: "स्त्री" },
-      // {key:"male", en: "Male", hi: "पुरुष", ma: "पुरुष" },
+      { key: "male", en: "Male", hi: "पुरुष", ma: "पुरुष" },
       // {key:"other", en: "Other", hi: "अन्य", ma: "इतर" },
-      { key: "trans", en: "Transwomen", hi: "ट्रांसवुमेन", ma: "ट्रांसवुमेन" },
+      { key: "trans", en: "Transgender", hi: "ट्रांसवुमेन", ma: "ट्रांसवुमेन" },
     ],
     error: {
       en: "Please specify your gender",
@@ -181,7 +182,7 @@ const BasicDetails = ({
   const uploadProfilePhoto = (e) => {
     const file = e.target.files[0];
     //check if file size is greater than 1mb
-    if (file.size > 1000000) {
+    if (file.size > 5000000) {
       enqueueSnackbar("File size should not exceed 1MB", { variant: "error" });
       return;
     }
@@ -346,17 +347,15 @@ const BasicDetails = ({
               field: { ref, ...rest },
               fieldState: { isTouched },
             }) => (
-              <LocalizationProvider dateAdapter={DateFnsUtils}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   disableFuture
                   disabled={inputDisabled && formData.dob !== null}
-                  // margin="normal"
                   id="dob"
                   label={langOptions.dob[lang]}
                   required
                   inputRef={ref}
                   focused={isTouched}
-                  inputFormat="dd/MM/yyyy"
                   inputVariant="outlined"
                   renderInput={(params) => (
                     <TextField
@@ -502,17 +501,19 @@ const BasicDetails = ({
               required: true,
               validate: (gender) => {
                 if (gender === "select gender") return false;
+                if (gender === "male") {
+                  enqueueSnackbar("Currently, Males admission is full.", {
+                    variant: "info",
+                  });
+                  return false;
+                }
                 if (
                   gender === "female" ||
                   gender === "other" ||
                   gender === "trans"
-                )
+                ) {
                   return true;
-                enqueueSnackbar("Currently, Males cannot appear for the Test", {
-                  variant: "info",
-                });
-                return false;
-                // return true;
+                }
               },
             }}
             name="gender"

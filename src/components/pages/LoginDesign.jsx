@@ -132,14 +132,14 @@ const LoginDesign = () => {
         <Paper className={classes.loginContainer}>
           <Box>
             <Typography variant="h5" component="h3">
-              NavGurukul Admissions
+              Admissions Admin Portal
             </Typography>
           </Box>
           <Box style={{ height: theme.spacing(5) }} />
           <Box>
             <GoogleLogin
               clientId="34917283366-b806koktimo2pod1cjas8kn2lcpn7bse.apps.googleusercontent.com"
-              buttonText="Login"
+              buttonText="Login with Google"
               onSuccess={handleLogin}
               onFailure={errr}
               scope="profile email"

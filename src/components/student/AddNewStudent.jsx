@@ -333,7 +333,7 @@ const AddNewStudent = () => {
                     { key: "other", en: "Other" },
                     {
                       key: "trans",
-                      en: "Transwomen",
+                      en: "Transgender",
                     },
                   ].map((el) => (
                     <MenuItem

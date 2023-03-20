@@ -125,7 +125,7 @@ const LandingPage = () => {
   // const [goToTest, setGoToTest] = React.useState(false);
   const lang = {
     Heading: {
-      en: "Software Engineering Scholarship",
+      en: "Software Engineering Scholarship Test",
       hi: "Software Engineering Scholarship",
       ma: "Software Engineering Scholarship",
     },
@@ -140,12 +140,12 @@ const LandingPage = () => {
       ma: "तुम्ही ज्या क्रमांकावरून चाचणी दिली होती ती क्रमांक टाकून तुमचा चाचणी निकाल तपासा",
     },
     AdmisssionTitle: {
-      en: "Start Admisssion Test",
+      // en: "Start Admisssion Test",
       hi: "परीक्षा शुरू करें",
       ma: "प्रवेश परीक्षा सुरू करा",
     },
     TestButton: {
-      en: "GIVE TEST",
+      en: "TAKE THE TEST / CHECK RESULT",
       hi: "परीक्षा दे।",
       ma: "परीक्षा द्या.",
     },
@@ -272,7 +272,7 @@ const LandingPage = () => {
         const response = data.data.data;
         if (response.alreadyGivenTest) {
           navigate(
-            `/check_duplicate/name=${first_name}_${middle_name}_${last_name}&number=${mobileNumber}&stage=${response.pendingInterviewStage}`,
+            `/check_duplicate?name=${first_name}_${middle_name}_${last_name}&number=${mobileNumber}&stage=${response.pendingInterviewStage}`,
             {
               state: {
                 ...state,
@@ -392,7 +392,7 @@ const LandingPage = () => {
             <Grid item xs={12}>
               <Box style={{ height: theme.spacing(2) }} />
             </Grid>
-            <Grid item>
+            <Grid item style={{marginTop:"3rem"}}>
               <Paper className={classes.loginContainer}>
                 <Box>
                   <Grid item xs={12}>
@@ -486,7 +486,9 @@ const LandingPage = () => {
               </Paper>
             </Grid>
             <Box style={{ height: theme.spacing(6) }} />
-            <Grid item>
+
+            {/* ---------------------------CHECK YOUR RESULT----------------------- */}
+            {/* <Grid item>
               <Box
                 display="flex"
                 alignItems="center"
@@ -502,8 +504,10 @@ const LandingPage = () => {
                   {lang.Status[selectedLang]}
                 </Typography>
               </Box>
-            </Grid>
-            <Grid item>
+            </Grid> */}
+
+            {/* -----------------------MOBILE NUMBER AND LINK-------------------------- */}
+            {/* <Grid item>
               <Paper className={classes.loginContainer}>
                 <Box>
                   <TextField
@@ -533,7 +537,7 @@ const LandingPage = () => {
                   </Link>
                 </div>
               </Paper>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
       </ThemeProvider>

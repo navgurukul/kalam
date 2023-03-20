@@ -1,6 +1,5 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React from "react";
 import dayjs from "dayjs";
 import { Avatar } from "@mui/material";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -44,11 +43,15 @@ import UploadDocuments from "../components/smallComponents/UploadDocuments";
 // import CampusStatusDropdown from "../components/smallComponents/CampusStatus";
 import OtherActivities from "../components/campus/OtherActivities";
 import DeleteStudent from "../components/smallComponents/DeleteStudent";
+import ProfilePhoto from "../components/smallComponents/ProfilePhoto";
 import { getColumnIndex } from "../utils";
+import axios from "axios";
+import StageMarks from "../components/smallComponents/StageMarks";
+import TestAttemptModel from "../components/smallComponents/TestAttemptModel";
 
 dayjs.extend(customParseFormat);
 
-// const baseURL = import.meta.env.VITE_API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const keysCampusStageOfLearning = Object.keys(campusStageOfLearning);
 // const allStagesOptions = Object.keys(allStages).map((x) => {
@@ -690,6 +693,20 @@ const marksColumn = {
   options: {
     filter: false,
     sort: true,
+    customBodyRender: (value) => {
+      let CheckAttempt = value.id.filter((marks) => {
+        return marks.total_marks;
+      });
+      return (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {CheckAttempt.length > 0 ? (
+            <TestAttemptModel value={CheckAttempt} />
+          ) : (
+            "N/A"
+          )}
+        </div>
+      );
+    },
   },
 };
 
@@ -1708,24 +1725,9 @@ const profileImage = {
   options: {
     filter: false,
     sort: false,
-    customBodyRender: (value, rowMeta) =>
-      value !== null ? (
-        <> 
-          <Avatar
-          src={value}
-          alt={rowMeta.rowData[2]}
-          style={{
-            width: "60px",
-            height: "60px",
-            // borderRadius: "50%",
-            // objectFit: "cover",
-          }}
-        />
-        </>
-      
-      ) : (
-        <p> </p>
-      ),
+    customBodyRender: (value, rowMeta) => (
+      <ProfilePhoto value={value} rowMeta={rowMeta} />
+    ),
   },
 };
 
@@ -1746,6 +1748,7 @@ const dConvert = (data) => {
     ? parseInt(x.enrolmentKey[x.enrolmentKey.length - 1].total_marks, 10)
     : null;
   x.marks = isNaN(x.marks) ? null : x.marks;
+
   x.lastUpdated = x.lastTransition ? x.lastTransition.created_at : null;
   x.age = x.dob ? new Date().getFullYear() - +x.dob.slice(0, 4) : "NA";
   x.studentOwner = x.feedbacks ? x.feedbacks.to_assign : x.to_assign;

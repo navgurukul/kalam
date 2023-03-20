@@ -258,11 +258,11 @@ const LandingPage = () => {
     const first_name = firstName.replace(
       firstName[0],
       firstName[0].toUpperCase()
-    );
+    ).trim();
     const middle_name =
       middleName &&
-      middleName.replace(middleName[0], middleName[0].toUpperCase());
-    const last_name = lastName.replace(lastName[0], lastName[0].toUpperCase());
+      middleName.replace(middleName[0], middleName[0].toUpperCase()).trim();
+    const last_name = lastName.replace(lastName[0], lastName[0].toUpperCase()).trim();
     axios
       .get(`${baseUrl}check_duplicate`, {
         params: {

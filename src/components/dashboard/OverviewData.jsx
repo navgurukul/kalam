@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Box, Grid, TextField } from "@mui/material";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider, DatePicker } from "@mui/lab";
 import MUIDataTable from "mui-datatables";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import DateFnsUtils from "@mui/lab/AdapterDateFns";
 import dayjs from "dayjs";
 import axios from "axios";
 
@@ -132,7 +132,7 @@ const columns = [
 ];
 // let filterFns = [];
 
-const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
+const OverviewData = ({ displayData, title, url, isCampus = false}) => {
   const location = useLocation();
   const { students, allStudents, fromDate, toDate, allStatusCount } =
     useSelector((state) => state.campus);
@@ -297,7 +297,7 @@ const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
         />
       </Grid>
       <Grid item xs={12} md={6} lg={3}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={DateFnsUtils}>
           <DatePicker
             margin="dense"
             style={{ marginLeft: 16, maxWidth: "40%" }}
@@ -316,7 +316,7 @@ const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
         </LocalizationProvider>
       </Grid>
       <Grid item xs={12} md={6} lg={3}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={DateFnsUtils}>
           <DatePicker
             margin="dense"
             style={{ marginLeft: 16, maxWidth: "40%" }}
@@ -363,7 +363,10 @@ const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
         />
       </Grid>
 
-      {/* <Grid item xs={12} md={12} lg={6}>
+
+      {/* CAMPUS COUNT */}
+
+      <Grid item xs={12} md={12} lg={6}>
         <MUIDataTable
           columns={Object.keys(allStatusCount).map((statusKey) => ({
             name: statusKey,
@@ -372,7 +375,7 @@ const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
               display: campusStatusOptions[statusKey]?.display ?? true,
             },
           }))}
-          title="Campus Counts"
+          title="Campus Counts overview.."
           data={[allStatusCount]}
           options={{
             customFooter: noFooter,
@@ -386,7 +389,7 @@ const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
             toolbar: false,
           }}
         />
-      </Grid> */}
+      </Grid>
     </Grid>
   );
   return (
@@ -395,13 +398,12 @@ const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
       <MainLayout
         tableBodyMaxHeight="56vh"
         title={title}
-        columns={[...displayData, ...columns]}
+       columns={[...displayData, ...columns]}
         onDownload={onDownload}
         data={students}
         showLoader={loading}
-        options={options}
       />
     </Box>
   );
 };
-export default DashboardPage;
+export default OverviewData;

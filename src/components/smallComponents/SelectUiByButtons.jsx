@@ -21,8 +21,7 @@ const useStyles = makeStyles(() => ({
 const SelectUiByButtons = ({
   name,
   progressMade,
-  studentData,
-  overview,
+  tabularData,
   showGraphData,
   selected,
 }) => {
@@ -38,19 +37,11 @@ const SelectUiByButtons = ({
           color="primary"
           aria-label="large outlined primary button group"
         >
-          {/* OVERVIEW BUTTON DATA */}
           <Button
-            variant={selected === "overview" ? "contained" : "outlined"}
-            onClick={() => overview.action()}
+            variant={selected === "tabularData" ? "contained" : "outlined"}
+            onClick={() => tabularData.action()}
           >
-            {overview.label}
-          </Button>
-          {/* ---------------ADDED NOW---------------- */}
-          <Button
-            variant={selected === "studentData" ? "contained" : "outlined"}
-            onClick={() => studentData.action()}
-          >
-            {studentData.label}
+            {tabularData.label}
           </Button>
           <Button
             variant={selected === "progressMade" ? "contained" : "outlined"}

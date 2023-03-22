@@ -4,16 +4,6 @@ import { allStages, caste } from "./constants";
 
 export const dConvert = (data, isCampus) => {
   const x = { ...data };
-  const isProgrammingSchool = x.school[0].id === 1;
-  let customStage;
-  if(!isProgrammingSchool){
-      if(!x.student_school_stage){
-          customStage = x.stage;
-      }else{
-          customStage = { value: x.student_school_stage?.id, label: x.student_school_stage?.stageName }
-      }
-  };
-
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
   try {
@@ -27,7 +17,7 @@ export const dConvert = (data, isCampus) => {
     x.gender === 1 ? "Female" : x.gender === 2 ? "Male" : "Transgender";
   x.stage = isCampus
     ? { ...x.stage, stage: allStages[x.stage.stage] }
-    : (isProgrammingSchool ? allStages[x.stage] : customStage);
+    : allStages[x.stage];
   x.marks = x.enrolmentKey.length
     ? parseInt(x.enrolmentKey[0].total_marks, 10)
     : // ?  { marks:parseInt(x.enrolmentKey[0].total_marks, 10),id:x.enrolmentKey[0]}

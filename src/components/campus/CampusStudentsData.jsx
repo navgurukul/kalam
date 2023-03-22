@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useParams } from "react-router-dom";
@@ -13,8 +13,6 @@ import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
 import StudentsProgressCards from "../student/StudentsProgressCards";
 import PieRechartReport from "../partner/PieRechartReport";
 import EvaluationSelect from "../smallComponents/EvaluationSelect";
-import OverviewData from "../dashboard/OverviewData";
-import NewCustomToolbar from "./ToolbarAddButtonNewSchool";
 
 import { campus } from "../../utils/constants";
 import RedFlag from "./FlagModal";
@@ -28,23 +26,6 @@ const CampusStudentsData = () => {
   const fetchingFinish = () => dispatch(changeFetching(false));
   // const usersSetup = (users) => dispatch(setupUsers(users));
   const [dataView, setDataView] = React.useState(0);
-
-  const [addSchool, setAddSchool] = useState(false);
-
-  const openAddSchool = () =>{
-    setAddSchool(true);
-  }
-
-  const options = {
-    selectableRows: "none",
-    responsive: "vertical",
-    filter: false,
-    customToolbar: React.useCallback(
-      () => <ToolbarAddButtonNewSchool openAddSchool={setAddSchool}/>,
-      []
-    ),
-  };
-
 
   const campusName = campus.find((x) => x.id === parseInt(campusId, 10)).name;
 
@@ -98,41 +79,22 @@ const CampusStudentsData = () => {
   };
 
   const progressMade = () => {
-    setDataView(2);
-  };
-  const studentData = () => {
     setDataView(1);
   };
-  const showGraphData = () => {
-    setDataView(3);
+  const tabularData = () => {
+    setDataView(0);
   };
-//-----------------------OVERVIEW DATA------------
-  const overview = () =>{
-    setDataView(0)
-  }
+  const showGraphData = () => {
+    setDataView(2);
+  };
   //console.log(campusName, campusId);
 
   const getVIew = (viewNo) => {
     switch (viewNo) {
       case 0:
         return (
-          <OverviewData
-          isCampus
-          displayData={[
-          // ...StudentService.CampusData,
-           //EvaluationColumn,
-           //redFlagColumn,
-           //navGurukulSurveyForm,
-         ]}
-          url={`campus/${campusId}/students`}
-          campusID={campusId}
-          options={options}
-        />
-        );
-      case 1:
-        return (
-            <DashboardPage
-           isCampus
+          <DashboardPage
+            isCampus
             displayData={[
               ...StudentService.CampusData,
               EvaluationColumn,
@@ -143,13 +105,25 @@ const CampusStudentsData = () => {
             campusID={campusId}
           />
         );
+      case 1:
+        return <StudentsProgressCards url={`campus/${campusId}`} />;
       case 2:
         return (
-                <StudentsProgressCards url={`campus/${campusId}`} />
+          <PieRechartReport url={`/campus/${campusId}/students/distribution`} />
         );
       default:
         return (
-          <PieRechartReport url={`/campus/${campusId}/students/distribution`} />
+          <DashboardPage
+            isCampus
+            displayData={[
+              ...StudentService.CampusData,
+              EvaluationColumn,
+              redFlagColumn,
+              navGurukulSurveyForm,
+            ]}
+            url={`campus/${campusId}/students`}
+            campusID={campusId}
+          />
         );
     }
   };
@@ -158,14 +132,14 @@ const CampusStudentsData = () => {
       <SelectUiByButtons
         name={`${campusName} Campus`}
         progressMade={{ label: "Progress Made", action: progressMade }}
-        studentData={{ label: "Student Data", action: studentData }}
+        tabularData={{ label: "Tabular Data", action: tabularData }}
         showGraphData={{ label: "Graph on Job", action: showGraphData }}
-        overview={{label: "overview", action : overview}}
         selected={
-          dataView === 1 ? "studentData" : 
-          dataView === 2 ? "progressMade" : 
-          dataView === 0? "overview": 
-          "showGraphData"
+          dataView === 0
+            ? "tabularData"
+            : dataView === 1
+            ? "progressMade"
+            : "showGraphData"
         }
       />
       {getVIew(dataView)}

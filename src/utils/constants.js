@@ -248,14 +248,6 @@ export const allStages = {
   paidForward: "Paid Forward",
 };
 
-export const allSchools = {
-  1: "School of Programming",
-  2: "School of Design",
-  3: "School of Finance",
-  4: "School of Management",
-  5: "School of Education",
-}
-
 export const campusStageOfLearning = {
   finallyJoined: "Joined",
   M1: "English & Quarantine",

@@ -49,7 +49,6 @@
     "@mui/lab": "^5.0.0-alpha.74",
     "@mui/material": "^5.5.2",
     "@mui/styles": "^5.5.1",
-    "@mui/x-date-pickers": "^5.0.20",
     "@reduxjs/toolkit": "^1.8.0",
     "axios": "^0.26.1",
     "date-fns": "^2.29.1",

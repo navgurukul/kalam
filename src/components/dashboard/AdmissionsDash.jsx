@@ -26,10 +26,9 @@ import {
   setToDate,
   setPageNo,
   fetchStudents,
-  setSchool,
 } from "../../store/slices/studentSlice";
 
-import { allStages, allSchools } from "../../utils/constants";
+import { allStages } from "../../utils/constants";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -45,18 +44,6 @@ allStagesOptions = [
     label: "All",
   },
   ...allStagesOptions,
-];
-
-let allSchoolOptions = Object.keys(allSchools).map((x) => ({
-  value: x,
-  label: allSchools[x],
-}));
-allSchoolOptions = [
-  {
-    value: "default",
-    label: "All",
-  },
-  ...allSchoolOptions,
 ];
 
 const useStyles = makeStyles(() => ({
@@ -83,7 +70,6 @@ const AdmissionsDash = (props) => {
     fromDate,
     toDate,
     stage,
-    school,
     totalData,
     numberOfRows,
     page,
@@ -105,7 +91,6 @@ const AdmissionsDash = (props) => {
   // const setRows = (data) => dispatch(setNoOfRows(data));
   const setPage = (data) => dispatch(setPageNo(data));
   const updateStage = (data) => dispatch(setStage(data));
-  const updateSchool = (data) => dispatch(setSchool(data));
   const [state, setState] = React.useState({
     // totalData: 0,
     // data: [],
@@ -116,7 +101,6 @@ const AdmissionsDash = (props) => {
     // filterValues: [],
     // numberOfRows: 10,
     selectedOption: [],
-    selectedSchool: allSchoolOptions[0],
     access: null, //access object to store who are having access data
     // userLoggedIn: user(), //user object to store who is logged in
     studentDashboardCondition: true, //condition to show student dashboard
@@ -300,24 +284,6 @@ const AdmissionsDash = (props) => {
     }
   };
 
-  const changeSchool = (selectedSchool)=>{
-    setState((prevState) => ({
-      ...prevState,
-      selectedSchool,
-    }));
-    if (selectedSchool.value === "default") {
-      setPage(0);
-      updateSchool("");
-      dataType = "softwareCourse";
-      value = "Student Details";
-    } else {
-      setPage(0);
-      updateSchool(selectedSchool.value);
-      dataType = "softwareCourse";
-    }
-    
-  }
-
   const changeFromDate = async (date) => {
     setFrom(date);
     // setState((prevState) => ({
@@ -347,7 +313,7 @@ const AdmissionsDash = (props) => {
   };
 
   const { fetchPendingInterviewDetails } = props;
-  const { sData, selectedOption, selectedSchool } = state;
+  const { sData, selectedOption } = state;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -372,7 +338,7 @@ const AdmissionsDash = (props) => {
     // console.log("Updating changes");
     if (loggedInUser)
       dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType })); //softwareCourse
-  }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser, school]);
+  }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser]);
 
   const options = (
     <Grid container spacing={4} style={{ marginBottom: "0.8rem" }}>
@@ -447,22 +413,6 @@ const AdmissionsDash = (props) => {
             )}
           />
         </LocalizationProvider>
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <label className={classes.label}>Filter by School</label>
-        <Select
-          // className="filterSelectGlobal"
-          id="schoolSelect"
-          value={selectedSchool}
-          onChange={changeSchool}
-          options={allSchoolOptions}
-          placeholder="Get Student Details By School"
-          isClearable={false}
-          menuPortalTarget={document.body}
-          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-          // components={animatedComponents}
-          closeMenuOnSelect
-        />
       </Grid>
     </Grid>
   );

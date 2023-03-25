@@ -26,6 +26,7 @@ import {
   nextStage,
 } from "../../utils/constants";
 import { setCounts } from "../../store/slices/campusSlice";
+import { fetchStudents } from "../../store/slices/studentSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
@@ -37,7 +38,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const setCampusCounts = (counts) => dispatch(setCounts(counts));
   const { loggedInUser } = useSelector((state) => state.auth);
   const { allStatusCount } = useSelector((state) => state.campus);
-
+  //const { allStatusCount } = useSelector((state) => state.students);
+  const refreshTable = (data) =>dispatch(fetchStudents(data));
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
 
@@ -118,6 +120,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           variant: "success",
         });
         change(isCampus ? { ...stage, stage: label } : label);
+        refreshTable({fetchPendingInterviewDetails: false, dataType: "softwareCourse"});
         // getTransitionStage(studentId);
       })
       .catch(() => {

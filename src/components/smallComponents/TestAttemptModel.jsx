@@ -32,26 +32,22 @@ export default function TestAttemptModel({ value }) {
       <Button onClick={handleOpen}>
         <InfoIcon />
       </Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-      >
+      <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-        <CancelSharpIcon onClick={Close} sx={{mt: -1 , cursor:"Pointer" }}/>
+          <CancelSharpIcon onClick={Close} sx={{ mt: -1, cursor: "Pointer" }} />
           <FormControl sx={{ m: 1, minWidth: 180, ml: 12 }}>
             {value.map((el, i) => {
-                
               return (
                 <>
-                <MenuItem value={el}>
-                  <Button>
-                    <StageMarks
-                      value={el}
-                      name={i+1}
-                      marks={el.total_marks}
-                    />
-                  </Button>
-                </MenuItem>
+                  <MenuItem key={i} value={el}>
+                    <Button>
+                      <StageMarks
+                        value={el}
+                        name={i + 1}
+                        marks={el.total_marks}
+                      />
+                    </Button>
+                  </MenuItem>
                 </>
               );
             })}

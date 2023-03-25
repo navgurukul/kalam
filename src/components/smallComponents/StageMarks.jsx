@@ -5,11 +5,11 @@ import DialogContentText from "@mui/material/DialogContentText";
 import axios from "axios";
 import { IconButton } from "@mui/material";
 import CancelSharpIcon from "@mui/icons-material/CancelSharp";
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-const StageMarks = ({ value, name , marks }) => {
+const StageMarks = ({ value, name, marks }) => {
   const [open, setOpen] = React.useState(false);
   const [DBdata, setDBdata] = React.useState(null);
 
@@ -21,7 +21,7 @@ const StageMarks = ({ value, name , marks }) => {
       setDBdata(data);
       setOpen(true);
     } catch (err) {
-        setDBdata(null);
+      setDBdata(null);
       setOpen(true);
     }
   };
@@ -35,7 +35,9 @@ const StageMarks = ({ value, name , marks }) => {
         <Button
           onClick={handleClickOpen}
           style={{ width: "2rem", marginLeft: ".2rem", cursor: "pointer" }}
-        >{name} Attempt:- {marks ? marks:"N/A"}</Button>
+        >
+          {name} Attempt:- {marks ? marks : "N/A"}
+        </Button>
       ) : (
         <div>
           <Dialog
@@ -68,8 +70,8 @@ const StageMarks = ({ value, name , marks }) => {
                 <>
                   {DBdata.map((el, index) => {
                     return (
-                      <div key={index} >
-                        <DialogContentText  mt={8}>
+                      <div key={index}>
+                        <DialogContentText mt={8}>
                           <strong>
                             Question {index + 1}) &nbsp;{" "}
                             {el[1][0].en_text
@@ -82,7 +84,8 @@ const StageMarks = ({ value, name , marks }) => {
                             }}
                           ></p>
                           <p>
-                            <strong>Answer - </strong> {el[0].text_answer || el[0].selected_option_id}
+                            <strong>Answer - </strong>{" "}
+                            {el[0].text_answer || el[0].selected_option_id}
                           </p>
                         </DialogContentText>
                       </div>
@@ -90,9 +93,9 @@ const StageMarks = ({ value, name , marks }) => {
                   })}
                 </>
               ) : (
-                <DialogContentText >
-                  <h1 align="center" > No Data Found</h1>
-                  </DialogContentText>
+                <DialogContentText>
+                  <h1 align="center"> No Data Found</h1>
+                </DialogContentText>
               )}
             </DialogContent>
           </Dialog>

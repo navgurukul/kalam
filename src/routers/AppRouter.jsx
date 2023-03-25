@@ -408,7 +408,10 @@ const AppRouter = () => {
                 </React.Suspense>
               }
             />
-            {/* <AnyRoute path="/check_duplicate" component={<DuplicateStudents/>} /> */}
+            {/* <AnyRoute
+              path="/check_duplicate"
+              component={<DuplicateStudents />}
+            /> */}
             <Route
               path="/check_duplicate"
               element={

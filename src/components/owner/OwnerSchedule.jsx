@@ -127,8 +127,6 @@ function OwnerSchedule(props) {
               <DatePicker
                 margin="normal"
                 format="MM/dd/yyyy"
-                id="date-picker-dialog"
-                label="From Date"
                 value={date}
                 onChange={(newDate) => handleDateChange(newDate)}
                 inputVariant="outlined"

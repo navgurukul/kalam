@@ -42,6 +42,7 @@ import UploadDocuments from "../components/smallComponents/UploadDocuments";
 // import CampusStatusDropdown from "../components/smallComponents/CampusStatus";
 import OtherActivities from "../components/campus/OtherActivities";
 import DeleteStudent from "../components/smallComponents/DeleteStudent";
+import ProfilePhoto from "../components/smallComponents/ProfilePhoto";
 import { getColumnIndex } from "../utils";
 import axios from "axios";
 import StageMarks from "../components/smallComponents/StageMarks";
@@ -693,12 +694,16 @@ const marksColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
-    let CheckAttempt = value.id.filter(marks=>{return marks.total_marks})
+      let CheckAttempt = value.id.filter((marks) => {
+        return marks.total_marks;
+      });
       return (
         <div style={{ display: "flex", alignItems: "center" }}>
-          {CheckAttempt.length >0 ? 
-          <TestAttemptModel value={CheckAttempt}/>:"N/A"
-        }
+          {CheckAttempt.length > 0 ? (
+            <TestAttemptModel value={CheckAttempt} />
+          ) : (
+            "N/A"
+          )}
         </div>
       );
     },
@@ -1657,21 +1662,9 @@ const profileImage = {
   options: {
     filter: false,
     sort: false,
-    customBodyRender: (value, rowMeta) =>
-      value !== null ? (
-        <Avatar
-          src={value}
-          alt={rowMeta.rowData[2]}
-          style={{
-            width: "60px",
-            height: "60px",
-            // borderRadius: "50%",
-            // objectFit: "cover",
-          }}
-        />
-      ) : (
-        <p> </p>
-      ),
+    customBodyRender: (value, rowMeta) => (
+      <ProfilePhoto value={value} rowMeta={rowMeta} />
+    ),
   },
 };
 

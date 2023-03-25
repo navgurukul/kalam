@@ -710,6 +710,8 @@ const marksColumn = {
   },
 };
 
+
+
 const ageColumn = {
   name: "age",
   label: "Age",

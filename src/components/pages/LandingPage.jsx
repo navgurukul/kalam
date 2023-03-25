@@ -468,7 +468,7 @@ const LandingPage = () => {
                     style={{
                       margin: 8,
                     }}
-                    type="number"
+                    type="text"
                     name="mobileNumber"
                     label="Mobile Number"
                     value={mobileNumber}

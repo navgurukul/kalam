@@ -188,6 +188,10 @@ const BasicDetails = ({
     }
     setProfileImage(file);
   };
+
+  const maxDate = new Date().getFullYear() - 17;
+  const minDate = new Date().getFullYear() - 28;
+
   return (
     <Container maxWidth="lg" align="center">
       {/* {pfpCompulsion ?  */}
@@ -357,6 +361,8 @@ const BasicDetails = ({
                   inputRef={ref}
                   focused={isTouched}
                   inputVariant="outlined"
+                  minDate={new Date(`${minDate}-01-01`)}
+                  maxDate={new Date(`${maxDate}-01-01`)}
                   renderInput={(params) => (
                     <TextField
                       {...params}

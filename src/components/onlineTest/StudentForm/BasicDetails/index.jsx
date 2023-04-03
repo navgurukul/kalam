@@ -189,8 +189,11 @@ const BasicDetails = ({
     setProfileImage(file);
   };
 
-  const maxDate = new Date().getFullYear() - 17;
-  const minDate = new Date().getFullYear() - 28;
+  const date = new Date();
+  const month = date.getMonth();
+  console.log("month", month);
+  const maxDate = date.getFullYear() - 17;
+  const minDate = date.getFullYear() - 28;
 
   return (
     <Container maxWidth="lg" align="center">
@@ -358,11 +361,12 @@ const BasicDetails = ({
                   id="dob"
                   label={langOptions.dob[lang]}
                   required
+                  openTo="year"
                   inputRef={ref}
                   focused={isTouched}
                   inputVariant="outlined"
-                  minDate={new Date(`${minDate}-01-01`)}
-                  maxDate={new Date(`${maxDate}-01-01`)}
+                  minDate={new Date(`${minDate}-${month + 1}-01`)}
+                  maxDate={new Date(`${maxDate}-${month + 2}-01`)}
                   renderInput={(params) => (
                     <TextField
                       {...params}

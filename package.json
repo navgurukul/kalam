@@ -52,6 +52,7 @@
     "@mui/x-data-grid": "^5.17.14",
     "@mui/x-date-pickers": "^5.0.9",
     "@reduxjs/toolkit": "^1.8.0",
+    "@sentry/react": "^7.46.0",
     "axios": "^0.26.1",
     "date-fns": "^2.29.1",
     "dayjs": "^1.11.0",

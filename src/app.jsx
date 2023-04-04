@@ -15,8 +15,6 @@ const dsn = import.meta.env.VITE_DSN;
 const TRACKING_ID = "G-WG6ZZQHGB8"; // OUR_TRACKING_ID
 ReactGA.initialize(TRACKING_ID);
 
-console.log("dsn", dsn);
-
 Sentry.init({
   dsn: dsn,
   integrations: [new Sentry.BrowserTracing()],

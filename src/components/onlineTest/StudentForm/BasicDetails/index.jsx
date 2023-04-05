@@ -190,6 +190,7 @@ const BasicDetails = ({
   };
 
   const date = new Date();
+  const currentDate = date.getDate();
   const month = date.getMonth();
   const maxDate = date.getFullYear() - 17;
   const minDate = date.getFullYear() - 28;
@@ -364,8 +365,8 @@ const BasicDetails = ({
                   inputRef={ref}
                   focused={isTouched}
                   inputVariant="outlined"
-                  minDate={new Date(`${minDate}-${month + 1}-01`)}
-                  maxDate={new Date(`${maxDate}-${month + 2}-01`)}
+                  minDate={new Date(`${minDate}-${month + 1}-${currentDate}`)}
+                  maxDate={new Date(`${maxDate}-${month + 1}-${currentDate}`)}
                   renderInput={(params) => (
                     <TextField
                       {...params}

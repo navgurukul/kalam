@@ -413,7 +413,7 @@ const BasicDetails = ({
                 }}
                 label={langOptions.whatsapp[lang]}
                 placeholder={langOptions.whatsapp[lang]}
-                type="number"
+                type="tel"
                 autoComplete="off"
                 error={!!errors.whatsapp}
                 helperText={

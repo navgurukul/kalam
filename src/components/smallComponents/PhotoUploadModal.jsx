@@ -22,6 +22,7 @@ const PhotoUploadModal = ({
   dialogOpen,
   handleClose,
   src,
+  updatedPicTable,
   enrollmentKey,
   name,
   setUpdatePicTable,
@@ -114,7 +115,7 @@ const PhotoUploadModal = ({
         }}
       >
         <Avatar
-          src={updatedPhoto ? previewPhoto : src}
+          src={updatedPhoto || updatedPicTable ? previewPhoto : src}
           style={{
             width: "120px",
             height: "120px",

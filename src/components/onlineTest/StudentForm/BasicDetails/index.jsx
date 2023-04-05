@@ -191,7 +191,6 @@ const BasicDetails = ({
 
   const date = new Date();
   const month = date.getMonth();
-  console.log("month", month);
   const maxDate = date.getFullYear() - 17;
   const minDate = date.getFullYear() - 28;
 

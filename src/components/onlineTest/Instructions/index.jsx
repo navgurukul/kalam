@@ -39,7 +39,7 @@ const tutorialSteps = [
     inputField: true,
     button: {
       // old:"Aage chalein",
-      en: "Lets go Ahead",
+      en: "Let's go Ahead",
       hi: "आगे बढ़ो",
       ma: "पुढे जा",
     },

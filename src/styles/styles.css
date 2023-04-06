@@ -12,14 +12,14 @@ body {
   position: initial;
 }
 
-.slick-prev {
-  left: 25px;
-}
 
 @media only screen and (min-width: 600px) {
   .slick-next {
     right: 25px;
   }
+  .slick-prev {
+    left: 25px;
+  }  
 }
 
 @media only screen and (max-width: 600px) {
@@ -29,15 +29,15 @@ body {
 }
 
 .slick-prev:before {
-  color: #f05f40;
-  opacity: 0.9;
-  font-size: 24px;
+  color: #f05f40 !important;
+  opacity: 0.9 !important;
+  font-size: 24px !important;
 }
 
 .slick-next:before {
-  color: #f05f40;
-  opacity: 0.9;
-  font-size: 24px;
+  color: #f05f40 !important;
+  opacity: 0.9 !important;
+  font-size: 24px !important;
 }
 
 .filterSelect {
@@ -47,9 +47,11 @@ body {
   padding-left: 16px;
   padding-top: 8px;
 }
+
 .filterSelectStage {
   min-width: 200px;
 }
+
 .filterSelectGlobal {
   z-index: 905;
   width: 300px;

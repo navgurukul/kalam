@@ -52,7 +52,7 @@ describe("Section 1: Landing page", () => {
     });
   });
 
-  // TS103
+  // TS103_02
   it.only("should type in user's first and last names AND MIDDLE NAME, submit form and verify move to test instructions", () => {
     cy.fixture("users").then((users) => {
       const user = users[0];
@@ -69,5 +69,14 @@ describe("Section 1: Landing page", () => {
         .url()
         .should("include", "test/instructions");
     });
+  });
+
+  // TS105
+  it("should submit button with invalid data", () => {
+    cy.get(`[data-cy="submitButton"]`)
+      .click()
+      .wait(1000)
+      .url()
+      .should("be.", "");
   });
 });

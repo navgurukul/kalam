@@ -89,7 +89,7 @@ describe("Section 1: Landing page", () => {
   });
 
   // TS105 Submit with invalid phone number
-  it.only("should submit button with invalid data, verify notification to user, URL should not change", () => {
+  it("should submit button with invalid data, verify notification to user, URL should not change", () => {
     cy.fixture("users").then((users) => {
       const user = users[0];
 

@@ -29,7 +29,7 @@ const tutorialSteps = [
     },
     subHadding: {
       // old:"Select Your Languge/ अपनी भाषा चुने",
-      en: "Select Your Languge",
+      en: "Select Your Language",
       hi: "अपनी भाषा चुने",
       ma: "तुमची भाषा निवडा",
     },

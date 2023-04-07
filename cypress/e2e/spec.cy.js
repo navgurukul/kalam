@@ -95,7 +95,7 @@ describe("Section 1: Landing page", () => {
 
       // get the url before submit button is clicked
       cy.url().then((urlBeforeSubmit) => {
-        // enter valid inputs for, first middle and last names: Invalud # Number
+        // enter valid inputs for, first middle and last names: Invalid # Number
         cy.get(`[data-cy="firstName-input"]`).type(user.firstName);
         cy.get(`[data-cy="middleName-input"]`).type(user.middleName);
         cy.get(`[data-cy="lastName-input"]`).type(user.lastName);

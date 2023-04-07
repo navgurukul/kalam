@@ -3,6 +3,7 @@ beforeEach(() => {
   cy.visit("http://localhost:8080/test/instructions");
 });
 
+// TS201
 describe("Section 2: Test Instructions", () => {
   it("should have a language dropdown with the options English, Hindi and Marathi: Verify language change", () => {
     cy.get(`[data-cy="lang-dropdown"]`).should("have.value", "");

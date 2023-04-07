@@ -224,7 +224,7 @@ const TestInstructions = () => {
           </Typography>
         </Paper>
         <Paper square elevation={0} className={classes.content}>
-          <Typography variant="h5">
+          <Typography data-cy="title" variant="h5">
             {tutorialSteps[activeStep].subHadding?.[lang]}
           </Typography>
         </Paper>
@@ -269,14 +269,21 @@ const TestInstructions = () => {
                 Choose your language
               </InputLabel>
               <Select
+                data-cy="lang-dropdown"
                 value={lang}
                 onChange={changeHandler}
                 label="Choose your language"
                 name="Language"
               >
-                <MenuItem value="en">English</MenuItem>
-                <MenuItem value="hi">Hindi</MenuItem>
-                <MenuItem value="ma">Marathi</MenuItem>
+                <MenuItem data-cy="en" value="en">
+                  English
+                </MenuItem>
+                <MenuItem data-cy="hi" value="hi">
+                  Hindi
+                </MenuItem>
+                <MenuItem data-cy="ma" value="ma">
+                  Marathi
+                </MenuItem>
               </Select>
             </FormControl>
           </Paper>

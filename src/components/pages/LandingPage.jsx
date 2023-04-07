@@ -140,7 +140,7 @@ const LandingPage = () => {
       ma: "तुम्ही ज्या क्रमांकावरून चाचणी दिली होती ती क्रमांक टाकून तुमचा चाचणी निकाल तपासा",
     },
     AdmisssionTitle: {
-      // en: "Start Admisssion Test",
+      en: "Start Admisssion Test",
       hi: "परीक्षा शुरू करें",
       ma: "प्रवेश परीक्षा सुरू करा",
     },
@@ -398,7 +398,7 @@ const LandingPage = () => {
               <Paper className={classes.loginContainer}>
                 <Box>
                   <Grid item xs={12}>
-                    <Typography variant="h5" component="h4">
+                    <Typography data-cy="title" variant="h5" component="h4">
                       {lang.AdmisssionTitle[selectedLang]}
                     </Typography>
                   </Grid>

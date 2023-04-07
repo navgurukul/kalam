@@ -274,8 +274,8 @@ const TestInstructions = () => {
                 label="Choose your language"
                 name="Language"
               >
-                <MenuItem value="hi">Hindi</MenuItem>
                 <MenuItem value="en">English</MenuItem>
+                <MenuItem value="hi">Hindi</MenuItem>
                 <MenuItem value="ma">Marathi</MenuItem>
               </Select>
             </FormControl>

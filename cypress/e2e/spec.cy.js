@@ -72,7 +72,7 @@ describe("Section 1: Landing page", () => {
   });
 
   // TS105
-  it.only("should submit button with invalid data, verify notification to user, URL should not change", () => {
+  it("should submit button with invalid data, verify notification to user, URL should not change", () => {
     // get the url before submit button is clicked
     cy.url().then((urlBeforeSubmit) => {
       cy.get(`[data-cy=submitButton]`).click();

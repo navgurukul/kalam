@@ -171,7 +171,7 @@ const LandingPage = () => {
     },
   };
 
-  sessionStorage.removeItem('formData')
+  sessionStorage.removeItem("formData");
 
   const getTestData = () => ({
     enrollmentKey: localStorage.getItem("enrollmentKey"),
@@ -255,14 +255,15 @@ const LandingPage = () => {
 
   const isDuplicate = () => {
     const { mobileNumber, firstName, middleName, lastName } = state;
-    const first_name = firstName.replace(
-      firstName[0],
-      firstName[0].toUpperCase()
-    ).trim();
+    const first_name = firstName
+      .replace(firstName[0], firstName[0].toUpperCase())
+      .trim();
     const middle_name =
       middleName &&
       middleName.replace(middleName[0], middleName[0].toUpperCase()).trim();
-    const last_name = lastName.replace(lastName[0], lastName[0].toUpperCase()).trim();
+    const last_name = lastName
+      .replace(lastName[0], lastName[0].toUpperCase())
+      .trim();
     axios
       .get(`${baseUrl}check_duplicate`, {
         params: {
@@ -394,7 +395,7 @@ const LandingPage = () => {
             <Grid item xs={12}>
               <Box style={{ height: theme.spacing(2) }} />
             </Grid>
-            <Grid item style={{marginTop:"3rem"}}>
+            <Grid item style={{ marginTop: "3rem" }}>
               <Paper className={classes.loginContainer}>
                 <Box>
                   <Grid item xs={12}>
@@ -410,6 +411,7 @@ const LandingPage = () => {
                   }}
                 >
                   <TextField
+                    data-cy="firstName-input"
                     required
                     id="filled-full-width"
                     margin="normal"
@@ -426,6 +428,7 @@ const LandingPage = () => {
                   />
 
                   <TextField
+                    data-cy="middleName-input"
                     id="filled-full-width"
                     margin="normal"
                     style={{ margin: 8 }}
@@ -446,6 +449,7 @@ const LandingPage = () => {
                   }}
                 >
                   <TextField
+                    data-cy="lastName-input"
                     required
                     id="filled-full-width"
                     margin="normal"
@@ -462,6 +466,7 @@ const LandingPage = () => {
                   />
 
                   <TextField
+                    data-cy="mobileNumber-input"
                     required
                     id="filled-full-width"
                     margin="normal"
@@ -481,7 +486,12 @@ const LandingPage = () => {
                   />
                 </div>
                 <div className={classes.root}>
-                  <Button variant="outlined" onClick={giveTest} color="primary">
+                  <Button
+                    data-cy="submitButton"
+                    variant="outlined"
+                    onClick={giveTest}
+                    color="primary"
+                  >
                     {lang.TestButton[selectedLang]}
                   </Button>
                 </div>

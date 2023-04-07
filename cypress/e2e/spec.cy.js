@@ -53,7 +53,7 @@ describe("Section 1: Landing page", () => {
   });
 
   // TS103_02
-  it.only("should type in user's first and last names AND MIDDLE NAME, submit form and verify move to test instructions", () => {
+  it("should type in user's first and last names AND MIDDLE NAME, submit form and verify move to test instructions", () => {
     cy.fixture("users").then((users) => {
       const user = users[0];
 
@@ -72,11 +72,45 @@ describe("Section 1: Landing page", () => {
   });
 
   // TS105
-  it("should submit button with invalid data", () => {
-    cy.get(`[data-cy="submitButton"]`)
-      .click()
-      .wait(1000)
-      .url()
-      .should("be.", "");
+  it.only("should submit button with invalid data, verify notification to user, URL should not change", () => {
+    // get the url before submit button is clicked
+    cy.url().then((urlBeforeSubmit) => {
+      cy.get(`[data-cy=submitButton]`).click();
+
+      // snackbar
+      cy.get('[data-cy="error-bar"]');
+
+      // get the url after submit button is clicked
+      cy.url().then((urlAfterSubmit) => {
+        // assert the URL before and after are the same
+        expect(urlBeforeSubmit).to.equal(urlAfterSubmit);
+      });
+    });
+  });
+
+  // TS105 Submit with invalid phone number
+  it.only("should submit button with invalid data, verify notification to user, URL should not change", () => {
+    cy.fixture("users").then((users) => {
+      const user = users[0];
+
+      // get the url before submit button is clicked
+      cy.url().then((urlBeforeSubmit) => {
+        // enter valid inputs for, first middle and last names: Invalud # Number
+        cy.get(`[data-cy="firstName-input"]`).type(user.firstName);
+        cy.get(`[data-cy="middleName-input"]`).type(user.middleName);
+        cy.get(`[data-cy="lastName-input"]`).type(user.lastName);
+
+        cy.get(`[data-cy=submitButton]`).click();
+
+        // snackbar
+        cy.get('[data-cy="error-bar"]');
+
+        // get the url after submit button is clicked
+        cy.url().then((urlAfterSubmit) => {
+          // assert the URL before and after are the same
+          expect(urlBeforeSubmit).to.equal(urlAfterSubmit);
+        });
+      });
+    });
   });
 });

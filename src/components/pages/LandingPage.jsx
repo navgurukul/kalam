@@ -320,23 +320,31 @@ const LandingPage = () => {
   const giveTest = async () => {
     const { mobileNumber, firstName, lastName } = state;
     if (!mobileNumber || !firstName || !lastName) {
-      enqueueSnackbar(<strong>{lang.mandatoryField[selectedLang]}</strong>, {
-        variant: "error",
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
-      });
+      enqueueSnackbar(
+        <strong data-cy="error-bar">
+          {lang.mandatoryField[selectedLang]}
+        </strong>,
+        {
+          variant: "error",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+        }
+      );
       return;
     }
     if (mobileNumber.toString().length !== 10) {
-      enqueueSnackbar(<strong>{lang.mobileNumber[selectedLang]}</strong>, {
-        variant: "error",
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
-      });
+      enqueueSnackbar(
+        <strong data-cy="error-bar">{lang.mobileNumber[selectedLang]}</strong>,
+        {
+          variant: "error",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+        }
+      );
       return;
     }
     await isDuplicate();

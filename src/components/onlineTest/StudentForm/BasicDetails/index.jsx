@@ -20,6 +20,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { makeStyles } from "@mui/styles";
 import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
+import { useForm } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -177,6 +178,7 @@ const BasicDetails = ({
   inputDisabled,
   reactForm: { errors, control },
 }) => {
+  const { setValue } = useForm();
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const uploadProfilePhoto = (e) => {
@@ -243,33 +245,40 @@ const BasicDetails = ({
       />
       <Grid style={{ paddingTop: "1.2rem" }} container spacing={2}>
         <Grid item xs={12} sm={6}>
-          <Controller
-            control={control}
-            name="FirstName"
-            rules={{ required: true }}
-            defaultValue={formData.FirstName}
-            render={({ field: { ref, ...rest } }) => (
-              <TextField
-                variant="outlined"
-                fullWidth
-                id="FirstName"
-                // autoFocus
-                inputRef={ref}
-                onBlur={rest.onBlur}
-                className={classes.spacing}
-                label={langOptions.FirstName[lang]}
-                placeholder={langOptions.FirstName[lang]}
-                // name="FirstName"
-                autoComplete="off"
-                type="text"
-                error={!!errors.FirstName}
-                helperText={
-                  errors.FirstName
-                    ? langOptions.FirstName.error[lang]
-                    : "Ex. XYZ"
-                }
-                disabled={inputDisabled && formData.FirstName !== null}
-                {...rest}
+        <Controller
+      control={control}
+      name="FirstName"
+      rules={{
+        required: true,
+        pattern: /^[^\d\W_]+$/u,
+        maxLength: 10,
+      }}
+      defaultValue={formData.FirstName}
+      render={({ field: { ref, ...rest } }) => (
+        <TextField
+          variant="outlined"
+          fullWidth
+          id="FirstName"
+          inputRef={ref}
+          onBlur={rest.onBlur}
+          className={classes.spacing}
+          label={langOptions.FirstName[lang]}
+          placeholder={langOptions.FirstName[lang]}
+          autoComplete="off"
+          type="text"
+          error={!!errors.FirstName}
+          helperText={
+            errors.FirstName
+              ? langOptions.FirstName.error[lang]
+              : "Ex. XYZ"
+          }
+          disabled={inputDisabled && formData.FirstName !== null}
+          onInput={(e) => {
+            console.log(e);
+            e.target.value = e.target.value.replace(/[^\p{L}\p{M}]+/u, '');
+            // setValue('FirstName', newValue);
+          }}
+          {...rest}
               />
             )}
           />
@@ -278,6 +287,11 @@ const BasicDetails = ({
           <Controller
             control={control}
             name="MiddleName"
+            rules={{
+              required: true,
+              pattern: /^[\p{L}\p{M}]+$/u,
+              maxLength: 10,
+            }}
             defaultValue={formData.MiddleName}
             render={({ field: { ref, ...rest } }) => (
               <TextField
@@ -296,6 +310,11 @@ const BasicDetails = ({
                     : "Ex. PQR"
                 }
                 disabled={inputDisabled && formData.MiddleName !== null}
+                onInput={(e) => {
+                  console.log(e);
+                  e.target.value = e.target.value.replace(/[^\p{L}\p{M}]+/u, '');
+                  // setValue('FirstName', newValue);
+                }}
                 {...rest}
               />
             )}
@@ -306,7 +325,11 @@ const BasicDetails = ({
             control={control}
             defaultValue={formData.LastName}
             name="LastName"
-            rules={{ required: true }}
+            rules={{
+              required: true,
+              pattern: /^[\p{L}\p{M}]+$/u,
+              maxLength: 10,
+            }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
                 variant="outlined"
@@ -327,6 +350,11 @@ const BasicDetails = ({
                     : "Ex. ABC"
                 }
                 disabled={inputDisabled && formData.LastName !== null}
+                onInput={(e) => {
+                  console.log(e);
+                  e.target.value = e.target.value.replace(/[^\p{L}\p{M}]+/u, '');
+                  // setValue('FirstName', newValue);
+                }}
                 {...rest}
               />
             )}

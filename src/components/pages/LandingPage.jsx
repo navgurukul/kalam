@@ -242,7 +242,7 @@ const LandingPage = () => {
   const onChangeEvent = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value.replace(/[^\p{L}\p{M}]+/u, ''),
     });
   };
 

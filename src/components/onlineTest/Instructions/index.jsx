@@ -219,7 +219,7 @@ const TestInstructions = () => {
     <Container maxWidth="lg" align="center">
       <div className={classes.root}>
         <Paper square elevation={0} className={classes.heading}>
-          <Typography variant="h4">
+          <Typography data-cy="heading" variant="h4">
             {tutorialSteps[activeStep].heading[lang]}
           </Typography>
         </Paper>
@@ -291,6 +291,7 @@ const TestInstructions = () => {
         {tutorialSteps[activeStep].button ? (
           <Paper square elevation={0} className={classes.content}>
             <Button
+              data-cy="nextStepButton"
               type="submit"
               fullWidth
               variant="contained"
@@ -304,6 +305,7 @@ const TestInstructions = () => {
         {tutorialSteps[activeStep].button3 ? (
           <Paper square elevation={0} className={classes.content}>
             <Button
+              data-cy="startTestButton"
               type="submit"
               fullWidth
               variant="contained"

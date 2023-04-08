@@ -203,6 +203,7 @@ const BasicDetails = ({
           badgeContent={<CameraAltIcon />}
         >
           <Avatar
+            data-cy="avatarImg"
             style={{
               width: "70px",
               height: "70px",
@@ -233,6 +234,7 @@ const BasicDetails = ({
       {/* : null} */}
       <input
         onChange={(e) => uploadProfilePhoto(e)}
+        data-cy="imageInput"
         id="ProfileImage"
         type="file"
         name="ProfileImage"

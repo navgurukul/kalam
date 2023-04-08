@@ -28,7 +28,7 @@ describe("Section 2: Test Instructions", () => {
   });
 
   context("Next step button functionality", () => {
-    it.only("should move to next step when (Step) button is clicked", () => {
+    it("should move to next step when (Step) button is clicked", () => {
       // Lets go ahead button
       cy.get('[data-cy="nextStepButton"]').click();
       cy.get(`[data-cy="heading`).contains("NavGurukul Entrance Test");

@@ -3,6 +3,7 @@
     "firstName": "Jane",
     "middleName": "Eva",
     "lastName": "Doe",
-    "mobileNumber": "1234567890"
+    "mobileNumber": "1234567890",
+    "email": "JaneEvaDoe@gmail.com"
   }
 ]

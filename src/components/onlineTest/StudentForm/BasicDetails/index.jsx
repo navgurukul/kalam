@@ -252,6 +252,7 @@ const BasicDetails = ({
             defaultValue={formData.FirstName}
             render={({ field: { ref, ...rest } }) => (
               <TextField
+                data-cy="firstName-input"
                 variant="outlined"
                 fullWidth
                 id="FirstName"
@@ -283,6 +284,7 @@ const BasicDetails = ({
             defaultValue={formData.MiddleName}
             render={({ field: { ref, ...rest } }) => (
               <TextField
+                data-cy="middleName-input"
                 variant="outlined"
                 id="MiddleName"
                 inputRef={ref}
@@ -311,6 +313,7 @@ const BasicDetails = ({
             rules={{ required: true }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
+                data-cy="lastName-input"
                 variant="outlined"
                 required
                 type="text"
@@ -473,6 +476,7 @@ const BasicDetails = ({
             }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
+                data-cy="email-input"
                 variant="outlined"
                 inputRef={ref}
                 type="email"

@@ -1,6 +1,19 @@
 /// <reference types='Cypress' />
 beforeEach(() => {
   cy.visit("http://localhost:8080/test/studentdetails");
+
+  // Inputs
+  cy.get(`[data-cy="firstName-input"]`).as("firstNameInput");
+  cy.get(`[data-cy="middleName-input"]`).as("middleNameInput");
+  cy.get(`[data-cy="lastName-input"]`).as("lastNameInput");
+  cy.get(`[data-cy="email-input"]`).as("emailInput");
+  cy.get('form > .MuiPaper-root > [tabindex="0"]').as("nextButton");
+
+  // Input feedback
+  cy.get("#FirstName-helper-text").as("firstNameFeedback");
+  cy.get("#MiddleName-helper-text").as("middleNameFeedback");
+  cy.get("#LastName-helper-text").as("lastNameFeedback");
+  cy.get("#FirstName-helper-text").as("numberFeedback");
 });
 
 describe("Section 3: Student Details", () => {
@@ -34,10 +47,15 @@ describe("Section 3: Student Details", () => {
         cy.fixture("users.json").then((users) => {
           const user = users[0];
 
-          cy.get(`[data-cy="firstName-input"]`).type(user.firstName);
-          cy.get(`[data-cy="lastName-input"]`).type(user.lastName);
-          cy.get(`[data-cy="email-input"]`).type(user.email);
-          cy.get(`[data-cy="submitButton"]`);
+          cy.get(`@firstNameInput`).type(user.firstName);
+          cy.get(`@lastNameInput`).type(user.lastName);
+          cy.get(`@emailInput`).type(user.email);
+          cy.get("@nextButton").click();
+
+          // Check if input is valid by checking the text value
+          cy.get(`@firstNameFeedback`).should("not.have.class", "Mui-error");
+          cy.get(`@lastNameInput`).should("not.have.class", "Mui-error");
+          cy.get(`@emailInput`).should("not.have.class", "Mui-error");
         });
       });
     });

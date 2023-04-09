@@ -41,7 +41,17 @@ describe("Section 3: Student Details", () => {
     });
   });
 
-  context.only("Form validation testing", () => {
+  context("Form validation testing", () => {
+    describe("Verify error feedback", () => {
+      it("should verify the first name, last name & email fields with invalid inputs", () => {
+        // Submit form (No input)
+        cy.get("@nextButton").click();
+        cy.get(`@firstNameFeedback`).contains("Enter First Name");
+        cy.get(`@lastNameInput`).contains("Enter Last Name");
+        cy.get(`@emailInput`).contains("Enter Email");
+      });
+    });
+
     describe("Verify fist name, last name, & email fields", () => {
       it("should verify the first name, last name & email fields with valid inputs", () => {
         cy.fixture("users.json").then((users) => {
@@ -50,6 +60,7 @@ describe("Section 3: Student Details", () => {
           cy.get(`@firstNameInput`).type(user.firstName);
           cy.get(`@lastNameInput`).type(user.lastName);
           cy.get(`@emailInput`).type(user.email);
+          // Submit form
           cy.get("@nextButton").click();
 
           // Check if input is valid by checking the text value

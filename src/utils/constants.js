@@ -826,3 +826,5 @@ export const allTagsForOnlineClass = [
   "programmingClasses",
   "duplicate",
 ];
+
+export const INPUT_PATTERNS = { name: /^[\p{L}\p{M}']+$/u , replaceName: /[^\p{L}\p{M}']+/u}

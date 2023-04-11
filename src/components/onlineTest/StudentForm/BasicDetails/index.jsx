@@ -20,7 +20,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { makeStyles } from "@mui/styles";
 import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
-import { useForm } from 'react-hook-form';
+import { INPUT_PATTERNS } from "../../../../utils/constants.js";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -178,7 +179,6 @@ const BasicDetails = ({
   inputDisabled,
   reactForm: { errors, control },
 }) => {
-  const { setValue } = useForm();
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const uploadProfilePhoto = (e) => {
@@ -250,8 +250,7 @@ const BasicDetails = ({
       name="FirstName"
       rules={{
         required: true,
-        pattern: /^[^\d\W_]+$/u,
-        maxLength: 10,
+        pattern: INPUT_PATTERNS.name,
       }}
       defaultValue={formData.FirstName}
       render={({ field: { ref, ...rest } }) => (
@@ -274,8 +273,7 @@ const BasicDetails = ({
           }
           disabled={inputDisabled && formData.FirstName !== null}
           onInput={(e) => {
-            console.log(e);
-            e.target.value = e.target.value.replace(/[^\p{L}\p{M}]+/u, '');
+            e.target.value = e.target.value.replace(INPUT_PATTERNS.replaceName, '');
             // setValue('FirstName', newValue);
           }}
           {...rest}
@@ -289,8 +287,7 @@ const BasicDetails = ({
             name="MiddleName"
             rules={{
               required: true,
-              pattern: /^[\p{L}\p{M}]+$/u,
-              maxLength: 10,
+              pattern: INPUT_PATTERNS.name,
             }}
             defaultValue={formData.MiddleName}
             render={({ field: { ref, ...rest } }) => (
@@ -311,8 +308,7 @@ const BasicDetails = ({
                 }
                 disabled={inputDisabled && formData.MiddleName !== null}
                 onInput={(e) => {
-                  console.log(e);
-                  e.target.value = e.target.value.replace(/[^\p{L}\p{M}]+/u, '');
+                  e.target.value = e.target.value.replace(INPUT_PATTERNS.replaceName, '');
                   // setValue('FirstName', newValue);
                 }}
                 {...rest}
@@ -327,8 +323,7 @@ const BasicDetails = ({
             name="LastName"
             rules={{
               required: true,
-              pattern: /^[\p{L}\p{M}]+$/u,
-              maxLength: 10,
+              pattern: INPUT_PATTERNS.name,
             }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
@@ -351,8 +346,7 @@ const BasicDetails = ({
                 }
                 disabled={inputDisabled && formData.LastName !== null}
                 onInput={(e) => {
-                  console.log(e);
-                  e.target.value = e.target.value.replace(/[^\p{L}\p{M}]+/u, '');
+                  e.target.value = e.target.value.replace(INPUT_PATTERNS.replaceName, '');
                   // setValue('FirstName', newValue);
                 }}
                 {...rest}

@@ -6,6 +6,7 @@ import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import GroupIcon from "@mui/icons-material/Group";
 import WorkIcon from "@mui/icons-material/Work";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import SchoolIcon from '@mui/icons-material/School';
 
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -44,6 +45,11 @@ const NavLinks = ({ toggleDrawer }) => {
         url: "/campus",
         name: "Campuses",
         icon: <MapsHomeWorkIcon />,
+      },
+      {
+        url:"/school",
+        name:"School",
+        icon: <SchoolIcon/>,
       },
       {
         url: "/owner",

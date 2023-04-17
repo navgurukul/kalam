@@ -19,6 +19,7 @@ body {
   }
   .slick-prev {
     left: 25px;
+    z-index: 9999
   }  
 }
 

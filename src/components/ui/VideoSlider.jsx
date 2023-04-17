@@ -197,9 +197,11 @@ const VideoSlider = ({ language, customLinks }) => {
           <div key={ele.videoId}>
             <Box
               maxWidth={width}
+            
               style={{ margin: "0 auto", position: "relative", padding: 0 }}
               onClick={handleClickOpen}
               value={ele.videoId}
+              // arrows={true}
               data-video_id={ele.videoId}
               data-video_headline={ele.label[language]}
             >

@@ -264,7 +264,7 @@ const BasicDetails = ({
             alt="ProfileImage"
             src={
               formData.ProfileImage
-                ? URL.createObjectURL(formData.ProfileImage)
+                ? URL.createObjectURL(formData.ProfileImage.length ? formData.ProfileImage[0] : formData.ProfileImage)
                 : formData.PrevImage
             }
           />

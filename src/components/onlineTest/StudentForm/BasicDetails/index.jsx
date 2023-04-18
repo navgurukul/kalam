@@ -286,8 +286,8 @@ const BasicDetails = ({
             },
           })}
           onChange={(e) => uploadProfilePhoto(e)}
-          style={{ display: "none" }}
-          error
+          style={{ /*display: "none"*/height: 0, width: 0 }}
+          // error
           disabled={inputDisabled && formData.ProfileImage !== null}
           accept=".png,.jpg,.jpeg"
         />

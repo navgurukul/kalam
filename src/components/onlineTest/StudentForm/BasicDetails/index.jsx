@@ -397,6 +397,7 @@ const BasicDetails = ({
             name="whatsapp"
             render={({ field: { ref, ...rest } }) => (
               <TextField
+                data-cy="waInput"
                 variant="outlined"
                 required
                 fullWidth
@@ -437,6 +438,7 @@ const BasicDetails = ({
             }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
+                data-cy="altInput"
                 variant="outlined"
                 fullWidth
                 id="AlternateNumber"

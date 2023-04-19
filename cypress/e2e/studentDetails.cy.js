@@ -9,6 +9,8 @@ beforeEach(() => {
   cy.get('[data-cy="email-input"]').as("emailInput");
   cy.get('form > .MuiPaper-root > [tabindex="0"]').as("nextButton");
   cy.get("#mui-1").as("dobDatePicker");
+  cy.get('[data-cy="waInput"]').as("whatsAppNumberInput");
+  cy.get('[data-cy="altInput"]').as("alternateNumberInput");
 
   // Input feedback
   cy.get("#FirstName-helper-text").as("firstNameFeedback");
@@ -17,6 +19,8 @@ beforeEach(() => {
   cy.get("#FirstName-helper-text").as("numberFeedback");
   cy.get("#mui-2-helper-text").as("emailFeedback");
   cy.get("#mui-1-helper-text").as("dobFeedback");
+  cy.get("#whatsapp-helper-text").as("whatsAppNumFeedback");
+  cy.get("#AlternateNumber-helper-text").as("altNumberFeedback");
 });
 
 describe("Section 3: Student Details", () => {
@@ -94,6 +98,43 @@ describe("Section 3: Student Details", () => {
         cy.get("@dobDatePicker").click().clear().type("10/13/1993");
         cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("have.class", "Mui-error");
+      });
+    });
+    describe("Verify Whatsapp and alternate number input fields", () => {
+      it("Should verify the number field validations are working", () => {
+        cy.fixture("users.json").then((users) => {
+          const user = users[0];
+          // Valid inputs
+          cy.get("@whatsAppNumberInput").type(user.mobileNumber);
+          cy.get("@nextButton").click();
+          cy.get("@whatsAppNumFeedback").should("not.have.class", "Mui-error");
+
+          cy.get("@alternateNumberInput").type(user.alternateNumber);
+          cy.get("@nextButton").click();
+          cy.get("@altNumberFeedback").should("not.have.class", "Mui-error");
+
+          // Invalid inputs shorter than 10 digits
+          cy.get("@whatsAppNumberInput").clear().type("1");
+          cy.get("@nextButton").click();
+          cy.get("@whatsAppNumFeedback").should("have.class", "Mui-error");
+
+          cy.get("@alternateNumberInput").clear().type("1");
+          cy.get("@nextButton").click();
+          cy.get("@altNumberFeedback").should("have.class", "Mui-error");
+
+          // Invalid inputs greater than 10 digits
+          cy.get("@whatsAppNumberInput")
+            .clear()
+            .type(user.mobileNumber + "1");
+          cy.get("@nextButton").click();
+          cy.get("@whatsAppNumFeedback").should("have.class", "Mui-error");
+
+          cy.get("@alternateNumberInput")
+            .clear()
+            .type(user.alternateNumber + "1");
+          cy.get("@nextButton").click();
+          cy.get("@altNumberFeedback").should("have.class", "Mui-error");
+        });
       });
     });
   });

@@ -276,8 +276,9 @@ const BasicDetails = ({
           type="file"
           id="ProfileImage"
           {...register("ProfileImage", {
-            required: "Profile image is required",
+            // required: "Profile image is required",
             validate: {
+              required: (_, formData) => formData.ProfileImage.length > 0 || "Profile image is required",
               fileSize: (value) =>
                 value[0].size < 1000000 || "Profile image size should be less than 1MB",
               fileType: (value) =>

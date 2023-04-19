@@ -505,6 +505,7 @@ const BasicDetails = ({
         </Grid>
         <Grid item xs={12}>
           <Controller
+            data-cy="controller"
             control={control}
             rules={{
               required: true,
@@ -529,6 +530,7 @@ const BasicDetails = ({
             defaultValue={formData.gender ? formData.gender : "select gender"}
             render={({ field: { ref, ...rest } }) => (
               <FormControl
+                data-cy="control"
                 disabled={inputDisabled}
                 variant="outlined"
                 fullWidth
@@ -537,6 +539,7 @@ const BasicDetails = ({
                   {langOptions.gender[lang]}
                 </InputLabel>
                 <Select
+                  data-cy="genderDropdown"
                   label={langOptions.gender[lang]}
                   placeholder={langOptions.gender[lang]}
                   error={!!errors.gender}
@@ -548,6 +551,7 @@ const BasicDetails = ({
                 >
                   {langOptions.gender.options.map((el) => (
                     <MenuItem
+                      data-cy={el.key}
                       key={el.key}
                       value={el.key}
                       disabled={el.en === "Select Gender"}

@@ -1,4 +1,5 @@
 /// <reference types='Cypress' />
+
 beforeEach(() => {
   cy.visit("http://localhost:8080/test/studentdetails");
 
@@ -11,6 +12,7 @@ beforeEach(() => {
   cy.get("#mui-1").as("dobDatePicker");
   cy.get('[data-cy="waInput"]').as("whatsAppNumberInput");
   cy.get('[data-cy="altInput"]').as("alternateNumberInput");
+  cy.get('[data-cy="genderDropdown"]').as("genderDropdown");
 
   // Input feedback
   cy.get("#FirstName-helper-text").as("firstNameFeedback");
@@ -24,7 +26,7 @@ beforeEach(() => {
 });
 
 describe("Section 3: Student Details", () => {
-  // WORK IN PROGRESS / SKIPPED
+  // TODO: Unable to get this working due to the complexity: Skipped for time purposes.
   context.skip("Profile image testing", () => {
     describe("Image input", () => {
       it("should allow the user to input an image", () => {
@@ -134,6 +136,15 @@ describe("Section 3: Student Details", () => {
             .type(user.alternateNumber + "1");
           cy.get("@nextButton").click();
           cy.get("@altNumberFeedback").should("have.class", "Mui-error");
+        });
+      });
+      // TODO: Unable to get this working due to the inability to access the values selected inside the dropdown.
+      describe("Verify gender dropdown functionality", () => {
+        it.skip("Should verify the functionality of the gender dropdown", () => {
+          cy.get("@genderDropdown").should("have.value", "");
+          cy.get("@genderDropdown").click();
+          cy.get('[data-value="male"]').click();
+          cy.get('[data-cy="control"]').invoke("val");
         });
       });
     });

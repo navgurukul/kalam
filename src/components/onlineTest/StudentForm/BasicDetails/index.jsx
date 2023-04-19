@@ -284,9 +284,9 @@ const BasicDetails = ({
                 /jpeg|jpg|png/.test(value[0].type) ||
                 "Only JPEG, JPG, and PNG image formats are allowed",
             },
+            onChange: (e) => uploadProfilePhoto(e)
           })}
-          onChange={(e) => uploadProfilePhoto(e)}
-          style={{ /*display: "none"*/height: 0, width: 0 }}
+          style={{ display: "none" }}
           // error
           disabled={inputDisabled && formData.ProfileImage !== null}
           accept=".png,.jpg,.jpeg"

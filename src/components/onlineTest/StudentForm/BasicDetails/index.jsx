@@ -354,6 +354,7 @@ const BasicDetails = ({
             }) => (
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
+                  data-cy="dob"
                   disableFuture
                   disabled={inputDisabled && formData.dob !== null}
                   id="dob"

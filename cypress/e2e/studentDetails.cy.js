@@ -3,17 +3,20 @@ beforeEach(() => {
   cy.visit("http://localhost:8080/test/studentdetails");
 
   // Inputs
-  cy.get(`[data-cy="firstName-input"]`).as("firstNameInput");
-  cy.get(`[data-cy="middleName-input"]`).as("middleNameInput");
-  cy.get(`[data-cy="lastName-input"]`).as("lastNameInput");
-  cy.get(`[data-cy="email-input"]`).as("emailInput");
+  cy.get('[data-cy="firstName-input"]').as("firstNameInput");
+  cy.get('[data-cy="middleName-input"]').as("middleNameInput");
+  cy.get('[data-cy="lastName-input"]').as("lastNameInput");
+  cy.get('[data-cy="email-input"]').as("emailInput");
   cy.get('form > .MuiPaper-root > [tabindex="0"]').as("nextButton");
+  cy.get("#mui-1").as("dobDatePicker");
 
   // Input feedback
   cy.get("#FirstName-helper-text").as("firstNameFeedback");
   cy.get("#MiddleName-helper-text").as("middleNameFeedback");
   cy.get("#LastName-helper-text").as("lastNameFeedback");
   cy.get("#FirstName-helper-text").as("numberFeedback");
+  cy.get("#mui-2-helper-text").as("emailFeedback");
+  cy.get("#mui-1-helper-text").as("dobFeedback");
 });
 
 describe("Section 3: Student Details", () => {
@@ -30,10 +33,10 @@ describe("Section 3: Student Details", () => {
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(testFile);
             input[0].files = dataTransfer.files;
-            cy.get(`[data-cy="avatarImg"]`).should(
+            cy.get('[data-cy="avatarImg"]').should(
               "have.attr",
               "src",
-              `${URL.createObjectURL}`
+              "${URL.createObjectURL}"
             );
           });
         });
@@ -46,28 +49,51 @@ describe("Section 3: Student Details", () => {
       it("should verify the first name, last name & email fields with invalid inputs", () => {
         // Submit form (No input)
         cy.get("@nextButton").click();
-        cy.get(`@firstNameFeedback`).contains("Enter First Name");
-        cy.get(`@lastNameInput`).contains("Enter Last Name");
-        cy.get(`@emailInput`).contains("Enter Email");
+        cy.get("@firstNameFeedback").contains("Enter First Name");
+        cy.get("@lastNameFeedback").contains("Enter Last Name");
+        cy.get("@emailFeedback").contains("Enter Email");
+      });
+      it("Should verify an invalid email", () => {
+        cy.get("@emailInput").type("invalid#gmail.com");
+        cy.get("@nextButton").click();
+
+        cy.get("@emailInput").contains("Enter Valid Email");
       });
     });
-
     describe("Verify fist name, last name, & email fields", () => {
       it("should verify the first name, last name & email fields with valid inputs", () => {
         cy.fixture("users.json").then((users) => {
           const user = users[0];
 
-          cy.get(`@firstNameInput`).type(user.firstName);
-          cy.get(`@lastNameInput`).type(user.lastName);
-          cy.get(`@emailInput`).type(user.email);
+          cy.get("@firstNameInput").type(user.firstName);
+          cy.get("@lastNameInput").type(user.lastName);
+          cy.get("@emailInput").type(user.email);
           // Submit form
           cy.get("@nextButton").click();
 
           // Check if input is valid by checking the text value
-          cy.get(`@firstNameFeedback`).should("not.have.class", "Mui-error");
-          cy.get(`@lastNameInput`).should("not.have.class", "Mui-error");
-          cy.get(`@emailInput`).should("not.have.class", "Mui-error");
+          cy.get("@firstNameFeedback").should("not.have.class", "Mui-error");
+          cy.get("@lastNameInput").should("not.have.class", "Mui-error");
+          cy.get("@emailInput").should("not.have.class", "Mui-error");
         });
+      });
+    });
+    describe("Verify the datepicker", () => {
+      it("Should verify the user age is between 17 & 28 years", () => {
+        // Invalid age lower than 17
+        cy.get("@dobDatePicker").click().type("10/13/2006");
+        cy.get("@nextButton").click();
+        cy.get("@dobFeedback").should("have.class", "Mui-error");
+
+        // valid age between 17-28 years
+        cy.get("@dobDatePicker").click().clear().type("10/13/2005");
+        cy.get("@nextButton").click();
+        cy.get("@dobFeedback").should("not.have.class", "Mui-error");
+
+        // Invalid age higher than 28 years
+        cy.get("@dobDatePicker").click().clear().type("10/13/1993");
+        cy.get("@nextButton").click();
+        cy.get("@dobFeedback").should("have.class", "Mui-error");
       });
     });
   });

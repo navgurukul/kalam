@@ -505,7 +505,6 @@ const BasicDetails = ({
         </Grid>
         <Grid item xs={12}>
           <Controller
-            data-cy="controller"
             control={control}
             rules={{
               required: true,
@@ -530,7 +529,6 @@ const BasicDetails = ({
             defaultValue={formData.gender ? formData.gender : "select gender"}
             render={({ field: { ref, ...rest } }) => (
               <FormControl
-                data-cy="control"
                 disabled={inputDisabled}
                 variant="outlined"
                 fullWidth

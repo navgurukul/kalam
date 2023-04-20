@@ -132,7 +132,7 @@ const columns = [
 ];
 // let filterFns = [];
 
-const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
+const DashboardPage = ({ displayData, title, url, isCampus = false }) => {
   const location = useLocation();
   const { students, allStudents, fromDate, toDate, allStatusCount } =
     useSelector((state) => state.campus);
@@ -173,7 +173,13 @@ const DashboardPage = ({ displayData, title, url, isCampus = false}) => {
       setCampusCounts(counts);
     }
 
-    const sData = studentData.map((data) => dConvert(data, isCampus));
+    const sData = studentData.map((data) => {
+      console.log("data", data);
+      console.log("isCampus", isCampus);
+      console.log("dConvert", dConvert);
+      console.log(" dConvert(data, isCampus)", dConvert(data, isCampus));
+      return dConvert(data, isCampus);
+    });
 
     setStudents(sData);
     setAllStudents(sData);

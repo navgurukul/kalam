@@ -43,26 +43,26 @@ const SelectUiByButtons = ({
             variant={selected === "overview" ? "contained" : "outlined"}
             onClick={() => overview.action()}
           >
-            {overview.label}
+            {overview?.label}
           </Button>
           {/* ---------------ADDED NOW---------------- */}
           <Button
             variant={selected === "studentData" ? "contained" : "outlined"}
             onClick={() => studentData.action()}
           >
-            {studentData.label}
+            {studentData?.label}
           </Button>
           <Button
             variant={selected === "progressMade" ? "contained" : "outlined"}
             onClick={() => progressMade.action()}
           >
-            {progressMade.label}
+            {progressMade?.label}
           </Button>
           <Button
             variant={selected === "showGraphData" ? "contained" : "outlined"}
             onClick={() => showGraphData.action()}
           >
-            {showGraphData.label}
+            {showGraphData?.label}
           </Button>
         </ButtonGroup>
       </Grid>

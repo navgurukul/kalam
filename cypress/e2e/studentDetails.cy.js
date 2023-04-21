@@ -25,7 +25,7 @@ beforeEach(() => {
   cy.get("#AlternateNumber-helper-text").as("altNumberFeedback");
 });
 
-describe("Section 3: Student Details", () => {
+describe("Section 3: Basic Details", () => {
   // TODO: Unable to get this working due to the complexity: Skipped for time purposes.
   context.skip("Profile image testing", () => {
     describe("Image input", () => {

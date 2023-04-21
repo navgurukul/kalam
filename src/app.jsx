@@ -9,9 +9,17 @@ import theme from "./theme";
 import store from "./store/store";
 import AppRouter from "./routers/AppRouter";
 import AlertDialog from "./components/ui/AlertDialog";
+import * as Sentry from "@sentry/react";
 
+const dsn = import.meta.env.VITE_DSN;
 const TRACKING_ID = "G-WG6ZZQHGB8"; // OUR_TRACKING_ID
 ReactGA.initialize(TRACKING_ID);
+
+Sentry.init({
+  dsn: dsn,
+  integrations: [new Sentry.BrowserTracing()],
+  tracesSampleRate: 1.0,
+});
 
 const App = () => (
   <Provider store={store}>

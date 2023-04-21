@@ -173,7 +173,7 @@ const LandingPage = () => {
     },
   };
 
-  sessionStorage.removeItem('formData')
+  sessionStorage.removeItem("formData");
 
   const getTestData = () => ({
     enrollmentKey: localStorage.getItem("enrollmentKey"),
@@ -257,14 +257,15 @@ const LandingPage = () => {
 
   const isDuplicate = () => {
     const { mobileNumber, firstName, middleName, lastName } = state;
-    const first_name = firstName.replace(
-      firstName[0],
-      firstName[0].toUpperCase()
-    ).trim();
+    const first_name = firstName
+      .replace(firstName[0], firstName[0].toUpperCase())
+      .trim();
     const middle_name =
       middleName &&
       middleName.replace(middleName[0], middleName[0].toUpperCase()).trim();
-    const last_name = lastName.replace(lastName[0], lastName[0].toUpperCase()).trim();
+    const last_name = lastName
+      .replace(lastName[0], lastName[0].toUpperCase())
+      .trim();
     axios
       .get(`${baseUrl}check_duplicate`, {
         params: {
@@ -396,7 +397,7 @@ const LandingPage = () => {
             <Grid item xs={12}>
               <Box style={{ height: theme.spacing(2) }} />
             </Grid>
-            <Grid item style={{marginTop:"3rem"}}>
+            <Grid item style={{ marginTop: "3rem" }}>
               <Paper className={classes.loginContainer}>
                 <Box>
                   <Grid item xs={12}>
@@ -470,7 +471,7 @@ const LandingPage = () => {
                     style={{
                       margin: 8,
                     }}
-                    type="number"
+                    type="tel"
                     name="mobileNumber"
                     label="Mobile Number"
                     value={mobileNumber}

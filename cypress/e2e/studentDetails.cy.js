@@ -138,14 +138,32 @@ describe("Section 3: Student Details", () => {
           cy.get("@altNumberFeedback").should("have.class", "Mui-error");
         });
       });
-      // TODO: Unable to get this working due to the inability to access the values selected inside the dropdown.
-      describe("Verify gender dropdown functionality", () => {
-        it.skip("Should verify the functionality of the gender dropdown", () => {
-          cy.get("@genderDropdown").should("have.value", "");
-          cy.get("@genderDropdown").click();
-          cy.get('[data-value="male"]').click();
-          cy.get('[data-cy="control"]').invoke("val");
-        });
+    });
+    // TODO: Unable to get this working due to the inability to access the values selected inside the dropdown.
+    describe("Verify gender dropdown functionality", () => {
+      it("Should verify the functionality of the gender dropdown", () => {
+        cy.get("@genderDropdown").should("have.value", "");
+
+        // male dropdown input
+        cy.get("@genderDropdown").click();
+        cy.get('[data-value="male"]').click();
+        cy.get("@genderDropdown")
+          .find(">input")
+          .should("have.attr", "value", "male");
+
+        // female dropdown input
+        cy.get("@genderDropdown").click();
+        cy.get('[data-value="female"]').click();
+        cy.get("@genderDropdown")
+          .find(">input")
+          .should("have.attr", "value", "female");
+
+        // transgender dropdown input
+        cy.get("@genderDropdown").click();
+        cy.get('[data-value="trans"]').click();
+        cy.get("@genderDropdown")
+          .find(">input")
+          .should("have.attr", "value", "trans");
       });
     });
   });

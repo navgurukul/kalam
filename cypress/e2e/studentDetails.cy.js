@@ -139,8 +139,13 @@ describe("Section 3: Student Details", () => {
         });
       });
     });
-    // TODO: Unable to get this working due to the inability to access the values selected inside the dropdown.
     describe("Verify gender dropdown functionality", () => {
+      it("Should verify that an empty gender dropdown does not allow the use of nextButton", () => {
+        cy.get("@nextButton").click();
+        cy.get('[data-cy="genderFeedback"]').contains(
+          "Please specify your gender"
+        );
+      });
       it("Should verify the functionality of the gender dropdown", () => {
         cy.get("@genderDropdown").should("have.value", "");
 

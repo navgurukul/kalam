@@ -563,6 +563,7 @@ const BasicDetails = ({
           />
           {errors.gender ? (
             <Typography
+              data-cy="genderFeedback"
               style={{
                 paddingLeft: "0.8rem",
                 paddingTop: "0.4rem",

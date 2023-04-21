@@ -23,9 +23,7 @@ import {
   setPartner,
   setStudentData,
 } from "../../store/slices/onlineTestSlice";
-
-import { INPUT_PATTERNS, testClosed } from "../../utils/constants";
-
+import { testClosed } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -244,7 +242,7 @@ const LandingPage = () => {
   const onChangeEvent = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ''),
+      [e.target.name]: e.target.value,
     });
   };
 

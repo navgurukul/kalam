@@ -412,6 +412,7 @@ function OtherDetails(props) {
               rules={{ required: "true" }}
               render={({ field: { ref, ...rest } }) => (
                 <TextField
+                  data-cy="cityInput"
                   disabled={inputDisabled && formData.city !== null}
                   variant="outlined"
                   required

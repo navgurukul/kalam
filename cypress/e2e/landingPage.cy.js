@@ -1,4 +1,5 @@
 /// <reference types='Cypress' />
+// TODO: Make links dynamic
 beforeEach(() => {
   cy.visit("http://localhost:8080/");
 });
@@ -14,6 +15,7 @@ describe("Section 1: Landing page", () => {
     // clicking logo should redirect user to home page
     cy.visit("http://localhost:8080/test/instructions");
     cy.get('[data-cy="logo"]').click();
+
     cy.url().should("equal", "http://localhost:8080/");
   });
   // TS101

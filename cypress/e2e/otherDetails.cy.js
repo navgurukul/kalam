@@ -24,6 +24,7 @@ beforeEach(() => {
     cy.get("@lastNameInput").type(user.lastName);
     cy.get("@whatsAppNumberInput").type(user.mobileNumber);
     cy.get("@alternateNumberInput").type(user.alternateNumber);
+    
     cy.get("@dobDatePicker").type(user.dob);
     cy.get("@emailInput").type(user.email);
     cy.get("@genderDropdown").click();

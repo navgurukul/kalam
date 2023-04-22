@@ -78,7 +78,7 @@ describe("Section 3: Basic Details", () => {
           cy.get("@nextButton").click();
 
           // Check if input is valid by checking the text value
-          cy.get("@firstNameFeedback").should("not.have.class", "Mui-error");
+          cy.get("@firstNameInput").should("not.have.class", "Mui-error");
           cy.get("@lastNameInput").should("not.have.class", "Mui-error");
           cy.get("@emailInput").should("not.have.class", "Mui-error");
         });

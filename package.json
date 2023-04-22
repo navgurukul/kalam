@@ -87,6 +87,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^1.2.0",
     "cypress": "^12.9.0",
+    "cypress-file-upload": "^5.0.8",
     "eslint": "^8.11.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",

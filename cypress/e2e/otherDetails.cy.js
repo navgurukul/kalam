@@ -41,7 +41,7 @@ beforeEach(() => {
   cy.get("@nextButton").click();
 });
 
-describe("Tests", () => {
+describe("Section 3: Other details", () => {
   it("Form validation for other details page", () => {
     cy.get('[data-cy="city"]').as("cityInput");
     cy.get('[data-cy="Pin-input"]').as("pinCodeDropdown");

@@ -40,18 +40,19 @@ beforeEach(() => {
     });
   });
   cy.get("@nextButton").click();
-});
 
-describe("Section 3: Other details", () => {
-  it("Form validation for other details page", () => {
-    cy.get('[data-cy="city"]').as("cityInput");
-    cy.get('[data-cy="Pin-input"]').as("pinCodeDropdown");
-    cy.get('[data-cy="district-input"]').as("districtDropdown");
-    cy.get('[data-cy="state-input"]').as("stateSelectDropdown");
-    cy.get('[data-cy="currentStatus"]').as("currentStatusDropdown");
-    cy.get('[data-cy="maxQualification"]').as("maximumQualificationLabel");
-    cy.get('[data-cy="maxQualification"]').as("maximumQualificationLabel");
-    cy.get('[data-cy="schoolMedium"]').as("schoolMediumDropdown");
-    cy.get('[data-cy="religion-input"]').as("religionDropdown");
+  describe("Section 3: Other details", () => {
+    it("Form validation for other details page", () => {
+      cy.get('[data-cy="city"]').as("cityInput");
+      cy.get('[data-cy="pin-Input"]').as("pinCodeDropdown");
+      cy.get('[data-cy="district-input"]').as("districtDropdown");
+      cy.get('[data-cy="state-input"]').as("stateSelectDropdown");
+      cy.get('[data-cy="currentStatus"]').as("currentStatusDropdown");
+      cy.get('[data-cy="maxQualification"]').as("maximumQualificationLabel");
+      cy.get('[data-cy="schoolMedium"]').as("schoolMediumDropdown");
+      cy.get('[data-cy="religion-input"]').as("religionDropdown");
+    });
   });
 });
+
+

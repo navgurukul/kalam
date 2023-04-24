@@ -305,6 +305,7 @@ function OtherDetails(props) {
                     {langOptions.state[lang]}
                   </InputLabel>
                   <Select
+                    cy-data="state-input"
                     error={!!errors.state}
                     required
                     inputRef={ref}
@@ -367,6 +368,7 @@ function OtherDetails(props) {
                     {langOptions.district[lang]}
                   </InputLabel>
                   <Select
+                    cy-data="district-input"
                     error={!!errors.district}
                     required
                     inputRef={ref}
@@ -439,6 +441,7 @@ function OtherDetails(props) {
               name="pin_code"
               render={({ field: { ref, ...rest } }) => (
                 <TextField
+                  cy-data="pin-Input"
                   disabled={inputDisabled && formData.pin_code !== null}
                   variant="outlined"
                   required
@@ -484,6 +487,7 @@ function OtherDetails(props) {
                     {langOptions.current_status[lang]}
                   </InputLabel>
                   <Select
+                    cy-data="currentStatus"
                     disabled={
                       inputDisabled && formData.current_status !== undefined
                     }
@@ -541,6 +545,7 @@ function OtherDetails(props) {
                     {langOptions.qualification[lang]}
                   </InputLabel>
                   <Select
+                    cy-data="maxQualification"
                     label={langOptions.qualification[lang]}
                     placeholder={langOptions.qualification[lang]}
                     error={!!errors.qualification}
@@ -739,6 +744,7 @@ function OtherDetails(props) {
                     {langOptions.school_medium[lang]}
                   </InputLabel>
                   <Select
+                    cy-data="schoolMedium"
                     label={langOptions.school_medium[lang]}
                     placeholder={langOptions.school_medium[lang]}
                     error={!!errors.school_medium}
@@ -860,6 +866,7 @@ function OtherDetails(props) {
                     {langOptions.religion[lang]}
                   </InputLabel>
                   <Select
+                    cy-data="religion-input"
                     label={langOptions.religion[lang]}
                     placeholder={langOptions.religion[lang]}
                     required

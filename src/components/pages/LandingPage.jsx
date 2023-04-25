@@ -244,8 +244,8 @@ const LandingPage = () => {
   const onChangeEvent = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ''),// replace anything that is not chinese
-    });                                                                       //, hindi, english, and Apostrophe.
+      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ''),// replace anything that is not letters, and '.
+    });
   };
   const onChangeEvent_numbersOnly = (e) => {
     setState({

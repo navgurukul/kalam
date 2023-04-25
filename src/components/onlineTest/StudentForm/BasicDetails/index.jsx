@@ -303,38 +303,38 @@ const BasicDetails = ({
 
       <Grid style={{ paddingTop: "1.2rem" }} container spacing={2}>
         <Grid item xs={12} sm={6}>
-        <Controller
-      control={control}
-      name="FirstName"
-      rules={{
-        required: true,
-        pattern: INPUT_PATTERNS.name, //allow anything that is chinese, hindi, english, and Apostrophe
-      }}
-      defaultValue={formData.FirstName}
-      render={({ field: { ref, ...rest } }) => (
-        <TextField
-          variant="outlined"
-          fullWidth
-          id="FirstName"
-          inputRef={ref}
-          onBlur={rest.onBlur}
-          className={classes.spacing}
-          label={langOptions.FirstName[lang]}
-          placeholder={langOptions.FirstName[lang]}
-          autoComplete="off"
-          type="text"
-          error={!!errors.FirstName}
-          helperText={
-            errors.FirstName
-              ? langOptions.FirstName.error[lang]
-              : "Ex. XYZ"
-          }
-          disabled={inputDisabled && formData.FirstName !== null}
-          onInput={(e) => {
-            e.target.value = e.target.value.replace(INPUT_PATTERNS.replaceName, '');
-            // setValue('FirstName', newValue);
-          }}
-          {...rest}
+          <Controller
+            control={control}
+            name="FirstName"
+            rules={{
+              required: true,
+              pattern: INPUT_PATTERNS.name, //allow anything that is chinese, hindi, english, and Apostrophe
+            }}
+            defaultValue={formData.FirstName}
+            render={({ field: { ref, ...rest } }) => (
+              <TextField
+                variant="outlined"
+                fullWidth
+                id="FirstName"
+                inputRef={ref}
+                onBlur={rest.onBlur}
+                className={classes.spacing}
+                label={langOptions.FirstName[lang]}
+                placeholder={langOptions.FirstName[lang]}
+                autoComplete="off"
+                type="text"
+                error={!!errors.FirstName}
+                helperText={
+                  errors.FirstName
+                    ? langOptions.FirstName.error[lang]
+                    : "Ex. XYZ"
+                }
+                disabled={inputDisabled && formData.FirstName !== null}
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(INPUT_PATTERNS.replaceName, '');
+                  // setValue('FirstName', newValue);
+                }}
+                {...rest}
               />
             )}
           />

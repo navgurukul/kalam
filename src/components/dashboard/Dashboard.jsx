@@ -261,7 +261,6 @@ const DashboardPage = ({ displayData, title, url, isCampus = false }) => {
   );
 
   const onDownload = (buildHead, buildBody, downloadColumns, data) => {
-    // console.log();
     // const newColums = [...]
     const newData = data.map(({ data: student }) => ({
       data: student.map((col, inx) => {

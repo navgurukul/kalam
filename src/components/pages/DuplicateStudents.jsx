@@ -70,10 +70,10 @@ const DuplicateStudents = () => {
           (value, rowMeta) => (
             <Button
               disabled={
-                rowMeta.rowData[1] === "pendingEnglishInterview" 
-              || rowMeta.rowData[1] ===  "pendingCultureFitInterview" 
-             || rowMeta.rowData[1] ===  "pendingAlgebraInterview"  
-            }
+                rowMeta.rowData[1] === "pendingEnglishInterview" ||
+                rowMeta.rowData[1] === "pendingCultureFitInterview" ||
+                rowMeta.rowData[1] === "pendingAlgebraInterview"
+              }
               variant="contained"
               color="primary"
               style={{ fontSize: "10px" }}
@@ -117,10 +117,11 @@ const DuplicateStudents = () => {
         customBodyRender: React.useCallback(
           (_, rowMeta) => (
             <Button
-              disabled={rowMeta.rowData[1] !== "pendingEnglishInterview" 
-              && rowMeta.rowData[1] !== "pendingCultureFitInterview" 
-              && rowMeta.rowData[1] !== "pendingAlgebraInterview" 
-            }
+              disabled={
+                rowMeta.rowData[1] !== "pendingEnglishInterview" &&
+                rowMeta.rowData[1] !== "pendingCultureFitInterview" &&
+                rowMeta.rowData[1] !== "pendingAlgebraInterview"
+              }
               variant="contained"
               color="primary"
               style={{ fontSize: "10px" }}
@@ -227,12 +228,9 @@ const DuplicateStudents = () => {
   const { pendingInterviewStage } = test;
   if (splittedName.length === 3) {
     [firstName, middleName, lastName] = splittedName;
-    console.log("Middle name", middleName);
   } else {
     [firstName, lastName] = splittedName;
   }
-
-  console.log("Is this page is coming?");
 
   return (
     <>

@@ -285,7 +285,8 @@ const AdmissionsDash = (props) => {
   };
 
   const changeFromDate = async (date) => {
-    setFrom(date);
+    let newDate = date.toLocaleString()
+    setFrom(newDate);
     // setState((prevState) => ({
     //   ...prevState,
     //   fromDate: date,
@@ -294,7 +295,8 @@ const AdmissionsDash = (props) => {
   };
 
   const changeToDate = (date) => {
-    setTo(date);
+    let newDate = date.toLocaleString()
+    setTo(newDate);
     // setState((prevState) => ({
     //   ...prevState,
     //   toDate: date,

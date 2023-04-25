@@ -24,6 +24,7 @@ import {
   setStudentData,
 } from "../../store/slices/onlineTestSlice";
 import { testClosed } from "../../utils/constants";
+import { INPUT_PATTERNS } from "../../utils/constants.js";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 

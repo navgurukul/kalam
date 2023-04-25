@@ -3,6 +3,7 @@
 import "cypress-file-upload";
 
 beforeEach(() => {
+
   cy.visit("http://localhost:8080/test/studentdetails");
 
   cy.fixture("users.json").then((users) => {
@@ -29,6 +30,7 @@ beforeEach(() => {
     });
   });
   cy.get('form > .MuiPaper-root > [tabindex="0"]').click();
+  
 
   // Inputs
   cy.get('[data-cy="city"]').as("cityInput");

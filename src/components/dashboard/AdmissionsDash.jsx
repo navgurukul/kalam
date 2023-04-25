@@ -448,7 +448,7 @@ const AdmissionsDash = (props) => {
           />
         </LocalizationProvider>
       </Grid>
-      <Grid item xs={12} md={6} lg={3}>
+      {/* <Grid item xs={12} md={6} lg={3}>
         <label className={classes.label}>Filter by School</label>
         <Select
           // className="filterSelectGlobal"
@@ -463,7 +463,7 @@ const AdmissionsDash = (props) => {
           // components={animatedComponents}
           closeMenuOnSelect
         />
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 

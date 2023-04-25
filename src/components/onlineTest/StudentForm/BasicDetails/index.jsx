@@ -250,7 +250,7 @@ const BasicDetails = ({
       name="FirstName"
       rules={{
         required: true,
-        pattern: INPUT_PATTERNS.name,
+        pattern: INPUT_PATTERNS.name, //allow anything that is chinese, hindi, english, and Apostrophe
       }}
       defaultValue={formData.FirstName}
       render={({ field: { ref, ...rest } }) => (

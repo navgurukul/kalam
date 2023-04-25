@@ -244,7 +244,13 @@ const LandingPage = () => {
   const onChangeEvent = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ''),
+      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ''),// replace anything that is not chinese
+    });                                                                       //, hindi, english, and Apostrophe.
+  };
+  const onChangeEvent_numbersOnly = (e) => {
+    setState({
+      ...state,
+      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.numbersOnly, ''), // Only allow digits (0-9)
     });
   };
 
@@ -475,7 +481,7 @@ const LandingPage = () => {
                     label="Mobile Number"
                     value={mobileNumber}
                     placeholder="Mobile Number..."
-                    onChange={onChangeEvent}
+                    onChange={onChangeEvent_numbersOnly}
                     InputLabelProps={{
                       shrink: true,
                     }}

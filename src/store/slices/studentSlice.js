@@ -2,6 +2,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 // eslint-disable-next-line import/no-cycle
+import dayjs from "dayjs";
 import { dataSetup } from "../../utils";
 import { changeFetching } from "./uiSlice";
 import { qualificationKeys } from "../../utils/constants";
@@ -16,6 +17,15 @@ export const fetchStudents = createAsyncThunk(
     const { stage, filterColumns, page, numberOfRows, fromDate, toDate } =
       globalState.students;
     // const { numberOfRows } = state;
+
+    const from = dayjs(fromDate).isValid(fromDate) ? fromDate : undefined;
+    const to = dayjs(toDate).isValid(toDate) ? toDate : undefined;
+
+    let finalDates = {};
+    if (from && to) {
+      finalDates = { from, to };
+    }
+
     const concatinateStage = stage.length === 0 ? null : stage.join(",");
     try {
       thunkAPI.dispatch(changeFetching(true)); // startFetching
@@ -39,8 +49,7 @@ export const fetchStudents = createAsyncThunk(
                 params: {
                   dataType,
                   stage: stage.length === 0 ? null : stage.join(","),
-                  from: fromDate,
-                  to: toDate,
+                  ...finalDates,
                 },
               })
             : await axios.get(
@@ -49,8 +58,7 @@ export const fetchStudents = createAsyncThunk(
                   params: {
                     dataType,
                     stage: concatinateStage,
-                    from: fromDate,
-                    to: toDate,
+                    ...finalDates,
                   },
                 }
               );

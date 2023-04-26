@@ -264,6 +264,12 @@ const LandingPage = () => {
     const last_name = lastName
       .replace(lastName[0], lastName[0].toUpperCase())
       .trim();
+    
+     if (firstName.includes(' ') || middleName?.includes(' ') || lastName.includes(' ')) {
+      alert('Name fields cannot contain spaces. Please remove any spaces and try again.');
+      return;
+    }
+    
     axios
       .get(`${baseUrl}check_duplicate`, {
         params: {

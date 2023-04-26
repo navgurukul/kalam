@@ -13,7 +13,6 @@ import makeAnimated from "react-select/animated";
 import { Grid, TextField } from "@mui/material";
 import _ from "lodash";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 import StudentService from "../../services/StudentService";
 import ServerSidePagination from "../muiTables/ServerSidePagination";
 import theme from "../../theme";
@@ -286,8 +285,7 @@ const AdmissionsDash = (props) => {
   };
 
   const changeFromDate = async (date) => {
-    const newDate = dayjs(date).format("MM-DD-YYYY");
-    setFrom(newDate);
+    setFrom(date);
     // setState((prevState) => ({
     //   ...prevState,
     //   fromDate: date,
@@ -296,8 +294,7 @@ const AdmissionsDash = (props) => {
   };
 
   const changeToDate = (date) => {
-    const newDate = dayjs(date).format("MM-DD-YYYY");
-    setTo(newDate);
+    setTo(date);
     // setState((prevState) => ({
     //   ...prevState,
     //   toDate: date,
@@ -454,7 +451,6 @@ const AdmissionsDash = (props) => {
   newColumns[1].options.viewColumns = privileges.some(
     (priv) => priv.privilege === "DeleteStudent"
   );
-
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
       <ThemeProvider theme={theme}>

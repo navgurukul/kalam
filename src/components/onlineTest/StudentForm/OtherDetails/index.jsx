@@ -269,19 +269,6 @@ function OtherDetails(props) {
         }
       )
       .then(({ data }) => {
-        if (_state === "CT") {
-          const newDis = { id: 0, name: "Dantewada" };
-          data.push(newDis);
-          data.sort(function (a, b) {
-            if (a.name < b.name) {
-              return -1;
-            }
-            if (a.name > b.name) {
-              return 1;
-            }
-            return 0;
-          });
-        }
         setDistricts(data);
       });
   }

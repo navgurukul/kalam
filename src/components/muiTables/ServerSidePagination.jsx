@@ -181,29 +181,6 @@ const ServerSidePagination = ({
     });
   };
 
-  // function dateSort(column, direction) {
-  //   return (a, b) => {
-  //     const dateA = new Date(a[column]);
-  //     const dateB = new Date(b[column]);
-  //     if (direction === 'ascending') {
-  //       return dateA - dateB;
-  //     } else {
-  //       return dateB - dateA;
-  //     }
-  //   }
-  // }
-
-  // ...
-
-  // onColumnSortChange: (changedColumn, direction) => {
-  //   if (changedColumn === 'dateColumn') {
-  //     const sortFunction = dateSort('dateColumn', direction);
-  //     sortChange(changedColumn, sortFunction);
-  //   } else {
-  //     sortChange(changedColumn, direction === 'ascending' ? 'asc' : 'desc');
-  //   }
-  // }
-
   const options = React.useMemo(
     () => ({
       selectableRows: "none",
@@ -214,14 +191,6 @@ const ServerSidePagination = ({
         downloadCSV();
         return false;
       },
-      // onColumnSortChange: (changedColumn, direction) => {
-      //   if (changedColumn === 'dateColumn') {
-      //     const sortFunction = dateSort('dateColumn', direction);
-      //     sortChange(changedColumn, sortFunction);
-      //   } else {
-      //     sortChange(changedColumn, direction === 'ascending' ? 'asc' : 'desc');
-      //   }
-      // }
       onColumnSortChange: (changedColumn, direction) =>
         sortChange(changedColumn, direction === "ascending" ? "asc" : "desc"),
       onFilterChange: async (columnChanged, filterList) => {
@@ -233,7 +202,7 @@ const ServerSidePagination = ({
           return getfilterApi(columnChanged, filterValue);
         }
 
-        setFilters({ filterColumns: [], url: `${baseURL}students ? ` });
+        setFilters({ filterColumns: [], url: `${baseURL}students?` });
       },
       responsive: "vertical",
       rowsPerPageOptions: [10, 50, 100],

@@ -36,7 +36,6 @@ export default function ProfilePhoto({ value, rowMeta }) {
         handleClose={onClose}
         openDialog={openDialog}
         src={value}
-        updatedPicTable={updatedPicTable}
         enrollmentKey={enrollmentKey}
         name={name}
         setUpdatePicTable={setUpdatePicTable}

@@ -20,6 +20,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { makeStyles } from "@mui/styles";
 import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
+import { INPUT_PATTERNS } from "../../../../utils/constants.js";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -304,21 +305,21 @@ const BasicDetails = ({
           <Controller
             control={control}
             name="FirstName"
-            rules={{ required: true }}
+            rules={{
+              required: true,
+              pattern: INPUT_PATTERNS.name, //allow anything that is chinese, hindi, english, and Apostrophe
+            }}
             defaultValue={formData.FirstName}
-            render={({ field: { ref, ...rest } }) => (
+            render={({ field: { ref, onChange, ...rest } }) => (
               <TextField
                 variant="outlined"
-                required
                 fullWidth
                 id="FirstName"
-                // autoFocus
                 inputRef={ref}
                 onBlur={rest.onBlur}
                 className={classes.spacing}
                 label={langOptions.FirstName[lang]}
                 placeholder={langOptions.FirstName[lang]}
-                // name="FirstName"
                 autoComplete="off"
                 type="text"
                 error={!!errors.FirstName}
@@ -328,6 +329,10 @@ const BasicDetails = ({
                     : "Ex. XYZ"
                 }
                 disabled={inputDisabled && formData.FirstName !== null}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(INPUT_PATTERNS.replaceName, '');
+                  onChange(newValue);
+                }}
                 {...rest}
               />
             )}
@@ -338,7 +343,7 @@ const BasicDetails = ({
             control={control}
             name="MiddleName"
             defaultValue={formData.MiddleName}
-            render={({ field: { ref, ...rest } }) => (
+            render={({ field: { ref, onChange, ...rest } }) => (
               <TextField
                 variant="outlined"
                 id="MiddleName"
@@ -355,6 +360,10 @@ const BasicDetails = ({
                     : "Ex. PQR"
                 }
                 disabled={inputDisabled && formData.MiddleName !== null}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(INPUT_PATTERNS.replaceName, '');
+                  onChange(newValue);
+                }}
                 {...rest}
               />
             )}
@@ -366,7 +375,7 @@ const BasicDetails = ({
             defaultValue={formData.LastName}
             name="LastName"
             rules={{ required: true }}
-            render={({ field: { ref, ...rest } }) => (
+            render={({ field: { ref, onChange, ...rest } }) => (
               <TextField
                 variant="outlined"
                 required
@@ -386,6 +395,10 @@ const BasicDetails = ({
                     : "Ex. ABC"
                 }
                 disabled={inputDisabled && formData.LastName !== null}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(INPUT_PATTERNS.replaceName, '');
+                  onChange(newValue);
+                }}
                 {...rest}
               />
             )}
@@ -452,7 +465,7 @@ const BasicDetails = ({
             }}
             defaultValue={formData.whatsapp}
             name="whatsapp"
-            render={({ field: { ref, ...rest } }) => (
+            render={({ field: { ref, onChange, ...rest } }) => (
               <TextField
                 variant="outlined"
                 required
@@ -478,6 +491,10 @@ const BasicDetails = ({
                     : "Ex. 99065xxxxx"
                 }
                 disabled={inputDisabled}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(INPUT_PATTERNS.numbersOnly, '');
+                  onChange(newValue);
+                }}
                 {...rest}
               />
             )}
@@ -492,7 +509,7 @@ const BasicDetails = ({
               pattern: /(6|7|8|9)\d{9}/,
               maxLength: 10,
             }}
-            render={({ field: { ref, ...rest } }) => (
+            render={({ field: { ref, onChange, ...rest } }) => (
               <TextField
                 variant="outlined"
                 fullWidth
@@ -517,6 +534,10 @@ const BasicDetails = ({
                     : "Ex. 99065xxxxx"
                 }
                 disabled={inputDisabled}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(INPUT_PATTERNS.numbersOnly, '');
+                  onChange(newValue);
+                }}
                 {...rest}
               />
             )}

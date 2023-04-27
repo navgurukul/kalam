@@ -339,6 +339,16 @@ const LandingPage = () => {
       });
       return;
     }
+    if (firstName.includes(' ') || middleName?.includes(' ') || lastName.includes(' ')) {
+      enqueueSnackbar(<strong>{'Name fields cannot contain spaces. Please remove any spaces and try again.'}</strong>, {
+        variant: "error",
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "center",
+        },
+      });
+      return;
+    }
     await isDuplicate();
   };
 

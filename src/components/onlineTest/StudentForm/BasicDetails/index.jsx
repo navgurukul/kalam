@@ -199,7 +199,7 @@ const BasicDetails = ({
   return (
     <Container maxWidth="lg" align="center">
       {/* {pfpCompulsion ?  */}
-      {/* <label
+      <label
         style={{
           cursor: inputDisabled ? "default" : "pointer",
         }}
@@ -248,8 +248,8 @@ const BasicDetails = ({
         error
         disabled={inputDisabled && formData.ProfileImage !== null}
         accept=".png,.jpg,.jpeg"
-      /> */}
-      <label style={{
+      />
+      {/* <label style={{
         cursor: inputDisabled ? "default" : "pointer",
       }} htmlFor="ProfileImage">
         <Badge
@@ -298,7 +298,7 @@ const BasicDetails = ({
             {errors.ProfileImage.message}
           </Typography>
         )}
-      </label>
+      </label> */}
 
       <Grid style={{ paddingTop: "1.2rem" }} container spacing={2}>
         <Grid item xs={12} sm={6}>
@@ -330,7 +330,10 @@ const BasicDetails = ({
                 }
                 disabled={inputDisabled && formData.FirstName !== null}
                 onChange={(e) => {
-                  const newValue = e.target.value.replace(INPUT_PATTERNS.replaceName, '');
+                  const newValue = e.target.value.replace(
+                    INPUT_PATTERNS.replaceName,
+                    ""
+                  );
                   onChange(newValue);
                 }}
                 {...rest}
@@ -361,7 +364,10 @@ const BasicDetails = ({
                 }
                 disabled={inputDisabled && formData.MiddleName !== null}
                 onChange={(e) => {
-                  const newValue = e.target.value.replace(INPUT_PATTERNS.replaceName, '');
+                  const newValue = e.target.value.replace(
+                    INPUT_PATTERNS.replaceName,
+                    ""
+                  );
                   onChange(newValue);
                 }}
                 {...rest}
@@ -396,7 +402,10 @@ const BasicDetails = ({
                 }
                 disabled={inputDisabled && formData.LastName !== null}
                 onChange={(e) => {
-                  const newValue = e.target.value.replace(INPUT_PATTERNS.replaceName, '');
+                  const newValue = e.target.value.replace(
+                    INPUT_PATTERNS.replaceName,
+                    ""
+                  );
                   onChange(newValue);
                 }}
                 {...rest}
@@ -492,7 +501,10 @@ const BasicDetails = ({
                 }
                 disabled={inputDisabled}
                 onChange={(e) => {
-                  const newValue = e.target.value.replace(INPUT_PATTERNS.numbersOnly, '');
+                  const newValue = e.target.value.replace(
+                    INPUT_PATTERNS.numbersOnly,
+                    ""
+                  );
                   onChange(newValue);
                 }}
                 {...rest}
@@ -535,7 +547,10 @@ const BasicDetails = ({
                 }
                 disabled={inputDisabled}
                 onChange={(e) => {
-                  const newValue = e.target.value.replace(INPUT_PATTERNS.numbersOnly, '');
+                  const newValue = e.target.value.replace(
+                    INPUT_PATTERNS.numbersOnly,
+                    ""
+                  );
                   onChange(newValue);
                 }}
                 {...rest}

@@ -176,7 +176,7 @@ const BasicDetails = ({
   formData,
   setProfileImage,
   inputDisabled,
-  reactForm: { register, errors, control },
+  reactForm: { errors, control },
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -189,13 +189,6 @@ const BasicDetails = ({
     }
     setProfileImage(file);
   };
-
-  const date = new Date();
-  const currentDate = date.getDate();
-  const month = date.getMonth();
-  const maxDate = date.getFullYear() - 17;
-  const minDate = date.getFullYear() - 28;
-
   return (
     <Container maxWidth="lg" align="center">
       {/* {pfpCompulsion ?  */}
@@ -238,17 +231,18 @@ const BasicDetails = ({
           ""
         )}
       </label>
+      {/* : null} */}
       <input
         onChange={(e) => uploadProfilePhoto(e)}
         id="ProfileImage"
         type="file"
         name="ProfileImage"
         style={{ display: "none" }}
-        required={true}
-        error
+        required
         disabled={inputDisabled && formData.ProfileImage !== null}
         accept=".png,.jpg,.jpeg"
       />
+<<<<<<< HEAD
       {/* <label style={{
         cursor: inputDisabled ? "default" : "pointer",
       }} htmlFor="ProfileImage">
@@ -300,6 +294,8 @@ const BasicDetails = ({
         )}
       </label> */}
 
+=======
+>>>>>>> dfc30a9cd1494ba9bdb84bec7637ac4a95c3e065
       <Grid style={{ paddingTop: "1.2rem" }} container spacing={2}>
         <Grid item xs={12} sm={6}>
           <Controller
@@ -435,17 +431,13 @@ const BasicDetails = ({
                   id="dob"
                   label={langOptions.dob[lang]}
                   required
-                  openTo="year"
                   inputRef={ref}
                   focused={isTouched}
                   inputVariant="outlined"
-                  minDate={new Date(`${minDate}-${month + 1}-${currentDate}`)}
-                  maxDate={new Date(`${maxDate}-${month + 1}-${currentDate}`)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       error={!!errors.dob}
-                      required
                       helperText={
                         errors.dob
                           ? errors.dob.type === "validate"
@@ -488,7 +480,7 @@ const BasicDetails = ({
                 }}
                 label={langOptions.whatsapp[lang]}
                 placeholder={langOptions.whatsapp[lang]}
-                type="tel"
+                type="number"
                 autoComplete="off"
                 error={!!errors.whatsapp}
                 helperText={
@@ -621,9 +613,7 @@ const BasicDetails = ({
               <FormControl
                 disabled={inputDisabled}
                 variant="outlined"
-                required
                 fullWidth
-                error={errors.gender}
               >
                 <InputLabel id="gender-label">
                   {langOptions.gender[lang]}

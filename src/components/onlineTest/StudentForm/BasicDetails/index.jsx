@@ -242,7 +242,6 @@ const BasicDetails = ({
         disabled={inputDisabled && formData.ProfileImage !== null}
         accept=".png,.jpg,.jpeg"
       />
-<<<<<<< HEAD
       {/* <label style={{
         cursor: inputDisabled ? "default" : "pointer",
       }} htmlFor="ProfileImage">
@@ -294,8 +293,6 @@ const BasicDetails = ({
         )}
       </label> */}
 
-=======
->>>>>>> dfc30a9cd1494ba9bdb84bec7637ac4a95c3e065
       <Grid style={{ paddingTop: "1.2rem" }} container spacing={2}>
         <Grid item xs={12} sm={6}>
           <Controller

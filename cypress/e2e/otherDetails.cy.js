@@ -42,6 +42,17 @@ beforeEach(() => {
   cy.get('[data-cy="schoolMedium"]').as("schoolMediumDropdown");
   cy.get('[data-cy="religion-input"]').as("religionDropdown");
 });
-describe("Section 3: Other details", () => {
-  it("Form validation for other details page", () => {});
+describe("TS307_01_State_District_Dropdown", () => {
+  it.only("District Dropdown should be populated based on state selected ", () => {
+    cy.get("@stateSelectDropdown").click();
+    cy.get('[data-value="BR"]').click();
+    cy.get('@districtDropdown').click();
+    cy.get('[data-value="Arrah"]').click();
+    cy.get('@districtDropdown').click();
+    cy.get('[data-value="Sheikhpura"]').click();
+    cy.get('@districtDropdown').click();
+    cy.get('[data-value="Maharajgani"]').click();
+    cy.get('@districtDropdown').click();
+    cy.get('[data-value="Thakurganj"]').click();
+  });
 });

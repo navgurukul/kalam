@@ -285,8 +285,7 @@ const AdmissionsDash = (props) => {
   };
 
   const changeFromDate = async (date) => {
-    // const newDate = dayjs(date).format("MM-DD-YYYY");
-    setFrom(date ? date.$d : null);
+    setFrom(date);
     // setState((prevState) => ({
     //   ...prevState,
     //   fromDate: date,
@@ -295,7 +294,7 @@ const AdmissionsDash = (props) => {
   };
 
   const changeToDate = (date) => {
-    setTo(date ? date.$d : null);
+    setTo(date);
     // setState((prevState) => ({
     //   ...prevState,
     //   toDate: date,

@@ -172,7 +172,6 @@ const StudentForm = () => {
   useEffect(() => {
     // setEnrolment_key(key)
     // const enrkey = location.pathname.split("/")[2];
-    //console.log("enrkey", enrkey);
     // setEnrolmentKey(enrkey);
   }, []);
 

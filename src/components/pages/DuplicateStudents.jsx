@@ -175,8 +175,6 @@ const DuplicateStudents = () => {
     },
   };
 
-  // console.log("useQuery", useQuery());
-
   const isDuplicate = () => {
     // const details = window.location.href.split("Name=")[1];
     // const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];

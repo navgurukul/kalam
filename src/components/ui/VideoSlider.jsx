@@ -164,8 +164,6 @@ const VideoSlider = ({ language, customLinks }) => {
     event.target.playVideo();
   };
 
-  //console.log(classes, this.props);
-
   const width = Math.min(600, window.screen.width);
   // const width = window.screen.width;
 
@@ -197,7 +195,6 @@ const VideoSlider = ({ language, customLinks }) => {
           <div key={ele.videoId}>
             <Box
               maxWidth={width}
-            
               style={{ margin: "0 auto", position: "relative", padding: 0 }}
               onClick={handleClickOpen}
               value={ele.videoId}

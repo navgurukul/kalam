@@ -30,7 +30,6 @@ const OwnerSelect = ({ value, change, rowMetaTable, studentId }) => {
     })();
     return () => controller.abort();
   }, []);
-  // console.log(ownerData);
 
   const handleChange = (selectedValue) => {
     try {

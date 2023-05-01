@@ -15,10 +15,6 @@ const CustomDatePicker = ({ offerLetterDate, id, studentId, change }) => {
 
   const updateDate = (newValue) => {
     if (dayjs(newValue).diff(offerLetterDate, "date") === 0) return;
-    // console.log(
-    //   newValue,
-    //   dayjs(newValue).diff(value.offer_letter_date, "date")
-    // );
     axios
       .put(`${baseUrl}students/jobDetails/${id}`, {
         offer_letter_date: newValue,

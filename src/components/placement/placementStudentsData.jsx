@@ -126,7 +126,6 @@ const PlacementStudentsData = () => {
                 <IconButton
                   color="primary"
                   onClick={() => {
-                    // console.log(studentData[rowIndex]);
                     setSelectedStudent({
                       action: "viewTransition",
                       studentId: value,

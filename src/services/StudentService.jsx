@@ -407,7 +407,6 @@ const AudioPlayer = {
       const ifExistingFeedback =
         rowMeta.rowData[2] ||
         feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
-      // console.log(value);
       return (
         <div style={{ width: "100%" }}>
           {!ifExistingFeedback && !value ? (
@@ -448,7 +447,6 @@ const deadlineColumnTrnasition1 = {
       const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
       const ifExistingDeadlineDate =
         rowData && !rowMeta.rowData[7] && feedbackableStage;
-      // console.log(rowData)
       if (ifExistingDeadlineDate) {
         const { deadline } = feedbackableStagesData[rowMeta.rowData[0]];
         const diff = new Date().getTime() - new Date(rowData).getTime();
@@ -709,8 +707,6 @@ const marksColumn = {
     },
   },
 };
-
-
 
 const ageColumn = {
   name: "age",

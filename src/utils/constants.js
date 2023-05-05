@@ -219,6 +219,8 @@ export const allStages = {
   // forReviewCallbackQueryResolved: "For Review CallbackQuery Resolved",
   queryResolvedAfterCallback: "Query Resolved After CallBack",
   testFailed: "Test Failed",
+  //For test pass
+  testPass: "Test Pass",
   M1: "English & Quarantine",
   M2: "Dry Run",
   M3: "If - Else",
@@ -828,4 +830,8 @@ export const allTagsForOnlineClass = [
   "duplicate",
 ];
 
-export const INPUT_PATTERNS = { name: /^[\p{L}\p{M}']+$/u, replaceName: /[^\p{L}\p{M}']+/gu, numbersOnly: /\D/g, }
+export const INPUT_PATTERNS = {
+  name: /^[\p{L}\p{M}']+$/u,
+  replaceName: /[^\p{L}\p{M}']+/gu,
+  numbersOnly: /\D/g,
+};

@@ -17,6 +17,11 @@ export const fetchStudents = createAsyncThunk(
     const { stage, filterColumns, page, numberOfRows, fromDate, toDate } =
       globalState.students;
     // const { numberOfRows } = state;
+    const studentStatus = stage?.length
+      ? stage?.indexOf("testPass") > -1
+        ? "testPass"
+        : null
+      : null;
 
     const from = dayjs(fromDate).isValid(fromDate) ? fromDate : undefined;
     const to = dayjs(toDate).isValid(toDate) ? toDate : undefined;
@@ -43,43 +48,94 @@ export const fetchStudents = createAsyncThunk(
           }
           return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
         }, `${baseUrl}students?`);
-        response =
-          filterColumns && filterColumns.length > 0
-            ? await axios.get(`${url}&limit=${numberOfRows}&page=${page}`, {
+        response = studentStatus
+          ? await axios.get(
+              `${baseUrl}students?limit=${numberOfRows}&page=${page}`,
+              {
+                params: {
+                  studentStatus,
+                },
+              }
+            )
+          : filterColumns && filterColumns.length > 0
+          ? await axios.get(`${url}&limit=${numberOfRows}&page=${page}`, {
+              params: {
+                dataType,
+                stage: stage.length === 0 ? null : stage.join(","),
+                ...finalDates,
+              },
+            })
+          : await axios.get(
+              `${baseUrl}students?limit=${numberOfRows}&page=${page}`,
+              {
                 params: {
                   dataType,
-                  stage: stage.length === 0 ? null : stage.join(","),
+                  stage: concatinateStage,
                   ...finalDates,
                 },
-              })
-            : await axios.get(
-                `${baseUrl}students?limit=${numberOfRows}&page=${page}`,
-                {
-                  params: {
-                    dataType,
-                    stage: concatinateStage,
-                    ...finalDates,
-                  },
-                }
-              );
-
+              }
+            );
         // eslint-disable-next-line no-use-before-define
         thunkAPI.dispatch(setUrl(url));
       }
-      const studentData =
-        // response.data &&
-        // response.data.data &&
-        response.data.data.results.map((student) => {
-          const contacts = student.contacts[student.contacts.length - 1];
-          return {
-            ...student,
-            qualification: qualificationKeys[student.qualification],
-            studentOwner: "",
-            campus: student.campus ? student.campus : null,
-            donor: student.studentDonor ? student.studentDonor : null,
-            altNumber: contacts ? contacts.alt_mobile : contacts,
-          };
-        });
+      // const studentData =
+      //   // response.data &&
+      //   // response.data.data &&
+      //   response.data.data.results.map((student) => {
+      //     const contacts = student.contacts[student.contacts.length - 1];
+      //     return {
+      //       ...student,
+      //       qualification: qualificationKeys[student.qualification],
+      //       studentOwner: "",
+      //       campus: student.campus ? student.campus : null,
+      //       donor: student.studentDonor ? student.studentDonor : null,
+      //       altNumber: contacts ? contacts.alt_mobile : contacts,
+      //     };
+      //   });
+      let studentData = [];
+      if (response.data && response.data.data) {
+        studentData = response.data.data.results
+          ? response.data.data.results.map((student) => {
+              const contacts =
+                student.contacts && student.contacts.length > 0
+                  ? student.contacts[student.contacts.length - 1]
+                  : null;
+              const qualification =
+                qualificationKeys[student.qualification] || "";
+              const campus = student.campus || null;
+              const donor = student.studentDonor || null;
+              const altNumber =
+                contacts && contacts.alt_mobile ? contacts.alt_mobile : null;
+              return {
+                ...student,
+                qualification,
+                studentOwner: "",
+                campus,
+                donor,
+                altNumber,
+              };
+            })
+          : response.data.data.map((student) => {
+              const contacts =
+                student.contacts && student.contacts.length > 0
+                  ? student.contacts[student.contacts.length - 1]
+                  : null;
+              const qualification =
+                qualificationKeys[student.qualification] || "";
+              const campus = student.campus || null;
+              const donor = student.studentDonor || null;
+              const altNumber =
+                contacts && contacts.alt_mobile ? contacts.alt_mobile : null;
+              return {
+                ...student,
+                qualification,
+                studentOwner: "",
+                campus,
+                donor,
+                altNumber,
+              };
+            });
+      }
       thunkAPI.dispatch(changeFetching(false));
       return dataSetup(
         studentData,

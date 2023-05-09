@@ -260,7 +260,6 @@ const AdmissionsDash = (props) => {
       ...prevState,
       selectedOption,
     }));
-    //console.log(selectedOption, "selectedOption");
     if (selectedOption === null) {
       setPage(0);
       updateStage([]);
@@ -337,7 +336,6 @@ const AdmissionsDash = (props) => {
   }, []);
 
   useEffect(() => {
-    // console.log("Updating changes");
     if (loggedInUser)
       dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType })); //softwareCourse
   }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser]);

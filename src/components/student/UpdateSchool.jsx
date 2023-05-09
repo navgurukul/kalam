@@ -32,20 +32,6 @@ const UpdateSchool = (props) => {
   const handleChange = (event) => {
     const { change, studentId } = props;
     const { label, value } = event;
-    console.log("event", event);
-    // axios
-    //   .put(`${baseURL}school/students_school_post/${studentId}`, {
-    //     school_id: value,
-    //   })
-    //   .then(() => {
-    //     enqueueSnackbar(`School successfully updated !`, {
-    //       variant: "success",
-    //     });
-    //     change(label);
-    //   })
-    //   .catch((err) => {
-    //     enqueueSnackbar(err.message, { variant: "error" });
-    //   });
     // if (value === "programming") {
     axios
       .post(`${baseURL}school/students_school`, {
@@ -53,10 +39,6 @@ const UpdateSchool = (props) => {
         school_id: value,
       })
       .then((response) => {
-        console.log("JSON.stringify(response.data)", response);
-        // enqueueSnackbar(`School successfully updated !`, {
-        //   variant: "success",
-        // });
         axios
           .put(`${baseURL}school/students_school_post/${studentId}`, {
             school_id: value,
@@ -78,28 +60,28 @@ const UpdateSchool = (props) => {
   };
 
   // remove this after words
-  if (value === "programming") {
-    const data = JSON.stringify({
-      student_id: studentId,
-      school_id: 1,
-    });
+  // if (value === "programming") {
+  //   const data = JSON.stringify({
+  //     student_id: studentId,
+  //     school_id: 1,
+  //   });
 
-    const config = {
-      method: "post",
-      url: "https://dev-join.navgurukul.org/apiDocs/school/students_school",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data,
-    };
-    axios(config)
-      .then((response) => {
-        console.log("JSON.stringify(response.data)", response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  //   const config = {
+  //     method: "post",
+  //     url: "https://dev-join.navgurukul.org/apiDocs/school/students_school",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     data,
+  //   };
+  //   axios(config)
+  //     .then((response) => {
+  //       console.log("JSON.stringify(response.data)", response);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }
 
   if (value === "programming") {
     value = { id: 1, name: "NG Programming" };

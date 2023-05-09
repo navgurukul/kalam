@@ -28,25 +28,55 @@ const UpdateSchool = (props) => {
   // only for students who have failed
   const showDropdown = rowMeta.rowData[14] === "Test Failed";
 
+  let { value, studentId } = props;
   const handleChange = (event) => {
     const { change, studentId } = props;
     const { label, value } = event;
+    console.log("event", event);
+    // axios
+    //   .put(`${baseURL}school/students_school_post/${studentId}`, {
+    //     school_id: value,
+    //   })
+    //   .then(() => {
+    //     enqueueSnackbar(`School successfully updated !`, {
+    //       variant: "success",
+    //     });
+    //     change(label);
+    //   })
+    //   .catch((err) => {
+    //     enqueueSnackbar(err.message, { variant: "error" });
+    //   });
+    // if (value === "programming") {
     axios
-      .put(`${baseURL}school/students_school_post/${studentId}`, {
+      .post(`${baseURL}school/students_school`, {
+        student_id: studentId,
         school_id: value,
       })
-      .then(() => {
-        enqueueSnackbar(`School successfully updated !`, {
-          variant: "success",
-        });
-        change(label);
+      .then((response) => {
+        console.log("JSON.stringify(response.data)", response);
+        // enqueueSnackbar(`School successfully updated !`, {
+        //   variant: "success",
+        // });
+        axios
+          .put(`${baseURL}school/students_school_post/${studentId}`, {
+            school_id: value,
+          })
+          .then(() => {
+            enqueueSnackbar(`School successfully updated !`, {
+              variant: "success",
+            });
+            change(label);
+          })
+          .catch((err) => {
+            enqueueSnackbar(err.message, { variant: "error" });
+          });
       })
       .catch((err) => {
         enqueueSnackbar(err.message, { variant: "error" });
       });
+    // }
   };
 
-  let { value, studentId } = props;
   // remove this after words
   if (value === "programming") {
     const data = JSON.stringify({
@@ -64,7 +94,7 @@ const UpdateSchool = (props) => {
     };
     axios(config)
       .then((response) => {
-        console.log("JSON.stringify(response.data)");
+        console.log("JSON.stringify(response.data)", response);
       })
       .catch((error) => {
         console.log(error);
@@ -80,20 +110,21 @@ const UpdateSchool = (props) => {
   const selectedValue = { value: value.id, label: value.name };
 
   //console.log([selectedValue]);
-  return  (
+  return (
     <Select
       className="filterSelectStage"
       defaultValue={selectedValue}
       onChange={handleChange}
       options={
-        data.length && showDropdown ? data.map((x) => ({ value: x.id, label: x.name })) :
-         [selectedValue].map((x) => ({ value: x.id, label: x.label }))
+        data.length && showDropdown
+          ? data.map((x) => ({ value: x.id, label: x.name }))
+          : [selectedValue].map((x) => ({ value: x.id, label: x.label }))
       }
       isClearable={false}
       components={animatedComponents}
       closeMenuOnSelect
     />
-  )  
+  );
 };
 
 export default UpdateSchool;

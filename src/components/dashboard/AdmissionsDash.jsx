@@ -260,7 +260,6 @@ const AdmissionsDash = (props) => {
       ...prevState,
       selectedOption,
     }));
-    //console.log(selectedOption, "selectedOption");
     if (selectedOption === null) {
       setPage(0);
       updateStage([]);

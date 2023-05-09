@@ -12,6 +12,17 @@ const UpdateSchool = (props) => {
   const [data, setData] = React.useState([]);
   const { rowMeta } = props;
 
+  let { value, studentId } = props;
+
+  if (value === "programming") {
+    value = { id: 1, name: "NG Programming" };
+  }
+  if (value.length > 0) {
+    value = value[0];
+  }
+
+  const selectedValue = { value: value.id, label: value.name };
+
   useEffect(() => {
     const controller = new AbortController();
     axios
@@ -28,70 +39,77 @@ const UpdateSchool = (props) => {
   // only for students who have failed
   const showDropdown = rowMeta.rowData[14] === "Test Failed";
 
-  let { value, studentId } = props;
   const handleChange = (event) => {
     const { change, studentId } = props;
     const { label, value } = event;
-    // if (value === "programming") {
-    axios
-      .post(`${baseURL}school/students_school`, {
-        student_id: studentId,
-        school_id: value,
-      })
-      .then((response) => {
-        axios
-          .put(`${baseURL}school/students_school_post/${studentId}`, {
-            school_id: value,
-          })
-          .then(() => {
-            enqueueSnackbar(`School successfully updated !`, {
-              variant: "success",
+    if (
+      selectedValue.label.toLowerCase() ===
+      "School of programming".toLowerCase()
+    ) {
+      axios
+        .post(`${baseURL}school/students_school`, {
+          student_id: studentId,
+          school_id: value,
+        })
+        .then((response) => {
+          axios
+            .put(`${baseURL}school/students_school_post/${studentId}`, {
+              school_id: value,
+            })
+            .then(() => {
+              enqueueSnackbar(`School successfully updated !`, {
+                variant: "success",
+              });
+              change(label);
+            })
+            .catch((err) => {
+              enqueueSnackbar(err.message, { variant: "error" });
             });
-            change(label);
-          })
-          .catch((err) => {
-            enqueueSnackbar(err.message, { variant: "error" });
+        })
+        .catch((err) => {
+          enqueueSnackbar(err.message, { variant: "error" });
+        });
+    } else {
+      axios
+        .put(`${baseURL}school/students_school_post/${studentId}`, {
+          school_id: value,
+        })
+        .then(() => {
+          enqueueSnackbar(`School successfully updated !`, {
+            variant: "success",
           });
-      })
-      .catch((err) => {
-        enqueueSnackbar(err.message, { variant: "error" });
-      });
-    // }
+          change(label);
+        })
+        .catch((err) => {
+          enqueueSnackbar(err.message, { variant: "error" });
+        });
+    }
   };
 
   // remove this after words
-  // if (value === "programming") {
-  //   const data = JSON.stringify({
-  //     student_id: studentId,
-  //     school_id: 1,
-  //   });
-
-  //   const config = {
-  //     method: "post",
-  //     url: "https://dev-join.navgurukul.org/apiDocs/school/students_school",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     data,
-  //   };
-  //   axios(config)
-  //     .then((response) => {
-  //       console.log("JSON.stringify(response.data)", response);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }
-
   if (value === "programming") {
-    value = { id: 1, name: "NG Programming" };
-  }
-  if (value.length > 0) {
-    value = value[0];
-  }
-  const selectedValue = { value: value.id, label: value.name };
+    const data = JSON.stringify({
+      student_id: studentId,
+      school_id: 1,
+    });
 
-  //console.log([selectedValue]);
+    const config = {
+      method: "post",
+      url: "https://dev-join.navgurukul.org/apiDocs/school/students_school",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data,
+    };
+    axios(config)
+      .then((response) => {
+        console.log("JSON.stringify(response.data)", response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   return (
     <Select
       className="filterSelectStage"

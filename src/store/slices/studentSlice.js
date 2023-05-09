@@ -13,8 +13,15 @@ export const fetchStudents = createAsyncThunk(
   async ({ fetchPendingInterviewDetails, dataType }, thunkAPI) => {
     const globalState = thunkAPI.getState();
     const { loggedInUser } = globalState.auth;
-    const { stage, filterColumns, page, numberOfRows, fromDate, toDate, school } =
-      globalState.students;
+    const {
+      stage,
+      filterColumns,
+      page,
+      numberOfRows,
+      fromDate,
+      toDate,
+      school,
+    } = globalState.students;
     // const { numberOfRows } = state;
     const concatinateStage = stage.length === 0 ? null : stage.join(",");
     const querySchool = school === "" ? null : school;
@@ -52,14 +59,15 @@ export const fetchStudents = createAsyncThunk(
                     stage: concatinateStage,
                     from: fromDate,
                     to: toDate,
-                    school: querySchool
+                    school: querySchool,
                   },
                 }
               );
         // eslint-disable-next-line no-use-before-define
         thunkAPI.dispatch(setUrl(url));
       }
-      let results = (school === "") ? response.data.data.results : response.data.data;
+      let results =
+        school === "" ? response.data.data.results : response.data.data;
       const studentData =
         // response.data &&
         // response.data.data &&
@@ -138,6 +146,7 @@ const StudentSlice = createSlice({
   },
   extraReducers: {
     [fetchStudents.fulfilled]: (state, action) => {
+      console.log("action.payload.data", action.payload.data);
       state.studentData = action.payload.data;
       state.totalData = action.payload.totalData;
     },

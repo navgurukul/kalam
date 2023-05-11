@@ -1,21 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import { Box, Grid, TextField } from "@mui/material";
-import { LocalizationProvider, DatePicker } from "@mui/lab";
+import ToolbarAddButtonOverview from "./ToolbarAddButtonOverview";
+import {
+  Box,
+  Dialog,
+  DialogContent,
+  TextField,
+  DialogActions,
+  Button,
+  Grid,
+  OutlinedInput,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import MUIDataTable from "mui-datatables";
-import DateFnsUtils from "@mui/lab/AdapterDateFns";
-import dayjs from "dayjs";
 import axios from "axios";
-
 import { useLocation } from "react-router-dom";
-import Select from "react-select";
 import {
   setAllStudentData,
   setCounts,
-  setStageFilter as setStageFilterAction,
-  setFromDate as setFromDateAction,
-  setToDate as setToDateAction,
   setStudentData,
   clearData,
 } from "../../store/slices/campusSlice";
@@ -23,134 +25,116 @@ import MainLayout from "../muiTables/MainLayout";
 
 import { changeFetching } from "../../store/slices/uiSlice";
 
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import NativeSelect from "@mui/material/NativeSelect";
+
 import {
   qualificationKeys,
-  campusStageOfLearning,
-  allStages,
   campusStatusOptions,
   campusStatusDisplayOptions,
 } from "../../utils/constants";
 import { dConvert } from "../../utils";
 
-const allStagesOptions = Object.entries(campusStageOfLearning).map(
-  ([value, label]) => ({
-    value,
-    label,
-  })
-);
-
-const partnerStages = Object.entries(allStages).map(([value, label]) => ({
-  value,
-  label,
-}));
-
-// API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const columns = [
-  {
-    label: "English Interview Pending (2nd Round)",
-    name: "pendingEnglishInterview",
-    options: {
-      viewColumns: false,
-      display: false,
-      filter: false,
-    },
-  },
-  {
-    label: "English Interview Failed",
-    name: "englishInterviewFail",
-    options: {
-      viewColumns: false,
-      display: false,
-      filter: false,
-    },
-  },
-  {
-    label: "Algebra Interview Pending (3rd Round)",
-    name: "pendingAlgebraInterview",
-    options: {
-      viewColumns: false,
-      display: false,
-      filter: false,
-    },
-  },
-  {
-    label: "Algebra Interview Failed",
-    name: "algebraInterviewFail",
-    options: {
-      viewColumns: false,
-      display: false,
-      filter: false,
-    },
-  },
-  {
-    label: "Culture Fit Interview Pending (4th Round)",
-    name: "pendingCultureFitInterview",
-    options: {
-      viewColumns: false,
-      display: false,
-      filter: false,
-    },
-  },
-  {
-    label: "Culture Interview Failed",
-    name: "cultureFitInterviewFail",
-    options: {
-      viewColumns: false,
-      display: false,
-      filter: false,
-    },
-  },
-  {
-    label: "Selected",
-    name: "selected",
-    options: {
-      viewColumns: false,
-      display: false,
-      filter: false,
-    },
-  },
-  {
-    label: "Offer Letter Sent",
-    name: "offerLetterSent",
-    options: {
-      viewColumns: false,
-      display: false,
-      filter: false,
-    },
-  },
-  {
-    label: "Unreachable",
-    name: "notReachable",
-    options: {
-      viewColumns: false,
-      display: false,
-      filter: false,
-    },
-  },
-];
-// let filterFns = [];
-
-const OverviewData = ({ displayData, title, url, isCampus = false}) => {
+const OverviewData = ({  url, isCampus = false }) => {
   const location = useLocation();
-  const { students, allStudents, fromDate, toDate, allStatusCount } =
+  const { allStudents, fromDate, toDate, allStatusCount } =
     useSelector((state) => state.campus);
 
   const dispatch = useDispatch();
+  const [schoolOverview, setSchoolOverview] = useState(false);
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const setStageFilter = (filterSt) => dispatch(setStageFilterAction(filterSt));
-  // const setToStage = (to) => dispatch(setToStageAction(to));
-  const setFromDate = (from) =>
-    dispatch(setFromDateAction(dayjs(from).format("YYYY-MM-DD")));
-  const setToDate = (to) =>
-    dispatch(setToDateAction(dayjs(to).format("YYYY-MM-DD")));
   const setCampusCounts = (counts) => dispatch(setCounts(counts));
   const setStudents = (studentData) => dispatch(setStudentData(studentData));
   const setAllStudents = (studentData) =>
     dispatch(setAllStudentData(studentData));
-
   const clearStudents = () => dispatch(clearData());
+
+  const columns = [
+    {
+      name: "id",
+      label: "S.No",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value, rowMeta) => {
+          const index = rowMeta.rowIndex + 1;
+          return index;
+        },
+      },
+    },
+
+    {
+      name: "name",
+      label: "School Name",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value, rowMeta) => {
+          return value;
+        },
+      },
+    },
+
+    {
+      name: "capacity",
+      label: "Capacity of students",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value, rowMeta) => {
+          return value;
+        },
+      },
+    },
+  ];
+
+  const [schoolList, setSchoolList] = useState([]);
+  const [schoolData, setSchoolData] = useState([]);
+  const [schoolId, setSchoolId] = useState("");
+  const [capacity, setCapacity] = useState("");
+  let pagelocation = useLocation();
+  let campusId = pagelocation.pathname.split("/")[2];
+
+  const fetchStages = async () => {
+    let url = `${baseUrl}school/campus_school/${campusId}`;
+    let data = await axios.get(url);
+    setSchoolList(data?.data);
+  };
+  useEffect(() => {
+    fetchStages();
+  }, []);
+
+  const handleOpenSubmit = async () => {
+    if (capacity && schoolId && campusId) {
+      let url = `${baseUrl}school/capacity?campus_id=${campusId}&school_id=${schoolId}`;
+      let data = await axios.put(url, { capacityofschool: capacity });
+    }
+    setSchoolOverview(false);
+    fetchStages();
+  };
+
+  const handleSelect = async () => {
+    let url = `${baseUrl}school`;
+    let response = await axios.get(url);
+    setSchoolData(response.data);
+  };
+
+  const openSchoolOverview = () => {
+    setSchoolOverview(true);
+  };
+
+  const options = {
+    selectableRows: "none",
+    responsive: "vertical",
+    filter: false,
+    customToolbar: React.useCallback(
+      () => <ToolbarAddButtonOverview handleOpen={openSchoolOverview} />,
+      []
+    ),
+  };
 
   const [loading, setLoading] = React.useState(true);
 
@@ -230,111 +214,9 @@ const OverviewData = ({ displayData, title, url, isCampus = false}) => {
     };
   }, []);
 
-  const changeFromDate = async (date) => {
-    setFromDate(date);
-    fetchStudents();
-  };
-
-  const changeToDate = (date) => {
-    setToDate(date);
-    fetchStudents();
-  };
-
-  const filterData = (filterLabel) => {
-    const newData = allStudents.filter(
-      (element) => element.stage === filterLabel
-    );
-    setStudents(newData);
-  };
-  const onChangeStageFilter = async (event) => {
-    setStageFilter(event);
-
-    filterData(event.label);
-  };
-
   const locationCampus = location.pathname.split("/")[1];
 
-  const showAllStage = parseInt(
-    location.pathname[location.pathname.length - 1],
-    10
-  );
-
-  const onDownload = (buildHead, buildBody, downloadColumns, data) => {
-    // console.log();
-    // const newColums = [...]
-    const newData = data.map(({ data: student }) => ({
-      data: student.map((col, inx) => {
-        switch (displayData[inx]?.name || "DEFAULT") {
-          case "enrolmentKey":
-            return {
-              onlineTest: "Online Test",
-              offlineTest: "Offline Test",
-              "N/A": "N/A",
-            }[col[col.length - 1].type_of_test];
-          default:
-            return col;
-        }
-      }),
-    }));
-
-    return `\uFEFF${buildHead(downloadColumns)}${buildBody(newData)}`;
-  };
-
   const noFooter = React.useCallback(() => <tbody />, []);
-
-  const options = (
-    <Grid container spacing={4} sx={{ paddingY: "0.8rem" }}>
-      <Grid item xs={12} md={6} lg={3}>
-        <Select
-          onChange={onChangeStageFilter}
-          options={showAllStage ? partnerStages : allStagesOptions}
-          placeholder="Filter Stage"
-          isClearable
-          closeMenuOnSelect
-          menuPortalTarget={document.body}
-          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-        />
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <LocalizationProvider dateAdapter={DateFnsUtils}>
-          <DatePicker
-            margin="dense"
-            style={{ marginLeft: 16, maxWidth: "40%" }}
-            value={fromDate}
-            id="date-picker-dialog"
-            label="From Date"
-            format="MM/dd/yyyy"
-            onChange={changeFromDate}
-            KeyboardButtonProps={{
-              "aria-label": "change date",
-            }}
-            renderInput={(params) => (
-              <TextField fullWidth size="small" {...params} />
-            )}
-          />
-        </LocalizationProvider>
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <LocalizationProvider dateAdapter={DateFnsUtils}>
-          <DatePicker
-            margin="dense"
-            style={{ marginLeft: 16, maxWidth: "40%" }}
-            value={toDate}
-            id="date-picker-dialog"
-            label="To Date"
-            format="MM/dd/yyyy"
-            onChange={changeToDate}
-            KeyboardButtonProps={{
-              "aria-label": "change date",
-            }}
-            renderInput={(params) => (
-              <TextField size="small" fullWidth {...params} />
-            )}
-          />
-        </LocalizationProvider>
-      </Grid>
-    </Grid>
-  );
 
   const options2 = allStudents.length > 0 && (
     <Grid container spacing={3} sx={{ paddingY: "0.8rem" }}>
@@ -350,21 +232,8 @@ const OverviewData = ({ displayData, title, url, isCampus = false}) => {
           justifyContent: "center",
           width: "100%",
         }}
-      >
-        <Select
-          onChange={onChangeStageFilter}
-          options={showAllStage ? partnerStages : allStagesOptions}
-          placeholder="Filter Stage"
-          isClearable
-          closeMenuOnSelect
-          menuPortalTarget={document.body}
-          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-        />
-      </Grid>
-
-
+      ></Grid>
       {/* CAMPUS COUNT */}
-
       <Grid item xs={12} md={12} lg={6}>
         <MUIDataTable
           columns={Object.keys(allStatusCount).map((statusKey) => ({
@@ -374,7 +243,7 @@ const OverviewData = ({ displayData, title, url, isCampus = false}) => {
               display: campusStatusOptions[statusKey]?.display ?? true,
             },
           }))}
-          title="Campus Counts overview.."
+          title="Campus Counts"
           data={[allStatusCount]}
           options={{
             customFooter: noFooter,
@@ -392,16 +261,97 @@ const OverviewData = ({ displayData, title, url, isCampus = false}) => {
     </Grid>
   );
   return (
-    <Box sx={{ paddingX: "1.2rem", paddingY: "0.2rem" }}>
+    <Box sx={{ paddingX: "30rem", paddingY: "0.2rem" }}>
       {locationCampus === "campus" ? options2 : options}
       <MainLayout
         tableBodyMaxHeight="56vh"
-        title={title}
-       columns={[...displayData, ...columns]}
-        onDownload={onDownload}
-        data={students}
+        title="Progress Offerd"
+        columns={columns}
+        data={schoolList}
         showLoader={loading}
+        options={options}
       />
+      <Dialog
+        fullWidth
+        open={schoolOverview}
+        onClose={() => setSchoolOverview(false)}
+      >
+        <section style={{ padding: "0rem 1rem 1rem 1rem" }}>
+          <DialogContent>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <p style={{ fontSize: "24px" }}>Add School</p>
+              <CloseIcon
+                style={{ cursor: "pointer" }}
+                onClick={() => setSchoolOverview(false)}
+              />
+            </div>
+            <FormControl fullWidth>
+              <InputLabel
+                label="school add"
+                variant="outlined"
+                htmlFor="uncontrolled-native"
+              >
+                Schools
+              </InputLabel>
+              <NativeSelect
+                defaultValue={30}
+                input={<OutlinedInput label="Name" />}
+                onClick={handleSelect}
+                value={schoolId}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setSchoolId(e.target.value);
+                }}
+              >
+                {schoolData.map((el) => {
+                  return (
+                    <option value={el.id} key={el.id}>
+                      {" "}
+                      {el.name}
+                    </option>
+                  );
+                })}
+              </NativeSelect>
+            </FormControl>
+            <div>
+              <TextField
+                fullWidth
+                autoFocus
+                label="No of Students"
+                placeholder="Enter School"
+                variant="outlined"
+                sx={{ mt: "2rem" }}
+                value={capacity}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setCapacity(e.target.value);
+                }}
+              />
+            </div>
+          </DialogContent>
+          <DialogActions
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ width: "94%", padding: ".5rem" }}
+              onClick={handleOpenSubmit}
+            >
+              Add School
+            </Button>
+          </DialogActions>
+        </section>
+      </Dialog>
     </Box>
   );
 };

@@ -46,11 +46,11 @@ const NavLinks = ({ toggleDrawer }) => {
         name: "Campuses",
         icon: <MapsHomeWorkIcon />,
       },
-      // {
-      //   url:"/school",
-      //   name:"School",
-      //   icon: <SchoolIcon/>,
-      // },
+      {
+        url:"/school",
+        name:"School",
+        icon: <SchoolIcon/>,
+      },
       {
         url: "/owner",
         name: "Owners",

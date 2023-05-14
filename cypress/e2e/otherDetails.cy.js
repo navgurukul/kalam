@@ -43,7 +43,7 @@ beforeEach(() => {
   cy.get('[data-cy="religion-input"]').as("religionDropdown");
 });
 describe("TS307_01_State_District_Dropdown", () => {
-  it.only("District Dropdown should be populated based on state selected ", () => {
+  it("District Dropdown should be populated based on state selected ", () => {
     cy.get("@stateSelectDropdown").click();
     cy.get('[data-value="BR"]').click();
     cy.get('@districtDropdown').click();
@@ -56,3 +56,79 @@ describe("TS307_01_State_District_Dropdown", () => {
     cy.get('[data-value="Thakurganj"]').click();
   });
 });
+
+describe("TS307_02_State_District_Dropdown",() => {
+  it.only("select a blak state and the page should not prompt the user with an error message", () => {
+    cy.get("@cityInput").type("SLC");
+    cy.get("@pinCodeDropdown").type("440212");
+    cy.get("@currentStatusDropdown").click();
+    cy.get('[data-value="job"]').click();
+    cy.get("@maximumQualificationLabel").click();
+    cy.get('[data-value="class10th"]').click();
+    cy.get('#mui-3').type("50")
+    cy.get("@schoolMediumDropdown").click();
+    cy.get('[data-value="en"]').click();
+    cy.get('#mui-component-select-caste').click();
+    cy.get('[data-value="scSt"]').click()
+    cy.get('#mui-component-select-religion').click();
+    cy.get('[data-value="others"]').click();
+    cy.get('.MuiMobileStepper-root > .MuiButton-contained').click()
+  });
+});
+
+describe("TS308_01_City_PIN",() => {
+  it.only("Should validate if website recognizes/invalid city and pin inputs", () => {
+    cy.get("@cityInput").type("Salt Lake City");
+    cy.get("@pinCodeDropdown").type("Gustavo");
+    cy.get('#pin_code-helper-text').should('be.visible').and('contain.text', 'Enter a valid Pin Code');
+    cy.get('@pinCodeDropdown')
+      .find('input') 
+      .clear()
+      .type('1212125');
+      cy.get('#pin_code-helper-text').should('be.visible').and('contain.text', 'Enter a valid Pin Code');
+    cy.reload();
+    cy.wait(5000);
+    cy.fixture("users.json").then((users) => {
+      const user = users[0];
+  
+      cy.get('[data-cy="firstName-input"]').type(user.firstName);
+      cy.get('[data-cy="middleName-input"]').type(user.middleName);
+      cy.get('[data-cy="lastName-input"]').type(user.lastName);
+      cy.get('[data-cy="waInput"]').type(user.mobileNumber);
+      cy.get('[data-cy="altInput"]').type(user.alternateNumber);
+  
+      cy.get("#mui-1").type(user.dob);
+      cy.get('[data-cy="email-input"]').type(user.email);
+      cy.get('[data-cy="genderDropdown"]').click();
+      cy.get('[data-value="female"]').click();
+    });
+  
+    const fileName = "test-image.jpg";
+    cy.fixture(fileName).then((fileContent) => {
+      cy.get('[data-cy="imageInput"]').attachFile({
+        fileContent,
+        fileName,
+        mimeType: "image/jpeg",
+      });
+    });
+    cy.get('form > .MuiPaper-root > [tabindex="0"]').click();
+    cy.get('@pinCodeDropdown')
+      .find('input') 
+      .clear()
+      .type('121212');
+    cy.get("@stateSelectDropdown").click();
+    cy.get('#pin_code-helper-text').should('be.visible').and('contain.text', 'Ex. 4402xx');
+  });
+    
+
+  
+   
+
+   
+
+    
+
+
+
+
+  });

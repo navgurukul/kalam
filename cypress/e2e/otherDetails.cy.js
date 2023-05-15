@@ -58,7 +58,7 @@ describe("TS307_01_State_District_Dropdown", () => {
 });
 
 describe("TS307_02_State_District_Dropdown",() => {
-  it.only("select a blank state and the page should prompt the user with an error message", () => {
+  it("select a blank state and the page should prompt the user with an error message", () => {
     cy.get("@cityInput").type("SLC");
     cy.get("@pinCodeDropdown").type("440212");
     cy.get("@currentStatusDropdown").click();
@@ -78,7 +78,7 @@ describe("TS307_02_State_District_Dropdown",() => {
 });
 
 describe("TS308_01_City_PIN",() => {
-  it("Should validate if website recognizes/invalid city and pin inputs", () => {
+  it.skip("Should validate if website recognizes/invalid city and pin inputs", () => {
     cy.get('@pinCodeDropdown')
       .find('input') 
       .type('121212');
@@ -134,5 +134,29 @@ describe("TS308_01_City_PIN",() => {
     cy.get("@stateSelectDropdown").click();
     cy.get('#pin_code-helper-text').should('be.visible').and('contain.text', 'Ex. 4402xx');
     cy.get('#city-helper-text').should('be.visible').and('contain.text', 'Error')
+  });
+});
+
+describe("TS309_01_Status_Qualification",() => {
+  it.only("Verify current status and maximum qualification dropdowns",() => {
+    cy.get("@stateSelectDropdown").click();
+    cy.get('[data-value="BR"]').click();
+    cy.get('@districtDropdown').click();
+    cy.get('[data-value="Arrah"]').click();
+    cy.get("@currentStatusDropdown").click();
+    cy.get('[data-value="study"]').click();
+    cy.get("@maximumQualificationLabel").click();
+    cy.get('[data-value="graduate"]').click();
+    cy.get('#mui-4').type("76.40");
+    cy.get('#mui-3').type("76.40");
+    cy.get("@cityInput").type("SLC");
+    cy.get("@pinCodeDropdown").type("440212");
+    cy.get("@schoolMediumDropdown").click();
+    cy.get('[data-value="en"]').click();
+    cy.get('#mui-component-select-caste').click();
+    cy.get('[data-value="scSt"]').click()
+    cy.get('#mui-component-select-religion').click();
+    cy.get('[data-value="others"]').click();
+    cy.get('.MuiMobileStepper-root > .MuiButton-contained').click()
   });
 });

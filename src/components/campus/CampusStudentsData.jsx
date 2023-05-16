@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useParams } from "react-router-dom";
 
+import axios from "axios";
 import StudentService, {
   navGurukulSurveyForm,
 } from "../../services/StudentService";
@@ -14,22 +15,54 @@ import StudentsProgressCards from "../student/StudentsProgressCards";
 import PieRechartReport from "../partner/PieRechartReport";
 import EvaluationSelect from "../smallComponents/EvaluationSelect";
 
-import { campus } from "../../utils/constants";
+// import { campus } from "../../utils/constants";
 import RedFlag from "./FlagModal";
 
-// const baseUrl = import.meta.env.VITE_API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const CampusStudentsData = () => {
   const { campusId } = useParams();
+  const { loggedInUser, roles } = useSelector((state) => state.auth);
   const { privileges } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const fetchingFinish = () => dispatch(changeFetching(false));
   // const usersSetup = (users) => dispatch(setupUsers(users));
   const [dataView, setDataView] = React.useState(0);
+  const [campusList, setCampusList] = useState([]);
 
-  const campusName = campus.find((x) => x.id === parseInt(campusId, 10)).name;
+  // const campusName = campus.find((x) => x.id === parseInt(campusId, 10)).name;
+  // useEffect(() => fetchingFinish(), []);
+  const fetchCampus = async () => {
+    try {
+      const adminRole = roles.findIndex(
+        (roleItem) => roleItem.role === "Admin"
+      );
+      const role = roles.find((roleItem) => roleItem.role === "Campus");
+      const access = role?.access?.map((accessItem) => accessItem.access) || [];
+      const dataURL = `${baseURL}campus`;
+      const response = await axios.get(dataURL);
+      const campus = response.data.data;
+      setCampusList(
+        adminRole !== -1
+          ? [...campus, { campus: "All" }]
+          : [...campus.filter((campusItem) => access.includes(campusItem.id))]
+      );
+    } catch (error) {
+      console.error("Error fetching campus data:", error);
+    } finally {
+      fetchingFinish();
+    }
+  };
 
-  useEffect(() => fetchingFinish(), []);
+  useEffect(() => {
+    (async () => {
+      await fetchCampus();
+    })();
+  }, [loggedInUser]);
+
+  const campusName = campusList.find(
+    (x) => x.id === parseInt(campusId, 10)
+  )?.campus;
 
   const EvaluationColumn = {
     name: "evaluation",

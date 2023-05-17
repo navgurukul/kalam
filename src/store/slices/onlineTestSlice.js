@@ -35,6 +35,21 @@ const OnlineTestSlice = createSlice({
     setStudentData: (state, action) => {
       state.studentData = action.payload;
     },
+    RESET: (state) => {
+      state.questions = [];
+      state.enrollmentKey = "";
+      state.studentId = "";
+      state.studentData = {
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        mobileNumber: "",
+      };
+      state.partner = {
+        slug: "",
+        id: "",
+      };
+    },
   },
 });
 
@@ -46,3 +61,4 @@ export const {
   setQuestions,
 } = OnlineTestSlice.actions;
 export default OnlineTestSlice.reducer;
+export const resetState = () => ({ type: "onlineTest/RESET" });

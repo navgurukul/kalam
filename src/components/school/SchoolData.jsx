@@ -14,6 +14,7 @@ import {
   Select as MUISelect,
   TextField,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -56,12 +57,26 @@ const SchoolData = () => {
   const [schoolDialog, setSchoolDialog] = useState(false);
   const [inputData, setInputData] = useState("");
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleOpenSubmit = async () => {
     const dataURL = `${baseUrl}school`;
-    await axios.post(dataURL, { name: inputData });
-    setInputData("");
-    fetchSchool();
-    setSchoolDialog(false);
+    await axios
+      .post(dataURL, { name: inputData })
+      .then((res) => {
+        setInputData("");
+        fetchSchool();
+        setSchoolDialog(false);
+
+        enqueueSnackbar(`School successfully Added !`, {
+          variant: "success",
+        });
+      })
+      .catch(() => {
+        enqueueSnackbar(`Error Please fill the School Name!`, {
+          variant: "error",
+        });
+      });
   };
 
   const openSchoolDialog = () => {
@@ -129,8 +144,11 @@ const SchoolData = () => {
                 alignItems: "center",
               }}
             >
-              <p style={{fontSize:"24px"}}>Create School</p>
-              <CloseIcon style={{cursor:"pointer"}} onClick={()=>setSchoolDialog(false)}/>
+              <p style={{ fontSize: "24px" }}>Create School</p>
+              <CloseIcon
+                style={{ cursor: "pointer" }}
+                onClick={() => setSchoolDialog(false)}
+              />
             </div>
             <TextField
               fullWidth
@@ -153,7 +171,7 @@ const SchoolData = () => {
             <Button
               variant="contained"
               color="primary"
-              style={{ width: "94%",padding:".5rem" }}
+              style={{ width: "94%", padding: ".5rem" }}
               onClick={handleOpenSubmit}
             >
               Create NEW School

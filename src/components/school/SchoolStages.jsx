@@ -22,105 +22,123 @@ import {
 import EditStage from "./SchoolStageEdit";
 import SchoolStageDelete from "./SchoolStageDelete";
 import { Refresh } from "@mui/icons-material";
+import { useSnackbar } from "notistack";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-
 const SchoolStages = () => {
-    const [SchoolStageList, setSchoolStageList] = useState([]);
-    const [loading, setLoading] = React.useState(true);
-    const [schoolStageDialog, setSchoolStageDialog] = useState(false);
-    const [refresh , setRefresh] = useState(false);
-    const columns = [
-      {
-        name: "id",
-        label: "S.No",
-        options: {
-          filter: true,
-          sort: true,
-          customBodyRender: (value, rowMeta) => {
-            const index = rowMeta.rowIndex + 1;
-            return index;
-          },
+  const [SchoolStageList, setSchoolStageList] = useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [schoolStageDialog, setSchoolStageDialog] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+  const columns = [
+    {
+      name: "id",
+      label: "S.No",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value, rowMeta) => {
+          const index = rowMeta.rowIndex + 1;
+          return index;
         },
       },
-    
-      {
-        name: "stageType",
-        label: "Type",
-        options: {
-          filter: true,
-          sort: true,
-          customBodyRender: (value, rowMeta) => {
-            return value;
-          },
+    },
+
+    {
+      name: "stageType",
+      label: "Type",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value, rowMeta) => {
+          return value;
         },
       },
-    
-      {
-        name: "stageName",
-        label: "Stage Name",
-        options: {
-          filter: true,
-          sort: true,
-          customBodyRender: (value, rowMeta) => {
-            return value;
-          },
+    },
+
+    {
+      name: "stageName",
+      label: "Stage Name",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value, rowMeta) => {
+          return value;
         },
       },
-    
-      {
-        name: "id",
-        label: "Edit",
-        options: {
-          filter: true,
-          sort: true,
-          customBodyRender: (value) => <EditStage setRefresh={setRefresh} value={value} />,
-        },
+    },
+
+    {
+      name: "id",
+      label: "Edit",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value) => (
+          <EditStage setRefresh={setRefresh} value={value} />
+        ),
       },
-    
-      {
-        name: "id",
-        label: "Delete",
-        options: {
-          filter: true,
-          sort: true,
-          customBodyRender: (value) => <SchoolStageDelete setRefresh={setRefresh} value={value} />,
-        },
+    },
+
+    {
+      name: "id",
+      label: "Delete",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value) => (
+          <SchoolStageDelete setRefresh={setRefresh} value={value} />
+        ),
       },
-    ];
-    
+    },
+  ];
+
   const [inputData, setInputData] = useState("");
-  console.log(inputData)
+  console.log(inputData);
 
   let location = useLocation();
   let id = location.pathname.split("/")[2];
+  const { enqueueSnackbar } = useSnackbar();
 
   const fetchStages = async () => {
     let url = `${baseUrl}stage/${id}`;
     let data = await axios.get(url);
-    // console.log(data.data, "all data is here.....");
     setSchoolStageList(data.data);
-    setLoading(true);
+    console.log(data, ">>>>>>>>>>>>>>>>>>>>>>>>>");
+    setLoading(false);
     setSchoolStageDialog(false);
   };
 
   // For post api
   const handleOpenSubmit = async () => {
-    //   if (inputData.stageType && inputData.stageName){
-    let id = location.pathname.split("/")[2];
-    const dataURL = `${baseUrl}stage`;
-    await axios.post(dataURL,inputData);
-    setInputData("");
-    fetchStages();
-    setSchoolStageDialog(false);
-// }
+    if (inputData.stageType && inputData.stageName) {
+      let id = location.pathname.split("/")[2];
+      const dataURL = `${baseUrl}stage`;
+      await axios
+        .post(dataURL, inputData)
+        .then((res) => {
+          setInputData("");
+          fetchStages();
+          setSchoolStageDialog(false);
+
+          enqueueSnackbar(`School stage successfully Added!`, {
+            variant: "success",
+          });
+        })
+        .catch((err) => {
+          enqueueSnackbar(`Error in updating School stage`, {
+            variant: "error",
+          });
+        });
+    }
+
+    // }
   };
 
   const openSchoolStageDialog = () => {
     setSchoolStageDialog(true);
   };
-
 
   useEffect(async () => {
     (async () => {
@@ -141,10 +159,9 @@ const SchoolStages = () => {
 
   return (
     <Container maxWidth="md">
-                {/* <h1>School/School of programing</h1> */}
-
       <MainLayout
-        title="Admission Stage"
+        // title="Admission Stage"
+        title={SchoolStageList[0]?.name || "Admission stage"}
         columns={columns}
         data={SchoolStageList}
         showLoader={loading}
@@ -175,7 +192,11 @@ const SchoolStages = () => {
               <RadioGroup
                 row
                 onChange={(e) => {
-                  setInputData({ ...inputData, stageType : e.target.value ,school_id:id } );
+                  setInputData({
+                    ...inputData,
+                    stageType: e.target.value,
+                    school_id: id,
+                  });
                 }}
               >
                 <FormControlLabel
@@ -202,9 +223,7 @@ const SchoolStages = () => {
                 setInputData({ ...inputData, stageName: e.target.value });
               }}
             />
-
           </DialogContent>
-
           <DialogActions
             style={{
               display: "flex",
@@ -214,10 +233,7 @@ const SchoolStages = () => {
             <Button
               variant="contained"
               color="primary"
-              style={{ width: "94%", padding: ".5rem" }}  
-            //   onChange={(e) => {
-            //     setInputData({ ...inputData, location: e.target.value });
-            //   }}  
+              style={{ width: "94%", padding: ".5rem" }}
               onClick={handleOpenSubmit}
             >
               Add Admission Stage

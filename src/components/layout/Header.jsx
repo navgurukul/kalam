@@ -40,6 +40,7 @@ import {
   changeLanguage,
   toggleDrawer as toggleDrawerAction,
 } from "../../store/slices/uiSlice";
+import { resetState } from "../../store/slices/onlineTestSlice";
 
 const Header = () => {
   const { isAuthenticated, loggedInUser } = useSelector((state) => state.auth);
@@ -61,6 +62,10 @@ const Header = () => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleClick = () => {
+    dispatch(resetState());
   };
 
   const dashboardModal = () => {
@@ -145,7 +150,7 @@ const Header = () => {
               // pt={0.5}
               style={{ flexGrow: 1, display: "flex", alignItems: "center" }}
             >
-              <Link to="/">
+              <Link to="/" onClick={handleClick}>
                 <Image
                   alt="ngLogo"
                   src={logo}
@@ -256,7 +261,7 @@ const Header = () => {
               ) : (
                 <Link to="/login">
                   <Button color="primary" variant="contained" align="right">
-                   admin Login
+                    admin Login
                   </Button>
                 </Link>
               )}

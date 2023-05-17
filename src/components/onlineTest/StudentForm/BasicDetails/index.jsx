@@ -14,13 +14,12 @@ import {
 } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useSnackbar } from "notistack";
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { makeStyles } from "@mui/styles";
 import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
-import { INPUT_PATTERNS } from "../../../../utils/constants.js";
+import { INPUT_PATTERNS } from "../../../../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -176,7 +175,7 @@ const BasicDetails = ({
   formData,
   setProfileImage,
   inputDisabled,
-  reactForm: { register, errors, control },
+  reactForm: { errors, control },
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -210,7 +209,7 @@ const BasicDetails = ({
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           badgeContent={<CameraAltIcon />}
         >
-          <Avatar
+          {/* <Avatar
             style={{
               width: "70px",
               height: "70px",
@@ -248,8 +247,71 @@ const BasicDetails = ({
         error
         disabled={inputDisabled && formData.ProfileImage !== null}
         accept=".png,.jpg,.jpeg"
-      />
-      {/* <label style={{
+      /> */}
+          <Avatar
+            style={{
+              width: "70px",
+              height: "70px",
+            }}
+            alt="ProfileImage"
+            src={
+              formData.ProfileImage
+                ? URL.createObjectURL(formData.ProfileImage)
+                : formData.PrevImage
+            }
+            // src={
+            //   formData.ProfileImage
+            //     ? URL.createObjectURL(
+            //         formData.ProfileImage.length
+            //           ? formData.ProfileImage[0]
+            //           : formData.ProfileImage
+            //       )
+            //     : formData.PrevImage
+            // }
+          />
+        </Badge>
+        <Typography
+          variant="h6"
+          className={classes.text}
+          color={errors.ProfileImage && "error"}
+        >
+          {langOptions.ProfileImage[lang]}
+        </Typography>
+        {/* <input
+          type="file"
+          id="ProfileImage"
+          required
+          onChange={(e) => uploadProfilePhoto(e)}
+          {...register("ProfileImage", {
+            // required: "Profile image is required",
+            // validate: {
+            //   // required: (_, formData) => formData.ProfileImage.length > 0 || "Profile image is required",
+            //   // fileSize: (value) =>
+            //   //   value[0].size < 1000000 ||
+            //   //   "Profile image size should be less than 1MB",
+            //   fileType: (value) =>
+            //     /jpeg|jpg|png/.test(value[0].type) ||
+            //     "Only JPEG, JPG, and PNG image formats are allowed",
+            // },
+            // onChange: (e) => uploadProfilePhoto(e),
+          })
+          }
+          style={{ display: "none" }}
+          // error
+          disabled={inputDisabled && formData.ProfileImage !== null}
+          accept=".png,.jpg,.jpeg"
+        /> */}
+        <input
+          onChange={(e) => uploadProfilePhoto(e)}
+          id="ProfileImage"
+          type="file"
+          name="ProfileImage"
+          style={{ display: "none" }}
+          required
+          disabled={inputDisabled && formData.ProfileImage !== null}
+          accept=".png,.jpg,.jpeg"
+        />
+        {/* <label style={{
         cursor: inputDisabled ? "default" : "pointer",
       }} htmlFor="ProfileImage">
         <Badge
@@ -297,8 +359,8 @@ const BasicDetails = ({
           <Typography variant="caption" color="error">
             {errors.ProfileImage.message}
           </Typography>
-        )}
-      </label> */}
+        )}*/}
+      </label>
 
       <Grid style={{ paddingTop: "1.2rem" }} container spacing={2}>
         <Grid item xs={12} sm={6}>

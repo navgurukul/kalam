@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import Grid from "@mui/material/Grid";
 import { makeStyles, ThemeProvider } from "@mui/styles";
@@ -22,9 +22,9 @@ import {
   setEnrollmentKey,
   setPartner,
   setStudentData,
+  resetState,
 } from "../../store/slices/onlineTestSlice";
-import { testClosed } from "../../utils/constants";
-import { INPUT_PATTERNS } from "../../utils/constants.js";
+import { testClosed, INPUT_PATTERNS } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -236,6 +236,16 @@ const LandingPage = () => {
   }, []);
 
   useEffect(() => {
+    const handlePopstate = () => {
+      if (window.location.pathname === "/") {
+        dispatch(resetState());
+        window.removeEventListener("popstate", handlePopstate);
+      }
+    };
+    window.addEventListener("popstate", handlePopstate);
+  }, [dispatch]);
+
+  useEffect(() => {
     // non interaction event
     ReactGA.pageview(window.location.pathname);
   }, []);
@@ -243,22 +253,22 @@ const LandingPage = () => {
   const onChangeEvent = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ''),// replace anything that is not letters, and '.
+      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ""), // replace anything that is not letters, and '.
     });
   };
   const onChangeEvent_numbersOnly = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.numbersOnly, ''), // Only allow digits (0-9)
+      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.numbersOnly, ""), // Only allow digits (0-9)
     });
   };
 
-  const onChangeEventStatus = (e) => {
-    setState({
-      ...state,
-      mobile: e.target.value,
-    });
-  };
+  // const onChangeEventStatus = (e) => {
+  //   setState({
+  //     ...state,
+  //     mobile: e.target.value,
+  //   });
+  // };
 
   const isDuplicate = () => {
     const { mobileNumber, firstName, middleName, lastName } = state;
@@ -359,7 +369,7 @@ const LandingPage = () => {
       </Container>
     );
 
-  const { mobileNumber, firstName, middleName, lastName, mobile } = state;
+  const { mobileNumber, firstName, middleName, lastName } = state;
   return (
     <div
       style={{

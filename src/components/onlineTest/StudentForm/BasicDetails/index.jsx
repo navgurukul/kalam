@@ -203,6 +203,7 @@ const BasicDetails = ({
           badgeContent={<CameraAltIcon />}
         >
           <Avatar
+            data-cy="avatarImg"
             style={{
               width: "70px",
               height: "70px",
@@ -233,6 +234,7 @@ const BasicDetails = ({
       {/* : null} */}
       <input
         onChange={(e) => uploadProfilePhoto(e)}
+        data-cy="imageInput"
         id="ProfileImage"
         type="file"
         name="ProfileImage"
@@ -250,6 +252,7 @@ const BasicDetails = ({
             defaultValue={formData.FirstName}
             render={({ field: { ref, ...rest } }) => (
               <TextField
+                data-cy="firstName-input"
                 variant="outlined"
                 fullWidth
                 id="FirstName"
@@ -281,6 +284,7 @@ const BasicDetails = ({
             defaultValue={formData.MiddleName}
             render={({ field: { ref, ...rest } }) => (
               <TextField
+                data-cy="middleName-input"
                 variant="outlined"
                 id="MiddleName"
                 inputRef={ref}
@@ -309,6 +313,7 @@ const BasicDetails = ({
             rules={{ required: true }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
+                data-cy="lastName-input"
                 variant="outlined"
                 required
                 type="text"
@@ -349,6 +354,7 @@ const BasicDetails = ({
             }) => (
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
+                  data-cy="dob"
                   disableFuture
                   disabled={inputDisabled && formData.dob !== null}
                   id="dob"
@@ -391,6 +397,7 @@ const BasicDetails = ({
             name="whatsapp"
             render={({ field: { ref, ...rest } }) => (
               <TextField
+                data-cy="waInput"
                 variant="outlined"
                 required
                 fullWidth
@@ -431,6 +438,7 @@ const BasicDetails = ({
             }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
+                data-cy="altInput"
                 variant="outlined"
                 fullWidth
                 id="AlternateNumber"
@@ -471,6 +479,7 @@ const BasicDetails = ({
             }}
             render={({ field: { ref, ...rest } }) => (
               <TextField
+                data-cy="email-input"
                 variant="outlined"
                 inputRef={ref}
                 type="email"
@@ -528,6 +537,7 @@ const BasicDetails = ({
                   {langOptions.gender[lang]}
                 </InputLabel>
                 <Select
+                  data-cy="genderDropdown"
                   label={langOptions.gender[lang]}
                   placeholder={langOptions.gender[lang]}
                   error={!!errors.gender}
@@ -539,6 +549,7 @@ const BasicDetails = ({
                 >
                   {langOptions.gender.options.map((el) => (
                     <MenuItem
+                      data-cy={el.key}
                       key={el.key}
                       value={el.key}
                       disabled={el.en === "Select Gender"}
@@ -552,6 +563,7 @@ const BasicDetails = ({
           />
           {errors.gender ? (
             <Typography
+              data-cy="genderFeedback"
               style={{
                 paddingLeft: "0.8rem",
                 paddingTop: "0.4rem",

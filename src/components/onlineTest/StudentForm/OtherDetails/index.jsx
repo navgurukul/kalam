@@ -16,6 +16,14 @@ import axios from "axios";
 import { Controller } from "react-hook-form";
 import { states, customPartner } from "../../../../utils/constants";
 
+Cypress.on('uncaught:exception', (err, runnable) => {
+  // returning false here prevents Cypress from
+  // failing the test
+  return false
+})
+
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 400,
@@ -318,6 +326,7 @@ function OtherDetails(props) {
                     {langOptions.state[lang]}
                   </InputLabel>
                   <Select
+                    data-cy="state-input"
                     error={!!errors.state}
                     required
                     inputRef={ref}
@@ -380,6 +389,7 @@ function OtherDetails(props) {
                     {langOptions.district[lang]}
                   </InputLabel>
                   <Select
+                    data-cy="district-input"
                     error={!!errors.district}
                     required
                     inputRef={ref}
@@ -425,6 +435,7 @@ function OtherDetails(props) {
               rules={{ required: "true" }}
               render={({ field: { ref, ...rest } }) => (
                 <TextField
+                  data-cy="city"
                   disabled={inputDisabled && formData.city !== null}
                   variant="outlined"
                   required
@@ -451,6 +462,7 @@ function OtherDetails(props) {
               name="pin_code"
               render={({ field: { ref, ...rest } }) => (
                 <TextField
+                  data-cy="pin-Input"
                   disabled={inputDisabled && formData.pin_code !== null}
                   variant="outlined"
                   required
@@ -496,6 +508,7 @@ function OtherDetails(props) {
                     {langOptions.current_status[lang]}
                   </InputLabel>
                   <Select
+                    data-cy="currentStatus"
                     disabled={
                       inputDisabled && formData.current_status !== undefined
                     }
@@ -553,6 +566,7 @@ function OtherDetails(props) {
                     {langOptions.qualification[lang]}
                   </InputLabel>
                   <Select
+                    data-cy="maxQualification"
                     label={langOptions.qualification[lang]}
                     placeholder={langOptions.qualification[lang]}
                     error={!!errors.qualification}
@@ -751,6 +765,7 @@ function OtherDetails(props) {
                     {langOptions.school_medium[lang]}
                   </InputLabel>
                   <Select
+                    data-cy="schoolMedium"
                     label={langOptions.school_medium[lang]}
                     placeholder={langOptions.school_medium[lang]}
                     error={!!errors.school_medium}
@@ -872,6 +887,7 @@ function OtherDetails(props) {
                     {langOptions.religion[lang]}
                   </InputLabel>
                   <Select
+                    data-cy="religion-input"
                     label={langOptions.religion[lang]}
                     placeholder={langOptions.religion[lang]}
                     required

@@ -21,12 +21,12 @@ beforeEach(() => {
     cy.get('[data-value="female"]').click();
   });
 
-  const fileName = "test-image.jpg";
+  const fileName = '1mb.png';
   cy.fixture(fileName).then((fileContent) => {
     cy.get('[data-cy="imageInput"]').attachFile({
       fileContent,
       fileName,
-      mimeType: "image/jpeg",
+      mimeType: 'image/png',
     });
   });
   cy.get('form > .MuiPaper-root > [tabindex="0"]').click();

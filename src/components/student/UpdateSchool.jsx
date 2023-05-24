@@ -63,6 +63,7 @@ const UpdateSchool = (props) => {
               change(label);
             })
             .catch((err) => {
+              console.log("err", err);
               enqueueSnackbar(err.message, { variant: "error" });
             });
         })

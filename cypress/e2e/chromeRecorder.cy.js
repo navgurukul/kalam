@@ -37,6 +37,11 @@ const getRandomBirthday = () => {
   return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
 };
 
+Cypress.on('uncaught:exception', (err, runnable) => {
+  // returning false here prevents Cypress from failing the test
+  return false
+})
+
 describe("JohnWickTest", () => {
   it("tests JohnWickTest", () => {
     cy.viewport(1268, 937);

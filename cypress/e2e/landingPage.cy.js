@@ -35,7 +35,7 @@ describe("Section 1: Landing page", () => {
 
     // select Marathi, change language
 
-    cy.get(`[data-cy="ma"]`).click();
+    cy.get(`[data-cy="mr"]`).click();
     cy.get('[data-cy="title"]').contains("प्रवेश परीक्षा सुरू करा");
   });
 

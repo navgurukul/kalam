@@ -17,8 +17,7 @@
     "checklint": "eslint src",
     "lint-staged": "lint-staged",
     "prepare": "husky install",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:open": "cypress open"
   },
   "lint-staged": {
     "*.{js,jsx}": [

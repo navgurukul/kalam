@@ -33,5 +33,9 @@ jobs:
     - run: npm run build --if-present
       env:
        CI: false
+    - name: Run npm run dev
+      run: |
+       npm run dev &
+       sleep 10
     - name: Run Cypress tests
       run: npm run cypress:run

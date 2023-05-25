@@ -21,8 +21,8 @@ describe("Section 2: Test Instructions", () => {
       cy.get('[data-cy="title"]').contains("अपनी भाषा चुने");
 
       // select Marathi, change language
-
-      cy.get('[data-cy="ma"]').click();
+      cy.get("#mui-component-select-Language").click();
+      cy.get('li[data-value="ma"]').click();
       cy.get('[data-cy="title"]').contains("तुमची भाषा निवडा");
     });
   });

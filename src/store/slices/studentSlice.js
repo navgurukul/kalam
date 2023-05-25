@@ -37,24 +37,24 @@ export const fetchStudents = createAsyncThunk(
         response =
           filterColumns && filterColumns.length > 0
             ? await axios.get(`${url}&limit=${numberOfRows}&page=${page}`, {
-              params: {
-                dataType,
-                stage: stage.length === 0 ? null : stage.join(","),
-                from: fromDate,
-                to: toDate,
-              },
-            })
-            : await axios.get(
-              `${baseUrl}students?limit=${numberOfRows}&page=${page}`,
-              {
                 params: {
                   dataType,
-                  stage: concatinateStage,
+                  stage: stage.length === 0 ? null : stage.join(","),
                   from: fromDate,
                   to: toDate,
                 },
-              }
-            );
+              })
+            : await axios.get(
+                `${baseUrl}students?limit=${numberOfRows}&page=${page}`,
+                {
+                  params: {
+                    dataType,
+                    stage: concatinateStage,
+                    from: fromDate,
+                    to: toDate,
+                  },
+                }
+              );
 
         // eslint-disable-next-line no-use-before-define
         thunkAPI.dispatch(setUrl(url));

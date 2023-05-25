@@ -36,6 +36,6 @@ jobs:
     - name: Run npm run dev
       run: |
        npm run dev &
-       sleep 10
+       sleep 2
     - name: Run Cypress tests
-      run: npm run cypress:run
+      run: npx cypress run --config-file cypress.config.js

@@ -16,7 +16,9 @@
     "lint": "eslint src --fix",
     "checklint": "eslint src",
     "lint-staged": "lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -76,7 +78,7 @@
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.2",
     "react-select": "^5.2.2",
-    "react-slick": "^0.29.0",
+    "react-slick": "^0.28.1",
     "react-spinner-material": "^1.4.0",
     "react-timer-hook": "^3.0.5",
     "react-youtube": "^7.14.0",
@@ -85,6 +87,8 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^1.2.0",
+    "cypress": "^12.9.0",
+    "cypress-file-upload": "^5.0.8",
     "eslint": "^8.11.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",

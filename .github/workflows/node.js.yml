@@ -29,6 +29,18 @@ jobs:
     - name: Set npm legacy-peer-deps
       run: npm config set legacy-peer-deps true
     - run: npm install
+    - name: Set Environment Variables
+      run: |
+        echo "DEV_ENV_CONTENT=VITE_API_URL=https://dev-join.navgurukul.org/api/" >> $GITHUB_ENV
+        echo "PROD_ENV_CONTENT=VITE_API_URL=https://join.navgurukul.org/api/" >> $GITHUB_ENV
+    - name: Commit environment files
+      run: | 
+        git config --global user.name "LouisCatala"
+        git config --global user.email "lcatala@lions.molloy.edu"
+        echo "${{ env.DEV_ENV_CONTENT }}" > env.development
+        echo "${{ env.PROD_ENV_CONTENT }}" > env.production
+        git add env.development env.production
+        git commit -m "Update environment files for testing"
     - run: npm ci
     - run: npm run build --if-present
       env:

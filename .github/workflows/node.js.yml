@@ -35,8 +35,8 @@ jobs:
         echo "PROD_ENV_CONTENT=VITE_API_URL=https://join.navgurukul.org/api/" >> $GITHUB_ENV
     - name: Commit environment files
       run: | 
-        git config --global user.name "LouisCatala"  #swap to your github ID
-        git config --global user.email "lcatala@lions.molloy.edu" #and linked email.
+        git config --global user.name "LouisCatala"  
+        git config --global user.email "lcatala@lions.molloy.edu" 
         echo "${{ env.DEV_ENV_CONTENT }}" > env.development
         echo "${{ env.PROD_ENV_CONTENT }}" > env.production
         git add env.development env.production

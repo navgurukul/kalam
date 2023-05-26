@@ -17,7 +17,8 @@ describe("Section 2: Test Instructions", () => {
       cy.get('[data-cy="title"]').contains("Select Your Language");
 
       // select Hindin verify change of language
-      cy.get('[data-cy="hi"]').click();
+      cy.get("#mui-component-select-Language").click();
+      cy.get('li[data-value="hi"]').click();
       cy.get('[data-cy="title"]').contains("अपनी भाषा चुने");
 
       // select Marathi, change language

@@ -39,3 +39,9 @@ jobs:
        sleep 2
     - name: Run Cypress tests
       run: npx cypress run --config-file cypress.config.js
+    - name: Archive test artifacts
+      uses: actions/upload-artifact@v2
+      if: always() # always upload videos, even if the test fails
+      with:
+        name: cypress-videos
+        path: cypress/videos    

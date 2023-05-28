@@ -30,7 +30,6 @@ const columns = [
       customBodyRender: (value, rowMeta) => {
         const id = rowMeta.rowData[0];
         const url = `/donor/${id}/students`;
-        console.log(url,value,rowMeta,"data is here..")
         return (
           <Link to={url} style={{ color: "#f05f40" }}>
             {value}
@@ -81,7 +80,6 @@ const DonorList = () => {
   }, []);
 
   const { data, showLoader } = state;
-  console.log(data, showLoader, "data ")
   return (
     <Container maxWidth="sm">
       <MainLayout

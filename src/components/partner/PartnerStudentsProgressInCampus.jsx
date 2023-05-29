@@ -31,7 +31,7 @@ const PartnerStudentsProgressInCampus = () => {
 
   const progressMade = () => setDataView(1);
 
-  const tabularData = () => setDataView(0);
+  const studentData = () => setDataView(0);
 
   const showGraphData = () => setDataView(2);
 
@@ -58,15 +58,15 @@ const PartnerStudentsProgressInCampus = () => {
     }
   };
   return (
-    <div>
+    <div className="modified-select-ui">
       <SelectUiByButtons
         name={`Hello ${partnerName}`}
         progressMade={{ label: "Progress Made", action: progressMade }}
-        tabularData={{ label: "Tabular Data", action: tabularData }}
+        studentData={{ label: "Student Data", action: studentData }}
         showGraphData={{ label: "Graph on Job", action: showGraphData }}
         selected={
           dataView === 0
-            ? "tabularData"
+            ? "studentData"
             : dataView === 1
             ? "progressMade"
             : "showGraphData"

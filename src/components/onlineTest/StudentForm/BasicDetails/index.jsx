@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import {
   TextField,
@@ -169,6 +168,12 @@ const langOptions = {
     },
   },
 };
+
+const date = new Date();
+  const currentDate = date.getDate();
+  const month = date.getMonth();
+  const maxDate = date.getFullYear() - 17;
+  const minDate = date.getFullYear() - 28;
 
 const BasicDetails = ({
   lang,
@@ -354,9 +359,12 @@ const BasicDetails = ({
                   id="dob"
                   label={langOptions.dob[lang]}
                   required
+                  openTo="year"
                   inputRef={ref}
                   focused={isTouched}
                   inputVariant="outlined"
+                  minDate={new Date(`${minDate}-${month + 1}-${currentDate}`)}
+                  maxDate={new Date(`${maxDate}-${month + 1}-${currentDate}`)}
                   renderInput={(params) => (
                     <TextField
                       {...params}

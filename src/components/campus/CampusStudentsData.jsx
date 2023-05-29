@@ -14,6 +14,7 @@ import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
 import StudentsProgressCards from "../student/StudentsProgressCards";
 import PieRechartReport from "../partner/PieRechartReport";
 import EvaluationSelect from "../smallComponents/EvaluationSelect";
+import OverviewData from "../dashboard/OverviewData";
 
 // import { campus } from "../../utils/constants";
 import RedFlag from "./FlagModal";
@@ -36,7 +37,7 @@ const CampusStudentsData = () => {
     try {
       const adminRole = roles.findIndex(
         (roleItem) => roleItem.role === "Admin"
-      ); 
+      );
       const role = roles.find((roleItem) => roleItem.role === "Campus");
       const access = role?.access?.map((accessItem) => accessItem.access) || [];
       const dataURL = `${baseURL}campus`;
@@ -111,20 +112,27 @@ const CampusStudentsData = () => {
     },
   };
 
-  const progressMade = () => {
-    setDataView(1);
-  };
-  const tabularData = () => {
+  const overview = () => {
     setDataView(0);
   };
-  const showGraphData = () => {
+
+  const studentData = () => {
+    setDataView(1);
+  };
+  const progressMade = () => {
     setDataView(2);
   };
+  const showGraphData = () => {
+    setDataView(3);
+  };
+
   //console.log(campusName, campusId);
 
   const getVIew = (viewNo) => {
     switch (viewNo) {
       case 0:
+        return <OverviewData />;
+      case 1:
         return (
           <DashboardPage
             isCampus
@@ -138,39 +146,30 @@ const CampusStudentsData = () => {
             campusID={campusId}
           />
         );
-      case 1:
-        return <StudentsProgressCards url={`campus/${campusId}`} />;
       case 2:
+        return <StudentsProgressCards url={`campus/${campusId}`} />;
+      case 3:
         return (
           <PieRechartReport url={`/campus/${campusId}/students/distribution`} />
         );
       default:
-        return (
-          <DashboardPage
-            isCampus
-            displayData={[
-              ...StudentService.CampusData,
-              EvaluationColumn,
-              redFlagColumn,
-              navGurukulSurveyForm,
-            ]}
-            url={`campus/${campusId}/students`}
-            campusID={campusId}
-          />
-        );
+        return <OverviewData />;
     }
   };
   return (
     <>
       <SelectUiByButtons
         name={`${campusName} Campus`}
+        overview={{ label: "Overview", action: overview }}
         progressMade={{ label: "Progress Made", action: progressMade }}
-        tabularData={{ label: "Tabular Data", action: tabularData }}
+        studentData={{ label: "Student Data", action: studentData }}
         showGraphData={{ label: "Graph on Job", action: showGraphData }}
         selected={
           dataView === 0
-            ? "tabularData"
+            ? "overview"
             : dataView === 1
+            ? "studentData"
+            : dataView === 2
             ? "progressMade"
             : "showGraphData"
         }

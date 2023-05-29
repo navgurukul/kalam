@@ -103,7 +103,7 @@ const ProgressMadeForPartner = () => {
 
   const progressMade = () => setDataView(1);
 
-  const tabularData = () => setDataView(0);
+  const studentData = () => setDataView(0);
 
   const graphData = () => setDataView(2);
 
@@ -163,18 +163,20 @@ const ProgressMadeForPartner = () => {
         <Grid item xs={12} style={{ marginBottom: 12 }}>
           <Typography variant="h4"> Hello {partnerName}</Typography>
         </Grid>
-        <SelectUiByButtons
-          progressMade={{ label: "Progress Made", action: progressMade }}
-          tabularData={{ label: "Tabular Data", action: tabularData }}
-          showGraphData={{ label: "Graph Data", action: graphData }}
-          selected={
-            dataView === 0
-              ? "tabularData"
-              : dataView === 1
-              ? "progressMade"
-              : "showGraphData"
-          }
-        />
+        <div className="modified-select-ui">
+          <SelectUiByButtons
+            progressMade={{ label: "Progress Made", action: progressMade }}
+            studentData={{ label: "Student Data", action: studentData }}
+            showGraphData={{ label: "Graph Data", action: graphData }}
+            selected={
+              dataView === 0
+                ? "studentData"
+                : dataView === 1
+                ? "progressMade"
+                : "showGraphData"
+            }
+          />
+        </div>
         {/* <Grid item xs={12}>
           <ButtonGroup
             size="large"

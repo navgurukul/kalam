@@ -14,13 +14,12 @@ import {
 } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useSnackbar } from "notistack";
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { makeStyles } from "@mui/styles";
 import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
-import { INPUT_PATTERNS } from "../../../../utils/constants.js";
+import { INPUT_PATTERNS } from "../../../../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -176,7 +175,7 @@ const BasicDetails = ({
   formData,
   setProfileImage,
   inputDisabled,
-  reactForm: { register, errors, control },
+  reactForm: { errors, control },
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -244,8 +243,8 @@ const BasicDetails = ({
         type="file"
         name="ProfileImage"
         style={{ display: "none" }}
-        required={true}
-        error
+        required
+        // error
         disabled={inputDisabled && formData.ProfileImage !== null}
         accept=".png,.jpg,.jpeg"
       />
@@ -435,6 +434,7 @@ const BasicDetails = ({
                   id="dob"
                   label={langOptions.dob[lang]}
                   required
+                  inputFormat="DD/MM/YYYY"
                   openTo="year"
                   inputRef={ref}
                   focused={isTouched}

@@ -95,7 +95,6 @@ const SchoolStages = () => {
   ];
 
   const [inputData, setInputData] = useState("");
-  console.log(inputData);
 
   let location = useLocation();
   let id = location.pathname.split("/")[2];
@@ -105,7 +104,6 @@ const SchoolStages = () => {
     let url = `${baseUrl}stage/${id}`;
     let data = await axios.get(url);
     setSchoolStageList(data.data);
-    console.log(data, ">>>>>>>>>>>>>>>>>>>>>>>>>");
     setLoading(false);
     setSchoolStageDialog(false);
   };

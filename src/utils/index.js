@@ -52,15 +52,15 @@ export const dConvert = (data, isCampus) => {
   // x.stage = isCampus
   //   ? { ...x.stage, stage: allStages[x.stage.stage] }
   //   : allStages[x.stage];
-  console.log("allStages", allStages);
-  console.log("x.school", x.school);
-  console.log("x", x);
-  console.log("allStages[x.stage]", allStages[x.stage]);
-  console.log("allStages[x.stage.stage]", allStages[x.stage.stage]);
-  console.log("x.stage", x.stage);
-  console.log("isCampus", isCampus);
-  console.log("customStage", customStage);
-  console.log("isProgrammingSchool", isProgrammingSchool);
+  // console.log("allStages", allStages);
+  // console.log("x.school", x.school);
+  // console.log("x", x);
+  // console.log("allStages[x.stage]", allStages[x.stage]);
+  // console.log("allStages[x.stage.stage]", allStages[x.stage.stage]);
+  // console.log("x.stage", x.stage);
+  // console.log("isCampus", isCampus);
+  // console.log("customStage", customStage);
+  // console.log("isProgrammingSchool", isProgrammingSchool);
   // ****************************************************************************
 
   x.marks = x.enrolmentKey.length

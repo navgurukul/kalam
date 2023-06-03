@@ -42,49 +42,20 @@ const UpdateSchool = (props) => {
   const handleChange = (event) => {
     const { change, studentId } = props;
     const { label, value } = event;
-    if (
-      selectedValue.label.toLowerCase() ===
-      "School of programming".toLowerCase()
-    ) {
-      axios
-        .post(`${baseURL}school/students_school`, {
-          student_id: studentId,
-          school_id: value,
-        })
-        .then((response) => {
-          axios
-            .put(`${baseURL}school/students_school_post/${studentId}`, {
-              school_id: value,
-            })
-            .then(() => {
-              enqueueSnackbar(`School successfully updated !`, {
-                variant: "success",
-              });
-              change(label);
-            })
-            .catch((err) => {
-              console.log("err", err);
-              enqueueSnackbar(err.message, { variant: "error" });
-            });
-        })
-        .catch((err) => {
-          enqueueSnackbar(err.message, { variant: "error" });
+    axios
+      .post(`${baseURL}school/students_school`, {
+        student_id: studentId,
+        school_id: value,
+      })
+      .then((response) => {
+        enqueueSnackbar(`School successfully updated !`, {
+          variant: "success",
         });
-    } else {
-      axios
-        .put(`${baseURL}school/students_school_post/${studentId}`, {
-          school_id: value,
-        })
-        .then(() => {
-          enqueueSnackbar(`School successfully updated !`, {
-            variant: "success",
-          });
-          change(label);
-        })
-        .catch((err) => {
-          enqueueSnackbar(err.message, { variant: "error" });
-        });
-    }
+        change(label);
+      })
+      .catch((err) => {
+        enqueueSnackbar(err.message, { variant: "error" });
+      });
   };
 
   // remove this after words

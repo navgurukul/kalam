@@ -15,8 +15,7 @@ import {
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useSnackbar } from "notistack";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-
-import DateFnsUtils from "@mui/lab/AdapterDateFns";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { makeStyles } from "@mui/styles";
 import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
@@ -433,7 +432,7 @@ const BasicDetails = ({
               field: { ref, ...rest },
               fieldState: { isTouched },
             }) => (
-              <LocalizationProvider dateAdapter={DateFnsUtils}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
                   data-cy="dob"
                   disableFuture

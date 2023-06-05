@@ -52,7 +52,7 @@ const getRandomBirthday = () => {
   const year = Math.floor(Math.random() * (maxYear - minYear + 1)) + minYear;
   const month = Math.floor(Math.random() * 12) + 1;
   const day = Math.floor(Math.random() * 28) + 1;
-  return `${month.toString().padStart(2, "0")}/${day
+  return `${day.toString().padStart(2, "0")}/${month
     .toString()
     .padStart(2, "0")}/${year}`;
 };

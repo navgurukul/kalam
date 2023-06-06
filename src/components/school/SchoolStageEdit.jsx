@@ -3,6 +3,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Dialog, IconButton } from "@mui/material";
 import { useSelector } from "react-redux";
 import DialogContent from "@mui/material/DialogContent";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Button,
   DialogActions,
@@ -81,6 +82,10 @@ const EditStage = (props) => {
                 }}
               >
                 <p style={{ fontSize: "24px" }}>Edit Admission Stage</p>
+                <CloseIcon
+                style={{ cursor: "pointer" }}
+                onClick={() => setDialogOpen(false)}
+              />
               </div>
               <FormControl>
                 <FormLabel>Stage Type</FormLabel>

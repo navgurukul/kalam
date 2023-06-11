@@ -29,7 +29,7 @@ import {
   setSchool,
 } from "../../store/slices/studentSlice";
 
-import { allStages, allSchools } from "../../utils/constants";
+import { allStages } from "../../utils/constants";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -45,18 +45,6 @@ allStagesOptions = [
     label: "All",
   },
   ...allStagesOptions,
-];
-
-let allSchoolOptions = Object.keys(allSchools).map((x) => ({
-  value: x,
-  label: allSchools[x],
-}));
-allSchoolOptions = [
-  {
-    value: "default",
-    label: "All",
-  },
-  ...allSchoolOptions,
 ];
 
 const useStyles = makeStyles(() => ({
@@ -88,16 +76,30 @@ const AdmissionsDash = (props) => {
     numberOfRows,
     page,
   } = useSelector((state) => state.students);
-  // console.log(
-  //   filterColumns,
-  //   url,
-  //   studentData,
-  //   fromDate,
-  //   toDate,
-  //   totalData,
-  //   stage,
-  //   page
-  // );
+  const [allSchools, setAllSchools] = React.useState()
+
+  useEffect(() => {
+    axios.get(`${baseURL}school`).then((res) => {
+      setAllSchools(res.data)
+    }).catch((err) => {
+      console.log('err', err)
+    })
+  },[])
+
+  let allSchoolOptions = [
+    {
+      value: "default",
+      label: "All",
+    },
+  ]
+  allSchools?.forEach((item, index) => {
+    let obj =  {
+      value: index,
+      label: item.name,
+    }
+    allSchoolOptions.push(obj)
+  });
+
   const dispatch = useDispatch();
   const setStudents = (data) => dispatch(setStudentData(data));
   const setFrom = (data) => dispatch(setFromDate(data));
@@ -275,7 +277,6 @@ const AdmissionsDash = (props) => {
       ...prevState,
       selectedOption,
     }));
-    //console.log(selectedOption, "selectedOption");
     if (selectedOption === null) {
       setPage(0);
       updateStage([]);
@@ -285,7 +286,6 @@ const AdmissionsDash = (props) => {
     } else {
       // const arr = [];
       const arr = selectedOption.map((option) => option.value);
-      //console.log(arr, " i am arr");
       if (arr.includes("default")) {
         // stage = null;
       } else {
@@ -368,7 +368,6 @@ const AdmissionsDash = (props) => {
   }, []);
 
   useEffect(() => {
-    // console.log("Updating changes");
     if (loggedInUser)
       dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType })); //softwareCourse
   }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser, school]);

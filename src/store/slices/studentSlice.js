@@ -146,7 +146,6 @@ const StudentSlice = createSlice({
   },
   extraReducers: {
     [fetchStudents.fulfilled]: (state, action) => {
-      console.log("action.payload.data", action.payload.data);
       state.studentData = action.payload.data;
       state.totalData = action.payload.totalData;
     },

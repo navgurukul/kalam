@@ -930,9 +930,12 @@ const donorColumn = {
 };
 
 const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
-  //console.log("STAGE Value---",value);
+  // console.log("STAGE Value---", value);
+  // console.log("allStages", allStages);
+  // console.log("campusStageOfLearning", campusStageOfLearning);
   const { privileges } = useSelector((state) => state.auth);
   const isCampusPathname = window.location.pathname.indexOf("campus");
+  // console.log("isCampusPathname", window.location.pathname);
   return privileges?.some((priv) => priv.privilege === "UpdateStage") ? (
     <StageSelect
       rowMetatable={rowMeta}
@@ -941,7 +944,6 @@ const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
       allStages={isCampusPathname > -1 ? campusStageOfLearning : allStages}
       change={(event) => updateValue(event)}
     />
-
   ) : (
     <p>{value}</p>
   );
@@ -949,7 +951,7 @@ const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
 
 const stageColumn = {
   name: "stage",
-  label: "Stage",
+  label: "Stage khl",
   options: {
     filter: false,
     display: true,
@@ -1551,11 +1553,11 @@ const ColumnTransitionsStatus = {
 };
 //---------------------------------------------SCHOOL START---------------
 
-const DashboardSchoolColumnWrapper = ({ value, rowMeta, updateValue}) => {
+const DashboardSchoolColumnWrapper = ({ value, rowMeta, updateValue }) => {
   //console.log("School value--", value);
   const { privileges } = useSelector((state) => state.auth);
   return privileges.some(
-    (priv) => priv.privilege === "UpdateStudentPartner" 
+    (priv) => priv.privilege === "UpdateStudentPartner"
   ) ? (
     <UpdateSchool
       studentId={rowMeta.rowData[0]}
@@ -1593,12 +1595,10 @@ const dashboardSchoolColumn = {
             column={column}
             value={filterlist[index].length === 0 ? "All" : filterlist[index]}
           />
-        
         </div>
       ),
     },
-    customBodyRender: (value, rowMeta, updateValue) => 
-    (
+    customBodyRender: (value, rowMeta, updateValue) => (
       <DashboardSchoolColumnWrapper
         value={value}
         rowMeta={rowMeta}
@@ -1609,8 +1609,7 @@ const dashboardSchoolColumn = {
     //   console.log("rowMeta data",rowMeta);
     // }
   },
-}; 
-
+};
 
 const DashboardPartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);

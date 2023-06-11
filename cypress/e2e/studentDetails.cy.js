@@ -65,17 +65,17 @@ describe("Section 3: Basic Details", () => {
     describe("Verify the datepicker", () => {
       it("Should verify the user age is between 17 & 28 years", () => {
         // Invalid age lower than 17
-        cy.get("@dobDatePicker").click().type("10/13/2006");
+        cy.get("@dobDatePicker").click().type("13/10/2006");
         cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("have.class", "Mui-error");
 
         // valid age between 17-28 years
-        cy.get("@dobDatePicker").click().clear().type("10/13/2005");
+        cy.get("@dobDatePicker").click().clear().type("13/10/2005");
         cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("not.have.class", "Mui-error");
 
         // Invalid age higher than 28 years
-        cy.get("@dobDatePicker").click().clear().type("10/13/1993");
+        cy.get("@dobDatePicker").click().clear().type("13/10/1993");
         cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("have.class", "Mui-error");
       });

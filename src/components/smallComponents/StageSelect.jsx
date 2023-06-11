@@ -30,25 +30,6 @@ import { setCounts } from "../../store/slices/campusSlice";
 const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
-// const schoolList = [
-//   "School of Programming",
-//   "School of Design",
-//   "School of Finance",
-//   "School of Management",
-//   "School of Education",
-// ];
-
-// function getSchoolId(currentSchool) {
-//   if (typeof currentSchool === "string") {
-//     const idx = schoolList.findIndex((val) => currentSchool === val);
-//     return idx + 1;
-//   } else if (currentSchool instanceof Array) {
-//     if (currentSchool.length === 0) return -1;
-//     return currentSchool[0].id;
-//   }
-//   return -1;
-// }
-
 function getSchoolId(currentSchool, allSchools) {
   if (typeof currentSchool === "string") {
     for (const item of allSchools) {
@@ -97,6 +78,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
 
   /*Stages for schools other than School of Programming */
   const [schoolStages, setSchoolStages] = React.useState([]);
+  const [studentData, setStudentData] = React.useState();
   const [loading, setLoading] = React.useState(false);
   const toggleLoading = () => setLoading((prev) => !prev);
 
@@ -113,12 +95,28 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       });
   }, []);
 
+  useEffect(() => {
+    const studentId = rowMetatable.rowData[0];
+    axios
+      .get(`${baseUrl}students/${studentId}`)
+      .then((res) => {
+        console.log("res student data", res);
+        setStudentData(res.data.data[0]);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, [stage]);
+
+  console.log("studentData", studentData);
+
   const currentSchool = rowMetatable.rowData[25];
   const schoolId = getSchoolId(currentSchool, allSchools);
   const isProgrammingSchool = schoolId === 1;
 
   //if(schoolStages) console.log(rowMetatable.rowIndex, schoolStages, stage);
-  console.log("schoolStages", schoolStages);
+  // console.log("schoolStages", schoolStages);
+  // const studentId = rowMetatable.rowData[0];
 
   useEffect(() => {
     if (isProgrammingSchool || !currentSchool) return;
@@ -175,7 +173,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const handleCampusStatusChange = (e) => {
     const studentId = rowMetatable.rowData[0];
     const currentStatus = stage.campus_status;
-    console.log("currentStatus stage", currentStatus);
+    // console.log("currentStatus stage", currentStatus);
     axios
       .put(`${baseUrl}students/updateDetails/${studentId}`, {
         campus_status: e.target.value,
@@ -188,7 +186,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           ? updatedCount[e.target.value] + 1
           : 1;
         setCampusCounts(updatedCount);
-        console.log("updatedCount", updatedCount);
+        // console.log("updatedCount", updatedCount);
         change({ ...stage, campus_status: e.target.value });
         enqueueSnackbar("Updated Campus Status", { variant: "success" });
       })
@@ -198,9 +196,9 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const changeStage = (selectedValue) => {
     const studentId = rowMetatable.rowData[0];
     const { value, label } = selectedValue;
-    console.log("selectedValue in students/changeStage/", selectedValue);
-    console.log("isCampus", isCampus);
-    console.log("stage", stage);
+    // console.log("selectedValue in students/changeStage/", selectedValue);
+    // console.log("isCampus", isCampus);
+    // console.log("stage in students/changeStage/${studentId}", stage);
     axios
       .post(`${baseUrl}students/changeStage/${studentId}`, {
         stage: value,
@@ -223,7 +221,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const changeStageChangeOther = async (selectedValue) => {
     const studentId = rowMetatable.rowData[0];
     const { value, label } = selectedValue;
-    console.log("selectedValue in stage/students", selectedValue);
+    // console.log("selectedValue in stage/students", selectedValue);
 
     try {
       // const response = await axios.post(`${baseUrl}stage/students`, {
@@ -232,9 +230,9 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       //   "student_stage": label
       // });
 
-      console.log("studentId", studentId);
-      console.log("isCampus", isCampus);
-      console.log("stage", stage);
+      // console.log("studentId", studentId);
+      // console.log("isCampus", isCampus);
+      // console.log("stage in stage/students", stage);
 
       axios
         .post(`${baseUrl}stage/students`, {
@@ -246,8 +244,9 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           enqueueSnackbar("Stage Updated!", {
             variant: "success",
           });
-          change(isCampus ? { ...stage, stage: label } : label);
-          // change(isCampus ? { ...stage, stage: label } : selectedValue);
+          // Change Here ....!!!
+          // change(isCampus ? { ...stage, stage: label } : label);
+          change(isCampus ? { ...stage, stage: label } : selectedValue);
           // getTransitionStage(studentId);
         });
 
@@ -271,8 +270,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
 
   const handleChange = async (selectedValue) => {
     const { value } = selectedValue;
-    console.log("selectedValue", selectedValue);
-    console.log("value", value);
+    // console.log("selectedValue", selectedValue);
+    // console.log("value", value);
 
     const email =
       rowMetatable.rowData[
@@ -396,14 +395,32 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   }
   let selectedValue = { value: "invalid", label: "Invalid Stage" };
 
+  // console.log("stage", stage);
   if (stage) {
     if (isProgrammingSchool) {
+      console.log("stage in Programming School", stage);
       selectedValue = {
         value: _.invert(allStages)[isCampus ? stage?.stage || "" : stage],
         label: isCampus ? stage?.stage || "" : stage,
       };
     } else {
-      selectedValue = stage;
+      console.log("stage in non Programming School", stage);
+      // console.log("schoolStages", schoolStages);
+      // studentData;
+      // selectedValue = stage;
+      // selectedValue = studentData?.student_school_stage?.stageName;
+      selectedValue = {
+        value: studentData?.student_school_stage?.id,
+        label: studentData?.student_school_stage?.stageName,
+      };
+      // selectedValue = schoolStages[0];
+      console.log("allStages", allStages);
+      console.log("schoolStages", schoolStages);
+      console.log("selectedValue", selectedValue);
+      // selectedValue = {
+      //   value: _.invert(schoolStages)[isCampus ? stage?.stage || "" : stage],
+      //   label: isCampus ? stage?.stage || "" : stage,
+      // };
 
       // if(!selectedValue){
       //   // selectedValue = {
@@ -458,8 +475,9 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
             Select {isCampus && "Academic"} Stage
           </Typography>
         </label>
-        {console.log("allStagesOptions", allStagesOptions)}
-        {console.log("isProgrammingSchool", isProgrammingSchool)}
+        {/* {console.log("allStagesOptions", allStagesOptions)}
+        {console.log("isProgrammingSchool", isProgrammingSchool)} */}
+        {/* {console.log("selectedValue in JSX", selectedValue)} */}
         <Select
           className="filterSelectStage"
           // defaultValue={selectedValue}

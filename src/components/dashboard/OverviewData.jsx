@@ -38,10 +38,11 @@ import { dConvert } from "../../utils";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-const OverviewData = ({  url, isCampus = false }) => {
+const OverviewData = ({ url, isCampus = false }) => {
   const location = useLocation();
-  const { allStudents, fromDate, toDate, allStatusCount } =
-    useSelector((state) => state.campus);
+  const { allStudents, fromDate, toDate, allStatusCount } = useSelector(
+    (state) => state.campus
+  );
 
   const dispatch = useDispatch();
   const [schoolOverview, setSchoolOverview] = useState(false);

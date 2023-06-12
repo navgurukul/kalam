@@ -448,7 +448,6 @@ const deadlineColumnTrnasition1 = {
       const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
       const ifExistingDeadlineDate =
         rowData && !rowMeta.rowData[7] && feedbackableStage;
-      // console.log(rowData)
       if (ifExistingDeadlineDate) {
         const { deadline } = feedbackableStagesData[rowMeta.rowData[0]];
         const diff = new Date().getTime() - new Date(rowData).getTime();
@@ -930,12 +929,8 @@ const donorColumn = {
 };
 
 const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
-  // console.log("STAGE Value---", value);
-  // console.log("allStages", allStages);
-  // console.log("campusStageOfLearning", campusStageOfLearning);
   const { privileges } = useSelector((state) => state.auth);
   const isCampusPathname = window.location.pathname.indexOf("campus");
-  // console.log("isCampusPathname", window.location.pathname);
   return privileges?.some((priv) => priv.privilege === "UpdateStage") ? (
     <StageSelect
       rowMetatable={rowMeta}
@@ -1554,7 +1549,6 @@ const ColumnTransitionsStatus = {
 //---------------------------------------------SCHOOL START---------------
 
 const DashboardSchoolColumnWrapper = ({ value, rowMeta, updateValue }) => {
-  //console.log("School value--", value);
   const { privileges } = useSelector((state) => state.auth);
   return privileges.some(
     (priv) => priv.privilege === "UpdateStudentPartner"
@@ -1605,9 +1599,6 @@ const dashboardSchoolColumn = {
         updateValue={updateValue}
       />
     ),
-    // {
-    //   console.log("rowMeta data",rowMeta);
-    // }
   },
 };
 

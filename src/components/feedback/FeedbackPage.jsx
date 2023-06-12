@@ -60,7 +60,6 @@ const StudentFeedback = (props) => {
           feedback: feedbackValue,
         })
         .then(() => {
-          //console.log(response.data);
           setDialogOpen(false);
           enqueueSnackbar("Feedback is successfully added!", {
             variant: "success",

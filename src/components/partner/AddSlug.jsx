@@ -50,7 +50,6 @@ const AddSlug = ({ name, notes, partnerId, change, columnIndex }) => {
           slug: partner.slug,
         })
         .then(() => {
-          //console.log(response.data);
           setDialogOpen(false);
           enqueueSnackbar("Partner successfully edited with slug!", {
             variant: "success",

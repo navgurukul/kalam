@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ToolbarAddButtonOverview from "./ToolbarAddButtonOverview";
 import {
   Box,
   Dialog,
@@ -15,6 +14,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import MUIDataTable from "mui-datatables";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import NativeSelect from "@mui/material/NativeSelect";
 import {
   setAllStudentData,
   setCounts,
@@ -25,9 +27,7 @@ import MainLayout from "../muiTables/MainLayout";
 
 import { changeFetching } from "../../store/slices/uiSlice";
 
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
-import NativeSelect from "@mui/material/NativeSelect";
+import ToolbarAddButtonOverview from "./ToolbarAddButtonOverview";
 
 import {
   qualificationKeys,
@@ -73,9 +73,7 @@ const OverviewData = ({ url, isCampus = false }) => {
       options: {
         filter: true,
         sort: true,
-        customBodyRender: (value, rowMeta) => {
-          return value;
-        },
+        customBodyRender: (value, rowMeta) => value,
       },
     },
 
@@ -85,9 +83,7 @@ const OverviewData = ({ url, isCampus = false }) => {
       options: {
         filter: true,
         sort: true,
-        customBodyRender: (value, rowMeta) => {
-          return value;
-        },
+        customBodyRender: (value, rowMeta) => value,
       },
     },
   ];
@@ -96,12 +92,12 @@ const OverviewData = ({ url, isCampus = false }) => {
   const [schoolData, setSchoolData] = useState([]);
   const [schoolId, setSchoolId] = useState("");
   const [capacity, setCapacity] = useState("");
-  let pagelocation = useLocation();
-  let campusId = pagelocation.pathname.split("/")[2];
+  const pagelocation = useLocation();
+  const campusId = pagelocation.pathname.split("/")[2];
 
   const fetchStages = async () => {
-    let url = `${baseUrl}school/campus_school/${campusId}`;
-    let data = await axios.get(url);
+    const url = `${baseUrl}school/campus_school/${campusId}`;
+    const data = await axios.get(url);
     setSchoolList(data?.data);
   };
   useEffect(() => {
@@ -110,16 +106,16 @@ const OverviewData = ({ url, isCampus = false }) => {
 
   const handleOpenSubmit = async () => {
     if (capacity && schoolId && campusId) {
-      let url = `${baseUrl}school/capacity?campus_id=${campusId}&school_id=${schoolId}`;
-      let data = await axios.put(url, { capacityofschool: capacity });
+      const url = `${baseUrl}school/capacity?campus_id=${campusId}&school_id=${schoolId}`;
+      const data = await axios.put(url, { capacityofschool: capacity });
     }
     setSchoolOverview(false);
     fetchStages();
   };
 
   const handleSelect = async () => {
-    let url = `${baseUrl}school`;
-    let response = await axios.get(url);
+    const url = `${baseUrl}school`;
+    const response = await axios.get(url);
     setSchoolData(response.data);
   };
 
@@ -233,7 +229,7 @@ const OverviewData = ({ url, isCampus = false }) => {
           justifyContent: "center",
           width: "100%",
         }}
-      ></Grid>
+       />
       {/* CAMPUS COUNT */}
       <Grid item xs={12} md={12} lg={6}>
         <MUIDataTable
@@ -310,14 +306,12 @@ const OverviewData = ({ url, isCampus = false }) => {
                   setSchoolId(e.target.value);
                 }}
               >
-                {schoolData.map((el) => {
-                  return (
+                {schoolData.map((el) => (
                     <option value={el.id} key={el.id}>
                       {" "}
                       {el.name}
                     </option>
-                  );
-                })}
+                  ))}
               </NativeSelect>
             </FormControl>
             <div>

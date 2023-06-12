@@ -18,7 +18,6 @@ const EditText = ({ name, label, type, value, id, studentId, change }) => {
     if (newValue === value) {
       return;
     }
-    // console.log(label, id);
     axios
       .put(`${baseUrl}students/jobDetails/${id}`, {
         [name]: newValue,

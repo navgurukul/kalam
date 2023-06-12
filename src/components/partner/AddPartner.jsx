@@ -187,7 +187,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
         navigate("/partners");
       }
     } catch (e) {
-      //console.log(e);
       enqueueSnackbar("All fields are mandatory Or Slug should be unique", {
         variant: "error",
       });

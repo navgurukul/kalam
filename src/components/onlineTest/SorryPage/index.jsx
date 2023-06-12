@@ -82,7 +82,7 @@ function SorryPage({ redirect }) {
       )
       .then(({ data }) => setTotalMarks(data.total_marks));
   }, []);
-  //console.log(marks);
+
   return (
     <Container maxWidth="lg" align="center">
       <div className={classes.root}>

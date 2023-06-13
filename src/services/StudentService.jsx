@@ -946,7 +946,7 @@ const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
 
 const stageColumn = {
   name: "stage",
-  label: "Stage khl",
+  label: "Stage",
   options: {
     filter: false,
     display: true,

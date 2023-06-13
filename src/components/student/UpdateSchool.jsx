@@ -10,6 +10,7 @@ const animatedComponents = makeAnimated();
 const UpdateSchool = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = React.useState([]);
+  const [studentData, setStudentData] = React.useState();
   const { rowMeta } = props;
 
   let { value, studentId } = props;
@@ -17,9 +18,17 @@ const UpdateSchool = (props) => {
   if (value === "programming") {
     value = { id: 1, name: "NG Programming" };
   }
+  if (typeof value === "string") {
+    value = studentData?.school[0];
+    // .map((x) => ({ value: x.id, label: x.label }));
+  }
   if (value.length > 0) {
     value = value[0];
   }
+
+  // if (value.length > 0) {
+  //   value = value[0];
+  // }
 
   const selectedValue = { value: value.id, label: value.name };
 
@@ -36,8 +45,34 @@ const UpdateSchool = (props) => {
     return () => controller.abort();
   }, []);
 
+  useEffect(() => {
+    const studentId = rowMeta.rowData[0];
+    axios
+      .get(`${baseURL}students/${studentId}`)
+      .then((res) => {
+        setStudentData(res.data.data[0]);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, [props]);
+
   // only for students who have failed
-  const showDropdown = rowMeta.rowData[14] === "Test Failed";
+  // const showDropdown = rowMeta.rowData[14] === "Test Failed";
+
+  let showDropdown =
+    studentData?.student_school_stage !== null
+      ? studentData?.student_school_stage?.stageName.toLowerCase() ===
+        "test failed"
+      : rowMeta.rowData[14] === "Test Failed";
+
+  useEffect(() => {
+    showDropdown =
+      studentData?.student_school_stage !== null
+        ? studentData?.student_school_stage?.stageName.toLowerCase() ===
+          "test failed"
+        : rowMeta.rowData[14] === "Test Failed";
+  }, [studentData]);
 
   const handleChange = (event) => {
     const { change, studentId } = props;
@@ -67,7 +102,7 @@ const UpdateSchool = (props) => {
 
     const config = {
       method: "post",
-      url: "https://dev-join.navgurukul.org/apiDocs/school/students_school",
+      url: `${baseURL}school/students_school`,
       headers: {
         "Content-Type": "application/json",
       },

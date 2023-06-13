@@ -76,29 +76,44 @@ const AdmissionsDash = (props) => {
     numberOfRows,
     page,
   } = useSelector((state) => state.students);
-  const [allSchools, setAllSchools] = React.useState()
+  const [allSchools, setAllSchools] = React.useState();
 
   useEffect(() => {
-    axios.get(`${baseURL}school`).then((res) => {
-      setAllSchools(res.data)
-    }).catch((err) => {
-      console.log('err', err)
-    })
-  },[])
+    axios
+      .get(`${baseURL}school`)
+      .then((res) => {
+        setAllSchools(res.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, []);
 
-  let allSchoolOptions = [
+  // let allSchoolOptions = [
+  //   {
+  //     value: "default",
+  //     label: "All",
+  //   },
+  // ]
+  // allSchools?.forEach((item, index) => {
+  //   let obj =  {
+  //     value: index,
+  //     label: item.name,
+  //   }
+  //   allSchoolOptions.push(obj)
+  // });
+
+  const allSchoolOptions = [
     {
       value: "default",
       label: "All",
     },
-  ]
-  allSchools?.forEach((item, index) => {
-    let obj =  {
-      value: index,
+  ].concat(
+    allSchools?.map((item) => ({
+      value: item.id,
       label: item.name,
-    }
-    allSchoolOptions.push(obj)
-  });
+    })) || []
+  );
 
   const dispatch = useDispatch();
   const setStudents = (data) => dispatch(setStudentData(data));

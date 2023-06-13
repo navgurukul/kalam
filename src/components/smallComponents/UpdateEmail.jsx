@@ -16,7 +16,6 @@ const UpdateEmail = ({ email, rowMetatable, change }) => {
     axios
       .put(`${baseUrl}students/updateEmail/${studentId}`, { email: newEmail })
       .then(() => {
-        //console.log("Success");
         enqueueSnackbar("Email updated successfully!", {
           variant: "success",
         });
@@ -24,7 +23,6 @@ const UpdateEmail = ({ email, rowMetatable, change }) => {
         change(newEmail);
       })
       .catch(() => {
-        //console.log("Failed");
         enqueueSnackbar("Couldn't update email!", {
           variant: "error",
         });

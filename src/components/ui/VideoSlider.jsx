@@ -164,8 +164,6 @@ const VideoSlider = ({ language, customLinks }) => {
     event.target.playVideo();
   };
 
-  //console.log(classes, this.props);
-
   const width = Math.min(600, window.screen.width);
   // const width = window.screen.width;
 

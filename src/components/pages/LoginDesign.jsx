@@ -106,7 +106,7 @@ const LoginDesign = () => {
     const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
     return quote;
   }, []);
-  // console.log(classes);
+
   const { quote, author } = getQuote();
 
   return (
@@ -143,7 +143,7 @@ const LoginDesign = () => {
               onSuccess={handleLogin}
               onFailure={errr}
               scope="profile email"
-            />        
+            />
           </Box>
           <Box style={{ height: theme.spacing(7) }} />
           <Box className={classes.quoteContainer}>

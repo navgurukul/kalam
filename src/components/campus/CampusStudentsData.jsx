@@ -126,8 +126,6 @@ const CampusStudentsData = () => {
     setDataView(3);
   };
 
-  //console.log(campusName, campusId);
-
   const getVIew = (viewNo) => {
     switch (viewNo) {
       case 0:

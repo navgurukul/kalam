@@ -22,7 +22,6 @@ const UpdateCampus = ({ change, studentId, value }) => {
       const access = role?.access?.map((accessItem) => accessItem.access) || [];
       const dataURL = `${baseURL}campus`;
       const response = await axios.get(dataURL);
-      // console.log(response.data.data, "response");
       const campus = response.data.data;
       setCampusList(
         adminRole !== -1

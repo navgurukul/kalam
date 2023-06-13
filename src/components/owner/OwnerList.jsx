@@ -63,7 +63,6 @@ const OwnerList = () => {
           const canUpdate =
             privileges.some((priv) => priv.privilege === "UpdateOwner") ||
             rowMeta.rowData[1] === user;
-          // console.log(privileges);
           const canDelete =
             (privileges.some((priv) => priv.privilege === "DeleteOwner") ||
               rowMeta.rowData[1] === user) &&
@@ -132,7 +131,6 @@ const OwnerList = () => {
         filter: true,
         sort: true,
         customBodyRender: (value) => {
-          //console.log("value", value);
           if (value === 1) return "Female";
           if (value === 2) return "Male";
           if (value === 3) return "Transgender";

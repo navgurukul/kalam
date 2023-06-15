@@ -148,7 +148,7 @@ const UpdateSchool = (props) => {
   return (
     <Select
       className="filterSelectStage"
-      defaultValue={selectedValue}
+      value={selectedValue}
       onChange={handleChange}
       options={
         data.length && showDropdown

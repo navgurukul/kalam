@@ -13,7 +13,6 @@ const UpdateStudentName = ({ name, rowMetatable, change }) => {
     axios
       .put(`${baseUrl}students/${studentId}`, { name: newName })
       .then(() => {
-        //console.log("Success");
         enqueueSnackbar("Name updated successfully!", {
           variant: "success",
         });

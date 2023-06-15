@@ -81,7 +81,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const toggleLoading = () => setLoading((prev) => !prev);
 
   const [allSchools, setAllSchools] = React.useState();
-  console.log("schoolStages", schoolStages);
 
   useEffect(() => {
     axios

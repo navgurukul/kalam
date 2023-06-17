@@ -208,7 +208,7 @@ const addedAtColumn = {
 };
 
 const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
-  let feedback = value?.split("@");
+  const feedback = value?.split("@");
   feedback?.shift();
 
   const { privileges } = useSelector((state) => state.auth);
@@ -704,7 +704,7 @@ const marksColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
-      let CheckAttempt = value.id.filter((marks) => {
+      const CheckAttempt = value.id.filter((marks) => {
         return marks.total_marks;
       });
       return (

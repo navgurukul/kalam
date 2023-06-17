@@ -6,6 +6,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useSelector } from "react-redux";
 
 import * as _ from "underscore";
+import axios from "axios";
 import StageSelect from "../components/smallComponents/StageSelect";
 import UpdateEmail from "../components/smallComponents/UpdateEmail";
 import OwnerSelect from "../components/owner/OwnerSelect";
@@ -45,7 +46,6 @@ import OtherActivities from "../components/campus/OtherActivities";
 import DeleteStudent from "../components/smallComponents/DeleteStudent";
 import ProfilePhoto from "../components/smallComponents/ProfilePhoto";
 import { getColumnIndex } from "../utils";
-import axios from "axios";
 import StageMarks from "../components/smallComponents/StageMarks";
 import TestAttemptModel from "../components/smallComponents/TestAttemptModel";
 
@@ -212,7 +212,7 @@ const addedAtColumn = {
 };
 
 const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
-  let feedback = value?.split("@");
+  const feedback = value?.split("@");
   feedback?.shift();
 
   const { privileges } = useSelector((state) => state.auth);
@@ -708,9 +708,7 @@ const marksColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
-      let CheckAttempt = value.id.filter((marks) => {
-        return marks.total_marks;
-      });
+      const CheckAttempt = value.id.filter((marks) => marks.total_marks);
       return (
         <div style={{ display: "flex", alignItems: "center" }}>
           {CheckAttempt.length > 0 ? (

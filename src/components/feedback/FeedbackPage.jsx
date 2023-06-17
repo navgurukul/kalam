@@ -2,11 +2,10 @@
 import React, { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { Button, Dialog, IconButton } from "@mui/material";
+import { Button, Dialog, IconButton, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useSnackbar } from "notistack";
 import TextField from "@mui/material/TextField";
-
 import EditIcon from "@mui/icons-material/Edit";
 import { changeFetching } from "../../store/slices/uiSlice";
 import { decryptText } from "../../utils";
@@ -105,9 +104,12 @@ const StudentFeedback = (props) => {
 
   return (
     <>
-      <IconButton onClick={handleOpen}>
-        <EditIcon />
-      </IconButton>
+      <Button onClick={handleOpen} style={{ textTransform: "none" }}>
+        <EditIcon style={{ width: "10%" }} />
+        <Typography style={{ fontWeight: "700", marginLeft: "5px" }}>
+          Add or Edit Feedback
+        </Typography>
+      </Button>
       <Dialog open={dialogOpen} onClose={handleClose}>
         <form className={classes.container}>
           <h1 style={{ color: "#f05f40", textAlign: "center" }}>

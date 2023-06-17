@@ -22,6 +22,7 @@ const PhotoUploadModal = ({
   dialogOpen,
   handleClose,
   src,
+  updatedPicTable,
   enrollmentKey,
   name,
   setUpdatePicTable,
@@ -41,7 +42,7 @@ const PhotoUploadModal = ({
 
   const updateProfilePhoto = (e) => {
     const file = e.target.files[0];
-    //check if file size is greater than 1mb
+    //check if file size is greater than savePhoto1mb
     if (file.size > 1000000) {
       enqueueSnackbar("File size should not exceed 1MB", { variant: "error" });
       return;
@@ -52,7 +53,6 @@ const PhotoUploadModal = ({
 
   const savePhoto = async () => {
     try {
-      
       if (!enrollmentKey[0]?.key) {
         enqueueSnackbar("Enrollment key no available", {
           variant: "error",
@@ -68,6 +68,8 @@ const PhotoUploadModal = ({
 
       const response = await axios.post(dataURL, tempFormdata);
       setLoading(false);
+      setUpdatedPhoto("");
+      handleClose();
       if (updatedPhoto) {
         setUpdatePicTable(URL.createObjectURL(updatedPhoto));
       }
@@ -113,7 +115,7 @@ const PhotoUploadModal = ({
         }}
       >
         <Avatar
-          src={updatedPhoto ? previewPhoto : src}
+          src={updatedPhoto || updatedPicTable ? previewPhoto : src}
           style={{
             width: "120px",
             height: "120px",

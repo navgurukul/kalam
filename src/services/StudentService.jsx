@@ -208,6 +208,9 @@ const addedAtColumn = {
 };
 
 const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
+  const feedback = value?.split("@");
+  feedback?.shift();
+
   const { privileges } = useSelector((state) => state.auth);
   const ifExistingFeedback =
     value || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
@@ -220,9 +223,18 @@ const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
           change={(event) => updateValue(event)}
         />
       ) : null}
-      {value
-        ?.split("\n\n")
-        .map((item) => <p key={item + Math.random()}> {item} </p>) || null}
+      {feedback?.map((item, idx) => (
+        <div
+          style={{
+            background: idx % 2 == 0 ? "#D1EAF9" : "#FFEDD8",
+            padding: "1px 10px",
+            margin: "8px 0",
+            borderRadius: "8px",
+          }}
+        >
+          <p key={item + Math.random()}> @{item} </p>
+        </div>
+      )) || null}
     </div>
   ) : null;
 };
@@ -692,7 +704,7 @@ const marksColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
-      let CheckAttempt = value.id.filter((marks) => {
+      const CheckAttempt = value.id.filter((marks) => {
         return marks.total_marks;
       });
       return (

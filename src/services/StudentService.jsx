@@ -210,8 +210,20 @@ const addedAtColumn = {
 
 const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
-  const ifExistingFeedback =
-    value || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  // const ifExistingFeedback =
+  //   value || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0] !== "Test Failed")
+  ) {
+    ifExistingFeedback = true;
+  }
+
   return ifExistingFeedback ? (
     <div>
       {privileges.some((priv) => priv.privilege === "UpdateTransition") ? (

@@ -153,7 +153,7 @@ const StageColumnTransitionWrapper = ({ value, rowMeta }) => {
       {privileges.some((priv) => priv.privilege === "DeleteTransition") ? (
         <DeleteRow transitionId={rowMeta.rowData[isCampus ? 11 : 9]} />
       ) : null}
-      {allStages[value]}
+      {allStages[value] || value}
     </>
   );
 };

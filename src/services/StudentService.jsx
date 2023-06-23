@@ -219,7 +219,7 @@ const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
     (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
       rowMeta.rowData[0] !== "basicDetailsEntered" &&
       rowMeta.rowData[0] !== "testFailed" &&
-      rowMeta.rowData[0] !== "Test Failed")
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
   ) {
     ifExistingFeedback = true;
   }
@@ -281,8 +281,18 @@ const OwnerColumnTransitionDashboardWrapper = ({
 
   //for admissiong dashboard student id is coming at rowMeta.rowData[7]
 
-  const ifExistingFeedback =
-    feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  // const ifExistingFeedback =
+  //   feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
+  ) {
+    ifExistingFeedback = true;
+  }
   const permissionForOwner = privileges.some(
     (priv) => priv.privilege === "UpdateTransition"
   );

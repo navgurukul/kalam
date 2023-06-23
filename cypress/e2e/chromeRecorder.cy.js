@@ -57,7 +57,6 @@ const getRandomBirthday = () => {
     .padStart(2, "0")}/${year}`;
 };
 
-Cypress.on("uncaught:exception", () => false);
 
 describe("JohnWickTest", () => {
   it("tests JohnWickTest", () => {

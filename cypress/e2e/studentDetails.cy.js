@@ -1,7 +1,5 @@
 /// <reference types='Cypress' />
 
-Cypress.on("uncaught:exception", () => false);
-
 beforeEach(() => {
   cy.visit("http://localhost:8080/test/studentdetails");
 

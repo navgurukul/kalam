@@ -1,6 +1,5 @@
 /// <reference types='Cypress' />
 
-Cypress.on("uncaught:exception", () => false);
 
 // TODO: Make links dynamic
 beforeEach(() => {

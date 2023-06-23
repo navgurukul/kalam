@@ -296,7 +296,7 @@ function OtherDetails(props) {
   const qualification = watch("qualification");
 
   useEffect(() => {
-    if (addrState !== "") {
+    if (addrState !== "" && addrState != undefined) {
       if (!inputDisabled) setValue("district", "");
       getCityFromState(addrState);
     }

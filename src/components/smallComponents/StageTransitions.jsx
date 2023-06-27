@@ -102,7 +102,7 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
         ? [...response?.data?.data, ...response?.data?.school]
         : [...response?.data?.data];
       if (loggedInUser) {
-        newData = allData.map((v) => {
+        newData = allData?.map((v) => {
           if (campusMilestoneKey.indexOf(v.to_stage) !== -1)
             joinedStudent.push(v);
           else joinedOutreach.push(v);
@@ -113,7 +113,7 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
           };
         });
       } else {
-        newData = allData.map((v) => {
+        newData = allData?.map((v) => {
           if (campusMilestoneKey.indexOf(v.to_stage) !== -1) {
             joinedStudent.push(v);
           } else {

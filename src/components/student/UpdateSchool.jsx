@@ -9,8 +9,9 @@ const animatedComponents = makeAnimated();
 
 const UpdateSchool = (props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [data, setData] = useState([]);
-  const [studentData, setStudentData] = useState();
+  const [data, setData] = React.useState([]);
+  const [studentData, setStudentData] = React.useState();
+  const [isMounted, setIsMounted] = useState(true);
   const { rowMeta } = props;
 
   let { value, studentId } = props;
@@ -18,12 +19,13 @@ const UpdateSchool = (props) => {
   if (value === "programming") {
     value = { id: 1, name: "NG Programming" };
   }
-  if (typeof value === "string") {
-    value = studentData?.school[0];
-    // .map((x) => ({ value: x.id, label: x.label }));
-  }
   if (value.length > 0) {
-    value = value[0];
+    if (typeof value === "string") {
+      value = studentData?.school[0];
+      // .map((x) => ({ value: x.id, label: x.label }));
+    } else {
+      value = value[0];
+    }
   }
 
   // if (value.length > 0) {
@@ -33,16 +35,20 @@ const UpdateSchool = (props) => {
   const selectedValue = { value: value.id, label: value.name };
 
   useEffect(() => {
-    const controller = new AbortController();
     axios
-      .get(`${baseURL}school`, { signal: controller.signal })
+      .get(`${baseURL}school`)
       .then((response) => {
-        setData(response.data);
+        // setData(response.data);
+        if (isMounted) {
+          setData(response.data);
+        }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log("err", err);
         // if (err.message === "canceled") return;
       });
-    return () => controller.abort();
+
+    return () => setIsMounted(false);
   }, []);
 
   useEffect(() => {
@@ -50,7 +56,10 @@ const UpdateSchool = (props) => {
     axios
       .get(`${baseURL}students/${studentId}`)
       .then((res) => {
-        setStudentData(res.data.data[0]);
+        // setStudentData(res.data.data[0]);
+        if (isMounted) {
+          setStudentData(res.data.data[0]);
+        }
       })
       .catch((err) => {
         console.log("err", err);
@@ -120,12 +129,15 @@ const UpdateSchool = (props) => {
   return (
     <Select
       className="filterSelectStage"
-      defaultValue={selectedValue}
+      value={selectedValue}
       onChange={handleChange}
       options={
         data.length && showDropdown
-          ? data.map((x) => ({ value: x.id, label: x.name }))
-          : [selectedValue].map((x) => ({ value: x.id, label: x.label }))
+          ? data.map((x) => ({ value: x.id, label: x.name })) // Either || x.value here
+          : [selectedValue].map((x) => ({
+              value: x.id, // Or || x.value here
+              label: x.label,
+            }))
       }
       isClearable={false}
       components={animatedComponents}

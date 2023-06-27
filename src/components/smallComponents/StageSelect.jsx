@@ -218,12 +218,12 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           student_id: studentId,
           stage_id: value,
           student_stage: label,
+          transition_done_by: loggedInUser.user_name,
         })
         .then(() => {
           enqueueSnackbar("Stage Updated!", {
             variant: "success",
           });
-          // Change Here ....!!!
           change(isCampus ? { ...stage, stage: label } : label);
           // change(isCampus ? { ...stage, stage: label } : selectedValue);
           // getTransitionStage(studentId);

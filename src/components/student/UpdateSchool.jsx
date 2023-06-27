@@ -35,16 +35,6 @@ const UpdateSchool = (props) => {
   const selectedValue = { value: value.id, label: value.name };
 
   useEffect(() => {
-    // const controller = new AbortController();
-    // axios
-    //   .get(`${baseURL}school`, { signal: controller.signal })
-    //   .then((response) => {
-    //     setData(response.data);
-    //   })
-    //   .catch(() => {
-    //     // if (err.message === "canceled") return;
-    //   });
-    // return () => controller.abort();
     axios
       .get(`${baseURL}school`)
       .then((response) => {
@@ -135,15 +125,6 @@ const UpdateSchool = (props) => {
         console.log(error);
       });
   }
-
-  console.log("studentData", studentData);
-  console.log("selectedValue", selectedValue);
-  console.log("data", data);
-  console.log(
-    "map",
-    [selectedValue].map((x) => ({ value: x.id, label: x.label }))
-  );
-  console.log("value", value);
 
   return (
     <Select

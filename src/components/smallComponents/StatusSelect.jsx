@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
@@ -13,16 +13,19 @@ const StatusSelect = ({
   state,
   feedbackableStagesData,
 }) => {
+  // const [studentData, setStudentData] = useState();
   const { enqueueSnackbar } = useSnackbar();
+  const studentId = window.location.pathname.includes("/campus")
+    ? rowMetaTable.rowData[7]
+    : rowMetaTable.rowData[5];
 
   const handleChange = (selectedValue) => {
-    const studentId = window.location.pathname.includes("/campus")
-      ? rowMetaTable.rowData[7]
-      : rowMetaTable.rowData[5];
-
     const { columnIndex } = rowMetaTable;
     const stage = rowMetaTable.rowData[0];
     const { value } = selectedValue;
+    console.log("stage", stage);
+    console.log("value", value);
+
     const dataURL = `${baseUrl}students/feedback/${studentId}`;
     axios
       .put(dataURL, { student_stage: stage, state: value })
@@ -40,13 +43,46 @@ const StatusSelect = ({
       });
   };
 
+  // useEffect(() => {
+  //   axios
+  //     .get(`${baseUrl}students/${studentId}`)
+  //     .then((res) => {
+  //       setStudentData(res.data.data[0]);
+  //       console.log("res", res);
+  //     })
+  //     .catch((err) => {
+  //       console.log("err", err);
+  //     });
+  // }, []);
+
+  // console.log(
+  //   "studentData",
+  //   studentData?.school && studentData?.school[0].name
+  // );
+
   const stage = rowMetaTable.rowData[0];
 
+  // const allstatus =
+  //   studentData?.school &&
+  //   studentData?.school[0].name.toLowerCase() ===
+  //     "School of Programming".toLowerCase()
+  //     ? feedbackableStagesData[stage].status
+  //     : ["Pass", "Fail"];
+
   const allstatus = feedbackableStagesData[stage].status;
+  // || [
+  //   "Passsss",
+  //   "Failllll",
+  // ];
+
+  // const allstatus = feedbackableStagesData[stage].status;
+
   const allStatusOptions = allstatus.map((x) => ({
     value: x,
     label: x.charAt(0).toUpperCase() + x.slice(1),
   }));
+
+  console.log("allStatusOptions", allStatusOptions);
 
   const selectedValue = { value: null, label: null };
   if (state) {

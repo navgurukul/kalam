@@ -370,7 +370,18 @@ const ownerColumnTransitionCampus = {
 };
 
 const StatusColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
-  const feedbackableStage = feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  // const feedbackableStage = feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  console.log("rowMeta", rowMeta);
+  console.log("rowMeta.rowData[0]", rowMeta.rowData[0]);
+  let feedbackableStage = false;
+  if (
+    rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+    rowMeta.rowData[0] !== "basicDetailsEntered" &&
+    rowMeta.rowData[0] !== "testFailed" &&
+    rowMeta.rowData[0].toLowerCase() !== "test failed"
+  ) {
+    feedbackableStage = true;
+  }
   if (rowMeta.rowData[0] === "selectedButNotJoined") {
     return null;
   }

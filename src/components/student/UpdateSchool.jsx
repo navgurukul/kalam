@@ -9,8 +9,8 @@ const animatedComponents = makeAnimated();
 
 const UpdateSchool = (props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [data, setData] = React.useState([]);
-  const [studentData, setStudentData] = React.useState();
+  const [data, setData] = useState([]);
+  const [studentData, setStudentData] = useState();
   const { rowMeta } = props;
 
   let { value, studentId } = props;

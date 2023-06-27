@@ -78,8 +78,6 @@ const AdmissionsDash = (props) => {
   } = useSelector((state) => state.students);
   const [allSchools, setAllSchools] = React.useState();
 
-  console.log("props", props);
-
   useEffect(() => {
     axios
       .get(`${baseURL}school`)

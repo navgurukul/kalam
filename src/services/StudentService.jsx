@@ -1582,7 +1582,7 @@ const DashboardSchoolColumnWrapper = ({ value, rowMeta, updateValue }) => {
       change={(event) => updateValue(event)}
     />
   ) : (
-    <p>{value}</p>
+    <p>{value?.[0]?.name}</p>
   );
 };
 

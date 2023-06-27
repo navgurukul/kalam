@@ -153,7 +153,7 @@ const StageColumnTransitionWrapper = ({ value, rowMeta }) => {
       {privileges.some((priv) => priv.privilege === "DeleteTransition") ? (
         <DeleteRow transitionId={rowMeta.rowData[isCampus ? 11 : 9]} />
       ) : null}
-      {allStages[value]}
+      {allStages[value] || value}
     </>
   );
 };
@@ -210,8 +210,20 @@ const addedAtColumn = {
 
 const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
-  const ifExistingFeedback =
-    value || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  // const ifExistingFeedback =
+  //   value || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
+  ) {
+    ifExistingFeedback = true;
+  }
+
   return ifExistingFeedback ? (
     <div>
       {privileges.some((priv) => priv.privilege === "UpdateTransition") ? (
@@ -269,8 +281,18 @@ const OwnerColumnTransitionDashboardWrapper = ({
 
   //for admissiong dashboard student id is coming at rowMeta.rowData[7]
 
-  const ifExistingFeedback =
-    feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  // const ifExistingFeedback =
+  //   feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
+  ) {
+    ifExistingFeedback = true;
+  }
   const permissionForOwner = privileges.some(
     (priv) => priv.privilege === "UpdateTransition"
   );
@@ -348,7 +370,16 @@ const ownerColumnTransitionCampus = {
 };
 
 const StatusColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
-  const feedbackableStage = feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  // const feedbackableStage = feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  let feedbackableStage = false;
+  if (
+    rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+    rowMeta.rowData[0] !== "basicDetailsEntered" &&
+    rowMeta.rowData[0] !== "testFailed" &&
+    rowMeta.rowData[0].toLowerCase() !== "test failed"
+  ) {
+    feedbackableStage = true;
+  }
   if (rowMeta.rowData[0] === "selectedButNotJoined") {
     return null;
   }
@@ -1560,7 +1591,7 @@ const DashboardSchoolColumnWrapper = ({ value, rowMeta, updateValue }) => {
       change={(event) => updateValue(event)}
     />
   ) : (
-    <p>{value}</p>
+    <p>{value?.[0]?.name}</p>
   );
 };
 

@@ -14,15 +14,15 @@ const StatusSelect = ({
   feedbackableStagesData,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const studentId = window.location.pathname.includes("/campus")
+    ? rowMetaTable.rowData[7]
+    : rowMetaTable.rowData[5];
 
   const handleChange = (selectedValue) => {
-    const studentId = window.location.pathname.includes("/campus")
-      ? rowMetaTable.rowData[7]
-      : rowMetaTable.rowData[5];
-
     const { columnIndex } = rowMetaTable;
     const stage = rowMetaTable.rowData[0];
     const { value } = selectedValue;
+
     const dataURL = `${baseUrl}students/feedback/${studentId}`;
     axios
       .put(dataURL, { student_stage: stage, state: value })
@@ -42,7 +42,12 @@ const StatusSelect = ({
 
   const stage = rowMetaTable.rowData[0];
 
-  const allstatus = feedbackableStagesData[stage].status;
+  // const allstatus = feedbackableStagesData[stage].status;
+  const allstatus =
+    stage in feedbackableStagesData
+      ? feedbackableStagesData[stage].status
+      : ["Pass", "Fail"];
+
   const allStatusOptions = allstatus.map((x) => ({
     value: x,
     label: x.charAt(0).toUpperCase() + x.slice(1),

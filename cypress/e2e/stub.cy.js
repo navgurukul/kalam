@@ -2,7 +2,7 @@
 
 it("should not create a duplicate user and register a call", () => {
   // Stubbing the request to the check_duplicate API endpoint.
-  cy.intercept("GET", "https://dev-join.navgurukul.org/api/check_duplicate", {
+  cy.intercept("GET", "https://dev-join.navgurukul.org/api/check_duplicate*", {
     statusCode: 200,
     body: { data: { alreadyGivenTest: false } },
   }).as("checkDuplicate");
@@ -10,14 +10,14 @@ it("should not create a duplicate user and register a call", () => {
   // Stubbing the request to the register_exotel_call API endpoint.
   cy.intercept(
     "GET",
-    "https://dev-join.navgurukul.org/api/helpline/register_exotel_call",
+    "https://dev-join.navgurukul.org/api/helpline/register_exotel_call*",
     {
       statusCode: 200,
       body: { success: true, key: "US0A8X" },
     }
   ).as("registerCall");
 
-  cy.visit("/http://localhost:8080/"); // replace this with the correct route
+  cy.visit("http://localhost:8080/"); // replace this with the correct route
 
   // Fill out the form and submit it.
   cy.get('[data-cy="firstName-input"]').type("Louis");

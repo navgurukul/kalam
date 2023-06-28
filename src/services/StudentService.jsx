@@ -477,9 +477,22 @@ const deadlineColumnTrnasition1 = {
     sort: true,
     customBodyRender: (rowData, rowMeta) => {
       const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
+      // let feedbackableStage = false;
+      // if (
+      //   value ||
+      //   (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      //     rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      //     rowMeta.rowData[0] !== "testFailed" &&
+      //     rowMeta.rowData[0].toLowerCase() !== "test failed")
+      // ) {
+      //   feedbackableStage = true;
+      // }
+      console.log("rowData", rowData);
+      console.log("rowMeta", rowMeta);
       const ifExistingDeadlineDate =
         rowData && !rowMeta.rowData[7] && feedbackableStage;
       if (ifExistingDeadlineDate) {
+        console.log("I AM DEADLINE");
         const { deadline } = feedbackableStagesData[rowMeta.rowData[0]];
         const diff = new Date().getTime() - new Date(rowData).getTime();
         const hours = Math.floor(diff / 1000 / 60 / 60);

@@ -57,7 +57,6 @@ const getRandomBirthday = () => {
     .padStart(2, "0")}/${year}`;
 };
 
-
 describe("JohnWickTest", () => {
   it("tests JohnWickTest", () => {
     cy.viewport(1268, 937);
@@ -81,14 +80,11 @@ describe("JohnWickTest", () => {
     cy.get("div:nth-of-type(4) > div:nth-of-type(2) input").type(
       randomPhoneNumber
     );
-    cy.get("div > div > div > div:nth-of-type(2) button").click();
+    cy.get(`[data-cy=submitButton]`).click();
     cy.get("#mui-component-select-Language").click();
-    cy.get('li[data-value="en"]').click();
-    // cy.contains("English").click({ force: true });  English option is covered by
-    //another element, comment code only work for hindi and marathi because
-    //those are not covered by other code. Tried other ways too.
-    //while use force true, the drop down menu will not go away, cannot process to next step.
-    //So be specific like: li[data-value="en"] so it works, en can replace with hi,mr.
+    cy.get('[data-cy="ma"]').click();
+    cy.get(`[data-cy="hi"]`).click();
+    cy.get(`[data-cy="en"]`).click({ force: true }); //used force bc sometimes timeout
     cy.get("#mui-component-select-Language").should("contain", "English");
     cy.get("div:nth-of-type(12) > button").click();
     cy.get("div:nth-of-type(11) > button").click();

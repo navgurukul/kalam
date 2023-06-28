@@ -1,6 +1,5 @@
 /// <reference types='Cypress' />
 
-
 // TODO: Make links dynamic
 beforeEach(() => {
   cy.visit("http://localhost:8080/");
@@ -36,8 +35,7 @@ describe("Section 1: Landing page", () => {
     cy.get('[data-cy="title"]').contains("परीक्षा शुरू करें");
 
     // select Marathi, change language
-    cy.get("#appheader > div > div:nth-child(1) > div > div").click();
-    cy.get('[data-value="ma"]').click();
+    cy.get('[data-cy="ma"]').click();
     cy.get('[data-cy="title"]').contains("प्रवेश परीक्षा सुरू करा");
   });
 
@@ -49,10 +47,8 @@ describe("Section 1: Landing page", () => {
       cy.get(`[data-cy="firstName-input"]`).type(user.firstName);
       cy.get(`[data-cy="lastName-input"]`).type(user.lastName);
       cy.get(`[data-cy="mobileNumber-input"]`).type(user.mobileNumber);
-      cy.get(`[data-cy="submitButton"]`)
-        .click()
-        .url()
-        .should("include", "test/instructions");
+      cy.get(`[data-cy="submitButton"]`).click();
+      cy.url().should("include", "test/instructions");
     });
   });
 
@@ -67,11 +63,8 @@ describe("Section 1: Landing page", () => {
 
       cy.get(`[data-cy="lastName-input"]`).type(user.lastName);
       cy.get(`[data-cy="mobileNumber-input"]`).type(user.mobileNumber);
-      cy.get(`[data-cy="submitButton"]`)
-        .click()
-        .wait(1000)
-        .url()
-        .should("include", "test/instructions");
+      cy.get(`[data-cy="submitButton"]`).click();
+      cy.url().should("include", "test/instructions");
     });
   });
 

@@ -83,8 +83,10 @@ describe("JohnWickTest", () => {
     cy.get(`[data-cy=submitButton]`).click();
     cy.get("#mui-component-select-Language").click();
     cy.get('[data-cy="ma"]').click();
+    cy.get("#mui-component-select-Language").click();
     cy.get(`[data-cy="hi"]`).click();
-    cy.get(`[data-cy="en"]`).click({ force: true }); //used force bc sometimes timeout
+    cy.get("#mui-component-select-Language").click();
+    cy.get(`[data-cy="en"]`).click();
     cy.get("#mui-component-select-Language").should("contain", "English");
     cy.get("div:nth-of-type(12) > button").click();
     cy.get("div:nth-of-type(11) > button").click();

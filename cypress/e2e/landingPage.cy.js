@@ -31,10 +31,12 @@ describe("Section 1: Landing page", () => {
     cy.get('[data-cy="title"]').contains("Start Admisssion Test");
 
     // select Hindin verify change of language
+    cy.get(`[data-cy="lang-dropdown"]`).click();
     cy.get(`[data-cy="hi"]`).click();
     cy.get('[data-cy="title"]').contains("परीक्षा शुरू करें");
 
     // select Marathi, change language
+    cy.get(`[data-cy="lang-dropdown"]`).click();
     cy.get('[data-cy="ma"]').click();
     cy.get('[data-cy="title"]').contains("प्रवेश परीक्षा सुरू करा");
   });

@@ -236,72 +236,72 @@ const StudentForm = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (studentId) {
-      axios.get(`${baseUrl}/students/${studentId}`).then((res) => {
-        if (res.data.data.length > 0) {
-          const PrevDatas = res.data.data[0];
+  // useEffect(() => {
+  //   if (studentId) {
+  //     axios.get(`${baseUrl}/students/${studentId}`).then((res) => {
+  //       if (res.data.data.length > 0) {
+  //         const PrevDatas = res.data.data[0];
 
-          // setPrevData(PrevDatas);
-          setAlreadyAUser(true);
-          // setInputDisabled(true);
-          // Storing the data in session storage..
-          window.sessionStorage.setItem("formData", JSON.stringify(PrevDatas));
-          setFormData({
-            ...formData,
-            PrevImage: PrevDatas.image_url,
-            FirstName: PrevDatas.name.split(" ")[0],
-            MiddleName: PrevDatas.name.split(" ")[1],
-            LastName: PrevDatas.name.split(" ")[2],
-            email: PrevDatas.email,
-            whatsapp: PrevDatas.contacts[0].mobile,
-            AlternateNumber:
-              PrevDatas.contacts[1] && PrevDatas.contacts[1].alt_mobile,
-            dob: PrevDatas.dob,
-            gender: gender[PrevDatas.gender],
-            district: PrevDatas.district,
-            pin_code: PrevDatas.pin_code,
-            state: PrevDatas.state,
-            city: PrevDatas.city,
-            current_status: CurrentStatusOptions[PrevDatas.current_status],
-            qualification: qualificationOptions[PrevDatas.qualification],
-            school_medium: schoolMediumOptions[PrevDatas.school_medium],
-            caste: casteOptions[PrevDatas.caste],
-            religion: religionOptions[PrevDatas.religon],
-            math_marks_in10th: PrevDatas.math_marks_in10th,
-            percentage_in10th: PrevDatas.percentage_in10th,
-            math_marks_in12th: PrevDatas.math_marks_in12th,
-            percentage_in12th: PrevDatas.percentage_in12th,
-          });
-          reset({
-            PrevImage: PrevDatas.image_url,
-            FirstName: PrevDatas.name.split(" ")[0],
-            MiddleName: PrevDatas.name.split(" ")[1],
-            LastName: PrevDatas.name.split(" ")[2],
-            email: PrevDatas.email,
-            whatsapp: PrevDatas.contacts[0].mobile,
-            AlternateNumber:
-              PrevDatas.contacts[1] && PrevDatas.contacts[1].alt_mobile,
-            dob: PrevDatas.dob,
-            gender: gender[PrevDatas.gender],
-            district: PrevDatas.district,
-            pin_code: PrevDatas.pin_code,
-            state: PrevDatas.state,
-            city: PrevDatas.city,
-            current_status: CurrentStatusOptions[PrevDatas.current_status],
-            qualification: qualificationOptions[PrevDatas.qualification],
-            school_medium: schoolMediumOptions[PrevDatas.school_medium],
-            caste: casteOptions[PrevDatas.caste],
-            religion: religionOptions[PrevDatas.religon],
-            math_marks_in10th: PrevDatas.math_marks_in10th,
-            percentage_in10th: PrevDatas.percentage_in10th,
-            math_marks_in12th: PrevDatas.math_marks_in12th,
-            percentage_in12th: PrevDatas.percentage_in12th,
-          });
-        }
-      });
-    }
-  }, []);
+  //         // setPrevData(PrevDatas);
+  //         setAlreadyAUser(true);
+  //         // setInputDisabled(true);
+  //         // Storing the data in session storage..
+  //         window.sessionStorage.setItem("formData", JSON.stringify(PrevDatas));
+  //         setFormData({
+  //           ...formData,
+  //           PrevImage: PrevDatas.image_url,
+  //           FirstName: PrevDatas.name.split(" ")[0],
+  //           MiddleName: PrevDatas.name.split(" ")[1],
+  //           LastName: PrevDatas.name.split(" ")[2],
+  //           email: PrevDatas.email,
+  //           whatsapp: PrevDatas.contacts[0].mobile,
+  //           AlternateNumber:
+  //             PrevDatas.contacts[1] && PrevDatas.contacts[1].alt_mobile,
+  //           dob: PrevDatas.dob,
+  //           gender: gender[PrevDatas.gender],
+  //           district: PrevDatas.district,
+  //           pin_code: PrevDatas.pin_code,
+  //           state: PrevDatas.state,
+  //           city: PrevDatas.city,
+  //           current_status: CurrentStatusOptions[PrevDatas.current_status],
+  //           qualification: qualificationOptions[PrevDatas.qualification],
+  //           school_medium: schoolMediumOptions[PrevDatas.school_medium],
+  //           caste: casteOptions[PrevDatas.caste],
+  //           religion: religionOptions[PrevDatas.religon],
+  //           math_marks_in10th: PrevDatas.math_marks_in10th,
+  //           percentage_in10th: PrevDatas.percentage_in10th,
+  //           math_marks_in12th: PrevDatas.math_marks_in12th,
+  //           percentage_in12th: PrevDatas.percentage_in12th,
+  //         });
+  //         reset({
+  //           PrevImage: PrevDatas.image_url,
+  //           FirstName: PrevDatas.name.split(" ")[0],
+  //           MiddleName: PrevDatas.name.split(" ")[1],
+  //           LastName: PrevDatas.name.split(" ")[2],
+  //           email: PrevDatas.email,
+  //           whatsapp: PrevDatas.contacts[0].mobile,
+  //           AlternateNumber:
+  //             PrevDatas.contacts[1] && PrevDatas.contacts[1].alt_mobile,
+  //           dob: PrevDatas.dob,
+  //           gender: gender[PrevDatas.gender],
+  //           district: PrevDatas.district,
+  //           pin_code: PrevDatas.pin_code,
+  //           state: PrevDatas.state,
+  //           city: PrevDatas.city,
+  //           current_status: CurrentStatusOptions[PrevDatas.current_status],
+  //           qualification: qualificationOptions[PrevDatas.qualification],
+  //           school_medium: schoolMediumOptions[PrevDatas.school_medium],
+  //           caste: casteOptions[PrevDatas.caste],
+  //           religion: religionOptions[PrevDatas.religon],
+  //           math_marks_in10th: PrevDatas.math_marks_in10th,
+  //           percentage_in10th: PrevDatas.percentage_in10th,
+  //           math_marks_in12th: PrevDatas.math_marks_in12th,
+  //           percentage_in12th: PrevDatas.percentage_in12th,
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, []);
 
   const getSteps = () => [
     { en: "Basic Details", hi: "बुनियादी जानकारी", ma: "मूलभूत माहिती" },

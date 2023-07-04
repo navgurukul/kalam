@@ -487,8 +487,8 @@ const deadlineColumnTrnasition1 = {
       // ) {
       //   feedbackableStage = true;
       // }
-      console.log("rowData", rowData);
-      console.log("rowMeta", rowMeta);
+      // console.log("rowData", rowData);
+      // console.log("rowMeta", rowMeta);
       const ifExistingDeadlineDate =
         rowData && !rowMeta.rowData[7] && feedbackableStage;
       if (ifExistingDeadlineDate) {
@@ -1232,7 +1232,7 @@ const statusFilterList = [
 
 const dashboardStatusColumn = {
   name: "status",
-  label: "Status",
+  label: "Statussss",
   options: {
     filter: true,
     sort: true,
@@ -1241,7 +1241,8 @@ const dashboardStatusColumn = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          <label style={Lables}>Status</label>
+          {console.log("filterlist", filterlist)}
+          <label style={Lables}>Statusppp</label>
           <SelectReact
             options={statusFilterList.map((status) => ({
               value: status,
@@ -1257,6 +1258,7 @@ const dashboardStatusColumn = {
       ),
     },
     customBodyRender: (state) => {
+      console.log("state", state);
       if (state) {
         return state.charAt(0).toUpperCase() + state.slice(1);
       }
@@ -1378,7 +1380,7 @@ const statusColumnMyreport = {
 };
 
 const dashboardOwnerColumnMyreport = {
-  label: "Owner",
+  label: "Ownerrrrrrr",
   name: "studentOwner",
   options: {
     filter: true,
@@ -1386,7 +1388,7 @@ const dashboardOwnerColumnMyreport = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          <label style={Lables}>Owner</label>
+          <label style={Lables}>Ownerpppp</label>
           <SelectReact
             options={["All", ...JSON.parse(localStorage.getItem("owners"))].map(
               (item) => ({
@@ -1871,7 +1873,7 @@ const StudentService = {
       transitionUpdatedByColumn,
       AudioPlayer,
       transitionIdColumn,
-      deadlineColumnTrnasition1,
+      // deadlineColumnTrnasition1,
       finishedColumnTransition,
     ],
     columnStudentStatus: [

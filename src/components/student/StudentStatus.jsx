@@ -40,7 +40,12 @@ const StudentStatus = () => {
     }
     try {
       const response = await axios.get(`${baseUrl}students/status/${mobile}`);
-      setStatus(response.data.data);
+      const allData =
+        response && response?.data?.school
+          ? [...response?.data?.data, ...response?.data?.school]
+          : [...response?.data?.data];
+      setStatus(allData);
+      console.log("data", response?.data);
     } catch (e) {
       enqueueSnackbar("Please Enter Registered Mobile Number!", {
         variant: "error",
@@ -51,6 +56,8 @@ const StudentStatus = () => {
       });
     }
   };
+
+  console.log("statusssss", status);
 
   useEffect(() => {
     (async () => fetchStatus())();

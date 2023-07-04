@@ -186,6 +186,12 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
     filterType: "dropdown",
     responsive: "vertical",
   };
+
+  console.log(
+    "StudentService.columns[dataType]",
+    StudentService.columns[dataType]
+  );
+  console.log("selectedStudent?.transitions", selectedStudent?.transitions);
   return (
     <>
       {isShow ? (

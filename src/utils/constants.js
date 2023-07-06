@@ -280,6 +280,7 @@ export const campusStageOfLearning = {
 };
 
 export const nextStage = {
+  diversityBasedDecisionPending: [],
   enrolmentKeyGenerated: ["basicDetailsEntered"],
   createdStudentWithoutExam: [],
   basicDetailsEntered: ["pendingEnglishInterview", "testFailed"],

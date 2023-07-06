@@ -40,7 +40,11 @@ const StudentStatus = () => {
     }
     try {
       const response = await axios.get(`${baseUrl}students/status/${mobile}`);
-      setStatus(response.data.data);
+      const allData =
+        response && response?.data?.school
+          ? [...response?.data?.data, ...response?.data?.school]
+          : [...response?.data?.data];
+      setStatus(allData);
     } catch (e) {
       enqueueSnackbar("Please Enter Registered Mobile Number!", {
         variant: "error",

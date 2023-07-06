@@ -489,6 +489,16 @@ const deadlineColumnTrnasition1 = {
     sort: true,
     customBodyRender: (rowData, rowMeta) => {
       const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
+      // let feedbackableStage = false;
+      // if (
+      //   value ||
+      //   (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      //     rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      //     rowMeta.rowData[0] !== "testFailed" &&
+      //     rowMeta.rowData[0].toLowerCase() !== "test failed")
+      // ) {
+      //   feedbackableStage = true;
+      // }
       const ifExistingDeadlineDate =
         rowData && !rowMeta.rowData[7] && feedbackableStage;
       if (ifExistingDeadlineDate) {
@@ -1231,7 +1241,7 @@ const statusFilterList = [
 
 const dashboardStatusColumn = {
   name: "status",
-  label: "Status",
+  label: "Statussss",
   options: {
     filter: true,
     sort: true,
@@ -1240,7 +1250,7 @@ const dashboardStatusColumn = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          <label style={Lables}>Status</label>
+          <label style={Lables}>Statusppp</label>
           <SelectReact
             options={statusFilterList.map((status) => ({
               value: status,
@@ -1256,6 +1266,7 @@ const dashboardStatusColumn = {
       ),
     },
     customBodyRender: (state) => {
+      console.log("state", state);
       if (state) {
         return state.charAt(0).toUpperCase() + state.slice(1);
       }
@@ -1377,7 +1388,7 @@ const statusColumnMyreport = {
 };
 
 const dashboardOwnerColumnMyreport = {
-  label: "Owner",
+  label: "Ownerrrrrrr",
   name: "studentOwner",
   options: {
     filter: true,
@@ -1385,7 +1396,7 @@ const dashboardOwnerColumnMyreport = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          <label style={Lables}>Owner</label>
+          <label style={Lables}>Ownerpppp</label>
           <SelectReact
             options={["All", ...JSON.parse(localStorage.getItem("owners"))].map(
               (item) => ({
@@ -1870,7 +1881,7 @@ const StudentService = {
       transitionUpdatedByColumn,
       AudioPlayer,
       transitionIdColumn,
-      deadlineColumnTrnasition1,
+      // deadlineColumnTrnasition1,
       finishedColumnTransition,
     ],
     columnStudentStatus: [

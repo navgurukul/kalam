@@ -307,7 +307,15 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           value: "offerLetterSent",
         });
       })
-      .catch(() => {
+        // Call the sms sending API
+        const studentId = rowMetatable.rowData[0];
+        axios
+          .post(
+            `${baseUrl}/student/sendSmsWhenSendOfferLeterToStudents/${studentId}`
+          )
+          .then(() => {
+            
+          }).catch(() => {
         enqueueSnackbar(`Something went wrong`, {
           variant: "error",
         });

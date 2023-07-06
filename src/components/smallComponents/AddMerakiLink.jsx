@@ -37,11 +37,8 @@ const AddMerakiLink = ({ isValue, studentId, updateValue }) => {
         enqueueSnackbar("Meraki link successfully created", {
           variant: "success",
         });
-        //console.log(response, "response");
         const data = response.data.data.meraki_link;
-        //console.log(data, "data");
         updateValue(data);
-        //console.log(this.props.updateValue, "updateValue");
       })
       .catch(() => {
         enqueueSnackbar(`Something went wrong`, {

@@ -10,7 +10,7 @@ const commonConfig = {
   },
   plugins: [react()],
   build: {
-    chunkSizeWarningLimit: 650,
+    chunkSizeWarningLimit: 100000000,
     rollupOptions: {
       output: {
         manualChunks: (id) => {

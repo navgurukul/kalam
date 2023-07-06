@@ -60,8 +60,6 @@ const StatusSelect = ({
     selectedValue.label = lable;
   }
 
-  console.log("selectedValue", selectedValue);
-
   return (
     <Select
       className="filterSelectStage"

@@ -145,8 +145,6 @@ const AdmissionsDash = (props) => {
   // let stage = null;
   let value = null;
 
-  console.log("dataType", dataType);
-
   const fetchOWner = async (signal) => {
     const response = await axios.get(`${baseURL}owner`, { signal });
     const allData =
@@ -181,8 +179,6 @@ const AdmissionsDash = (props) => {
     }
   };
   const dataSetup = (data, _totalData) => {
-    console.log("data", data);
-    console.log("_totalData", _totalData);
     if (data.length > 0) {
       for (let i = 0; i < data.length; i += 1) {
         // eslint-disable-next-line import/no-named-as-default-member, no-param-reassign
@@ -531,10 +527,6 @@ const AdmissionsDash = (props) => {
   newColumns[1].options.viewColumns = privileges.some(
     (priv) => priv.privilege === "DeleteStudent"
   );
-
-  console.log("sData", sData);
-  console.log("studentData", studentData);
-  console.log("newColumns", newColumns);
 
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>

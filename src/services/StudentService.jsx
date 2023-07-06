@@ -487,12 +487,9 @@ const deadlineColumnTrnasition1 = {
       // ) {
       //   feedbackableStage = true;
       // }
-      // console.log("rowData", rowData);
-      // console.log("rowMeta", rowMeta);
       const ifExistingDeadlineDate =
         rowData && !rowMeta.rowData[7] && feedbackableStage;
       if (ifExistingDeadlineDate) {
-        console.log("I AM DEADLINE");
         const { deadline } = feedbackableStagesData[rowMeta.rowData[0]];
         const diff = new Date().getTime() - new Date(rowData).getTime();
         const hours = Math.floor(diff / 1000 / 60 / 60);
@@ -1241,7 +1238,6 @@ const dashboardStatusColumn = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          {console.log("filterlist", filterlist)}
           <label style={Lables}>Statusppp</label>
           <SelectReact
             options={statusFilterList.map((status) => ({

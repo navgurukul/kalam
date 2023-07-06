@@ -147,20 +147,32 @@ const AdmissionsDash = (props) => {
 
   const fetchOWner = async (signal) => {
     const response = await axios.get(`${baseURL}owner`, { signal });
-    const newData = response.data.data.map((e) => e.user.mail_id);
+    const allData =
+      response && response?.data?.school
+        ? [...response?.data?.data, ...response?.data?.school]
+        : [...response?.data?.data];
+    const newData = allData.map((e) => e.user.mail_id);
     localStorage.setItem("owners", JSON.stringify(newData.sort()));
   };
 
   const fetchPartner = async (signal) => {
     const response = await axios.get(`${baseURL}partners`, { signal });
-    const newData = response.data.data.map((e) => e.name);
+    const allData =
+      response && response?.data?.school
+        ? [...response?.data?.data, ...response?.data?.school]
+        : [...response?.data?.data];
+    const newData = allData.map((e) => e.name);
     localStorage.setItem("partners", JSON.stringify(newData.sort()));
   };
   const fetchUsers = async (signal) => {
     try {
       const response = await axios.get(usersURL, { signal });
       // usersSetup(response.data.data);
-      const newData = response.data.data.map((data) => data.user);
+      const allData =
+        response && response?.data?.school
+          ? [...response?.data?.data, ...response?.data?.school]
+          : [...response?.data?.data];
+      const newData = allData.map((data) => data.user);
       localStorage.setItem("users", JSON.stringify(newData));
     } catch (e) {
       // console.error(e);
@@ -515,6 +527,7 @@ const AdmissionsDash = (props) => {
   newColumns[1].options.viewColumns = privileges.some(
     (priv) => priv.privilege === "DeleteStudent"
   );
+
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
       <ThemeProvider theme={theme}>

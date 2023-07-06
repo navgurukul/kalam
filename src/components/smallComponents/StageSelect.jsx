@@ -241,7 +241,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       nextStage[
         getKeyByValue(
           allStages,
-          isCampus ? stage?.stage || 'enrolmentKeyGenerated' : stage
+          isCampus ? stage?.stage || "enrolmentKeyGenerated" : stage
         )
       ] || []
     ).map((x) => ({

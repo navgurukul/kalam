@@ -122,7 +122,6 @@ const AddPartnerPage = ({ partnerId, closeDialog }) => {
       const dataURL = `${baseUrl}partners/${partnerId}`;
       axios.get(dataURL).then((response) => {
         const { data } = response.data;
-        //console.log("data", data);
         setFormData((prevState) => ({
           ...prevState,
           name: data.name || "",

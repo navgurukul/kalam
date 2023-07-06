@@ -82,7 +82,10 @@ function SorryPage({ redirect }) {
       )
       .then(({ data }) => setTotalMarks(data.total_marks));
   }, []);
+<<<<<<< HEAD
 
+=======
+>>>>>>> ab7b8b96732ddb6e30a578f87a873790c1dd4b43
   return (
     <Container maxWidth="lg" align="center">
       <div className={classes.root}>

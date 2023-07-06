@@ -350,17 +350,17 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   // }
 
   if (stage) {
-    if (isProgrammingSchool) {
-      allStagesOptions = nextStage[
+    allStagesOptions = (
+      nextStage[
         getKeyByValue(
           allStages,
           isCampus ? stage?.stage || "enrolmentKeyGenerated" : stage
         )
-      ].map((x) => ({
-        value: x,
-        label: allStages[x],
-      }));
-    }
+      ] || []
+    ).map((x) => ({
+      value: x,
+      label: allStages[x],
+    }));
   }
   let selectedValue = { value: "invalid", label: "Invalid Stage" };
 

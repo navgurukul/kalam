@@ -19,6 +19,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { makeStyles } from "@mui/styles";
 import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
+import { INPUT_PATTERNS } from "../../../../utils/constants.js";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -180,7 +181,7 @@ const BasicDetails = ({
   formData,
   setProfileImage,
   inputDisabled,
-  reactForm: { errors, control },
+  reactForm: { register, errors, control },
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -193,6 +194,13 @@ const BasicDetails = ({
     }
     setProfileImage(file);
   };
+
+  const date = new Date();
+  const currentDate = date.getDate();
+  const month = date.getMonth();
+  const maxDate = date.getFullYear() - 17;
+  const minDate = date.getFullYear() - 28;
+
   return (
     <Container maxWidth="lg" align="center">
       {/* {pfpCompulsion ?  */}
@@ -235,36 +243,88 @@ const BasicDetails = ({
           ""
         )}
       </label>
-      {/* : null} */}
       <input
         onChange={(e) => uploadProfilePhoto(e)}
         id="ProfileImage"
         type="file"
         name="ProfileImage"
         style={{ display: "none" }}
-        required
+        required={true}
+        error
         disabled={inputDisabled && formData.ProfileImage !== null}
         accept=".png,.jpg,.jpeg"
       />
+      {/* <label style={{
+        cursor: inputDisabled ? "default" : "pointer",
+      }} htmlFor="ProfileImage">
+        <Badge
+          overlap="circular"
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          badgeContent={<CameraAltIcon />}
+        >
+          <Avatar
+            style={{
+              width: "70px",
+              height: "70px",
+            }}
+            alt="ProfileImage"
+            src={
+              formData.ProfileImage
+                ? URL.createObjectURL(formData.ProfileImage.length ? formData.ProfileImage[0] : formData.ProfileImage)
+                : formData.PrevImage
+            }
+          />
+        </Badge>
+        <Typography variant="h6" className={classes.text} color={errors.ProfileImage && "error"}>
+          {langOptions.ProfileImage[lang]}
+        </Typography>
+        <input
+          type="file"
+          id="ProfileImage"
+          {...register("ProfileImage", {
+            // required: "Profile image is required",
+            validate: {
+              required: (_, formData) => formData.ProfileImage.length > 0 || "Profile image is required",
+              fileSize: (value) =>
+                value[0].size < 1000000 || "Profile image size should be less than 1MB",
+              fileType: (value) =>
+                /jpeg|jpg|png/.test(value[0].type) ||
+                "Only JPEG, JPG, and PNG image formats are allowed",
+            },
+            onChange: (e) => uploadProfilePhoto(e)
+          })}
+          style={{ display: "none" }}
+          // error
+          disabled={inputDisabled && formData.ProfileImage !== null}
+          accept=".png,.jpg,.jpeg"
+        />
+        {errors.ProfileImage && (
+          <Typography variant="caption" color="error">
+            {errors.ProfileImage.message}
+          </Typography>
+        )}
+      </label> */}
+
       <Grid style={{ paddingTop: "1.2rem" }} container spacing={2}>
         <Grid item xs={12} sm={6}>
           <Controller
             control={control}
             name="FirstName"
-            rules={{ required: true }}
+            rules={{
+              required: true,
+              pattern: INPUT_PATTERNS.name, //allow anything that is chinese, hindi, english, and Apostrophe
+            }}
             defaultValue={formData.FirstName}
-            render={({ field: { ref, ...rest } }) => (
+            render={({ field: { ref, onChange, ...rest } }) => (
               <TextField
                 variant="outlined"
                 fullWidth
                 id="FirstName"
-                // autoFocus
                 inputRef={ref}
                 onBlur={rest.onBlur}
                 className={classes.spacing}
                 label={langOptions.FirstName[lang]}
                 placeholder={langOptions.FirstName[lang]}
-                // name="FirstName"
                 autoComplete="off"
                 type="text"
                 error={!!errors.FirstName}
@@ -274,6 +334,13 @@ const BasicDetails = ({
                     : "Ex. XYZ"
                 }
                 disabled={inputDisabled && formData.FirstName !== null}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(
+                    INPUT_PATTERNS.replaceName,
+                    ""
+                  );
+                  onChange(newValue);
+                }}
                 {...rest}
               />
             )}
@@ -284,7 +351,7 @@ const BasicDetails = ({
             control={control}
             name="MiddleName"
             defaultValue={formData.MiddleName}
-            render={({ field: { ref, ...rest } }) => (
+            render={({ field: { ref, onChange, ...rest } }) => (
               <TextField
                 variant="outlined"
                 id="MiddleName"
@@ -301,6 +368,13 @@ const BasicDetails = ({
                     : "Ex. PQR"
                 }
                 disabled={inputDisabled && formData.MiddleName !== null}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(
+                    INPUT_PATTERNS.replaceName,
+                    ""
+                  );
+                  onChange(newValue);
+                }}
                 {...rest}
               />
             )}
@@ -312,7 +386,7 @@ const BasicDetails = ({
             defaultValue={formData.LastName}
             name="LastName"
             rules={{ required: true }}
-            render={({ field: { ref, ...rest } }) => (
+            render={({ field: { ref, onChange, ...rest } }) => (
               <TextField
                 variant="outlined"
                 required
@@ -332,6 +406,13 @@ const BasicDetails = ({
                     : "Ex. ABC"
                 }
                 disabled={inputDisabled && formData.LastName !== null}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(
+                    INPUT_PATTERNS.replaceName,
+                    ""
+                  );
+                  onChange(newValue);
+                }}
                 {...rest}
               />
             )}
@@ -369,6 +450,7 @@ const BasicDetails = ({
                     <TextField
                       {...params}
                       error={!!errors.dob}
+                      required
                       helperText={
                         errors.dob
                           ? errors.dob.type === "validate"
@@ -397,7 +479,7 @@ const BasicDetails = ({
             }}
             defaultValue={formData.whatsapp}
             name="whatsapp"
-            render={({ field: { ref, ...rest } }) => (
+            render={({ field: { ref, onChange, ...rest } }) => (
               <TextField
                 variant="outlined"
                 required
@@ -411,7 +493,7 @@ const BasicDetails = ({
                 }}
                 label={langOptions.whatsapp[lang]}
                 placeholder={langOptions.whatsapp[lang]}
-                type="number"
+                type="tel"
                 autoComplete="off"
                 error={!!errors.whatsapp}
                 helperText={
@@ -423,6 +505,13 @@ const BasicDetails = ({
                     : "Ex. 99065xxxxx"
                 }
                 disabled={inputDisabled}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(
+                    INPUT_PATTERNS.numbersOnly,
+                    ""
+                  );
+                  onChange(newValue);
+                }}
                 {...rest}
               />
             )}
@@ -437,7 +526,7 @@ const BasicDetails = ({
               pattern: /(6|7|8|9)\d{9}/,
               maxLength: 10,
             }}
-            render={({ field: { ref, ...rest } }) => (
+            render={({ field: { ref, onChange, ...rest } }) => (
               <TextField
                 variant="outlined"
                 fullWidth
@@ -462,6 +551,13 @@ const BasicDetails = ({
                     : "Ex. 99065xxxxx"
                 }
                 disabled={inputDisabled}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(
+                    INPUT_PATTERNS.numbersOnly,
+                    ""
+                  );
+                  onChange(newValue);
+                }}
                 {...rest}
               />
             )}
@@ -530,7 +626,9 @@ const BasicDetails = ({
               <FormControl
                 disabled={inputDisabled}
                 variant="outlined"
+                required
                 fullWidth
+                error={errors.gender}
               >
                 <InputLabel id="gender-label">
                   {langOptions.gender[lang]}

@@ -19,7 +19,7 @@ const UpdateSchool = (props) => {
   if (value === "programming") {
     value = { id: 1, name: "NG Programming" };
   }
-  if (value.length > 0) {
+  if (value?.length > 0) {
     if (typeof value === "string") {
       value = studentData?.school[0];
       // .map((x) => ({ value: x.id, label: x.label }));
@@ -32,7 +32,7 @@ const UpdateSchool = (props) => {
   //   value = value[0];
   // }
 
-  const selectedValue = { value: value.id, label: value.name };
+  const selectedValue = { value: value?.id, label: value?.name };
 
   useEffect(() => {
     axios

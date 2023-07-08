@@ -132,8 +132,9 @@ const UpdateSchool = (props) => {
       value={selectedValue}
       onChange={handleChange}
       options={
-        data.length && showDropdown
-          ? data.map((x) => ({ value: x.id, label: x.name })) // Either || x.value here
+        data.length
+          ? // && showDropdown
+            data.map((x) => ({ value: x.id, label: x.name })) // Either || x.value here
           : [selectedValue].map((x) => ({
               value: x.id, // Or || x.value here
               label: x.label,

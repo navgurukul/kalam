@@ -232,7 +232,9 @@ const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
             borderRadius: "8px",
           }}
         >
-          <p key={item + Math.random()}> @{item} </p>
+          {item.split("\n").map((i, index) => (
+            <p key={item + Math.random()}> {index === 0 ? `@${i}` : i} </p>
+          ))}
         </div>
       )) || null}
     </div>

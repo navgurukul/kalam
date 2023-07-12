@@ -39,7 +39,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const { loggedInUser } = useSelector((state) => state.auth);
   const { allStatusCount } = useSelector((state) => state.campus);
   //const { allStatusCount } = useSelector((state) => state.students);
-  const refreshTable = (data) =>dispatch(fetchStudents(data));
+  const refreshTable = (data) => dispatch(fetchStudents(data));
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
 
@@ -120,7 +120,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           variant: "success",
         });
         change(isCampus ? { ...stage, stage: label } : label);
-        refreshTable({fetchPendingInterviewDetails: false, dataType: "softwareCourse"});
+        refreshTable({
+          fetchPendingInterviewDetails: false,
+          dataType: "softwareCourse",
+        });
         // getTransitionStage(studentId);
       })
       .catch(() => {
@@ -167,47 +170,56 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   };
 
   const sendOfferLetter = () => {
+    const studentId = rowMetatable.rowData[0];
     toggleLoading();
-    axios
-      .post(
-        `https://connect.merakilearn.org/api/offerLetter/admissions`,
-        state.payload
-      )
-      .then(() => {
-        enqueueSnackbar(
-          `Joining letter successfully sent to ${state.payload.receiverEmail}`,
-          {
+    changeStage({
+      label: "Offer Letter Sent",
+      value: "offerLetterSent",
+    });
+    const offerLetter = () => {
+      axios
+        .post(
+          `https://connect.merakilearn.org/api/offerLetter/admissions`,
+          state.payload
+        )
+        .then(() => {
+          enqueueSnackbar(
+            `Joining letter successfully sent to ${state.payload.receiverEmail}`,
+            {
+              variant: "success",
+            }
+          );
+          toggleLoading();
+          setState({
+            ...state,
+            flag: false,
+          });
+        });
+    };
+    const sendSMS = () => {
+      axios
+        .post(
+          `${baseUrl}/student/sendSmsWhenSendOfferLeterToStudents/${studentId}`
+        )
+        .then((res) => {
+          enqueueSnackbar(`SMS sent successfully!`, {
             variant: "success",
-          }
-        );
-        toggleLoading();
-        setState({
-          ...state,
-          flag: false,
+          });
+        })
+        .catch((err) => {
+          console.log("err", err);
+          enqueueSnackbar(`Something went wrong`, {
+            variant: "error",
+          });
+          toggleLoading();
+          setState({
+            ...state,
+            flag: false,
+          });
         });
-        changeStage({
-          label: "Offer Letter Sent",
-          value: "offerLetterSent",
-        });
-      })
-        // Call the sms sending API
-        const studentId = rowMetatable.rowData[0];
-        axios
-          .post(
-            `${baseUrl}/student/sendSmsWhenSendOfferLeterToStudents/${studentId}`
-          )
-          .then(() => {
-            
-          }).catch(() => {
-        enqueueSnackbar(`Something went wrong`, {
-          variant: "error",
-        });
-        toggleLoading();
-        setState({
-          ...state,
-          flag: false,
-        });
-      });
+    };
+    setTimeout(offerLetter, 1000);
+    setTimeout(sendSMS, 5000);
   };
 
   const handleClose = (e, clickaway) => {

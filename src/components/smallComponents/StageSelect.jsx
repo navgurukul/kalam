@@ -182,14 +182,22 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           `https://connect.merakilearn.org/api/offerLetter/admissions`,
           state.payload
         )
-        .then(() => {
+        .then((res) => {
           enqueueSnackbar(
             `Joining letter successfully sent to ${state.payload.receiverEmail}`,
             {
               variant: "success",
             }
           );
-          toggleLoading();
+          setState({
+            ...state,
+            flag: false,
+          });
+        })
+        .catch((err) => {
+          enqueueSnackbar(`Something went wrong while sending Joining letter`, {
+            variant: "error",
+          });
           setState({
             ...state,
             flag: false,
@@ -205,13 +213,15 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           enqueueSnackbar(`SMS sent successfully!`, {
             variant: "success",
           });
+          setState({
+            ...state,
+            flag: false,
+          });
         })
         .catch((err) => {
-          console.log("err", err);
-          enqueueSnackbar(`Something went wrong`, {
+          enqueueSnackbar(`Something went wrong while sending SMS`, {
             variant: "error",
           });
-          toggleLoading();
           setState({
             ...state,
             flag: false,

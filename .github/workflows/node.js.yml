@@ -1,0 +1,51 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+# From https://github.com/dhxnveer/bhanwari-devi/blob/main/.github/workflows/tests.yml
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    types: [ opened, reopened ]
+
+jobs:
+  build:
+    name: test
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 15.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Builds and tests ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Set npm legacy-peer-deps
+      run: npm config set legacy-peer-deps true
+    - run: npm install
+    - name: Set Environment Variables
+      run: |
+        echo "VITE_API_URL=https://dev-join.navgurukul.org/api/" >> .env.development
+        echo "VITE_API_URL=https://join.navgurukul.org/api/" >> .env.production
+    - run: npm ci
+    - run: npm run build --if-present
+      env:
+       CI: false
+    - name: Run npm run dev
+      run: |
+       npm run dev &
+       sleep 2
+    - name: Run Cypress tests
+      run: npx cypress run --config-file cypress.config.js
+    - name: Archive test artifacts
+      uses: actions/upload-artifact@v2
+      if: always() # always upload videos, even if the test fails
+      with:
+        name: cypress-videos
+        path: cypress/videos    

@@ -169,54 +169,57 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     }
   };
 
-  const sendOfferLetter = async () => {
-    console.log("state", state);
-    await toggleLoading();
-    await changeStage({
+  const sendOfferLetter = () => {
+    const studentId = rowMetatable.rowData[0];
+    toggleLoading();
+    changeStage({
       label: "Offer Letter Sent",
       value: "offerLetterSent",
     });
-    await axios
-      .post(
-        `https://connect.merakilearn.org/api/offerLetter/admissions`,
-        state.payload
-      )
-      .then(() => {
-        enqueueSnackbar(
-          `Joining letter successfully sent to ${state.payload.receiverEmail}`,
-          {
+    const offerLetter = () => {
+      axios
+        .post(
+          `https://connect.merakilearn.org/api/offerLetter/admissions`,
+          state.payload
+        )
+        .then(() => {
+          enqueueSnackbar(
+            `Joining letter successfully sent to ${state.payload.receiverEmail}`,
+            {
+              variant: "success",
+            }
+          );
+          toggleLoading();
+          setState({
+            ...state,
+            flag: false,
+          });
+        });
+    };
+    const sendSMS = () => {
+      axios
+        .post(
+          `${baseUrl}/student/sendSmsWhenSendOfferLeterToStudents/${studentId}`
+        )
+        .then((res) => {
+          enqueueSnackbar(`SMS sent successfully!`, {
             variant: "success",
-          }
-        );
-        toggleLoading();
-        setState({
-          ...state,
-          flag: false,
+          });
+        })
+        .catch((err) => {
+          console.log("err", err);
+          enqueueSnackbar(`Something went wrong`, {
+            variant: "error",
+          });
+          toggleLoading();
+          setState({
+            ...state,
+            flag: false,
+          });
         });
-      });
-    // Call the sms sending API
-    const studentId = rowMetatable.rowData[0];
-    await axios
-      .post(
-        `${baseUrl}/student/sendSmsWhenSendOfferLeterToStudents/${studentId}`
-      )
-      .then((res) => {
-        console.log("res", res);
-        enqueueSnackbar(`SMS sent successfully!`, {
-          variant: "success",
-        });
-      })
-      .catch((err) => {
-        console.log("err", err);
-        enqueueSnackbar(`Something went wrong`, {
-          variant: "error",
-        });
-        toggleLoading();
-        setState({
-          ...state,
-          flag: false,
-        });
-      });
+    };
+    setTimeout(offerLetter, 1000);
+    setTimeout(sendSMS, 5000);
   };
 
   const handleClose = (e, clickaway) => {

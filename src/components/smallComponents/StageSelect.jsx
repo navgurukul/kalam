@@ -39,7 +39,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const { loggedInUser } = useSelector((state) => state.auth);
   const { allStatusCount } = useSelector((state) => state.campus);
   //const { allStatusCount } = useSelector((state) => state.students);
-  const refreshTable = (data) =>dispatch(fetchStudents(data));
+  const refreshTable = (data) => dispatch(fetchStudents(data));
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
 
@@ -120,7 +120,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           variant: "success",
         });
         change(isCampus ? { ...stage, stage: label } : label);
-        refreshTable({fetchPendingInterviewDetails: false, dataType: "softwareCourse"});
+        refreshTable({
+          fetchPendingInterviewDetails: false,
+          dataType: "softwareCourse",
+        });
         // getTransitionStage(studentId);
       })
       .catch(() => {
@@ -166,9 +169,14 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     }
   };
 
-  const sendOfferLetter = () => {
-    toggleLoading();
-    axios
+  const sendOfferLetter = async () => {
+    console.log("state", state);
+    await toggleLoading();
+    await changeStage({
+      label: "Offer Letter Sent",
+      value: "offerLetterSent",
+    });
+    await axios
       .post(
         `https://connect.merakilearn.org/api/offerLetter/admissions`,
         state.payload
@@ -185,20 +193,21 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           ...state,
           flag: false,
         });
-        changeStage({
-          label: "Offer Letter Sent",
-          value: "offerLetterSent",
+      });
+    // Call the sms sending API
+    const studentId = rowMetatable.rowData[0];
+    await axios
+      .post(
+        `${baseUrl}/student/sendSmsWhenSendOfferLeterToStudents/${studentId}`
+      )
+      .then((res) => {
+        console.log("res", res);
+        enqueueSnackbar(`SMS sent successfully!`, {
+          variant: "success",
         });
       })
-        // Call the sms sending API
-        const studentId = rowMetatable.rowData[0];
-        axios
-          .post(
-            `${baseUrl}/student/sendSmsWhenSendOfferLeterToStudents/${studentId}`
-          )
-          .then(() => {
-            
-          }).catch(() => {
+      .catch((err) => {
+        console.log("err", err);
         enqueueSnackbar(`Something went wrong`, {
           variant: "error",
         });

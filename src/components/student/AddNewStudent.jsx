@@ -170,7 +170,7 @@ const AddNewStudent = () => {
       <Divider color="gray" sx={{ mt: "0.8rem", mb: "2rem" }} />
       <Grid container spacing={2}>
         <Grid item xs={3}>
-          <Typography variant="h6">Basic </Typography>
+          <Typography variant="h6">Basic Details</Typography>
           <Divider color="gray" sx={{ mt: "0.2rem", width: "120%" }} />
         </Grid>
 
@@ -381,7 +381,7 @@ const AddNewStudent = () => {
                 <DatePicker
                   disableFuture
                   id="dob"
-                  label="of Birth"
+                  label="Date of Birth"
                   inputRef={ref}
                   focused={isTouched}
                   dateRange={{

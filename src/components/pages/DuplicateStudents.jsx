@@ -117,10 +117,9 @@ const DuplicateStudents = () => {
         customBodyRender: React.useCallback(
           (_, rowMeta) => (
             <Button
-              disabled={
-                rowMeta.rowData[1] !== "pendingEnglishInterview" &&
-                rowMeta.rowData[1] !== "pendingCultureFitInterview" &&
-                rowMeta.rowData[1] !== "pendingAlgebraInterview"
+              disabled={rowMeta.rowData[1] !== "pendingEnglishInterview"
+                && rowMeta.rowData[1] !== "pendingCultureFitInterview"
+                && rowMeta.rowData[1] !== "pendingAlgebraInterview"
               }
               variant="contained"
               color="primary"
@@ -162,12 +161,10 @@ const DuplicateStudents = () => {
   ];
   const message = {
     stageMessage: {
-      en: `Your  ${
-        allStages[test.pendingInterviewStage]
-      } is still pending. You’re not required to give the online test now. We will soon complete your admission process.`,
-      hi: `आपका  ${
-        allStages[test.pendingInterviewStage]
-      }  अभी भी चल रहा हैं। अभी आपको ऑनलाइन परीक्षा देने की आवश्यकता नहीं है। हम जल्द ही आपकी प्रवेश प्रक्रिया (एडमिशन प्रोसेस) पूरी कर देंगे।`,
+      en: `Your  ${allStages[test.pendingInterviewStage]
+        } is still pending. You’re not required to give the online test now. We will soon complete your admission process.`,
+      hi: `आपका  ${allStages[test.pendingInterviewStage]
+        }  अभी भी चल रहा हैं। अभी आपको ऑनलाइन परीक्षा देने की आवश्यकता नहीं है। हम जल्द ही आपकी प्रवेश प्रक्रिया (एडमिशन प्रोसेस) पूरी कर देंगे।`,
     },
     testFailedMessage: {
       en: `, Your previous attempts were unsuccessful/test failed, please give the 1st stage of the online test again.`,
@@ -226,9 +223,11 @@ const DuplicateStudents = () => {
   const { pendingInterviewStage } = test;
   if (splittedName.length === 3) {
     [firstName, middleName, lastName] = splittedName;
+    console.log("Middle name", middleName);
   } else {
     [firstName, lastName] = splittedName;
   }
+  console.log("Is this page is coming?");
 
   return (
     <>
@@ -239,12 +238,11 @@ const DuplicateStudents = () => {
       <MUIDataTable
         title={
           pendingInterviewStage === "enrolmentKeyGenerated" ||
-          pendingInterviewStage === "testFailed"
+            pendingInterviewStage === "testFailed"
             ? `${firstName.concat(" ", middleName, " ", lastName)}
             ${message.testFailedMessage[selectedLang]}`
-            : `${firstName.concat(" ", middleName, " ", lastName)}${
-                message.stageMessage[selectedLang]
-              }`
+            : `${firstName.concat(" ", middleName, " ", lastName)}${message.stageMessage[selectedLang]
+            }`
         }
         columns={columns}
         data={data}

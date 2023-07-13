@@ -141,7 +141,7 @@ const LandingPage = () => {
       ma: "तुम्ही ज्या क्रमांकावरून चाचणी दिली होती ती क्रमांक टाकून तुमचा चाचणी निकाल तपासा",
     },
     AdmisssionTitle: {
-      // en: "Start Admisssion Test",
+      en: "Start Admisssion Test",
       hi: "परीक्षा शुरू करें",
       ma: "प्रवेश परीक्षा सुरू करा",
     },
@@ -327,23 +327,31 @@ const LandingPage = () => {
   const giveTest = async () => {
     const { mobileNumber, firstName, lastName } = state;
     if (!mobileNumber || !firstName || !lastName) {
-      enqueueSnackbar(<strong>{lang.mandatoryField[selectedLang]}</strong>, {
-        variant: "error",
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
-      });
+      enqueueSnackbar(
+        <strong data-cy="error-bar">
+          {lang.mandatoryField[selectedLang]}
+        </strong>,
+        {
+          variant: "error",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+        }
+      );
       return;
     }
     if (mobileNumber.toString().length !== 10) {
-      enqueueSnackbar(<strong>{lang.mobileNumber[selectedLang]}</strong>, {
-        variant: "error",
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
-      });
+      enqueueSnackbar(
+        <strong data-cy="error-bar">{lang.mobileNumber[selectedLang]}</strong>,
+        {
+          variant: "error",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+        }
+      );
       return;
     }
     await isDuplicate();
@@ -406,7 +414,7 @@ const LandingPage = () => {
               <Paper className={classes.loginContainer}>
                 <Box>
                   <Grid item xs={12}>
-                    <Typography variant="h5" component="h4">
+                    <Typography data-cy="title" variant="h5" component="h4">
                       {lang.AdmisssionTitle[selectedLang]}
                     </Typography>
                   </Grid>
@@ -418,6 +426,7 @@ const LandingPage = () => {
                   }}
                 >
                   <TextField
+                    data-cy="firstName-input"
                     required
                     id="filled-full-width"
                     margin="normal"
@@ -434,6 +443,7 @@ const LandingPage = () => {
                   />
 
                   <TextField
+                    data-cy="middleName-input"
                     id="filled-full-width"
                     margin="normal"
                     style={{ margin: 8 }}
@@ -454,6 +464,7 @@ const LandingPage = () => {
                   }}
                 >
                   <TextField
+                    data-cy="lastName-input"
                     required
                     id="filled-full-width"
                     margin="normal"
@@ -470,6 +481,7 @@ const LandingPage = () => {
                   />
 
                   <TextField
+                    data-cy="mobileNumber-input"
                     required
                     id="filled-full-width"
                     margin="normal"
@@ -489,7 +501,12 @@ const LandingPage = () => {
                   />
                 </div>
                 <div className={classes.root}>
-                  <Button variant="outlined" onClick={giveTest} color="primary">
+                  <Button
+                    data-cy="submitButton"
+                    variant="outlined"
+                    onClick={giveTest}
+                    color="primary"
+                  >
                     {lang.TestButton[selectedLang]}
                   </Button>
                 </div>

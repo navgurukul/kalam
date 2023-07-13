@@ -29,7 +29,7 @@ const tutorialSteps = [
     },
     subHadding: {
       // old:"Select Your Languge/ अपनी भाषा चुने",
-      en: "Select Your Languge",
+      en: "Select Your Language",
       hi: "अपनी भाषा चुने",
       ma: "तुमची भाषा निवडा",
     },
@@ -39,7 +39,7 @@ const tutorialSteps = [
     inputField: true,
     button: {
       // old:"Aage chalein",
-      en: "Let's go Ahead ",
+      en: "Let's go Ahead",
       hi: "आगे बढ़ो",
       ma: "पुढे जा",
     },
@@ -219,12 +219,12 @@ const TestInstructions = () => {
     <Container maxWidth="lg" align="center">
       <div className={classes.root}>
         <Paper square elevation={0} className={classes.heading}>
-          <Typography variant="h4">
+          <Typography data-cy="heading" variant="h4">
             {tutorialSteps[activeStep].heading[lang]}
           </Typography>
         </Paper>
         <Paper square elevation={0} className={classes.content}>
-          <Typography variant="h5">
+          <Typography data-cy="title" variant="h5">
             {tutorialSteps[activeStep].subHadding?.[lang]}
           </Typography>
         </Paper>
@@ -269,14 +269,21 @@ const TestInstructions = () => {
                 Choose your language
               </InputLabel>
               <Select
+                data-cy="lang-dropdown"
                 value={lang}
                 onChange={changeHandler}
                 label="Choose your language"
                 name="Language"
               >
-                <MenuItem value="hi">Hindi</MenuItem>
-                <MenuItem value="en">English</MenuItem>
-                <MenuItem value="ma">Marathi</MenuItem>
+                <MenuItem data-cy="en" value="en">
+                  English
+                </MenuItem>
+                <MenuItem data-cy="hi" value="hi">
+                  Hindi
+                </MenuItem>
+                <MenuItem data-cy="ma" value="ma">
+                  Marathi
+                </MenuItem>
               </Select>
             </FormControl>
           </Paper>
@@ -284,6 +291,7 @@ const TestInstructions = () => {
         {tutorialSteps[activeStep].button ? (
           <Paper square elevation={0} className={classes.content}>
             <Button
+              data-cy="nextStepButton"
               type="submit"
               fullWidth
               variant="contained"
@@ -297,6 +305,7 @@ const TestInstructions = () => {
         {tutorialSteps[activeStep].button3 ? (
           <Paper square elevation={0} className={classes.content}>
             <Button
+              data-cy="startTestButton"
               type="submit"
               fullWidth
               variant="contained"

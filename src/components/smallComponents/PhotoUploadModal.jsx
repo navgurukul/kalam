@@ -42,7 +42,7 @@ const PhotoUploadModal = ({
 
   const updateProfilePhoto = (e) => {
     const file = e.target.files[0];
-    //check if file size is greater than savePhoto1mb
+    //check if file size is greater than 1mb
     if (file.size > 1000000) {
       enqueueSnackbar("File size should not exceed 1MB", { variant: "error" });
       return;
@@ -115,7 +115,7 @@ const PhotoUploadModal = ({
         }}
       >
         <Avatar
-          src={updatedPhoto || updatedPicTable ? previewPhoto : src}
+          src={updatedPhoto ? previewPhoto : src}
           style={{
             width: "120px",
             height: "120px",

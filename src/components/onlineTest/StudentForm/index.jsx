@@ -132,6 +132,7 @@ const StudentForm = () => {
   };
 
   const setProfileImage = (img) => {
+    console.log(img);
     setFormData({ ...formData, ProfileImage: img });
     savePhoto(img);
   };

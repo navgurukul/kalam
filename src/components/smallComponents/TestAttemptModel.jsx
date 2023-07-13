@@ -37,16 +37,16 @@ export default function TestAttemptModel({ value }) {
           <CancelSharpIcon onClick={Close} sx={{ mt: -1, cursor: "Pointer" }} />
           <FormControl sx={{ m: 1, minWidth: 180, ml: 12 }}>
             {value.map((el, i) => {
-              return (              
-                  <MenuItem key={i} value={el}>
-                    <Button>
-                      <StageMarks
-                        value={el}
-                        name={i + 1}
-                        marks={el.total_marks}
-                      />
-                    </Button>
-                  </MenuItem>                
+              return (
+                <MenuItem key={i} value={el}>
+                  <Button>
+                    <StageMarks
+                      value={el}
+                      name={i + 1}
+                      marks={el.total_marks}
+                    />
+                  </Button>
+                </MenuItem>
               );
             })}
           </FormControl>

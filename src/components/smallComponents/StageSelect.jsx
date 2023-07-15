@@ -31,7 +31,6 @@ const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
 function getSchoolId(currentSchool, allSchools) {
-  console.log("allSchools", allSchools);
   if (typeof currentSchool === "string") {
     for (const item of allSchools) {
       if (item.name === currentSchool) {
@@ -75,8 +74,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     },
   });
 
-  console.log("stage in StageSelect", stage);
-
   /*Stages for schools other than School of Programming */
   const [schoolStages, setSchoolStages] = React.useState([]);
   const [studentData, setStudentData] = React.useState();
@@ -102,14 +99,11 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       .get(`${baseUrl}students/${studentId}`)
       .then((res) => {
         setStudentData(res.data.data[0]);
-        console.log("res", res);
       })
       .catch((err) => {
         console.log("err", err);
       });
   }, []);
-
-  console.log("studentData after useEffect", studentData);
 
   const currentSchool = rowMetatable.rowData[25];
   const schoolId = getSchoolId(currentSchool, allSchools);
@@ -190,14 +184,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const changeStage = (selectedValue) => {
     const studentId = rowMetatable.rowData[0];
     const { value, label } = selectedValue;
-    console.log("value", value);
-    console.log("label", label);
-    console.log("studentId", studentId);
-    console.log("loggedInUser.user_name", loggedInUser.user_name);
+
     axios
       .post(`${baseUrl}students/changeStage/${studentId}`, {
         stage: isProgrammingSchool ? value : label,
-        // stage: value,
         transition_done_by: loggedInUser.user_name,
       })
       .then(() => {
@@ -205,7 +195,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           variant: "success",
         });
         change(isCampus ? { ...stage, stage: label } : label);
-        // change(isCampus ? { ...stage, stage: label } : selectedValue);
         // getTransitionStage(studentId);
       })
       .catch(() => {
@@ -214,47 +203,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         });
       });
   };
-
-  // Was using for other schools previously
-  // const changeStageChangeOther = async (selectedValue) => {
-  //   const studentId = rowMetatable.rowData[0];
-  //   const { value, label } = selectedValue;
-  //   try {
-  //     // const response = await axios.post(`${baseUrl}stage/students`, {
-  //     //   student_id: studentId,
-  //     //   "stage_id": value,
-  //     //   "student_stage": label
-  //     // });
-
-  //     axios
-  //       .post(`${baseUrl}stage/students`, {
-  //         student_id: studentId,
-  //         stage_id: value,
-  //         student_stage: label,
-  //         transition_done_by: loggedInUser.user_name,
-  //       })
-  //       .then(() => {
-  //         enqueueSnackbar("Stage Updated!", {
-  //           variant: "success",
-  //         });
-  //         change(isCampus ? { ...stage, stage: label } : label);
-  //         // change(isCampus ? { ...stage, stage: label } : selectedValue);
-  //         // getTransitionStage(studentId);
-  //       });
-
-  //     // PUT/stage/update/{id}
-
-  //     // const res = await axios.post(`${baseUrl}stage/update/${studentId}`, {
-  //     //     stageName: label,
-  //     //     stageType: "Test"
-  //     // });
-  //   } catch (e) {
-  //     //console.log(e)
-  //     enqueueSnackbar("Something is wrong with previous stage!", {
-  //       variant: "error",
-  //     });
-  //   }
-  // };
 
   const handleChange = async (selectedValue) => {
     const { value } = selectedValue;
@@ -285,12 +233,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       });
     } else if (value !== "offerLetterSent") {
       changeStage(selectedValue);
-      // Was using for other schools previously
-      // if (isProgrammingSchool) {
-      //   changeStage(selectedValue);
-      // } else {
-      //   changeStageChangeOther(selectedValue);
-      // }
     } else {
       enqueueSnackbar("Please update email or campus!", {
         variant: "error",
@@ -378,8 +320,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     }));
   }
   let selectedValue = { value: "invalid", label: "Invalid Stage" };
-  console.log("studentData", studentData);
-  console.log("stage", stage);
 
   if (stage) {
     if (isProgrammingSchool) {
@@ -387,7 +327,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         value: _.invert(allStages)[isCampus ? stage?.stage || "" : stage],
         label: isCampus ? stage?.stage || "" : stage,
       };
-      console.log("selectedValue in if", selectedValue);
     } else {
       // selectedValue = {
       //   value: studentData?.student_school_stage?.id,
@@ -397,7 +336,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         value: studentData?.school_stage_id,
         label: studentData?.stage,
       };
-      console.log("selectedValue in else", selectedValue);
     }
   } else {
     selectedValue = {
@@ -405,8 +343,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       label: studentData?.stage,
     };
   }
-
-  console.log("selectedValue later", selectedValue);
 
   // useEffect(() => getTransitionStage(rowMetatable.rowData[0]), []);
   return (

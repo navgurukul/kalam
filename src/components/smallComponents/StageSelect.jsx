@@ -184,9 +184,13 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const changeStage = (selectedValue) => {
     const studentId = rowMetatable.rowData[0];
     const { value, label } = selectedValue;
+    console.log("value", value);
+    console.log("studentId", studentId);
+    console.log("loggedInUser.user_name", loggedInUser.user_name);
     axios
       .post(`${baseUrl}students/changeStage/${studentId}`, {
-        stage: value,
+        stage: isProgrammingSchool ? value : toString(value),
+        // stage: value,
         transition_done_by: loggedInUser.user_name,
       })
       .then(() => {
@@ -203,45 +207,46 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       });
   };
 
-  const changeStageChangeOther = async (selectedValue) => {
-    const studentId = rowMetatable.rowData[0];
-    const { value, label } = selectedValue;
-    try {
-      // const response = await axios.post(`${baseUrl}stage/students`, {
-      //   student_id: studentId,
-      //   "stage_id": value,
-      //   "student_stage": label
-      // });
+  // Was using for other schools previously
+  // const changeStageChangeOther = async (selectedValue) => {
+  //   const studentId = rowMetatable.rowData[0];
+  //   const { value, label } = selectedValue;
+  //   try {
+  //     // const response = await axios.post(`${baseUrl}stage/students`, {
+  //     //   student_id: studentId,
+  //     //   "stage_id": value,
+  //     //   "student_stage": label
+  //     // });
 
-      axios
-        .post(`${baseUrl}stage/students`, {
-          student_id: studentId,
-          stage_id: value,
-          student_stage: label,
-          transition_done_by: loggedInUser.user_name,
-        })
-        .then(() => {
-          enqueueSnackbar("Stage Updated!", {
-            variant: "success",
-          });
-          change(isCampus ? { ...stage, stage: label } : label);
-          // change(isCampus ? { ...stage, stage: label } : selectedValue);
-          // getTransitionStage(studentId);
-        });
+  //     axios
+  //       .post(`${baseUrl}stage/students`, {
+  //         student_id: studentId,
+  //         stage_id: value,
+  //         student_stage: label,
+  //         transition_done_by: loggedInUser.user_name,
+  //       })
+  //       .then(() => {
+  //         enqueueSnackbar("Stage Updated!", {
+  //           variant: "success",
+  //         });
+  //         change(isCampus ? { ...stage, stage: label } : label);
+  //         // change(isCampus ? { ...stage, stage: label } : selectedValue);
+  //         // getTransitionStage(studentId);
+  //       });
 
-      // PUT/stage/update/{id}
+  //     // PUT/stage/update/{id}
 
-      // const res = await axios.post(`${baseUrl}stage/update/${studentId}`, {
-      //     stageName: label,
-      //     stageType: "Test"
-      // });
-    } catch (e) {
-      //console.log(e)
-      enqueueSnackbar("Something is wrong with previous stage!", {
-        variant: "error",
-      });
-    }
-  };
+  //     // const res = await axios.post(`${baseUrl}stage/update/${studentId}`, {
+  //     //     stageName: label,
+  //     //     stageType: "Test"
+  //     // });
+  //   } catch (e) {
+  //     //console.log(e)
+  //     enqueueSnackbar("Something is wrong with previous stage!", {
+  //       variant: "error",
+  //     });
+  //   }
+  // };
 
   const handleChange = async (selectedValue) => {
     const { value } = selectedValue;
@@ -271,11 +276,13 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         },
       });
     } else if (value !== "offerLetterSent") {
-      if (isProgrammingSchool) {
-        changeStage(selectedValue);
-      } else {
-        changeStageChangeOther(selectedValue);
-      }
+      changeStage(selectedValue);
+      // Was using for other schools previously
+      // if (isProgrammingSchool) {
+      //   changeStage(selectedValue);
+      // } else {
+      //   changeStageChangeOther(selectedValue);
+      // }
     } else {
       enqueueSnackbar("Please update email or campus!", {
         variant: "error",

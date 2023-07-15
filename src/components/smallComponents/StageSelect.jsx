@@ -91,6 +91,15 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       .catch((err) => {
         console.log("err", err);
       });
+    const studentId = rowMetatable.rowData[0];
+    axios
+      .get(`${baseUrl}students/${studentId}`)
+      .then((res) => {
+        setStudentData(res.data.data[0]);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
   }, []);
 
   useEffect(() => {
@@ -103,7 +112,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       .catch((err) => {
         console.log("err", err);
       });
-  }, []);
+  }, [stage]);
 
   const currentSchool = rowMetatable.rowData[25];
   const schoolId = getSchoolId(currentSchool, allSchools);

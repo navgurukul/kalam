@@ -106,10 +106,6 @@ const LoginDesign = () => {
     const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
     return quote;
   }, []);
-<<<<<<< HEAD
-
-=======
->>>>>>> ab7b8b96732ddb6e30a578f87a873790c1dd4b43
   const { quote, author } = getQuote();
 
   return (

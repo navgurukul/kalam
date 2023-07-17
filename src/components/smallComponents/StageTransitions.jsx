@@ -98,12 +98,8 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
       const joinedStudent = [];
       const joinedOutreach = [];
       const campusMilestoneKey = Object.keys(campusStageOfLearning);
-      const allData =
-        response && response?.data?.school
-          ? [...response?.data?.data, ...response?.data?.school]
-          : [...response?.data?.data];
       if (loggedInUser) {
-        newData = allData?.map((v) => {
+        newData = response.data.data.map((v) => {
           if (campusMilestoneKey.indexOf(v.to_stage) !== -1)
             joinedStudent.push(v);
           else joinedOutreach.push(v);
@@ -114,7 +110,7 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
           };
         });
       } else {
-        newData = allData?.map((v) => {
+        newData = response.data.data.map((v) => {
           if (campusMilestoneKey.indexOf(v.to_stage) !== -1) {
             joinedStudent.push(v);
           } else {
@@ -187,11 +183,6 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
     responsive: "vertical",
   };
 
-  console.log(
-    "StudentService.columns[dataType]",
-    StudentService.columns[dataType]
-  );
-  console.log("selectedStudent?.transitions", selectedStudent?.transitions);
   return (
     <>
       {isShow ? (

@@ -148,21 +148,13 @@ const AdmissionsDash = (props) => {
 
   const fetchOWner = async (signal) => {
     const response = await axios.get(`${baseURL}owner`, { signal });
-    const allData =
-      response && response?.data?.school
-        ? [...response?.data?.data, ...response?.data?.school]
-        : [...response?.data?.data];
-    const newData = allData.map((e) => e.user.mail_id);
+    const newData = response.data.data.map((e) => e.user.mail_id);
     localStorage.setItem("owners", JSON.stringify(newData.sort()));
   };
 
   const fetchPartner = async (signal) => {
     const response = await axios.get(`${baseURL}partners`, { signal });
-    const allData =
-      response && response?.data?.school
-        ? [...response?.data?.data, ...response?.data?.school]
-        : [...response?.data?.data];
-    const newData = allData.map((e) => e.name);
+    const newData = response.data.data.map((e) => e.name);
     localStorage.setItem("partners", JSON.stringify(newData.sort()));
   };
   const fetchUsers = async (signal) => {

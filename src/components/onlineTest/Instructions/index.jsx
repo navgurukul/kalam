@@ -175,7 +175,6 @@ const TestInstructions = () => {
 
   const handleNext = () => {
     if (activeStep === maxSteps - 1) {
-      // console.log(enrollmentKey, rest);
       localStorage.setItem("enrollmentKey", encryptText(`${enrollmentKey}`));
       // dispatch(setEnrollmentKey(enrollmentKey));
       if (studentId) {

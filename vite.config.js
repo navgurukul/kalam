@@ -63,7 +63,6 @@ const commonConfig = {
 };
 
 export default defineConfig(({ mode }) => {
-  // console.log(command, mode);
   if (mode === "development") {
     return {
       ...commonConfig,

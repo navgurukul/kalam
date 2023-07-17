@@ -389,7 +389,6 @@ const AdmissionsDash = (props) => {
   }, []);
 
   useEffect(() => {
-    // console.log("FPI", fetchPendingInterviewDetails, dataType);
     if (loggedInUser)
       dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType })); //softwareCourse
   }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser, school]);

@@ -62,8 +62,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const setCampusCounts = (counts) => dispatch(setCounts(counts));
   const { loggedInUser } = useSelector((state) => state.auth);
   const { allStatusCount } = useSelector((state) => state.campus);
-  //const { allStatusCount } = useSelector((state) => state.students);
-  const refreshTable = (data) => dispatch(fetchStudents(data));
+  // const { allStatusCount } = useSelector((state) => state.students);
+  // const refreshTable = (data) => dispatch(fetchStudents(data));
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
   const [state, setState] = React.useState({
@@ -206,10 +206,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           variant: "success",
         });
         change(isCampus ? { ...stage, stage: label } : label);
-        refreshTable({
-          fetchPendingInterviewDetails: false,
-          dataType: "softwareCourse",
-        });
+        // refreshTable({
+        //   fetchPendingInterviewDetails: false,
+        //   dataType: "softwareCourse",
+        // });
         // getTransitionStage(studentId);
       })
       .catch(() => {

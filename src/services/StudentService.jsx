@@ -985,8 +985,6 @@ const donorColumn = {
 
 const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
-  console.log("value stage", value);
-  console.log("rowMeta stage", rowMeta);
   const isCampusPathname = window.location.pathname.indexOf("campus");
   return privileges?.some((priv) => priv.privilege === "UpdateStage") ? (
     <StageSelect
@@ -1257,7 +1255,7 @@ const dashboardStatusColumn = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          <label style={Lables}>Statusppp</label>
+          <label style={Lables}>Status</label>
           <SelectReact
             options={statusFilterList.map((status) => ({
               value: status,
@@ -1394,7 +1392,7 @@ const statusColumnMyreport = {
 };
 
 const dashboardOwnerColumnMyreport = {
-  label: "Ownerrrrrrr",
+  label: "Owner",
   name: "studentOwner",
   options: {
     filter: true,
@@ -1402,7 +1400,7 @@ const dashboardOwnerColumnMyreport = {
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
         <div>
-          <label style={Lables}>Ownerpppp</label>
+          <label style={Lables}>Owner</label>
           <SelectReact
             options={["All", ...JSON.parse(localStorage.getItem("owners"))].map(
               (item) => ({

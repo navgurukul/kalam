@@ -1007,7 +1007,6 @@ const stageColumn = {
     display: true,
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
-      console.log("value --------", value);
       return (
         <StageSelectWrapper
           value={value}

@@ -229,7 +229,7 @@ const OverviewData = ({ url, isCampus = false }) => {
           justifyContent: "center",
           width: "100%",
         }}
-       />
+      />
       {/* CAMPUS COUNT */}
       <Grid item xs={12} md={12} lg={6}>
         <MUIDataTable
@@ -262,7 +262,7 @@ const OverviewData = ({ url, isCampus = false }) => {
       {locationCampus === "campus" ? options2 : options}
       <MainLayout
         tableBodyMaxHeight="56vh"
-        title="Progress Offerd"
+        title="Programs offered"
         columns={columns}
         data={schoolList}
         showLoader={loading}
@@ -307,11 +307,11 @@ const OverviewData = ({ url, isCampus = false }) => {
                 }}
               >
                 {schoolData.map((el) => (
-                    <option value={el.id} key={el.id}>
-                      {" "}
-                      {el.name}
-                    </option>
-                  ))}
+                  <option value={el.id} key={el.id}>
+                    {" "}
+                    {el.name}
+                  </option>
+                ))}
               </NativeSelect>
             </FormControl>
             <div>

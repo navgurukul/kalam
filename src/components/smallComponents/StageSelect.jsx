@@ -259,7 +259,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     setLoading(!loading);
     const studentId = rowMetatable.rowData[0];
     // toggleLoading();
-    console.log("loading in sendOfferLetter", loading);
+    // console.log("loading in sendOfferLetter", loading);
     changeStage({
       label: "Offer Letter Sent",
       value: "offerLetterSent",
@@ -271,7 +271,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           state.payload
         )
         .then((res) => {
-          console.log("Is loading true in offer sent ", loading);
+          // console.log("Is loading true in offer sent ", loading);
           enqueueSnackbar(
             `Joining letter successfully sent to ${state.payload.receiverEmail}`,
             {
@@ -286,7 +286,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           // loading && toggleLoading();
         })
         .catch((err) => {
-          console.log("Is loading true in offer ERROR ", loading);
+          // console.log("Is loading true in offer ERROR ", loading);
           enqueueSnackbar(`Something went wrong while sending Joining letter`, {
             variant: "error",
           });
@@ -304,7 +304,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           `${baseUrl}/student/sendSmsWhenSendOfferLeterToStudents/${studentId}`
         )
         .then((res) => {
-          console.log("Is loading true in SMS sent ", loading);
+          // console.log("Is loading true in SMS sent ", loading);
           enqueueSnackbar(`SMS sent successfully!`, {
             variant: "success",
           });
@@ -315,7 +315,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           // loading && toggleLoading();
         })
         .catch((err) => {
-          console.log("Is loading true in SMS ERROR ", loading);
+          // console.log("Is loading true in SMS ERROR ", loading);
           enqueueSnackbar(`Something went wrong while sending SMS`, {
             variant: "error",
           });
@@ -374,9 +374,24 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       label: allStages[x],
     }));
   }
+
   let selectedValue = { value: "invalid", label: "Invalid Stage" };
-  console.log("selectedValue Above", selectedValue);
-  console.log("allStages", allStages);
+
+  // useEffect(() => {
+  //   console.log("schoolStages", schoolStages);
+  //   selectedValue = isProgrammingSchool
+  //     ? {
+  //         value: studentData?.stage,
+  //         label: allStages[studentData?.stage],
+  //       }
+  //     : {
+  //         value: studentData?.school_stage_id,
+  //         label: studentData?.stage,
+  //       };
+  // }, [currentSchool]);
+
+  // console.log("selectedValue Above", selectedValue);
+  // console.log("allStages", allStages);
 
   if (stage) {
     if (isProgrammingSchool) {
@@ -411,8 +426,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     // if (studentData?.school[0].id === 1) {
     if (isProgrammingSchool) {
       selectedValue = { value: "", label: "" };
-      console.log("value", studentData?.stage);
-      console.log("label", _.invert(allStages)[studentData?.stage]);
       selectedValue = {
         value: studentData?.stage,
         label: allStages[studentData?.stage],
@@ -431,10 +444,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     // }
     // }
   }
-
-  console.log("studentData", studentData);
-  console.log("stage", stage);
-  console.log("selectedValue Below", selectedValue);
 
   // useEffect(() => getTransitionStage(rowMetatable.rowData[0]), []);
   return (
@@ -503,8 +512,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
             NO
           </Button>
           <Button disabled={loading} onClick={sendOfferLetter} color="primary">
-            YES
-            {/* {loading ? <HalfCircleSpinner size={24} color="#f05f40" /> : "YES"} */}
+            {loading ? <HalfCircleSpinner size={24} color="#f05f40" /> : "YES"}
           </Button>
         </DialogActions>
       </Dialog>

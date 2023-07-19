@@ -158,6 +158,8 @@ const ServerSidePagination = ({
         return body;
       })
       .join("\n");
+
+    console.log("fullStudentData --------------------", fullStudentData);
     const csvContent = `${await columns
       .map((col) => col.label)
       .join(",")}"\n"${fullStudentData}`;

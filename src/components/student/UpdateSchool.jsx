@@ -126,8 +126,8 @@ const UpdateSchool = (props) => {
       });
   }
 
-  console.log("data", data);
-  console.log("selectedValue", selectedValue);
+  // console.log("data", data);
+  // console.log("selectedValue", selectedValue);
 
   return (
     <Select

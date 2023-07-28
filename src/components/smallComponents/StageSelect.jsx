@@ -80,7 +80,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const [schoolStages, setSchoolStages] = React.useState([]);
   const [studentData, setStudentData] = React.useState();
   const [loading, setLoading] = React.useState(false);
-  // const toggleLoading = () => setLoading((prev) => !prev);
+  const toggleLoading = () => setLoading((prev) => !prev);
 
   const [allSchools, setAllSchools] = React.useState();
 
@@ -256,10 +256,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   };
 
   const sendOfferLetter = () => {
-    setLoading(!loading);
     const studentId = rowMetatable.rowData[0];
-    // toggleLoading();
-    // console.log("loading in sendOfferLetter", loading);
+    toggleLoading();
     changeStage({
       label: "Offer Letter Sent",
       value: "offerLetterSent",
@@ -271,32 +269,28 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           state.payload
         )
         .then((res) => {
-          // console.log("Is loading true in offer sent ", loading);
           enqueueSnackbar(
             `Joining letter successfully sent to ${state.payload.receiverEmail}`,
             {
               variant: "success",
             }
           );
+          toggleLoading();
           setState({
             ...state,
             flag: false,
           });
-          // loading && setLoading(!loading)
-          // loading && toggleLoading();
         })
         .catch((err) => {
-          // console.log("Is loading true in offer ERROR ", loading);
           enqueueSnackbar(`Something went wrong while sending Joining letter`, {
             variant: "error",
           });
+          toggleLoading();
           setState({
             ...state,
             flag: false,
           });
         });
-      // loading && setLoading(!loading)
-      // loading && toggleLoading();
     };
     const sendSMS = () => {
       axios
@@ -304,7 +298,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           `${baseUrl}/student/sendSmsWhenSendOfferLeterToStudents/${studentId}`
         )
         .then((res) => {
-          // console.log("Is loading true in SMS sent ", loading);
           enqueueSnackbar(`SMS sent successfully!`, {
             variant: "success",
           });
@@ -312,10 +305,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
             ...state,
             flag: false,
           });
-          // loading && toggleLoading();
         })
         .catch((err) => {
-          // console.log("Is loading true in SMS ERROR ", loading);
           enqueueSnackbar(`Something went wrong while sending SMS`, {
             variant: "error",
           });
@@ -323,7 +314,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
             ...state,
             flag: false,
           });
-          // loading && toggleLoading();
         });
     };
     setTimeout(offerLetter, 1000);
@@ -331,9 +321,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   };
 
   const handleClose = (e, clickaway) => {
-    loading && setLoading(!loading);
     if (clickaway) return;
-    // loading && toggleLoading();
+    toggleLoading();
     setState({
       ...state,
       flag: false,

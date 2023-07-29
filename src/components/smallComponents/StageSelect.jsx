@@ -81,10 +81,12 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const [studentData, setStudentData] = React.useState();
   const [loading, setLoading] = React.useState(false);
   const toggleLoading = () => setLoading((prev) => !prev);
-
+  const [firstStages, setFirstStages] = React.useState();
   const [allSchools, setAllSchools] = React.useState();
+  const [reload, setReload] = React.useState(false);
 
   useEffect(() => {
+    setReload(true);
     axios
       .get(`${baseUrl}school`)
       .then((res) => {
@@ -119,26 +121,75 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const currentSchool = rowMetatable.rowData[25];
   const schoolId = getSchoolId(currentSchool, allSchools);
   const isProgrammingSchool = schoolId === 1;
+  let selectedValue = { value: "invalid", label: "Invalid Stage" };
 
   useEffect(() => {
-    if (isProgrammingSchool || !currentSchool) return;
+    // if (isProgrammingSchool || !currentSchool) return;
+    console.log("currentSchool", currentSchool);
+    const studentId = rowMetatable.rowData[0];
+
+    if (isProgrammingSchool || !currentSchool) {
+      setFirstStages({
+        value: "enrolmentKeyGenerated",
+        label: allStages.enrolmentKeyGenerated,
+      });
+      // axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+      //   stage: "enrolmentKeyGenerated",
+      //   transition_done_by: loggedInUser.user_name,
+      // });
+    }
 
     if (schoolId === -1) return;
 
-    (async () => {
-      try {
-        const response = await axios.get(`${baseUrl}stage/${schoolId}`);
+    if (!isProgrammingSchool) {
+      axios
+        .get(`${baseUrl}stage/${schoolId}`)
+        .then((response) => {
+          console.log("response *************", response);
+          const data = response.data.map((element) => {
+            const obj = { value: element.id, label: element.stageName };
+            return obj;
+          });
 
-        const data = response.data.map((element) => {
-          const obj = { value: element.id, label: element.stageName };
-          return obj;
+          setFirstStages({
+            value: data[0]?.value,
+            label: data[0]?.label,
+          });
+
+          if (reload) {
+            //need to change the condition
+            axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+              stage: response.data[0]?.stageName,
+              transition_done_by: loggedInUser.user_name,
+            });
+            // .then((res) => {
+            //   console.log("res-----", data[0]?.labe, res);
+            // })
+            // .catch((err) => {
+            //   console.log("err------------", data[0]?.labe, err);
+            // });
+          }
+          setSchoolStages(data);
+        })
+        .catch((err) => {
+          console.error("Failed Fetching School Stages ", err);
         });
+    }
 
-        setSchoolStages(data);
-      } catch (e) {
-        console.error("Failed Fetching School Stages ", e);
-      }
-    })();
+    // (async () => {
+    //   try {
+    //     const response = await axios.get(`${baseUrl}stage/${schoolId}`);
+
+    //     const data = response.data.map((element) => {
+    //       const obj = { value: element.id, label: element.stageName };
+    //       return obj;
+    //     });
+
+    //     setSchoolStages(data);
+    //   } catch (e) {
+    //     console.error("Failed Fetching School Stages ", e);
+    //   }
+    // })();
   }, [currentSchool]);
 
   // const getTransitionStage = (studentId) => {
@@ -218,6 +269,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         });
       });
   };
+
+  // useEffect(() => {
+  //   setReload(true);
+  // }, []);
 
   const handleChange = async (selectedValue) => {
     const { value } = selectedValue;
@@ -364,7 +419,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     }));
   }
 
-  let selectedValue = { value: "invalid", label: "Invalid Stage" };
+  // let selectedValue = { value: "invalid", label: "Invalid Stage" };
 
   // useEffect(() => {
   //   console.log("schoolStages", schoolStages);
@@ -393,14 +448,19 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       //   value: studentData?.student_school_stage?.id,
       //   label: studentData?.student_school_stage?.stageName,
       // };
-      if (studentData?.school[0].id === 1) {
-        selectedValue = { value: "", label: "" };
-      } else {
-        selectedValue = {
-          value: studentData?.school_stage_id,
-          label: studentData?.stage,
-        };
-      }
+
+      selectedValue = {
+        value: studentData?.school_stage_id,
+        label: studentData?.stage,
+      };
+      // if (studentData?.school[0].id === 1) {
+      //   selectedValue = { value: "", label: "" };
+      // } else {
+      //   selectedValue = {
+      //     value: studentData?.school_stage_id,
+      //     label: studentData?.stage,
+      //   };
+      // }
     }
   } else {
     // if (isProgrammingSchool) {
@@ -414,7 +474,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
 
     // if (studentData?.school[0].id === 1) {
     if (isProgrammingSchool) {
-      selectedValue = { value: "", label: "" };
+      // selectedValue = { value: "", label: "" };
       selectedValue = {
         value: studentData?.stage,
         label: allStages[studentData?.stage],
@@ -433,6 +493,9 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     // }
     // }
   }
+
+  console.log("selectedValue", selectedValue);
+  console.log("firstStages", firstStages);
 
   // useEffect(() => getTransitionStage(rowMetatable.rowData[0]), []);
   return (
@@ -477,7 +540,16 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         <Select
           className="filterSelectStage"
           // defaultValue={selectedValue}
-          value={selectedValue}
+          value={
+            isProgrammingSchool
+              ? selectedValue
+              : schoolStages.find((item) => {
+                  return item.label === selectedValue.label;
+                })
+              ? selectedValue
+              : firstStages
+          }
+          // value={selectedValue}
           onChange={handleChange}
           options={isProgrammingSchool ? allStagesOptions : schoolStages}
           // placeholder={"Select "+props.filter.name+" ..."}

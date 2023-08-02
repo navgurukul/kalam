@@ -156,19 +156,62 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
             label: data[0]?.label,
           });
 
-          if (reload) {
-            //need to change the condition
-            axios.post(`${baseUrl}students/changeStage/${studentId}`, {
-              stage: response.data[0]?.stageName,
-              transition_done_by: loggedInUser.user_name,
+          axios
+            .get(`${baseUrl}students/transitions/${studentId}`)
+            .then((res) => {
+              console.log("response", res.data?.data);
+              console.log("length", res.data?.data[res.data?.data.length - 1]);
+              const transition = res.data?.data.length > 0;
+              const lastTransition =
+                res.data?.data[res.data?.data.length - 1]?.to_stage;
+              const secondLastTransition =
+                res.data?.data.length > 1
+                  ? res.data?.data[res.data?.data.length - 2]?.to_stage
+                  : null;
+
+              console.log("secondLastTransition", secondLastTransition);
+              // const { data } = res;
+
+              // const beforeStage = data.data[data.data.length - 1].from_stage;
+              // const afterStage = data.data[data.data.length - 1].to_stage;
+
+              // const beforeStageValue = allStages[beforeStage];
+              // const afterStageValue = allStages[afterStage];
+
+              // setStages({
+              //   currentStage: beforeStageValue,
+              //   nextStage: afterStageValue,
+              // });
+
+              if (transition) {
+                if (
+                  reload &&
+                  lastTransition !== response.data[0]?.stageName &&
+                  secondLastTransition !== response.data[0]?.stageName
+                ) {
+                  // if (reload) {
+                  //need to change the condition
+                  axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+                    stage: response.data[0]?.stageName,
+                    transition_done_by: loggedInUser.user_name,
+                  });
+                  // .then((res) => {
+                  //   console.log("res-----", data[0]?.labe, res);
+                  // })
+                  // .catch((err) => {
+                  //   console.log("err------------", data[0]?.labe, err);
+                  // });
+                }
+              } else {
+                axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+                  stage: response.data[0]?.stageName,
+                  transition_done_by: loggedInUser.user_name,
+                });
+              }
+            })
+            .catch((err) => {
+              console.error(err);
             });
-            // .then((res) => {
-            //   console.log("res-----", data[0]?.labe, res);
-            // })
-            // .catch((err) => {
-            //   console.log("err------------", data[0]?.labe, err);
-            // });
-          }
           setSchoolStages(data);
         })
         .catch((err) => {
@@ -192,22 +235,46 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     // })();
   }, [currentSchool]);
 
+  useEffect(() => {
+    const studentId = rowMetatable.rowData[0];
+    axios
+      .get(`${baseUrl}students/transitions/${studentId}`)
+      .then((res) => {
+        console.log("res", res);
+        // const { data } = res;
+
+        // const beforeStage = data.data[data.data.length - 1].from_stage;
+        // const afterStage = data.data[data.data.length - 1].to_stage;
+
+        // const beforeStageValue = allStages[beforeStage];
+        // const afterStageValue = allStages[afterStage];
+
+        // setStages({
+        //   currentStage: beforeStageValue,
+        //   nextStage: afterStageValue,
+        // });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
   // const getTransitionStage = (studentId) => {
   //   axios
   //     .get(`${baseUrl}students/transitions/${studentId}`)
   //     .then((res) => {
-  //       const { data } = res;
+  //       console.log('res',res)
+  //       // const { data } = res;
 
-  //       const beforeStage = data.data[data.data.length - 1].from_stage;
-  //       const afterStage = data.data[data.data.length - 1].to_stage;
+  //       // const beforeStage = data.data[data.data.length - 1].from_stage;
+  //       // const afterStage = data.data[data.data.length - 1].to_stage;
 
-  //       const beforeStageValue = allStages[beforeStage];
-  //       const afterStageValue = allStages[afterStage];
+  //       // const beforeStageValue = allStages[beforeStage];
+  //       // const afterStageValue = allStages[afterStage];
 
-  //       setStages({
-  //         currentStage: beforeStageValue,
-  //         nextStage: afterStageValue,
-  //       });
+  //       // setStages({
+  //       //   currentStage: beforeStageValue,
+  //       //   nextStage: afterStageValue,
+  //       // });
   //     })
   //     .catch((err) => {
   //       console.error(err);
@@ -494,8 +561,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     // }
   }
 
-  console.log("selectedValue", selectedValue);
-  console.log("firstStages", firstStages);
+  // console.log("selectedValue", selectedValue);
+  // console.log("firstStages", firstStages);
 
   // useEffect(() => getTransitionStage(rowMetatable.rowData[0]), []);
   return (

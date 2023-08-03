@@ -133,10 +133,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         value: "enrolmentKeyGenerated",
         label: allStages.enrolmentKeyGenerated,
       });
-      // axios.post(`${baseUrl}students/changeStage/${studentId}`, {
-      //   stage: "enrolmentKeyGenerated",
-      //   transition_done_by: loggedInUser.user_name,
-      // });
+      axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+        stage: "enrolmentKeyGenerated",
+        transition_done_by: loggedInUser.user_name,
+      });
     }
 
     if (schoolId === -1) return;
@@ -145,7 +145,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       axios
         .get(`${baseUrl}stage/${schoolId}`)
         .then((response) => {
-          console.log("response *************", response);
+          // console.log("response *************", response);
           const data = response.data.map((element) => {
             const obj = { value: element.id, label: element.stageName };
             return obj;
@@ -159,8 +159,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           axios
             .get(`${baseUrl}students/transitions/${studentId}`)
             .then((res) => {
-              console.log("response", res.data?.data);
-              console.log("length", res.data?.data[res.data?.data.length - 1]);
+              // console.log("response", res.data?.data);
+              // console.log("length", res.data?.data[res.data?.data.length - 1]);
               const transition = res.data?.data.length > 0;
               const lastTransition =
                 res.data?.data[res.data?.data.length - 1]?.to_stage;
@@ -169,7 +169,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
                   ? res.data?.data[res.data?.data.length - 2]?.to_stage
                   : null;
 
-              console.log("secondLastTransition", secondLastTransition);
+              // console.log("secondLastTransition", secondLastTransition);
               // const { data } = res;
 
               // const beforeStage = data.data[data.data.length - 1].from_stage;
@@ -240,15 +240,12 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     axios
       .get(`${baseUrl}students/transitions/${studentId}`)
       .then((res) => {
-        console.log("res", res);
+        // console.log("res", res);
         // const { data } = res;
-
         // const beforeStage = data.data[data.data.length - 1].from_stage;
         // const afterStage = data.data[data.data.length - 1].to_stage;
-
         // const beforeStageValue = allStages[beforeStage];
         // const afterStageValue = allStages[afterStage];
-
         // setStages({
         //   currentStage: beforeStageValue,
         //   nextStage: afterStageValue,
@@ -610,7 +607,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           value={
             isProgrammingSchool
               ? selectedValue
-              : schoolStages.find((item) => {
+              : // ?  firstStages
+              schoolStages.find((item) => {
                   return item.label === selectedValue.label;
                 })
               ? selectedValue

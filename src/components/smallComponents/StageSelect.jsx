@@ -133,9 +133,18 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         value: "enrolmentKeyGenerated",
         label: allStages.enrolmentKeyGenerated,
       });
-      axios.post(`${baseUrl}students/changeStage/${studentId}`, {
-        stage: "enrolmentKeyGenerated",
-        transition_done_by: loggedInUser.user_name,
+      axios.get(`${baseUrl}students/transitions/${studentId}`).then((res) => {
+        console.log("response", res.data?.data);
+        const transition = res.data?.data.length > 0;
+        const lastTransition =
+          res.data?.data[res.data?.data.length - 1]?.to_stage;
+
+        if (transition && lastTransition !== "enrolmentKeyGenerated") {
+          axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+            stage: "enrolmentKeyGenerated",
+            transition_done_by: loggedInUser.user_name,
+          });
+        }
       });
     }
 
@@ -165,23 +174,9 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
               const lastTransition =
                 res.data?.data[res.data?.data.length - 1]?.to_stage;
               const secondLastTransition =
-                res.data?.data.length > 1
-                  ? res.data?.data[res.data?.data.length - 2]?.to_stage
+                res.data?.data.length > 4
+                  ? res.data?.data[res.data?.data.length - 4]?.to_stage
                   : null;
-
-              // console.log("secondLastTransition", secondLastTransition);
-              // const { data } = res;
-
-              // const beforeStage = data.data[data.data.length - 1].from_stage;
-              // const afterStage = data.data[data.data.length - 1].to_stage;
-
-              // const beforeStageValue = allStages[beforeStage];
-              // const afterStageValue = allStages[afterStage];
-
-              // setStages({
-              //   currentStage: beforeStageValue,
-              //   nextStage: afterStageValue,
-              // });
 
               if (transition) {
                 if (
@@ -235,26 +230,26 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     // })();
   }, [currentSchool]);
 
-  useEffect(() => {
-    const studentId = rowMetatable.rowData[0];
-    axios
-      .get(`${baseUrl}students/transitions/${studentId}`)
-      .then((res) => {
-        // console.log("res", res);
-        // const { data } = res;
-        // const beforeStage = data.data[data.data.length - 1].from_stage;
-        // const afterStage = data.data[data.data.length - 1].to_stage;
-        // const beforeStageValue = allStages[beforeStage];
-        // const afterStageValue = allStages[afterStage];
-        // setStages({
-        //   currentStage: beforeStageValue,
-        //   nextStage: afterStageValue,
-        // });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+  // useEffect(() => {
+  //   const studentId = rowMetatable.rowData[0];
+  //   axios
+  //     .get(`${baseUrl}students/transitions/${studentId}`)
+  //     .then((res) => {
+  //       // console.log("res", res);
+  //       // const { data } = res;
+  //       // const beforeStage = data.data[data.data.length - 1].from_stage;
+  //       // const afterStage = data.data[data.data.length - 1].to_stage;
+  //       // const beforeStageValue = allStages[beforeStage];
+  //       // const afterStageValue = allStages[afterStage];
+  //       // setStages({
+  //       //   currentStage: beforeStageValue,
+  //       //   nextStage: afterStageValue,
+  //       // });
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //     });
+  // }, []);
   // const getTransitionStage = (studentId) => {
   //   axios
   //     .get(`${baseUrl}students/transitions/${studentId}`)
@@ -558,8 +553,9 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     // }
   }
 
-  // console.log("selectedValue", selectedValue);
-  // console.log("firstStages", firstStages);
+  console.log("selectedValue", selectedValue);
+  console.log("studentData", studentData);
+  console.log("allStages", allStages);
 
   // useEffect(() => getTransitionStage(rowMetatable.rowData[0]), []);
   return (
@@ -606,9 +602,12 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           // defaultValue={selectedValue}
           value={
             isProgrammingSchool
-              ? selectedValue
-              : // ?  firstStages
-              schoolStages.find((item) => {
+              ? Object.keys(allStages).find(
+                  (item) => item === selectedValue.value
+                )
+                ? selectedValue
+                : firstStages
+              : schoolStages.find((item) => {
                   return item.label === selectedValue.label;
                 })
               ? selectedValue

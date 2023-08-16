@@ -85,14 +85,11 @@ function FinalInstruction() {
 
   // //1. Where we'll get time 00:00:00
   // const time = useRef(new Date().setSeconds(new Date().getSeconds() + 5400));
-  //console.log("time.current", time.current);
 
   const answerList = [];
   // const correctAnswerObj = {};
 
   // localStorage.setItem("correctAnswerObj", JSON.stringify(correctAnswerObj));
-
-  //console.log("enrolmentKey", enrolmentKey);
 
   const fetchQuestionsAndOptions = () => {
     // localStorage.setItem("answerObj", JSON.stringify(""));
@@ -106,7 +103,6 @@ function FinalInstruction() {
     axios
       .get(`${baseUrl}on_assessment/questions/${enrollmentKey}`)
       .then((res) => {
-        //console.log("response", res.data.data);
         // localStorage.setItem("questionsList", JSON.stringify(res.data.data));
         // localStorage.setItem("questionsList", res.data.data);
         dispatch(setQuestions(res.data.data));

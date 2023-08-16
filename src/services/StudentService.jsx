@@ -1260,7 +1260,7 @@ const statusFilterList = [
 
 const dashboardStatusColumn = {
   name: "status",
-  label: "Statussss",
+  label: "Status",
   options: {
     filter: true,
     sort: true,

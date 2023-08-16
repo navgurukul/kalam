@@ -196,7 +196,6 @@ const TestInstructions = () => {
 
   const clickHandler = () => {
     if (activeStep === maxSteps - 1) {
-      // console.log(enrollmentKey);
       return;
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

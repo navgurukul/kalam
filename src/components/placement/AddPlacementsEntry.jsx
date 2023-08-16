@@ -358,42 +358,6 @@ const AddPlacementsEntry = ({
               />
             </Grid>
             <Grid item xs={6}>
-              {/* <Controller
-                control={control}
-                // defaultValue={formData.resume || ""}
-                name="resume"
-                rules={{ required: true }}
-                render={({ field: { ref, ...rest } }) => (
-                  <FormControl variant="outlined" fullWidth>
-                    <label id="resume-label">
-                      <Typography variant="caption">Upload Resume</Typography>
-                    </label>
-                    <Input
-                      inputProps={{ type: "file", accept: "image/*,.pdf" }}
-                      id="resume"
-                      fullWidth
-                      name="resume"
-                      inputRef={ref}
-                      ref={resumeRef}
-                      type="file"
-                      style={
-                        {
-                          // display: "none",
-                        }
-                      }
-                      error={!!errors.resume}
-                      onChange={(e) => {
-                        // LinkGenerator(e, 1);
-                        console.log(e.target.files[0]);
-                      }}
-                      // helperText={
-                      //   errors.resume ? "Enter Job Salary/Stipend" : ""
-                      // }
-                      {...rest}
-                    />
-                  </FormControl>
-                )}
-              /> */}
               <FormControl variant="outlined" fullWidth>
                 <label id="resume-label">
                   <Typography variant="caption">Upload Resume</Typography>

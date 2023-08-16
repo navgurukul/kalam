@@ -53,6 +53,9 @@ const StudentFeedback = (props) => {
       }
       const userId = parseInt(decryptText(localStorage.getItem("userId")), 10);
 
+      console.log("rowData", rowData);
+      console.log("studentId", studentId);
+
       const dataURL = `${baseUrl}students/feedback/${studentId}/${userId}`;
       await axios
         .post(dataURL, {

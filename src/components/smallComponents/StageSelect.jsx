@@ -127,6 +127,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     // if (isProgrammingSchool || !currentSchool) return;
     console.log("currentSchool", currentSchool);
     const studentId = rowMetatable.rowData[0];
+    const schoolName = rowMetatable.rowData[25][0].name;
 
     if (isProgrammingSchool || !currentSchool) {
       setFirstStages({
@@ -139,11 +140,25 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         const lastTransition =
           res.data?.data[res.data?.data.length - 1]?.to_stage;
 
-        if (transition && lastTransition !== "enrolmentKeyGenerated") {
-          axios.post(`${baseUrl}students/changeStage/${studentId}`, {
-            stage: "enrolmentKeyGenerated",
-            transition_done_by: loggedInUser.user_name,
-          });
+        // if (transition && lastTransition !== "enrolmentKeyGenerated") {
+        //   axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+        //     stage: "enrolmentKeyGenerated",
+        //     school: schoolName,
+        //     transition_done_by: loggedInUser.user_name,
+        //   });
+        // }
+        if (currentSchool && typeof currentSchool === "string") {
+          if (
+            reload &&
+            transition &&
+            lastTransition !== "enrolmentKeyGenerated"
+          ) {
+            axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+              stage: "enrolmentKeyGenerated",
+              school: schoolName,
+              transition_done_by: loggedInUser.user_name,
+            });
+          }
         }
       });
     }
@@ -178,30 +193,34 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
                   ? res.data?.data[res.data?.data.length - 4]?.to_stage
                   : null;
 
-              if (transition) {
-                if (
-                  reload &&
-                  lastTransition !== response.data[0]?.stageName &&
-                  secondLastTransition !== response.data[0]?.stageName
-                ) {
-                  // if (reload) {
-                  //need to change the condition
+              if (currentSchool && typeof currentSchool === "string") {
+                if (transition) {
+                  if (
+                    reload &&
+                    lastTransition !== response.data[0]?.stageName &&
+                    secondLastTransition !== response.data[0]?.stageName
+                  ) {
+                    // if (reload) {
+                    //need to change the condition
+                    axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+                      stage: response.data[0]?.stageName,
+                      school: schoolName,
+                      transition_done_by: loggedInUser.user_name,
+                    });
+                    // .then((res) => {
+                    //   console.log("res-----", data[0]?.labe, res);
+                    // })
+                    // .catch((err) => {
+                    //   console.log("err------------", data[0]?.labe, err);
+                    // });
+                  }
+                } else {
                   axios.post(`${baseUrl}students/changeStage/${studentId}`, {
                     stage: response.data[0]?.stageName,
+                    school: schoolName,
                     transition_done_by: loggedInUser.user_name,
                   });
-                  // .then((res) => {
-                  //   console.log("res-----", data[0]?.labe, res);
-                  // })
-                  // .catch((err) => {
-                  //   console.log("err------------", data[0]?.labe, err);
-                  // });
                 }
-              } else {
-                axios.post(`${baseUrl}students/changeStage/${studentId}`, {
-                  stage: response.data[0]?.stageName,
-                  transition_done_by: loggedInUser.user_name,
-                });
               }
             })
             .catch((err) => {
@@ -304,11 +323,13 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
 
   const changeStage = (selectedValue) => {
     const studentId = rowMetatable.rowData[0];
+    const schoolName = rowMetatable.rowData[25][0].name;
     const { value, label } = selectedValue;
 
     axios
       .post(`${baseUrl}students/changeStage/${studentId}`, {
         stage: isProgrammingSchool ? value : label,
+        school: schoolName,
         transition_done_by: loggedInUser.user_name,
       })
       .then(() => {

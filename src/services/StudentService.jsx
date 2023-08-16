@@ -151,7 +151,11 @@ const StageColumnTransitionWrapper = ({ value, rowMeta }) => {
   return (
     <>
       {privileges.some((priv) => priv.privilege === "DeleteTransition") ? (
-        <DeleteRow transitionId={rowMeta.rowData[isCampus ? 11 : 9]} />
+        <DeleteRow
+          transitionId={
+            rowMeta.rowData[isCampus ? 11 : 9] || rowMeta.rowData[10]
+          }
+        />
       ) : null}
       {allStages[value] || value}
     </>
@@ -167,6 +171,17 @@ const stageColumnTransition = {
     customBodyRender: (value, rowMeta) => (
       <StageColumnTransitionWrapper value={value} rowMeta={rowMeta} />
     ),
+  },
+};
+
+const schoolTransition = {
+  name: "school",
+  label: "Stage of School",
+  options: {
+    filter: true,
+    sort: true,
+    // customBodyRender: (value, rowMeta) => (
+    // ),
   },
 };
 
@@ -1875,6 +1890,7 @@ const StudentService = {
     ],
     columnTransition: [
       stageColumnTransition,
+      schoolTransition,
       addedAtColumn,
       feedbackColumnTransition,
       ownerColumnTransitionDashboard,
@@ -1903,6 +1919,7 @@ const StudentService = {
     ],
     columnTransition2: [
       stageColumnTransition,
+      schoolTransition,
       addedAtColumnCampus,
       finishedColumnTransitionCampus,
       deadlineColumnTrnasition,

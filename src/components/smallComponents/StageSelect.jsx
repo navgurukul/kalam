@@ -124,8 +124,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   useEffect(() => {
     // if (isProgrammingSchool || !currentSchool) return;
     const studentId = rowMetatable.rowData[0];
-    const schoolName =
-      rowMetatable.rowData[25] && rowMetatable.rowData[25][0].name;
+    const schoolName = rowMetatable.rowData[25];
 
     if (isProgrammingSchool || !currentSchool) {
       setFirstStages({
@@ -136,6 +135,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         const transition = res.data?.data.length > 0;
         const lastTransition =
           res.data?.data[res.data?.data.length - 1]?.to_stage;
+
         if (currentSchool && typeof currentSchool === "string") {
           if (
             reload &&

@@ -69,19 +69,19 @@ const UpdateSchool = (props) => {
   // only for students who have failed
   // const showDropdown = rowMeta.rowData[14] === "Test Failed";
 
-  let showDropdown =
-    studentData?.student_school_stage !== null
-      ? studentData?.student_school_stage?.stageName.toLowerCase() ===
-        "test failed"
-      : rowMeta.rowData[14] === "Test Failed";
+  // let showDropdown =
+  //   studentData?.student_school_stage !== null
+  //     ? studentData?.student_school_stage?.stageName.toLowerCase() ===
+  //       "test failed"
+  //     : rowMeta.rowData[14] === "Test Failed";
 
-  useEffect(() => {
-    showDropdown =
-      studentData?.student_school_stage !== null
-        ? studentData?.student_school_stage?.stageName.toLowerCase() ===
-          "test failed"
-        : rowMeta.rowData[14] === "Test Failed";
-  }, [studentData]);
+  // useEffect(() => {
+  //   showDropdown =
+  //     studentData?.student_school_stage !== null
+  //       ? studentData?.student_school_stage?.stageName.toLowerCase() ===
+  //         "test failed"
+  //       : rowMeta.rowData[14] === "Test Failed";
+  // }, [studentData]);
 
   const handleChange = (event) => {
     const { change, studentId } = props;

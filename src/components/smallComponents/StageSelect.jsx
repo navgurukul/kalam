@@ -31,6 +31,7 @@ const baseUrl = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
 function getSchoolId(currentSchool, allSchools) {
+  // This function will return the school id for the current school
   if (typeof currentSchool === "string") {
     for (const item of allSchools) {
       if (item.name === currentSchool) {
@@ -42,17 +43,6 @@ function getSchoolId(currentSchool, allSchools) {
     return currentSchool[0].id;
   }
   return -1;
-}
-
-function findStageByName(stageName, stages) {
-  let current;
-  stages.forEach((stage) => {
-    if (stageName === stage.label) {
-      current = stage;
-      return stage;
-    }
-  });
-  return current;
 }
 
 const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
@@ -85,6 +75,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
 
   useEffect(() => {
     setReload(true);
+    // In the beginning we will make an API call to get all the schools and store it in allSchools and
+    // also we will make an API call to get the student data to get the school_stage_id
     axios
       .get(`${baseUrl}school`)
       .then((res) => {
@@ -105,6 +97,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   }, []);
 
   useEffect(() => {
+    // Whenever stage changes we will make an API call to get the student data to get the school_stage_id
     const studentId = rowMetatable.rowData[0];
     axios
       .get(`${baseUrl}students/${studentId}`)
@@ -127,6 +120,9 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     const schoolName = rowMetatable.rowData[25];
 
     if (isProgrammingSchool || !currentSchool) {
+      // Maintain the first stage for programming school, when user selects programming school then
+      // the stage will get updated with enrolmentKeyGenerated which is the first stage for programming school
+      // and also will add to the transition
       setFirstStages({
         value: "enrolmentKeyGenerated",
         label: allStages.enrolmentKeyGenerated,
@@ -161,6 +157,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     if (schoolId === -1) return;
 
     if (!isProgrammingSchool) {
+      // Making an API call for stage/${schoolId} so that we can get the stages for the selected school
       axios
         .get(`${baseUrl}stage/${schoolId}`)
         .then((response) => {
@@ -169,6 +166,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
             return obj;
           });
 
+          // Maintain the first stage for other schools, when user selects any school then
+          // the stage will get updated with that school's first stage and also will add to the transition
           setFirstStages({
             value: data[0]?.value,
             label: data[0]?.label,
@@ -187,16 +186,11 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
                   reload &&
                   lastTransition !== response.data[0]?.stageName
                 ) {
-                  // if (
-                  //   reload &&
-                  //   lastTransition !== response.data[0]?.stageName
-                  // ) {
                   axios.post(`${baseUrl}students/changeStage/${studentId}`, {
                     stage: response.data[0]?.stageName,
                     school: schoolName,
                     transition_done_by: loggedInUser.user_name,
                   });
-                  // }
                 } else {
                   axios.post(`${baseUrl}students/changeStage/${studentId}`, {
                     stage: response.data[0]?.stageName,
@@ -251,8 +245,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     const schoolName = rowMetatable.rowData[25][0].name;
     const { value, label } = selectedValue;
 
+    // Updating the stage with the selected value
     axios
       .post(`${baseUrl}students/changeStage/${studentId}`, {
+        // If the school is programming school then we will update the stage with the value else with the label
         stage: isProgrammingSchool ? value : label,
         school: schoolName,
         transition_done_by: loggedInUser.user_name,
@@ -367,6 +363,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           });
         });
     };
+    // Delaying the offerLetter and sendSMS function so that the stage can get updated first
     setTimeout(offerLetter, 1000);
     setTimeout(sendSMS, 5000);
   };
@@ -408,6 +405,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   }
 
   if (stage) {
+    // If stage is present in database then for programming school we will show the stage name from allStages
+    // and for other schools from studentData
+
+    // With isProgrammingSchool we are checking whether the school is programming school or not
     if (isProgrammingSchool) {
       selectedValue = {
         value: _.invert(allStages)[isCampus ? stage?.stage || "" : stage],
@@ -420,6 +421,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       };
     }
   } else {
+    // If stage is not present in database then for programming school we will show the stage name
+    // from allStages and studentData, and for other schools from studentData
     if (isProgrammingSchool) {
       selectedValue = {
         value: studentData?.stage,
@@ -477,12 +480,16 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           // defaultValue={selectedValue}
           value={
             isProgrammingSchool
-              ? Object.keys(allStages).find(
+              ? // For programming school we will show the selectedValue if the selectedValue is present in allStages
+                // else we will show the firstStages
+                Object.keys(allStages).find(
                   (item) => item === selectedValue.value
                 )
                 ? selectedValue
                 : firstStages
-              : schoolStages.find((item) => {
+              : // For other schools we will show the selectedValue if the selectedValue is present in the current school stages whichi is schoolStages
+              // else we will show the firstStages
+              schoolStages.find((item) => {
                   return item.label === selectedValue.label;
                 })
               ? selectedValue

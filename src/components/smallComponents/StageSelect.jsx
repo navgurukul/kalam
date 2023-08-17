@@ -147,6 +147,12 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
               school: schoolName,
               transition_done_by: loggedInUser.user_name,
             });
+          } else {
+            axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+              stage: "enrolmentKeyGenerated",
+              school: schoolName,
+              transition_done_by: loggedInUser.user_name,
+            });
           }
         }
       });
@@ -174,24 +180,23 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
               const transition = res.data?.data.length > 0;
               const lastTransition =
                 res.data?.data[res.data?.data.length - 1]?.to_stage;
-              const secondLastTransition =
-                res.data?.data.length > 4
-                  ? res.data?.data[res.data?.data.length - 4]?.to_stage
-                  : null;
 
               if (currentSchool && typeof currentSchool === "string") {
-                if (transition) {
-                  if (
-                    reload &&
-                    lastTransition !== response.data[0]?.stageName &&
-                    secondLastTransition !== response.data[0]?.stageName
-                  ) {
-                    axios.post(`${baseUrl}students/changeStage/${studentId}`, {
-                      stage: response.data[0]?.stageName,
-                      school: schoolName,
-                      transition_done_by: loggedInUser.user_name,
-                    });
-                  }
+                if (
+                  transition &&
+                  reload &&
+                  lastTransition !== response.data[0]?.stageName
+                ) {
+                  // if (
+                  //   reload &&
+                  //   lastTransition !== response.data[0]?.stageName
+                  // ) {
+                  axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+                    stage: response.data[0]?.stageName,
+                    school: schoolName,
+                    transition_done_by: loggedInUser.user_name,
+                  });
+                  // }
                 } else {
                   axios.post(`${baseUrl}students/changeStage/${studentId}`, {
                     stage: response.data[0]?.stageName,

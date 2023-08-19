@@ -474,7 +474,6 @@ export const campus = [
   { id: 7, name: "Amravati" },
   { id: 8, name: "Jashpur" },
   { id: 9, name: "Udaipur" },
-
 ];
 
 export const donor = [
@@ -831,4 +830,8 @@ export const allTagsForOnlineClass = [
   "duplicate",
 ];
 
-export const INPUT_PATTERNS = { name: /^[\p{L}\p{M}']+$/u, replaceName: /[^\p{L}\p{M}']+/gu, numbersOnly: /\D/g, }
+export const INPUT_PATTERNS = {
+  name: /^[\p{L}\p{M}']+$/u,
+  replaceName: /[^\p{L}\p{M}']+/gu,
+  numbersOnly: /\D/g,
+};

@@ -73,7 +73,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const [allSchools, setAllSchools] = React.useState();
 
   useEffect(() => {
-    setReload(true);
     // In the beginning we will make an API call to get all the schools and store it in allSchools and
     // also we will make an API call to get the student data to get the school_stage_id
     axios

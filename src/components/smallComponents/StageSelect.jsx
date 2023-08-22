@@ -71,7 +71,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const toggleLoading = () => setLoading((prev) => !prev);
   const [firstStages, setFirstStages] = React.useState();
   const [allSchools, setAllSchools] = React.useState();
-  const [reload, setReload] = React.useState(false);
 
   useEffect(() => {
     setReload(true);
@@ -127,31 +126,13 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         value: "enrolmentKeyGenerated",
         label: allStages.enrolmentKeyGenerated,
       });
-      axios.get(`${baseUrl}students/transitions/${studentId}`).then((res) => {
-        const transition = res.data?.data.length > 0;
-        const lastTransition =
-          res.data?.data[res.data?.data.length - 1]?.to_stage;
-
-        if (currentSchool && typeof currentSchool === "string") {
-          if (
-            reload &&
-            transition &&
-            lastTransition !== "enrolmentKeyGenerated"
-          ) {
-            axios.post(`${baseUrl}students/changeStage/${studentId}`, {
-              stage: "enrolmentKeyGenerated",
-              school: schoolName,
-              transition_done_by: loggedInUser.user_name,
-            });
-          } else {
-            axios.post(`${baseUrl}students/changeStage/${studentId}`, {
-              stage: "enrolmentKeyGenerated",
-              school: schoolName,
-              transition_done_by: loggedInUser.user_name,
-            });
-          }
-        }
-      });
+      if (currentSchool && typeof currentSchool === "string") {
+        axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+          stage: "enrolmentKeyGenerated",
+          school: schoolName,
+          transition_done_by: loggedInUser.user_name,
+        });
+      }
     }
 
     if (schoolId === -1) return;
@@ -173,36 +154,14 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
             label: data[0]?.label,
           });
 
-          axios
-            .get(`${baseUrl}students/transitions/${studentId}`)
-            .then((res) => {
-              const transition = res.data?.data.length > 0;
-              const lastTransition =
-                res.data?.data[res.data?.data.length - 1]?.to_stage;
-
-              if (currentSchool && typeof currentSchool === "string") {
-                if (
-                  transition &&
-                  reload &&
-                  lastTransition !== response.data[0]?.stageName
-                ) {
-                  axios.post(`${baseUrl}students/changeStage/${studentId}`, {
-                    stage: response.data[0]?.stageName,
-                    school: schoolName,
-                    transition_done_by: loggedInUser.user_name,
-                  });
-                } else {
-                  axios.post(`${baseUrl}students/changeStage/${studentId}`, {
-                    stage: response.data[0]?.stageName,
-                    school: schoolName,
-                    transition_done_by: loggedInUser.user_name,
-                  });
-                }
-              }
-            })
-            .catch((err) => {
-              console.error(err);
+          if (currentSchool && typeof currentSchool === "string") {
+            axios.post(`${baseUrl}students/changeStage/${studentId}`, {
+              stage: response.data[0]?.stageName,
+              school: schoolName,
+              transition_done_by: loggedInUser.user_name,
             });
+          }
+
           setSchoolStages(data);
         })
         .catch((err) => {

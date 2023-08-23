@@ -53,10 +53,10 @@ const DonorStudentsData = () => {
   };
 
   return (
-    <div className="modified-select-ui">
+    <div>
       <SelectUiByButtons
         name={`${donorName} Donor`}
-        overview={{ label: "Overview", action: overview }}
+        // overview={{ label: "Overview", action: overview }}
         progressMade={{ label: "Progress Made", action: progressMade }}
         studentData={{ label: "Student Data", action: studentData }}
         showGraphData={{ label: "Graph on Job", action: showGraphData }}

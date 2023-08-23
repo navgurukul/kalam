@@ -22,7 +22,7 @@ const SelectUiByButtons = ({
   name,
   progressMade,
   studentData,
-  overview,
+  // overview,
   showGraphData,
   selected,
 }) => {
@@ -39,12 +39,12 @@ const SelectUiByButtons = ({
           aria-label="large outlined primary button group"
         >
           {/* OVERVIEW BUTTON DATA */}
-          <Button
+          {/* <Button
             variant={selected === "overview" ? "contained" : "outlined"}
             onClick={() => overview.action()}
           >
             {overview?.label}
-          </Button>
+          </Button> */}
           {/* ---------------ADDED NOW---------------- */}
           <Button
             variant={selected === "studentData" ? "contained" : "outlined"}

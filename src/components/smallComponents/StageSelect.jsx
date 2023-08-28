@@ -97,9 +97,11 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   useEffect(() => {
     // Whenever stage changes we will make an API call to get the student data to get the school_stage_id
     const studentId = rowMetatable.rowData[0];
+
     axios
       .get(`${baseUrl}students/${studentId}`)
       .then((res) => {
+        console.log("Changed", res.data.data[0]);
         setStudentData(res.data.data[0]);
       })
       .catch((err) => {
@@ -364,19 +366,25 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     }));
   }
 
+  console.log("selectedValue up", selectedValue);
+
   if (stage) {
     // If stage is present in database then for programming school we will show the stage name from allStages
     // and for other schools from studentData
 
     // With isProgrammingSchool we are checking whether the school is programming school or not
     if (isProgrammingSchool) {
+      // selectedValue = {
+      //   value: _.invert(allStages)[isCampus ? stage?.stage || "" : stage],
+      //   label: isCampus ? stage?.stage || "" : stage,
+      // };
       selectedValue = {
-        value: _.invert(allStages)[isCampus ? stage?.stage || "" : stage],
-        label: isCampus ? stage?.stage || "" : stage,
+        value: studentData?.stage,
+        label: allStages[studentData?.stage],
       };
     } else {
       selectedValue = {
-        value: studentData?.school_stage_id,
+        value: null,
         label: studentData?.stage,
       };
     }
@@ -390,11 +398,15 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       };
     } else {
       selectedValue = {
-        value: studentData?.school_stage_id,
+        value: null,
         label: studentData?.stage,
       };
     }
   }
+
+  console.log("studentData", studentData);
+  console.log("stage", stage);
+  console.log("selectedValue down", selectedValue);
 
   return (
     <div

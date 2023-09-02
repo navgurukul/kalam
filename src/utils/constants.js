@@ -474,6 +474,8 @@ export const campus = [
   { id: 7, name: "Amravati" },
   { id: 8, name: "Jashpur" },
   { id: 9, name: "Udaipur" },
+  { id: 10, name: "Dantewada" },
+  { id: 11, name: "Raipur" },
 ];
 
 export const donor = [

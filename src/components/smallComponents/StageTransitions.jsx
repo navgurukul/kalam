@@ -253,6 +253,9 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
                 sx={{ padding: 0, margin: 0, py: 0 }}
                 size="small"
                 onClick={handleClose}
+                // onClick={() => {
+                //   window.location.reload();
+                // }}
               >
                 <CancelIcon />
               </IconButton>

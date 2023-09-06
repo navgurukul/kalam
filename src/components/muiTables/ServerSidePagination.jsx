@@ -20,12 +20,16 @@ const ServerSidePagination = ({
   defaultColumns,
   showLoader,
   params,
+  myData,
   sortChange,
   customOptions,
 }) => {
   const snackbar = useSnackbar();
   const { filterColumns, studentData, totalData, numberOfRows, page, url } =
-    useSelector((state) => state.students);
+    useSelector((state) => {
+      console.log("state", state);
+      return state.students;
+    });
   const dispatch = useDispatch();
   const setFilters = (data) => dispatch(setFilterColumns(data));
   const setRows = (data) => dispatch(setNoOfRows(data));
@@ -35,6 +39,7 @@ const ServerSidePagination = ({
     (object, value) => Object.keys(object).find((key) => object[key] === value),
     []
   );
+  const [studentDataaa, setStudentDataaa] = React.useState();
 
   const getStudentsDetailBySearch = async (query, value) => {
     const keys = {
@@ -205,6 +210,9 @@ const ServerSidePagination = ({
   //   }
   // }
 
+  console.log("studentData in SSP", studentData);
+  console.log("myData in SSP", myData);
+
   const options = React.useMemo(
     () => ({
       selectableRows: "none",
@@ -264,12 +272,22 @@ const ServerSidePagination = ({
       },
       ...(customOptions || {}),
     }),
+    // axios
+    //   .get(`${baseURL}students/117383`)
+    //   .then((res) => {
+    //     setStudentDataaa(res.data.data[0]);
+    //   })
+    //   .catch((err) => {
+    //     console.log("err", err);
+    //   })
     [totalData, numberOfRows, page, showLoader, customOptions]
   );
+
+  console.log("studentDataaaaaa", studentDataaa);
   return (
     <MUIDataTable
       title={<SearchBar searchByName={getSearchApi} />}
-      data={studentData}
+      data={myData}
       columns={columns}
       options={options}
     />

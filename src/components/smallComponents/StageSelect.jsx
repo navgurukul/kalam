@@ -71,6 +71,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const toggleLoading = () => setLoading((prev) => !prev);
   const [firstStages, setFirstStages] = React.useState();
   const [allSchools, setAllSchools] = React.useState();
+  const [schoolUpdated, setSchoolUpdated] = React.useState(false);
 
   useEffect(() => {
     // In the beginning we will make an API call to get all the schools and store it in allSchools and
@@ -133,6 +134,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           school: schoolName,
           transition_done_by: loggedInUser.user_name,
         });
+        setSchoolUpdated(true);
       }
     }
 
@@ -156,11 +158,23 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           });
 
           if (currentSchool && typeof currentSchool === "string") {
-            axios.post(`${baseUrl}students/changeStage/${studentId}`, {
-              stage: response.data[0]?.stageName,
-              school: schoolName,
-              transition_done_by: loggedInUser.user_name,
-            });
+            axios
+              .post(`${baseUrl}students/changeStage/${studentId}`, {
+                stage: response.data[0]?.stageName,
+                school: schoolName,
+                transition_done_by: loggedInUser.user_name,
+              })
+              .then(() => {
+                // setSchoolUpdated(true);
+                axios.get(`${baseUrl}students/${studentId}`).then((res) => {
+                  console.log("Changed Ok", res.data.data[0]);
+                  setStudentData(res.data.data[0]);
+                  selectedValue = {
+                    value: null,
+                    label: res.data.data[0]?.stage,
+                  };
+                });
+              });
           }
 
           setSchoolStages(data);
@@ -404,7 +418,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     }
   }
 
-  console.log("studentData", studentData);
+  console.log("studentData in stage", studentData);
   console.log("stage", stage);
   console.log("selectedValue down", selectedValue);
 

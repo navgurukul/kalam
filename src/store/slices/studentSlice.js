@@ -24,7 +24,7 @@ export const fetchStudents = createAsyncThunk(
       school,
     } = globalState.students;
     // const { numberOfRows } = state;
-
+    console.log("Data is fecthing");
     const from = dayjs(fromDate).isValid(fromDate) ? fromDate : undefined;
     const to = dayjs(toDate).isValid(toDate) ? toDate : undefined;
 
@@ -33,11 +33,31 @@ export const fetchStudents = createAsyncThunk(
       finalDates = { from, to };
     }
 
+    console.log("school in slice", school);
+
+    // const updatedSchool = await axios
+    //   .get(`${baseUrl}school`)
+    //   .then((response) => {
+    //     console.log("response", response);
+    //   });
+
+    // console.log("updatedSchool", updatedSchool);
+    // const querySchool = updatedSchool
+    //   ? await updatedSchool.data.find((school) => {
+    //       console.log("school name console", school);
+    //       if (school.name === school) return school.id;
+    //     })
+    //   : null;
+    // console.log("querySchool", querySchool);
+
     const concatinateStage = stage.length === 0 ? null : stage.join(",");
     const querySchool = school === "" ? null : school;
     try {
+      console.log("Lets go to try block");
       thunkAPI.dispatch(changeFetching(true)); // startFetching
+      console.log("Is thunkAPI working", thunkAPI);
       let response;
+      console.log("What is happening with response then?", response);
       if (fetchPendingInterviewDetails) {
         response = await axios.get(`${baseUrl}students/pending_interview`, {
           params: {
@@ -45,12 +65,25 @@ export const fetchStudents = createAsyncThunk(
           },
         });
       } else {
-        const url = await filterColumns.reduce((cUrl, filterColumn, index) => {
-          if (index > 0) {
-            return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
-          }
-          return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
-        }, `${baseUrl}students?`);
+        console.log("Am I going to else block?");
+        console.log("filterColumns before", filterColumns);
+        const url =
+          filterColumns && filterColumns.length > 0
+            ? await filterColumns.reduce((cUrl, filterColumn, index) => {
+                if (index > 0) {
+                  return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
+                }
+                return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
+              }, `${baseUrl}students?`)
+            : null;
+        // const url = await filterColumns.reduce((cUrl, filterColumn, index) => {
+        //   if (index > 0) {
+        //     return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
+        //   }
+        //   return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
+        // }, `${baseUrl}students?`);
+        console.log("filterColumns after", filterColumns);
+        console.log("url", url);
         response =
           filterColumns && filterColumns.length > 0
             ? await axios.get(`${url}&limit=${numberOfRows}&page=${page}`, {
@@ -68,13 +101,37 @@ export const fetchStudents = createAsyncThunk(
                     stage: concatinateStage,
                     from: fromDate,
                     to: toDate,
-                    school: querySchool,
+                    // school: querySchool,
                   },
                 }
               );
+        // console.log("dataType", dataType);
+        // console.log("concatinateStage", concatinateStage);
+        // console.log("fromDate", fromDate);
+        // console.log("toDate", toDate);
+        // console.log("querySchool", querySchool);
+        // response = await axios.get(
+        //   `${baseUrl}students?limit=${numberOfRows}&page=${page}`,
+        //   {
+        //     params: {
+        //       dataType,
+        //       stage: concatinateStage,
+        //       from: fromDate,
+        //       to: toDate,
+        //       // school: querySchool,
+        //     },
+        //   }
+        // );
+
+        // It's only returning the response for else block only when we refresh the page
+        console.log("response in else", response);
         // eslint-disable-next-line no-use-before-define
         thunkAPI.dispatch(setUrl(url));
       }
+      console.log("Lets find the response", response);
+
+      console.log("response result", response.data.data.results);
+      console.log("response data", response.data.data);
       let results =
         school === "" ? response.data.data.results : response.data.data;
       const studentData =

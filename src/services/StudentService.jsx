@@ -1666,13 +1666,17 @@ const dashboardSchoolColumn = {
         </div>
       ),
     },
-    customBodyRender: (value, rowMeta, updateValue) => (
-      <DashboardSchoolColumnWrapper
-        value={value}
-        rowMeta={rowMeta}
-        updateValue={updateValue}
-      />
-    ),
+    customBodyRender: (value, rowMeta, updateValue) => {
+      console.log("school value", value);
+      console.log("school rowMeta", rowMeta);
+      return (
+        <DashboardSchoolColumnWrapper
+          value={value}
+          rowMeta={rowMeta}
+          updateValue={updateValue}
+        />
+      );
+    },
   },
 };
 

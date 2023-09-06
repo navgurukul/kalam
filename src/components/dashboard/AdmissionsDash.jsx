@@ -76,8 +76,13 @@ const AdmissionsDash = (props) => {
     totalData,
     numberOfRows,
     page,
-  } = useSelector((state) => state.students);
+  } = useSelector((state) => {
+    console.log("state in Dash", state);
+    return state.students;
+  });
   const [allSchools, setAllSchools] = React.useState();
+
+  console.log("school in dash", school);
 
   useEffect(() => {
     axios
@@ -145,6 +150,8 @@ const AdmissionsDash = (props) => {
   const usersURL = `${baseURL}users/getall`;
   // let stage = null;
   let value = null;
+
+  console.log("updateSchoollll", updateSchool);
 
   const fetchOWner = async (signal) => {
     const response = await axios.get(`${baseURL}owner`, { signal });
@@ -321,6 +328,7 @@ const AdmissionsDash = (props) => {
   };
 
   const changeSchool = (selectedSchool) => {
+    console.log("selectedSchool", selectedSchool);
     setState((prevState) => ({
       ...prevState,
       selectedSchool,
@@ -336,6 +344,12 @@ const AdmissionsDash = (props) => {
       dataType = "softwareCourse";
     }
   };
+
+  useEffect(() => {
+    console.log("School is changing in dash");
+    // dispatch the student data when school gets updated
+    dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType }));
+  }, [school]);
 
   const changeFromDate = async (date) => {
     // const newDate = dayjs(date).format("MM-DD-YYYY");
@@ -368,6 +382,10 @@ const AdmissionsDash = (props) => {
 
   const { fetchPendingInterviewDetails } = props;
   const { sData, selectedOption, selectedSchool } = state;
+
+  console.log("sData", sData);
+  console.log("selectedOption", selectedOption);
+  console.log("selectedSchool", selectedSchool);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -521,6 +539,11 @@ const AdmissionsDash = (props) => {
     (priv) => priv.privilege === "DeleteStudent"
   );
 
+  console.log("newColumns", newColumns);
+  console.log("studentData is an object", studentData);
+  console.log("typeof studentData", typeof studentData);
+  console.log("sData", sData);
+
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
       <ThemeProvider theme={theme}>
@@ -528,7 +551,10 @@ const AdmissionsDash = (props) => {
         <div className={classes.clear} />
         <ServerSidePagination
           defaultColumns={StudentService.columns[dataType]}
-          data={sData || studentData}
+          // data={sData || studentData}
+          // data={sData || (typeof studentData === "object" && studentData)}
+          myData={typeof studentData === "object" && studentData}
+          // data={sData}
           showLoader={loading}
           // fun={fetchStudents}
           params={{

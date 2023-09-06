@@ -109,36 +109,36 @@ const DuplicateStudents = () => {
         customBodyRender: (value) => allStages[value],
       },
     },
-    {
-      name: "stage",
-      label: "Book Slot",
-      options: {
-        filter: false,
-        customBodyRender: React.useCallback(
-          (_, rowMeta) => (
-            <Button
-              // disabled={
-              //   rowMeta.rowData[1] !== "pendingEnglishInterview" &&
-              //   rowMeta.rowData[1] !== "pendingCultureFitInterview" &&
-              //   rowMeta.rowData[1] !== "pendingAlgebraInterview"
-              // }
-              disabled="true"
-              variant="contained"
-              color="primary"
-              style={{ fontSize: "10px" }}
-              onClick={() => {
-                navigate({
-                  pathname: `/bookSlot/${rowMeta.rowData[0]}`,
-                });
-              }}
-            >
-              Book Slot
-            </Button>
-          ),
-          []
-        ),
-      },
-    },
+    // {
+    //   name: "stage",
+    //   label: "Book Slot",
+    //   options: {
+    //     filter: false,
+    //     customBodyRender: React.useCallback(
+    //       (_, rowMeta) => (
+    //         <Button
+    //           // disabled={
+    //           //   rowMeta.rowData[1] !== "pendingEnglishInterview" &&
+    //           //   rowMeta.rowData[1] !== "pendingCultureFitInterview" &&
+    //           //   rowMeta.rowData[1] !== "pendingAlgebraInterview"
+    //           // }
+    //           disabled="true"
+    //           variant="contained"
+    //           color="primary"
+    //           style={{ fontSize: "10px" }}
+    //           onClick={() => {
+    //             navigate({
+    //               pathname: `/bookSlot/${rowMeta.rowData[0]}`,
+    //             });
+    //           }}
+    //         >
+    //           Book Slot
+    //         </Button>
+    //       ),
+    //       []
+    //     ),
+    //   },
+    // },
     {
       name: "total_marks",
       label: "Marks",

@@ -101,7 +101,8 @@ export const fetchStudents = createAsyncThunk(
                     stage: concatinateStage,
                     from: fromDate,
                     to: toDate,
-                    // school: querySchool,
+                    school:
+                      typeof querySchool === "string" ? null : querySchool,
                   },
                 }
               );
@@ -109,7 +110,7 @@ export const fetchStudents = createAsyncThunk(
         // console.log("concatinateStage", concatinateStage);
         // console.log("fromDate", fromDate);
         // console.log("toDate", toDate);
-        // console.log("querySchool", querySchool);
+        console.log("querySchool", querySchool);
         // response = await axios.get(
         //   `${baseUrl}students?limit=${numberOfRows}&page=${page}`,
         //   {

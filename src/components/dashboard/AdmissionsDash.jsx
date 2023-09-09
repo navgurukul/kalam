@@ -129,6 +129,7 @@ const AdmissionsDash = (props) => {
   const setPage = (data) => dispatch(setPageNo(data));
   const updateStage = (data) => dispatch(setStage(data));
   const updateSchool = (data) => dispatch(setSchool(data));
+  const [myStudentData, setMyStudentData] = React.useState();
   const [state, setState] = React.useState({
     // totalData: 0,
     // data: [],
@@ -204,6 +205,15 @@ const AdmissionsDash = (props) => {
       }));
     }
   };
+
+  // const getStudentsData = () => {
+  //   axios
+  //     .get(`${baseURL}students?limit=${numberOfRows}&page=${page}`)
+  //     .then((res) => {
+  //       console.log("msa response", res.data.data.results);
+  //     });
+  // };
+
   // const fetchStudents = async () => {
   //   const { fetchPendingInterviewDetails, loggedInUser: pLoggedInUser } = props;
   //   // const { numberOfRows } = state;
@@ -348,8 +358,20 @@ const AdmissionsDash = (props) => {
   useEffect(() => {
     console.log("School is changing in dash");
     // dispatch the student data when school gets updated
-    dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType }));
-  }, [school]);
+    // dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType }));
+    console.log("school in admissionDash", school);
+    if (school.length > 0) {
+      axios
+        .get(`${baseURL}students?limit=${numberOfRows}&page=${page}`)
+        .then((res) => {
+          console.log("msa response", res.data.data.results);
+          // setStudentData(res.data.data.results);
+          setMyStudentData(res.data.data.results);
+        });
+    }
+
+    // console.log("msa", msa);
+  }, [school, dataType]);
 
   const changeFromDate = async (date) => {
     // const newDate = dayjs(date).format("MM-DD-YYYY");
@@ -542,7 +564,7 @@ const AdmissionsDash = (props) => {
   console.log("newColumns", newColumns);
   console.log("studentData is an object", studentData);
   console.log("typeof studentData", typeof studentData);
-  console.log("sData", sData);
+  console.log("myStudentData", myStudentData);
 
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
@@ -553,7 +575,7 @@ const AdmissionsDash = (props) => {
           defaultColumns={StudentService.columns[dataType]}
           // data={sData || studentData}
           // data={sData || (typeof studentData === "object" && studentData)}
-          myData={typeof studentData === "object" && studentData}
+          myData={myStudentData?.length > 0 ? myStudentData : studentData}
           // data={sData}
           showLoader={loading}
           // fun={fetchStudents}

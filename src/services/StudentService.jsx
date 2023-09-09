@@ -763,12 +763,13 @@ const marksColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
-      const CheckAttempt = value.id.filter((marks) => {
+      console.log("value in student service", value);
+      const CheckAttempt = value?.id.filter((marks) => {
         return marks.total_marks;
       });
       return (
         <div style={{ display: "flex", alignItems: "center" }}>
-          {CheckAttempt.length > 0 ? (
+          {CheckAttempt?.length > 0 ? (
             <TestAttemptModel value={CheckAttempt} />
           ) : (
             "N/A"

@@ -24,7 +24,6 @@ export const fetchStudents = createAsyncThunk(
       school,
     } = globalState.students;
     // const { numberOfRows } = state;
-    console.log("Data is fecthing");
     const from = dayjs(fromDate).isValid(fromDate) ? fromDate : undefined;
     const to = dayjs(toDate).isValid(toDate) ? toDate : undefined;
 
@@ -32,8 +31,6 @@ export const fetchStudents = createAsyncThunk(
     if (from && to) {
       finalDates = { from, to };
     }
-
-    console.log("school in slice", school);
 
     // const updatedSchool = await axios
     //   .get(`${baseUrl}school`)

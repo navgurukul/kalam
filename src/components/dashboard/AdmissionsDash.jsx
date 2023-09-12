@@ -78,13 +78,8 @@ const AdmissionsDash = (props) => {
     totalData,
     numberOfRows,
     page,
-  } = useSelector((state) => {
-    console.log("state in Dash", state);
-    return state.students;
-  });
+  } = useSelector((state) => state.students);
   const [allSchools, setAllSchools] = React.useState();
-
-  console.log("school in dash", school);
 
   useEffect(() => {
     axios
@@ -131,7 +126,7 @@ const AdmissionsDash = (props) => {
   const setPage = (data) => dispatch(setPageNo(data));
   const updateStage = (data) => dispatch(setStage(data));
   const updateSchool = (data) => dispatch(setSchool(data));
-  const [myStudentData, setMyStudentData] = React.useState();
+  const [allStudentData, setAllStudentData] = React.useState();
   const [state, setState] = React.useState({
     // totalData: 0,
     // data: [],
@@ -153,8 +148,6 @@ const AdmissionsDash = (props) => {
   const usersURL = `${baseURL}users/getall`;
   // let stage = null;
   let value = null;
-
-  console.log("updateSchoollll", updateSchool);
 
   const fetchOWner = async (signal) => {
     const response = await axios.get(`${baseURL}owner`, { signal });
@@ -207,14 +200,6 @@ const AdmissionsDash = (props) => {
       }));
     }
   };
-
-  // const getStudentsData = () => {
-  //   axios
-  //     .get(`${baseURL}students?limit=${numberOfRows}&page=${page}`)
-  //     .then((res) => {
-  //       console.log("msa response", res.data.data.results);
-  //     });
-  // };
 
   // const fetchStudents = async () => {
   //   const { fetchPendingInterviewDetails, loggedInUser: pLoggedInUser } = props;
@@ -340,7 +325,6 @@ const AdmissionsDash = (props) => {
   };
 
   const changeSchool = (selectedSchool) => {
-    console.log("selectedSchool", selectedSchool);
     setState((prevState) => ({
       ...prevState,
       selectedSchool,
@@ -358,31 +342,20 @@ const AdmissionsDash = (props) => {
   };
 
   useEffect(() => {
-    console.log("School is changing in dash");
-    // dispatch the student data when school gets updated
-    // dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType }));
-    console.log("school in admissionDash", school);
+    // get school and set it to setAllStudentData state with adding marks property to the data when school changes
     if (school.length > 0) {
       axios
         .get(`${baseURL}students?limit=${numberOfRows}&page=${page}`)
         .then((res) => {
           console.log("msa response", res.data.data.results);
-          // setStudentData(res.data.data.results);
-          // setMyStudentData(res.data.data.results);
-          // if (data.length > 0) {
-          // for (let i = 0; i < data.length; i++) {
-          //   data[i] = StudentService.dConvert(data[i]);
-          // }
+          // adding marks property to the data
           const newData = res.data.data.results.map((v) => ({
             ...dConvert(v),
           }));
           console.log("newData in dash", newData);
-          setMyStudentData(newData);
-          // }
+          setAllStudentData(newData);
         });
     }
-
-    // console.log("msa", msa);
   }, [school, dataType]);
 
   const changeFromDate = async (date) => {
@@ -416,10 +389,6 @@ const AdmissionsDash = (props) => {
 
   const { fetchPendingInterviewDetails } = props;
   const { sData, selectedOption, selectedSchool } = state;
-
-  console.log("sData", sData);
-  console.log("selectedOption", selectedOption);
-  console.log("selectedSchool", selectedSchool);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -573,11 +542,6 @@ const AdmissionsDash = (props) => {
     (priv) => priv.privilege === "DeleteStudent"
   );
 
-  console.log("newColumns", newColumns);
-  console.log("studentData is an object", studentData);
-  console.log("typeof studentData", typeof studentData);
-  console.log("myStudentData", myStudentData);
-
   return (
     <Box sx={{ paddingX: "1.2rem", paddingY: "0.4rem" }}>
       <ThemeProvider theme={theme}>
@@ -586,9 +550,7 @@ const AdmissionsDash = (props) => {
         <ServerSidePagination
           defaultColumns={StudentService.columns[dataType]}
           // data={sData || studentData}
-          // data={sData || (typeof studentData === "object" && studentData)}
-          myData={myStudentData?.length > 0 ? myStudentData : studentData}
-          // data={sData}
+          data={allStudentData?.length > 0 ? allStudentData : studentData}
           showLoader={loading}
           // fun={fetchStudents}
           params={{

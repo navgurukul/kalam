@@ -20,7 +20,7 @@ const ServerSidePagination = ({
   defaultColumns,
   showLoader,
   params,
-  myData,
+  data,
   sortChange,
   customOptions,
 }) => {
@@ -211,7 +211,7 @@ const ServerSidePagination = ({
   // }
 
   console.log("studentData in SSP", studentData);
-  console.log("myData in SSP", myData);
+  console.log("data in SSP", data);
 
   const options = React.useMemo(
     () => ({
@@ -287,7 +287,7 @@ const ServerSidePagination = ({
   return (
     <MUIDataTable
       title={<SearchBar searchByName={getSearchApi} />}
-      data={myData}
+      data={data}
       columns={columns}
       options={options}
     />

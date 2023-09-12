@@ -14,6 +14,7 @@ const StageMarks = ({ value, name, marks }) => {
   const [DBdata, setDBdata] = React.useState(null);
 
   const handleClickOpen = async () => {
+    console.log("Value", value);
     try {
       const { data } = await axios.get(
         `${baseURL}/questions/attempts/${value.id}`

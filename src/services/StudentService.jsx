@@ -767,6 +767,7 @@ const marksColumn = {
       const CheckAttempt = value?.id.filter((marks) => {
         return marks.total_marks;
       });
+      console.log("CheckAttempt", CheckAttempt);
       return (
         <div style={{ display: "flex", alignItems: "center" }}>
           {CheckAttempt?.length > 0 ? (

@@ -149,6 +149,7 @@ export const fetchStudents = createAsyncThunk(
             altNumber: contacts ? contacts.alt_mobile : contacts,
           };
         });
+      console.log("My studentData in studentSlice", studentData);
       thunkAPI.dispatch(changeFetching(false));
       return dataSetup(
         studentData,

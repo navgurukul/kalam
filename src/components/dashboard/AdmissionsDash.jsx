@@ -19,6 +19,8 @@ import ServerSidePagination from "../muiTables/ServerSidePagination";
 import theme from "../../theme";
 import ToolbarAddButton from "../admin/ToolbarAddButton";
 import { fetchOwners as fetchOwnersAction } from "../../store/slices/dataSlice";
+import { dConvert } from "../../utils";
+// "../../utils";
 import {
   setFromDate,
   // setNoOfRows,
@@ -366,7 +368,17 @@ const AdmissionsDash = (props) => {
         .then((res) => {
           console.log("msa response", res.data.data.results);
           // setStudentData(res.data.data.results);
-          setMyStudentData(res.data.data.results);
+          // setMyStudentData(res.data.data.results);
+          // if (data.length > 0) {
+          // for (let i = 0; i < data.length; i++) {
+          //   data[i] = StudentService.dConvert(data[i]);
+          // }
+          const newData = res.data.data.results.map((v) => ({
+            ...dConvert(v),
+          }));
+          console.log("newData in dash", newData);
+          setMyStudentData(newData);
+          // }
         });
     }
 

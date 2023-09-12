@@ -36,6 +36,14 @@ export const dConvert = (data, isCampus) => {
 };
 
 export const dataSetup = (data, totalData, loggedInUser) => {
+  console.log(
+    "data in utils",
+    data,
+    "totalData",
+    totalData,
+    "loggedInUser",
+    loggedInUser
+  );
   if (data.length > 0) {
     // for (let i = 0; i < data.length; i++) {
     //   data[i] = StudentService.dConvert(data[i]);
@@ -44,6 +52,7 @@ export const dataSetup = (data, totalData, loggedInUser) => {
       ...dConvert(v),
       loggedInUser,
     }));
+    console.log("newData", newData);
     return { data: newData, totalData };
   }
   return { data: [], totalData: 0 };

@@ -79,7 +79,9 @@ export const fetchStudents = createAsyncThunk(
         thunkAPI.dispatch(setUrl(url));
       }
       let results =
-        school === "" ? response.data.data.results : response.data.data.results;
+        typeof school === "string"
+          ? response.data.data.results
+          : response.data.data;
       const studentData =
         // response.data &&
         // response.data.data &&

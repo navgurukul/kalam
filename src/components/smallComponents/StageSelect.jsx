@@ -71,6 +71,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const toggleLoading = () => setLoading((prev) => !prev);
   const [firstStages, setFirstStages] = React.useState();
   const [allSchools, setAllSchools] = React.useState();
+  const [schoolUpdated, setSchoolUpdated] = React.useState(false);
 
   useEffect(() => {
     // In the beginning we will make an API call to get all the schools and store it in allSchools and
@@ -97,6 +98,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   useEffect(() => {
     // Whenever stage changes we will make an API call to get the student data to get the school_stage_id
     const studentId = rowMetatable.rowData[0];
+
     axios
       .get(`${baseUrl}students/${studentId}`)
       .then((res) => {
@@ -131,6 +133,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           school: schoolName,
           transition_done_by: loggedInUser.user_name,
         });
+        setSchoolUpdated(true);
       }
     }
 
@@ -154,11 +157,22 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           });
 
           if (currentSchool && typeof currentSchool === "string") {
-            axios.post(`${baseUrl}students/changeStage/${studentId}`, {
-              stage: response.data[0]?.stageName,
-              school: schoolName,
-              transition_done_by: loggedInUser.user_name,
-            });
+            axios
+              .post(`${baseUrl}students/changeStage/${studentId}`, {
+                stage: response.data[0]?.stageName,
+                school: schoolName,
+                transition_done_by: loggedInUser.user_name,
+              })
+              .then(() => {
+                // setSchoolUpdated(true);
+                axios.get(`${baseUrl}students/${studentId}`).then((res) => {
+                  setStudentData(res.data.data[0]);
+                  selectedValue = {
+                    value: null,
+                    label: res.data.data[0]?.stage,
+                  };
+                });
+              });
           }
 
           setSchoolStages(data);
@@ -370,13 +384,17 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
 
     // With isProgrammingSchool we are checking whether the school is programming school or not
     if (isProgrammingSchool) {
+      // selectedValue = {
+      //   value: _.invert(allStages)[isCampus ? stage?.stage || "" : stage],
+      //   label: isCampus ? stage?.stage || "" : stage,
+      // };
       selectedValue = {
-        value: _.invert(allStages)[isCampus ? stage?.stage || "" : stage],
-        label: isCampus ? stage?.stage || "" : stage,
+        value: studentData?.stage,
+        label: allStages[studentData?.stage],
       };
     } else {
       selectedValue = {
-        value: studentData?.school_stage_id,
+        value: null,
         label: studentData?.stage,
       };
     }
@@ -390,7 +408,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       };
     } else {
       selectedValue = {
-        value: studentData?.school_stage_id,
+        value: null,
         label: studentData?.stage,
       };
     }

@@ -763,12 +763,12 @@ const marksColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
-      const CheckAttempt = value.id.filter((marks) => {
+      const CheckAttempt = value?.id.filter((marks) => {
         return marks.total_marks;
       });
       return (
         <div style={{ display: "flex", alignItems: "center" }}>
-          {CheckAttempt.length > 0 ? (
+          {CheckAttempt?.length > 0 ? (
             <TestAttemptModel value={CheckAttempt} />
           ) : (
             "N/A"
@@ -1664,13 +1664,15 @@ const dashboardSchoolColumn = {
         </div>
       ),
     },
-    customBodyRender: (value, rowMeta, updateValue) => (
-      <DashboardSchoolColumnWrapper
-        value={value}
-        rowMeta={rowMeta}
-        updateValue={updateValue}
-      />
-    ),
+    customBodyRender: (value, rowMeta, updateValue) => {
+      return (
+        <DashboardSchoolColumnWrapper
+          value={value}
+          rowMeta={rowMeta}
+          updateValue={updateValue}
+        />
+      );
+    },
   },
 };
 

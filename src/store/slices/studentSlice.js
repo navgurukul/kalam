@@ -24,7 +24,6 @@ export const fetchStudents = createAsyncThunk(
       school,
     } = globalState.students;
     // const { numberOfRows } = state;
-
     const from = dayjs(fromDate).isValid(fromDate) ? fromDate : undefined;
     const to = dayjs(toDate).isValid(toDate) ? toDate : undefined;
 
@@ -34,7 +33,7 @@ export const fetchStudents = createAsyncThunk(
     }
 
     const concatinateStage = stage.length === 0 ? null : stage.join(",");
-    const querySchool = school === "" ? null : school;
+    const querySchool = typeof school === "string" ? null : school;
     try {
       thunkAPI.dispatch(changeFetching(true)); // startFetching
       let response;
@@ -45,12 +44,16 @@ export const fetchStudents = createAsyncThunk(
           },
         });
       } else {
-        const url = await filterColumns.reduce((cUrl, filterColumn, index) => {
-          if (index > 0) {
-            return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
-          }
-          return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
-        }, `${baseUrl}students?`);
+        const url =
+          filterColumns && filterColumns.length > 0
+            ? await filterColumns.reduce((cUrl, filterColumn, index) => {
+                if (index > 0) {
+                  return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
+                }
+                return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
+              }, `${baseUrl}students?`)
+            : null;
+
         response =
           filterColumns && filterColumns.length > 0
             ? await axios.get(`${url}&limit=${numberOfRows}&page=${page}`, {
@@ -76,7 +79,9 @@ export const fetchStudents = createAsyncThunk(
         thunkAPI.dispatch(setUrl(url));
       }
       let results =
-        school === "" ? response.data.data.results : response.data.data;
+        typeof school === "string"
+          ? response.data.data.results
+          : response.data.data;
       const studentData =
         // response.data &&
         // response.data.data &&
@@ -155,8 +160,8 @@ const StudentSlice = createSlice({
   },
   extraReducers: {
     [fetchStudents.fulfilled]: (state, action) => {
-      state.studentData = action.payload.data;
-      state.totalData = action.payload.totalData;
+      state.studentData = action.payload?.data;
+      state.totalData = action.payload?.totalData;
     },
   },
 });

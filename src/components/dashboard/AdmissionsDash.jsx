@@ -19,6 +19,8 @@ import ServerSidePagination from "../muiTables/ServerSidePagination";
 import theme from "../../theme";
 import ToolbarAddButton from "../admin/ToolbarAddButton";
 import { fetchOwners as fetchOwnersAction } from "../../store/slices/dataSlice";
+import { dConvert } from "../../utils";
+// "../../utils";
 import {
   setFromDate,
   // setNoOfRows,
@@ -124,6 +126,7 @@ const AdmissionsDash = (props) => {
   const setPage = (data) => dispatch(setPageNo(data));
   const updateStage = (data) => dispatch(setStage(data));
   const updateSchool = (data) => dispatch(setSchool(data));
+  const [allStudentData, setAllStudentData] = React.useState();
   const [state, setState] = React.useState({
     // totalData: 0,
     // data: [],
@@ -197,6 +200,7 @@ const AdmissionsDash = (props) => {
       }));
     }
   };
+
   // const fetchStudents = async () => {
   //   const { fetchPendingInterviewDetails, loggedInUser: pLoggedInUser } = props;
   //   // const { numberOfRows } = state;
@@ -336,6 +340,21 @@ const AdmissionsDash = (props) => {
       dataType = "softwareCourse";
     }
   };
+
+  useEffect(() => {
+    // get school and set it to setAllStudentData state with adding marks property to the data when school changes
+    if (school.length > 0) {
+      axios
+        .get(`${baseURL}students?limit=${numberOfRows}&page=${page}`)
+        .then((res) => {
+          // adding marks property to the data
+          const newData = res.data.data.results.map((v) => ({
+            ...dConvert(v),
+          }));
+          setAllStudentData(newData);
+        });
+    }
+  }, [school, dataType]);
 
   const changeFromDate = async (date) => {
     // const newDate = dayjs(date).format("MM-DD-YYYY");
@@ -528,7 +547,10 @@ const AdmissionsDash = (props) => {
         <div className={classes.clear} />
         <ServerSidePagination
           defaultColumns={StudentService.columns[dataType]}
-          data={sData || studentData}
+          // data={sData || studentData}
+          // data={allStudentData?.length > 0 ? allStudentData : studentData}
+          data={allStudentData}
+          setAllStudentData={setAllStudentData}
           showLoader={loading}
           // fun={fetchStudents}
           params={{

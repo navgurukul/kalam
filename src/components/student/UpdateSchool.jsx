@@ -3,9 +3,11 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { useDispatch, useSelector } from "react-redux";
 
 const baseURL = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
+import { setSchool } from "../../store/slices/studentSlice";
 
 const UpdateSchool = (props) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -13,6 +15,9 @@ const UpdateSchool = (props) => {
   const [studentData, setStudentData] = React.useState();
   const [isMounted, setIsMounted] = useState(true);
   const { rowMeta } = props;
+  // const { studentData, school } = useSelector((state) => state.students);
+  const dispatch = useDispatch();
+  const setUpdateSchool = (data) => dispatch(setSchool(data));
 
   let { value, studentId } = props;
 
@@ -27,10 +32,6 @@ const UpdateSchool = (props) => {
       value = value[0];
     }
   }
-
-  // if (value.length > 0) {
-  //   value = value[0];
-  // }
 
   const selectedValue = { value: value?.id, label: value?.name };
 
@@ -56,7 +57,6 @@ const UpdateSchool = (props) => {
     axios
       .get(`${baseURL}students/${studentId}`)
       .then((res) => {
-        // setStudentData(res.data.data[0]);
         if (isMounted) {
           setStudentData(res.data.data[0]);
         }
@@ -95,6 +95,7 @@ const UpdateSchool = (props) => {
         enqueueSnackbar(`School successfully updated !`, {
           variant: "success",
         });
+        setUpdateSchool(label);
         change(label);
       })
       .catch((err) => {

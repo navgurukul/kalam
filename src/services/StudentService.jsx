@@ -763,11 +763,9 @@ const marksColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
-      console.log("value in student service", value);
       const CheckAttempt = value?.id.filter((marks) => {
         return marks.total_marks;
       });
-      console.log("CheckAttempt", CheckAttempt);
       return (
         <div style={{ display: "flex", alignItems: "center" }}>
           {CheckAttempt?.length > 0 ? (
@@ -1024,8 +1022,6 @@ const stageColumn = {
     display: true,
     sort: true,
     customBodyRender: (value, rowMeta, updateValue) => {
-      console.log("rowMeta", rowMeta);
-      console.log("value", value);
       return (
         <StageSelectWrapper
           value={value}
@@ -1669,8 +1665,6 @@ const dashboardSchoolColumn = {
       ),
     },
     customBodyRender: (value, rowMeta, updateValue) => {
-      console.log("school value", value);
-      console.log("school rowMeta", rowMeta);
       return (
         <DashboardSchoolColumnWrapper
           value={value}

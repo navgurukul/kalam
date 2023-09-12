@@ -7,41 +7,17 @@ import { useDispatch, useSelector } from "react-redux";
 
 const baseURL = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
-import {
-  // setFromDate,
-  // // setNoOfRows,
-  // setStage,
-  setStudentData,
-  // setToDate,
-  // setPageNo,
-  fetchStudents,
-  setSchool,
-} from "../../store/slices/studentSlice";
+import { setSchool } from "../../store/slices/studentSlice";
 
 const UpdateSchool = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = React.useState([]);
-  const [studentDataa, setStudentDataa] = React.useState();
+  const [studentData, setStudentData] = React.useState();
   const [isMounted, setIsMounted] = useState(true);
   const { rowMeta } = props;
-  const {
-    url,
-    // filterColumns,
-    studentData,
-    fromDate,
-    toDate,
-    stage,
-    school,
-    totalData,
-    numberOfRows,
-    page,
-  } = useSelector((state) => {
-    console.log("state in School", state);
-    return state.students;
-  });
+  // const { studentData, school } = useSelector((state) => state.students);
   const dispatch = useDispatch();
-  const updateSchoolll = (data) => dispatch(setSchool(data));
-  const setStudents = (data) => dispatch(setStudentData(data));
+  const setUpdateSchool = (data) => dispatch(setSchool(data));
 
   let { value, studentId } = props;
 
@@ -50,19 +26,12 @@ const UpdateSchool = (props) => {
   }
   if (value?.length > 0) {
     if (typeof value === "string") {
-      value = studentDataa?.school[0];
+      value = studentData?.school[0];
       // .map((x) => ({ value: x.id, label: x.label }));
     } else {
       value = value[0];
     }
   }
-
-  console.log("studentData in school", studentData);
-  console.log("school in school", school);
-
-  // if (value.length > 0) {
-  //   value = value[0];
-  // }
 
   const selectedValue = { value: value?.id, label: value?.name };
 
@@ -88,19 +57,14 @@ const UpdateSchool = (props) => {
     axios
       .get(`${baseURL}students/${studentId}`)
       .then((res) => {
-        // setStudentData(res.data.data[0]);
         if (isMounted) {
-          setStudentDataa(res.data.data[0]);
-          console.log("res.data.data[0]", res.data.data);
-          // setStudents(res.data.data);
+          setStudentData(res.data.data[0]);
         }
       })
       .catch((err) => {
         console.log("err", err);
       });
   }, [props]);
-
-  console.log("props", props);
 
   // only for students who have failed
   // const showDropdown = rowMeta.rowData[14] === "Test Failed";
@@ -131,7 +95,7 @@ const UpdateSchool = (props) => {
         enqueueSnackbar(`School successfully updated !`, {
           variant: "success",
         });
-        updateSchoolll(label);
+        setUpdateSchool(label);
         change(label);
       })
       .catch((err) => {
@@ -162,13 +126,6 @@ const UpdateSchool = (props) => {
         console.log(error);
       });
   }
-
-  // useEffect(() => {
-  //   console.log("School is changing");
-  //   // dispatch the student data when school gets updated
-  //   // dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType }));
-  //   dispatch(fetchStudents());
-  // }, [school]);
 
   return (
     <Select

@@ -102,7 +102,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     axios
       .get(`${baseUrl}students/${studentId}`)
       .then((res) => {
-        console.log("Changed", res.data.data[0]);
         setStudentData(res.data.data[0]);
       })
       .catch((err) => {
@@ -167,7 +166,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
               .then(() => {
                 // setSchoolUpdated(true);
                 axios.get(`${baseUrl}students/${studentId}`).then((res) => {
-                  console.log("Changed Ok", res.data.data[0]);
                   setStudentData(res.data.data[0]);
                   selectedValue = {
                     value: null,
@@ -380,8 +378,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     }));
   }
 
-  console.log("selectedValue up", selectedValue);
-
   if (stage) {
     // If stage is present in database then for programming school we will show the stage name from allStages
     // and for other schools from studentData
@@ -417,10 +413,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       };
     }
   }
-
-  console.log("studentData in stage", studentData);
-  console.log("stage", stage);
-  console.log("selectedValue down", selectedValue);
 
   return (
     <div

@@ -347,12 +347,10 @@ const AdmissionsDash = (props) => {
       axios
         .get(`${baseURL}students?limit=${numberOfRows}&page=${page}`)
         .then((res) => {
-          console.log("msa response", res.data.data.results);
           // adding marks property to the data
           const newData = res.data.data.results.map((v) => ({
             ...dConvert(v),
           }));
-          console.log("newData in dash", newData);
           setAllStudentData(newData);
         });
     }

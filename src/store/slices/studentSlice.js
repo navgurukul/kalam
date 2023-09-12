@@ -33,7 +33,7 @@ export const fetchStudents = createAsyncThunk(
     }
 
     const concatinateStage = stage.length === 0 ? null : stage.join(",");
-    const querySchool = school === "" ? null : school;
+    const querySchool = typeof school === "string" ? null : school;
     try {
       thunkAPI.dispatch(changeFetching(true)); // startFetching
       let response;
@@ -71,8 +71,7 @@ export const fetchStudents = createAsyncThunk(
                     stage: concatinateStage,
                     from: fromDate,
                     to: toDate,
-                    school:
-                      typeof querySchool === "string" ? null : querySchool,
+                    school: querySchool,
                   },
                 }
               );
@@ -80,7 +79,7 @@ export const fetchStudents = createAsyncThunk(
         thunkAPI.dispatch(setUrl(url));
       }
       let results =
-        school === "" ? response.data.data.results : response.data.data;
+        school === "" ? response.data.data.results : response.data.data.results;
       const studentData =
         // response.data &&
         // response.data.data &&
@@ -159,8 +158,8 @@ const StudentSlice = createSlice({
   },
   extraReducers: {
     [fetchStudents.fulfilled]: (state, action) => {
-      state.studentData = action.payload.data;
-      state.totalData = action.payload.totalData;
+      state.studentData = action.payload?.data;
+      state.totalData = action.payload?.totalData;
     },
   },
 });

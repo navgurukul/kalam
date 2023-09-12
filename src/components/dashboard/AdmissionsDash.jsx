@@ -548,7 +548,9 @@ const AdmissionsDash = (props) => {
         <ServerSidePagination
           defaultColumns={StudentService.columns[dataType]}
           // data={sData || studentData}
-          data={allStudentData?.length > 0 ? allStudentData : studentData}
+          // data={allStudentData?.length > 0 ? allStudentData : studentData}
+          data={allStudentData}
+          setAllStudentData={setAllStudentData}
           showLoader={loading}
           // fun={fetchStudents}
           params={{

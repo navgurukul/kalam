@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useSnackbar } from "notistack";
+import { useLocation } from "react-router-dom";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -185,6 +186,8 @@ const BasicDetails = ({
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const location = useLocation();
+  const { state } = location;
   const uploadProfilePhoto = (e) => {
     const file = e.target.files[0];
     //check if file size is greater than 1mb
@@ -195,6 +198,7 @@ const BasicDetails = ({
     setProfileImage(file);
   };
 
+  const slug = state?.slug;
   const date = new Date();
   const currentDate = date.getDate();
   const month = date.getMonth();
@@ -606,10 +610,14 @@ const BasicDetails = ({
               validate: (gender) => {
                 if (gender === "select gender") return false;
                 if (gender === "male") {
-                  enqueueSnackbar("Currently, Males admission is full.", {
-                    variant: "info",
-                  });
-                  return false;
+                  if (slug === "dantewada") {
+                    return true;
+                  } else {
+                    enqueueSnackbar("Currently, Males admission is full.", {
+                      variant: "info",
+                    });
+                    return false;
+                  }
                 }
                 if (
                   gender === "female" ||

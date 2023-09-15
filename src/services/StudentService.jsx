@@ -245,7 +245,9 @@ const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
             borderRadius: "8px",
           }}
         >
-          <p key={item + Math.random()}> @{item} </p>
+          {item.split("\n").map((i, index) => (
+            <p key={item + Math.random()}> {index === 0 ? `@${i}` : i} </p>
+          ))}
         </div>
       )) || null}
     </div>
@@ -983,6 +985,8 @@ const donorColumn = {
 
 const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
+  console.log("value stage", value);
+  console.log("rowMeta stage", rowMeta);
   const isCampusPathname = window.location.pathname.indexOf("campus");
   return privileges?.some((priv) => priv.privilege === "UpdateStage") ? (
     <StageSelect
@@ -1004,13 +1008,16 @@ const stageColumn = {
     filter: false,
     display: true,
     sort: true,
-    customBodyRender: (value, rowMeta, updateValue) => (
-      <StageSelectWrapper
-        value={value}
-        rowMeta={rowMeta}
-        updateValue={updateValue}
-      />
-    ),
+    customBodyRender: (value, rowMeta, updateValue) => {
+      console.log("value --------", value);
+      return (
+        <StageSelectWrapper
+          value={value}
+          rowMeta={rowMeta}
+          updateValue={updateValue}
+        />
+      );
+    },
   },
 };
 
@@ -1266,7 +1273,6 @@ const dashboardStatusColumn = {
       ),
     },
     customBodyRender: (state) => {
-      console.log("state", state);
       if (state) {
         return state.charAt(0).toUpperCase() + state.slice(1);
       }

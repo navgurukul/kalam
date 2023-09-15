@@ -62,6 +62,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const setCampusCounts = (counts) => dispatch(setCounts(counts));
   const { loggedInUser } = useSelector((state) => state.auth);
   const { allStatusCount } = useSelector((state) => state.campus);
+  // const { allStatusCount } = useSelector((state) => state.students);
+  // const refreshTable = (data) => dispatch(fetchStudents(data));
   const getKeyByValue = (object, value) =>
     Object.keys(object).find((key) => object[key] === value);
   const [state, setState] = React.useState({
@@ -87,6 +89,15 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       .get(`${baseUrl}school`)
       .then((res) => {
         setAllSchools(res.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+    const studentId = rowMetatable.rowData[0];
+    axios
+      .get(`${baseUrl}students/${studentId}`)
+      .then((res) => {
+        setStudentData(res.data.data[0]);
       })
       .catch((err) => {
         console.log("err", err);
@@ -184,9 +195,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const changeStage = (selectedValue) => {
     const studentId = rowMetatable.rowData[0];
     const { value, label } = selectedValue;
+
     axios
       .post(`${baseUrl}students/changeStage/${studentId}`, {
-        stage: value,
+        stage: isProgrammingSchool ? value : label,
         transition_done_by: loggedInUser.user_name,
       })
       .then(() => {
@@ -194,6 +206,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           variant: "success",
         });
         change(isCampus ? { ...stage, stage: label } : label);
+        // refreshTable({
+        //   fetchPendingInterviewDetails: false,
+        //   dataType: "softwareCourse",
+        // });
         // getTransitionStage(studentId);
       })
       .catch(() => {
@@ -201,46 +217,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           variant: "error",
         });
       });
-  };
-
-  const changeStageChangeOther = async (selectedValue) => {
-    const studentId = rowMetatable.rowData[0];
-    const { value, label } = selectedValue;
-    try {
-      // const response = await axios.post(`${baseUrl}stage/students`, {
-      //   student_id: studentId,
-      //   "stage_id": value,
-      //   "student_stage": label
-      // });
-
-      axios
-        .post(`${baseUrl}stage/students`, {
-          student_id: studentId,
-          stage_id: value,
-          student_stage: label,
-          transition_done_by: loggedInUser.user_name,
-        })
-        .then(() => {
-          enqueueSnackbar("Stage Updated!", {
-            variant: "success",
-          });
-          change(isCampus ? { ...stage, stage: label } : label);
-          // change(isCampus ? { ...stage, stage: label } : selectedValue);
-          // getTransitionStage(studentId);
-        });
-
-      // PUT/stage/update/{id}
-
-      // const res = await axios.post(`${baseUrl}stage/update/${studentId}`, {
-      //     stageName: label,
-      //     stageType: "Test"
-      // });
-    } catch (e) {
-      //console.log(e)
-      enqueueSnackbar("Something is wrong with previous stage!", {
-        variant: "error",
-      });
-    }
   };
 
   const handleChange = async (selectedValue) => {
@@ -271,11 +247,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         },
       });
     } else if (value !== "offerLetterSent") {
-      if (isProgrammingSchool) {
-        changeStage(selectedValue);
-      } else {
-        changeStageChangeOther(selectedValue);
-      }
+      changeStage(selectedValue);
     } else {
       enqueueSnackbar("Please update email or campus!", {
         variant: "error",
@@ -284,47 +256,66 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   };
 
   const sendOfferLetter = () => {
+    const studentId = rowMetatable.rowData[0];
     toggleLoading();
-    axios
-      .post(
-        `https://connect.merakilearn.org/api/offerLetter/admissions`,
-        state.payload
-      )
-      .then(() => {
-        enqueueSnackbar(
-          `Joining letter successfully sent to ${state.payload.receiverEmail}`,
-          {
+    changeStage({
+      label: "Offer Letter Sent",
+      value: "offerLetterSent",
+    });
+    const offerLetter = () => {
+      axios
+        .post(
+          `https://connect.merakilearn.org/api/offerLetter/admissions`,
+          state.payload
+        )
+        .then((res) => {
+          enqueueSnackbar(
+            `Joining letter successfully sent to ${state.payload.receiverEmail}`,
+            {
+              variant: "success",
+            }
+          );
+          setState({
+            ...state,
+            flag: false,
+          });
+        })
+        .catch((err) => {
+          enqueueSnackbar(`Something went wrong while sending Joining letter`, {
+            variant: "error",
+          });
+          setState({
+            ...state,
+            flag: false,
+          });
+        });
+    };
+    const sendSMS = () => {
+      axios
+        .post(
+          `${baseUrl}/student/sendSmsWhenSendOfferLeterToStudents/${studentId}`
+        )
+        .then((res) => {
+          enqueueSnackbar(`SMS sent successfully!`, {
             variant: "success",
-          }
-        );
-        toggleLoading();
-        setState({
-          ...state,
-          flag: false,
+          });
+          setState({
+            ...state,
+            flag: false,
+          });
+        })
+        .catch((err) => {
+          enqueueSnackbar(`Something went wrong while sending SMS`, {
+            variant: "error",
+          });
+          setState({
+            ...state,
+            flag: false,
+          });
         });
-        changeStage({
-          label: "Offer Letter Sent",
-          value: "offerLetterSent",
-        });
-      })
-        // Call the sms sending API
-        const studentId = rowMetatable.rowData[0];
-        axios
-          .post(
-            `${baseUrl}/student/sendSmsWhenSendOfferLeterToStudents/${studentId}`
-          )
-          .then(() => {
-            
-          }).catch(() => {
-        enqueueSnackbar(`Something went wrong`, {
-          variant: "error",
-        });
-        toggleLoading();
-        setState({
-          ...state,
-          flag: false,
-        });
-      });
+    };
+    setTimeout(offerLetter, 1000);
+    setTimeout(sendSMS, 5000);
   };
 
   const handleClose = (e, clickaway) => {
@@ -379,11 +370,20 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         label: isCampus ? stage?.stage || "" : stage,
       };
     } else {
+      // selectedValue = {
+      //   value: studentData?.student_school_stage?.id,
+      //   label: studentData?.student_school_stage?.stageName,
+      // };
       selectedValue = {
-        value: studentData?.student_school_stage?.id,
-        label: studentData?.student_school_stage?.stageName,
+        value: studentData?.school_stage_id,
+        label: studentData?.stage,
       };
     }
+  } else {
+    selectedValue = {
+      value: studentData?.school_stage_id,
+      label: studentData?.stage,
+    };
   }
 
   // useEffect(() => getTransitionStage(rowMetatable.rowData[0]), []);

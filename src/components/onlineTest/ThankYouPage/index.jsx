@@ -126,7 +126,6 @@ function ThankYouPage({ userID }) {
           variant="contained"
           color="primary"
           className={classes.button}
-          disabled="true"
           onClick={() => {
             clearTestData();
             navigate(`/bookSlot/${userID}`);

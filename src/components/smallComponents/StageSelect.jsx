@@ -275,6 +275,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
               variant: "success",
             }
           );
+          toggleLoading();
           setState({
             ...state,
             flag: false,
@@ -284,6 +285,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           enqueueSnackbar(`Something went wrong while sending Joining letter`, {
             variant: "error",
           });
+          toggleLoading();
           setState({
             ...state,
             flag: false,

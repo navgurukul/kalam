@@ -377,8 +377,6 @@ const StudentForm = () => {
             //   studentId: res.data.details.id,
             // },
           });
-
-          //console.log("res", res);
         })
         .catch(() => {
           enqueueSnackbar("Please fill all the fields properly", {

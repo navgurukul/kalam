@@ -23,6 +23,8 @@ import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
 import { INPUT_PATTERNS } from "../../../../utils/constants.js";
 
+const enableBoysAdmission = import.meta.env.VITE_API_ENABLE_BOYS_ADMISSION;
+
 const useStyles = makeStyles((theme) => ({
   root: {
     // maxWidth: 400,
@@ -605,14 +607,26 @@ const BasicDetails = ({
               validate: (gender) => {
                 if (gender === "select gender") return false;
                 if (gender === "male") {
-                  if (slug === "dantewada") {
+                  if (enableBoysAdmission === "true") {
                     return true;
                   } else {
-                    enqueueSnackbar("Currently, Males admission is full.", {
-                      variant: "info",
-                    });
-                    return false;
+                    if (slug === "dantewada") {
+                      return true;
+                    } else {
+                      enqueueSnackbar("Currently, Males admission is full.", {
+                        variant: "info",
+                      });
+                      return false;
+                    }
                   }
+                  // if (slug === "dantewada") {
+                  //   return true;
+                  // } else {
+                  //   enqueueSnackbar("Currently, Males admission is full.", {
+                  //     variant: "info",
+                  //   });
+                  //   return false;
+                  // }
                 }
                 if (
                   gender === "female" ||

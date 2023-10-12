@@ -607,16 +607,17 @@ const BasicDetails = ({
               validate: (gender) => {
                 if (gender === "select gender") return false;
                 if (gender === "male") {
-                  if (slug === "dantewada") {
-                    return true;
-                  }
-                  if (enableBoysAdmission) {
+                  if (enableBoysAdmission === "true") {
                     return true;
                   } else {
-                    enqueueSnackbar("Currently, Males admission is full.", {
-                      variant: "info",
-                    });
-                    return false;
+                    if (slug === "dantewada") {
+                      return true;
+                    } else {
+                      enqueueSnackbar("Currently, Males admission is full.", {
+                        variant: "info",
+                      });
+                      return false;
+                    }
                   }
                   // if (slug === "dantewada") {
                   //   return true;

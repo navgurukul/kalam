@@ -15,14 +15,13 @@ const StatusSelect = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const studentId = window.location.pathname.includes("/campus")
-    ? rowMetaTable.rowData[7]
-    : rowMetaTable.rowData[5];
+    ? rowMetaTable.rowData[8]
+    : rowMetaTable.rowData[6];
 
   const handleChange = (selectedValue) => {
     const { columnIndex } = rowMetaTable;
     const stage = rowMetaTable.rowData[0];
     const { value } = selectedValue;
-
     const dataURL = `${baseUrl}students/feedback/${studentId}`;
     axios
       .put(dataURL, { student_stage: stage, state: value })

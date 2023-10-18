@@ -308,7 +308,7 @@ const OwnerColumnTransitionDashboardWrapper = ({
 }) => {
   const { privileges } = useSelector((state) => state.auth);
 
-  //for admissiong dashboard student id is coming at rowMeta.rowData[7]
+  //for admissiong dashboard student id is coming at rowMeta.rowData[8]
 
   // const ifExistingFeedback =
   //   feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
@@ -332,7 +332,7 @@ const OwnerColumnTransitionDashboardWrapper = ({
           currentValue={value}
           rowMetaTable={rowMeta}
           value={value}
-          studentId={rowMeta.rowData[5]}
+          studentId={rowMeta.rowData[6]}
           change={(event) => updateValue(event)}
         />
       ) : null}
@@ -375,7 +375,7 @@ const OwnerColumnTransitionCampusWrapper = ({
       currentValue={rowMeta}
       rowMetaTable={rowMeta}
       value={value}
-      studentId={rowMeta.rowData[7]}
+      studentId={rowMeta.rowData[8]}
       change={(event) => updateValue(event)}
     />
   ) : null;
@@ -517,7 +517,7 @@ const deadlineColumnTrnasition1 = {
       //   feedbackableStage = true;
       // }
       const ifExistingDeadlineDate =
-        rowData && !rowMeta.rowData[7] && feedbackableStage;
+        rowData && !rowMeta.rowData[8] && feedbackableStage;
       if (ifExistingDeadlineDate) {
         const { deadline } = feedbackableStagesData[rowMeta.rowData[0]];
         const diff = new Date().getTime() - new Date(rowData).getTime();

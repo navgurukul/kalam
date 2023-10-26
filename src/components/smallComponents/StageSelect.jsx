@@ -390,12 +390,15 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       // };
       selectedValue = {
         value: studentData?.stage,
-        label: allStages[studentData?.stage],
+        label:
+          studentData?.stage === ""
+            ? "Invalid Stage"
+            : allStages[studentData?.stage],
       };
     } else {
       selectedValue = {
         value: null,
-        label: studentData?.stage,
+        label: studentData?.stage === "" ? "Invalid Stage" : studentData?.stage,
       };
     }
   } else {
@@ -404,15 +407,21 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     if (isProgrammingSchool) {
       selectedValue = {
         value: studentData?.stage,
-        label: allStages[studentData?.stage],
+        label:
+          studentData?.stage === ""
+            ? "Invalid Stage"
+            : allStages[studentData?.stage],
       };
     } else {
       selectedValue = {
         value: null,
-        label: studentData?.stage,
+        label: studentData?.stage === "" ? "Invalid Stage" : studentData?.stage,
       };
     }
   }
+
+  console.log("studentData", studentData);
+  console.log("selectedValue", selectedValue);
 
   return (
     <div
@@ -457,7 +466,9 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           className="filterSelectStage"
           // defaultValue={selectedValue}
           value={
-            isProgrammingSchool
+            selectedValue.label === "Invalid Stage"
+              ? selectedValue
+              : isProgrammingSchool
               ? // For programming school we will show the selectedValue if the selectedValue is present in allStages
                 // else we will show the firstStages
                 Object.keys(allStages).find(

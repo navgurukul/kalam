@@ -21,6 +21,8 @@ import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
 import { INPUT_PATTERNS } from "../../../../utils/constants.js";
 
+const enableBoysAdmission = import.meta.env.VITE_API_ENABLE_BOYS_ADMISSION;
+
 const useStyles = makeStyles((theme) => ({
   root: {
     // maxWidth: 400,
@@ -171,10 +173,10 @@ const langOptions = {
 };
 
 const date = new Date();
-  const currentDate = date.getDate();
-  const month = date.getMonth();
-  const maxDate = date.getFullYear() - 17;
-  const minDate = date.getFullYear() - 28;
+const currentDate = date.getDate();
+const month = date.getMonth();
+const maxDate = date.getFullYear() - 17;
+const minDate = date.getFullYear() - 28;
 
 const BasicDetails = ({
   lang,
@@ -606,10 +608,26 @@ const BasicDetails = ({
               validate: (gender) => {
                 if (gender === "select gender") return false;
                 if (gender === "male") {
-                  enqueueSnackbar("Currently, Males admission is full.", {
-                    variant: "info",
-                  });
-                  return false;
+                  if (enableBoysAdmission === "true") {
+                    return true;
+                  } else {
+                    if (slug === "dantewada") {
+                      return true;
+                    } else {
+                      enqueueSnackbar("Currently, Males admission is full.", {
+                        variant: "info",
+                      });
+                      return false;
+                    }
+                  }
+                  // if (slug === "dantewada") {
+                  //   return true;
+                  // } else {
+                  //   enqueueSnackbar("Currently, Males admission is full.", {
+                  //     variant: "info",
+                  //   });
+                  //   return false;
+                  // }
                 }
                 if (
                   gender === "female" ||

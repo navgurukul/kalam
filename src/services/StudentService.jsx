@@ -47,6 +47,9 @@ import { getColumnIndex } from "../utils";
 import axios from "axios";
 import StageMarks from "../components/smallComponents/StageMarks";
 import TestAttemptModel from "../components/smallComponents/TestAttemptModel";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import NotifyStudents from "../components/notifyStudents/NotifyStudents";
+import NotificationHistory from "../components/notifyStudents/NotificationHistory";
 
 dayjs.extend(customParseFormat);
 
@@ -385,6 +388,68 @@ const statusColumnTransition = {
     customBodyRender: (value, rowMeta, updateValue) => (
       <StatusColumnTransitionWrapper
         value={value}
+        rowMeta={rowMeta}
+        updateValue={updateValue}
+      />
+    ),
+  },
+};
+
+const NotifyStudentColumnTransitionWrapper = ({
+  value,
+  rowMeta,
+  updateValue,
+}) => {
+  const { privileges } = useSelector((state) => state.auth);
+  const ifExistingFeedback =
+    feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  const permissionForOwner = privileges.some(
+    (priv) => priv.privilege === "UpdateTransition"
+  );
+  return ifExistingFeedback && permissionForOwner ? <NotifyStudents /> : null;
+};
+
+const notifyStudentColumnTransition = {
+  name: "notify_student",
+  label: "Notify Student",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => (
+      <NotifyStudentColumnTransitionWrapper
+        value={rowData}
+        rowMeta={rowMeta}
+        updateValue={updateValue}
+      />
+    ),
+  },
+};
+
+const NotificationHistoryColumnTransitionWrapper = ({
+  value,
+  rowMeta,
+  updateValue,
+}) => {
+  const { privileges } = useSelector((state) => state.auth);
+  const ifExistingFeedback =
+    feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  const permissionForOwner = privileges.some(
+    (priv) => priv.privilege === "UpdateTransition"
+  );
+  return ifExistingFeedback && permissionForOwner ? (
+    <NotificationHistory />
+  ) : null;
+};
+
+const notificationHistoryColumnTransition = {
+  name: "notification_history",
+  label: "Notification History",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => (
+      <NotificationHistoryColumnTransitionWrapper
+        value={rowData}
         rowMeta={rowMeta}
         updateValue={updateValue}
       />
@@ -1778,6 +1843,8 @@ const StudentService = {
       feedbackColumnTransition,
       ownerColumnTransitionDashboard,
       statusColumnTransition,
+      notifyStudentColumnTransition,
+      notificationHistoryColumnTransition,
       timeColumnTransition,
       loggedInUserColumn2,
       transitionUpdatedByColumn,
@@ -1808,6 +1875,8 @@ const StudentService = {
       feedbackColumnTransition,
       ownerColumnTransitionCampus,
       statusColumnTransition,
+      notifyStudentColumnTransition,
+      notificationHistoryColumnTransition,
       timeColumnTransition,
       loggedInUserColumn2,
       transitionUpdatedByColumn,

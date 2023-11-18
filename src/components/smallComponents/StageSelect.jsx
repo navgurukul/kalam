@@ -28,6 +28,7 @@ import {
 import { setCounts } from "../../store/slices/campusSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
+const rakmabaiBaseUrl = import.meta.env.VITE_API_RAKMABAI_URL;
 const animatedComponents = makeAnimated();
 
 function getSchoolId(currentSchool, allSchools) {
@@ -283,10 +284,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     });
     const offerLetter = () => {
       axios
-        .post(
-          `https://connect.merakilearn.org/api/offerLetter/admissions`,
-          state.payload
-        )
+        .post(`${rakmabaiBaseUrl}/offerLetter/admissions`, state.payload)
         .then((res) => {
           enqueueSnackbar(
             `Joining letter successfully sent to ${state.payload.receiverEmail}`,
@@ -369,7 +367,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       nextStage[
         getKeyByValue(
           allStages,
-          isCampus ? stage?.stage || "enrolmentKeyGenerated" : stage
+          isCampus
+            ? stage?.stage || "enrolmentKeyGenerated"
+            : allStages[studentData?.stage]
+          // isCampus ? stage?.stage || "enrolmentKeyGenerated" : stage
         )
       ] || []
     ).map((x) => ({
@@ -419,9 +420,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       };
     }
   }
-
-  console.log("studentData", studentData);
-  console.log("selectedValue", selectedValue);
 
   return (
     <div

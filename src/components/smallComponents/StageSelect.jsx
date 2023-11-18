@@ -367,7 +367,10 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       nextStage[
         getKeyByValue(
           allStages,
-          isCampus ? stage?.stage || "enrolmentKeyGenerated" : stage
+          isCampus
+            ? stage?.stage || "enrolmentKeyGenerated"
+            : allStages[studentData?.stage]
+          // isCampus ? stage?.stage || "enrolmentKeyGenerated" : stage
         )
       ] || []
     ).map((x) => ({
@@ -417,9 +420,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       };
     }
   }
-
-  console.log("studentData", studentData);
-  console.log("selectedValue", selectedValue);
 
   return (
     <div

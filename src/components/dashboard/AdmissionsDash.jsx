@@ -19,6 +19,8 @@ import ServerSidePagination from "../muiTables/ServerSidePagination";
 import theme from "../../theme";
 import ToolbarAddButton from "../admin/ToolbarAddButton";
 import { fetchOwners as fetchOwnersAction } from "../../store/slices/dataSlice";
+import { dConvert } from "../../utils";
+// "../../utils";
 import {
   setFromDate,
   // setNoOfRows,
@@ -27,6 +29,7 @@ import {
   setToDate,
   setPageNo,
   fetchStudents,
+  setSchool,
 } from "../../store/slices/studentSlice";
 
 import { allStages } from "../../utils/constants";
@@ -71,20 +74,50 @@ const AdmissionsDash = (props) => {
     fromDate,
     toDate,
     stage,
+    school,
     totalData,
     numberOfRows,
     page,
   } = useSelector((state) => state.students);
-  // console.log(
-  //   filterColumns,
-  //   url,
-  //   studentData,
-  //   fromDate,
-  //   toDate,
-  //   totalData,
-  //   stage,
-  //   page
-  // );
+  const [allSchools, setAllSchools] = React.useState();
+
+  useEffect(() => {
+    axios
+      .get(`${baseURL}school`)
+      .then((res) => {
+        setAllSchools(res.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, []);
+
+  // let allSchoolOptions = [
+  //   {
+  //     value: "default",
+  //     label: "All",
+  //   },
+  // ]
+  // allSchools?.forEach((item, index) => {
+  //   let obj =  {
+  //     value: index,
+  //     label: item.name,
+  //   }
+  //   allSchoolOptions.push(obj)
+  // });
+
+  const allSchoolOptions = [
+    {
+      value: "default",
+      label: "All",
+    },
+  ].concat(
+    allSchools?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || []
+  );
+
   const dispatch = useDispatch();
   const setStudents = (data) => dispatch(setStudentData(data));
   const setFrom = (data) => dispatch(setFromDate(data));
@@ -92,6 +125,8 @@ const AdmissionsDash = (props) => {
   // const setRows = (data) => dispatch(setNoOfRows(data));
   const setPage = (data) => dispatch(setPageNo(data));
   const updateStage = (data) => dispatch(setStage(data));
+  const updateSchool = (data) => dispatch(setSchool(data));
+  const [allStudentData, setAllStudentData] = React.useState();
   const [state, setState] = React.useState({
     // totalData: 0,
     // data: [],
@@ -102,6 +137,7 @@ const AdmissionsDash = (props) => {
     // filterValues: [],
     // numberOfRows: 10,
     selectedOption: [],
+    selectedSchool: allSchoolOptions[0],
     access: null, //access object to store who are having access data
     // userLoggedIn: user(), //user object to store who is logged in
     studentDashboardCondition: true, //condition to show student dashboard
@@ -128,7 +164,11 @@ const AdmissionsDash = (props) => {
     try {
       const response = await axios.get(usersURL, { signal });
       // usersSetup(response.data.data);
-      const newData = response.data.data.map((data) => data.user);
+      const allData =
+        response && response?.data?.school
+          ? [...response?.data?.data, ...response?.data?.school]
+          : [...response?.data?.data];
+      const newData = allData.map((data) => data.user);
       localStorage.setItem("users", JSON.stringify(newData));
     } catch (e) {
       // console.error(e);
@@ -160,6 +200,7 @@ const AdmissionsDash = (props) => {
       }));
     }
   };
+
   // const fetchStudents = async () => {
   //   const { fetchPendingInterviewDetails, loggedInUser: pLoggedInUser } = props;
   //   // const { numberOfRows } = state;
@@ -269,7 +310,6 @@ const AdmissionsDash = (props) => {
     } else {
       // const arr = [];
       const arr = selectedOption.map((option) => option.value);
-      //console.log(arr, " i am arr");
       if (arr.includes("default")) {
         // stage = null;
       } else {
@@ -283,6 +323,38 @@ const AdmissionsDash = (props) => {
       dataType = "softwareCourse";
     }
   };
+
+  const changeSchool = (selectedSchool) => {
+    setState((prevState) => ({
+      ...prevState,
+      selectedSchool,
+    }));
+    if (selectedSchool.value === "default") {
+      setPage(0);
+      updateSchool("");
+      dataType = "softwareCourse";
+      value = "Student Details";
+    } else {
+      setPage(0);
+      updateSchool(selectedSchool.value);
+      dataType = "softwareCourse";
+    }
+  };
+
+  useEffect(() => {
+    // get school and set it to setAllStudentData state with adding marks property to the data when school changes
+    if (school.length > 0) {
+      axios
+        .get(`${baseURL}students?limit=${numberOfRows}&page=${page}`)
+        .then((res) => {
+          // adding marks property to the data
+          const newData = res.data.data.results.map((v) => ({
+            ...dConvert(v),
+          }));
+          setAllStudentData(newData);
+        });
+    }
+  }, [school, dataType]);
 
   const changeFromDate = async (date) => {
     // const newDate = dayjs(date).format("MM-DD-YYYY");
@@ -314,7 +386,7 @@ const AdmissionsDash = (props) => {
   };
 
   const { fetchPendingInterviewDetails } = props;
-  const { sData, selectedOption } = state;
+  const { sData, selectedOption, selectedSchool } = state;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -338,7 +410,7 @@ const AdmissionsDash = (props) => {
   useEffect(() => {
     if (loggedInUser)
       dispatch(fetchStudents({ fetchPendingInterviewDetails, dataType })); //softwareCourse
-  }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser]);
+  }, [url, fromDate, toDate, stage, page, numberOfRows, loggedInUser, school]);
 
   const options = (
     <Grid container spacing={4} style={{ marginBottom: "0.8rem" }}>
@@ -414,6 +486,22 @@ const AdmissionsDash = (props) => {
           />
         </LocalizationProvider>
       </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <label className={classes.label}>Filter by School</label>
+        <Select
+          // className="filterSelectGlobal"
+          id="schoolSelect"
+          value={selectedSchool}
+          onChange={changeSchool}
+          options={allSchoolOptions}
+          placeholder="Get Student Details By School"
+          isClearable={false}
+          menuPortalTarget={document.body}
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+          // components={animatedComponents}
+          closeMenuOnSelect
+        />
+      </Grid>
     </Grid>
   );
 
@@ -459,7 +547,10 @@ const AdmissionsDash = (props) => {
         <div className={classes.clear} />
         <ServerSidePagination
           defaultColumns={StudentService.columns[dataType]}
-          data={sData || studentData}
+          // data={sData || studentData}
+          // data={allStudentData?.length > 0 ? allStudentData : studentData}
+          data={allStudentData}
+          setAllStudentData={setAllStudentData}
           showLoader={loading}
           // fun={fetchStudents}
           params={{

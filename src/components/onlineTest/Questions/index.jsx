@@ -190,7 +190,6 @@ function Questions() {
   };
 
   if (index !== null && !loading) {
-    //console.log("questionsList inside the condition", questionsList);
     const text = {
       en: DOMPurify.sanitize(questionsList[index]?.en_text),
       hi: DOMPurify.sanitize(questionsList[index]?.hi_text),

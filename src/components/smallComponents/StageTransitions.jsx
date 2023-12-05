@@ -98,7 +98,6 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
       const joinedStudent = [];
       const joinedOutreach = [];
       const campusMilestoneKey = Object.keys(campusStageOfLearning);
-
       if (loggedInUser) {
         newData = response.data.data.map((v) => {
           if (campusMilestoneKey.indexOf(v.to_stage) !== -1)
@@ -183,6 +182,7 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
     filterType: "dropdown",
     responsive: "vertical",
   };
+
   return (
     <>
       {isShow ? (
@@ -253,6 +253,9 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
                 sx={{ padding: 0, margin: 0, py: 0 }}
                 size="small"
                 onClick={handleClose}
+                // onClick={() => {
+                //   window.location.reload();
+                // }}
               >
                 <CancelIcon />
               </IconButton>

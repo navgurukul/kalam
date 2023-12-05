@@ -101,9 +101,6 @@ const useStyles = makeStyles(() => ({
 //   };
 // };
 
-// test/instructions
-// test/studentdetails
-
 const LandingPage = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -126,7 +123,6 @@ const LandingPage = () => {
     pendingInterviewStage: "checking",
     enrollmentKey: "",
   });
-
   // const [goToTest, setGoToTest] = React.useState(false);
   const lang = {
     Heading: {
@@ -247,13 +243,13 @@ const LandingPage = () => {
   const onChangeEvent = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ""), // replace anything that is not letters, and '.
+      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ''),// replace anything that is not letters, and '.
     });
   };
   const onChangeEvent_numbersOnly = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.numbersOnly, ""), // Only allow digits (0-9)
+      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.numbersOnly, ''), // Only allow digits (0-9)
     });
   };
 

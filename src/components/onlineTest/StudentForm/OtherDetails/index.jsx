@@ -258,33 +258,32 @@ function OtherDetails(props) {
       setDistricts(newDistricts);
       return;
     }
-    _state &&
-      axios
-        .get(
-          `https://api.countrystatecity.in/v1/countries/IN/states/${_state}/cities`, //API URL
-          {
-            headers: {
-              "X-CSCAPI-KEY":
-                "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
-            },
-          }
-        )
-        .then(({ data }) => {
-          if (_state === "CT") {
-            const newDis = { id: 0, name: "Dantewada" };
-            data.push(newDis);
-            data.sort(function (a, b) {
-              if (a.name < b.name) {
-                return -1;
-              }
-              if (a.name > b.name) {
-                return 1;
-              }
-              return 0;
-            });
-          }
-          setDistricts(data);
-        });
+    axios
+      .get(
+        `https://api.countrystatecity.in/v1/countries/IN/states/${_state}/cities`, //API URL
+        {
+          headers: {
+            "X-CSCAPI-KEY":
+              "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
+          },
+        }
+      )
+      .then(({ data }) => {
+        if (_state === "CT") {
+          const newDis = { id: 0, name: "Dantewada" };
+          data.push(newDis);
+          data.sort(function (a, b) {
+            if (a.name < b.name) {
+              return -1;
+            }
+            if (a.name > b.name) {
+              return 1;
+            }
+            return 0;
+          });
+        }
+        setDistricts(data);
+      });
   }
 
   const addrState = watch("state");
@@ -296,33 +295,6 @@ function OtherDetails(props) {
       getCityFromState(addrState);
     }
   }, [addrState]);
-
-  // const stateList = []
-  // if(partnerSlug && customPartner.includes(partnerSlug)){
-  //   stateList.push({ MH: "Maharashtra" })
-  //   partnerSlug && customPartner.includes(partnerSlug)
-  //                       ? { MH: "Maharashtra" }
-  //                       : states
-  // }else if(partnerSlug && partnerSlug === "samarth"){
-  //   stateList.push({ MH: "Maharashtra" })
-  // }else{
-  //   stateList
-  // }
-  let stateList = {};
-  if (partnerSlug && customPartner.includes(partnerSlug)) {
-    stateList = { MH: "Maharashtra" };
-  } else if (partnerSlug && partnerSlug === "dantewada") {
-    stateList = { CT: "Chhattisgarh" };
-  } else {
-    stateList = states;
-  }
-
-  let districstList = [];
-  if (partnerSlug && partnerSlug === "dantewada") {
-    districstList = [{ id: 0, name: "Dantewada" }];
-  } else {
-    districstList = districts;
-  }
 
   return (
     <Container maxWidth="lg" align="center" className={classes.container}>
@@ -358,7 +330,11 @@ function OtherDetails(props) {
                     <MenuItem value="" disabled>
                       {langOptions.state[lang]}
                     </MenuItem>
-                    {Object.entries(stateList).map(([key, value]) => (
+                    {Object.entries(
+                      partnerSlug && customPartner.includes(partnerSlug)
+                        ? { MH: "Maharashtra" }
+                        : states
+                    ).map(([key, value]) => (
                       <MenuItem key={key} value={key}>
                         {value}
                       </MenuItem>
@@ -416,7 +392,7 @@ function OtherDetails(props) {
                     <MenuItem value="" disabled>
                       {langOptions.district[lang]}
                     </MenuItem>
-                    {districstList.map((key) => (
+                    {districts.map((key) => (
                       <MenuItem key={key.name} value={key.name}>
                         {key.name}
                       </MenuItem>

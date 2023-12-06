@@ -13,6 +13,7 @@ import {
 } from "../../store/slices/studentSlice";
 import { qualificationKeys } from "../../utils/constants";
 import { dConvert, getColumnIndex } from "../../utils";
+import { useEffect } from "react";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -20,6 +21,8 @@ const ServerSidePagination = ({
   defaultColumns,
   showLoader,
   params,
+  data,
+  setAllStudentData,
   sortChange,
   customOptions,
 }) => {
@@ -158,6 +161,7 @@ const ServerSidePagination = ({
         return body;
       })
       .join("\n");
+
     const csvContent = `${await columns
       .map((col) => col.label)
       .join(",")}"\n"${fullStudentData}`;
@@ -265,10 +269,16 @@ const ServerSidePagination = ({
     }),
     [totalData, numberOfRows, page, showLoader, customOptions]
   );
+
+  useEffect(() => {
+    setAllStudentData(studentData);
+  }, [getSearchApi]);
+
   return (
     <MUIDataTable
       title={<SearchBar searchByName={getSearchApi} />}
-      data={studentData}
+      // data={data}
+      data={data?.length > 0 ? data : studentData}
       columns={columns}
       options={options}
     />

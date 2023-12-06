@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import { setupUsers } from "../store/slices/authSlice";
@@ -10,6 +9,7 @@ import DashboardPage from "../dashboard/Dashboard";
 import SelectUiByButtons from "../smallComponents/SelectUiByButtons";
 import StudentsProgressCards from "../student/StudentsProgressCards";
 import PieRechartReport from "../partner/PieRechartReport";
+import OverviewData from "../dashboard/OverviewData";
 
 import EvaluationSelect from "../smallComponents/EvaluationSelect";
 import RedFlag from "./FlagModal";
@@ -72,20 +72,25 @@ const CampusStudentsData = () => {
   };
 
   useEffect(() => fetchingFinish(), []);
-
-  const progressMade = () => {
-    setDataView(1);
-  };
-  const tabularData = () => {
+  const overview = () => {
     setDataView(0);
   };
-  const showGraphData = () => {
+
+  const studentData = () => {
+    setDataView(1);
+  };
+  const progressMade = () => {
     setDataView(2);
+  };
+  const showGraphData = () => {
+    setDataView(3);
   };
 
   const getVIew = (viewNo) => {
     switch (viewNo) {
       case 0:
+        return <OverviewData />;
+      case 1:
         return (
           <DashboardPage
             isCampus
@@ -98,23 +103,12 @@ const CampusStudentsData = () => {
             url="/allcampus/students"
           />
         );
-      case 1:
-        return <StudentsProgressCards url="allcampus" />;
       case 2:
+        return <StudentsProgressCards url="allcampus" />;
+      case 3:
         return <PieRechartReport url="/allcampus/students/distribution" />;
       default:
-        return (
-          <DashboardPage
-            isCampus
-            displayData={[
-              ...StudentService.CampusData,
-              EvaluationColumn,
-              redFlagColumn,
-              navGurukulSurveyForm,
-            ]}
-            url="/allcampus/students"
-          />
-        );
+        return <OverviewData />;
     }
   };
   return (
@@ -122,13 +116,16 @@ const CampusStudentsData = () => {
     <>
       <SelectUiByButtons
         name="All Campus"
+        overview={{ label: "Overview", action: overview }}
         progressMade={{ label: "Progress Made", action: progressMade }}
-        tabularData={{ label: "Tabular Data", action: tabularData }}
+        studentData={{ label: "Student Data", action: studentData }}
         showGraphData={{ label: "Graph on Job", action: showGraphData }}
         selected={
           dataView === 0
-            ? "tabularData"
+            ? "overview"
             : dataView === 1
+            ? "studentData"
+            : dataView === 2
             ? "progressMade"
             : "showGraphData"
         }

@@ -47,9 +47,9 @@ const StudentFeedback = (props) => {
       let studentId;
 
       if (window.location.pathname.includes("/campus")) {
-        studentId = rowData[7];
+        studentId = rowData[8];
       } else {
-        studentId = rowData[5];
+        studentId = rowData[6];
       }
       const userId = parseInt(decryptText(localStorage.getItem("userId")), 10);
 
@@ -60,7 +60,6 @@ const StudentFeedback = (props) => {
           feedback: feedbackValue,
         })
         .then(() => {
-          //console.log(response.data);
           setDialogOpen(false);
           enqueueSnackbar("Feedback is successfully added!", {
             variant: "success",

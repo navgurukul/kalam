@@ -29,25 +29,25 @@ const PartnerStudentsProgressInCampus = () => {
       });
   }, []);
 
-  const progressMade = () => setDataView(1);
+  const studentData = () => setDataView(1);
 
-  const studentData = () => setDataView(0);
+  const progressMade = () => setDataView(2);
 
-  const showGraphData = () => setDataView(2);
+  const showGraphData = () => setDataView(3);
 
   const getView = (viewNo) => {
     switch (viewNo) {
-      case 0:
+      case 1:
         return (
           <DashboardPage
             displayData={StudentService.CampusData}
             url={`${isPartnerGroup}/joined_progress_made/${partnerId}`}
           />
         );
-      case 1:
+      case 2:
         return <StudentsProgressCards url={`${isPartnerGroup}/${partnerId}`} />;
 
-      case 2:
+      case 3:
         return (
           <PieRechartReport
             url={`/${isPartnerGroup}/${partnerId}/students/distribution`}
@@ -57,6 +57,7 @@ const PartnerStudentsProgressInCampus = () => {
         return <StudentsProgressCards url={`${isPartnerGroup}/${partnerId}`} />;
     }
   };
+
   return (
     <div className="modified-select-ui">
       <SelectUiByButtons
@@ -65,9 +66,9 @@ const PartnerStudentsProgressInCampus = () => {
         studentData={{ label: "Student Data", action: studentData }}
         showGraphData={{ label: "Graph on Job", action: showGraphData }}
         selected={
-          dataView === 0
+          dataView === 1
             ? "studentData"
-            : dataView === 1
+            : dataView === 2
             ? "progressMade"
             : "showGraphData"
         }

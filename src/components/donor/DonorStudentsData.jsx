@@ -10,13 +10,13 @@ import { donor } from "../../utils/constants";
 // import OverviewData from "../dashboard/OverviewData";
 const DonorStudentsData = () => {
   const { donorId } = useParams();
-  const [dataView, setDataView] = React.useState(0);
+  const [dataView, setDataView] = React.useState(1);
 
   const donorName = donor.find((x) => x.id === parseInt(donorId, 10)).name;
 
-  const overview = () => {
-    setDataView(0);
-  };
+  // const overview = () => {
+  //   setDataView(0);
+  // };
   const studentData = () => {
     setDataView(1);
   };
@@ -28,7 +28,8 @@ const DonorStudentsData = () => {
   };
   const getView = (viewNo) => {
     switch (viewNo) {
-      // case 0: return <OverviewData/>
+      // case 0:
+      //   return <OverviewData />;
       case 1:
         return (
           <DashboardPage
@@ -61,9 +62,10 @@ const DonorStudentsData = () => {
         studentData={{ label: "Student Data", action: studentData }}
         showGraphData={{ label: "Graph on Job", action: showGraphData }}
         selected={
-          dataView === 0
-            ? "studentData"
-            : dataView === 1
+          // dataView === 0
+          //   ? "overview"
+          //   :
+          dataView === 1
             ? "studentData"
             : dataView === 2
             ? "progressMade"

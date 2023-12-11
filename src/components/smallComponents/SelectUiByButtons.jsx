@@ -48,6 +48,8 @@ const SelectUiByButtons = ({
               {overview?.label}
             </Button>
           )}
+          {/* ---------------Added div to fix Student Tabula Tab in Partner---------------- */}
+          {/* Somehow the Student Tabula Tab in Partner was not visible when comment or show overview conditionally */}
           <div></div>
           {/* ---------------ADDED NOW---------------- */}
           <Button

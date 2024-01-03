@@ -48,6 +48,8 @@ import { getColumnIndex } from "../utils";
 import axios from "axios";
 import StageMarks from "../components/smallComponents/StageMarks";
 import TestAttemptModel from "../components/smallComponents/TestAttemptModel";
+import CampusFilterList from "../components/campus/CampusFilterList";
+import SchoolFilterList from "../components/school/SchoolFilterList";
 
 dayjs.extend(customParseFormat);
 
@@ -865,20 +867,13 @@ const dashboardCampusColumn = {
     filterType: "custom",
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
-        <div>
-          <label style={Lables}>Campus</label>
-          <SelectReact
-            options={[{ name: "All" }, ...campus].map((x) => ({
-              value: x.name,
-              label: x.name,
-            }))}
-            filterList={filterlist}
-            onChange={onChange}
-            index={index}
-            column={column}
-            value={filterlist[index].length === 0 ? "All" : filterlist[index]}
-          />
-        </div>
+        <CampusFilterList
+          filterlist={filterlist}
+          onChange={onChange}
+          index={index}
+          column={column}
+          Lables={Lables}
+        />
       ),
     },
   },
@@ -1645,23 +1640,33 @@ const dashboardSchoolColumn = {
     filterType: "custom",
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
-        <div>
-          <label style={Lables}>School</label>
-          <SelectReact
-            // options={[
-            //   "All",
-            //   ...JSON.parse(localStorage.getItem("schools")),
-            // ].map((school) => ({
-            //   value: school,
-            //   label: school,
-            // }))}
-            filterList={filterlist}
-            onChange={onChange}
-            index={index}
-            column={column}
-            value={filterlist[index].length === 0 ? "All" : filterlist[index]}
-          />
-        </div>
+        // Need to fix school filter in filters
+        <SchoolFilterList
+          filterlist={filterlist}
+          onChange={onChange}
+          index={index}
+          column={column}
+          Lables={Lables}
+        />
+        // <div>
+        //   <label style={Lables}>School</label>
+        //   <SelectReact
+        //     options={[
+        //       "All",
+        //       ...JSON.parse(localStorage.getItem("schools")),
+        //     ].map((school) => ({
+        //       value: school,
+        //       label: school,
+        //     }))}
+        //     filterList={filterlist}
+        //     onChange={onChange}
+        //     index={index}
+        //     column={column}
+        //     value={
+        //       filterlist[index].length === 0 ? "All" : filterlist[index]
+        //     }
+        //   />
+        // </div>
       ),
     },
     customBodyRender: (value, rowMeta, updateValue) => {

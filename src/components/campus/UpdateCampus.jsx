@@ -25,7 +25,7 @@ const UpdateCampus = ({ change, studentId, value }) => {
       const campus = response.data.data;
       setCampusList(
         adminRole !== -1
-          ? [...campus, { campus: "All" }]
+          ? campus
           : [...campus.filter((campusItem) => access.includes(campusItem.id))]
       );
     } catch (e) {
@@ -57,6 +57,8 @@ const UpdateCampus = ({ change, studentId, value }) => {
   };
 
   const selectedValue = { value, label: value };
+
+  console.log("campusList in Update Campus", campusList);
 
   return (
     <Select

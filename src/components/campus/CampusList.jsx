@@ -39,9 +39,7 @@ const columns = [
       customBodyRender: (value, rowMeta) => {
         const id = rowMeta.rowData[0];
         const url =
-          value === "All"
-            ? `/campus/allcampus/`
-            : `/campus/${id}/students`;
+          value === "All" ? `/campus/allcampus/` : `/campus/${id}/students`;
         return (
           <Link to={url} style={{ color: "#f05f40" }}>
             {value}
@@ -115,6 +113,8 @@ const CampusList = () => {
     })();
   }, [loggedInUser]);
 
+  console.log("campusList", campusList);
+
   return (
     <Container maxWidth="sm">
       <MainLayout
@@ -139,7 +139,10 @@ const CampusList = () => {
               }}
             >
               <p style={{ fontSize: "24px" }}>New Campus Details</p>
-              <CloseIcon style={{cursor:"pointer"}} onClick={()=>setCampusDialog(false)} />
+              <CloseIcon
+                style={{ cursor: "pointer" }}
+                onClick={() => setCampusDialog(false)}
+              />
             </div>
             <TextField
               fullWidth
@@ -153,7 +156,7 @@ const CampusList = () => {
               }}
             />
             <TextField
-            style={{marginTop:"2rem"}}
+              style={{ marginTop: "2rem" }}
               fullWidth
               // maxWidth="md"
               autoFocus
@@ -168,7 +171,7 @@ const CampusList = () => {
             <Button
               variant="contained"
               color="primary"
-              style={{ width: "100%", padding: "0.7rem",marginTop:"2rem" }}
+              style={{ width: "100%", padding: "0.7rem", marginTop: "2rem" }}
               onClick={handleOpenSubmit}
             >
               Add New Campus

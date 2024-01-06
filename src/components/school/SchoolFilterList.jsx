@@ -45,7 +45,7 @@ const SchoolFilterList = ({ filterlist, onChange, index, column, Lables }) => {
       <label style={Lables}>School</label>
       <SelectReact
         options={[{ name: "All" }, ...schoolList].map((x) => ({
-          value: x.name,
+          value: x.id,
           label: x.name,
         }))}
         filterList={filterlist}

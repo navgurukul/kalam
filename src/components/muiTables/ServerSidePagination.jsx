@@ -53,11 +53,15 @@ const ServerSidePagination = ({
     };
     const { filterColumns: newColumns } = newState;
     const newUrl = filterColumns.reduce((cUrl, filterColumn, index) => {
-      if (index > 0) {
-        return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
+      if (filterColumn.key !== "school") {
+        if (index > 0) {
+          return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
+        }
+        return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
       }
-      return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
     }, `${baseURL}students?`);
+
+    console.log("newUrl", newUrl);
 
     if (newColumns.length > 0) {
       setFilters({ filterColumns: newState.filterColumns, url: `${newUrl}&` });
@@ -80,6 +84,7 @@ const ServerSidePagination = ({
       studentOwner: "searchOwnerName",
       status: "searchStatus",
       partnerName: "searchPartnerName",
+      school: "school",
     };
 
     const newData = filterColumns.filter(

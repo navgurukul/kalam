@@ -58,8 +58,6 @@ const UpdateCampus = ({ change, studentId, value }) => {
 
   const selectedValue = { value, label: value };
 
-  console.log("campusList in Update Campus", campusList);
-
   return (
     <Select
       className="filterSelectStage"

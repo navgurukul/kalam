@@ -638,7 +638,7 @@ const districtColumn = {
   name: "district",
   label: "District",
   options: {
-    filter: true,
+    filter: false,
     sort: true,
     display: false,
   },
@@ -945,10 +945,12 @@ const dashboardDonorColumn = {
         <div>
           <label style={Lables}>Donor</label>
           <SelectReact
-            options={[{ name: "All" }, ...donor].map((don) => ({
-              value: don.name,
-              label: don.name,
-            }))}
+            options={["All", ...JSON.parse(localStorage.getItem("donors"))].map(
+              (item) => ({
+                value: item,
+                label: item,
+              })
+            )}
             filterList={filterlist}
             onChange={onChange}
             index={index}

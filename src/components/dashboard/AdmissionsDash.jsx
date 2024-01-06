@@ -172,6 +172,13 @@ const AdmissionsDash = (props) => {
     const newData = response.data.data.map((e) => e.name);
     localStorage.setItem("partners", JSON.stringify(newData.sort()));
   };
+
+  const fetchDonor = async (signal) => {
+    const response = await axios.get(`${baseURL}donors`, { signal });
+    const newData = response.data.map((e) => e.donor);
+    localStorage.setItem("donors", JSON.stringify(newData.sort()));
+  };
+
   const fetchUsers = async (signal) => {
     try {
       const response = await axios.get(usersURL, { signal });
@@ -411,6 +418,7 @@ const AdmissionsDash = (props) => {
       await fetchCampus(controller.signal);
       await fetchSchool(controller.signal);
       await fetchPartner(controller.signal);
+      await fetchDonor(controller.signal);
 
       // await fetchAccess(controller.signal);
       dispatch(fetchOwnersAction());

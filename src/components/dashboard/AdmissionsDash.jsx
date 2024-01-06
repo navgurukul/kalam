@@ -151,8 +151,20 @@ const AdmissionsDash = (props) => {
 
   const fetchOWner = async (signal) => {
     const response = await axios.get(`${baseURL}owner`, { signal });
-    const newData = response.data.data.map((e) => e.user.mail_id);
+    const newData = response.data.data.map((e) => e.user.user_name);
     localStorage.setItem("owners", JSON.stringify(newData.sort()));
+  };
+
+  const fetchCampus = async (signal) => {
+    const response = await axios.get(`${baseURL}campus`, { signal });
+    const newData = response.data.data.map((e) => e.campus);
+    localStorage.setItem("campus", JSON.stringify(newData));
+  };
+
+  const fetchSchool = async (signal) => {
+    const response = await axios.get(`${baseURL}school`, { signal });
+    const newData = response.data;
+    localStorage.setItem("schools", JSON.stringify(newData));
   };
 
   const fetchPartner = async (signal) => {
@@ -396,7 +408,10 @@ const AdmissionsDash = (props) => {
       // await fetchStudents(null, controller.signal);
       await fetchUsers(controller.signal);
       await fetchOWner(controller.signal);
+      await fetchCampus(controller.signal);
+      await fetchSchool(controller.signal);
       await fetchPartner(controller.signal);
+
       // await fetchAccess(controller.signal);
       dispatch(fetchOwnersAction());
       setState({ ...state, loading: false });

@@ -838,7 +838,7 @@ const DashboardCampusColumnWrapper = ({ value, rowMeta, updateValue }) => {
 
   return privileges.some((priv) => priv.privilege === "UpdateStudentCampus") ? (
     <UpdateCampus
-      allOptions={campus}
+      allOptions={JSON.parse(localStorage.getItem("campus"))}
       value={value || "No Campus Assigned"}
       studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
@@ -902,7 +902,7 @@ const CampusColumnWrapper = ({ value, rowMeta, updateValue }) => {
 
 const campusColumn = {
   name: "campus",
-  label: "Campus",
+  label: "CampusSSS",
   options: {
     filter: true,
     sort: true,
@@ -922,7 +922,7 @@ const DashboardDonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
   return privileges.some((priv) => priv.privilege === "UpdateStudentDonor") ? (
     <UpdateDonor
-      allOptions={donor}
+      allOptions={JSON.parse(localStorage.getItem("donors"))}
       value={value}
       studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
@@ -951,6 +951,10 @@ const dashboardDonorColumn = {
                 label: item,
               })
             )}
+            // options={[{ name: "All" }, ...donor].map((don) => ({
+            //   value: don.name,
+            //   label: don.name,
+            // }))}
             filterList={filterlist}
             onChange={onChange}
             index={index}
@@ -970,37 +974,39 @@ const dashboardDonorColumn = {
   },
 };
 
-const DonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
-  const { privileges } = useSelector((state) => state.auth);
-  return privileges.some((priv) => priv.privilege === "UpdateStudentDonor") ? (
-    <UpdateDonor
-      allOptions={donor}
-      value={value}
-      studentId={rowMeta.rowData[0]}
-      change={(event) => updateValue(event)}
-    />
-  ) : value ? (
-    value.reduce((newValue, item) => `${newValue}   ${item.donor}`, "")
-  ) : null;
-};
+// const DonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
+//   const { privileges } = useSelector((state) => state.auth);
+//   console.log("value in DC", value);
+//   console.log("updateValue in DC", updateValue);
+//   return privileges.some((priv) => priv.privilege === "UpdateStudentDonor") ? (
+//     <UpdateDonor
+//       allOptions={donor}
+//       value={value}
+//       studentId={rowMeta.rowData[0]}
+//       change={(event) => updateValue(event)}
+//     />
+//   ) : value ? (
+//     value.reduce((newValue, item) => `${newValue}   ${item.donor}`, "")
+//   ) : null;
+// };
 
-const donorColumn = {
-  name: "donor",
-  label: "Donor",
-  options: {
-    filter: true,
-    sort: true,
-    display: false,
-    filterOptions: { names: donor.map((donorEl) => donorEl.name) },
-    customBodyRender: (value, rowMeta, updateValue) => (
-      <DonorColumnWrapper
-        value={value}
-        rowMeta={rowMeta}
-        updateValue={updateValue}
-      />
-    ),
-  },
-};
+// const donorColumn = {
+//   name: "donor",
+//   label: "DonorRRRR",
+//   options: {
+//     filter: true,
+//     sort: true,
+//     display: false,
+//     filterOptions: { names: donor.map((donorEl) => donorEl.name) },
+//     customBodyRender: (value, rowMeta, updateValue) => (
+//       <DonorColumnWrapper
+//         value={value}
+//         rowMeta={rowMeta}
+//         updateValue={updateValue}
+//       />
+//     ),
+//   },
+// };
 
 const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
@@ -1686,6 +1692,8 @@ const DashboardPartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
     (priv) => priv.privilege === "UpdateStudentPartner"
   ) ? (
     <UpdatePartner
+      rowMeta={rowMeta}
+      allOptions={JSON.parse(localStorage.getItem("partners"))}
       studentId={rowMeta.rowData[0]}
       value={value}
       change={(event) => updateValue(event)}
@@ -1697,7 +1705,7 @@ const DashboardPartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
 
 // this
 const dashboardPartnerNameColumn = {
-  label: "Partner Name",
+  label: "Partner Nameeeee",
   name: "partnerName",
   options: {
     filter: true,
@@ -1724,13 +1732,18 @@ const dashboardPartnerNameColumn = {
         </div>
       ),
     },
-    customBodyRender: (value, rowMeta, updateValue) => (
-      <DashboardPartnerNameColumnWrapper
-        value={value}
-        rowMeta={rowMeta}
-        updateValue={updateValue}
-      />
-    ),
+    customBodyRender: (value, rowMeta, updateValue) => {
+      // console.log("value in partner", value);
+      // console.log("rowMeta in partner", rowMeta);
+      // console.log("updateValue in partner", updateValue);
+      return (
+        <DashboardPartnerNameColumnWrapper
+          value={value}
+          rowMeta={rowMeta}
+          updateValue={updateValue}
+        />
+      );
+    },
   },
 };
 
@@ -1892,7 +1905,7 @@ const StudentService = {
       onlineClassColumn,
       ageColumn,
       campusColumn,
-      donorColumn,
+      // donorColumn,
     ],
     columnTransition: [
       stageColumnTransition,
@@ -1921,7 +1934,7 @@ const StudentService = {
       linkForEnglishTestColumn,
       // linkForOnlineTestColumn,
       campusColumn,
-      donorColumn,
+      // donorColumn,
     ],
     columnTransition2: [
       stageColumnTransition,
@@ -1989,7 +2002,7 @@ const StudentService = {
     kitneDinLagenge,
     QualificationColumn,
     partnerNameColumn,
-    donorColumn,
+    // donorColumn,
     OtherActivitiesColumn,
     // EvaluationColumn,
     // redFlagColumn,

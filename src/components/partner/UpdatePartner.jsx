@@ -7,9 +7,14 @@ import { useSnackbar } from "notistack";
 const baseURL = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
-const UpdatePartner = (props) => {
+const UpdatePartner = ({ change, studentId, value, allOptions, rowMeta }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = React.useState([]);
+
+  console.log("value", value);
+  // console.log("allOptions", allOptions);
+  console.log("data", data);
+  console.log("rowMeta", rowMeta);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -25,7 +30,8 @@ const UpdatePartner = (props) => {
   }, []);
 
   const handleChange = (event) => {
-    const { change, studentId } = props;
+    console.log("event", event);
+    // const { change, studentId } = props;
     const { label, value } = event;
     axios
       .put(`${baseURL}students/${studentId}`, { partner_id: value })
@@ -39,8 +45,12 @@ const UpdatePartner = (props) => {
         enqueueSnackbar(err.message, { variant: "error" });
       });
   };
-  const { value } = props;
-  const selectedValue = { value, label: value };
+  // const { value } = props;
+  const newValue = value ? value : rowMeta.rowData[26];
+  console.log("newValue", newValue);
+  const selectedValue = { value: newValue, label: newValue };
+
+  console.log("selectedValue", selectedValue);
 
   return (
     <Select

@@ -32,7 +32,7 @@ import {
   setSchool,
 } from "../../store/slices/studentSlice";
 
-import { allStages } from "../../utils/constants";
+import { allStages, campus } from "../../utils/constants";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -157,7 +157,9 @@ const AdmissionsDash = (props) => {
 
   const fetchCampus = async (signal) => {
     const response = await axios.get(`${baseURL}campus`, { signal });
-    const newData = response.data.data.map((e) => e.campus);
+    const newData = response.data.data.map((e) => {
+      return { id: e.id, campus: e.campus };
+    });
     localStorage.setItem("campus", JSON.stringify(newData));
   };
 
@@ -169,13 +171,15 @@ const AdmissionsDash = (props) => {
 
   const fetchPartner = async (signal) => {
     const response = await axios.get(`${baseURL}partners`, { signal });
+    console.log("response", response);
     const newData = response.data.data.map((e) => e.name);
+    console.log("newData", newData);
     localStorage.setItem("partners", JSON.stringify(newData.sort()));
   };
 
   const fetchDonor = async (signal) => {
     const response = await axios.get(`${baseURL}donors`, { signal });
-    const newData = response.data.map((e) => e.donor);
+    const newData = response.data;
     localStorage.setItem("donors", JSON.stringify(newData.sort()));
   };
 

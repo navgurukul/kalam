@@ -48,8 +48,6 @@ import { getColumnIndex } from "../utils";
 import axios from "axios";
 import StageMarks from "../components/smallComponents/StageMarks";
 import TestAttemptModel from "../components/smallComponents/TestAttemptModel";
-import CampusFilterList from "../components/campus/CampusFilterList";
-import SchoolFilterList from "../components/school/SchoolFilterList";
 
 dayjs.extend(customParseFormat);
 
@@ -640,7 +638,7 @@ const districtColumn = {
   name: "district",
   label: "District",
   options: {
-    filter: true,
+    filter: false,
     sort: true,
     display: false,
   },
@@ -840,7 +838,7 @@ const DashboardCampusColumnWrapper = ({ value, rowMeta, updateValue }) => {
 
   return privileges.some((priv) => priv.privilege === "UpdateStudentCampus") ? (
     <UpdateCampus
-      allOptions={campus}
+      allOptions={JSON.parse(localStorage.getItem("campus"))}
       value={value || "No Campus Assigned"}
       studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
@@ -867,13 +865,22 @@ const dashboardCampusColumn = {
     filterType: "custom",
     filterOptions: {
       display: (filterlist, onChange, index, column) => (
-        <CampusFilterList
-          filterlist={filterlist}
-          onChange={onChange}
-          index={index}
-          column={column}
-          Lables={Lables}
-        />
+        <div>
+          <label style={Lables}>Campus</label>
+          <SelectReact
+            options={["All", ...JSON.parse(localStorage.getItem("campus"))].map(
+              (item) => ({
+                value: item,
+                label: item,
+              })
+            )}
+            filterList={filterlist}
+            onChange={onChange}
+            index={index}
+            column={column}
+            value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+          />
+        </div>
       ),
     },
   },
@@ -895,7 +902,7 @@ const CampusColumnWrapper = ({ value, rowMeta, updateValue }) => {
 
 const campusColumn = {
   name: "campus",
-  label: "Campus",
+  label: "CampusSSS",
   options: {
     filter: true,
     sort: true,
@@ -915,7 +922,7 @@ const DashboardDonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
   return privileges.some((priv) => priv.privilege === "UpdateStudentDonor") ? (
     <UpdateDonor
-      allOptions={donor}
+      allOptions={JSON.parse(localStorage.getItem("donors"))}
       value={value}
       studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
@@ -938,10 +945,12 @@ const dashboardDonorColumn = {
         <div>
           <label style={Lables}>Donor</label>
           <SelectReact
-            options={[{ name: "All" }, ...donor].map((don) => ({
-              value: don.name,
-              label: don.name,
-            }))}
+            options={["All", ...JSON.parse(localStorage.getItem("donors"))].map(
+              (item) => ({
+                value: item,
+                label: item,
+              })
+            )}
             filterList={filterlist}
             onChange={onChange}
             index={index}
@@ -961,37 +970,37 @@ const dashboardDonorColumn = {
   },
 };
 
-const DonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
-  const { privileges } = useSelector((state) => state.auth);
-  return privileges.some((priv) => priv.privilege === "UpdateStudentDonor") ? (
-    <UpdateDonor
-      allOptions={donor}
-      value={value}
-      studentId={rowMeta.rowData[0]}
-      change={(event) => updateValue(event)}
-    />
-  ) : value ? (
-    value.reduce((newValue, item) => `${newValue}   ${item.donor}`, "")
-  ) : null;
-};
+// const DonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
+//   const { privileges } = useSelector((state) => state.auth);
+//   return privileges.some((priv) => priv.privilege === "UpdateStudentDonor") ? (
+//     <UpdateDonor
+//       allOptions={donor}
+//       value={value}
+//       studentId={rowMeta.rowData[0]}
+//       change={(event) => updateValue(event)}
+//     />
+//   ) : value ? (
+//     value.reduce((newValue, item) => `${newValue}   ${item.donor}`, "")
+//   ) : null;
+// };
 
-const donorColumn = {
-  name: "donor",
-  label: "Donor",
-  options: {
-    filter: true,
-    sort: true,
-    display: false,
-    filterOptions: { names: donor.map((donorEl) => donorEl.name) },
-    customBodyRender: (value, rowMeta, updateValue) => (
-      <DonorColumnWrapper
-        value={value}
-        rowMeta={rowMeta}
-        updateValue={updateValue}
-      />
-    ),
-  },
-};
+// const donorColumn = {
+//   name: "donor",
+//   label: "DonorRRRR",
+//   options: {
+//     filter: true,
+//     sort: true,
+//     display: false,
+//     filterOptions: { names: donor.map((donorEl) => donorEl.name) },
+//     customBodyRender: (value, rowMeta, updateValue) => (
+//       <DonorColumnWrapper
+//         value={value}
+//         rowMeta={rowMeta}
+//         updateValue={updateValue}
+//       />
+//     ),
+//   },
+// };
 
 const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
@@ -1639,35 +1648,27 @@ const dashboardSchoolColumn = {
     sort: true,
     filterType: "custom",
     filterOptions: {
-      display: (filterlist, onChange, index, column) => (
-        // Need to fix school filter in filters
-        <SchoolFilterList
-          filterlist={filterlist}
-          onChange={onChange}
-          index={index}
-          column={column}
-          Lables={Lables}
-        />
-        // <div>
-        //   <label style={Lables}>School</label>
-        //   <SelectReact
-        //     options={[
-        //       "All",
-        //       ...JSON.parse(localStorage.getItem("schools")),
-        //     ].map((school) => ({
-        //       value: school,
-        //       label: school,
-        //     }))}
-        //     filterList={filterlist}
-        //     onChange={onChange}
-        //     index={index}
-        //     column={column}
-        //     value={
-        //       filterlist[index].length === 0 ? "All" : filterlist[index]
-        //     }
-        //   />
-        // </div>
-      ),
+      display: (filterlist, onChange, index, column) => {
+        return (
+          <div>
+            <label style={Lables}>School</label>
+            <SelectReact
+              options={[
+                { name: "All" },
+                ...JSON.parse(localStorage.getItem("schools")),
+              ].map((item) => ({
+                value: item.id,
+                label: item.name,
+              }))}
+              filterList={filterlist}
+              onChange={onChange}
+              index={index}
+              column={column}
+              value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+            />
+          </div>
+        );
+      },
     },
     customBodyRender: (value, rowMeta, updateValue) => {
       return (
@@ -1683,20 +1684,18 @@ const dashboardSchoolColumn = {
 
 const DashboardPartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
-  return privileges.some(
-    (priv) => priv.privilege === "UpdateStudentPartner"
-  ) ? (
+  return (
     <UpdatePartner
+      rowMeta={rowMeta}
+      allOptions={JSON.parse(localStorage.getItem("partners"))}
       studentId={rowMeta.rowData[0]}
       value={value}
       change={(event) => updateValue(event)}
+      privileges={privileges}
     />
-  ) : (
-    <p>{value}</p>
   );
 };
 
-// this
 const dashboardPartnerNameColumn = {
   label: "Partner Name",
   name: "partnerName",
@@ -1713,8 +1712,8 @@ const dashboardPartnerNameColumn = {
               "All",
               ...JSON.parse(localStorage.getItem("partners")),
             ].map((partner) => ({
-              value: partner,
-              label: partner,
+              value: partner.name,
+              label: partner.name,
             }))}
             filterList={filterlist}
             onChange={onChange}
@@ -1893,7 +1892,7 @@ const StudentService = {
       onlineClassColumn,
       ageColumn,
       campusColumn,
-      donorColumn,
+      // donorColumn,
     ],
     columnTransition: [
       stageColumnTransition,
@@ -1922,7 +1921,7 @@ const StudentService = {
       linkForEnglishTestColumn,
       // linkForOnlineTestColumn,
       campusColumn,
-      donorColumn,
+      // donorColumn,
     ],
     columnTransition2: [
       stageColumnTransition,
@@ -1990,7 +1989,7 @@ const StudentService = {
     kitneDinLagenge,
     QualificationColumn,
     partnerNameColumn,
-    donorColumn,
+    // donorColumn,
     OtherActivitiesColumn,
     // EvaluationColumn,
     // redFlagColumn,

@@ -280,8 +280,8 @@ const ServerSidePagination = ({
   return (
     <MUIDataTable
       title={<SearchBar searchByName={getSearchApi} />}
-      data={data}
-      // data={data?.length > 0 ? data : studentData}
+      // data={data}
+      data={data?.length > 0 ? data : studentData}
       columns={columns}
       options={options}
     />

@@ -951,10 +951,6 @@ const dashboardDonorColumn = {
                 label: item,
               })
             )}
-            // options={[{ name: "All" }, ...donor].map((don) => ({
-            //   value: don.name,
-            //   label: don.name,
-            // }))}
             filterList={filterlist}
             onChange={onChange}
             index={index}

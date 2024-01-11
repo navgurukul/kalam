@@ -868,12 +868,13 @@ const dashboardCampusColumn = {
         <div>
           <label style={Lables}>Campus</label>
           <SelectReact
-            options={["All", ...JSON.parse(localStorage.getItem("campus"))].map(
-              (item) => ({
-                value: item,
-                label: item,
-              })
-            )}
+            options={[
+              { campus: "All" },
+              ...JSON.parse(localStorage.getItem("campus")),
+            ].map((item) => ({
+              value: item.campus,
+              label: item.campus,
+            }))}
             filterList={filterlist}
             onChange={onChange}
             index={index}
@@ -902,7 +903,7 @@ const CampusColumnWrapper = ({ value, rowMeta, updateValue }) => {
 
 const campusColumn = {
   name: "campus",
-  label: "CampusSSS",
+  label: "Campus",
   options: {
     filter: true,
     sort: true,
@@ -945,12 +946,13 @@ const dashboardDonorColumn = {
         <div>
           <label style={Lables}>Donor</label>
           <SelectReact
-            options={["All", ...JSON.parse(localStorage.getItem("donors"))].map(
-              (item) => ({
-                value: item,
-                label: item,
-              })
-            )}
+            options={[
+              { donor: "All" },
+              ...JSON.parse(localStorage.getItem("donors")),
+            ].map((item) => ({
+              value: item.donor,
+              label: item.donor,
+            }))}
             filterList={filterlist}
             onChange={onChange}
             index={index}

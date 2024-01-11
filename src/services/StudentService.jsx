@@ -976,8 +976,6 @@ const dashboardDonorColumn = {
 
 // const DonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
 //   const { privileges } = useSelector((state) => state.auth);
-//   console.log("value in DC", value);
-//   console.log("updateValue in DC", updateValue);
 //   return privileges.some((priv) => priv.privilege === "UpdateStudentDonor") ? (
 //     <UpdateDonor
 //       allOptions={donor}
@@ -1654,25 +1652,27 @@ const dashboardSchoolColumn = {
     sort: true,
     filterType: "custom",
     filterOptions: {
-      display: (filterlist, onChange, index, column) => (
-        <div>
-          <label style={Lables}>School</label>
-          <SelectReact
-            options={[
-              { name: "All" },
-              ...JSON.parse(localStorage.getItem("schools")),
-            ].map((item) => ({
-              value: item.id,
-              label: item.name,
-            }))}
-            filterList={filterlist}
-            onChange={onChange}
-            index={index}
-            column={column}
-            value={filterlist[index].length === 0 ? "All" : filterlist[index]}
-          />
-        </div>
-      ),
+      display: (filterlist, onChange, index, column) => {
+        return (
+          <div>
+            <label style={Lables}>School</label>
+            <SelectReact
+              options={[
+                { name: "All" },
+                ...JSON.parse(localStorage.getItem("schools")),
+              ].map((item) => ({
+                value: item.id,
+                label: item.name,
+              }))}
+              filterList={filterlist}
+              onChange={onChange}
+              index={index}
+              column={column}
+              value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+            />
+          </div>
+        );
+      },
     },
     customBodyRender: (value, rowMeta, updateValue) => {
       return (
@@ -1688,24 +1688,20 @@ const dashboardSchoolColumn = {
 
 const DashboardPartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
-  return privileges.some(
-    (priv) => priv.privilege === "UpdateStudentPartner"
-  ) ? (
+  return (
     <UpdatePartner
       rowMeta={rowMeta}
       allOptions={JSON.parse(localStorage.getItem("partners"))}
       studentId={rowMeta.rowData[0]}
       value={value}
       change={(event) => updateValue(event)}
+      privileges={privileges}
     />
-  ) : (
-    <p>{value}</p>
   );
 };
 
-// this
 const dashboardPartnerNameColumn = {
-  label: "Partner Nameeeee",
+  label: "Partner Name",
   name: "partnerName",
   options: {
     filter: true,
@@ -1720,8 +1716,8 @@ const dashboardPartnerNameColumn = {
               "All",
               ...JSON.parse(localStorage.getItem("partners")),
             ].map((partner) => ({
-              value: partner,
-              label: partner,
+              value: partner.name,
+              label: partner.name,
             }))}
             filterList={filterlist}
             onChange={onChange}
@@ -1732,18 +1728,13 @@ const dashboardPartnerNameColumn = {
         </div>
       ),
     },
-    customBodyRender: (value, rowMeta, updateValue) => {
-      // console.log("value in partner", value);
-      // console.log("rowMeta in partner", rowMeta);
-      // console.log("updateValue in partner", updateValue);
-      return (
-        <DashboardPartnerNameColumnWrapper
-          value={value}
-          rowMeta={rowMeta}
-          updateValue={updateValue}
-        />
-      );
-    },
+    customBodyRender: (value, rowMeta, updateValue) => (
+      <DashboardPartnerNameColumnWrapper
+        value={value}
+        rowMeta={rowMeta}
+        updateValue={updateValue}
+      />
+    ),
   },
 };
 

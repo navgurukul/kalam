@@ -61,8 +61,6 @@ const ServerSidePagination = ({
       }
     }, `${baseURL}students?`);
 
-    console.log("newUrl", newUrl);
-
     if (newColumns.length > 0) {
       setFilters({ filterColumns: newState.filterColumns, url: `${newUrl}&` });
     } else {
@@ -282,8 +280,8 @@ const ServerSidePagination = ({
   return (
     <MUIDataTable
       title={<SearchBar searchByName={getSearchApi} />}
-      // data={data}
-      data={data?.length > 0 ? data : studentData}
+      data={data}
+      // data={data?.length > 0 ? data : studentData}
       columns={columns}
       options={options}
     />

@@ -7,31 +7,17 @@ import { useSnackbar } from "notistack";
 const baseURL = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
-const UpdatePartner = ({ change, studentId, value, allOptions, rowMeta }) => {
+const UpdatePartner = ({
+  change,
+  studentId,
+  value,
+  allOptions,
+  privileges,
+}) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [data, setData] = React.useState([]);
-
-  console.log("value", value);
-  // console.log("allOptions", allOptions);
-  console.log("data", data);
-  console.log("rowMeta", rowMeta);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    axios
-      .get(`${baseURL}partners`, { signal: controller.signal })
-      .then((response) => {
-        setData(response.data.data);
-      })
-      .catch(() => {
-        // if (err.message === "canceled") return;
-      });
-    return () => controller.abort();
-  }, []);
+  const [partnerName, setPartnerName] = React.useState();
 
   const handleChange = (event) => {
-    console.log("event", event);
-    // const { change, studentId } = props;
     const { label, value } = event;
     axios
       .put(`${baseURL}students/${studentId}`, { partner_id: value })
@@ -45,25 +31,38 @@ const UpdatePartner = ({ change, studentId, value, allOptions, rowMeta }) => {
         enqueueSnackbar(err.message, { variant: "error" });
       });
   };
-  // const { value } = props;
-  const newValue = value ? value : rowMeta.rowData[26];
-  console.log("newValue", newValue);
+
+  useEffect(() => {
+    axios
+      .get(`${baseURL}/students/${studentId}`)
+      .then((res) => {
+        setPartnerName(res.data.data[0]?.partner?.name);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, [value]);
+
+  const newValue = value ? value : partnerName;
   const selectedValue = { value: newValue, label: newValue };
 
-  console.log("selectedValue", selectedValue);
-
-  return (
+  return privileges.some(
+    (priv) => priv.privilege === "UpdateStudentPartner"
+  ) ? (
     <Select
       className="filterSelectStage"
       value={selectedValue}
       onChange={handleChange}
       options={
-        data.length > 0 && data.map((x) => ({ value: x.id, label: x.name }))
+        allOptions.length > 0 &&
+        allOptions.map((x) => ({ value: x.id, label: x.name }))
       }
       isClearable={false}
       components={animatedComponents}
       closeMenuOnSelect
     />
+  ) : (
+    <p>{value}</p>
   );
 };
 

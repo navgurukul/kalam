@@ -171,9 +171,9 @@ const AdmissionsDash = (props) => {
 
   const fetchPartner = async (signal) => {
     const response = await axios.get(`${baseURL}partners`, { signal });
-    console.log("response", response);
-    const newData = response.data.data.map((e) => e.name);
-    console.log("newData", newData);
+    const newData = response.data.data.map((e) => {
+      return { id: e.id, name: e.name };
+    });
     localStorage.setItem("partners", JSON.stringify(newData.sort()));
   };
 

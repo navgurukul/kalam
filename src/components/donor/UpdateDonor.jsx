@@ -46,11 +46,6 @@ const UpdateDonor = ({ value, studentId, change, allOptions }) => {
         : event.map((item) => ({ id: item.value, donor: item.label }))
     );
 
-  console.log("selectedDonors", selectedDonors);
-  console.log("value", value);
-
-  // Need to come back to this
-
   return (
     <>
       <Select

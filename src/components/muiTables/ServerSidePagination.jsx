@@ -61,8 +61,6 @@ const ServerSidePagination = ({
       }
     }, `${baseURL}students?`);
 
-    console.log("newUrl", newUrl);
-
     if (newColumns.length > 0) {
       setFilters({ filterColumns: newState.filterColumns, url: `${newUrl}&` });
     } else {

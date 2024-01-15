@@ -22,11 +22,12 @@ const SelectUiByButtons = ({
   name,
   progressMade,
   studentData,
-  // overview,
+  overview,
   showGraphData,
   selected,
 }) => {
   const classes = useStyles();
+
   return (
     <Container className={classes.container}>
       <Grid item xs={12} className={classes.space}>
@@ -39,12 +40,17 @@ const SelectUiByButtons = ({
           aria-label="large outlined primary button group"
         >
           {/* OVERVIEW BUTTON DATA */}
-          {/* <Button
-            variant={selected === "overview" ? "contained" : "outlined"}
-            onClick={() => overview.action()}
-          >
-            {overview?.label}
-          </Button> */}
+          {overview && (
+            <Button
+              variant={selected === "overview" ? "contained" : "outlined"}
+              onClick={() => overview.action()}
+            >
+              {overview?.label}
+            </Button>
+          )}
+          {/* ---------------Added div to fix Student Tabula Tab in Partner---------------- */}
+          {/* Somehow the Student Tabula Tab in Partner was not visible when comment or show overview conditionally */}
+          <div></div>
           {/* ---------------ADDED NOW---------------- */}
           <Button
             variant={selected === "studentData" ? "contained" : "outlined"}

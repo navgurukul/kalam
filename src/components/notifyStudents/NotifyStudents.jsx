@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Box,
@@ -16,9 +16,16 @@ import EmailIcon from "@mui/icons-material/Email";
 import SmsIcon from "@mui/icons-material/Sms";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
+import axios from "axios";
+import DOMPurify from "dompurify";
 
-function NotifyStudents() {
+const baseURL = import.meta.env.VITE_API_URL;
+
+function NotifyStudents({ studentId, currectStage }) {
+  const [emailContent, setEmailContent] = useState(false);
   const [open, setOpen] = useState(false);
+  let email = "";
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -42,6 +49,32 @@ function NotifyStudents() {
     pb: 3,
   };
 
+  console.log("studentId", studentId);
+
+  const newEmail =
+    "Dear Hemangi Sunil Bhadane\r\n\nYour admission progress -\r\n\n\r\n\nSchool: School Of Programming\r\n\nStage: pendingAlgebraInterview\r\n\nCurrent status: passed\r\n\n\r\n\nThank you";
+
+  useEffect(() => {
+    axios
+      .get(`${baseURL}students/notificationContent/${studentId}`)
+      .then((res) => {
+        console.log("res", res.data);
+        const sanitized = DOMPurify.sanitize(res.data.data);
+        email = sanitized;
+        setEmailContent(DOMPurify.sanitize(res.data.data));
+
+        // setAllSchools(res.data);
+        // console.log("res", res.data.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, [email]);
+
+  console.log("emailContent", emailContent);
+  console.log("email", email);
+  console.log("newEmail", newEmail);
+
   return (
     <>
       {open ? (
@@ -59,7 +92,8 @@ function NotifyStudents() {
               Notifications
             </DialogTitle> */}
             <Typography variant="h6" sx={{ mt: "40px", fontWeight: "bold" }}>
-              Algebra & English Interview Pending (2nd Round)
+              {/* Algebra & English Interview Pending (2nd Round) */}
+              {currectStage}
             </Typography>
             <Box
               sx={{
@@ -90,10 +124,15 @@ function NotifyStudents() {
               Algebra & English Interview Pending (2nd Round)
             </DialogTitle> */}
             <DialogContent sx={{ background: "#ededed", mt: "20px" }}>
-              <Typography sx={{ color: "#303030", fontSize: "20px" }}>
+              {/* <Typography sx={{ color: "#303030", fontSize: "20px" }}>
                 Let Google help apps determine location. This means sending
                 anonymous location data to Google, even when no apps are
+                running. Let Google help apps determine location. This means
+                sending anonymous location data to Google, even when no apps are
                 running.
+              </Typography> */}
+              <Typography variant="subtitle1">
+                <div dangerouslySetInnerHTML={{ __html: emailContent }} />
               </Typography>
             </DialogContent>
             <DialogActions>

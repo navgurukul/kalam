@@ -448,12 +448,18 @@ const NotifyStudentColumnTransitionWrapper = ({
   updateValue,
 }) => {
   const { privileges } = useSelector((state) => state.auth);
+  console.log("rowMeta", rowMeta);
   const ifExistingFeedback =
     feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
   const permissionForOwner = privileges.some(
     (priv) => priv.privilege === "UpdateTransition"
   );
-  return ifExistingFeedback && permissionForOwner ? <NotifyStudents /> : null;
+  return ifExistingFeedback && permissionForOwner ? (
+    <NotifyStudents
+      studentId={rowMeta.rowData[8]}
+      currectStage={rowMeta.rowData[0]}
+    />
+  ) : null;
 };
 
 const notifyStudentColumnTransition = {

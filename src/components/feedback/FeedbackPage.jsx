@@ -45,6 +45,7 @@ const StudentFeedback = (props) => {
       const { change, rowMetaTable } = props;
       const { rowData } = rowMetaTable;
       let studentId;
+      console.log("rowData", rowData);
 
       if (window.location.pathname.includes("/campus")) {
         studentId = rowData[8];
@@ -52,7 +53,7 @@ const StudentFeedback = (props) => {
         studentId = rowData[6];
       }
       const userId = parseInt(decryptText(localStorage.getItem("userId")), 10);
-
+      console.log("studentId in Feeback", studentId);
       const dataURL = `${baseUrl}students/feedback/${studentId}/${userId}`;
       await axios
         .post(dataURL, {

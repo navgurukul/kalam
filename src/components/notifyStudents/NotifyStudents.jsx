@@ -21,8 +21,9 @@ import DOMPurify from "dompurify";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-function NotifyStudents({ studentId, currectStage }) {
+function NotifyStudents({ studentId, currectStage, allStages }) {
   const [emailContent, setEmailContent] = useState(false);
+  const [platformList, setPlatformList] = useState(["email"]);
   const [open, setOpen] = useState(false);
   let email = "";
 
@@ -51,6 +52,10 @@ function NotifyStudents({ studentId, currectStage }) {
 
   console.log("studentId", studentId);
 
+  const stage = /\s/g.test(currectStage)
+    ? currectStage
+    : allStages[currectStage];
+
   const newEmail =
     "Dear Hemangi Sunil Bhadane\r\n\nYour admission progress -\r\n\n\r\n\nSchool: School Of Programming\r\n\nStage: pendingAlgebraInterview\r\n\nCurrent status: passed\r\n\n\r\n\nThank you";
 
@@ -71,9 +76,32 @@ function NotifyStudents({ studentId, currectStage }) {
       });
   }, [email]);
 
-  console.log("emailContent", emailContent);
-  console.log("email", email);
-  console.log("newEmail", newEmail);
+  const platformConfirmation = (platform) => {
+    if (platform === "email") {
+      if (platformList.includes("email")) {
+        setPlatformList(platformList.filter((item) => item !== "email"));
+      } else {
+        setPlatformList([...platformList, "email"]);
+      }
+    }
+  };
+
+  // const submitNotification = () => {
+  //   // console.log("platformList", platformList);
+  //   // console.log("email", email);
+  //   // console.log("newEmail", newEmail);
+  //   if (platformList.includes("email")) {
+  //     axios.get(`${baseURL}students/stageNotification/${studentId}`, {
+  //       platformList,
+  //     });
+  //   }
+  // };
+
+  // console.log("emailContent", emailContent);
+  // console.log("emaillll", email);
+  // console.log("newEmail", newEmail);
+
+  // console.log("platformList", platformList);
 
   return (
     <>
@@ -93,7 +121,7 @@ function NotifyStudents({ studentId, currectStage }) {
             </DialogTitle> */}
             <Typography variant="h6" sx={{ mt: "40px", fontWeight: "bold" }}>
               {/* Algebra & English Interview Pending (2nd Round) */}
-              {currectStage}
+              {stage}
             </Typography>
             <Box
               sx={{
@@ -104,11 +132,23 @@ function NotifyStudents({ studentId, currectStage }) {
               }}
             >
               <Box sx={{ display: "flex" }}>
-                <Switch {...label} defaultChecked />
+                <Switch
+                  {...label}
+                  defaultChecked
+                  checked={platformList.includes("email")}
+                  onChange={(e) => {
+                    platformConfirmation("email");
+                  }}
+                  // onChange={(e) => {
+                  //   console.log("platform in onChange", platform);
+                  //   console.log("email", e);
+                  //   setPlatform([...platform, "email"]);
+                  // }}
+                />
                 <EmailIcon sx={{ mt: "6px" }} />
                 <Typography sx={{ mt: "6px", ml: "6px" }}>Email</Typography>
               </Box>
-              <Box sx={{ display: "flex" }}>
+              {/* <Box sx={{ display: "flex" }}>
                 <Switch {...label} />
                 <SmsOutlinedIcon sx={{ mt: "6px" }} />
                 <Typography sx={{ mt: "6px", ml: "6px" }}>SMS</Typography>
@@ -117,7 +157,7 @@ function NotifyStudents({ studentId, currectStage }) {
                 <Switch {...label} />
                 <WhatsAppIcon sx={{ mt: "6px" }} />
                 <Typography sx={{ mt: "6px", ml: "6px" }}>WhatsApp</Typography>
-              </Box>
+              </Box> */}
             </Box>
             {/* </Typography> */}
             {/* <DialogTitle id="alert-dialog-title">
@@ -137,15 +177,12 @@ function NotifyStudents({ studentId, currectStage }) {
             </DialogContent>
             <DialogActions>
               <Button
-                onClick={handleClose}
+                // onClick={submitNotification}
                 variant="contained"
                 sx={{ mt: "20px", padding: "15px", borderRadius: "8px" }}
               >
                 Sent Notification
               </Button>
-              {/* <Button onClick={handleClose} autoFocus>
-                Agree
-              </Button> */}
             </DialogActions>
           </Box>
         </Dialog>

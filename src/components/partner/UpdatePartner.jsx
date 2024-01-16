@@ -54,8 +54,8 @@ const UpdatePartner = ({
       value={selectedValue}
       onChange={handleChange}
       options={
-        allOptions.length > 0 &&
-        allOptions.map((x) => ({ value: x.id, label: x.name }))
+        allOptions?.length > 0 &&
+        allOptions?.map((x) => ({ value: x.id, label: x.name }))
       }
       isClearable={false}
       components={animatedComponents}

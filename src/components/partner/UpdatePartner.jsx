@@ -46,7 +46,7 @@ const UpdatePartner = ({
   const newValue = value ? value : partnerName;
   const selectedValue = { value: newValue, label: newValue };
 
-  return privileges.some(
+  return privileges?.some(
     (priv) => priv.privilege === "UpdateStudentPartner"
   ) ? (
     <Select

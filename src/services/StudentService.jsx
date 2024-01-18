@@ -452,6 +452,8 @@ const NotifyStudentColumnTransitionWrapper = ({
     (priv) => priv.privilege === "UpdateTransition"
   );
   console.log("rowMeta", rowMeta);
+  console.log("value", value);
+
   let ifExistingFeedback = false;
   if (
     value ||
@@ -467,6 +469,7 @@ const NotifyStudentColumnTransitionWrapper = ({
       studentId={rowMeta.rowData[8]}
       currectStage={rowMeta.rowData[0]}
       allStages={allStages}
+      rowMeta={rowMeta}
     />
   ) : null;
 };

@@ -18,12 +18,15 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
 import axios from "axios";
 import DOMPurify from "dompurify";
+import { useSnackbar } from "notistack";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-function NotifyStudents({ studentId, currectStage, allStages }) {
+function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
+  const { enqueueSnackbar } = useSnackbar();
   const [emailContent, setEmailContent] = useState(false);
   const [platformList, setPlatformList] = useState(["email"]);
+  const [lastTransition, setLastTransition] = useState();
   const [open, setOpen] = useState(false);
   let email = "";
 
@@ -59,6 +62,9 @@ function NotifyStudents({ studentId, currectStage, allStages }) {
   const newEmail =
     "Dear Hemangi Sunil Bhadane\r\n\nYour admission progress -\r\n\n\r\n\nSchool: School Of Programming\r\n\nStage: pendingAlgebraInterview\r\n\nCurrent status: passed\r\n\n\r\n\nThank you";
 
+  // const feedbackId = rowMeta.tableData[rowMeta.tableData.length - 1];
+  // console.log("feedbackId", feedbackId);
+
   useEffect(() => {
     axios
       .get(`${baseURL}students/notificationContent/${studentId}`)
@@ -67,6 +73,24 @@ function NotifyStudents({ studentId, currectStage, allStages }) {
         const sanitized = DOMPurify.sanitize(res.data.data);
         email = sanitized;
         setEmailContent(DOMPurify.sanitize(res.data.data));
+
+        // setAllSchools(res.data);
+        // console.log("res", res.data.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+
+    axios
+      .get(`${baseURL}students/transitionsWithFeedback/${studentId}`)
+      .then((res) => {
+        console.log("response", res.data.data);
+        const data = res.data.data;
+        console.log("data", data[data.length - 1]);
+        setLastTransition(data[data.length - 1]);
+        // const sanitized = DOMPurify.sanitize(res.data.data);
+        // email = sanitized;
+        // setEmailContent(DOMPurify.sanitize(res.data.data));
 
         // setAllSchools(res.data);
         // console.log("res", res.data.data);
@@ -86,16 +110,28 @@ function NotifyStudents({ studentId, currectStage, allStages }) {
     }
   };
 
-  // const submitNotification = () => {
-  //   // console.log("platformList", platformList);
-  //   // console.log("email", email);
-  //   // console.log("newEmail", newEmail);
-  //   if (platformList.includes("email")) {
-  //     axios.get(`${baseURL}students/stageNotification/${studentId}`, {
-  //       platformList,
-  //     });
-  //   }
-  // };
+  const submitNotification = () => {
+    if (platformList.includes("email")) {
+      axios
+        .post(
+          `${baseURL}students/stageNotification/${lastTransition?.feedback_id}`,
+          { platform: platformList }
+        )
+        .then((res) => {
+          enqueueSnackbar("Email is successfully sent!", {
+            variant: "success",
+          });
+          setOpen(false);
+        })
+        .catch((err) => {
+          enqueueSnackbar(
+            `Please fill feedback and status columns first and try again!${err.message}`,
+            { variant: "error" }
+          );
+          setOpen(false);
+        });
+    }
+  };
 
   // console.log("emailContent", emailContent);
   // console.log("emaillll", email);
@@ -177,7 +213,7 @@ function NotifyStudents({ studentId, currectStage, allStages }) {
             </DialogContent>
             <DialogActions>
               <Button
-                // onClick={submitNotification}
+                onClick={submitNotification}
                 variant="contained"
                 sx={{ mt: "20px", padding: "15px", borderRadius: "8px" }}
               >
@@ -188,7 +224,10 @@ function NotifyStudents({ studentId, currectStage, allStages }) {
         </Dialog>
       ) : (
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button onClick={handleOpen}>
+          <Button
+            onClick={handleOpen}
+            disabled={rowMeta.rowData[12] !== lastTransition?.id}
+          >
             <NotificationsActiveIcon />
           </Button>
         </div>

@@ -113,8 +113,6 @@ const CampusList = () => {
     })();
   }, [loggedInUser]);
 
-  console.log("campusList", campusList);
-
   return (
     <Container maxWidth="sm">
       <MainLayout

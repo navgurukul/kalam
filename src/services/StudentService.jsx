@@ -451,8 +451,6 @@ const NotifyStudentColumnTransitionWrapper = ({
   const permissionForOwner = privileges.some(
     (priv) => priv.privilege === "UpdateTransition"
   );
-  console.log("rowMeta", rowMeta);
-  console.log("value", value);
 
   let ifExistingFeedback = false;
   if (
@@ -495,14 +493,31 @@ const NotificationHistoryColumnTransitionWrapper = ({
   rowMeta,
   updateValue,
 }) => {
-  const { privileges } = useSelector((state) => state.auth);
-  const ifExistingFeedback =
-    feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  const { privileges } = useSelector((state) => {
+    console.log("state", state);
+    return state.auth;
+  });
   const permissionForOwner = privileges.some(
     (priv) => priv.privilege === "UpdateTransition"
   );
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
+  ) {
+    ifExistingFeedback = true;
+  }
+  console.log("rowIndex:", rowMeta.rowIndex);
   return ifExistingFeedback && permissionForOwner ? (
-    <NotificationHistory />
+    <NotificationHistory
+      studentId={rowMeta.rowData[8]}
+      rowMeta={rowMeta}
+      value={value}
+      updateValue={updateValue}
+    />
   ) : null;
 };
 

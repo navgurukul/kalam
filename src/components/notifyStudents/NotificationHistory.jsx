@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Box,
@@ -12,8 +12,11 @@ import {
   Switch,
 } from "@mui/material";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import axios from "axios";
 
-function NotificationHistory() {
+const baseURL = import.meta.env.VITE_API_URL;
+
+function NotificationHistory({ studentId, rowMeta, value, updateValue }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -21,6 +24,22 @@ function NotificationHistory() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    axios
+      .get(`${baseURL}students/transitionsWithFeedback/${studentId}`)
+      .then((res) => {
+        const data = res.data.data;
+        console.log("data", data);
+        // setLastTransition(data[data.length - 1]);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, []);
+
+  console.log("rowMeta", rowMeta);
+
   return (
     <>
       {open ? (

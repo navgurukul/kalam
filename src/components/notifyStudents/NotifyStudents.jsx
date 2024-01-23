@@ -2,20 +2,14 @@ import React, { useState, useEffect } from "react";
 import {
   Button,
   Box,
-  Modal,
   Dialog,
-  DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
   Typography,
   Switch,
 } from "@mui/material";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import EmailIcon from "@mui/icons-material/Email";
-import SmsIcon from "@mui/icons-material/Sms";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
 import axios from "axios";
 import DOMPurify from "dompurify";
 import { useSnackbar } from "notistack";
@@ -28,7 +22,7 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
   const [platformList, setPlatformList] = useState(["email"]);
   const [lastTransition, setLastTransition] = useState();
   const [open, setOpen] = useState(false);
-  let email = "";
+  // let email = "";
 
   const handleOpen = () => {
     setOpen(true);
@@ -53,29 +47,16 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
     pb: 3,
   };
 
-  console.log("studentId", studentId);
-
   const stage = /\s/g.test(currectStage)
     ? currectStage
     : allStages[currectStage];
-
-  const newEmail =
-    "Dear Hemangi Sunil Bhadane\r\n\nYour admission progress -\r\n\n\r\n\nSchool: School Of Programming\r\n\nStage: pendingAlgebraInterview\r\n\nCurrent status: passed\r\n\n\r\n\nThank you";
-
-  // const feedbackId = rowMeta.tableData[rowMeta.tableData.length - 1];
-  // console.log("feedbackId", feedbackId);
 
   useEffect(() => {
     axios
       .get(`${baseURL}students/notificationContent/${studentId}`)
       .then((res) => {
-        console.log("res", res.data);
-        const sanitized = DOMPurify.sanitize(res.data.data);
-        email = sanitized;
-        setEmailContent(DOMPurify.sanitize(res.data.data));
-
-        // setAllSchools(res.data);
-        // console.log("res", res.data.data);
+        const emailData = res.data.data.replace(/\r/g, "<br>");
+        setEmailContent(DOMPurify.sanitize(emailData));
       })
       .catch((err) => {
         console.log("err", err);
@@ -84,21 +65,13 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
     axios
       .get(`${baseURL}students/transitionsWithFeedback/${studentId}`)
       .then((res) => {
-        console.log("response", res.data.data);
         const data = res.data.data;
-        console.log("data", data[data.length - 1]);
         setLastTransition(data[data.length - 1]);
-        // const sanitized = DOMPurify.sanitize(res.data.data);
-        // email = sanitized;
-        // setEmailContent(DOMPurify.sanitize(res.data.data));
-
-        // setAllSchools(res.data);
-        // console.log("res", res.data.data);
       })
       .catch((err) => {
         console.log("err", err);
       });
-  }, [email]);
+  }, []);
 
   const platformConfirmation = (platform) => {
     if (platform === "email") {
@@ -133,12 +106,6 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
     }
   };
 
-  // console.log("emailContent", emailContent);
-  // console.log("emaillll", email);
-  // console.log("newEmail", newEmail);
-
-  // console.log("platformList", platformList);
-
   return (
     <>
       {open ? (
@@ -147,16 +114,13 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
           onClose={handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          fullWidth
         >
           <Box sx={{ padding: "30px" }}>
             <Typography variant="h4" sx={{ fontWeight: "bold" }}>
               Notifications
             </Typography>
-            {/* <DialogTitle id="alert-dialog-title" variant="h4">
-              Notifications
-            </DialogTitle> */}
             <Typography variant="h6" sx={{ mt: "40px", fontWeight: "bold" }}>
-              {/* Algebra & English Interview Pending (2nd Round) */}
               {stage}
             </Typography>
             <Box
@@ -164,7 +128,6 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
                 display: "flex",
                 justifyContent: "space-between",
                 mt: "10px",
-                // background: "#ededed",
               }}
             >
               <Box sx={{ display: "flex" }}>
@@ -175,39 +138,13 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
                   onChange={(e) => {
                     platformConfirmation("email");
                   }}
-                  // onChange={(e) => {
-                  //   console.log("platform in onChange", platform);
-                  //   console.log("email", e);
-                  //   setPlatform([...platform, "email"]);
-                  // }}
                 />
                 <EmailIcon sx={{ mt: "6px" }} />
                 <Typography sx={{ mt: "6px", ml: "6px" }}>Email</Typography>
               </Box>
-              {/* <Box sx={{ display: "flex" }}>
-                <Switch {...label} />
-                <SmsOutlinedIcon sx={{ mt: "6px" }} />
-                <Typography sx={{ mt: "6px", ml: "6px" }}>SMS</Typography>
-              </Box>
-              <Box sx={{ display: "flex" }}>
-                <Switch {...label} />
-                <WhatsAppIcon sx={{ mt: "6px" }} />
-                <Typography sx={{ mt: "6px", ml: "6px" }}>WhatsApp</Typography>
-              </Box> */}
             </Box>
-            {/* </Typography> */}
-            {/* <DialogTitle id="alert-dialog-title">
-              Algebra & English Interview Pending (2nd Round)
-            </DialogTitle> */}
             <DialogContent sx={{ background: "#ededed", mt: "20px" }}>
-              {/* <Typography sx={{ color: "#303030", fontSize: "20px" }}>
-                Let Google help apps determine location. This means sending
-                anonymous location data to Google, even when no apps are
-                running. Let Google help apps determine location. This means
-                sending anonymous location data to Google, even when no apps are
-                running.
-              </Typography> */}
-              <Typography variant="subtitle1">
+              <Typography sx={{ color: "#303030", fontSize: "18px" }}>
                 <div dangerouslySetInnerHTML={{ __html: emailContent }} />
               </Typography>
             </DialogContent>

@@ -473,8 +473,12 @@ const NotifyStudentColumnTransitionWrapper = ({
 };
 
 const notifyStudentColumnTransition = {
-  name: "notify_student",
+  name: "notification_status",
   label: "Notify Student",
+
+  // name: "notification_sent_at",
+  // label: "notification_sent_at",
+
   options: {
     filter: false,
     sort: true,
@@ -487,6 +491,9 @@ const notifyStudentColumnTransition = {
     ),
   },
 };
+
+// console.log(rowData, "rowData::::::::::");
+// console.log(rowMeta, "rowMeta.........");
 
 const NotificationHistoryColumnTransitionWrapper = ({
   value,
@@ -514,7 +521,9 @@ const NotificationHistoryColumnTransitionWrapper = ({
   return ifExistingFeedback && permissionForOwner ? (
     <NotificationHistory
       studentId={rowMeta.rowData[8]}
+      currectStage={rowMeta.rowData[0]}
       rowMeta={rowMeta}
+      allStages={allStages}
       value={value}
       updateValue={updateValue}
     />
@@ -522,7 +531,7 @@ const NotificationHistoryColumnTransitionWrapper = ({
 };
 
 const notificationHistoryColumnTransition = {
-  name: "notification_history",
+  name: "notification_sent_at",
   label: "Notification History",
   options: {
     filter: false,

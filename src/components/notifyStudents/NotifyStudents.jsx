@@ -84,6 +84,8 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
   };
 
   const submitNotification = () => {
+    console.log("abc");
+    console.log("none........");
     if (platformList.includes("email")) {
       axios
         .post(

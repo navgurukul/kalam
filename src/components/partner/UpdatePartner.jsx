@@ -39,7 +39,7 @@ const UpdatePartner = ({
         setPartnerName(res.data.data[0]?.partner?.name);
       })
       .catch((err) => {
-        console.log("err", err);
+        // console.log("err", err);
       });
   }, [value]);
 

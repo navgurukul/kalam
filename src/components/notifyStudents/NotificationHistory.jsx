@@ -48,43 +48,54 @@ function NotificationHistory({ currectStage, rowMeta, allStages }) {
               {stage}
             </Typography>
             {notifications !== undefined &&
-              notifications?.map((item, index) => (
-                <Box sx={{ mt: "20px" }} key={index}>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      mt: "20px",
-                      mb: "7px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    <FiberManualRecordIcon
-                      sx={{
-                        fontSize: "17px",
-                        color:
-                          notificationStatus !== undefined &&
-                          notificationStatus[index] === "true"
-                            ? "green"
-                            : "red",
-                        mr: "5px",
-                      }}
-                    />
-                    Lates on {convertDate(item)}
-                  </Typography>
-                  <Typography sx={{ ml: "23px" }}>
-                    {notificationStatus !== undefined &&
-                    notificationStatus[index] === "true"
-                      ? "Notification sent successfully via Email"
-                      : "Notification failed"}
-                  </Typography>
-                </Box>
-              ))}
+              notifications?.map((item, index) => {
+                if (item !== "null") {
+                  return (
+                    <Box sx={{ mt: "20px" }} key={index}>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          mt: "20px",
+                          mb: "7px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        <FiberManualRecordIcon
+                          sx={{
+                            fontSize: "17px",
+                            color:
+                              notificationStatus !== undefined &&
+                              notificationStatus[index] === "true"
+                                ? "green"
+                                : "red",
+                            mr: "5px",
+                          }}
+                        />
+                        Lates on {convertDate(item)}
+                      </Typography>
+                      <Typography sx={{ ml: "23px" }}>
+                        {notificationStatus !== undefined &&
+                        notificationStatus[index] === "true"
+                          ? "Notification sent successfully via Email"
+                          : "Notification failed"}
+                      </Typography>
+                    </Box>
+                  );
+                }
+              })}
           </Box>
         </Dialog>
       ) : (
         <>
-          <Typography>Last sent on {latestNotificationDate}</Typography>
-          <Button onClick={handleOpen}>View Details</Button>
+          {notifications === undefined ||
+          (notifications.length === 1 && notifications[0] === "null") ? (
+            <Typography>There is no notification history yet</Typography>
+          ) : (
+            <>
+              <Typography>Last sent on {latestNotificationDate}</Typography>
+              <Button onClick={handleOpen}>View Details</Button>
+            </>
+          )}
         </>
       )}
     </>

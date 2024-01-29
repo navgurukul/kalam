@@ -48,6 +48,9 @@ import { getColumnIndex } from "../utils";
 import axios from "axios";
 import StageMarks from "../components/smallComponents/StageMarks";
 import TestAttemptModel from "../components/smallComponents/TestAttemptModel";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import NotifyStudents from "../components/notifyStudents/NotifyStudents";
+import NotificationHistory from "../components/notifyStudents/NotificationHistory";
 
 dayjs.extend(customParseFormat);
 
@@ -432,6 +435,110 @@ const statusColumnTransition = {
     customBodyRender: (value, rowMeta, updateValue) => (
       <StatusColumnTransitionWrapper
         value={value}
+        rowMeta={rowMeta}
+        updateValue={updateValue}
+      />
+    ),
+  },
+};
+
+const NotifyStudentColumnTransitionWrapper = ({
+  value,
+  rowMeta,
+  updateValue,
+}) => {
+  const { privileges } = useSelector((state) => state.auth);
+  const permissionForOwner = privileges.some(
+    (priv) => priv.privilege === "UpdateTransition"
+  );
+
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
+  ) {
+    ifExistingFeedback = true;
+  }
+  return ifExistingFeedback && permissionForOwner ? (
+    <NotifyStudents
+      studentId={rowMeta.rowData[8]}
+      currectStage={rowMeta.rowData[0]}
+      allStages={allStages}
+      rowMeta={rowMeta}
+    />
+  ) : null;
+};
+
+const notifyStudentColumnTransition = {
+  name: "notification_status",
+  label: "Notify Student",
+
+  // name: "notification_sent_at",
+  // label: "notification_sent_at",
+
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => (
+      <NotifyStudentColumnTransitionWrapper
+        value={rowData}
+        rowMeta={rowMeta}
+        updateValue={updateValue}
+      />
+    ),
+  },
+};
+
+// console.log(rowData, "rowData::::::::::");
+// console.log(rowMeta, "rowMeta.........");
+
+const NotificationHistoryColumnTransitionWrapper = ({
+  value,
+  rowMeta,
+  updateValue,
+}) => {
+  const { privileges } = useSelector((state) => {
+    console.log("state", state);
+    return state.auth;
+  });
+  const permissionForOwner = privileges.some(
+    (priv) => priv.privilege === "UpdateTransition"
+  );
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
+  ) {
+    ifExistingFeedback = true;
+  }
+  console.log("rowIndex:", rowMeta.rowIndex);
+  return ifExistingFeedback && permissionForOwner ? (
+    <NotificationHistory
+      studentId={rowMeta.rowData[8]}
+      currectStage={rowMeta.rowData[0]}
+      rowMeta={rowMeta}
+      allStages={allStages}
+      value={value}
+      updateValue={updateValue}
+    />
+  ) : null;
+};
+
+const notificationHistoryColumnTransition = {
+  name: "notification_sent_at",
+  label: "Notification History",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta, updateValue) => (
+      <NotificationHistoryColumnTransitionWrapper
+        value={rowData}
         rowMeta={rowMeta}
         updateValue={updateValue}
       />
@@ -1903,6 +2010,8 @@ const StudentService = {
       feedbackColumnTransition,
       ownerColumnTransitionDashboard,
       statusColumnTransition,
+      notifyStudentColumnTransition,
+      notificationHistoryColumnTransition,
       timeColumnTransition,
       loggedInUserColumn2,
       transitionUpdatedByColumn,
@@ -1934,6 +2043,8 @@ const StudentService = {
       feedbackColumnTransition,
       ownerColumnTransitionCampus,
       statusColumnTransition,
+      notifyStudentColumnTransition,
+      notificationHistoryColumnTransition,
       timeColumnTransition,
       loggedInUserColumn2,
       transitionUpdatedByColumn,

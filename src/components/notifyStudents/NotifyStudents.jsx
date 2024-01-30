@@ -40,7 +40,7 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
     axios
       .get(`${baseURL}students/notificationContent/${studentId}`)
       .then((res) => {
-        const emailData = res.data.data.replace(/\r/g, "<br>");
+        const emailData = res.data.data.replace(/\n\n/g, "<br>");
         setEmailContent(DOMPurify.sanitize(emailData));
       })
       .catch((err) => {

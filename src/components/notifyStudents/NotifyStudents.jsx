@@ -56,7 +56,7 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
       .catch((err) => {
         console.log("err", err);
       });
-  }, []);
+  }, [rowMeta.rowData[3]]);
 
   const platformConfirmation = (platform) => {
     if (platform === "email") {

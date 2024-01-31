@@ -310,7 +310,7 @@ const OwnerColumnTransitionDashboardWrapper = ({
 }) => {
   const { privileges } = useSelector((state) => state.auth);
 
-  //for admissiong dashboard student id is coming at rowMeta.rowData[8]
+  //for admission dashboard student id is coming at rowMeta.rowData[9]
 
   // const ifExistingFeedback =
   //   feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
@@ -377,7 +377,7 @@ const OwnerColumnTransitionCampusWrapper = ({
       currentValue={rowMeta}
       rowMetaTable={rowMeta}
       value={value}
-      studentId={rowMeta.rowData[8]}
+      studentId={rowMeta.rowData[9]}
       change={(event) => updateValue(event)}
     />
   ) : null;
@@ -447,6 +447,8 @@ const NotifyStudentColumnTransitionWrapper = ({ value, rowMeta }) => {
     (priv) => priv.privilege === "UpdateTransition"
   );
 
+  console.log("value", value);
+
   let ifExistingFeedback = false;
   if (
     value ||
@@ -457,9 +459,13 @@ const NotifyStudentColumnTransitionWrapper = ({ value, rowMeta }) => {
   ) {
     ifExistingFeedback = true;
   }
+  console.log("rowMeta", rowMeta);
+  console.log("rowMeta.rowData", rowMeta.rowData);
+
   return ifExistingFeedback && permissionForOwner ? (
     <NotifyStudents
-      studentId={rowMeta.rowData[8]}
+      studentId={rowMeta.rowData[9]}
+      feedbackId={rowMeta.rowData[8]}
       currectStage={rowMeta.rowData[0]}
       allStages={allStages}
       rowMeta={rowMeta}
@@ -517,6 +523,15 @@ const notificationHistoryColumnTransition = {
         rowMeta={rowMeta}
       />
     ),
+  },
+};
+
+const studentFeedbackIdColumnTransition = {
+  name: "feedback_id",
+  label: "Feedback Id",
+  options: {
+    filter: false,
+    display: false,
   },
 };
 
@@ -1986,6 +2001,7 @@ const StudentService = {
       statusColumnTransition,
       notifyStudentColumnTransition,
       notificationHistoryColumnTransition,
+      studentFeedbackIdColumnTransition,
       timeColumnTransition,
       loggedInUserColumn2,
       transitionUpdatedByColumn,
@@ -2019,6 +2035,7 @@ const StudentService = {
       statusColumnTransition,
       notifyStudentColumnTransition,
       notificationHistoryColumnTransition,
+      studentFeedbackIdColumnTransition,
       timeColumnTransition,
       loggedInUserColumn2,
       transitionUpdatedByColumn,

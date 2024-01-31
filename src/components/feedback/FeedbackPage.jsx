@@ -47,9 +47,9 @@ const StudentFeedback = (props) => {
       let studentId;
 
       if (window.location.pathname.includes("/campus")) {
-        studentId = rowData[10];
+        studentId = rowData[11];
       } else {
-        studentId = rowData[8];
+        studentId = rowData[9];
       }
       const userId = parseInt(decryptText(localStorage.getItem("userId")), 10);
       const dataURL = `${baseUrl}students/feedback/${studentId}/${userId}`;

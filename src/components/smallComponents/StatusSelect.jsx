@@ -15,8 +15,8 @@ const StatusSelect = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const studentId = window.location.pathname.includes("/campus")
-    ? rowMetaTable.rowData[10]
-    : rowMetaTable.rowData[8];
+    ? rowMetaTable.rowData[11]
+    : rowMetaTable.rowData[9];
 
   const handleChange = (selectedValue) => {
     const { columnIndex } = rowMetaTable;

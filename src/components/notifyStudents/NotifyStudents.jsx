@@ -16,7 +16,13 @@ import { useSnackbar } from "notistack";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
+function NotifyStudents({
+  studentId,
+  feedbackId,
+  currectStage,
+  allStages,
+  rowMeta,
+}) {
   const { enqueueSnackbar } = useSnackbar();
   const [emailContent, setEmailContent] = useState(false);
   const [platformList, setPlatformList] = useState(["email"]);
@@ -56,7 +62,7 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
       .catch((err) => {
         console.log("err", err);
       });
-  }, []);
+  }, [rowMeta.rowData[3]]);
 
   const platformConfirmation = (platform) => {
     if (platform === "email") {
@@ -67,6 +73,9 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
       }
     }
   };
+
+  console.log("feedbackId", feedbackId);
+  console.log("lastTransition?.feedback_id", lastTransition?.feedback_id);
 
   const submitNotification = () => {
     if (platformList.includes("email")) {
@@ -148,7 +157,7 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Button
             onClick={handleOpen}
-            disabled={rowMeta.rowData[12] !== lastTransition?.id}
+            disabled={rowMeta.rowData[13] !== lastTransition?.id}
           >
             <NotificationsActiveIcon />
           </Button>

@@ -154,11 +154,7 @@ const StageColumnTransitionWrapper = ({ value, rowMeta }) => {
   return (
     <>
       {privileges.some((priv) => priv.privilege === "DeleteTransition") ? (
-        <DeleteRow
-          transitionId={
-            rowMeta.rowData[isCampus ? 11 : 9] || rowMeta.rowData[10]
-          }
-        />
+        <DeleteRow transitionId={rowMeta.rowData[isCampus ? 14 : 12]} />
       ) : null}
       {allStages[value] || value}
     </>
@@ -334,7 +330,7 @@ const OwnerColumnTransitionDashboardWrapper = ({
           currentValue={value}
           rowMetaTable={rowMeta}
           value={value}
-          studentId={rowMeta.rowData[6]}
+          studentId={rowMeta.rowData[8]}
           change={(event) => updateValue(event)}
         />
       ) : null}
@@ -372,12 +368,13 @@ const OwnerColumnTransitionCampusWrapper = ({
   const permissionForOwner = privileges.some(
     (priv) => priv.privilege === "UpdateStudentOwner"
   );
+
   return ifExistingFeedback && permissionForOwner ? (
     <OwnerSelect
       currentValue={rowMeta}
       rowMetaTable={rowMeta}
       value={value}
-      studentId={rowMeta.rowData[8]}
+      studentId={rowMeta.rowData[10]}
       change={(event) => updateValue(event)}
     />
   ) : null;

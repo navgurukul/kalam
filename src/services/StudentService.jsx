@@ -1810,7 +1810,7 @@ const dashboardPartnerNameColumn = {
           <label style={Lables}>Partner</label>
           <SelectReact
             options={[
-              "All",
+              { name: "All" },
               ...JSON.parse(localStorage.getItem("partners")),
             ].map((partner) => ({
               value: partner.name,

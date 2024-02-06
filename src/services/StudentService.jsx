@@ -150,7 +150,6 @@ const StageColumnTransitionWrapper = ({ value, rowMeta }) => {
   const { privileges } = useSelector((state) => state.auth);
   const path = window.location.pathname.split("/");
   const isCampus = path[1] === "campus";
-
   return (
     <>
       {privileges.some((priv) => priv.privilege === "DeleteTransition") ? (
@@ -475,10 +474,6 @@ const NotifyStudentColumnTransitionWrapper = ({
 const notifyStudentColumnTransition = {
   name: "notification_status",
   label: "Notify Student",
-
-  // name: "notification_sent_at",
-  // label: "notification_sent_at",
-
   options: {
     filter: false,
     sort: true,
@@ -491,9 +486,6 @@ const notifyStudentColumnTransition = {
     ),
   },
 };
-
-// console.log(rowData, "rowData::::::::::");
-// console.log(rowMeta, "rowMeta.........");
 
 const NotificationHistoryColumnTransitionWrapper = ({
   value,

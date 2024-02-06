@@ -104,9 +104,10 @@ const ServerSidePagination = ({
           filterColumn.value
         )}`;
       }
-      return `${cUrl}${filterColumn.key}=${encodeURIComponent(
-        filterColumn.value
-      )}`;
+      return `${cUrl}`;
+      // return `${cUrl}${filterColumn.key}=${encodeURIComponent(
+      //   filterColumn.value
+      // )}`;
     }, `${baseURL}students?`);
     if (newColumns.length > 0) {
       setFilters({ filterColumns: newState.filterColumns, url: `${newUrl}&` });

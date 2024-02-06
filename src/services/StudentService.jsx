@@ -150,7 +150,6 @@ const StageColumnTransitionWrapper = ({ value, rowMeta }) => {
   const { privileges } = useSelector((state) => state.auth);
   const path = window.location.pathname.split("/");
   const isCampus = path[1] === "campus";
-
   return (
     <>
       {privileges.some((priv) => priv.privilege === "DeleteTransition") ? (
@@ -1789,7 +1788,7 @@ const dashboardPartnerNameColumn = {
           <label style={Lables}>Partner</label>
           <SelectReact
             options={[
-              "All",
+              { name: "All" },
               ...JSON.parse(localStorage.getItem("partners")),
             ].map((partner) => ({
               value: partner.name,

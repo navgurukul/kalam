@@ -22,7 +22,6 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
   const [platformList, setPlatformList] = useState(["email"]);
   const [lastTransition, setLastTransition] = useState();
   const [open, setOpen] = useState(false);
-  // let email = "";
 
   const handleOpen = () => {
     setOpen(true);
@@ -33,20 +32,6 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
 
   const label = { inputProps: { "aria-label": "Color switch demo" } };
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    pt: 2,
-    px: 4,
-    pb: 3,
-  };
-
   const stage = /\s/g.test(currectStage)
     ? currectStage
     : allStages[currectStage];
@@ -55,7 +40,7 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
     axios
       .get(`${baseURL}students/notificationContent/${studentId}`)
       .then((res) => {
-        const emailData = res.data.data.replace(/\r/g, "<br>");
+        const emailData = res.data.data.replace(/\n\n/g, "<br>");
         setEmailContent(DOMPurify.sanitize(emailData));
       })
       .catch((err) => {
@@ -71,7 +56,7 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
       .catch((err) => {
         console.log("err", err);
       });
-  }, []);
+  }, [rowMeta.rowData[3]]);
 
   const platformConfirmation = (platform) => {
     if (platform === "email") {
@@ -84,8 +69,6 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
   };
 
   const submitNotification = () => {
-    console.log("abc");
-    console.log("none........");
     if (platformList.includes("email")) {
       axios
         .post(
@@ -136,7 +119,6 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
                 <Switch
                   {...label}
                   defaultChecked
-                  checked={platformList.includes("email")}
                   onChange={(e) => {
                     platformConfirmation("email");
                   }}
@@ -146,9 +128,10 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
               </Box>
             </Box>
             <DialogContent sx={{ background: "#ededed", mt: "20px" }}>
-              <Typography sx={{ color: "#303030", fontSize: "18px" }}>
-                <div dangerouslySetInnerHTML={{ __html: emailContent }} />
-              </Typography>
+              <Typography
+                sx={{ color: "#303030", fontSize: "18px" }}
+                dangerouslySetInnerHTML={{ __html: emailContent }}
+              />
             </DialogContent>
             <DialogActions>
               <Button

@@ -102,6 +102,7 @@ const useStyles = makeStyles(() => ({
 // };
 
 const LandingPage = () => {
+  console.log("window.location", window.location.href.split("partnerLanding/"));
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
@@ -243,13 +244,13 @@ const LandingPage = () => {
   const onChangeEvent = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ''),// replace anything that is not letters, and '.
+      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ""), // replace anything that is not letters, and '.
     });
   };
   const onChangeEvent_numbersOnly = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.numbersOnly, ''), // Only allow digits (0-9)
+      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.numbersOnly, ""), // Only allow digits (0-9)
     });
   };
 
@@ -281,6 +282,7 @@ const LandingPage = () => {
       .then(async (data) => {
         const response = data.data.data;
         if (response.alreadyGivenTest) {
+          console.log("alreadyGivenTest", alreadyGivenTest);
           navigate(
             `/check_duplicate?name=${first_name}_${middle_name}_${last_name}&number=${mobileNumber}&stage=${response.pendingInterviewStage}`,
             {
@@ -291,7 +293,9 @@ const LandingPage = () => {
             }
           );
         } else {
+          console.log("New student");
           const res = await generateTestLink();
+          console.log("res", res);
 
           setState({
             ...state,

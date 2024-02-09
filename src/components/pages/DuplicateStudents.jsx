@@ -202,6 +202,7 @@ const DuplicateStudents = () => {
   const partnerFetch = async (slug) => {
     try {
       const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
+      console.log("response", response);
       setPartnerId(response.data.data.id);
     } catch (e) {
       navigate("/notFound");
@@ -211,6 +212,7 @@ const DuplicateStudents = () => {
   useEffect(() => {
     const slug = window.location.href.split("partnerLanding/")[1];
     if (slug) {
+      console.log("Slug hai", slug);
       partnerFetch(slug);
     }
     isDuplicate();

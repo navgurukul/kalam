@@ -136,6 +136,7 @@ const getColumns = (partnerList) => [
       filter: false,
       sort: false,
       customBodyRender: (value, rowMeta, updateValue) => {
+        console.log("value", value);
         if (value) {
           const url = `/partnerLanding/${value}`;
           return (

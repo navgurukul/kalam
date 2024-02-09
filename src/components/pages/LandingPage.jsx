@@ -102,7 +102,6 @@ const useStyles = makeStyles(() => ({
 // };
 
 const LandingPage = () => {
-  console.log("window.location", window.location.href.split("partnerLanding/"));
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
@@ -184,7 +183,7 @@ const LandingPage = () => {
     const response = await axios.get(`${baseUrl}partners/slug/${_slug}`, {});
     setState({
       ...state,
-      partnerId: response.data.data.id,
+      partnerId: response.data.data[0].id,
     });
   };
 
@@ -282,7 +281,6 @@ const LandingPage = () => {
       .then(async (data) => {
         const response = data.data.data;
         if (response.alreadyGivenTest) {
-          console.log("alreadyGivenTest", alreadyGivenTest);
           navigate(
             `/check_duplicate?name=${first_name}_${middle_name}_${last_name}&number=${mobileNumber}&stage=${response.pendingInterviewStage}`,
             {
@@ -293,10 +291,7 @@ const LandingPage = () => {
             }
           );
         } else {
-          console.log("New student");
           const res = await generateTestLink();
-          console.log("res", res);
-
           setState({
             ...state,
             mobileNumber: "",

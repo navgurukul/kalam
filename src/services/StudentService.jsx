@@ -1762,7 +1762,6 @@ const dashboardSchoolColumn = {
 };
 
 const DashboardPartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
-  console.log("valueeeee", value);
   const { privileges } = useSelector((state) => state.auth);
   return (
     <UpdatePartner
@@ -1777,7 +1776,7 @@ const DashboardPartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
 };
 
 const dashboardPartnerNameColumn = {
-  label: "Partner Nameeeeeeeeeeee",
+  label: "Partner Name",
   name: "partnerName",
   options: {
     filter: true,

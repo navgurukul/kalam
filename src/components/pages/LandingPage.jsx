@@ -183,7 +183,7 @@ const LandingPage = () => {
     const response = await axios.get(`${baseUrl}partners/slug/${_slug}`, {});
     setState({
       ...state,
-      partnerId: response.data.data.id,
+      partnerId: response.data.data[0].id,
     });
   };
 
@@ -243,13 +243,13 @@ const LandingPage = () => {
   const onChangeEvent = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ''),// replace anything that is not letters, and '.
+      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.replaceName, ""), // replace anything that is not letters, and '.
     });
   };
   const onChangeEvent_numbersOnly = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.numbersOnly, ''), // Only allow digits (0-9)
+      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.numbersOnly, ""), // Only allow digits (0-9)
     });
   };
 
@@ -292,7 +292,6 @@ const LandingPage = () => {
           );
         } else {
           const res = await generateTestLink();
-
           setState({
             ...state,
             mobileNumber: "",

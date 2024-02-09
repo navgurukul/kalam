@@ -16,10 +16,11 @@ import NotFoundPage from "../components/layout/NotFoundPage";
 import Loader from "../components/ui/Loader";
 import { changeFetching } from "../store/slices/uiSlice";
 
-const SchoolStages = React.lazy(()=>import ("../components/school/SchoolStages"))
+const SchoolStages = React.lazy(() =>
+  import("../components/school/SchoolStages")
+);
 
-const SchoolData = React.lazy(()=>import ("../components/school/SchoolData"));
-
+const SchoolData = React.lazy(() => import("../components/school/SchoolData"));
 
 const AddNewStudent = React.lazy(() =>
   import("../components/student/AddNewStudent")
@@ -201,22 +202,23 @@ const AppRouter = () => {
               }
             />
 
-            <Route path="/school"
-                element={
-                  <React.Suspense fallback={<Loader container />}>
-                    <RequireAuth privateRoute>
-                      <SchoolData/>
-                    </RequireAuth>
-                  </React.Suspense>
-                }
-              />
+            <Route
+              path="/school"
+              element={
+                <React.Suspense fallback={<Loader container />}>
+                  <RequireAuth privateRoute>
+                    <SchoolData />
+                  </RequireAuth>
+                </React.Suspense>
+              }
+            />
 
             <Route
               path="/school/:Id/school-stages"
               element={
                 <React.Suspense fallback={<Loader container />}>
                   <RequireAuth privateRoute>
-                    <SchoolStages/>
+                    <SchoolStages />
                   </RequireAuth>
                 </React.Suspense>
               }

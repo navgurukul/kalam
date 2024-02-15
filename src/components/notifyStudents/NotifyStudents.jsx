@@ -40,6 +40,7 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
     axios
       .get(`${baseURL}students/notificationContent/${studentId}`)
       .then((res) => {
+        console.log("res", res);
         const emailData = res.data.data.replace(/\n\n/g, "<br>");
         setEmailContent(DOMPurify.sanitize(emailData));
       })
@@ -56,7 +57,7 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
       .catch((err) => {
         console.log("err", err);
       });
-  }, [rowMeta.rowData[3]]);
+  }, [rowMeta.rowData[3], rowMeta.rowData[5], rowMeta.currentTableData]);
 
   const platformConfirmation = (platform) => {
     if (platform === "email") {
@@ -90,6 +91,16 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
         });
     }
   };
+
+  console.log("rowMeta in NotifyStudent", rowMeta);
+  console.log("rowMeta.rowData in NotifyStudent", rowMeta.rowData);
+
+  // console.log(
+  //   "rowMeta.rowData[12] !== lastTransition?.id",
+  //   rowMeta.rowData[12] !== lastTransition?.id
+  // );
+  // console.log("rowMeta.rowData[12]", rowMeta.rowData[12]);
+  // console.log("lastTransition?.id", lastTransition?.id);
 
   return (
     <>
@@ -137,6 +148,7 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
               <Button
                 onClick={submitNotification}
                 variant="contained"
+                disabled={!platformList.includes("email")}
                 sx={{ mt: "20px", padding: "15px", borderRadius: "8px" }}
               >
                 Sent Notification
@@ -148,7 +160,12 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Button
             onClick={handleOpen}
-            disabled={rowMeta.rowData[12] !== lastTransition?.id}
+            disabled={
+              rowMeta.rowData[5] === undefined ||
+              rowMeta.rowData[5] === null ||
+              rowMeta.rowData[12] !== lastTransition?.id ||
+              rowMeta.rowData[0] === "offerLetterSent"
+            }
           >
             <NotificationsActiveIcon />
           </Button>

@@ -492,6 +492,7 @@ const NotificationHistoryColumnTransitionWrapper = ({ value, rowMeta }) => {
   ) {
     ifExistingFeedback = true;
   }
+  console.log("rowMeta.rowData in Student Service", rowMeta.rowData);
   return ifExistingFeedback && permissionForOwner ? (
     <NotificationHistory
       currectStage={rowMeta.rowData[0]}

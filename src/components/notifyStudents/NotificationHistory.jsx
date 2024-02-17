@@ -69,18 +69,18 @@ function NotificationHistory({ currectStage, rowMeta, allStages }) {
   const notificationStatus = rowMeta.rowData[6]?.split(", ");
   const notifications = rowMeta.rowData[7]?.split(", ");
 
-  useEffect(() => {
-    console.log("notifications", notifications);
-    // const date = convertDate(
-    //   notifications !== undefined && notifications[notifications?.length - 1]
-    // );
-    // console.log("date", date);
-    // setLatestNotificationDate(date);
+  // useEffect(() => {
+  //   console.log("notifications", notifications);
+  //   // const date = convertDate(
+  //   //   notifications !== undefined && notifications[notifications?.length - 1]
+  //   // );
+  //   // console.log("date", date);
+  //   // setLatestNotificationDate(date);
 
-    console.log("rowMeta.rowData", rowMeta.rowData[6]);
-    console.log("notificationStatus", notificationStatus);
-    console.log("notifications", notifications);
-  }, [notifications, notificationStatus, rowMeta.rowData[6]]);
+  //   // console.log("rowMeta.rowData", rowMeta.rowData[6]);
+  //   // console.log("notificationStatus", notificationStatus);
+  //   // console.log("notifications", notifications);
+  // }, [notifications, notificationStatus, rowMeta.rowData[6]]);
 
   const latestNotificationDate = convertDate(
     notifications !== undefined && notifications[notifications?.length - 1]
@@ -91,7 +91,7 @@ function NotificationHistory({ currectStage, rowMeta, allStages }) {
   );
 
   console.log("rowMeta in Notification History", rowMeta);
-  console.log("rowMeta.rowData in Notification History", rowMeta.rowData);
+  // console.log("rowMeta.rowData in Notification History", rowMeta.rowData);
 
   return (
     <>
@@ -134,15 +134,18 @@ function NotificationHistory({ currectStage, rowMeta, allStages }) {
         </Dialog>
       ) : (
         <>
-          {notifications === undefined ||
-          (notifications.length === 1 && notifications[0] === "null") ? (
-            <Typography>There is no notification history yet</Typography>
-          ) : (
-            <>
-              <Typography>Last sent on {latestNotificationDate}</Typography>
-              <Button onClick={handleOpen}>View Details</Button>
-            </>
-          )}
+          {
+            // ((rowMeta.rowData[5] === undefined || rowMeta.rowData[5] === null) &&
+            notifications === undefined ||
+            (notifications.length === 1 && notifications[0] === "null") ? (
+              <Typography>There is no notification history yet</Typography>
+            ) : (
+              <>
+                <Typography>Last sent on {latestNotificationDate}</Typography>
+                <Button onClick={handleOpen}>View Details</Button>
+              </>
+            )
+          }
         </>
       )}
     </>

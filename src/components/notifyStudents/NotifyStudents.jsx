@@ -7,7 +7,9 @@ import {
   DialogActions,
   Typography,
   Switch,
+  IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import EmailIcon from "@mui/icons-material/Email";
 import axios from "axios";
@@ -16,7 +18,13 @@ import { useSnackbar } from "notistack";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
+function NotifyStudents({
+  studentId,
+  currectStage,
+  allStages,
+  rowMeta,
+  change,
+}) {
   const { enqueueSnackbar } = useSnackbar();
   const [emailContent, setEmailContent] = useState(false);
   const [platformList, setPlatformList] = useState(["email"]);
@@ -40,7 +48,7 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
     axios
       .get(`${baseURL}students/notificationContent/${studentId}`)
       .then((res) => {
-        console.log("res", res);
+        // console.log("res", res);
         const emailData = res.data.data.replace(/\n\n/g, "<br>");
         setEmailContent(DOMPurify.sanitize(emailData));
       })
@@ -92,8 +100,8 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
     }
   };
 
-  console.log("rowMeta in NotifyStudent", rowMeta);
-  console.log("rowMeta.rowData in NotifyStudent", rowMeta.rowData);
+  // console.log("rowMeta in NotifyStudent", rowMeta);
+  // console.log("rowMeta.rowData in NotifyStudent", rowMeta.rowData);
 
   // console.log(
   //   "rowMeta.rowData[12] !== lastTransition?.id",
@@ -116,6 +124,18 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
             <Typography variant="h4" sx={{ fontWeight: "bold" }}>
               Notifications
             </Typography>
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
             <Typography variant="h6" sx={{ mt: "40px", fontWeight: "bold" }}>
               {stage}
             </Typography>

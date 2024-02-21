@@ -25,11 +25,13 @@ function NotifyStudents({
   rowMeta,
   change,
 }) {
+  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [emailContent, setEmailContent] = useState(false);
   const [platformList, setPlatformList] = useState(["email"]);
   const [lastTransition, setLastTransition] = useState();
   const [open, setOpen] = useState(false);
+  const fetchingStart = () => dispatch(changeFetching(true));
 
   const handleOpen = () => {
     setOpen(true);
@@ -60,6 +62,7 @@ function NotifyStudents({
       .get(`${baseURL}students/transitionsWithFeedback/${studentId}`)
       .then((res) => {
         const data = res.data.data;
+        console.log("data in Notify Student", data);
         setLastTransition(data[data.length - 1]);
       })
       .catch((err) => {
@@ -88,6 +91,7 @@ function NotifyStudents({
           enqueueSnackbar("Email is successfully sent!", {
             variant: "success",
           });
+          fetchingStart();
           setOpen(false);
         })
         .catch((err) => {

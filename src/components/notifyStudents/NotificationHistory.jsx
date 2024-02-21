@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Box, Dialog, Typography } from "@mui/material";
+import { Button, Box, Dialog, Typography, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import axios from "axios";
+
+const baseURL = import.meta.env.VITE_API_URL;
 
 const Notification = ({
   index,
@@ -44,7 +48,7 @@ const Notification = ({
   );
 };
 
-function NotificationHistory({ currectStage, rowMeta, allStages }) {
+function NotificationHistory({ studentId, currectStage, rowMeta, allStages }) {
   const [open, setOpen] = useState(false);
   // const [latestNotificationDate, setLatestNotificationDate] = useState();
   const handleOpen = () => {
@@ -68,6 +72,19 @@ function NotificationHistory({ currectStage, rowMeta, allStages }) {
 
   const notificationStatus = rowMeta.rowData[6]?.split(", ");
   const notifications = rowMeta.rowData[7]?.split(", ");
+
+  useEffect(() => {
+    axios
+      .get(`${baseURL}students/transitionsWithFeedback/${studentId}`)
+      .then((res) => {
+        const data = res.data.data;
+        console.log("data", data);
+        // setLastTransition(data[data.length - 1]);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, [rowMeta.rowData[3], rowMeta.rowData[5], rowMeta.currentTableData]);
 
   // useEffect(() => {
   //   console.log("notifications", notifications);
@@ -107,6 +124,18 @@ function NotificationHistory({ currectStage, rowMeta, allStages }) {
             <Typography variant="h4" sx={{ fontWeight: "bold" }}>
               Notification History
             </Typography>
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
             <Typography variant="h6" sx={{ mt: "40px", fontWeight: "bold" }}>
               {stage}
             </Typography>

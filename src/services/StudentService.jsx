@@ -74,7 +74,7 @@ const Lables = {
 //column transitions for student dashboard
 const ColumnTransitions = {
   name: "id",
-  label: "Transitions",
+  label: "Transitionsssss",
   options: {
     filter: false,
     sort: false,
@@ -513,6 +513,7 @@ const NotificationHistoryColumnTransitionWrapper = ({
   console.log("rowMeta.rowData in Student Service", rowMeta);
   return ifExistingFeedback && permissionForOwner ? (
     <NotificationHistory
+      studentId={rowMeta.rowData[8]}
       currectStage={rowMeta.rowData[0]}
       rowMeta={rowMeta}
       allStages={allStages}

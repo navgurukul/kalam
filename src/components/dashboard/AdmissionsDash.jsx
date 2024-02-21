@@ -32,7 +32,7 @@ import {
   setSchool,
 } from "../../store/slices/studentSlice";
 
-import { allStages } from "../../utils/constants";
+import { allStages, campus } from "../../utils/constants";
 
 const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
@@ -151,15 +151,38 @@ const AdmissionsDash = (props) => {
 
   const fetchOWner = async (signal) => {
     const response = await axios.get(`${baseURL}owner`, { signal });
-    const newData = response.data.data.map((e) => e.user.mail_id);
+    const newData = response.data.data.map((e) => e.user.user_name);
     localStorage.setItem("owners", JSON.stringify(newData.sort()));
+  };
+
+  const fetchCampus = async (signal) => {
+    const response = await axios.get(`${baseURL}campus`, { signal });
+    const newData = response.data.data.map((e) => {
+      return { id: e.id, campus: e.campus };
+    });
+    localStorage.setItem("campus", JSON.stringify(newData));
+  };
+
+  const fetchSchool = async (signal) => {
+    const response = await axios.get(`${baseURL}school`, { signal });
+    const newData = response.data;
+    localStorage.setItem("schools", JSON.stringify(newData));
   };
 
   const fetchPartner = async (signal) => {
     const response = await axios.get(`${baseURL}partners`, { signal });
-    const newData = response.data.data.map((e) => e.name);
+    const newData = response.data.data.map((e) => {
+      return { id: e.id, name: e.name };
+    });
     localStorage.setItem("partners", JSON.stringify(newData.sort()));
   };
+
+  const fetchDonor = async (signal) => {
+    const response = await axios.get(`${baseURL}donors`, { signal });
+    const newData = response.data;
+    localStorage.setItem("donors", JSON.stringify(newData.sort()));
+  };
+
   const fetchUsers = async (signal) => {
     try {
       const response = await axios.get(usersURL, { signal });
@@ -396,7 +419,11 @@ const AdmissionsDash = (props) => {
       // await fetchStudents(null, controller.signal);
       await fetchUsers(controller.signal);
       await fetchOWner(controller.signal);
+      await fetchCampus(controller.signal);
+      await fetchSchool(controller.signal);
       await fetchPartner(controller.signal);
+      await fetchDonor(controller.signal);
+
       // await fetchAccess(controller.signal);
       dispatch(fetchOwnersAction());
       setState({ ...state, loading: false });

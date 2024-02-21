@@ -421,8 +421,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     }
   }
 
-  console.log("Added new env variables in vercel");
-
   return (
     <div
       style={{

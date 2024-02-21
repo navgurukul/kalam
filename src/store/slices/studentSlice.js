@@ -33,7 +33,14 @@ export const fetchStudents = createAsyncThunk(
     }
 
     const concatinateStage = stage.length === 0 ? null : stage.join(",");
-    const querySchool = typeof school === "string" ? null : school;
+
+    const querySchool =
+      typeof school === "string"
+        ? filterColumns.length > 0
+          ? filterColumns[0].value
+          : null
+        : school;
+
     try {
       thunkAPI.dispatch(changeFetching(true)); // startFetching
       let response;
@@ -55,7 +62,9 @@ export const fetchStudents = createAsyncThunk(
             : null;
 
         response =
-          filterColumns && filterColumns.length > 0
+          filterColumns &&
+          filterColumns.length > 0 &&
+          filterColumns[0].key !== "school"
             ? await axios.get(`${url}&limit=${numberOfRows}&page=${page}`, {
                 params: {
                   dataType,
@@ -75,13 +84,17 @@ export const fetchStudents = createAsyncThunk(
                   },
                 }
               );
+
         // eslint-disable-next-line no-use-before-define
         thunkAPI.dispatch(setUrl(url));
       }
+
       let results =
-        typeof school === "string"
-          ? response.data.data.results
-          : response.data.data;
+        (filterColumns.length > 0 && filterColumns[0].key === "school") ||
+        typeof school !== "string"
+          ? response.data.data
+          : response.data.data.results;
+
       const studentData =
         // response.data &&
         // response.data.data &&

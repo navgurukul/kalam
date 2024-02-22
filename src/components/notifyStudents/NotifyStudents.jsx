@@ -9,6 +9,8 @@ import {
   Switch,
   IconButton,
 } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedStudent } from "../../store/slices/studentSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import EmailIcon from "@mui/icons-material/Email";
@@ -25,13 +27,14 @@ function NotifyStudents({
   rowMeta,
   change,
 }) {
-  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
+  const setTransitions = (transitions) =>
+    dispatch(setSelectedStudent({ studentId, transitions }));
   const [emailContent, setEmailContent] = useState(false);
   const [platformList, setPlatformList] = useState(["email"]);
   const [lastTransition, setLastTransition] = useState();
   const [open, setOpen] = useState(false);
-  const fetchingStart = () => dispatch(changeFetching(true));
 
   const handleOpen = () => {
     setOpen(true);
@@ -62,7 +65,6 @@ function NotifyStudents({
       .get(`${baseURL}students/transitionsWithFeedback/${studentId}`)
       .then((res) => {
         const data = res.data.data;
-        console.log("data in Notify Student", data);
         setLastTransition(data[data.length - 1]);
       })
       .catch((err) => {
@@ -91,8 +93,18 @@ function NotifyStudents({
           enqueueSnackbar("Email is successfully sent!", {
             variant: "success",
           });
-          fetchingStart();
           setOpen(false);
+          axios
+            .get(`${baseURL}students/transitionsWithFeedback/${studentId}`)
+            .then((res) => {
+              const data = res.data.data;
+              console.log("data in Notify Student", data);
+              setTransitions(data);
+              // setLastTransition(data[data.length - 1]);
+            })
+            .catch((err) => {
+              console.log("err", err);
+            });
         })
         .catch((err) => {
           enqueueSnackbar(

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Button, Box, Dialog, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Button, Box, Dialog, Typography, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
 const Notification = ({
@@ -46,7 +47,6 @@ const Notification = ({
 
 function NotificationHistory({ currectStage, rowMeta, allStages }) {
   const [open, setOpen] = useState(false);
-  // const [latestNotificationDate, setLatestNotificationDate] = useState();
   const handleOpen = () => {
     setOpen(true);
   };
@@ -69,19 +69,6 @@ function NotificationHistory({ currectStage, rowMeta, allStages }) {
   const notificationStatus = rowMeta.rowData[6]?.split(", ");
   const notifications = rowMeta.rowData[7]?.split(", ");
 
-  useEffect(() => {
-    console.log("notifications", notifications);
-    // const date = convertDate(
-    //   notifications !== undefined && notifications[notifications?.length - 1]
-    // );
-    // console.log("date", date);
-    // setLatestNotificationDate(date);
-
-    console.log("rowMeta.rowData", rowMeta.rowData[6]);
-    console.log("notificationStatus", notificationStatus);
-    console.log("notifications", notifications);
-  }, [notifications, notificationStatus, rowMeta.rowData[6]]);
-
   const latestNotificationDate = convertDate(
     notifications !== undefined && notifications[notifications?.length - 1]
   );
@@ -89,9 +76,6 @@ function NotificationHistory({ currectStage, rowMeta, allStages }) {
   const allNotifications = notifications?.filter(
     (item, index) => index !== notifications.length - 1
   );
-
-  console.log("rowMeta in Notification History", rowMeta);
-  console.log("rowMeta.rowData in Notification History", rowMeta.rowData);
 
   return (
     <>
@@ -107,6 +91,18 @@ function NotificationHistory({ currectStage, rowMeta, allStages }) {
             <Typography variant="h4" sx={{ fontWeight: "bold" }}>
               Notification History
             </Typography>
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
             <Typography variant="h6" sx={{ mt: "40px", fontWeight: "bold" }}>
               {stage}
             </Typography>

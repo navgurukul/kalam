@@ -7,7 +7,11 @@ import {
   DialogActions,
   Typography,
   Switch,
+  IconButton,
 } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { setSelectedStudent } from "../../store/slices/studentSlice";
+import CloseIcon from "@mui/icons-material/Close";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import EmailIcon from "@mui/icons-material/Email";
 import axios from "axios";
@@ -18,6 +22,9 @@ const baseURL = import.meta.env.VITE_API_URL;
 
 function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
+  const setTransitions = (transitions) =>
+    dispatch(setSelectedStudent({ studentId, transitions }));
   const [emailContent, setEmailContent] = useState(false);
   const [platformList, setPlatformList] = useState(["email"]);
   const [lastTransition, setLastTransition] = useState();
@@ -40,7 +47,6 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
     axios
       .get(`${baseURL}students/notificationContent/${studentId}`)
       .then((res) => {
-        console.log("res", res);
         const emailData = res.data.data.replace(/\n\n/g, "<br>");
         setEmailContent(DOMPurify.sanitize(emailData));
       })
@@ -81,6 +87,15 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
             variant: "success",
           });
           setOpen(false);
+          axios
+            .get(`${baseURL}students/transitionsWithFeedback/${studentId}`)
+            .then((res) => {
+              const data = res.data.data;
+              setTransitions(data);
+            })
+            .catch((err) => {
+              console.log("err", err);
+            });
         })
         .catch((err) => {
           enqueueSnackbar(
@@ -91,16 +106,6 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
         });
     }
   };
-
-  console.log("rowMeta in NotifyStudent", rowMeta);
-  console.log("rowMeta.rowData in NotifyStudent", rowMeta.rowData);
-
-  // console.log(
-  //   "rowMeta.rowData[12] !== lastTransition?.id",
-  //   rowMeta.rowData[12] !== lastTransition?.id
-  // );
-  // console.log("rowMeta.rowData[12]", rowMeta.rowData[12]);
-  // console.log("lastTransition?.id", lastTransition?.id);
 
   return (
     <>
@@ -116,6 +121,18 @@ function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
             <Typography variant="h4" sx={{ fontWeight: "bold" }}>
               Notifications
             </Typography>
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
             <Typography variant="h6" sx={{ mt: "40px", fontWeight: "bold" }}>
               {stage}
             </Typography>

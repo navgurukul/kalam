@@ -9,7 +9,7 @@ import {
   Switch,
   IconButton,
 } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setSelectedStudent } from "../../store/slices/studentSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
@@ -20,13 +20,7 @@ import { useSnackbar } from "notistack";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-function NotifyStudents({
-  studentId,
-  currectStage,
-  allStages,
-  rowMeta,
-  change,
-}) {
+function NotifyStudents({ studentId, currectStage, allStages, rowMeta }) {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const setTransitions = (transitions) =>
@@ -53,7 +47,6 @@ function NotifyStudents({
     axios
       .get(`${baseURL}students/notificationContent/${studentId}`)
       .then((res) => {
-        // console.log("res", res);
         const emailData = res.data.data.replace(/\n\n/g, "<br>");
         setEmailContent(DOMPurify.sanitize(emailData));
       })
@@ -98,9 +91,7 @@ function NotifyStudents({
             .get(`${baseURL}students/transitionsWithFeedback/${studentId}`)
             .then((res) => {
               const data = res.data.data;
-              console.log("data in Notify Student", data);
               setTransitions(data);
-              // setLastTransition(data[data.length - 1]);
             })
             .catch((err) => {
               console.log("err", err);
@@ -115,16 +106,6 @@ function NotifyStudents({
         });
     }
   };
-
-  // console.log("rowMeta in NotifyStudent", rowMeta);
-  // console.log("rowMeta.rowData in NotifyStudent", rowMeta.rowData);
-
-  // console.log(
-  //   "rowMeta.rowData[12] !== lastTransition?.id",
-  //   rowMeta.rowData[12] !== lastTransition?.id
-  // );
-  // console.log("rowMeta.rowData[12]", rowMeta.rowData[12]);
-  // console.log("lastTransition?.id", lastTransition?.id);
 
   return (
     <>

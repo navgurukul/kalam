@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Box, Dialog, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import axios from "axios";
-
-const baseURL = import.meta.env.VITE_API_URL;
 
 const Notification = ({
   index,
@@ -48,9 +45,8 @@ const Notification = ({
   );
 };
 
-function NotificationHistory({ studentId, currectStage, rowMeta, allStages }) {
+function NotificationHistory({ currectStage, rowMeta, allStages }) {
   const [open, setOpen] = useState(false);
-  // const [latestNotificationDate, setLatestNotificationDate] = useState();
   const handleOpen = () => {
     setOpen(true);
   };
@@ -73,32 +69,6 @@ function NotificationHistory({ studentId, currectStage, rowMeta, allStages }) {
   const notificationStatus = rowMeta.rowData[6]?.split(", ");
   const notifications = rowMeta.rowData[7]?.split(", ");
 
-  useEffect(() => {
-    axios
-      .get(`${baseURL}students/transitionsWithFeedback/${studentId}`)
-      .then((res) => {
-        const data = res.data.data;
-        console.log("data", data);
-        // setLastTransition(data[data.length - 1]);
-      })
-      .catch((err) => {
-        console.log("err", err);
-      });
-  }, [rowMeta.rowData[3], rowMeta.rowData[5], rowMeta.currentTableData]);
-
-  // useEffect(() => {
-  //   console.log("notifications", notifications);
-  //   // const date = convertDate(
-  //   //   notifications !== undefined && notifications[notifications?.length - 1]
-  //   // );
-  //   // console.log("date", date);
-  //   // setLatestNotificationDate(date);
-
-  //   // console.log("rowMeta.rowData", rowMeta.rowData[6]);
-  //   // console.log("notificationStatus", notificationStatus);
-  //   // console.log("notifications", notifications);
-  // }, [notifications, notificationStatus, rowMeta.rowData[6]]);
-
   const latestNotificationDate = convertDate(
     notifications !== undefined && notifications[notifications?.length - 1]
   );
@@ -106,9 +76,6 @@ function NotificationHistory({ studentId, currectStage, rowMeta, allStages }) {
   const allNotifications = notifications?.filter(
     (item, index) => index !== notifications.length - 1
   );
-
-  console.log("rowMeta in Notification History", rowMeta);
-  // console.log("rowMeta.rowData in Notification History", rowMeta.rowData);
 
   return (
     <>
@@ -163,18 +130,15 @@ function NotificationHistory({ studentId, currectStage, rowMeta, allStages }) {
         </Dialog>
       ) : (
         <>
-          {
-            // ((rowMeta.rowData[5] === undefined || rowMeta.rowData[5] === null) &&
-            notifications === undefined ||
-            (notifications.length === 1 && notifications[0] === "null") ? (
-              <Typography>There is no notification history yet</Typography>
-            ) : (
-              <>
-                <Typography>Last sent on {latestNotificationDate}</Typography>
-                <Button onClick={handleOpen}>View Details</Button>
-              </>
-            )
-          }
+          {notifications === undefined ||
+          (notifications.length === 1 && notifications[0] === "null") ? (
+            <Typography>There is no notification history yet</Typography>
+          ) : (
+            <>
+              <Typography>Last sent on {latestNotificationDate}</Typography>
+              <Button onClick={handleOpen}>View Details</Button>
+            </>
+          )}
         </>
       )}
     </>

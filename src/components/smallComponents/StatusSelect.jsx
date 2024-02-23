@@ -29,8 +29,6 @@ const StatusSelect = ({
         enqueueSnackbar("state is successfully changed!", {
           variant: "success",
         });
-        console.log("value in statue", value);
-        console.log("columnIndex in statue", columnIndex);
         change(value, columnIndex);
       })
       .catch((e) => {

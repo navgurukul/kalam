@@ -74,7 +74,7 @@ const Lables = {
 //column transitions for student dashboard
 const ColumnTransitions = {
   name: "id",
-  label: "Transitionsssss",
+  label: "Transitions",
   options: {
     filter: false,
     sort: false,
@@ -410,9 +410,6 @@ const StatusColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
   if (rowMeta.rowData[0] === "selectedButNotJoined") {
     return null;
   }
-  console.log("rowMeta.rowData[3]", rowMeta.rowData[3]);
-  console.log("value", value);
-  console.log("feedbackableStage", feedbackableStage);
   return (value || rowMeta.rowData[3]) && feedbackableStage ? (
     <StatusSelect
       feedbackableStagesData={feedbackableStagesData}
@@ -440,11 +437,7 @@ const statusColumnTransition = {
   },
 };
 
-const NotifyStudentColumnTransitionWrapper = ({
-  value,
-  rowMeta,
-  updateValue,
-}) => {
+const NotifyStudentColumnTransitionWrapper = ({ value, rowMeta }) => {
   const { privileges } = useSelector((state) => state.auth);
   const permissionForOwner = privileges.some(
     (priv) => priv.privilege === "UpdateTransition"
@@ -460,14 +453,12 @@ const NotifyStudentColumnTransitionWrapper = ({
   ) {
     ifExistingFeedback = true;
   }
-  console.log("value in Notify", value);
   return ifExistingFeedback && permissionForOwner ? (
     <NotifyStudents
       studentId={rowMeta.rowData[8]}
       currectStage={rowMeta.rowData[0]}
       allStages={allStages}
       rowMeta={rowMeta}
-      change={(event) => updateValue(event)}
     />
   ) : null;
 };
@@ -478,21 +469,13 @@ const notifyStudentColumnTransition = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => (
-      <NotifyStudentColumnTransitionWrapper
-        value={rowData}
-        rowMeta={rowMeta}
-        updateValue={updateValue}
-      />
+    customBodyRender: (rowData, rowMeta) => (
+      <NotifyStudentColumnTransitionWrapper value={rowData} rowMeta={rowMeta} />
     ),
   },
 };
 
-const NotificationHistoryColumnTransitionWrapper = ({
-  value,
-  rowMeta,
-  updateValue,
-}) => {
+const NotificationHistoryColumnTransitionWrapper = ({ value, rowMeta }) => {
   const { privileges } = useSelector((state) => {
     return state.auth;
   });
@@ -509,15 +492,12 @@ const NotificationHistoryColumnTransitionWrapper = ({
   ) {
     ifExistingFeedback = true;
   }
-  // console.log("value in History", value);
-  console.log("rowMeta.rowData in Student Service", rowMeta);
+
   return ifExistingFeedback && permissionForOwner ? (
     <NotificationHistory
-      studentId={rowMeta.rowData[8]}
       currectStage={rowMeta.rowData[0]}
       rowMeta={rowMeta}
       allStages={allStages}
-      change={(event) => updateValue(event)}
     />
   ) : null;
 };
@@ -528,11 +508,10 @@ const notificationHistoryColumnTransition = {
   options: {
     filter: false,
     sort: true,
-    customBodyRender: (rowData, rowMeta, updateValue) => (
+    customBodyRender: (rowData, rowMeta) => (
       <NotificationHistoryColumnTransitionWrapper
         value={rowData}
         rowMeta={rowMeta}
-        updateValue={updateValue}
       />
     ),
   },

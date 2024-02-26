@@ -48,6 +48,9 @@ import { getColumnIndex } from "../utils";
 import axios from "axios";
 import StageMarks from "../components/smallComponents/StageMarks";
 import TestAttemptModel from "../components/smallComponents/TestAttemptModel";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import NotifyStudents from "../components/notifyStudents/NotifyStudents";
+import NotificationHistory from "../components/notifyStudents/NotificationHistory";
 
 dayjs.extend(customParseFormat);
 
@@ -147,15 +150,10 @@ const StageColumnTransitionWrapper = ({ value, rowMeta }) => {
   const { privileges } = useSelector((state) => state.auth);
   const path = window.location.pathname.split("/");
   const isCampus = path[1] === "campus";
-
   return (
     <>
       {privileges.some((priv) => priv.privilege === "DeleteTransition") ? (
-        <DeleteRow
-          transitionId={
-            rowMeta.rowData[isCampus ? 11 : 9] || rowMeta.rowData[10]
-          }
-        />
+        <DeleteRow transitionId={rowMeta.rowData[isCampus ? 14 : 12]} />
       ) : null}
       {allStages[value] || value}
     </>
@@ -228,8 +226,6 @@ const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
   feedback?.shift();
 
   const { privileges } = useSelector((state) => state.auth);
-  // const ifExistingFeedback =
-  //   value || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
 
   let ifExistingFeedback = false;
   if (
@@ -253,6 +249,7 @@ const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
       ) : null}
       {feedback?.map((item, idx) => (
         <div
+          key={idx}
           style={{
             background: idx % 2 == 0 ? "#D1EAF9" : "#FFEDD8",
             padding: "1px 10px",
@@ -332,7 +329,7 @@ const OwnerColumnTransitionDashboardWrapper = ({
           currentValue={value}
           rowMetaTable={rowMeta}
           value={value}
-          studentId={rowMeta.rowData[6]}
+          studentId={rowMeta.rowData[8]}
           change={(event) => updateValue(event)}
         />
       ) : null}
@@ -370,12 +367,13 @@ const OwnerColumnTransitionCampusWrapper = ({
   const permissionForOwner = privileges.some(
     (priv) => priv.privilege === "UpdateStudentOwner"
   );
+
   return ifExistingFeedback && permissionForOwner ? (
     <OwnerSelect
       currentValue={rowMeta}
       rowMetaTable={rowMeta}
       value={value}
-      studentId={rowMeta.rowData[8]}
+      studentId={rowMeta.rowData[10]}
       change={(event) => updateValue(event)}
     />
   ) : null;
@@ -434,6 +432,86 @@ const statusColumnTransition = {
         value={value}
         rowMeta={rowMeta}
         updateValue={updateValue}
+      />
+    ),
+  },
+};
+
+const NotifyStudentColumnTransitionWrapper = ({ value, rowMeta }) => {
+  const { privileges } = useSelector((state) => state.auth);
+  const permissionForOwner = privileges.some(
+    (priv) => priv.privilege === "UpdateTransition"
+  );
+
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
+  ) {
+    ifExistingFeedback = true;
+  }
+  return ifExistingFeedback && permissionForOwner ? (
+    <NotifyStudents
+      studentId={rowMeta.rowData[8]}
+      currectStage={rowMeta.rowData[0]}
+      allStages={allStages}
+      rowMeta={rowMeta}
+    />
+  ) : null;
+};
+
+const notifyStudentColumnTransition = {
+  name: "notification_status",
+  label: "Notify Student",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta) => (
+      <NotifyStudentColumnTransitionWrapper value={rowData} rowMeta={rowMeta} />
+    ),
+  },
+};
+
+const NotificationHistoryColumnTransitionWrapper = ({ value, rowMeta }) => {
+  const { privileges } = useSelector((state) => {
+    return state.auth;
+  });
+  const permissionForOwner = privileges.some(
+    (priv) => priv.privilege === "UpdateTransition"
+  );
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
+  ) {
+    ifExistingFeedback = true;
+  }
+
+  return ifExistingFeedback && permissionForOwner ? (
+    <NotificationHistory
+      currectStage={rowMeta.rowData[0]}
+      rowMeta={rowMeta}
+      allStages={allStages}
+    />
+  ) : null;
+};
+
+const notificationHistoryColumnTransition = {
+  name: "notification_sent_at",
+  label: "Notification History",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta) => (
+      <NotificationHistoryColumnTransitionWrapper
+        value={rowData}
+        rowMeta={rowMeta}
       />
     ),
   },
@@ -1711,7 +1789,7 @@ const dashboardPartnerNameColumn = {
           <label style={Lables}>Partner</label>
           <SelectReact
             options={[
-              "All",
+              { name: "All" },
               ...JSON.parse(localStorage.getItem("partners")),
             ].map((partner) => ({
               value: partner.name,
@@ -1903,6 +1981,8 @@ const StudentService = {
       feedbackColumnTransition,
       ownerColumnTransitionDashboard,
       statusColumnTransition,
+      notifyStudentColumnTransition,
+      notificationHistoryColumnTransition,
       timeColumnTransition,
       loggedInUserColumn2,
       transitionUpdatedByColumn,
@@ -1934,6 +2014,8 @@ const StudentService = {
       feedbackColumnTransition,
       ownerColumnTransitionCampus,
       statusColumnTransition,
+      notifyStudentColumnTransition,
+      notificationHistoryColumnTransition,
       timeColumnTransition,
       loggedInUserColumn2,
       transitionUpdatedByColumn,

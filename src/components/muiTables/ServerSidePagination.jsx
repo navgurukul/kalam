@@ -131,7 +131,9 @@ const ServerSidePagination = ({
       action: CustomSnackSpinner,
       persist: true,
     });
-    const response = await axios.get(url, params);
+    const newUrl = url === null ? `${baseURL}students?` : url;
+    const response = await axios.get(newUrl, params);
+
     const fullStudentData = await response.data.data.results
       .map((student) => {
         const nStudent = dConvert({

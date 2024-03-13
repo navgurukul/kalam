@@ -10,6 +10,10 @@ import TextField from "@mui/material/TextField";
 import EditIcon from "@mui/icons-material/Edit";
 import { changeFetching } from "../../store/slices/uiSlice";
 import { decryptText } from "../../utils";
+import io from "socket.io-client";
+
+const socket = io.connect("http://localhost:3111/");
+// const socket = io.connect("http://localhost:8080");
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -63,6 +67,7 @@ const StudentFeedback = (props) => {
           enqueueSnackbar("Feedback is successfully added!", {
             variant: "success",
           });
+          socket.emit("send_feedback", { message: feedbackValue });
           change(feedbackValue);
         });
 

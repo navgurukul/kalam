@@ -82,6 +82,7 @@
     "react-timer-hook": "^3.0.5",
     "react-youtube": "^7.14.0",
     "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.7.4",
     "underscore": "^1.13.2"
   },
   "devDependencies": {

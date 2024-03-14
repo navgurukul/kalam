@@ -57,8 +57,8 @@ const MainLayout = ({
             // filtering: true,
             // filter: true,
             // filterType: "dropdown",
-           responsive: "vertical",
-           onDownload: onDownload || null,
+            responsive: "vertical",
+            onDownload: onDownload || null,
             tableBodyMaxHeight: tableBodyMaxHeight || "64vh",
             textLabels: {
               body: {

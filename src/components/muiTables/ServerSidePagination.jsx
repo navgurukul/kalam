@@ -53,10 +53,12 @@ const ServerSidePagination = ({
     };
     const { filterColumns: newColumns } = newState;
     const newUrl = filterColumns.reduce((cUrl, filterColumn, index) => {
-      if (index > 0) {
-        return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
+      if (filterColumn.key !== "school") {
+        if (index > 0) {
+          return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
+        }
+        return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
       }
-      return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
     }, `${baseURL}students?`);
 
     if (newColumns.length > 0) {
@@ -80,6 +82,7 @@ const ServerSidePagination = ({
       studentOwner: "searchOwnerName",
       status: "searchStatus",
       partnerName: "searchPartnerName",
+      school: "school",
     };
 
     const newData = filterColumns.filter(
@@ -101,9 +104,10 @@ const ServerSidePagination = ({
           filterColumn.value
         )}`;
       }
-      return `${cUrl}${filterColumn.key}=${encodeURIComponent(
-        filterColumn.value
-      )}`;
+      return `${cUrl}`;
+      // return `${cUrl}${filterColumn.key}=${encodeURIComponent(
+      //   filterColumn.value
+      // )}`;
     }, `${baseURL}students?`);
     if (newColumns.length > 0) {
       setFilters({ filterColumns: newState.filterColumns, url: `${newUrl}&` });
@@ -127,7 +131,8 @@ const ServerSidePagination = ({
       action: CustomSnackSpinner,
       persist: true,
     });
-    const response = await axios.get(url, params);
+    const newUrl = url === null ? `${baseURL}students?` : url;
+    const response = await axios.get(newUrl, params);
     const fullStudentData = await response.data.data.results
       .map((student) => {
         const nStudent = dConvert({

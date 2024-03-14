@@ -222,15 +222,10 @@ const addedAtColumn = {
 };
 
 const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
-  // const storedDataString = localStorage.getItem("feedback");
-  // const retrievedFeedback = JSON.parse(storedDataString);
   const feedback = value?.split("@");
   feedback?.shift();
 
   const { privileges } = useSelector((state) => state.auth);
-
-  console.log("value", value);
-  // console.log("retrievedFeedback", retrievedFeedback);
 
   let ifExistingFeedback = false;
   if (

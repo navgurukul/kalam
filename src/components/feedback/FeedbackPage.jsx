@@ -1,5 +1,5 @@
 /* eslint-disable prefer-destructuring */
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { Button, Dialog, IconButton, Typography } from "@mui/material";
@@ -38,7 +38,6 @@ const StudentFeedback = (props) => {
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const [feedbackValue, setFeedbackValue] = React.useState("");
-  const [retrievedFeedback, setRetrievedFeedback] = React.useState("");
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const addFeedbck = async () => {
@@ -61,14 +60,10 @@ const StudentFeedback = (props) => {
           feedback: feedbackValue,
         })
         .then(() => {
-          localStorage.setItem("feedback", JSON.stringify(feedbackValue));
-          const storedDataString = localStorage.getItem("feedback");
-          setRetrievedFeedback(JSON.parse(storedDataString));
           setDialogOpen(false);
           enqueueSnackbar("Feedback is successfully added!", {
             variant: "success",
           });
-
           change(feedbackValue);
         });
 
@@ -108,15 +103,6 @@ const StudentFeedback = (props) => {
 
   const { feedback } = props;
 
-  // localStorage.setItem("feedback", JSON.stringify(feedback));
-
-  useEffect(() => {
-    const storedDataString = localStorage.getItem("feedback");
-    setRetrievedFeedback(JSON.parse(storedDataString));
-  }, [feedback]);
-
-  console.log("retrievedFeedback", retrievedFeedback);
-
   return (
     <>
       <Button onClick={handleOpen} style={{ textTransform: "none" }}>
@@ -136,7 +122,7 @@ const StudentFeedback = (props) => {
             multiline
             rows="6"
             name="feedback"
-            defaultValue={addFeedbackDetails(retrievedFeedback)}
+            defaultValue={addFeedbackDetails(feedback)}
             onChange={handleChange}
             className={classes.textField}
             margin="normal"

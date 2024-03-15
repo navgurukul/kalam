@@ -151,12 +151,14 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
     setModalOpen(true);
   };
 
+  let timeoutId;
+
   const autoClose = () => {
     console.log("Auto Close called");
     // enqueueSnackbar(`The transition modal will be closed in 20 seconds`, {
     //   variant: "error",
     // });
-    setTimeout(() => {
+    timeoutId = setTimeout(() => {
       console.log("Modal Closed..............");
       // enqueueSnackbar(`The transition modal is closed`, {
       //   variant: "success",
@@ -165,7 +167,14 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
     }, 30000);
   };
 
+  // Function to cancel the timeout
+  const cancelAutoClose = () => {
+    clearTimeout(timeoutId);
+    console.log("Auto Close canceled");
+  };
+
   const onFocus = () => {
+    cancelAutoClose();
     console.log("Tab is in focus");
   };
 

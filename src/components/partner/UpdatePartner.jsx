@@ -39,14 +39,14 @@ const UpdatePartner = ({
         setPartnerName(res.data.data[0]?.partner?.name);
       })
       .catch((err) => {
-        console.log("err", err);
+        // console.log("err", err);
       });
   }, [value]);
 
   const newValue = value ? value : partnerName;
   const selectedValue = { value: newValue, label: newValue };
 
-  return privileges.some(
+  return privileges?.some(
     (priv) => priv.privilege === "UpdateStudentPartner"
   ) ? (
     <Select

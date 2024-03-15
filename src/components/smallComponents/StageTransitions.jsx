@@ -22,10 +22,10 @@ import Loader from "../ui/Loader";
 import DeleteStudentDetails from "./DeleteStudentDetails";
 import OutreachData from "../outreach/OutreachData";
 import { campusStageOfLearning } from "../../utils/constants";
-import { useSnackbar } from "notistack";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = import.meta.env.VITE_API_URL;
+const timeOut = import.meta.env.VITE_API_TIMEOUT;
 
 const getModalStyle = () => {
   const top = 50; // + rand()
@@ -71,7 +71,6 @@ const useStyles = makeStyles((_theme) => ({
 const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
   const classes = useStyles();
   const location = useLocation();
-  const { enqueueSnackbar } = useSnackbar();
 
   const { loggedInUser } = useSelector((state) => state.auth);
   const { selectedStudent } = useSelector((state) => state.students);
@@ -154,34 +153,23 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
   let timeoutId;
 
   const autoClose = () => {
-    console.log("Auto Close called");
-    // enqueueSnackbar(`The transition modal will be closed in 20 seconds`, {
-    //   variant: "error",
-    // });
     timeoutId = setTimeout(() => {
-      console.log("Modal Closed..............");
-      // enqueueSnackbar(`The transition modal is closed`, {
-      //   variant: "success",
-      // });
       setModalOpen(false);
-    }, 30000);
+    }, timeOut);
   };
 
   // Function to cancel the timeout
   const cancelAutoClose = () => {
     clearTimeout(timeoutId);
-    console.log("Auto Close canceled");
   };
 
   const onFocus = () => {
     cancelAutoClose();
-    console.log("Tab is in focus");
   };
 
   // User has switched away from the tab (AKA tab is hidden)
   const onBlur = () => {
     autoClose();
-    console.log("Tab is blurred");
   };
 
   useEffect(() => {

@@ -169,7 +169,6 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
 
   // User has switched away from the tab (AKA tab is hidden)
   const onBlur = () => {
-    console.log("onBlur");
     autoClose();
   };
 

@@ -1,5 +1,5 @@
 import "date-fns";
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal, Grid, Box, Typography, IconButton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
@@ -25,6 +25,7 @@ import { campusStageOfLearning } from "../../utils/constants";
 
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = import.meta.env.VITE_API_URL;
+const timeOut = import.meta.env.VITE_API_TIMEOUT;
 
 const getModalStyle = () => {
   const top = 50; // + rand()
@@ -148,6 +149,40 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
     fetchtransition();
     setModalOpen(true);
   };
+
+  let timeoutId;
+
+  const autoClose = () => {
+    timeoutId = setTimeout(() => {
+      setModalOpen(false);
+    }, timeOut);
+  };
+
+  // Function to cancel the timeout
+  const cancelAutoClose = () => {
+    clearTimeout(timeoutId);
+  };
+
+  const onFocus = () => {
+    cancelAutoClose();
+  };
+
+  // User has switched away from the tab (AKA tab is hidden)
+  const onBlur = () => {
+    autoClose();
+  };
+
+  useEffect(() => {
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("blur", onBlur);
+    // Calls onFocus when the window first loads
+    onFocus();
+    // Specify how to clean up after this effect:
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("blur", onBlur);
+    };
+  }, []);
 
   const handleChange = () => {
     setTransitions(

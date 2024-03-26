@@ -40,6 +40,8 @@ const StudentFeedback = (props) => {
   const [feedbackValue, setFeedbackValue] = React.useState("");
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
+  const { feedback } = props;
+
   const addFeedbck = async () => {
     try {
       fetchingStart();
@@ -64,7 +66,7 @@ const StudentFeedback = (props) => {
           enqueueSnackbar("Feedback is successfully added!", {
             variant: "success",
           });
-          change(feedbackValue);
+          change(feedback ? feedbackValue + feedback : feedbackValue);
         });
 
       fetchingFinish();
@@ -81,7 +83,9 @@ const StudentFeedback = (props) => {
 
   // const validate = () => {};
 
-  const handleChange = (event) => setFeedbackValue(event.target.value);
+  const handleChange = (event) => {
+    setFeedbackValue(event.target.value);
+  };
 
   const handleClose = () => setDialogOpen(false);
 
@@ -96,12 +100,11 @@ const StudentFeedback = (props) => {
       "guest"
     }`;
     const feedbackTime = `Feedback date ${time.getDate()}/${month}/${time.getFullYear()}`;
-    return feedback
-      ? `${currentUser}: ${feedbackTime}\n\n${feedback}`
-      : `${currentUser}: ${feedbackTime}\n\n`;
+    // return feedback
+    //   ? `${currentUser}: ${feedbackTime}\n\n${feedback}`
+    //   : `${currentUser}: ${feedbackTime}\n\n`;
+    return (feedback = `${currentUser}: ${feedbackTime}\n\n`);
   };
-
-  const { feedback } = props;
 
   return (
     <>

@@ -100,9 +100,6 @@ const StudentFeedback = (props) => {
       "guest"
     }`;
     const feedbackTime = `Feedback date ${time.getDate()}/${month}/${time.getFullYear()}`;
-    // return feedback
-    //   ? `${currentUser}: ${feedbackTime}\n\n${feedback}`
-    //   : `${currentUser}: ${feedbackTime}\n\n`;
     return (feedback = `${currentUser}: ${feedbackTime}\n\n`);
   };
 

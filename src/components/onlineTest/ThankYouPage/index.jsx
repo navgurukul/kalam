@@ -37,28 +37,24 @@ const tutorialSteps = {
   },
   content1: {
     // old:"NavGurukul ki One Year Fellowship mein",
-    en: "Thank you for applying in ",
+    en: "Thank you for applying to NavGurukul Program",
     hi: "नवगुरुकुल की एक वर्षीय फेलोशिप में ",
     ma: "नवगुरुकुलच्या एका वर्षाच्या फेलोशिपमध्ये ",
   },
   content2: {
-    en: "NavGurukul's One Year Fellowship.",
-    hi: "आवेदन करने के लिए धन्यवाद।",
-    ma: "अर्ज केल्याबद्दल धन्यवाद.",
-  },
-  content3: {
     old: "Aap apna interview slot apne time ke hisab se book kar sakte hain.",
-    en: "You can book your interview slot according to your convenience.",
+    en: "Admission team will reach out to you for the next steps",
+    // en: "You can book your interview slot according to your convenience.",
     hi: "आप अपनी सुविधा के अनुसार अपना इंटरव्यू स्लॉट बुक कर सकते हैं।",
     ma: "तुमच्या सोयीनुसार तुम्ही तुमचा मुलाखतीचा स्लॉट बुक करू शकता.",
   },
-  content4: {
+  content3: {
     old: "Aap humein ",
     en: "You can send us a mail on ",
     hi: "आप हमें ",
     ma: "तुम्ही आम्हाला ",
   },
-  content5: {
+  content4: {
     en: ".",
     hi: " पर मेल भेज सकते हैं।",
     ma: " वर मेल पाठवू शकता.",
@@ -113,15 +109,14 @@ function ThankYouPage({ userID }) {
         </Typography>
         <Typography>{tutorialSteps.content1[lang]}</Typography>
         <Typography>{tutorialSteps.content2[lang]}</Typography>
-        <Typography>{tutorialSteps.content3[lang]}</Typography>
         <Typography className={classes.link}>
-          {tutorialSteps.content4[lang]}
+          {tutorialSteps.content3[lang]}
           <Link href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=hi@navgurukul.org">
             hi@navgurukul.org
           </Link>{" "}
-          {tutorialSteps.content5[lang]}
+          {tutorialSteps.content4[lang]}
         </Typography>
-        <Button
+        {/* <Button
           fullWidth
           variant="contained"
           color="primary"
@@ -132,7 +127,7 @@ function ThankYouPage({ userID }) {
           }}
         >
           {tutorialSteps.bookSlot[lang]}
-        </Button>
+        </Button> */}
         <Button
           fullWidth
           variant="outlined"

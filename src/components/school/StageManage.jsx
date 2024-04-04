@@ -9,17 +9,26 @@ const baseUrl = import.meta.env.VITE_API_URL;
 function StageManage() {
   const [schoolStages, setSchoolStages] = useState([]);
   const [transitionStages, setTransitionStage] = useState([]);
-  const [transitionStagesList, setTransitionStageList] = useState([]);
+  // const [transitionStagesList, setTransitionStageList] = useState([]);
+  const [stageName, setStageName] = useState("");
 
-  const stageName = window.location.pathname.split("/")[4].replace("%20", " ");
   const schoolId = window.location.pathname.split("/")[2];
+  const stageId = window.location.pathname.split("/")[4];
 
   const fetchStages = async () => {
     let url = `${baseUrl}stage/${schoolId}`;
     let data = await axios.get(url);
     console.log("data", data.data);
+    const stageList = data.data.filter((item) => {
+      if (item.id == stageId) {
+        setStageName(item.stageName);
+      } else {
+        return item;
+      }
+    });
+    console.log("stageList", stageList);
     setSchoolStages(data.data);
-    setTransitionStage(data.data);
+    setTransitionStage(stageList);
     // setLoading(false);
     // setSchoolStageDialog(false);
   };
@@ -47,8 +56,16 @@ function StageManage() {
     }
   };
 
-  const submitTransitionStage = () => {
+  const submitTransitionStage = async () => {
     // Post the transitionStages for next stage stransition
+    // /stage/{stage_id}/subStage
+    const transitionStagesList = transitionStages.map((item) => item.stageName);
+    const response = await axios.post(`${baseUrl}stage/${stageId}/subStage`, {
+      stage_name: stageName,
+      school_id: schoolId,
+      sub_stages: transitionStagesList,
+    });
+    console.log("response", response);
   };
 
   console.log("transitionStages", transitionStages);
@@ -71,7 +88,8 @@ function StageManage() {
               onClick={() => Transition(item)}
             >
               <Checkbox
-                checked={transitionStages?.includes(item)}
+                checked={item.id == stageId || transitionStages?.includes(item)}
+                disabled={item.id == stageId}
                 // onChange={() => Transition(item)}
               />
               {item.stageName}

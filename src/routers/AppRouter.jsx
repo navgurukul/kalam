@@ -227,7 +227,8 @@ const AppRouter = () => {
 
             <Route
               // path="/school-stages/:stageId"
-              path="/school/:Id/school-stages/:stageName"
+              // path="/school/:Id/school-stages/:stageName"
+              path="/school/:id/manage-transitions/:stageId"
               element={
                 <React.Suspense fallback={<Loader container />}>
                   <RequireAuth privateRoute>

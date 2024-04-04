@@ -93,7 +93,8 @@ const SchoolStages = () => {
           const stageId = rowMeta.rowData[0];
           // const url = `/school-stages/${stageId}`;
           // const url = `/school/${id}/school-stages/${stageId}`;
-          const url = `/school/${id}/school-stages/${value}`;
+          // const url = `/school/${id}/school-stages/${value}`;
+          const url = `/school/${id}/manage-transitions/${stageId}`;
           return (
             <Link to={url} style={{ color: "#f05f40" }}>
               Manage Transitions

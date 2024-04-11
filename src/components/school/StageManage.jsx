@@ -3,10 +3,12 @@ import axios from "axios";
 import Select from "react-select";
 import { Button, Checkbox } from "@mui/material";
 import SelectReact from "../smallComponents/SelectReact";
+import { useSnackbar } from "notistack";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
 function StageManage() {
+  const { enqueueSnackbar } = useSnackbar();
   const [schoolStages, setSchoolStages] = useState([]);
   const [transitionStages, setTransitionStage] = useState([]);
   // const [transitionStagesList, setTransitionStageList] = useState([]);
@@ -19,6 +21,17 @@ function StageManage() {
     let url = `${baseUrl}stage/${schoolId}`;
     let data = await axios.get(url);
     console.log("data", data.data);
+    // const list = data.data.map((item) => ({
+    //   value: item.id,
+    //   label: item.stageName,
+    // }));
+    // const stageList = list.filter((item) => {
+    //   if (item.value == stageId) {
+    //     setStageName(item.label);
+    //   } else {
+    //     return item;
+    //   }
+    // });
     const stageList = data.data.filter((item) => {
       if (item.id == stageId) {
         setStageName(item.stageName);
@@ -28,10 +41,17 @@ function StageManage() {
     });
     console.log("stageList", stageList);
     setSchoolStages(data.data);
+    // const list = stageList.map((item) => ({
+    //   value: item.id,
+    //   label: item.stageName,
+    // }));
+    // console.log("list", list);
     setTransitionStage(stageList);
     // setLoading(false);
     // setSchoolStageDialog(false);
   };
+
+  const selectedStage = { value: "invalid", label: stageName };
 
   useEffect(async () => {
     (async () => {
@@ -59,16 +79,30 @@ function StageManage() {
   const submitTransitionStage = async () => {
     // Post the transitionStages for next stage stransition
     // /stage/{stage_id}/subStage
-    const transitionStagesList = transitionStages.map((item) => item.stageName);
-    const response = await axios.post(`${baseUrl}stage/${stageId}/subStage`, {
-      stage_name: stageName,
-      school_id: schoolId,
-      sub_stages: transitionStagesList,
-    });
-    console.log("response", response);
+    try {
+      const transitionStagesList = transitionStages.map(
+        (item) => item.stageName
+      );
+      const response = await axios.post(`${baseUrl}stage/${stageId}/subStage`, {
+        stage_name: stageName,
+        school_id: schoolId,
+        sub_stages: transitionStagesList,
+      });
+      enqueueSnackbar(`Added sub stages for Transition Successfully`, {
+        variant: "success",
+      });
+      console.log("response", response);
+    } catch (e) {
+      console.error(e);
+      enqueueSnackbar("Error in adding sub stages for Transition", {
+        variant: "error",
+      });
+    }
   };
 
   console.log("transitionStages", transitionStages);
+  console.log("stageName", stageName);
+  console.log("selectedStage", selectedStage);
 
   return (
     <div style={{ margin: "0 7% 0 7%" }}>
@@ -104,29 +138,17 @@ function StageManage() {
           </Button>
         </div>
         <div style={{ width: "21%" }}>
-          {/* <Select
-            // className="filterSelectGlobal"
-            // id="schoolSelect"
-            value={stageName}
-            //   onChange={changeSchool}
-            options={transitionStages.map((item) => ({
-              value: item.id,
-              label: item.stageName,
-            }))}
-            // placeholder="Get Student Details By School"
-            isClearable={false}
-            menuPortalTarget={document.body}
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-            // components={animatedComponents}
-            closeMenuOnSelect
-          /> */}
+          <p style={{ fontSize: "21px", fontWeight: "bold" }}>Preview</p>
           <SelectReact
             value={stageName}
+            // value={selectedStage}
             options={transitionStages.map((item) => ({
               value: item.id,
               label: item.stageName,
             }))}
+            // options={transitionStages}
           />
+          {/* <Select value={selectedStage} options={transitionStages} /> */}
         </div>
       </div>
     </div>

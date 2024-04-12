@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import {
   TextField,
@@ -16,10 +15,13 @@ import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useSnackbar } from "notistack";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { useLocation } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
 import { INPUT_PATTERNS } from "../../../../utils/constants";
+
+const enableBoysAdmission = import.meta.env.VITE_API_ENABLE_BOYS_ADMISSION;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -179,6 +181,8 @@ const BasicDetails = ({
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const location = useLocation();
+  const { state } = location;
   const uploadProfilePhoto = (e) => {
     const file = e.target.files[0];
     //check if file size is greater than 1mb
@@ -189,6 +193,7 @@ const BasicDetails = ({
     setProfileImage(file);
   };
 
+  const slug = state?.slug;
   const date = new Date();
   const currentDate = date.getDate();
   const month = date.getMonth();
@@ -610,10 +615,26 @@ const BasicDetails = ({
               validate: (gender) => {
                 if (gender === "select gender") return false;
                 if (gender === "male") {
-                  enqueueSnackbar("Currently, Males admission is full.", {
-                    variant: "info",
-                  });
-                  return false;
+                  if (enableBoysAdmission === "true") {
+                    return true;
+                  } else {
+                    if (slug === "dantewada") {
+                      return true;
+                    } else {
+                      enqueueSnackbar("Currently, Males admission is full.", {
+                        variant: "info",
+                      });
+                      return false;
+                    }
+                  }
+                  // if (slug === "dantewada") {
+                  //   return true;
+                  // } else {
+                  //   enqueueSnackbar("Currently, Males admission is full.", {
+                  //     variant: "info",
+                  //   });
+                  //   return false;
+                  // }
                 }
                 if (
                   gender === "female" ||

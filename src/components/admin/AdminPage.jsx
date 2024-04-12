@@ -59,7 +59,6 @@ export const setupUser = (user) => {
     roles,
     privileges,
   };
-  // console.log(currentUserData);
   return currentUserData;
 };
 
@@ -115,7 +114,6 @@ const AdminPage = () => {
     switch (role.toLowerCase()) {
       case "campus":
         matchedItem = campus.find((campusItem) => campusItem.id === accessId);
-        // console.log(matchedItem);
         return matchedItem;
 
       case "partner":

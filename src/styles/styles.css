@@ -373,11 +373,23 @@ body {
       width: 19em;
     }
   }
+  
+.FirstNameLast {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 5px;
+  grid-row-gap: 0px;
+}
 
-  .FirstNameLast {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 1fr;
-    grid-column-gap: 5px;
-    grid-row-gap: 0px;
-  }
+.modified-select-ui button.MuiButton-root:nth-child(2) {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.modified-select-ui button.MuiButton-root:nth-child(1) {
+  display: none;
+}
+
+.modified-select-ui button.MuiButton-root:focus {
+  outline: none;
+}

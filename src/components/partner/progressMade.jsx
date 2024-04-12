@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 const ProgressMadeForPartner = () => {
   const { partnerId } = useParams();
   const classes = useStyles();
-  const [dataView, setDataView] = React.useState(2);
+  const [dataView, setDataView] = React.useState(3);
   const [partnerName, setPartnerName] = React.useState("");
   const [cardData, setCardData] = React.useState({});
 
@@ -101,22 +101,22 @@ const ProgressMadeForPartner = () => {
       .then((res) => whatsAppMessage(res.data.data));
   }, []);
 
-  const progressMade = () => setDataView(1);
+  const progressMade = () => setDataView(2);
 
-  const tabularData = () => setDataView(0);
+  const studentData = () => setDataView(1);
 
-  const graphData = () => setDataView(2);
+  const graphData = () => setDataView(3);
 
   const getView = (viewNo) => {
     switch (viewNo) {
-      case 0:
+      case 1:
         return (
           <DashboardPage
             displayData={StudentService.columns.partnerData}
             url={`${isPartnerGroup}/${partnerId}/students`}
           />
         );
-      case 1:
+      case 2:
         return (
           <Grid
             maxWidth="xl"
@@ -141,7 +141,7 @@ const ProgressMadeForPartner = () => {
             )}
           </Grid>
         );
-      case 2:
+      case 3:
         return (
           <GraphPage
             url={`${isPartnerGroup}/graph/progress_made/${partnerId}`}
@@ -163,18 +163,20 @@ const ProgressMadeForPartner = () => {
         <Grid item xs={12} style={{ marginBottom: 12 }}>
           <Typography variant="h4"> Hello {partnerName}</Typography>
         </Grid>
-        <SelectUiByButtons
-          progressMade={{ label: "Progress Made", action: progressMade }}
-          tabularData={{ label: "Tabular Data", action: tabularData }}
-          showGraphData={{ label: "Graph Data", action: graphData }}
-          selected={
-            dataView === 0
-              ? "tabularData"
-              : dataView === 1
-              ? "progressMade"
-              : "showGraphData"
-          }
-        />
+        <div className="modified-select-ui">
+          <SelectUiByButtons
+            progressMade={{ label: "Progress Made", action: progressMade }}
+            studentData={{ label: "Student Data", action: studentData }}
+            showGraphData={{ label: "Graph Data", action: graphData }}
+            selected={
+              dataView === 1
+                ? "studentData"
+                : dataView === 2
+                ? "progressMade"
+                : "showGraphData"
+            }
+          />
+        </div>
         {/* <Grid item xs={12}>
           <ButtonGroup
             size="large"

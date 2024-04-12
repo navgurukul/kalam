@@ -10,7 +10,7 @@ const commonConfig = {
   },
   plugins: [react()],
   build: {
-    chunkSizeWarningLimit: 650,
+    chunkSizeWarningLimit: 100000000,
     rollupOptions: {
       output: {
         manualChunks: (id) => {
@@ -63,7 +63,6 @@ const commonConfig = {
 };
 
 export default defineConfig(({ mode }) => {
-  // console.log(command, mode);
   if (mode === "development") {
     return {
       ...commonConfig,

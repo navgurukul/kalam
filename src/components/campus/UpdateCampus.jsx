@@ -7,8 +7,15 @@ import { useSnackbar } from "notistack";
 const baseURL = import.meta.env.VITE_API_URL;
 const animatedComponents = makeAnimated();
 
-const UpdateCampus = ({ change, studentId, allOptions, value }) => {
+const UpdateCampus = ({ change, studentId, value, allOptions }) => {
   const { enqueueSnackbar } = useSnackbar();
+
+  const campus =
+    typeof value === "string"
+      ? value
+      : value.length > 0
+      ? value[0]?.campus
+      : "No Campus Assigned";
 
   const handleChange = (event) => {
     axios
@@ -27,7 +34,7 @@ const UpdateCampus = ({ change, studentId, allOptions, value }) => {
       );
   };
 
-  const selectedValue = { value, label: value };
+  const selectedValue = { value: campus, label: campus };
 
   return (
     <Select
@@ -35,8 +42,8 @@ const UpdateCampus = ({ change, studentId, allOptions, value }) => {
       value={selectedValue}
       onChange={handleChange}
       options={[...allOptions, { name: "No Campus Assigned" }].map((x) => ({
-        value: x.name,
-        label: x.name,
+        value: x.campus,
+        label: x.campus,
       }))}
       isClearable={false}
       components={animatedComponents}

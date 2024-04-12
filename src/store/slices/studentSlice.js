@@ -2,6 +2,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 // eslint-disable-next-line import/no-cycle
+import dayjs from "dayjs";
 import { dataSetup } from "../../utils";
 import { changeFetching } from "./uiSlice";
 import { qualificationKeys } from "../../utils/constants";
@@ -13,11 +14,33 @@ export const fetchStudents = createAsyncThunk(
   async ({ fetchPendingInterviewDetails, dataType }, thunkAPI) => {
     const globalState = thunkAPI.getState();
     const { loggedInUser } = globalState.auth;
-    const { stage, filterColumns, page, numberOfRows, fromDate, toDate } =
-      globalState.students;
+    const {
+      stage,
+      filterColumns,
+      page,
+      numberOfRows,
+      fromDate,
+      toDate,
+      school,
+    } = globalState.students;
     // const { numberOfRows } = state;
+    const from = dayjs(fromDate).isValid(fromDate) ? fromDate : undefined;
+    const to = dayjs(toDate).isValid(toDate) ? toDate : undefined;
+
+    let finalDates = {};
+    if (from && to) {
+      finalDates = { from, to };
+    }
 
     const concatinateStage = stage.length === 0 ? null : stage.join(",");
+
+    const querySchool =
+      typeof school === "string"
+        ? filterColumns.length > 0
+          ? filterColumns[0].value
+          : null
+        : school;
+
     try {
       thunkAPI.dispatch(changeFetching(true)); // startFetching
       let response;
@@ -28,14 +51,20 @@ export const fetchStudents = createAsyncThunk(
           },
         });
       } else {
-        const url = await filterColumns.reduce((cUrl, filterColumn, index) => {
-          if (index > 0) {
-            return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
-          }
-          return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
-        }, `${baseUrl}students?`);
-        response =
+        const url =
           filterColumns && filterColumns.length > 0
+            ? await filterColumns.reduce((cUrl, filterColumn, index) => {
+                if (index > 0) {
+                  return `${cUrl}&${filterColumn.key}=${filterColumn.value}`;
+                }
+                return `${cUrl}${filterColumn.key}=${filterColumn.value}`;
+              }, `${baseUrl}students?`)
+            : null;
+
+        response =
+          filterColumns &&
+          filterColumns.length > 0 &&
+          filterColumns[0].key !== "school"
             ? await axios.get(`${url}&limit=${numberOfRows}&page=${page}`, {
                 params: {
                   dataType,
@@ -52,6 +81,7 @@ export const fetchStudents = createAsyncThunk(
                     stage: concatinateStage,
                     from: fromDate,
                     to: toDate,
+                    school: querySchool,
                   },
                 }
               );
@@ -59,10 +89,17 @@ export const fetchStudents = createAsyncThunk(
         // eslint-disable-next-line no-use-before-define
         thunkAPI.dispatch(setUrl(url));
       }
+
+      let results =
+        (filterColumns.length > 0 && filterColumns[0].key === "school") ||
+        typeof school !== "string"
+          ? response.data.data
+          : response.data.data.results;
+
       const studentData =
         // response.data &&
         // response.data.data &&
-        response.data.data.results.map((student) => {
+        results.map((student) => {
           const contacts = student.contacts[student.contacts.length - 1];
           return {
             ...student,
@@ -97,6 +134,7 @@ const StudentSlice = createSlice({
     numberOfRows: 10,
     page: 0,
     stage: [],
+    school: "",
     selectedStudent: { studentId: null, transitions: [] },
   },
   reducers: {
@@ -127,14 +165,17 @@ const StudentSlice = createSlice({
     setStage: (state, action) => {
       state.stage = action.payload;
     },
+    setSchool: (state, action) => {
+      state.school = action.payload;
+    },
     setSelectedStudent: (state, action) => {
       state.selectedStudent = action.payload;
     },
   },
   extraReducers: {
     [fetchStudents.fulfilled]: (state, action) => {
-      state.studentData = action.payload.data;
-      state.totalData = action.payload.totalData;
+      state.studentData = action.payload?.data;
+      state.totalData = action.payload?.totalData;
     },
   },
 });
@@ -147,6 +188,7 @@ export const {
   setNoOfRows,
   setPageNo,
   setStage,
+  setSchool,
   setUrl,
   setSelectedStudent,
 } = StudentSlice.actions; // actions auto generated from above reducers

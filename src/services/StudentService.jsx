@@ -27,6 +27,7 @@ import SelectReact from "../components/smallComponents/SelectReact";
 
 import SurveyForm from "../components/smallComponents/SurveyForm";
 import UpdatePartner from "../components/partner/UpdatePartner";
+import UpdateSchool from "../components/student/UpdateSchool";
 import DeadLineDateUpdate from "../components/smallComponents/DeadlineDateUpdate";
 import EndDateUpdate from "../components/smallComponents/EndDateUpdate";
 import {
@@ -47,6 +48,9 @@ import { getColumnIndex } from "../utils";
 import axios from "axios";
 import StageMarks from "../components/smallComponents/StageMarks";
 import TestAttemptModel from "../components/smallComponents/TestAttemptModel";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import NotifyStudents from "../components/notifyStudents/NotifyStudents";
+import NotificationHistory from "../components/notifyStudents/NotificationHistory";
 
 dayjs.extend(customParseFormat);
 
@@ -146,13 +150,12 @@ const StageColumnTransitionWrapper = ({ value, rowMeta }) => {
   const { privileges } = useSelector((state) => state.auth);
   const path = window.location.pathname.split("/");
   const isCampus = path[1] === "campus";
-
   return (
     <>
       {privileges.some((priv) => priv.privilege === "DeleteTransition") ? (
-        <DeleteRow transitionId={rowMeta.rowData[isCampus ? 11 : 9]} />
+        <DeleteRow transitionId={rowMeta.rowData[isCampus ? 14 : 12]} />
       ) : null}
-      {allStages[value]}
+      {allStages[value] || value}
     </>
   );
 };
@@ -166,6 +169,17 @@ const stageColumnTransition = {
     customBodyRender: (value, rowMeta) => (
       <StageColumnTransitionWrapper value={value} rowMeta={rowMeta} />
     ),
+  },
+};
+
+const schoolTransition = {
+  name: "school",
+  label: "Stage of School",
+  options: {
+    filter: true,
+    sort: true,
+    // customBodyRender: (value, rowMeta) => (
+    // ),
   },
 };
 
@@ -208,9 +222,22 @@ const addedAtColumn = {
 };
 
 const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
+  const feedback = value?.split("@");
+  feedback?.shift();
+
   const { privileges } = useSelector((state) => state.auth);
-  const ifExistingFeedback =
-    value || feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
+  ) {
+    ifExistingFeedback = true;
+  }
+
   return ifExistingFeedback ? (
     <div>
       {privileges.some((priv) => priv.privilege === "UpdateTransition") ? (
@@ -220,9 +247,21 @@ const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
           change={(event) => updateValue(event)}
         />
       ) : null}
-      {value
-        ?.split("\n\n")
-        .map((item) => <p key={item + Math.random()}> {item} </p>) || null}
+      {feedback?.map((item, idx) => (
+        <div
+          key={idx}
+          style={{
+            background: idx % 2 == 0 ? "#D1EAF9" : "#FFEDD8",
+            padding: "1px 10px",
+            margin: "8px 0",
+            borderRadius: "8px",
+          }}
+        >
+          {item.split("\n").map((i, index) => (
+            <p key={item + Math.random()}> {index === 0 ? `@${i}` : i} </p>
+          ))}
+        </div>
+      )) || null}
     </div>
   ) : null;
 };
@@ -266,10 +305,20 @@ const OwnerColumnTransitionDashboardWrapper = ({
 }) => {
   const { privileges } = useSelector((state) => state.auth);
 
-  //for admissiong dashboard student id is coming at rowMeta.rowData[7]
+  //for admissiong dashboard student id is coming at rowMeta.rowData[8]
 
-  const ifExistingFeedback =
-    feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  // const ifExistingFeedback =
+  //   feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
+  ) {
+    ifExistingFeedback = true;
+  }
   const permissionForOwner = privileges.some(
     (priv) => priv.privilege === "UpdateTransition"
   );
@@ -280,7 +329,7 @@ const OwnerColumnTransitionDashboardWrapper = ({
           currentValue={value}
           rowMetaTable={rowMeta}
           value={value}
-          studentId={rowMeta.rowData[5]}
+          studentId={rowMeta.rowData[8]}
           change={(event) => updateValue(event)}
         />
       ) : null}
@@ -318,12 +367,13 @@ const OwnerColumnTransitionCampusWrapper = ({
   const permissionForOwner = privileges.some(
     (priv) => priv.privilege === "UpdateStudentOwner"
   );
+
   return ifExistingFeedback && permissionForOwner ? (
     <OwnerSelect
       currentValue={rowMeta}
       rowMetaTable={rowMeta}
       value={value}
-      studentId={rowMeta.rowData[7]}
+      studentId={rowMeta.rowData[10]}
       change={(event) => updateValue(event)}
     />
   ) : null;
@@ -347,7 +397,16 @@ const ownerColumnTransitionCampus = {
 };
 
 const StatusColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
-  const feedbackableStage = feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  // const feedbackableStage = feedbackableStages.indexOf(rowMeta.rowData[0]) > -1;
+  let feedbackableStage = false;
+  if (
+    rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+    rowMeta.rowData[0] !== "basicDetailsEntered" &&
+    rowMeta.rowData[0] !== "testFailed" &&
+    rowMeta.rowData[0].toLowerCase() !== "test failed"
+  ) {
+    feedbackableStage = true;
+  }
   if (rowMeta.rowData[0] === "selectedButNotJoined") {
     return null;
   }
@@ -373,6 +432,86 @@ const statusColumnTransition = {
         value={value}
         rowMeta={rowMeta}
         updateValue={updateValue}
+      />
+    ),
+  },
+};
+
+const NotifyStudentColumnTransitionWrapper = ({ value, rowMeta }) => {
+  const { privileges } = useSelector((state) => state.auth);
+  const permissionForOwner = privileges.some(
+    (priv) => priv.privilege === "UpdateTransition"
+  );
+
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
+  ) {
+    ifExistingFeedback = true;
+  }
+  return ifExistingFeedback && permissionForOwner ? (
+    <NotifyStudents
+      studentId={rowMeta.rowData[8]}
+      currectStage={rowMeta.rowData[0]}
+      allStages={allStages}
+      rowMeta={rowMeta}
+    />
+  ) : null;
+};
+
+const notifyStudentColumnTransition = {
+  name: "notification_status",
+  label: "Notify Student",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta) => (
+      <NotifyStudentColumnTransitionWrapper value={rowData} rowMeta={rowMeta} />
+    ),
+  },
+};
+
+const NotificationHistoryColumnTransitionWrapper = ({ value, rowMeta }) => {
+  const { privileges } = useSelector((state) => {
+    return state.auth;
+  });
+  const permissionForOwner = privileges.some(
+    (priv) => priv.privilege === "UpdateTransition"
+  );
+  let ifExistingFeedback = false;
+  if (
+    value ||
+    (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      rowMeta.rowData[0] !== "testFailed" &&
+      rowMeta.rowData[0].toLowerCase() !== "test failed")
+  ) {
+    ifExistingFeedback = true;
+  }
+
+  return ifExistingFeedback && permissionForOwner ? (
+    <NotificationHistory
+      currectStage={rowMeta.rowData[0]}
+      rowMeta={rowMeta}
+      allStages={allStages}
+    />
+  ) : null;
+};
+
+const notificationHistoryColumnTransition = {
+  name: "notification_sent_at",
+  label: "Notification History",
+  options: {
+    filter: false,
+    sort: true,
+    customBodyRender: (rowData, rowMeta) => (
+      <NotificationHistoryColumnTransitionWrapper
+        value={rowData}
+        rowMeta={rowMeta}
       />
     ),
   },
@@ -445,8 +584,18 @@ const deadlineColumnTrnasition1 = {
     sort: true,
     customBodyRender: (rowData, rowMeta) => {
       const feedbackableStage = feedbackableStagesData[rowMeta.rowData[0]];
+      // let feedbackableStage = false;
+      // if (
+      //   value ||
+      //   (rowMeta.rowData[0] !== "enrolmentKeyGenerated" &&
+      //     rowMeta.rowData[0] !== "basicDetailsEntered" &&
+      //     rowMeta.rowData[0] !== "testFailed" &&
+      //     rowMeta.rowData[0].toLowerCase() !== "test failed")
+      // ) {
+      //   feedbackableStage = true;
+      // }
       const ifExistingDeadlineDate =
-        rowData && !rowMeta.rowData[7] && feedbackableStage;
+        rowData && !rowMeta.rowData[8] && feedbackableStage;
       if (ifExistingDeadlineDate) {
         const { deadline } = feedbackableStagesData[rowMeta.rowData[0]];
         const diff = new Date().getTime() - new Date(rowData).getTime();
@@ -567,7 +716,7 @@ const districtColumn = {
   name: "district",
   label: "District",
   options: {
-    filter: true,
+    filter: false,
     sort: true,
     display: false,
   },
@@ -692,12 +841,12 @@ const marksColumn = {
     filter: false,
     sort: true,
     customBodyRender: (value) => {
-      let CheckAttempt = value.id.filter((marks) => {
+      const CheckAttempt = value?.id.filter((marks) => {
         return marks.total_marks;
       });
       return (
         <div style={{ display: "flex", alignItems: "center" }}>
-          {CheckAttempt.length > 0 ? (
+          {CheckAttempt?.length > 0 ? (
             <TestAttemptModel value={CheckAttempt} />
           ) : (
             "N/A"
@@ -767,7 +916,7 @@ const DashboardCampusColumnWrapper = ({ value, rowMeta, updateValue }) => {
 
   return privileges.some((priv) => priv.privilege === "UpdateStudentCampus") ? (
     <UpdateCampus
-      allOptions={campus}
+      allOptions={JSON.parse(localStorage.getItem("campus"))}
       value={value || "No Campus Assigned"}
       studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
@@ -797,9 +946,12 @@ const dashboardCampusColumn = {
         <div>
           <label style={Lables}>Campus</label>
           <SelectReact
-            options={[{ name: "All" }, ...campus].map((x) => ({
-              value: x.name,
-              label: x.name,
+            options={[
+              { campus: "All" },
+              ...JSON.parse(localStorage.getItem("campus")),
+            ].map((item) => ({
+              value: item.campus,
+              label: item.campus,
             }))}
             filterList={filterlist}
             onChange={onChange}
@@ -849,7 +1001,7 @@ const DashboardDonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
   return privileges.some((priv) => priv.privilege === "UpdateStudentDonor") ? (
     <UpdateDonor
-      allOptions={donor}
+      allOptions={JSON.parse(localStorage.getItem("donors"))}
       value={value}
       studentId={rowMeta.rowData[0]}
       change={(event) => updateValue(event)}
@@ -872,9 +1024,12 @@ const dashboardDonorColumn = {
         <div>
           <label style={Lables}>Donor</label>
           <SelectReact
-            options={[{ name: "All" }, ...donor].map((don) => ({
-              value: don.name,
-              label: don.name,
+            options={[
+              { donor: "All" },
+              ...JSON.parse(localStorage.getItem("donors")),
+            ].map((item) => ({
+              value: item.donor,
+              label: item.donor,
             }))}
             filterList={filterlist}
             onChange={onChange}
@@ -895,37 +1050,37 @@ const dashboardDonorColumn = {
   },
 };
 
-const DonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
-  const { privileges } = useSelector((state) => state.auth);
-  return privileges.some((priv) => priv.privilege === "UpdateStudentDonor") ? (
-    <UpdateDonor
-      allOptions={donor}
-      value={value}
-      studentId={rowMeta.rowData[0]}
-      change={(event) => updateValue(event)}
-    />
-  ) : value ? (
-    value.reduce((newValue, item) => `${newValue}   ${item.donor}`, "")
-  ) : null;
-};
+// const DonorColumnWrapper = ({ value, rowMeta, updateValue }) => {
+//   const { privileges } = useSelector((state) => state.auth);
+//   return privileges.some((priv) => priv.privilege === "UpdateStudentDonor") ? (
+//     <UpdateDonor
+//       allOptions={donor}
+//       value={value}
+//       studentId={rowMeta.rowData[0]}
+//       change={(event) => updateValue(event)}
+//     />
+//   ) : value ? (
+//     value.reduce((newValue, item) => `${newValue}   ${item.donor}`, "")
+//   ) : null;
+// };
 
-const donorColumn = {
-  name: "donor",
-  label: "Donor",
-  options: {
-    filter: true,
-    sort: true,
-    display: false,
-    filterOptions: { names: donor.map((donorEl) => donorEl.name) },
-    customBodyRender: (value, rowMeta, updateValue) => (
-      <DonorColumnWrapper
-        value={value}
-        rowMeta={rowMeta}
-        updateValue={updateValue}
-      />
-    ),
-  },
-};
+// const donorColumn = {
+//   name: "donor",
+//   label: "DonorRRRR",
+//   options: {
+//     filter: true,
+//     sort: true,
+//     display: false,
+//     filterOptions: { names: donor.map((donorEl) => donorEl.name) },
+//     customBodyRender: (value, rowMeta, updateValue) => (
+//       <DonorColumnWrapper
+//         value={value}
+//         rowMeta={rowMeta}
+//         updateValue={updateValue}
+//       />
+//     ),
+//   },
+// };
 
 const StageSelectWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
@@ -950,13 +1105,15 @@ const stageColumn = {
     filter: false,
     display: true,
     sort: true,
-    customBodyRender: (value, rowMeta, updateValue) => (
-      <StageSelectWrapper
-        value={value}
-        rowMeta={rowMeta}
-        updateValue={updateValue}
-      />
-    ),
+    customBodyRender: (value, rowMeta, updateValue) => {
+      return (
+        <StageSelectWrapper
+          value={value}
+          rowMeta={rowMeta}
+          updateValue={updateValue}
+        />
+      );
+    },
   },
 };
 
@@ -1046,7 +1203,7 @@ const lastUpdatedColumn = {
 
 const JobKabLagegiColumn = {
   name: "jobKabLagega",
-  label: "Job Kab Lagegi",
+  label: "Job Kab Lagegi..",
   options: {
     filter: false,
     sort: true,
@@ -1545,19 +1702,77 @@ const ColumnTransitionsStatus = {
     ),
   },
 };
+//---------------------------------------------SCHOOL START---------------
 
-const DashboardPartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
+const DashboardSchoolColumnWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
   return privileges.some(
     (priv) => priv.privilege === "UpdateStudentPartner"
   ) ? (
-    <UpdatePartner
+    <UpdateSchool
       studentId={rowMeta.rowData[0]}
       value={value}
+      rowMeta={rowMeta}
       change={(event) => updateValue(event)}
     />
   ) : (
-    <p>{value}</p>
+    <p>{value?.[0]?.name}</p>
+  );
+};
+
+const dashboardSchoolColumn = {
+  label: "School",
+  name: "school",
+  options: {
+    filter: true,
+    sort: true,
+    filterType: "custom",
+    filterOptions: {
+      display: (filterlist, onChange, index, column) => {
+        return (
+          <div>
+            <label style={Lables}>School</label>
+            <SelectReact
+              options={[
+                { name: "All" },
+                ...JSON.parse(localStorage.getItem("schools")),
+              ].map((item) => ({
+                value: item.id,
+                label: item.name,
+              }))}
+              filterList={filterlist}
+              onChange={onChange}
+              index={index}
+              column={column}
+              value={filterlist[index].length === 0 ? "All" : filterlist[index]}
+            />
+          </div>
+        );
+      },
+    },
+    customBodyRender: (value, rowMeta, updateValue) => {
+      return (
+        <DashboardSchoolColumnWrapper
+          value={value}
+          rowMeta={rowMeta}
+          updateValue={updateValue}
+        />
+      );
+    },
+  },
+};
+
+const DashboardPartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
+  const { privileges } = useSelector((state) => state.auth);
+  return (
+    <UpdatePartner
+      rowMeta={rowMeta}
+      allOptions={JSON.parse(localStorage.getItem("partners"))}
+      studentId={rowMeta.rowData[0]}
+      value={value}
+      change={(event) => updateValue(event)}
+      privileges={privileges}
+    />
   );
 };
 
@@ -1574,11 +1789,11 @@ const dashboardPartnerNameColumn = {
           <label style={Lables}>Partner</label>
           <SelectReact
             options={[
-              "All",
+              { name: "All" },
               ...JSON.parse(localStorage.getItem("partners")),
             ].map((partner) => ({
-              value: partner,
-              label: partner,
+              value: partner.name,
+              label: partner.name,
             }))}
             filterList={filterlist}
             onChange={onChange}
@@ -1676,7 +1891,7 @@ const dConvert = (data) => {
 
   x.gender =
     x.gender === 1 ? "Female" : x.gender === 2 ? "Male" : "Transgender";
-  x.stage = allStages[x.stage];
+  // x.stage = allStages[x.stage];
   x.marks = x.enrolmentKey[x.enrolmentKey.length - 1]
     ? parseInt(x.enrolmentKey[x.enrolmentKey.length - 1].total_marks, 10)
     : null;
@@ -1723,6 +1938,7 @@ const StudentService = {
       dashboardOwnerColumnMyreport,
       dashboardStatusColumn,
       deadlineColumn,
+      dashboardSchoolColumn, // added now
       dashboardPartnerNameColumn,
       onlineClassColumn,
       ageColumn,
@@ -1756,20 +1972,23 @@ const StudentService = {
       onlineClassColumn,
       ageColumn,
       campusColumn,
-      donorColumn,
+      // donorColumn,
     ],
     columnTransition: [
       stageColumnTransition,
+      schoolTransition,
       addedAtColumn,
       feedbackColumnTransition,
       ownerColumnTransitionDashboard,
       statusColumnTransition,
+      notifyStudentColumnTransition,
+      notificationHistoryColumnTransition,
       timeColumnTransition,
       loggedInUserColumn2,
       transitionUpdatedByColumn,
       AudioPlayer,
       transitionIdColumn,
-      deadlineColumnTrnasition1,
+      // deadlineColumnTrnasition1,
       finishedColumnTransition,
     ],
     columnStudentStatus: [
@@ -1784,16 +2003,19 @@ const StudentService = {
       linkForEnglishTestColumn,
       // linkForOnlineTestColumn,
       campusColumn,
-      donorColumn,
+      // donorColumn,
     ],
     columnTransition2: [
       stageColumnTransition,
+      schoolTransition,
       addedAtColumnCampus,
       finishedColumnTransitionCampus,
       deadlineColumnTrnasition,
       feedbackColumnTransition,
       ownerColumnTransitionCampus,
       statusColumnTransition,
+      notifyStudentColumnTransition,
+      notificationHistoryColumnTransition,
       timeColumnTransition,
       loggedInUserColumn2,
       transitionUpdatedByColumn,
@@ -1832,6 +2054,7 @@ const StudentService = {
     kitneAurDin,
     kitneDinLagenge,
     QualificationColumn,
+    //schoolColumn,  // added now
     partnerNameColumn,
     campusColumn,
   ],
@@ -1850,7 +2073,7 @@ const StudentService = {
     kitneDinLagenge,
     QualificationColumn,
     partnerNameColumn,
-    donorColumn,
+    // donorColumn,
     OtherActivitiesColumn,
     // EvaluationColumn,
     // redFlagColumn,

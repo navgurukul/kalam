@@ -21,11 +21,13 @@ const useStyles = makeStyles(() => ({
 const SelectUiByButtons = ({
   name,
   progressMade,
-  tabularData,
+  studentData,
+  overview,
   showGraphData,
   selected,
 }) => {
   const classes = useStyles();
+
   return (
     <Container className={classes.container}>
       <Grid item xs={12} className={classes.space}>
@@ -37,23 +39,36 @@ const SelectUiByButtons = ({
           color="primary"
           aria-label="large outlined primary button group"
         >
+          {/* OVERVIEW BUTTON DATA */}
+          {overview && (
+            <Button
+              variant={selected === "overview" ? "contained" : "outlined"}
+              onClick={() => overview.action()}
+            >
+              {overview?.label}
+            </Button>
+          )}
+          {/* ---------------Added div to fix Student Tabula Tab in Partner---------------- */}
+          {/* Somehow the Student Tabula Tab in Partner was not visible when comment or show overview conditionally */}
+          <div></div>
+          {/* ---------------ADDED NOW---------------- */}
           <Button
-            variant={selected === "tabularData" ? "contained" : "outlined"}
-            onClick={() => tabularData.action()}
+            variant={selected === "studentData" ? "contained" : "outlined"}
+            onClick={() => studentData.action()}
           >
-            {tabularData.label}
+            {studentData?.label}
           </Button>
           <Button
             variant={selected === "progressMade" ? "contained" : "outlined"}
             onClick={() => progressMade.action()}
           >
-            {progressMade.label}
+            {progressMade?.label}
           </Button>
           <Button
             variant={selected === "showGraphData" ? "contained" : "outlined"}
             onClick={() => showGraphData.action()}
           >
-            {showGraphData.label}
+            {showGraphData?.label}
           </Button>
         </ButtonGroup>
       </Grid>

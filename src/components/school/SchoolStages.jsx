@@ -88,12 +88,7 @@ const SchoolStages = () => {
         filter: true,
         sort: true,
         customBodyRender: (value, rowMeta) => {
-          console.log("Meta", rowMeta.rowData);
-          console.log("value", value);
           const stageId = rowMeta.rowData[0];
-          // const url = `/school-stages/${stageId}`;
-          // const url = `/school/${id}/school-stages/${stageId}`;
-          // const url = `/school/${id}/school-stages/${value}`;
           const url = `/school/${id}/manage-transitions/${stageId}`;
           return (
             <Link to={url} style={{ color: "#f05f40" }}>

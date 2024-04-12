@@ -440,8 +440,6 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     setSubStage(subStageData);
   }, [subStageList, currentSchool, schoolStages]);
 
-  console.log("selectedValue", selectedValue);
-
   return (
     <div
       style={{

@@ -82,6 +82,24 @@ const SchoolStages = () => {
     },
 
     {
+      name: "stageName",
+      label: "Manage Transitions",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value, rowMeta) => {
+          const stageId = rowMeta.rowData[0];
+          const url = `/school/${id}/manage-transitions/${stageId}`;
+          return (
+            <Link to={url} style={{ color: "#f05f40" }}>
+              Manage Transitions
+            </Link>
+          );
+        },
+      },
+    },
+
+    {
       name: "id",
       label: "Delete",
       options: {

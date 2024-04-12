@@ -73,6 +73,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const [firstStages, setFirstStages] = React.useState();
   const [allSchools, setAllSchools] = React.useState();
   const [schoolUpdated, setSchoolUpdated] = React.useState(false);
+  const [subStageList, setSubStageList] = React.useState([]);
+  const [subStage, setSubStage] = React.useState([]);
 
   useEffect(() => {
     // In the beginning we will make an API call to get all the schools and store it in allSchools and
@@ -176,6 +178,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
               });
           }
 
+          setSubStageList(response.data);
           setSchoolStages(data);
         })
         .catch((err) => {
@@ -421,6 +424,22 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
     }
   }
 
+  useEffect(() => {
+    const selectedStage = schoolStages.some((obj) => {
+      return obj.label == selectedValue.label;
+    });
+    const data = subStageList.filter((element) =>
+      selectedStage
+        ? selectedValue.label == element.stageName
+        : firstStages.label == element.stageName
+    );
+    const subStageData = data[0]?.sub_stages.map((element) => {
+      const obj = { value: null, label: element.sub_stages };
+      return obj;
+    });
+    setSubStage(subStageData);
+  }, [subStageList, currentSchool, schoolStages]);
+
   return (
     <div
       style={{
@@ -476,14 +495,14 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
                 : firstStages
               : // For other schools we will show the selectedValue if the selectedValue is present in the current school stages whichi is schoolStages
               // else we will show the firstStages
-              schoolStages.find((item) => {
+              schoolStages?.find((item) => {
                   return item.label === selectedValue.label;
                 })
               ? selectedValue
               : firstStages
           }
           onChange={handleChange}
-          options={isProgrammingSchool ? allStagesOptions : schoolStages}
+          options={isProgrammingSchool ? allStagesOptions : subStage}
           isClearable={false}
           components={animatedComponents}
           closeMenuOnSelect

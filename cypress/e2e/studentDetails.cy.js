@@ -70,17 +70,21 @@ describe("Section 3: Basic Details", () => {
         const month = (futureMonth + 1).toString().padStart(2, "0");
         // Invalid age lower than 17 (16)       
         cy.get("@dobDatePicker").click().type(`${date}/${month}/${(futureYear - 17)}`);
-        cy.get("@nextButton").click();
+        cy.get("@dobDatePicker").blur();
+        // cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("have.class", "Mui-error");
+        cy.get('.error-message').should('be.visible')
 
         // valid age between 17-28 years (21)
         cy.get("@dobDatePicker").click().type(`${date}/${month}/${(futureYear - 22)}`);
-        cy.get("@nextButton").click();
+        cy.get("@dobDatePicker").blur();
+        // cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("not.have.class", "Mui-error");
 
         // Invalid age higher than 28 years (29)
         cy.get("@dobDatePicker").click().clear().type(`${date}/${month}/${(futureYear - 30)}`);
-        cy.get("@nextButton").click();
+        cy.get("@dobDatePicker").blur();
+        // cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("have.class", "Mui-error");
       });
     });

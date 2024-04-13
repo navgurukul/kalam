@@ -70,20 +70,24 @@ describe("Section 3: Basic Details", () => {
         const month = (futureMonth + 1).toString().padStart(2, "0");
         // Invalid age lower than 17 (16)       
         cy.get("@dobDatePicker").click().type(`${date}/${month}/${(futureYear - 17)}`);
-        cy.get("@dobDatePicker").blur();
-        // cy.get("@nextButton").click();
+        // cy.get("@dobDatePicker").blur();
+        cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("have.class", "Mui-error");
         cy.get('.error-message').should('be.visible')
 
         // valid age between 17-28 years (21)
+        // Use wait hack until errors are shown in real-time before clicking next for first time:
+        //  This is to correct the first input with the error being focused after date picker is
+        //  clicked so without the wait, the date was being typed in the first name input.
+        cy.wait(100);
         cy.get("@dobDatePicker").click().type(`${date}/${month}/${(futureYear - 22)}`);
-        cy.get("@dobDatePicker").blur();
+        // cy.get("@dobDatePicker").blur();
         // cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("not.have.class", "Mui-error");
 
         // Invalid age higher than 28 years (29)
         cy.get("@dobDatePicker").click().clear().type(`${date}/${month}/${(futureYear - 30)}`);
-        cy.get("@dobDatePicker").blur();
+        // cy.get("@dobDatePicker").blur();
         // cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("have.class", "Mui-error");
       });

@@ -62,18 +62,24 @@ describe("Section 3: Basic Details", () => {
     });
     describe("Verify the datepicker", () => {
       it("Should verify the user age is between 17 & 28 years", () => {
-        // Invalid age lower than 17
-        cy.get("@dobDatePicker").click().type("13/10/2006");
+        const now = new Date();
+        const future = new Date(new Date(now).setDate(now.getDate()+Math.floor(183*Math.random() + 1)));
+        const [futureDate, futureMonth, futureYear] = 
+          [future.getDate(), future.getMonth(), future.getFullYear()];
+        const date = futureDate.toString().padStart(2, "0");
+        const month = (futureMonth + 1).toString().padStart(2, "0");
+        // Invalid age lower than 17 (16)       
+        cy.get("@dobDatePicker").click().type(`${date}/${month}/${(futureYear - 17)}`);
         cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("have.class", "Mui-error");
 
-        // valid age between 17-28 years
-        cy.get("@dobDatePicker").click().clear().type("13/10/2005");
+        // valid age between 17-28 years (21)
+        cy.get("@dobDatePicker").click().type(`${date}/${month}/${(futureYear - 22)}`);
         cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("not.have.class", "Mui-error");
 
-        // Invalid age higher than 28 years
-        cy.get("@dobDatePicker").click().clear().type("13/10/1993");
+        // Invalid age higher than 28 years (29)
+        cy.get("@dobDatePicker").click().clear().type(`${date}/${month}/${(futureYear - 30)}`);
         cy.get("@nextButton").click();
         cy.get("@dobFeedback").should("have.class", "Mui-error");
       });

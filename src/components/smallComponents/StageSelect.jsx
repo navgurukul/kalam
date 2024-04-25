@@ -73,6 +73,8 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
   const [firstStages, setFirstStages] = React.useState();
   const [allSchools, setAllSchools] = React.useState();
   const [schoolUpdated, setSchoolUpdated] = React.useState(false);
+  const [subStageList, setSubStageList] = React.useState([]);
+  const [subStage, setSubStage] = React.useState([]);
 
   useEffect(() => {
     // In the beginning we will make an API call to get all the schools and store it in allSchools and
@@ -110,6 +112,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       });
   }, [stage]);
 
+  const path = window.location.pathname.split("/")[1];
   const currentSchool = rowMetatable.rowData[25];
   const schoolId = getSchoolId(currentSchool, allSchools);
   const isProgrammingSchool = schoolId === 1;
@@ -145,7 +148,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       axios
         .get(`${baseUrl}stage/${schoolId}`)
         .then((response) => {
-          const data = response.data.map((element) => {
+          const data = response.data?.map((element) => {
             const obj = { value: element.id, label: element.stageName };
             return obj;
           });
@@ -176,6 +179,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
               });
           }
 
+          setSubStageList(response.data);
           setSchoolStages(data);
         })
         .catch((err) => {
@@ -373,7 +377,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           // isCampus ? stage?.stage || "enrolmentKeyGenerated" : stage
         )
       ] || []
-    ).map((x) => ({
+    )?.map((x) => ({
       value: x,
       label: allStages[x],
     }));
@@ -402,6 +406,14 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         label: studentData?.stage === "" ? "Invalid Stage" : studentData?.stage,
       };
     }
+
+    if (path === "partner") {
+      const stageKey = getKeyByValue(allStages, stage);
+      selectedValue = {
+        value: stageKey,
+        label: stage,
+      };
+    }
   } else {
     // If stage is not present in database then for programming school we will show the stage name
     // from allStages and studentData, and for other schools from studentData
@@ -420,6 +432,22 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       };
     }
   }
+
+  useEffect(() => {
+    const selectedStage = schoolStages.some((obj) => {
+      return obj.label == selectedValue.label;
+    });
+    const data = subStageList.filter((element) =>
+      selectedStage
+        ? selectedValue.label == element.stageName
+        : firstStages.label == element.stageName
+    );
+    const subStageData = data[0]?.sub_stages?.map((element) => {
+      const obj = { value: null, label: element.sub_stages };
+      return obj;
+    });
+    setSubStage(subStageData);
+  }, [subStageList, currentSchool, schoolStages]);
 
   return (
     <div
@@ -469,21 +497,23 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
               : isProgrammingSchool
               ? // For programming school we will show the selectedValue if the selectedValue is present in allStages
                 // else we will show the firstStages
-                Object.keys(allStages).find(
-                  (item) => item === selectedValue.value
-                )
+                path === "partner" || path === "donor" || path === "campus"
+                ? selectedValue
+                : Object.keys(allStages).find(
+                    (item) => item == selectedValue.value
+                  )
                 ? selectedValue
                 : firstStages
               : // For other schools we will show the selectedValue if the selectedValue is present in the current school stages whichi is schoolStages
               // else we will show the firstStages
-              schoolStages.find((item) => {
-                  return item.label === selectedValue.label;
-                })
+              path === "partner" || path === "donor" || path === "campus"
+              ? selectedValue
+              : schoolStages?.find((item) => item.label === selectedValue.label)
               ? selectedValue
               : firstStages
           }
           onChange={handleChange}
-          options={isProgrammingSchool ? allStagesOptions : schoolStages}
+          options={isProgrammingSchool ? allStagesOptions : subStage}
           isClearable={false}
           components={animatedComponents}
           closeMenuOnSelect

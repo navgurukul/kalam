@@ -112,6 +112,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       });
   }, [stage]);
 
+  const path = window.location.pathname.split("/")[1];
   const currentSchool = rowMetatable.rowData[25];
   const schoolId = getSchoolId(currentSchool, allSchools);
   const isProgrammingSchool = schoolId === 1;
@@ -147,7 +148,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       axios
         .get(`${baseUrl}stage/${schoolId}`)
         .then((response) => {
-          const data = response.data.map((element) => {
+          const data = response.data?.map((element) => {
             const obj = { value: element.id, label: element.stageName };
             return obj;
           });
@@ -376,7 +377,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
           // isCampus ? stage?.stage || "enrolmentKeyGenerated" : stage
         )
       ] || []
-    ).map((x) => ({
+    )?.map((x) => ({
       value: x,
       label: allStages[x],
     }));
@@ -403,6 +404,14 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
       selectedValue = {
         value: null,
         label: studentData?.stage === "" ? "Invalid Stage" : studentData?.stage,
+      };
+    }
+
+    if (path === "partner") {
+      const stageKey = getKeyByValue(allStages, stage);
+      selectedValue = {
+        value: stageKey,
+        label: stage,
       };
     }
   } else {
@@ -433,7 +442,7 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
         ? selectedValue.label == element.stageName
         : firstStages.label == element.stageName
     );
-    const subStageData = data[0]?.sub_stages.map((element) => {
+    const subStageData = data[0]?.sub_stages?.map((element) => {
       const obj = { value: null, label: element.sub_stages };
       return obj;
     });
@@ -488,16 +497,18 @@ const StageSelect = ({ allStages, stage, rowMetatable, change, isCampus }) => {
               : isProgrammingSchool
               ? // For programming school we will show the selectedValue if the selectedValue is present in allStages
                 // else we will show the firstStages
-                Object.keys(allStages).find(
-                  (item) => item === selectedValue.value
-                )
+                path === "partner" || path === "donor" || path === "campus"
+                ? selectedValue
+                : Object.keys(allStages).find(
+                    (item) => item == selectedValue.value
+                  )
                 ? selectedValue
                 : firstStages
               : // For other schools we will show the selectedValue if the selectedValue is present in the current school stages whichi is schoolStages
               // else we will show the firstStages
-              schoolStages?.find((item) => {
-                  return item.label === selectedValue.label;
-                })
+              path === "partner" || path === "donor" || path === "campus"
+              ? selectedValue
+              : schoolStages?.find((item) => item.label === selectedValue.label)
               ? selectedValue
               : firstStages
           }

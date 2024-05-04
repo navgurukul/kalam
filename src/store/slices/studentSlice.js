@@ -69,7 +69,8 @@ export const fetchStudents = createAsyncThunk(
                 params: {
                   dataType,
                   stage: stage.length === 0 ? null : stage.join(","),
-                  ...finalDates,
+                  from: fromDate,
+                  to: toDate,
                 },
               })
             : await axios.get(

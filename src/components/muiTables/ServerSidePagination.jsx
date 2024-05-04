@@ -93,9 +93,9 @@ const ServerSidePagination = ({
         value === "All"
           ? [...newData]
           : [
-              ...newData,
-              { key: keys[query], value: encodeURIComponent(value) },
-            ],
+            ...newData,
+            { key: keys[query], value: encodeURIComponent(value) },
+          ],
     };
     const { filterColumns: newColumns } = newState;
     const newUrl = await filterColumns.reduce((cUrl, filterColumn, index) => {
@@ -145,23 +145,20 @@ const ServerSidePagination = ({
         let body = "";
         columns.forEach((col, colInx) => {
           if (col.name === "donor") {
-            body += `"${
-              nStudent.donor !== null && nStudent.donor !== undefined
+            body += `"${nStudent.donor !== null && nStudent.donor !== undefined
                 ? nStudent.donor.map((donor) => donor.donor).join(", ")
                 : ""
-            }",`;
+              }",`;
           } else if (colInx === columns.length - 1)
-            body += `"${
-              !nStudent[col.name] || nStudent[col.name] === undefined
+            body += `"${!nStudent[col.name] || nStudent[col.name] === undefined
                 ? " "
                 : nStudent[col.name]
-            }"`;
+              }"`;
           else
-            body += `"${
-              !nStudent[col.name] || nStudent[col.name] === undefined
+            body += `"${!nStudent[col.name] || nStudent[col.name] === undefined
                 ? " "
                 : nStudent[col.name]
-            }",`;
+              }",`;
         });
         return body;
       })
@@ -242,7 +239,7 @@ const ServerSidePagination = ({
           return getfilterApi(columnChanged, filterValue);
         }
 
-        setFilters({ filterColumns: [], url: `${baseURL}students ? ` });
+        setFilters({ filterColumns: [], url: `${baseURL}students?` });
       },
       responsive: "vertical",
       rowsPerPageOptions: [10, 50, 100],

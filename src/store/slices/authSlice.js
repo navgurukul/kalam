@@ -15,11 +15,14 @@ export const loginWithGoogle = createAsyncThunk(
   "auth/login",
   async ({ response }, thunkAPI) => {
     thunkAPI.dispatch(changeFetching(true));
+    console.log("response", response);
     try {
+      console.log("Its on try");
       const rolesData = await axios.get(
         `${baseUrl}rolebaseaccess/mail/${response.profileObj.email}`
       );
       // const rolesData = { data: [] };
+      console.log("rolesData", rolesData);
       const { roles, privileges } =
         rolesData.data.length > 0
           ? setupUser(rolesData.data[0])
@@ -57,6 +60,7 @@ export const loginWithGoogle = createAsyncThunk(
         thunkAPI.dispatch(changeFetching(false));
         return { isAuthenticated: true, user, roles, privileges: newPrivs };
       }
+      console.log("Please use NG Email, or request Special Access");
       thunkAPI.dispatch(
         enqueueSnackbar({
           message: `Please use NG Email, or request Special Access`,
@@ -66,6 +70,7 @@ export const loginWithGoogle = createAsyncThunk(
       thunkAPI.dispatch(changeFetching(false));
       return { isAuthenticated: false };
     } catch (err) {
+      console.log("Its on catch", err);
       thunkAPI.dispatch(
         enqueueSnackbar({
           message: `Error : ${err.message}`,

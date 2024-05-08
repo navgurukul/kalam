@@ -187,6 +187,7 @@ const TestInstructions = () => {
       //     encryptText(JSON.stringify(rest.partner))
       //   );
       navigate("/test/studentdetails", {
+        state: history.state.usr,
         // state: { enrollmentKey, lang, ...rest },
       });
       return;

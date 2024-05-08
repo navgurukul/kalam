@@ -570,13 +570,13 @@ function OtherDetails(props) {
                       Select Option
                     </MenuItem>
                     {partnerSlug &&
-                      customPartner.includes(partnerSlug) ? null : (
+                    customPartner.includes(partnerSlug) ? null : (
                       <MenuItem value="lessThan10th">
                         Less than 10th pass
                       </MenuItem>
                     )}
                     {partnerSlug &&
-                      customPartner.includes(partnerSlug) ? null : (
+                    customPartner.includes(partnerSlug) ? null : (
                       <MenuItem value="class10th">10th pass</MenuItem>
                     )}
                     <MenuItem value="class12th">12th pass</MenuItem>
@@ -640,8 +640,8 @@ function OtherDetails(props) {
             </Grid>
           ) : null}
           {qualification === "class12th" ||
-            qualification === "graduate" ||
-            qualification === "iti" ? (
+          qualification === "graduate" ||
+          qualification === "iti" ? (
             <>
               <Grid item xs={12} sm={6}>
                 <Controller

@@ -18,6 +18,7 @@ import { changeFetching } from "../../store/slices/uiSlice";
 import VideoSlider from "../ui/VideoSlider";
 import theme from "../../theme";
 import { decryptText, encryptText } from "../../utils";
+import Switch from "@mui/material/Switch";
 import {
   setEnrollmentKey,
   setPartner,
@@ -110,6 +111,7 @@ const LandingPage = () => {
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const { lang: selectedLang } = useSelector((state) => state.ui);
+  const [school, setSchool] = React.useState("");
   const [state, setState] = React.useState({
     mobileNumber: "",
     firstName: "",
@@ -260,6 +262,10 @@ const LandingPage = () => {
     });
   };
 
+  const handleBCA = (e) => {
+    setSchool(e.target.checked ? "School of BCA" : "");
+  };
+
   const isDuplicate = () => {
     const { mobileNumber, firstName, middleName, lastName } = state;
     const first_name = firstName
@@ -317,6 +323,7 @@ const LandingPage = () => {
               lastName,
               mobileNumber,
               enrollmentKey: res.data.key,
+              school,
               partner: { slug, partnerId: state.partnerId },
             },
           });
@@ -499,6 +506,10 @@ const LandingPage = () => {
                     }}
                     variant="outlined"
                   />
+                </div>
+                <div>
+                  Applying for school of BCA
+                  <Switch onChange={handleBCA} />
                 </div>
                 <div className={classes.root}>
                   <Button

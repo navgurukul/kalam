@@ -30,12 +30,18 @@ const tutorialSteps = {
     ma: "वर्तमान प्रश्न no. ",
   },
   content2: {
-    old: "(out of 18 questions) Aapne  ",
-    en: "(out of 18 questions) You have attempted ",
-    hi: "(18 प्रश्नों में से) आपने अब तक ",
-    ma: "(18 प्रश्नांपैकी) तुम्ही आतापर्यंत ",
+    old: "(out of ",
+    en: "(out of ",
+    hi: "( ",
+    ma: "( ",
   },
   content3: {
+    old: " questions) Aapne  ",
+    en: " questions) You have attempted ",
+    hi: " प्रश्नों में से) आपने अब तक ",
+    ma: " प्रश्नांपैकी) तुम्ही आतापर्यंत ",
+  },
+  content4: {
     old: "questions already attempt kar liye hai!",
     en: " so far.",
     hi: " प्रश्नों का प्रयास किया है।",
@@ -219,8 +225,10 @@ function Questions() {
               <b>
                 {tutorialSteps.content1[lang]} {index + 1}
               </b>{" "}
-              {tutorialSteps.content2[lang]} <b>{index}</b>{" "}
+              {tutorialSteps.content2[lang]}
+              {questionsList.length}
               {tutorialSteps.content3[lang]}
+              <b>{index}</b> {tutorialSteps.content4[lang]}
             </Typography>
             <Typography variant="subtitle1">
               <Timer
@@ -331,7 +339,7 @@ function Questions() {
                   Previous
                 </Button>
               </Grid>
-              {index === 17 ? (
+              {index === questionsList.length - 1 ? (
                 <Grid item xs={6}>
                   <Button
                     type="submit"

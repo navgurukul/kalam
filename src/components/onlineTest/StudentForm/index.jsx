@@ -363,6 +363,7 @@ const StudentForm = () => {
         })
         .then(() => {
           navigate(`/test/finalinstruction/`, {
+            state: history.state,
             // state: { enrollmentKey, studentId },
           });
         });
@@ -372,6 +373,7 @@ const StudentForm = () => {
         .then((res) => {
           dispatch(setStudentId(res.data.details.id));
           navigate(`/test/finalinstruction/`, {
+            state: history.state,
             // state: {
             //   enrollmentKey,
             //   partnerSlug: partner?.slug,

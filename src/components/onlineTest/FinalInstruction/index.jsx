@@ -104,9 +104,9 @@ function FinalInstruction() {
       );
     axios
       .get(
-        school.length === 0
-          ? `${baseUrl}on_assessment/questions/${enrollmentKey}`
-          : `${baseUrl}on_assessment/questions/${enrollmentKey}?school=${schoolId}`
+        schoolId
+          ? `${baseUrl}on_assessment/questions/${enrollmentKey}?school=${schoolId}`
+          : `${baseUrl}on_assessment/questions/${enrollmentKey}`
       )
       .then((res) => {
         dispatch(setQuestions(res.data.data));

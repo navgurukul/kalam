@@ -374,7 +374,14 @@ const LandingPage = () => {
 
   const handleChange = (selectedOption) => {
     setSelectedOption(selectedOption);
-    setSchoolId(selectedOption.value);
+    if (
+      selectedOption.label.toLowerCase() ===
+      "School Of Programming".toLowerCase()
+    ) {
+      setSchoolId(null);
+    } else {
+      setSchoolId(selectedOption.value);
+    }
   };
 
   const fetchSchool = async () => {

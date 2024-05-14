@@ -18,7 +18,7 @@ import { changeFetching } from "../../store/slices/uiSlice";
 import VideoSlider from "../ui/VideoSlider";
 import theme from "../../theme";
 import { decryptText, encryptText } from "../../utils";
-import Switch from "@mui/material/Switch";
+import Select from "react-select";
 import {
   setEnrollmentKey,
   setPartner,
@@ -111,7 +111,9 @@ const LandingPage = () => {
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const { lang: selectedLang } = useSelector((state) => state.ui);
-  const [school, setSchool] = React.useState("");
+  const [schoolId, setSchoolId] = React.useState("");
+  const [school, setSchool] = React.useState([]);
+  const [selectedOption, setSelectedOption] = React.useState(null);
   const [state, setState] = React.useState({
     mobileNumber: "",
     firstName: "",
@@ -262,10 +264,6 @@ const LandingPage = () => {
     });
   };
 
-  const handleBCA = (e) => {
-    setSchool(e.target.checked ? "School of BCA" : "");
-  };
-
   const isDuplicate = () => {
     const { mobileNumber, firstName, middleName, lastName } = state;
     const first_name = firstName
@@ -323,7 +321,7 @@ const LandingPage = () => {
               lastName,
               mobileNumber,
               enrollmentKey: res.data.key,
-              school,
+              schoolId,
               partner: { slug, partnerId: state.partnerId },
             },
           });
@@ -373,6 +371,31 @@ const LandingPage = () => {
         ``
       </Container>
     );
+
+  const handleChange = (selectedOption) => {
+    setSelectedOption(selectedOption);
+    setSchoolId(selectedOption.value);
+  };
+
+  const fetchSchool = async () => {
+    const dataURL = `${baseUrl}school`;
+    const response = await axios.get(dataURL);
+    console.log(response.data);
+    const schoolList = response.data.filter(
+      (school) =>
+        school.name.toLowerCase() === "School of BCA".toLowerCase() ||
+        school.name.toLowerCase() === "School Of Programming".toLowerCase()
+    );
+    const list = schoolList.map((item) => ({
+      value: item.id,
+      label: item.name,
+    }));
+    setSchool(list);
+  };
+
+  useEffect(() => {
+    fetchSchool();
+  }, []);
 
   const { mobileNumber, firstName, middleName, lastName, mobile } = state;
   return (
@@ -507,9 +530,13 @@ const LandingPage = () => {
                     variant="outlined"
                   />
                 </div>
-                <div>
-                  Applying for school of BCA
-                  <Switch onChange={handleBCA} />
+                <div style={{ marginBottom: 8 }}>
+                  <p>Applying for school of BCA</p>
+                  <Select
+                    value={selectedOption}
+                    onChange={handleChange}
+                    options={school}
+                  />
                 </div>
                 <div className={classes.root}>
                   <Button

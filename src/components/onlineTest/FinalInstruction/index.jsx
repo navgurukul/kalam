@@ -89,7 +89,7 @@ function FinalInstruction() {
   const answerList = [];
   // const correctAnswerObj = {};
 
-  const school = history.state.usr.usr.school;
+  const schoolId = history.state.usr.usr.schoolId;
 
   // localStorage.setItem("correctAnswerObj", JSON.stringify(correctAnswerObj));
 
@@ -106,7 +106,7 @@ function FinalInstruction() {
       .get(
         school.length === 0
           ? `${baseUrl}on_assessment/questions/${enrollmentKey}`
-          : `${baseUrl}on_assessment/questions/${enrollmentKey}?school=${school}`
+          : `${baseUrl}on_assessment/questions/${enrollmentKey}?school=${schoolId}`
       )
       .then((res) => {
         dispatch(setQuestions(res.data.data));

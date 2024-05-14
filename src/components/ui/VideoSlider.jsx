@@ -21,7 +21,7 @@ import playIcon from "../../assets/img/playicon.png";
 
 const settings = {
   dots: false,
-  // arrows: true,
+  arrows: true,
   autoplay: true,
   autoplaySpeed: 3000,
   infinite: true,

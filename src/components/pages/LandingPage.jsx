@@ -18,6 +18,7 @@ import { changeFetching } from "../../store/slices/uiSlice";
 import VideoSlider from "../ui/VideoSlider";
 import theme from "../../theme";
 import { decryptText, encryptText } from "../../utils";
+import Select from "react-select";
 import {
   setEnrollmentKey,
   setPartner,
@@ -110,6 +111,9 @@ const LandingPage = () => {
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const { lang: selectedLang } = useSelector((state) => state.ui);
+  const [schoolId, setSchoolId] = React.useState("");
+  const [school, setSchool] = React.useState([]);
+  const [selectedOption, setSelectedOption] = React.useState(null);
   const [state, setState] = React.useState({
     mobileNumber: "",
     firstName: "",
@@ -141,7 +145,7 @@ const LandingPage = () => {
       ma: "तुम्ही ज्या क्रमांकावरून चाचणी दिली होती ती क्रमांक टाकून तुमचा चाचणी निकाल तपासा",
     },
     AdmisssionTitle: {
-      // en: "Start Admisssion Test",
+      en: "Start Admisssion Test",
       hi: "परीक्षा शुरू करें",
       ma: "प्रवेश परीक्षा सुरू करा",
     },
@@ -317,6 +321,7 @@ const LandingPage = () => {
               lastName,
               mobileNumber,
               enrollmentKey: res.data.key,
+              schoolId,
               partner: { slug, partnerId: state.partnerId },
             },
           });
@@ -327,23 +332,31 @@ const LandingPage = () => {
   const giveTest = async () => {
     const { mobileNumber, firstName, lastName } = state;
     if (!mobileNumber || !firstName || !lastName) {
-      enqueueSnackbar(<strong>{lang.mandatoryField[selectedLang]}</strong>, {
-        variant: "error",
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
-      });
+      enqueueSnackbar(
+        <strong data-cy="error-bar">
+          {lang.mandatoryField[selectedLang]}
+        </strong>,
+        {
+          variant: "error",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+        }
+      );
       return;
     }
     if (mobileNumber.toString().length !== 10) {
-      enqueueSnackbar(<strong>{lang.mobileNumber[selectedLang]}</strong>, {
-        variant: "error",
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
-      });
+      enqueueSnackbar(
+        <strong data-cy="error-bar">{lang.mobileNumber[selectedLang]}</strong>,
+        {
+          variant: "error",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+        }
+      );
       return;
     }
     await isDuplicate();
@@ -358,6 +371,38 @@ const LandingPage = () => {
         ``
       </Container>
     );
+
+  const handleChange = (selectedOption) => {
+    setSelectedOption(selectedOption);
+    if (
+      selectedOption.label.toLowerCase() ===
+      "School Of Programming".toLowerCase()
+    ) {
+      setSchoolId(null);
+    } else {
+      setSchoolId(selectedOption.value);
+    }
+  };
+
+  const fetchSchool = async () => {
+    const dataURL = `${baseUrl}school`;
+    const response = await axios.get(dataURL);
+    console.log(response.data);
+    const schoolList = response.data.filter(
+      (school) =>
+        school.name.toLowerCase() === "School of BCA".toLowerCase() ||
+        school.name.toLowerCase() === "School Of Programming".toLowerCase()
+    );
+    const list = schoolList.map((item) => ({
+      value: item.id,
+      label: item.name,
+    }));
+    setSchool(list);
+  };
+
+  useEffect(() => {
+    fetchSchool();
+  }, []);
 
   const { mobileNumber, firstName, middleName, lastName, mobile } = state;
   return (
@@ -406,7 +451,7 @@ const LandingPage = () => {
               <Paper className={classes.loginContainer}>
                 <Box>
                   <Grid item xs={12}>
-                    <Typography variant="h5" component="h4">
+                    <Typography data-cy="title" variant="h5" component="h4">
                       {lang.AdmisssionTitle[selectedLang]}
                     </Typography>
                   </Grid>
@@ -418,6 +463,7 @@ const LandingPage = () => {
                   }}
                 >
                   <TextField
+                    data-cy="firstName-input"
                     required
                     id="filled-full-width"
                     margin="normal"
@@ -434,6 +480,7 @@ const LandingPage = () => {
                   />
 
                   <TextField
+                    data-cy="middleName-input"
                     id="filled-full-width"
                     margin="normal"
                     style={{ margin: 8 }}
@@ -454,6 +501,7 @@ const LandingPage = () => {
                   }}
                 >
                   <TextField
+                    data-cy="lastName-input"
                     required
                     id="filled-full-width"
                     margin="normal"
@@ -470,6 +518,7 @@ const LandingPage = () => {
                   />
 
                   <TextField
+                    data-cy="mobileNumber-input"
                     required
                     id="filled-full-width"
                     margin="normal"
@@ -488,8 +537,21 @@ const LandingPage = () => {
                     variant="outlined"
                   />
                 </div>
+                <div style={{ marginBottom: 8 }}>
+                  <p>Applying for school of BCA</p>
+                  <Select
+                    value={selectedOption}
+                    onChange={handleChange}
+                    options={school}
+                  />
+                </div>
                 <div className={classes.root}>
-                  <Button variant="outlined" onClick={giveTest} color="primary">
+                  <Button
+                    data-cy="submitButton"
+                    variant="outlined"
+                    onClick={giveTest}
+                    color="primary"
+                  >
                     {lang.TestButton[selectedLang]}
                   </Button>
                 </div>

@@ -38,7 +38,10 @@ const StudentFeedback = (props) => {
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const [feedbackValue, setFeedbackValue] = React.useState("");
+  const [feedbackType, setFeedbackType] = React.useState("");
   const [dialogOpen, setDialogOpen] = React.useState(false);
+
+  const { feedback } = props;
 
   const addFeedbck = async () => {
     try {
@@ -58,13 +61,20 @@ const StudentFeedback = (props) => {
         .post(dataURL, {
           student_stage: rowData[0],
           feedback: feedbackValue,
+          feedback_type: feedbackType,
         })
         .then(() => {
           setDialogOpen(false);
           enqueueSnackbar("Feedback is successfully added!", {
             variant: "success",
           });
-          change(feedbackValue);
+          change(
+            feedback
+              ? feedbackType === "edit"
+                ? feedbackValue
+                : feedbackValue + "\n\n" + feedback
+              : feedbackValue
+          );
         });
 
       fetchingFinish();
@@ -81,11 +91,16 @@ const StudentFeedback = (props) => {
 
   // const validate = () => {};
 
-  const handleChange = (event) => setFeedbackValue(event.target.value);
+  const handleChange = (event) => {
+    setFeedbackValue(event.target.value);
+  };
 
   const handleClose = () => setDialogOpen(false);
 
-  const handleOpen = () => setDialogOpen(true);
+  const handleOpen = (type) => {
+    setFeedbackType(type);
+    setDialogOpen(true);
+  };
 
   const addFeedbackDetails = (feedback) => {
     const time = new Date();
@@ -95,26 +110,41 @@ const StudentFeedback = (props) => {
       loggedInUser?.user_name?.toString().split(" ").join("").toLowerCase() ||
       "guest"
     }`;
-    const feedbackTime = `Feedback date ${time.getDate()}/${month}/${time.getFullYear()}`;
-    return feedback
-      ? `${currentUser}: ${feedbackTime}\n\n${feedback}`
-      : `${currentUser}: ${feedbackTime}\n\n`;
-  };
 
-  const { feedback } = props;
+    const feedbackTime = `Feedback date ${time.getDate()}/${month}/${time.getFullYear()}`;
+    const existingFeedback =
+      feedbackType === "edit"
+        ? feedback + "\n\n"
+        : `${currentUser}: ${feedbackTime}\n\n`;
+    return existingFeedback;
+  };
 
   return (
     <>
-      <Button onClick={handleOpen} style={{ textTransform: "none" }}>
+      <Button
+        onClick={() => handleOpen("add")}
+        style={{ textTransform: "none" }}
+      >
         <EditIcon style={{ width: "10%" }} />
         <Typography style={{ fontWeight: "700", marginLeft: "5px" }}>
-          Add or Edit Feedback
+          Add Feedback
         </Typography>
       </Button>
+      {feedback && (
+        <Button
+          onClick={() => handleOpen("edit")}
+          style={{ textTransform: "none" }}
+        >
+          <EditIcon style={{ width: "10%" }} />
+          <Typography style={{ fontWeight: "700", marginLeft: "5px" }}>
+            Edit Feedback
+          </Typography>
+        </Button>
+      )}
       <Dialog open={dialogOpen} onClose={handleClose}>
         <form className={classes.container}>
           <h1 style={{ color: "#f05f40", textAlign: "center" }}>
-            Add Feedback
+            {feedbackType === "edit" ? "Edit Feedback" : "Add Feedback"}
           </h1>
           <TextField
             id="outlined-multiline-static"

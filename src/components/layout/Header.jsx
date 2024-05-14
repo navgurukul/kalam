@@ -147,6 +147,7 @@ const Header = () => {
             >
               <Link to="/">
                 <Image
+                  data-cy="logo"
                   alt="ngLogo"
                   src={logo}
                   color="inherit"
@@ -168,6 +169,7 @@ const Header = () => {
                 >
                   <InputLabel id="lang-input">Select Language</InputLabel>
                   <Select
+                    data-cy="lang-dropdown"
                     label="Select Language"
                     onChange={onLangChange}
                     value={lang}
@@ -177,9 +179,15 @@ const Header = () => {
                     <MenuItem disabled value="">
                       Select a Language
                     </MenuItem>
-                    <MenuItem value="en">English</MenuItem>
-                    <MenuItem value="hi">Hindi</MenuItem>
-                    <MenuItem value="ma">Marathi</MenuItem>
+                    <MenuItem data-cy="en" value="en">
+                      English
+                    </MenuItem>
+                    <MenuItem data-cy="hi" value="hi">
+                      Hindi
+                    </MenuItem>
+                    <MenuItem data-cy="ma" value="ma">
+                      Marathi
+                    </MenuItem>
                   </Select>
                 </FormControl>
               )}
@@ -256,7 +264,7 @@ const Header = () => {
               ) : (
                 <Link to="/login">
                   <Button color="primary" variant="contained" align="right">
-                   admin Login
+                    admin Login
                   </Button>
                 </Link>
               )}

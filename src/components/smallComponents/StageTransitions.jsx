@@ -244,7 +244,7 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
             e.target.style.color = "black";
           }}
         >
-          {studentName} ikhk,hblikh
+          {studentName}
         </Typography>
       ) : (
         <IconButton color="primary" align="right" onClick={handleOpen}>

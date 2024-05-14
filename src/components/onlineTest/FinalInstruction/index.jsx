@@ -89,6 +89,8 @@ function FinalInstruction() {
   const answerList = [];
   // const correctAnswerObj = {};
 
+  const schoolId = history.state.usr.usr.schoolId;
+
   // localStorage.setItem("correctAnswerObj", JSON.stringify(correctAnswerObj));
 
   const fetchQuestionsAndOptions = () => {
@@ -101,17 +103,15 @@ function FinalInstruction() {
         encryptText(`${new Date().setSeconds(new Date().getSeconds() + 5400)}`)
       );
     axios
-      .get(`${baseUrl}on_assessment/questions/${enrollmentKey}`)
+      .get(
+        schoolId
+          ? `${baseUrl}on_assessment/questions/${enrollmentKey}?school=${schoolId}`
+          : `${baseUrl}on_assessment/questions/${enrollmentKey}`
+      )
       .then((res) => {
-        // localStorage.setItem("questionsList", JSON.stringify(res.data.data));
-        // localStorage.setItem("questionsList", res.data.data);
         dispatch(setQuestions(res.data.data));
         navigate(`/test/${enrollmentKey}/${studentId}`, {
-          // questions: res.data.data,
-          // time: time.current, // 2nd point
-          // time: TIME,   // 1st point and 3rd point
           state: { answerList },
-          // correctAnswerObj: correctAnswerObj,
         });
       })
       .catch(() => {

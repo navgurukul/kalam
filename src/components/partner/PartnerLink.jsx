@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const PartnerLink = ({ text, url }) => (
   <Link
-    target="_blank"
+    // target="_blank"
     style={{ color: "#f05f40" }}
     to={{
       pathname: url,

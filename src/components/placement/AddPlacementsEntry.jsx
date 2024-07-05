@@ -38,6 +38,7 @@ const AddPlacementsEntry = ({
   const { enqueueSnackbar } = useSnackbar();
   const { isFetching } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
+  console.log("testing");
   const fetchingStart = () => dispatch(changeFetching(true));
   const fetchingFinish = () => dispatch(changeFetching(false));
   const {

@@ -1814,6 +1814,7 @@ const dashboardPartnerNameColumn = {
   },
 };
 
+
 const PartnerNameColumnWrapper = ({ value, rowMeta, updateValue }) => {
   const { privileges } = useSelector((state) => state.auth);
   return privileges.some(

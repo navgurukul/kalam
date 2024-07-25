@@ -9,11 +9,6 @@ const commonConfig = {
     esbuildOptions: {},
   },
   plugins: [react()],
-  babel: {
-    plugins: [
-      ['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }],
-    ]
-  },
   build: {
     chunkSizeWarningLimit: 100000000,
     rollupOptions: {

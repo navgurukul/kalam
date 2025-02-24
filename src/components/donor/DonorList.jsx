@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,10 +15,7 @@ const columns = [
     options: {
       filter: true,
       sort: true,
-      customBodyRender: (value, rowMeta) => {
-        const index = rowMeta.rowIndex + 1;
-        return index;
-      },
+      customBodyRender: (value, rowMeta) => rowMeta.rowIndex + 1,
     },
   },
   {
@@ -29,9 +26,8 @@ const columns = [
       sort: true,
       customBodyRender: (value, rowMeta) => {
         const id = rowMeta.rowData[0];
-        const url = `/donor/${id}/students`;
         return (
-          <Link to={url} style={{ color: "#f05f40" }}>
+          <Link to={`/donor/${id}/students`} style={{ color: "#f05f40" }}>
             {value}
           </Link>
         );
@@ -44,49 +40,58 @@ const DonorList = () => {
   const { roles } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const fetchingFinish = () => dispatch(changeFetching(false));
-  const [state, setState] = React.useState({
+  
+  const [state, setState] = useState({
     data: [],
     showLoader: true,
   });
+
   const fetchDonors = async (signal) => {
     try {
+      const response = await axios.get(`${baseUrl}donors`, { signal });
+      console.log("API Response:", response.data);
+
       const role = roles.find((roleItem) => roleItem.role === "Donor");
       const access = role?.access?.map((accessItem) => accessItem.access) || [];
-      const dataURL = `${baseUrl}donors`;
-      const response = await axios.get(dataURL, { signal });
-      const adminRole = roles.findIndex(
-        (roleItem) => roleItem.role === "Admin"
-      );
-      setState({
-        ...state,
-        data:
-          adminRole !== -1
-            ? response.data
-            : response.data.filter((donorItem) =>
-                access.includes(donorItem.id)
-              ),
+      console.log("User Access List:", access);
+      console.log("Roles from Redux:", roles);
+
+      // Fix: Allow access if user has no restrictions
+      const filteredDonors =
+        roles.some((roleItem) => roleItem.role === "Admin") || access.length === 0
+          ? response.data
+          : response.data.filter((donorItem) => access.includes(donorItem.id));
+
+      console.log("Filtered Donors:", filteredDonors);
+
+      setState((prev) => ({
+        ...prev,
+        data: filteredDonors,
         showLoader: false,
-      });
+      }));
     } catch (e) {
-      // console.error(e);
+      if (axios.isCancel(e)) {
+        console.warn("Request canceled:", e.message);
+      } else {
+        console.error("Error fetching donors:", e);
+      }
     }
   };
+
   useEffect(() => {
     const controller = new AbortController();
-    const fetchData = async () => fetchDonors(controller.signal);
-    fetchData();
+    fetchDonors(controller.signal);
     fetchingFinish();
     return () => controller.abort();
   }, []);
 
-  const { data, showLoader } = state;
   return (
     <Container maxWidth="sm">
       <MainLayout
         title="Donors Name"
         columns={columns}
-        data={data}
-        showLoader={showLoader}
+        data={state.data}
+        showLoader={state.showLoader}
       />
     </Container>
   );

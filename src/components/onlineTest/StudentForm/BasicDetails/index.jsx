@@ -97,9 +97,9 @@ const langOptions = {
       hi: "जन्मदिन दर्ज करें",
       ma: "जन्मदिवस टाका",
       validate: {
-        en: "Age must be between 17 & 28",
-        hi: "उम्र 17 से 28 के बीच होनी चाहिए",
-        ma: "वय 17 आणि 28 च्या दरम्यान असावे",
+        en: "Age must be between 17",
+        hi: "उम्र कम से कम 17 वर्ष होनी चाहिए",
+        ma: "वय किमान 17 वर्षे असावे",
       },
     },
   },
@@ -198,7 +198,7 @@ const BasicDetails = ({
   const currentDate = date.getDate();
   const month = date.getMonth();
   const maxDate = date.getFullYear() - 17;
-  const minDate = date.getFullYear() - 28;
+  const minDate = date.getFullYear() - 100;
 
   return (
     <Container maxWidth="lg" align="center">
@@ -430,8 +430,9 @@ const BasicDetails = ({
             rules={{
               required: true,
               validate: (dob) =>
-                parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 17 &&
-                parseInt(dayjs().diff(dayjs(dob), "year"), 10) <= 28,
+                parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 17 
+              // &&
+              //   parseInt(dayjs().diff(dayjs(dob), "year"), 10) <= 28,
             }}
             render={({
               field: { ref, ...rest },
@@ -481,6 +482,8 @@ const BasicDetails = ({
             rules={{
               required: true,
               pattern: /(6|7|8|9)\d{9}/,
+              // pattern: /^\d{10}$/,  // Exactly 10 digits required
+              minLength: 10,
               maxLength: 10,
             }}
             defaultValue={formData.whatsapp}
@@ -505,18 +508,22 @@ const BasicDetails = ({
                 error={!!errors.whatsapp}
                 helperText={
                   errors.whatsapp
-                    ? errors.whatsapp.type === "pattern" ||
-                      errors.whatsapp.type === "maxLength"
-                      ? langOptions.whatsapp.error.pattern[lang]
-                      : langOptions.whatsapp.error[lang]
+                    // ? errors.whatsapp.type === "pattern" ||
+                    //   errors.whatsapp.type === "maxLength"
+                    //   ? langOptions.whatsapp.error.pattern[lang]
+                    //   : langOptions.whatsapp.error[lang]
+                    ? "Please enter exactly 10 digits."
                     : "Ex. 99065xxxxx"
                 }
                 disabled={inputDisabled}
                 onChange={(e) => {
-                  const newValue = e.target.value.replace(
-                    INPUT_PATTERNS.numbersOnly,
-                    ""
-                  );
+                  // const newValue = e.target.value.replace(
+                  //   INPUT_PATTERNS.numbersOnly,
+                  //   ""
+                  // );
+                  // onChange(newValue);
+                  let newValue = e.target.value.replace(INPUT_PATTERNS.numbersOnly, ""); // Allow only numbers
+                  if (newValue.length > 10) newValue = newValue.slice(0, 10); // Restrict to 10 digits
                   onChange(newValue);
                 }}
                 {...rest}
@@ -531,6 +538,8 @@ const BasicDetails = ({
             name="AlternateNumber"
             rules={{
               pattern: /(6|7|8|9)\d{9}/,
+              // pattern: /^\d{10}$/, // Must be exactly 10 digits
+              minLength: 10,
               maxLength: 10,
             }}
             render={({ field: { ref, onChange, ...rest } }) => (
@@ -552,18 +561,22 @@ const BasicDetails = ({
                 error={!!errors.AlternateNumber}
                 helperText={
                   errors.AlternateNumber
-                    ? errors.AlternateNumber.type === "pattern" ||
-                      errors.AlternateNumber.type === "maxLength"
-                      ? langOptions.AlternateNumber.error.pattern[lang]
-                      : langOptions.AlternateNumber.error[lang]
+                    // ? errors.AlternateNumber.type === "pattern" ||
+                    //   errors.AlternateNumber.type === "maxLength"
+                    //   ? langOptions.AlternateNumber.error.pattern[lang]
+                    //   : langOptions.AlternateNumber.error[lang]
+                    ? "Please enter exactly 10 digits."
                     : "Ex. 99065xxxxx"
                 }
                 disabled={inputDisabled}
                 onChange={(e) => {
-                  const newValue = e.target.value.replace(
-                    INPUT_PATTERNS.numbersOnly,
-                    ""
-                  );
+                  // const newValue = e.target.value.replace(
+                  //   INPUT_PATTERNS.numbersOnly,
+                  //   ""
+                  // );
+                  let newValue = e.target.value.replace(INPUT_PATTERNS.numbersOnly, ""); // Allow only numbers
+                  if (newValue.length > 10) newValue = newValue.slice(0, 10); // Restrict to 10 digits
+                  onChange(newValue);
                   onChange(newValue);
                 }}
                 {...rest}

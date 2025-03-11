@@ -833,5 +833,6 @@ export const allTagsForOnlineClass = [
 export const INPUT_PATTERNS = {
   name: /^[\p{L}\p{M}']+$/u,
   replaceName: /[^\p{L}\p{M}']+/gu,
-  numbersOnly: /\D/g,
+  numbersOnly:/[^0-9]/g,
+  // numbersOnly: /\D/g,
 };

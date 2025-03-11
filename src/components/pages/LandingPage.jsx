@@ -123,6 +123,8 @@ const LandingPage = () => {
     pendingInterviewStage: "checking",
     enrollmentKey: "",
   });
+  const [mobileError, setMobileError] = React.useState("");
+
   // const [goToTest, setGoToTest] = React.useState(false);
   const lang = {
     Heading: {
@@ -247,10 +249,16 @@ const LandingPage = () => {
     });
   };
   const onChangeEvent_numbersOnly = (e) => {
+    // setState({
+    //   ...state,
+    //   [e.target.name]: e.target.value.replace(INPUT_PATTERNS.numbersOnly, ""), // Only allow digits (0-9)
+    // });
+    const value = e.target.value.replace(INPUT_PATTERNS, "").slice(0, 10);
     setState({
       ...state,
-      [e.target.name]: e.target.value.replace(INPUT_PATTERNS.numbersOnly, ""), // Only allow digits (0-9)
+      [e.target.name]: value,
     });
+    setMobileError(value.length === 10 ? "" : "Mobile number must be 10 digits");
   };
 
   const onChangeEventStatus = (e) => {
@@ -494,6 +502,11 @@ const LandingPage = () => {
                     value={mobileNumber}
                     placeholder="Mobile Number..."
                     onChange={onChangeEvent_numbersOnly}
+                    error={!!mobileError}
+                    helperText={mobileError}
+                    inputProps={{
+                      maxLength: 10
+                    }}
                     InputLabelProps={{
                       shrink: true,
                     }}

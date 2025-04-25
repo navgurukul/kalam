@@ -10,7 +10,6 @@ import store from "./store/store";
 import AppRouter from "./routers/AppRouter";
 import AlertDialog from "./components/ui/AlertDialog";
 import * as Sentry from "@sentry/react";
-import FaceUpload from "./components/onlineTest/Instructions/FileUpload";
 
 const dsn = import.meta.env.VITE_DSN;
 const TRACKING_ID = "G-WG6ZZQHGB8"; // OUR_TRACKING_ID
@@ -23,15 +22,14 @@ Sentry.init({
 });
 
 const App = () => (
-  // <Provider store={store}>
-  //   <ThemeProvider theme={theme}>
-  //     <AlertDialog />
-  //     <SnackbarProvider maxSnack={2}>
-  //       <AppRouter />
-  //     </SnackbarProvider>
-  //   </ThemeProvider>
-  // </Provider>
-  <FaceUpload />
+  <Provider store={store}>
+    <ThemeProvider theme={theme}>
+      <AlertDialog />
+      <SnackbarProvider maxSnack={2}>
+        <AppRouter />
+      </SnackbarProvider>
+    </ThemeProvider>
+  </Provider>
 );
 
 ReactDOM.render(<App />, document.getElementById("app"));

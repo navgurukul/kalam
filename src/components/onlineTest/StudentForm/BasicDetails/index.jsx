@@ -183,14 +183,49 @@ const BasicDetails = ({
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
   const { state } = location;
-  const uploadProfilePhoto = (e) => {
+
+  const [isHuman, setIsHuman] = useState(false);
+
+  const uploadProfilePhoto = async (e) => {
+    setIsHuman(false);
     const file = e.target.files[0];
     //check if file size is greater than 1mb
     if (file.size > 5000000) {
       enqueueSnackbar("File size should not exceed 1MB", { variant: "error" });
       return;
     }
-    setProfileImage(file);
+
+    if (!file) return;
+    const imgUrl = URL.createObjectURL(file);
+    const imgEl = imageRef.current;
+
+    // 1. Hook up the onload before setting src
+    await new Promise((resolve, reject) => {
+      imgEl.onload = () => resolve();
+      imgEl.onerror = (err) => reject(err);
+      imgEl.src = imgUrl;
+    });
+
+    // 2. (Optional) Pre-load models once, e.g. in a useEffect.
+    await faceapi.nets.ssdMobilenetv1.loadFromUri("/models");
+    await faceapi.nets.faceLandmark68Net.loadFromUri("/models");
+    await faceapi.nets.faceRecognitionNet.loadFromUri("/models");
+
+    // 3. Specify options so you know exactly what network is running
+    const options = new faceapi.SsdMobilenetv1Options({
+      minConfidence: 0.5,
+      // inputSize: 300 // you can tweak this if you like
+    });
+
+    // 4. Now run detection on the fully-loaded image
+    const detection = await faceapi.detectSingleFace(imgEl, options);
+
+    if (detection) {
+      setProfileImage(file);
+      setIsHuman(true);
+    } else {
+      setIsHuman(false);
+    }
   };
 
   const slug = state?.slug;
@@ -255,6 +290,8 @@ const BasicDetails = ({
         disabled={inputDisabled && formData.ProfileImage !== null}
         accept=".png,.jpg,.jpeg"
       />
+
+      {!isHuman && <p>Needs to be a human face</p>}
       {/* <label style={{
         cursor: inputDisabled ? "default" : "pointer",
       }} htmlFor="ProfileImage">
@@ -430,7 +467,7 @@ const BasicDetails = ({
             rules={{
               required: true,
               validate: (dob) =>
-                parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 17 
+                parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 17,
               // &&
               //   parseInt(dayjs().diff(dayjs(dob), "year"), 10) <= 28,
             }}
@@ -508,11 +545,11 @@ const BasicDetails = ({
                 error={!!errors.whatsapp}
                 helperText={
                   errors.whatsapp
-                    // ? errors.whatsapp.type === "pattern" ||
-                    //   errors.whatsapp.type === "maxLength"
-                    //   ? langOptions.whatsapp.error.pattern[lang]
-                    //   : langOptions.whatsapp.error[lang]
-                    ? "Please enter exactly 10 digits."
+                    ? // ? errors.whatsapp.type === "pattern" ||
+                      //   errors.whatsapp.type === "maxLength"
+                      //   ? langOptions.whatsapp.error.pattern[lang]
+                      //   : langOptions.whatsapp.error[lang]
+                      "Please enter exactly 10 digits."
                     : "Ex. 99065xxxxx"
                 }
                 disabled={inputDisabled}
@@ -522,7 +559,10 @@ const BasicDetails = ({
                   //   ""
                   // );
                   // onChange(newValue);
-                  let newValue = e.target.value.replace(INPUT_PATTERNS.numbersOnly, ""); // Allow only numbers
+                  let newValue = e.target.value.replace(
+                    INPUT_PATTERNS.numbersOnly,
+                    ""
+                  ); // Allow only numbers
                   if (newValue.length > 10) newValue = newValue.slice(0, 10); // Restrict to 10 digits
                   onChange(newValue);
                 }}
@@ -561,11 +601,11 @@ const BasicDetails = ({
                 error={!!errors.AlternateNumber}
                 helperText={
                   errors.AlternateNumber
-                    // ? errors.AlternateNumber.type === "pattern" ||
-                    //   errors.AlternateNumber.type === "maxLength"
-                    //   ? langOptions.AlternateNumber.error.pattern[lang]
-                    //   : langOptions.AlternateNumber.error[lang]
-                    ? "Please enter exactly 10 digits."
+                    ? // ? errors.AlternateNumber.type === "pattern" ||
+                      //   errors.AlternateNumber.type === "maxLength"
+                      //   ? langOptions.AlternateNumber.error.pattern[lang]
+                      //   : langOptions.AlternateNumber.error[lang]
+                      "Please enter exactly 10 digits."
                     : "Ex. 99065xxxxx"
                 }
                 disabled={inputDisabled}
@@ -574,7 +614,10 @@ const BasicDetails = ({
                   //   INPUT_PATTERNS.numbersOnly,
                   //   ""
                   // );
-                  let newValue = e.target.value.replace(INPUT_PATTERNS.numbersOnly, ""); // Allow only numbers
+                  let newValue = e.target.value.replace(
+                    INPUT_PATTERNS.numbersOnly,
+                    ""
+                  ); // Allow only numbers
                   if (newValue.length > 10) newValue = newValue.slice(0, 10); // Restrict to 10 digits
                   onChange(newValue);
                   onChange(newValue);

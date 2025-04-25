@@ -12,6 +12,7 @@ import Grid from "@mui/material/Grid";
 import theme from "../../theme";
 import { loginWithGoogle } from "../../store/slices/authSlice";
 import { decryptText } from "../../utils";
+import html2pdf from "html2pdf.js";
 
 // const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -43,6 +44,20 @@ const LoginDesign = () => {
   // state = {
   //   specialLogin: [],
   // };
+
+  const downloadPDF = () => {
+    const element = document.getElementById("question-pdf-content");
+    html2pdf()
+      .set({
+        margin: 10,
+        filename: `question-${question.topic || "question"}.pdf`,
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      })
+      .from(element)
+      .save();
+  };
+
   const getTestData = () => ({
     enrollmentKey: localStorage.getItem("enrollmentKey"),
     time: localStorage.getItem("time"),

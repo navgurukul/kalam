@@ -61,6 +61,8 @@
     "devextreme": "24.1.4",
     "devextreme-react": "24.1.4",
     "dompurify": "^2.3.6",
+    "face-api.js": "^0.22.2",
+    "html2pdf.js": "^0.10.3",
     "lodash": "^4.17.21",
     "mui-datatables": "^4.3.0",
     "notistack": "^2.0.3",

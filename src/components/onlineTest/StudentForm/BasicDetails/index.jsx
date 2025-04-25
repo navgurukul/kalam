@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import {
   TextField,
   InputLabel,
@@ -20,6 +20,7 @@ import { makeStyles } from "@mui/styles";
 import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
 import { INPUT_PATTERNS } from "../../../../utils/constants";
+import * as faceapi from "face-api.js";
 
 const enableBoysAdmission = import.meta.env.VITE_API_ENABLE_BOYS_ADMISSION;
 
@@ -183,11 +184,12 @@ const BasicDetails = ({
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
   const { state } = location;
+  const imageRef = useRef();
 
-  const [isHuman, setIsHuman] = useState(false);
+  const [isHuman, setIsHuman] = useState(true);
 
   const uploadProfilePhoto = async (e) => {
-    setIsHuman(false);
+    setIsHuman(true);
     const file = e.target.files[0];
     //check if file size is greater than 1mb
     if (file.size > 5000000) {
@@ -289,6 +291,11 @@ const BasicDetails = ({
         //error
         disabled={inputDisabled && formData.ProfileImage !== null}
         accept=".png,.jpg,.jpeg"
+      />
+      <img
+        ref={imageRef}
+        style={{ display: "none", width: 0, height: 0 }}
+        alt="upload-preview"
       />
 
       {!isHuman && <p>Needs to be a human face</p>}

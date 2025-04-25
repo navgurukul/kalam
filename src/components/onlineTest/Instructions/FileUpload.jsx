@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 
 const FaceUpload = () => {
@@ -18,7 +18,7 @@ const FaceUpload = () => {
       imgEl.src = imgUrl;
     });
 
-    // 2. (Optional) Pre-load models once, e.g. in a useEffect.
+    // 2. (Optional) Pre-lo ad models once, e.g. in a useEffect.
     await faceapi.nets.ssdMobilenetv1.loadFromUri("/models");
     await faceapi.nets.faceLandmark68Net.loadFromUri("/models");
     await faceapi.nets.faceRecognitionNet.loadFromUri("/models");

@@ -98,9 +98,9 @@ const langOptions = {
       hi: "जन्मदिन दर्ज करें",
       ma: "जन्मदिवस टाका",
       validate: {
-        en: "Age must be between 17",
-        hi: "उम्र कम से कम 17 वर्ष होनी चाहिए",
-        ma: "वय किमान 17 वर्षे असावे",
+        en: "Age must be between 16.5",
+        hi: "उम्र कम से कम 16.5 वर्ष होनी चाहिए",
+        ma: "वय किमान 16.5 वर्षे असावे",
       },
     },
   },
@@ -476,7 +476,7 @@ const BasicDetails = ({
             rules={{
               required: true,
               validate: (dob) =>
-                parseInt(dayjs().diff(dayjs(dob), "year"), 10) >= 17,
+                parseInt(dayjs().diff(dayjs(dob), "month") / 12) >= 6.5,
               // &&
               //   parseInt(dayjs().diff(dayjs(dob), "year"), 10) <= 28,
             }}

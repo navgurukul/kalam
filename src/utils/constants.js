@@ -159,9 +159,9 @@ export const allStages = {
   createdStudentWithoutExam: "Created Student Without Exam",
   basicDetailsEntered: "Basic Details Entered",
   // english interviews
-  pendingEnglishInterview: "English Interview Pending (2nd Round)",
+  pendingEnglishInterview: "Screening Test Pass",
   // forReviewEnglishInterview: "English Interview For Review",
-  englishInterviewFail: "English Interview Failed",
+  englishInterviewFail: "Learning round Fail",
   // englishInterviewWaitlisted: "English Interview Waitlisted",
 
   // algebra interviews
@@ -171,11 +171,11 @@ export const allStages = {
   // algebraInterviewWaitlisted: "Algebra Interview Waitlisted",
 
   // culture fit interviews
-  pendingCultureFitInterview: "Culture Fit Interview Pending (4th Round)",
+  pendingCultureFitInterview: "Learning Round Pass",
 
   // cultureFitInterviewWaitlisted: "Culture Fit Interview Waitlisted",
   pendingCultureFitReinterview: "Pending Culture Fit Re-Interview",
-  cultureFitInterviewFail: "Culture Interview Failed",
+  cultureFitInterviewFail: "Culture fit round Fail",
 
   // parent conversations
   pendingParentConversation: "Pending Parent Conversations",
@@ -183,7 +183,7 @@ export const allStages = {
 
   // selection
   selected: "Selected",
-  selectedAndJoiningAwaited: "Selected & Joining Awaited",
+  selectedAndJoiningAwaited: "Culture fit round Pass",
   selectedButNotJoined: "Selected But Not Joined",
   offerLetterSent: "Offer Letter Sent",
 
@@ -218,7 +218,7 @@ export const allStages = {
   // pendingCallbackForQuery: "Pending Callback",
   // forReviewCallbackQueryResolved: "For Review CallbackQuery Resolved",
   queryResolvedAfterCallback: "Query Resolved After CallBack",
-  testFailed: "Test Failed",
+  testFailed: "Screening Test Fail",
   M1: "English & Quarantine",
   M2: "Dry Run",
   M3: "If - Else",
@@ -287,14 +287,15 @@ export const nextStage = {
   testFailed: ["enrolmentKeyGenerated"],
   pendingEnglishInterview: [
     "englishInterviewFail",
-    "pendingAlgebraInterview",
+    // "pendingAlgebraInterview",
+    "pendingCultureFitInterview",
     "notReachable",
     "becameDisIntersested",
     "possibleDuplicate",
   ],
   englishInterviewFail: ["pendingEnglishInterview"],
   pendingAlgebraInterview: [
-    "algebraInterviewFail",
+    // "algebraInterviewFail",
     "pendingCultureFitInterview",
     "notReachable",
     "becameDisIntersested",
@@ -314,10 +315,18 @@ export const nextStage = {
   cultureFitInterviewFail: ["pendingCultureFitInterview"],
   notReachable: [
     "pendingEnglishInterview",
-    "pendingAlgebraInterview",
+    // "pendingAlgebraInterview",
     "pendingCultureFitInterview",
     "becameDisIntersested",
   ],
+  
+  cultureFitInterviewFail: ["pendingCultureFitReinterview"],
+  notReachable: [
+    "pendingEnglishInterview",
+    "pendingCultureFitInterview",
+    "becameDisIntersested",
+  ],
+
   selectedAndJoiningAwaited: ["offerLetterSent", "becameDisIntersested"],
   selectedButNotJoined: [],
   offerLetterSent: [
@@ -341,7 +350,7 @@ export const nextStage = {
   ],
   possibleDuplicate: [
     "pendingEnglishInterview",
-    "pendingAlgebraInterview",
+    // "pendingAlgebraInterview",
     "pendingCultureFitInterview",
   ],
   finalisedTravelPlans: [

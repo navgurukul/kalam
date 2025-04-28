@@ -234,8 +234,10 @@ const BasicDetails = ({
   const date = new Date();
   const currentDate = date.getDate();
   const month = date.getMonth();
-  const maxDate = date.getFullYear() - 17;
-  const minDate = date.getFullYear() - 100;
+  const today = new Date();
+  const minDate = today.getFullYear() - 100;
+  const maxDate = new Date(today.setFullYear(today.getFullYear() - 16));
+  maxDate.setMonth(maxDate.getMonth() - 6);
 
   return (
     <Container maxWidth="lg" align="center">

@@ -38,10 +38,13 @@ const animatedComponents = makeAnimated();
 // API USage : https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/
 const baseURL = import.meta.env.VITE_API_URL;
 
-let allStagesOptions = Object.keys(allStages).map((x) => ({
-  value: x,
-  label: allStages[x],
-}));
+let allStagesOptions = Object.keys(allStages)
+  .filter((key) => key !== "pendingAlgebraInterview" && key !== "algebraInterviewFail")
+  .map((x) => ({
+    value: x,
+    label: allStages[x],
+  }));
+
 allStagesOptions = [
   {
     value: "default",

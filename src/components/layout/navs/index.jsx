@@ -56,16 +56,16 @@ const NavLinks = ({ toggleDrawer }) => {
         name: "Owners",
         icon: <GroupIcon />,
       },
-      privileges.some((priv) => priv.privilege === "ViewPlacements") && {
-        url: "/placements",
-        name: "Placements",
-        icon: <WorkIcon />,
-      },
-      {
-        url: "/outreachDetails",
-        name: "Outreach Details",
-        icon: <GroupIcon />,
-      },
+      // privileges.some((priv) => priv.privilege === "ViewPlacements") && {
+      //   url: "/placements",
+      //   name: "Placements",
+      //   icon: <WorkIcon />,
+      // },
+      // {
+      //   url: "/outreachDetails",
+      //   name: "Outreach Details",
+      //   icon: <GroupIcon />,
+      // },
     ],
     [roles, privileges]
   );

@@ -184,10 +184,10 @@ const SlotBooking = () => {
   return loading ? (
     <Loader />
   ) : [
-      "English Interview Pending (2nd Round)",
-      "Culture Fit Interview Pending (4th Round)",
-      "Pending Culture Fit Re-Interview",
-    ].includes(studentData.stage) ? (
+    "Screening Test Pass",
+    "Learning Round Pass",
+    "Pending Culture Fit Re-Interview",
+  ].includes(studentData.stage) ? (
     <Container
       maxWidth="md"
       sx={{

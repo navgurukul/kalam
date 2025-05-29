@@ -296,6 +296,7 @@ export const nextStage = {
   englishInterviewFail: ["pendingEnglishInterview"],
   pendingAlgebraInterview: [
     // "algebraInterviewFail",
+    "englishInterviewFail", 
     "pendingCultureFitInterview",
     "notReachable",
     "becameDisIntersested",

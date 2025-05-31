@@ -307,7 +307,7 @@ const SlotBooking = () => {
             sx={{ mt: 3 }}
             onClick={handleDeleteSlot}
           >
-            Delete Slot
+            Reschedule Slot
           </Button>
         </>
       )}

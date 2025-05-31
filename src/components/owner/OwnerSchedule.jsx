@@ -19,11 +19,8 @@ import MainLayout from "../muiTables/MainLayout";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
-// ✅ Utility render functions outside of component
 const renderTime = (value) => dayjs(value, "hh:mm").format("hh:mm A");
-
 const renderDate = (value) => dayjs(value).format("D MMM YYYY");
-
 const renderMeetLink = (value) =>
   value?.trim() ? (
     <a href={value} target="_blank" rel="noopener noreferrer">
@@ -44,20 +41,20 @@ function OwnerSchedule(props) {
 
     const DateToSend = d.format("YYYY-MM-DD");
 
-    axios
-      .get(`${baseUrl}/slot/interview/ondate/${DateToSend}`)
-      .then(({ data }) => {
-        const newSlotData = data.data.map((item) => ({
-          ...item,
-          name: item.student.name,
-          email: item.student.email,
-          phone: item.contacts.mobile,
-          owner: item.user?.user_name || "",
-          meet_link: item.meet_link || " ",
-        }));
-        setDate(DateToSend);
-        setSlotData(newSlotData);
-      });
+    axios.get(`${baseUrl}/slot/interview/ondate/${DateToSend}`).then(({ data }) => {
+      const newSlotData = data.data.map((item) => ({
+        ...item,
+        name: item.student.name,
+        email: item.student.email,
+        phone: item.contacts.mobile,
+        owner: item.user?.user_name || "",
+        meet_link: item.meet_link || " ",
+        meet_link_status: item.meet_link_status,
+        meet_call_status: item.meet_link_status === true ? "Present" : "Absent",
+      }));
+      setDate(DateToSend);
+      setSlotData(newSlotData);
+    });
   }, []);
 
   const handleStatusChange = async (index, newStatus) => {

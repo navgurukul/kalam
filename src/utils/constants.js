@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 export const baseUrl = `${import.meta.env.VITE_API_URL}`;
 
 export const customPartner = ["amravati", "lahia"];
@@ -181,6 +182,12 @@ export const allStages = {
   pendingParentConversation: "Pending Parent Conversations",
   parentConversationFail: "Parent Conversation Failed",
 
+  // slotBookingStages
+  interviewScheduled: "Interview Scheduled",
+  interviewPassed: "Interview Pass",
+  studentAbsentForInterview: "Student Absent",
+  interviewFailed: "Interview Failed",
+
   // selection
   selected: "Selected",
   selectedAndJoiningAwaited: "Culture fit round Pass",
@@ -285,6 +292,13 @@ export const nextStage = {
   createdStudentWithoutExam: [],
   basicDetailsEntered: ["pendingEnglishInterview", "testFailed"],
   testFailed: ["enrolmentKeyGenerated"],
+  interviewPassed: [
+    "englishInterviewFail",
+    "pendingCultureFitInterview",
+    "notReachable",
+    "becameDisIntersested",
+    "possibleDuplicate",
+  ],
   pendingEnglishInterview: [
     "englishInterviewFail",
     // "pendingAlgebraInterview",
@@ -296,7 +310,7 @@ export const nextStage = {
   englishInterviewFail: ["pendingEnglishInterview"],
   pendingAlgebraInterview: [
     // "algebraInterviewFail",
-    "englishInterviewFail", 
+    "englishInterviewFail",
     "pendingCultureFitInterview",
     "notReachable",
     "becameDisIntersested",
@@ -313,15 +327,10 @@ export const nextStage = {
     "possibleDuplicate",
   ],
   selected: ["selectedAndJoiningAwaited", "selectedButNotJoined"],
-  cultureFitInterviewFail: ["pendingCultureFitInterview"],
-  notReachable: [
-    "pendingEnglishInterview",
-    // "pendingAlgebraInterview",
+  cultureFitInterviewFail: [
     "pendingCultureFitInterview",
-    "becameDisIntersested",
+    "pendingCultureFitReinterview",
   ],
-  
-  cultureFitInterviewFail: ["pendingCultureFitReinterview"],
   notReachable: [
     "pendingEnglishInterview",
     "pendingCultureFitInterview",
@@ -843,6 +852,6 @@ export const allTagsForOnlineClass = [
 export const INPUT_PATTERNS = {
   name: /^[\p{L}\p{M}']+$/u,
   replaceName: /[^\p{L}\p{M}']+/gu,
-  numbersOnly:/[^0-9]/g,
+  numbersOnly: /[^0-9]/g,
   // numbersOnly: /\D/g,
 };

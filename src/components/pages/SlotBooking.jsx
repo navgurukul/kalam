@@ -212,6 +212,7 @@ const SlotBooking = () => {
     "Screening Test Pass",
     "Learning Round Pass",
     "Pending Culture Fit Re-Interview",
+    "Interview Scheduled",
   ].includes(studentData.stage);
 
   if (!canBookSlot) {

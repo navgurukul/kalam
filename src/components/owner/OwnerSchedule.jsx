@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable prettier/prettier */
 /* eslint-disable camelcase */
 /* eslint-disable prettier/prettier */
@@ -41,56 +42,137 @@ function OwnerSchedule(props) {
 
     const DateToSend = d.format("YYYY-MM-DD");
 
-    axios.get(`${baseUrl}/slot/interview/ondate/${DateToSend}`).then(({ data }) => {
-      const newSlotData = data.data.map((item) => ({
-        ...item,
-        name: item.student.name,
-        email: item.student.email,
-        phone: item.contacts.mobile,
-        owner: item.user?.user_name || "",
-        meet_link: item.meet_link || " ",
-        meet_link_status: item.meet_link_status,
-        meet_call_status: item.meet_link_status === true ? "Present" : "Absent",
-      }));
-      setDate(DateToSend);
-      setSlotData(newSlotData);
-    });
+    axios
+      .get(`${baseUrl}/slot/interview/ondate/${DateToSend}`)
+      .then(({ data }) => {
+        const newSlotData = data.data.map((item) => ({
+          ...item,
+          name: item.student.name,
+          email: item.student.email,
+          phone: item.contacts.mobile,
+          owner: item.user?.user_name || "",
+          meet_link: item.meet_link || " ",
+          meet_link_status: item.meet_link_status,
+          meet_call_status:
+            item.meet_link_status === true
+              ? "Present"
+              : item.meet_link_status === false
+              ? "Absent"
+              : "",
+          result_status:
+            item.result_status === true
+              ? "Pass"
+              : item.result_status === false
+              ? "Fail"
+              : "",
+        }));
+
+        setDate(DateToSend);
+        setSlotData(newSlotData);
+      });
   }, []);
 
-  const handleStatusChange = async (index, newStatus) => {
+  const handleResultChange = async (index, resultStatus) => {
     const selectedSlot = slotData[index].id;
-    const meet_link_status = newStatus === "Present";
+    const meet_call_status = slotData[index].meet_call_status;
+
+    const meet_link_status = meet_call_status === "Present";
+    const pass = resultStatus === "Pass";
 
     try {
       await axios.put(
         `${baseUrl}/slot/interview/updateMeetStatus/${selectedSlot}`,
         {
           meet_link_status,
+          pass,
         }
       );
 
       const updatedData = [...slotData];
-      updatedData[index].meet_call_status = newStatus;
+      updatedData[index].result_status = resultStatus;
       setSlotData(updatedData);
     } catch (error) {
-      console.error("Error updating meet status:", error);
+      console.error("Error updating both statuses:", error);
+      alert("Failed to update interview status. Please try again.");
+    }
+  };
+
+  const handleStatusChange = async (index, status) => {
+    const selectedSlot = slotData[index].id;
+    const meet_link_status = status === "Present";
+
+    try {
+      if (status === "Absent") {
+        await axios.put(
+          `${baseUrl}/slot/interview/updateMeetStatus/${selectedSlot}`,
+          {
+            meet_link_status,
+          }
+        );
+      }
+
+      const updatedData = [...slotData];
+      updatedData[index].meet_call_status = status;
+      updatedData[index].meet_link_status = meet_link_status;
+      setSlotData(updatedData);
+    } catch (error) {
+      console.error("Error updating meet call status:", error);
       alert("Failed to update status. Please try again.");
     }
   };
 
   const renderMeetStatusSelect = useCallback(
-    (dataIndex) => (
-      <Select
-        value={slotData[dataIndex]?.meet_call_status || ""}
-        onChange={(e) => handleStatusChange(dataIndex, e.target.value)}
-        displayEmpty
-        size="small"
-      >
-        <MenuItem value="">Select</MenuItem>
-        <MenuItem value="Present">Present</MenuItem>
-        <MenuItem value="Absent">Absent</MenuItem>
-      </Select>
-    ),
+    (dataIndex) => {
+      const value = slotData[dataIndex]?.meet_call_status;
+
+      return (
+        <Select
+          value={value !== undefined ? value : ""}
+          onChange={(e) => handleStatusChange(dataIndex, e.target.value)}
+          size="small"
+          displayEmpty
+          renderValue={(selected) => {
+            if (!selected) {
+              return "Select";
+            }
+            return selected;
+          }}
+        >
+          <MenuItem value="">Select</MenuItem>
+          <MenuItem value="Present">Present</MenuItem>
+          <MenuItem value="Absent">Absent</MenuItem>
+        </Select>
+      );
+    },
+    [slotData]
+  );
+
+  const renderResultSelect = useCallback(
+    (dataIndex) => {
+      const status = slotData[dataIndex]?.meet_call_status;
+      if (status !== "Present") return "—";
+
+      const value = slotData[dataIndex]?.result_status || "";
+
+      return (
+        <Select
+          value={value}
+          onChange={(e) => handleResultChange(dataIndex, e.target.value)}
+          displayEmpty
+          size="small"
+          renderValue={(selected) => {
+            if (selected === "") {
+              return "Select";
+            }
+            return selected;
+          }}
+        >
+          <MenuItem value="">Select</MenuItem>
+          <MenuItem value="Pass">Pass</MenuItem>
+          <MenuItem value="Fail">Fail</MenuItem>
+        </Select>
+      );
+    },
     [slotData]
   );
 
@@ -155,6 +237,15 @@ function OwnerSchedule(props) {
         filter: false,
         sort: false,
         customBodyRenderLite: renderMeetStatusSelect,
+      },
+    },
+    {
+      name: "result_status",
+      label: "Result",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRenderLite: renderResultSelect,
       },
     },
   ];

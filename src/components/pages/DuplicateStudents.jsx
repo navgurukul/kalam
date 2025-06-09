@@ -27,7 +27,9 @@ const BookSlotButton = ({ studentId, stage }) => {
   const isEligible =
     stage === "pendingEnglishInterview" ||
     stage === "pendingCultureFitInterview" ||
-    stage === "pendingAlgebraInterview";
+    stage === "pendingAlgebraInterview" ||
+    stage === "interviewScheduled" ||
+    stage === "interviewFailed";
 
   useEffect(() => {
     const checkSlot = async () => {

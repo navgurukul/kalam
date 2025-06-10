@@ -16,6 +16,7 @@ import NotFoundPage from "../components/layout/NotFoundPage";
 import Loader from "../components/ui/Loader";
 import { changeFetching } from "../store/slices/uiSlice";
 import StageManage from "../components/school/StageManage";
+import OfferLetter from "../components/pages/OfferLetter";
 
 const SchoolStages = React.lazy(() =>
   import("../components/school/SchoolStages")
@@ -235,6 +236,8 @@ const AppRouter = () => {
                 </React.Suspense>
               }
             />
+
+              <Route path="/OfferLetter" element={<OfferLetter />}/>
 
             <Route path="/partner">
               <Route

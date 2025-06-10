@@ -19,6 +19,7 @@ import ServerSidePagination from "../muiTables/ServerSidePagination";
 import theme from "../../theme";
 import ToolbarAddButton from "../admin/ToolbarAddButton";
 import { fetchOwners as fetchOwnersAction } from "../../store/slices/dataSlice";
+import { Button } from "@mui/material";
 import { dConvert } from "../../utils";
 // "../../utils";
 import {
@@ -531,6 +532,23 @@ const AdmissionsDash = (props) => {
           // components={animatedComponents}
           closeMenuOnSelect
         />
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <Button
+          variant="outlined"
+          onClick={() => navigate("/OfferLetter")}
+          sx={{
+            marginTop: 2.5,
+            color: "green",
+            borderColor: "green",
+            "&:hover": {
+              backgroundColor: "rgba(0,128,0,0.1)",
+              borderColor: "darkgreen",
+            },
+          }}
+        >
+          Send Offer Letter
+        </Button>
       </Grid>
     </Grid>
   );

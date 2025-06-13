@@ -7,6 +7,7 @@ import GroupIcon from "@mui/icons-material/Group";
 import WorkIcon from "@mui/icons-material/Work";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import SchoolIcon from '@mui/icons-material/School';
+import MessageIcon from '@mui/icons-material/Message';
 
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -66,6 +67,11 @@ const NavLinks = ({ toggleDrawer }) => {
       //   name: "Outreach Details",
       //   icon: <GroupIcon />,
       // },
+      {
+        url: "Outreach",
+        name: "Outreach",
+        icon: <MessageIcon />,
+      },
     ],
     [roles, privileges]
   );

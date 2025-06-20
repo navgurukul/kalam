@@ -67,11 +67,11 @@ const NavLinks = ({ toggleDrawer }) => {
       //   name: "Outreach Details",
       //   icon: <GroupIcon />,
       // },
-      {
-        url: "Outreach",
-        name: "Outreach",
-        icon: <MessageIcon />,
-      },
+      // {
+      //   url: "Outreach",
+      //   name: "Outreach",
+      //   icon: <MessageIcon />,
+      // },
     ],
     [roles, privileges]
   );

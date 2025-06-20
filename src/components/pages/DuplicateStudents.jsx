@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+// ✅ Updated and clean version of your component
+
 import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -15,6 +18,57 @@ import {
 } from "../../store/slices/onlineTestSlice";
 
 const baseUrl = import.meta.env.VITE_API_URL;
+
+// ✅ BookSlotButton component
+const BookSlotButton = ({ studentId, stage }) => {
+  const [isBooked, setIsBooked] = React.useState(null);
+  const navigate = useNavigate();
+
+  const isEligible =
+    stage === "pendingEnglishInterview" ||
+    stage === "pendingCultureFitInterview" ||
+    stage === "pendingAlgebraInterview" ||
+    stage === "interviewScheduled" ||
+    stage === "interviewFailed";
+
+  useEffect(() => {
+    const checkSlot = async () => {
+      try {
+        const response = await axios.get(
+          `${baseUrl}slot/interview/${studentId}`
+        );
+        const slotData = response.data?.data?.[0];
+        setIsBooked(slotData && !slotData.is_cancelled);
+      } catch (err) {
+        setIsBooked(false);
+      }
+    };
+    checkSlot();
+  }, [studentId]);
+
+  return (
+    <Button
+      disabled={!isEligible}
+      variant="contained"
+      style={{
+        fontSize: "10px",
+        backgroundColor: isBooked ? "#4caf50" : undefined, // ✅ green if booked
+        color: isBooked ? "white" : undefined,
+      }}
+      onClick={() => {
+        navigate({ pathname: `/bookSlot/${studentId}` });
+      }}
+    >
+      {isBooked ? "Booked" : "Book Slot"}
+    </Button>
+  );
+};
+
+const renderBookSlotButton = (value, rowMeta) => {
+  const studentId = rowMeta.rowData[0];
+  const stage = rowMeta.rowData[1];
+  return <BookSlotButton studentId={studentId} stage={stage} />;
+};
 
 const DuplicateStudents = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -37,29 +91,29 @@ const DuplicateStudents = () => {
     try {
       const mobile = `0${number}`;
       fetchingStart();
-      const dataURL = `${baseUrl}helpline/register_exotel_call`;
-      const response = await axios.get(dataURL, {
-        params: {
-          ngCallType: "getEnrolmentKey",
-          From: mobile,
-          partner_id: partnerId,
-          student_id: studentId,
-        },
-      });
+      const response = await axios.get(
+        `${baseUrl}helpline/register_exotel_call`,
+        {
+          params: {
+            ngCallType: "getEnrolmentKey",
+            From: mobile,
+            partner_id: partnerId,
+            student_id: studentId,
+          },
+        }
+      );
       fetchingFinish();
       return response;
     } catch (e) {
       enqueueSnackbar("Something went wrong", {
         variant: "error",
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
+        anchorOrigin: { vertical: "top", horizontal: "center" },
       });
       fetchingFinish();
       throw Error(e.message);
     }
   };
+
   const columns = [
     {
       name: "id",
@@ -114,27 +168,7 @@ const DuplicateStudents = () => {
       label: "Book Slot",
       options: {
         filter: false,
-        customBodyRender: React.useCallback(
-          (_, rowMeta) => (
-            <Button
-              disabled={rowMeta.rowData[1] !== "pendingEnglishInterview"
-                && rowMeta.rowData[1] !== "pendingCultureFitInterview"
-                && rowMeta.rowData[1] !== "pendingAlgebraInterview"
-              }
-              variant="contained"
-              color="primary"
-              style={{ fontSize: "10px" }}
-              onClick={() => {
-                navigate({
-                  pathname: `/bookSlot/${rowMeta.rowData[0]}`,
-                });
-              }}
-            >
-              Book Slot
-            </Button>
-          ),
-          []
-        ),
+        customBodyRender: renderBookSlotButton,
       },
     },
     {
@@ -148,7 +182,6 @@ const DuplicateStudents = () => {
             : value,
       },
     },
-
     {
       name: "key",
       label: "Key",
@@ -159,12 +192,15 @@ const DuplicateStudents = () => {
       },
     },
   ];
+
   const message = {
     stageMessage: {
-      en: `Your  ${allStages[test.pendingInterviewStage]
-        } is still pending. You’re not required to give the online test now. We will soon complete your admission process.`,
-      hi: `आपका  ${allStages[test.pendingInterviewStage]
-        }  अभी भी चल रहा हैं। अभी आपको ऑनलाइन परीक्षा देने की आवश्यकता नहीं है। हम जल्द ही आपकी प्रवेश प्रक्रिया (एडमिशन प्रोसेस) पूरी कर देंगे।`,
+      en: `Your ${
+        allStages[test.pendingInterviewStage]
+      } is still pending. You’re not required to give the online test now. We will soon complete your admission process.`,
+      hi: `आपका ${
+        allStages[test.pendingInterviewStage]
+      } अभी भी चल रहा हैं। अभी आपको ऑनलाइन परीक्षा देने की आवश्यकता नहीं है। हम जल्द ही आपकी प्रवेश प्रक्रिया पूरी कर देंगे।`,
     },
     testFailedMessage: {
       en: `, Your previous attempts were unsuccessful/test failed, please give the 1st stage of the online test again.`,
@@ -173,20 +209,15 @@ const DuplicateStudents = () => {
   };
 
   const isDuplicate = () => {
-    // const details = window.location.href.split("Name=")[1];
-    // const mobileNumber = details.split("&Number=")[1].split("&Stage=")[0];
-    const mobileNumber = number;
-    // const name = details.split("&Number=")[0];
     axios
       .get(`${baseUrl}check_duplicate`, {
         params: {
           Name: name.split("_").join(""),
-          Number: mobileNumber,
+          Number: number,
         },
       })
-      .then(async (data) => {
+      .then((data) => {
         const response = data.data.data;
-
         if (response.alreadyGivenTest) {
           setTest({
             ...test,
@@ -196,9 +227,10 @@ const DuplicateStudents = () => {
         }
       });
   };
+
   const partnerFetch = async (slug) => {
     try {
-      const response = await axios.get(`${baseUrl}partners/slug/${slug}`, {});
+      const response = await axios.get(`${baseUrl}partners/slug/${slug}`);
       setPartnerId(response.data.data.id);
     } catch (e) {
       navigate("/notFound");
@@ -207,9 +239,7 @@ const DuplicateStudents = () => {
 
   useEffect(() => {
     const slug = window.location.href.split("partnerLanding/")[1];
-    if (slug) {
-      partnerFetch(slug);
-    }
+    if (slug) partnerFetch(slug);
     isDuplicate();
   }, []);
 
@@ -218,31 +248,22 @@ const DuplicateStudents = () => {
   let firstName;
   let middleName = "";
   let lastName;
-  // const splitedName = name.match(/[A-Z][a-z]+/g);
   const splittedName = name.split("_");
-  const { pendingInterviewStage } = test;
   if (splittedName.length === 3) {
     [firstName, middleName, lastName] = splittedName;
-    console.log("Middle name", middleName);
   } else {
     [firstName, lastName] = splittedName;
   }
-  console.log("Is this page is coming?");
 
   return (
     <>
-      <Typography variant="h5" id="modal-title">
-        Student Status
-        <br />
-      </Typography>
+      <Typography variant="h5">Student Status</Typography>
       <MUIDataTable
         title={
-          pendingInterviewStage === "enrolmentKeyGenerated" ||
-            pendingInterviewStage === "testFailed"
-            ? `${firstName.concat(" ", middleName, " ", lastName)}
-            ${message.testFailedMessage[selectedLang]}`
-            : `${firstName.concat(" ", middleName, " ", lastName)}${message.stageMessage[selectedLang]
-            }`
+          test.pendingInterviewStage === "enrolmentKeyGenerated" ||
+          test.pendingInterviewStage === "testFailed"
+            ? `${firstName} ${middleName} ${lastName}${message.testFailedMessage[selectedLang]}`
+            : `${firstName} ${middleName} ${lastName}${message.stageMessage[selectedLang]}`
         }
         columns={columns}
         data={data}
@@ -264,16 +285,4 @@ const DuplicateStudents = () => {
   );
 };
 
-// const mapDispatchToProps = (dispatch) => ({
-//   fetchingStart: () => dispatch(changeFetching(true)),
-//   fetchingFinish: () => dispatch(changeFetching(false)),
-// });
-
-// export default withSnackbar(
-//   withRouter(
-//     withStyles(useStyles)(
-//       connect(undefined, mapDispatchToProps)(DuplicateStudents)
-//     )
-//   )
-// );
 export default DuplicateStudents;

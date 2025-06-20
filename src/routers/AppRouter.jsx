@@ -16,6 +16,9 @@ import NotFoundPage from "../components/layout/NotFoundPage";
 import Loader from "../components/ui/Loader";
 import { changeFetching } from "../store/slices/uiSlice";
 import StageManage from "../components/school/StageManage";
+import OfferLetter from "../components/pages/OfferLetter";
+import WhatsappSMS from "../components/pages/WhatsappSMS"
+import WhatsappSMSForm from '../components/pages/WhatsappSMSForm';
 
 const SchoolStages = React.lazy(() =>
   import("../components/school/SchoolStages")
@@ -235,6 +238,9 @@ const AppRouter = () => {
                 </React.Suspense>
               }
             />
+              <Route path="/Outreach" element={<WhatsappSMS />}/>
+              <Route path="/create-campaign" element={<WhatsappSMSForm />} />
+              <Route path="/OfferLetter" element={<OfferLetter />}/>
 
             <Route path="/partner">
               <Route

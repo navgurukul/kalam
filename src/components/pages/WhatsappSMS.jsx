@@ -4,7 +4,7 @@ import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, Button, Typography, Box, Modal, TextField, MenuItem, Select, FormControl, InputLabel
+  Paper, Button, Typography, Box, Modal, MenuItem, Select, FormControl, InputLabel
 } from '@mui/material';
 
 const baseURL = import.meta.env.VITE_API_URL;
@@ -95,20 +95,20 @@ const WhatsappSMS = () => {
     handleFileUploadGeneric(file);
   };
 
-const fetchUploadedData = async () => {
-  try {
-    const response = await fetch(`${baseURL}student/outreach/data?page=1&pageSize=10`);
-    const result = await response.json();
-    const formattedData = result.data.map(row => ({
-      name: row.name,
-      whatsapp: row.contact_number,
-      mobile: row.contact_number
-    }));
-    setTableData(formattedData);
-  } catch (error) {
-    console.error('Failed to fetch data', error);
-  }
-};
+  const fetchUploadedData = async () => {
+    try {
+      const response = await fetch(`${baseURL}student/outreach/data?page=1&pageSize=10`);
+      const result = await response.json();
+      const formattedData = result.data.map(row => ({
+        name: row.name,
+        whatsapp: row.contact_number,
+        mobile: row.contact_number
+      }));
+      setTableData(formattedData);
+    } catch (error) {
+      console.error('Failed to fetch data', error);
+    }
+  };
 
 
   const handleDownloadTemplate = () => {
@@ -121,6 +121,43 @@ const fetchUploadedData = async () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     XLSX.writeFile(workbook, "Template.xlsx");
+  };
+
+  const handleSendMessages = async () => {
+    if (!campaignName) {
+      alert("Please select a campaign.");
+      return;
+    }
+
+    const payload = {
+      students: tableData.map(student => ({
+        name: student.name,
+        contactNumber: student.whatsapp
+      })),
+      campaignName,
+      params: []
+    };
+
+    try {
+      const response = await fetch(`${baseURL}student/outreach/whatsappMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("✅ WhatsApp messages sent:", result);
+        alert("Messages sent successfully!");
+      } else {
+        console.error("❌ Failed to send messages:", result);
+        alert("Failed to send messages.");
+      }
+    } catch (error) {
+      console.error("❌ Error sending messages:", error);
+      alert("An error occurred while sending messages.");
+    }
   };
 
   return (
@@ -137,7 +174,7 @@ const fetchUploadedData = async () => {
             Import Excel / CSV
           </Button>
           {tableData.length > 0 && (
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={handleSendMessages}>
               Send
             </Button>
           )}

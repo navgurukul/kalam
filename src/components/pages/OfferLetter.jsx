@@ -25,6 +25,9 @@ const OfferLetterTable = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
 
+  const [selectedCampus, setSelectedCampus] = useState("");
+  const [campusOptions, setCampusOptions] = useState([]);
+
   const fetchStudents = async () => {
     setLoading(true);
     try {
@@ -51,6 +54,9 @@ const OfferLetterTable = () => {
         subject: "NavGurukul - Your Admission Letter",
         phone: student.contacts?.[0]?.mobile || "—",
       }));
+
+      const uniqueCampuses = [...new Set(formatted.map(s => s.name_of_campus_en))].filter(c => c && c !== "—");
+      setCampusOptions(uniqueCampuses);
 
       setStudents(formatted);
       setTotalCount(total);
@@ -148,7 +154,6 @@ const OfferLetterTable = () => {
           headers: { "Content-Type": "application/json" },
         });
 
-        // Show snackbar
         setSnackbarMsg(`Offer letters sent to ${emailStudents.length} student(s)`);
         setSnackbarOpen(true);
       } catch (err) {
@@ -169,9 +174,29 @@ const OfferLetterTable = () => {
     }
   };
 
+  const displayedStudents = selectedCampus
+    ? students.filter(s => s.name_of_campus_en === selectedCampus)
+    : students;
+
   return (
     <Box>
-      <Box display="flex" alignItems="center" gap={2} mt={2}>
+      <Box display="flex" alignItems="center" gap={3} mt={2}>
+        <TextField
+          select
+          size="small"
+          label="Filter by Campus"
+          value={selectedCampus}
+          onChange={(e) => setSelectedCampus(e.target.value)}
+          sx={{ minWidth: 200 }}
+        >
+          <MenuItem value="">All Campuses</MenuItem>
+          {campusOptions.map((campus) => (
+            <MenuItem key={campus} value={campus}>
+              {campus}
+            </MenuItem>
+          ))}
+        </TextField>
+
         <TextField
           select
           size="small"
@@ -186,6 +211,7 @@ const OfferLetterTable = () => {
             </MenuItem>
           ))}
         </TextField>
+
         <Button
           variant="contained"
           onClick={handleBulkStageChange}
@@ -218,7 +244,7 @@ const OfferLetterTable = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              students.map((student, index) => (
+              displayedStudents.map((student, index) => (
                 <TableRow key={student.id}>
                   <TableCell>
                     <Checkbox
@@ -271,7 +297,6 @@ const OfferLetterTable = () => {
         </Button>
       </Box>
 
-      {/* Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={4000}

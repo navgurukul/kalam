@@ -238,10 +238,30 @@ const AppRouter = () => {
                 </React.Suspense>
               }
             />
-              <Route path="/Outreach" element={<WhatsappSMS />}/>
-              <Route path="/create-campaign" element={<WhatsappSMSForm />} />
-              <Route path="/OfferLetter" element={<OfferLetter />}/>
-
+            <Route
+              path="/Outreach"
+              element={
+                <RequireAuth privateRoute={true}>
+                  <WhatsappSMS />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/create-campaign"
+              element={
+                <RequireAuth privateRoute={true}>
+                  <WhatsappSMSForm />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/OfferLetter"
+              element={
+                <RequireAuth privateRoute={true}>
+                  <OfferLetter />
+                </RequireAuth>
+              }
+            />
             <Route path="/partner">
               <Route
                 path="add"

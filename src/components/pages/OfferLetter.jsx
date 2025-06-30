@@ -28,44 +28,44 @@ const OfferLetterTable = () => {
   const [selectedCampus, setSelectedCampus] = useState("");
   const [campusOptions, setCampusOptions] = useState([]);
 
-  const fetchStudents = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${baseURL}students`, {
-        params: {
-          limit: numberOfRows,
-          page,
-        },
-      });
+const fetchStudents = async () => {
+  setLoading(true);
+  try {
+    const response = await axios.get(`${baseURL}students`, {
+      params: {
+        limit: numberOfRows,
+        page,
+        stage: "selectedAndJoiningAwaited",
+      },
+    });
 
-      const results = response?.data?.data?.results || [];
-      const total = response?.data?.data?.count || 0;
+    const results = response?.data?.data?.results || [];
+    const total = response?.data?.data?.count || 0;
 
-      const filtered = results.filter(student => student.stage === "selectedAndJoiningAwaited");
+    const formatted = results.map((student) => ({
+      id: student.id,
+      profileImage: student.image_url || "https://i.pravatar.cc/40?img=1",
+      email: student.email || "",
+      name_of_school_en: student.school?.[0]?.name || "—",
+      name_of_campus_en: student.campus || "—",
+      name: student.name || "—",
+      stage: student.stage || "—",
+      subject: "NavGurukul - Your Admission Letter",
+      phone: student.contacts?.[0]?.mobile || "—",
+    }));
 
-      const formatted = filtered.map((student) => ({
-        id: student.id,
-        profileImage: student.image_url || "https://i.pravatar.cc/40?img=1",
-        email: student.email || "",
-        name_of_school_en: student.school?.[0]?.name || "—",
-        name_of_campus_en: student.campus || "—",
-        name: student.name || "—",
-        stage: student.stage || "—",
-        subject: "NavGurukul - Your Admission Letter",
-        phone: student.contacts?.[0]?.mobile || "—",
-      }));
+    const uniqueCampuses = [...new Set(formatted.map(s => s.name_of_campus_en))].filter(c => c && c !== "—");
+    setCampusOptions(uniqueCampuses);
 
-      const uniqueCampuses = [...new Set(formatted.map(s => s.name_of_campus_en))].filter(c => c && c !== "—");
-      setCampusOptions(uniqueCampuses);
+    setStudents(formatted);
+    setTotalCount(total);
+  } catch (error) {
+    console.error("Failed to fetch students:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
-      setStudents(formatted);
-      setTotalCount(total);
-    } catch (error) {
-      console.error("Failed to fetch students:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     fetchStudents();

@@ -18,7 +18,7 @@ const OfferLetterTable = () => {
   const [selectedStudentIds, setSelectedStudentIds] = useState([]);
   const [bulkStage, setBulkStage] = useState("");
   const [page, setPage] = useState(0);
-  const [numberOfRows] = useState(50);
+  const [numberOfRows] = useState(100);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
 

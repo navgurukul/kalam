@@ -35,8 +35,11 @@ const tutorialSteps = {
     hi: " अंक प्राप्त किए हैं",
     ma: " गुण मिळाले आहेत",
   },
+  heading3:{
+    en: "Good job! You've cleared the screening test for Navgurukul's Residential Program! However, all the spots are currently full. So, we've placed you on our waitlist. If a spot opens up, we'll let you know right away. Thanks for your understanding!",
+    hi: " नमस्ते! नवगुरुकुल के रेजिडेंशियल प्रोग्राम के लिए आपने स्क्रीनिंग टेस्ट पास कर लिया है, बहुत बढ़िया! हालांकि, अभी सभी सीटें भर चुकी हैं, इसलिए हमने आपको वेटलिस्ट में रखा है। जैसे ही कोई सीट खाली होगी, हम आपको तुरंत सूचित करेंगे। समझने के लिए धन्यवाद!"
+  },
   content1: {
-    // old:"NavGurukul ki One Year Fellowship mein",
     en: "Thank you for applying to NavGurukul Program",
     hi: "नवगुरुकुल की एक वर्षीय फेलोशिप में ",
     ma: "नवगुरुकुलच्या एका वर्षाच्या फेलोशिपमध्ये ",
@@ -44,7 +47,6 @@ const tutorialSteps = {
   content2: {
     old: "Aap apna interview slot apne time ke hisab se book kar sakte hain.",
     en: "Admission team will reach out to you for the next steps",
-    // en: "You can book your interview slot according to your convenience.",
     hi: "आप अपनी सुविधा के अनुसार अपना इंटरव्यू स्लॉट बुक कर सकते हैं।",
     ma: "तुमच्या सोयीनुसार तुम्ही तुमचा मुलाखतीचा स्लॉट बुक करू शकता.",
   },
@@ -81,6 +83,7 @@ function ThankYouPage({ userID }) {
   const navigate = useNavigate();
   const { lang } = useSelector((state) => state.ui);
   const [totalMarks, setTotalMarks] = useState("");
+  const [gender, setGender] = useState("");
 
   const clearTestData = () => {
     localStorage.removeItem("answerList");
@@ -91,12 +94,11 @@ function ThankYouPage({ userID }) {
 
   useEffect(() => {
     axios
-      .get(
-        `${baseUrl}/on_assessment/Show_testResult/${
-          location.pathname.split("/")[2]
-        }`
-      )
-      .then(({ data }) => setTotalMarks(data.total_marks));
+      .get(`${baseUrl}/on_assessment/Show_testResult/${location.pathname.split("/")[2]}`)
+      .then(({ data }) => {
+        setTotalMarks(data.total_marks);
+        setGender(data.gender);
+      });
   }, []);
 
   return (
@@ -106,9 +108,17 @@ function ThankYouPage({ userID }) {
           {tutorialSteps.heading1[lang]}
           <b>{totalMarks}</b>
           {tutorialSteps.heading2[lang]}
+
         </Typography>
+          {gender === 2 && tutorialSteps.heading3[lang] && (
+            <Typography color="black" style={{ marginBottom: "16px" }}>
+              {tutorialSteps.heading3[lang]}
+            </Typography>
+          )}
+
         <Typography>{tutorialSteps.content1[lang]}</Typography>
         <Typography>{tutorialSteps.content2[lang]}</Typography>
+
         <Typography className={classes.link}>
           {tutorialSteps.content3[lang]}
           <Link href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=hi@navgurukul.org">
@@ -116,7 +126,7 @@ function ThankYouPage({ userID }) {
           </Link>{" "}
           {tutorialSteps.content4[lang]}
         </Typography>
-        {/* <Button
+          {/* <Button
           fullWidth
           variant="contained"
           color="primary"
@@ -143,6 +153,7 @@ function ThankYouPage({ userID }) {
             {tutorialSteps.visitNGSite[lang]}
           </a>
         </Button>
+
         <Button
           fullWidth
           variant="outlined"

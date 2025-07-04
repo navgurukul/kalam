@@ -51,6 +51,7 @@ import TestAttemptModel from "../components/smallComponents/TestAttemptModel";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import NotifyStudents from "../components/notifyStudents/NotifyStudents";
 import NotificationHistory from "../components/notifyStudents/NotificationHistory";
+import DeleteTransitionWrapper from "../components/smallComponents/DeleteTransitionWrapper"
 
 dayjs.extend(customParseFormat);
 
@@ -146,19 +147,10 @@ const ColumnUpload = {
       finishedColumnTransition,
 */
 
-const StageColumnTransitionWrapper = ({ value, rowMeta }) => {
-  const { privileges } = useSelector((state) => state.auth);
-  const path = window.location.pathname.split("/");
-  const isCampus = path[1] === "campus";
-  return (
-    <>
-      {privileges.some((priv) => priv.privilege === "DeleteTransition") ? (
-        <DeleteRow transitionId={rowMeta.rowData[isCampus ? 14 : 12]} />
-      ) : null}
-      {allStages[value] || value}
-    </>
-  );
+const StageColumnTransitionWrapper = ({ value }) => {
+  return <>{allStages[value] || value}</>;
 };
+
 
 const stageColumnTransition = {
   name: "to_stage",
@@ -166,11 +158,24 @@ const stageColumnTransition = {
   options: {
     filter: true,
     sort: true,
-    customBodyRender: (value, rowMeta) => (
-      <StageColumnTransitionWrapper value={value} rowMeta={rowMeta} />
+    customBodyRender: (value) => (
+      <StageColumnTransitionWrapper value={value} />
     ),
   },
 };
+
+const deleteTransitionColumn = {
+  name: "delete_action",
+  label: "Delete",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (value, tableMeta) => {
+      return <DeleteTransitionWrapper rowMeta={{ rowData: tableMeta.rowData }} />;
+    },
+  },
+};
+
 
 const schoolTransition = {
   name: "school",
@@ -247,7 +252,7 @@ const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
           change={(event) => updateValue(event)}
         />
       ) : null}
-      {feedback?.map((item, idx) => (
+      {/* {feedback?.map((item, idx) => (
         <div
           key={idx}
           style={{
@@ -261,7 +266,7 @@ const FeedbackColumnTransitionWrapper = ({ value, rowMeta, updateValue }) => {
             <p key={item + Math.random()}> {index === 0 ? `@${i}` : i} </p>
           ))}
         </div>
-      )) || null}
+      )) || null} */}
     </div>
   ) : null;
 };
@@ -1990,6 +1995,7 @@ const StudentService = {
       transitionIdColumn,
       // deadlineColumnTrnasition1,
       finishedColumnTransition,
+      deleteTransitionColumn,
     ],
     columnStudentStatus: [
       ColumnTransitionsStatus,

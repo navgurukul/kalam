@@ -1,70 +1,82 @@
-import React from "react";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { Button } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  Select as MUISelect,
+  MenuItem,
+  Button,
+  OutlinedInput,
+  Checkbox,
+  ListItemText,
+} from "@mui/material";
 
 const baseURL = import.meta.env.VITE_API_URL;
-const animatedComponents = makeAnimated();
 
 const UpdateDonor = ({ value, studentId, change, allOptions }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [selectedDonors, setSelectedDonors] = React.useState(value);
+  const [selectedDonors, setSelectedDonors] = useState([]);
 
-  const donor =
-    selectedDonors && selectedDonors?.donor_id
-      ? allOptions?.filter((item) => item.id == selectedDonors?.donor_id[0])
-      : selectedDonors;
+  useEffect(() => {
+    if (value && value?.donor_id) {
+      const matched = allOptions.filter((item) => value.donor_id.includes(item.id));
+      setSelectedDonors(matched.map((x) => x.id));
+    }
+  }, [value, allOptions]);
 
-  const selectedValue =
-    value && value?.donor_id
-      ? allOptions?.filter((item) => item.id == value?.donor_id[0])
-      : value;
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setSelectedDonors(typeof value === 'string' ? value.split(',') : value);
+  };
 
-  const updateDonor = () =>
+  const updateDonor = () => {
     axios
       .put(`${baseURL}students/${studentId}`, {
-        donor: donor?.map((item) => item.id),
+        donor: selectedDonors,
       })
       .then((res) => {
-        change(selectedDonors ?? []);
-        enqueueSnackbar(res.data.data, {
-          variant: "success",
-        });
+        const newDonors = allOptions.filter((x) => selectedDonors.includes(x.id));
+        change(newDonors);
+        enqueueSnackbar(res.data.data, { variant: "success" });
       })
       .catch(() => {
-        enqueueSnackbar(`Error in Updating Donor`, {
-          variant: "error",
-        });
+        enqueueSnackbar("Error in Updating Donor", { variant: "error" });
       });
+  };
 
-  const handleChange = (event) =>
-    setSelectedDonors(
-      value && event === null
-        ? []
-        : event.map((item) => ({ id: item.value, donor: item.label }))
-    );
+  const selectedValue = selectedDonors;
 
   return (
     <>
-      <Select
-        className="filterSelectStage"
-        components={{ animatedComponents }}
-        isMulti
-        value={
-          selectedDonors
-            ? donor?.map((x) => ({ value: x.id, label: x.donor }))
-            : selectedDonors
-        }
-        onChange={handleChange}
-        options={allOptions.map((x) => ({ value: x.id, label: x.donor }))}
-        isClearable={false}
-      />
+      <FormControl fullWidth size="small">
+        <InputLabel>Select Donor</InputLabel>
+        <MUISelect
+          multiple
+          value={selectedValue}
+          onChange={handleChange}
+          input={<OutlinedInput label="Select Donor" />}
+          renderValue={(selected) =>
+            selected
+              .map((id) => allOptions.find((x) => x.id === id)?.donor || id)
+              .join(", ")
+          }
+        >
+          {allOptions.map((option) => (
+            <MenuItem key={option.id} value={option.id}>
+              <Checkbox checked={selectedDonors.indexOf(option.id) > -1} />
+              <ListItemText primary={option.donor} />
+            </MenuItem>
+          ))}
+        </MUISelect>
+      </FormControl>
       <Button
         color="primary"
         disabled={
-          JSON.stringify(selectedDonors) === JSON.stringify(selectedValue)
+          JSON.stringify(selectedDonors) ===
+          JSON.stringify(value?.donor_id || [])
         }
         onClick={updateDonor}
       >

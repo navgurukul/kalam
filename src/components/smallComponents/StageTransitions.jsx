@@ -296,12 +296,12 @@ const StageTransitions = ({ studentName, studentId, isShow, dataType }) => {
               </IconButton>
             </Box>
           </Box>
-          <MUIDataTable
+            <MUIDataTable
             columns={StudentService.columns[dataType]}
-            data={selectedStudent?.transitions || []}
-            icons={tableIcons}
-            options={options}
-          />
+              data={selectedStudent?.transitions || []}
+              icons={tableIcons}
+              options={options}
+            />
         </Box>
       </Modal>
     </>

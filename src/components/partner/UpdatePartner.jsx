@@ -1,36 +1,13 @@
-import React, { useEffect } from "react";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { FormControl, InputLabel, Select as MUISelect, MenuItem } from "@mui/material";
 
 const baseURL = import.meta.env.VITE_API_URL;
-const animatedComponents = makeAnimated();
 
-const UpdatePartner = ({
-  change,
-  studentId,
-  value,
-  allOptions,
-  privileges,
-}) => {
+const UpdatePartner = ({ change, studentId, value, allOptions, privileges }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [partnerName, setPartnerName] = React.useState();
-
-  const handleChange = (event) => {
-    const { label, value } = event;
-    axios
-      .put(`${baseURL}students/${studentId}`, { partner_id: value })
-      .then(() => {
-        enqueueSnackbar(`Partner successfully updated !`, {
-          variant: "success",
-        });
-        change(label);
-      })
-      .catch((err) => {
-        enqueueSnackbar(err.message, { variant: "error" });
-      });
-  };
+  const [partnerName, setPartnerName] = useState();
 
   useEffect(() => {
     axios
@@ -38,29 +15,45 @@ const UpdatePartner = ({
       .then((res) => {
         setPartnerName(res.data.data[0]?.partner?.name);
       })
-      .catch((err) => {
-        // console.log("err", err);
-      });
+      .catch(() => {});
   }, [value]);
 
   const newValue = value ? value : partnerName;
-  const selectedValue = { value: newValue, label: newValue };
+  const selectedValue = allOptions?.find((opt) => opt.name === newValue)?.id || "";
 
-  return privileges?.some(
-    (priv) => priv.privilege === "UpdateStudentPartner"
-  ) ? (
-    <Select
-      className="filterSelectStage"
-      value={selectedValue}
-      onChange={handleChange}
-      options={
-        allOptions?.length > 0 &&
-        allOptions?.map((x) => ({ value: x.id, label: x.name }))
-      }
-      isClearable={false}
-      components={animatedComponents}
-      closeMenuOnSelect
-    />
+  const handleChange = (e) => {
+    const selectedId = e.target.value;
+    const selectedOption = allOptions.find((item) => item.id === selectedId);
+    if (!selectedOption) return;
+
+    axios
+      .put(`${baseURL}students/${studentId}`, { partner_id: selectedId })
+      .then(() => {
+        enqueueSnackbar(`Partner successfully updated !`, {
+          variant: "success",
+        });
+        change(selectedOption.name);
+      })
+      .catch((err) => {
+        enqueueSnackbar(err.message, { variant: "error" });
+      });
+  };
+
+  return privileges?.some((priv) => priv.privilege === "UpdateStudentPartner") ? (
+    <FormControl fullWidth size="small">
+      <InputLabel>Select Partner</InputLabel>
+      <MUISelect
+        value={selectedValue}
+        onChange={handleChange}
+        label="Select Partner"
+      >
+        {allOptions?.map((option) => (
+          <MenuItem key={option.id} value={option.id}>
+            {option.name}
+          </MenuItem>
+        ))}
+      </MUISelect>
+    </FormControl>
   ) : (
     <p>{value}</p>
   );

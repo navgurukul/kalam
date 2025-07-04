@@ -8,6 +8,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import CsvUpload from "../smallComponents/Uploadcsv";
 import { tableIcons } from "../../services/GlobalService";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -158,10 +159,12 @@ const ModalStages = ({ partnerId }) => {
   const modalStyle = getModalStyle();
 
   return !modalOpen ? (
-    <Button color="primary" align="right" onClick={handleOpen}>
-      <AssessmentIcon color="primary" />
-      &nbsp;&nbsp;
-    </Button>
+      <Button color="primary" align="right" onClick={handleOpen}>
+        <Box display="flex" alignItems="center" gap={1}>
+          <VisibilityIcon color="action" />
+          <span style={{ color: "gray" }}>View Assessments</span>
+        </Box>
+      </Button>
   ) : (
     <Modal open={modalOpen} onClose={toggleModal}>
       <Box style={modalStyle} className={classes.paper}>

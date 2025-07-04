@@ -1,11 +1,16 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
-import { FormControl, MenuItem } from "@mui/material";
-import StageMarks from "./StageMarks";
-import InfoIcon from "@mui/icons-material/Info";
+import {
+  Box,
+  Modal,
+  Typography,
+  IconButton,
+  Stack,
+  Paper,
+  Divider,
+} from "@mui/material";
 import CancelSharpIcon from "@mui/icons-material/CancelSharp";
+import QuizIcon from "@mui/icons-material/Quiz";
+import StageMarks from "./StageMarks";
 
 const style = {
   position: "absolute",
@@ -15,6 +20,7 @@ const style = {
   width: 400,
   bgcolor: "background.paper",
   boxShadow: 24,
+  borderRadius: 2,
   p: 4,
 };
 
@@ -23,35 +29,70 @@ export default function TestAttemptModel({ value }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const Close = () => {
-    setOpen(false);
-  };
+  // ✅ Remove duplicates by 'stage_name' (or use 'id' if available)
+  const uniqueAttempts = React.useMemo(() => {
+    const seen = new Set();
+    return value.filter((attempt) => {
+      const key = attempt.stage_name; // Replace with 'attempt.id' if exists
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [value]);
 
   return (
-    <div>
-      <Button onClick={handleOpen}>
-        <InfoIcon />
-      </Button>
+    <>
+      <IconButton onClick={handleOpen} color="primary">
+        <QuizIcon />
+        <Typography ml={1} fontSize={14}>
+          {uniqueAttempts.length} Attempt{uniqueAttempts.length > 1 ? "s" : ""}
+        </Typography>
+      </IconButton>
+
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <CancelSharpIcon onClick={Close} sx={{ mt: -1, cursor: "Pointer" }} />
-          <FormControl sx={{ m: 1, minWidth: 180, ml: 12 }}>
-            {value.map((el, i) => {
-              return (
-                <MenuItem key={i} value={el}>
-                  <Button>
-                    <StageMarks
-                      value={el}
-                      name={i + 1}
-                      marks={el.total_marks}
-                    />
-                  </Button>
-                </MenuItem>
-              );
-            })}
-          </FormControl>
+          <IconButton
+            onClick={handleClose}
+            sx={{ position: "absolute", right: 12, top: 12 }}
+          >
+            <CancelSharpIcon />
+          </IconButton>
+
+          <Typography variant="h6" mb={3}>
+            {uniqueAttempts.length} Attempt{uniqueAttempts.length > 1 ? "s" : ""} Found
+          </Typography>
+
+          {uniqueAttempts.length === 0 ? (
+            <Typography>No Attempts Available</Typography>
+          ) : (
+            <Stack spacing={2}>
+              {uniqueAttempts.map((el, i) => (
+                <Paper
+                  key={i}
+                  elevation={3}
+                  sx={{
+                    p: 2,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    bgcolor: "#f9f9f9",
+                    borderRadius: 2,
+                  }}
+                >
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    width="100%"
+                  >
+                    <StageMarks value={el} marks={el.total_marks} />
+                  </Box>
+                </Paper>
+              ))}
+            </Stack>
+          )}
         </Box>
       </Modal>
-    </div>
+    </>
   );
 }

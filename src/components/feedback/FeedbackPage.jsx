@@ -55,41 +55,35 @@ const StudentFeedback = (props) => {
       } else {
         studentId = rowData[8];
       }
+
       const userId = parseInt(decryptText(localStorage.getItem("userId")), 10);
       const dataURL = `${baseUrl}students/feedback/${studentId}/${userId}`;
-      await axios
-        .post(dataURL, {
-          student_stage: rowData[0],
-          feedback: feedbackValue,
-          feedback_type: feedbackType,
-        })
-        .then(() => {
-          setDialogOpen(false);
-          enqueueSnackbar("Feedback is successfully added!", {
-            variant: "success",
-          });
-          change(
-            feedback
-              ? feedbackType === "edit"
-                ? feedbackValue
-                : feedbackValue + "\n\n" + feedback
-              : feedbackValue
-          );
-        });
+      await axios.post(dataURL, {
+        student_stage: rowData[0],
+        feedback: feedbackValue,
+        feedback_type: feedbackType,
+      });
+
+      setDialogOpen(false);
+      enqueueSnackbar("Feedback is successfully added!", { variant: "success" });
+
+      change(
+        feedback
+          ? feedbackType === "edit"
+            ? feedbackValue
+            : `${feedbackValue}\n\n${feedback}`
+          : feedbackValue
+      );
 
       fetchingFinish();
     } catch (e) {
       console.error(e);
-      enqueueSnackbar("Please select student Status", {
-        variant: "error",
-      });
+      enqueueSnackbar("Please select student Status", { variant: "error" });
       fetchingFinish();
     }
   };
 
   const onSubmit = () => addFeedbck();
-
-  // const validate = () => {};
 
   const handleChange = (event) => {
     setFeedbackValue(event.target.value);
@@ -105,68 +99,167 @@ const StudentFeedback = (props) => {
   const addFeedbackDetails = (feedback) => {
     const time = new Date();
     const month = time.getMonth() + 1;
-
     const currentUser = `@${
-      loggedInUser?.user_name?.toString().split(" ").join("").toLowerCase() ||
-      "guest"
+      loggedInUser?.user_name?.toString().split(" ").join("").toLowerCase() || "guest"
     }`;
-
     const feedbackTime = `Feedback date ${time.getDate()}/${month}/${time.getFullYear()}`;
-    const existingFeedback =
-      feedbackType === "edit"
-        ? feedback + "\n\n"
-        : `${currentUser}: ${feedbackTime}\n\n`;
-    return existingFeedback;
+
+    return feedbackType === "edit"
+      ? `${feedback}\n\n`
+      : `${currentUser}: ${feedbackTime}\n\n`;
   };
 
   return (
     <>
-      <Button
-        onClick={() => handleOpen("add")}
-        style={{ textTransform: "none" }}
-      >
+      <Button onClick={() => handleOpen("add")} style={{ textTransform: "none" }}>
         <EditIcon style={{ width: "10%" }} />
         <Typography style={{ fontWeight: "700", marginLeft: "5px" }}>
           Add Feedback
         </Typography>
       </Button>
+
       {feedback && (
-        <Button
-          onClick={() => handleOpen("edit")}
-          style={{ textTransform: "none" }}
-        >
-          <EditIcon style={{ width: "10%" }} />
-          <Typography style={{ fontWeight: "700", marginLeft: "5px" }}>
-            Edit Feedback
-          </Typography>
-        </Button>
-      )}
-      <Dialog open={dialogOpen} onClose={handleClose}>
-        <form className={classes.container}>
-          <h1 style={{ color: "#f05f40", textAlign: "center" }}>
-            {feedbackType === "edit" ? "Edit Feedback" : "Add Feedback"}
-          </h1>
-          <TextField
-            id="outlined-multiline-static"
-            label="Feedback"
-            multiline
-            rows="6"
-            name="feedback"
-            defaultValue={addFeedbackDetails(feedback)}
-            onChange={handleChange}
-            className={classes.textField}
-            margin="normal"
-            variant="outlined"
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={onSubmit}
-            className={classes.btn}
+        <>
+          {/* <Button onClick={() => handleOpen("edit")} style={{ textTransform: "none" }}>
+            <EditIcon style={{ width: "10%" }} />
+            <Typography style={{ fontWeight: "700", marginLeft: "5px" }}>
+              Edit Feedback
+            </Typography>
+          </Button> */}
+
+          <Typography
+            sx={{
+              color: "#3f51b5",
+              mt: 1,
+              ml: 0.5,
+              cursor: "pointer",
+              fontSize: "0.9rem",
+              fontStyle: "normal",
+            }}
+            onClick={() => {
+              setFeedbackType("view");
+              setDialogOpen(true);
+            }}
           >
-            Submit Feedback
-          </Button>
-        </form>
+            {feedback.split("\n\n")[0]}
+          </Typography>
+        </>
+      )}
+
+      <Dialog open={dialogOpen} onClose={handleClose}>
+        {feedbackType === "add" || feedbackType === "edit" ? (
+          <form className={classes.container}>
+            <h1 style={{ color: "#f05f40", textAlign: "center" }}>
+              {feedbackType === "edit" ? "Edit Feedback" : "Add Feedback"}
+            </h1>
+            <TextField
+              id="outlined-multiline-static"
+              label="Feedback"
+              multiline
+              rows="6"
+              name="feedback"
+              defaultValue={addFeedbackDetails(feedback)}
+              onChange={handleChange}
+              className={classes.textField}
+              margin="normal"
+              variant="outlined"
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={onSubmit}
+              className={classes.btn}
+            >
+              Submit Feedback
+            </Button>
+          </form>
+        ) : (
+          <div
+            style={{
+              padding: "1.5rem",
+              maxWidth: 600,
+              backgroundColor: "#fff",
+              border: "1px solid #ccc",
+              borderRadius: "8px",
+            }}
+          >
+            <Typography
+              style={{
+                fontWeight: "bold",
+                fontSize: "16px",
+                marginBottom: "10px",
+                borderBottom: "1px dashed #999",
+                paddingBottom: "5px",
+              }}
+            >
+              Full Feedback
+            </Typography>
+
+            {/* Render all feedback blocks properly */}
+            {feedback
+              ?.trim()
+              ?.split("\n\n")
+              ?.reduce((acc, curr, index, arr) => {
+                if (index % 2 === 0) {
+                  acc.push({ author: curr, content: arr[index + 1] || "" });
+                }
+                return acc;
+              }, [])
+              ?.map((block, i) => (
+                <div
+                  key={i}
+                  style={{
+                    marginBottom: "1.5rem",
+                    paddingBottom: "1rem",
+                    borderBottom: "1px dashed #ddd",
+                  }}
+                >
+                  <Typography
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: "14px",
+                      marginBottom: "0.5rem",
+                      color: "#444",
+                    }}
+                  >
+                    {block.author}
+                  </Typography>
+                  <Typography
+                    style={{
+                      whiteSpace: "pre-line",
+                      fontSize: "14px",
+                      lineHeight: "1.6",
+                      color: "#333",
+                    }}
+                  >
+                    {block.content}
+                  </Typography>
+                </div>
+              )) || <Typography>No feedback available.</Typography>}
+
+            <div
+              style={{
+                marginTop: "20px",
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+              }}
+            >
+              <Button variant="outlined" onClick={handleClose}>
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  setFeedbackType("edit");
+                }}
+              >
+                Edit Feedback
+              </Button>
+            </div>
+          </div>
+        )}
       </Dialog>
     </>
   );

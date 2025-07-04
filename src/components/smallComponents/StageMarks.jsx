@@ -1,11 +1,18 @@
 import * as React from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import axios from "axios";
-import { IconButton } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  IconButton,
+  Typography,
+  Box,
+  Divider,
+  Button,
+} from "@mui/material";
 import CancelSharpIcon from "@mui/icons-material/CancelSharp";
-import Button from "@mui/material/Button";
+import QuizIcon from "@mui/icons-material/Quiz";
+import axios from "axios";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -19,89 +26,81 @@ const StageMarks = ({ value, name, marks }) => {
         `${baseURL}/questions/attempts/${value.id}`
       );
       setDBdata(data);
-      setOpen(true);
-    } catch (err) {
+    } catch {
       setDBdata(null);
-      setOpen(true);
     }
+    setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClose = () => setOpen(false);
+
   return (
     <>
-      {!open ? (
-        <Button
-          onClick={handleClickOpen}
-          style={{ width: "2rem", marginLeft: ".2rem", cursor: "pointer" }}
-        >
-          {name} Attempt:- {marks ? marks : "N/A"}
-        </Button>
-      ) : (
-        <div>
-          <Dialog
-            sx={{ pt: 6, m: 15, w: 72 }}
-            size="small"
-            fullScreen
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="responsive-dialog-title"
-          >
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="close"
-            >
-              <CancelSharpIcon />
-            </IconButton>
-            <span style={{ display: "flex", alignItems: "center" }}>
-              <img
-                style={{ marginLeft: "2rem" }}
-                src="https://emojipedia-us.s3.amazonaws.com/source/microsoft-teams/337/brain_1f9e0.png"
-                alt="brainIcon"
-                width={100}
-              />
-              <h1 style={{ marginLeft: "2rem" }}>Questions and Answers</h1>
-            </span>
-            <DialogContent>
-              {DBdata ? (
-                <>
-                  {DBdata.map((el, index) => {
-                    return (
-                      <div key={index}>
-                        <DialogContentText mt={8}>
-                          <strong>
-                            Question {index + 1}) &nbsp;{" "}
-                            {el[1][0].en_text
-                              .replace(/\<p>/gi, "")
-                              .replace("</p>", "")}
-                          </strong>
-                          <p
-                            dangerouslySetInnerHTML={{
-                              __html: el[1][0].common_text,
-                            }}
-                          ></p>
-                          <p>
-                            <strong>Answer - </strong>{" "}
-                            {el[0].text_answer || el[0].selected_option_id}
-                          </p>
-                        </DialogContentText>
-                      </div>
-                    );
-                  })}
-                </>
-              ) : (
-                <DialogContentText>
-                  <h1 align="center"> No Data Found</h1>
-                </DialogContentText>
-              )}
-            </DialogContent>
-          </Dialog>
-        </div>
-      )}
+      <Button
+        onClick={handleClickOpen}
+        variant="outlined"
+        size="small"
+        sx={{
+          minWidth: "fit-content",
+          padding: "4px 8px",
+          fontSize: "0.8rem",
+          marginX: "0.4rem",
+        }}
+      >
+        {name} Attempt: {marks ?? "N/A"}
+      </Button>
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="md"
+        fullWidth
+        aria-labelledby="stage-marks-dialog"
+      >
+        <Box sx={{ display: "flex", alignItems: "center", p: 2 }}>
+          <IconButton onClick={handleClose}>
+            <CancelSharpIcon />
+          </IconButton>
+          <QuizIcon sx={{ fontSize: 36, ml: 2, color: "#3f51b5" }} />
+          <Typography variant="h6" sx={{ ml: 2 }}>
+            Questions and Answers
+          </Typography>
+        </Box>
+        <Divider />
+
+        <DialogContent sx={{ p: 4 }}>
+          {DBdata && DBdata.length > 0 ? (
+            DBdata.map((el, index) => (
+              <Box key={index} sx={{ mb: 4 }}>
+                <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                  Question {index + 1}){" "}
+                  {el[1][0].en_text
+                    ?.replace(/\<p>/gi, "")
+                    .replace("</p>", "")}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ mb: 1 }}
+                  dangerouslySetInnerHTML={{
+                    __html: el[1][0].common_text,
+                  }}
+                />
+                <Typography variant="body1">
+                  <strong>Answer:</strong>{" "}
+                  {el[0].text_answer || el[0].selected_option_id || "N/A"}
+                </Typography>
+                <Divider sx={{ mt: 2 }} />
+              </Box>
+            ))
+          ) : (
+            <Typography align="center" variant="h6">
+              No Data Found
+            </Typography>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
+
 export default StageMarks;

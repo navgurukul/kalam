@@ -1,11 +1,9 @@
-import React from "react";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
+import React, { useState } from "react";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { FormControl, InputLabel, Select as MUISelect, MenuItem } from "@mui/material";
 
 const baseURL = import.meta.env.VITE_API_URL;
-const animatedComponents = makeAnimated();
 
 const UpdateCampus = ({ change, studentId, value, allOptions }) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -18,14 +16,14 @@ const UpdateCampus = ({ change, studentId, value, allOptions }) => {
       : "No Campus Assigned";
 
   const handleChange = (event) => {
+    const selectedValue = event.target.value;
     axios
-      // eslint-disable-next-line camelcase
-      .put(`${baseURL}students/${studentId}`, { campus: event.value })
+      .put(`${baseURL}students/${studentId}`, { campus: selectedValue })
       .then(() => {
         enqueueSnackbar(`Campus successfully updated !`, {
           variant: "success",
         });
-        change(event.value);
+        change(selectedValue);
       })
       .catch(() =>
         enqueueSnackbar(`Error in updating Campus`, {
@@ -34,21 +32,28 @@ const UpdateCampus = ({ change, studentId, value, allOptions }) => {
       );
   };
 
-  const selectedValue = { value: campus, label: campus };
+  const selectedValue = campus;
+
+  const options = [
+    ...allOptions,
+    { campus: "No Campus Assigned" },
+  ].map((x) => x.campus);
 
   return (
-    <Select
-      className="filterSelectStage"
-      value={selectedValue}
-      onChange={handleChange}
-      options={[...allOptions, { name: "No Campus Assigned" }].map((x) => ({
-        value: x.campus,
-        label: x.campus,
-      }))}
-      isClearable={false}
-      components={animatedComponents}
-      closeMenuOnSelect
-    />
+    <FormControl fullWidth size="small">
+      <InputLabel>Select Campus</InputLabel>
+      <MUISelect
+        value={selectedValue}
+        onChange={handleChange}
+        label="Select Campus"
+      >
+        {options.map((option) => (
+          <MenuItem key={option} value={option}>
+            {option}
+          </MenuItem>
+        ))}
+      </MUISelect>
+    </FormControl>
   );
 };
 

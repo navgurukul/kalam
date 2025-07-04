@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { FormControl, InputLabel, Select as MUISelect, MenuItem } from "@mui/material";
+import { setSchool } from "../../store/slices/studentSlice";
 
 const baseURL = import.meta.env.VITE_API_URL;
-const animatedComponents = makeAnimated();
-import { setSchool } from "../../store/slices/studentSlice";
 
 const UpdateSchool = (props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [data, setData] = React.useState([]);
-  const [studentData, setStudentData] = React.useState();
+  const [data, setData] = useState([]);
+  const [studentData, setStudentData] = useState();
   const [isMounted, setIsMounted] = useState(true);
   const { rowMeta } = props;
-  // const { studentData, school } = useSelector((state) => state.students);
   const dispatch = useDispatch();
   const setUpdateSchool = (data) => dispatch(setSchool(data));
 
@@ -27,26 +24,23 @@ const UpdateSchool = (props) => {
   if (value?.length > 0) {
     if (typeof value === "string") {
       value = studentData?.school[0];
-      // .map((x) => ({ value: x.id, label: x.label }));
     } else {
       value = value[0];
     }
   }
 
-  const selectedValue = { value: value?.id, label: value?.name };
+  const selectedValue = value?.id || "";
 
   useEffect(() => {
     axios
       .get(`${baseURL}school`)
       .then((response) => {
-        // setData(response.data);
         if (isMounted) {
           setData(response.data);
         }
       })
       .catch((err) => {
         console.log("err", err);
-        // if (err.message === "canceled") return;
       });
 
     return () => setIsMounted(false);
@@ -66,44 +60,29 @@ const UpdateSchool = (props) => {
       });
   }, [props]);
 
-  // only for students who have failed
-  // const showDropdown = rowMeta.rowData[14] === "Test Failed";
-
-  // let showDropdown =
-  //   studentData?.student_school_stage !== null
-  //     ? studentData?.student_school_stage?.stageName.toLowerCase() ===
-  //       "test failed"
-  //     : rowMeta.rowData[14] === "Test Failed";
-
-  // useEffect(() => {
-  //   showDropdown =
-  //     studentData?.student_school_stage !== null
-  //       ? studentData?.student_school_stage?.stageName.toLowerCase() ===
-  //         "test failed"
-  //       : rowMeta.rowData[14] === "Test Failed";
-  // }, [studentData]);
-
-  const handleChange = (event) => {
+  const handleChange = (e) => {
     const { change, studentId } = props;
-    const { label, value } = event;
+    const selectedId = e.target.value;
+    const selectedOption = data.find((item) => item.id === selectedId);
+    if (!selectedOption) return;
+
     axios
       .post(`${baseURL}school/students_school`, {
         student_id: studentId,
-        school_id: value,
+        school_id: selectedId,
       })
-      .then((response) => {
+      .then(() => {
         enqueueSnackbar(`School successfully updated !`, {
           variant: "success",
         });
-        setUpdateSchool(label);
-        change(label);
+        setUpdateSchool(selectedOption.name);
+        change(selectedOption.name);
       })
       .catch((err) => {
         enqueueSnackbar(err.message, { variant: "error" });
       });
   };
 
-  // remove this after words
   if (value === "programming") {
     const data = JSON.stringify({
       student_id: studentId,
@@ -128,23 +107,20 @@ const UpdateSchool = (props) => {
   }
 
   return (
-    <Select
-      className="filterSelectStage"
-      value={selectedValue}
-      onChange={handleChange}
-      options={
-        data.length
-          ? // && showDropdown
-            data.map((x) => ({ value: x.id, label: x.name })) // Either || x.value here
-          : [selectedValue].map((x) => ({
-              value: x.id, // Or || x.value here
-              label: x.label,
-            }))
-      }
-      isClearable={false}
-      components={animatedComponents}
-      closeMenuOnSelect
-    />
+    <FormControl fullWidth size="small">
+      <InputLabel>Select School</InputLabel>
+      <MUISelect
+        value={selectedValue}
+        onChange={handleChange}
+        label="Select School"
+      >
+        {data.map((school) => (
+          <MenuItem key={school.id} value={school.id}>
+            {school.name}
+          </MenuItem>
+        ))}
+      </MUISelect>
+    </FormControl>
   );
 };
 

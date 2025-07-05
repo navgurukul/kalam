@@ -41,8 +41,8 @@ const tutorialSteps = {
   },
   content1: {
     en: "Thank you for applying to NavGurukul Program",
-    hi: "नवगुरुकुल की एक वर्षीय फेलोशिप में ",
-    ma: "नवगुरुकुलच्या एका वर्षाच्या फेलोशिपमध्ये ",
+    hi: "नवगुरुकुल की दो वर्षीय फेलोशिप में ",
+    ma: "नवगुरुकुलच्या दोन वर्षाच्या फेलोशिपमध्ये ",
   },
   content2: {
     old: "Aap apna interview slot apne time ke hisab se book kar sakte hain.",

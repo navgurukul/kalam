@@ -183,7 +183,7 @@ const StudentFeedback = (props) => {
               borderRadius: "8px",
             }}
           >
-            <Typography
+            {/* <Typography
               style={{
                 fontWeight: "bold",
                 fontSize: "16px",
@@ -193,7 +193,7 @@ const StudentFeedback = (props) => {
               }}
             >
               Full Feedback
-            </Typography>
+            </Typography> */}
 
             {/* Render all feedback blocks properly */}
             {feedback

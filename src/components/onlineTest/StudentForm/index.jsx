@@ -319,7 +319,7 @@ const StudentForm = () => {
       const selectedState = statesData.find(state => state.id === prevData.state);
       // Use state_code (2 chars) instead of state_name for database
       stateValue = selectedState ? selectedState.state_code : prevData.state;
-      console.log("Submitting with state code:", stateValue, "from ID:", prevData.state);
+   
     } else {
       console.log("States data not loaded, submitting state ID:", prevData.state);
     }

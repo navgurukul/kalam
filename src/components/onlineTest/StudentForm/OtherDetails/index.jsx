@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { makeStyles } from "@mui/styles";
 import {
   Grid,
@@ -14,7 +14,9 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { Controller } from "react-hook-form";
-import { states, customPartner } from "../../../../utils/constants";
+import { customPartner } from "../../../../utils/constants";
+
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -226,11 +228,55 @@ function OtherDetails(props) {
     formData,
     reactForm: { errors, control, watch, setValue },
     partnerSlug,
+    onStatesLoaded, // Callback to pass states to parent
   } = props;
   const { lang } = props;
 
+  const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
-  async function getCityFromState(_state) {
+  const [previousState, setPreviousState] = useState(null);
+  const [statesLoaded, setStatesLoaded] = useState(false);
+  const [loadingDistricts, setLoadingDistricts] = useState(false);
+  
+  // Use a ref to cache fetched districts by state ID
+  const districtCache = useRef({});
+
+  // Fetch all states from new API - memoized to prevent re-creation
+  const fetchStates = useCallback(async () => {
+    if (statesLoaded) return; // Don't fetch if already loaded
+    
+    try {
+      const response = await axios.get(
+        `https://dev-new-admissions.navgurukul.org/api/v1/states/getAll`
+      );
+      if (response.data && response.data.data) {
+        setStates(response.data.data);
+        setStatesLoaded(true);
+        // Pass states to parent component if callback exists
+        if (onStatesLoaded) {
+          onStatesLoaded(response.data.data);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching states:", error);
+    }
+  }, [statesLoaded, onStatesLoaded]);
+
+
+
+  
+  // Fetch districts by state from new API - uses cache to prevent duplicate calls
+  const getCityFromState = useCallback(async (stateId) => {
+    if (!stateId) return;
+    
+    // Check if districts are already cached for this state
+    if (districtCache.current[stateId]) {
+      setDistricts(districtCache.current[stateId]);
+      return;
+    }
+    
+    setLoadingDistricts(true);
+    
     if (partnerSlug && customPartner.includes(partnerSlug)) {
       const newDistricts = [
         { name: "Amravati" },
@@ -255,46 +301,61 @@ function OtherDetails(props) {
           name: "Yavatmal",
         },
       ];
+      districtCache.current[stateId] = newDistricts; // Cache it
       setDistricts(newDistricts);
+      setLoadingDistricts(false);
       return;
     }
-    axios
-      .get(
-        `https://api.countrystatecity.in/v1/countries/IN/states/${_state}/cities`, //API URL
-        {
-          headers: {
-            "X-CSCAPI-KEY":
-              "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
-          },
-        }
-      )
-      .then(({ data }) => {
-        if (_state === "CT") {
-          const newDis = { id: 0, name: "Dantewada" };
-          data.push(newDis);
-          data.sort(function (a, b) {
-            if (a.name < b.name) {
-              return -1;
-            }
-            if (a.name > b.name) {
-              return 1;
-            }
-            return 0;
-          });
-        }
-        setDistricts(data);
-      });
-  }
+
+    try {
+      const response = await axios.get(
+        `https://dev-new-admissions.navgurukul.org/api/v1/districts/getByState?state_id=${stateId}`
+      );
+      if (response.data && response.data.data) {
+        districtCache.current[stateId] = response.data.data; 
+        setDistricts(response.data.data);
+      } else {
+        console.warn("No districts data in response");
+        setDistricts([]);
+      }
+    } catch (error) {
+      console.error("Error fetching districts:", error);
+      setDistricts([]);
+    } finally {
+      setLoadingDistricts(false);
+    }
+  }, [partnerSlug]);
+
+  // Load states on component mount only once
+  useEffect(() => {
+    fetchStates();
+    // If there's already a state value (user navigating back to this tab), prepare for district loading
+    if (formData.state && formData.state !== "") {
+     
+      setPreviousState(formData.state);
+      // If district is already selected, fetch districts for that state
+      if (formData.district && formData.district !== "") {
+        getCityFromState(formData.state);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty array ensures this runs only once on mount
 
   const addrState = watch("state");
   const qualification = watch("qualification");
 
+  // Handle state changes - only clear district if state changes
   useEffect(() => {
     if (addrState !== "" && addrState != undefined) {
-      if (!inputDisabled) setValue("district", "");
-      getCityFromState(addrState);
+      // Only clear district if state actually changed (not on initial load or tab switch)
+      if (previousState !== null && previousState !== addrState && !inputDisabled) {
+      
+        setValue("district", "");
+        setDistricts([]); // Clear current districts display
+      }
+      setPreviousState(addrState);
     }
-  }, [addrState]);
+  }, [addrState, previousState, inputDisabled, setValue]);
 
   return (
     <Container maxWidth="lg" align="center" className={classes.container}>
@@ -331,15 +392,17 @@ function OtherDetails(props) {
                     <MenuItem value="" disabled>
                       {langOptions.state[lang]}
                     </MenuItem>
-                    {Object.entries(
-                      partnerSlug && customPartner.includes(partnerSlug)
-                        ? { MH: "Maharashtra" }
-                        : states
-                    ).map(([key, value]) => (
-                      <MenuItem key={key} value={key}>
-                        {value}
-                      </MenuItem>
-                    ))}
+                    {partnerSlug && customPartner.includes(partnerSlug)
+                      ? [{ id: 21, state_name: "Maharashtra" }].map((state) => (
+                          <MenuItem key={state.id} value={state.id}>
+                            {state.state_name}
+                          </MenuItem>
+                        ))
+                      : states.map((state) => (
+                          <MenuItem key={state.id} value={state.id}>
+                            {state.state_name}
+                          </MenuItem>
+                        ))}
                   </Select>
                 </FormControl>
               )}
@@ -390,15 +453,31 @@ function OtherDetails(props) {
                     label={langOptions.district[lang]}
                     placeholder={langOptions.district[lang]}
                     MenuProps={{ classes: { paper: classes.menuPaper } }}
+                    onOpen={() => {
+                      // Fetch districts when dropdown is opened (uses cache automatically)
+                      if (addrState) {
+                        console.log("District dropdown opened for state:", addrState);
+                        getCityFromState(addrState);
+                      }
+                    }}
                   >
                     <MenuItem value="" disabled>
                       {langOptions.district[lang]}
                     </MenuItem>
-                    {districts.map((key) => (
-                      <MenuItem key={key.name} value={key.name}>
-                        {key.name}
+                    {districts.length === 0 ? (
+                      <MenuItem value="" disabled>
+                        {addrState ? "Loading districts..." : "Please select a state first"}
                       </MenuItem>
-                    ))}
+                    ) : (
+                      districts.map((district) => (
+                        <MenuItem 
+                          key={district.id || district.name || district.district_name} 
+                          value={district.district_name || district.name}
+                        >
+                          {district.district_name || district.name}
+                        </MenuItem>
+                      ))
+                    )}
                   </Select>
                 </FormControl>
               )}

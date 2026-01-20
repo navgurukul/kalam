@@ -82,6 +82,7 @@ const StudentForm = () => {
 
   //State for disabled form input field on Page Refresh
   const [formDisabled, setformDisabled] = useState(false);
+  const [statesData, setStatesData] = useState([]); // Store states for ID to name conversion
 
   const [formData, setFormData] = useState({
     ProfileImage: "",
@@ -311,6 +312,18 @@ const StudentForm = () => {
   const steps = getSteps();
 
   const submitHandler = (prevData) => {
+    // Find the state code from the state ID
+    // Database expects 2-character state codes (e.g., "AP", "MH"), not full names
+    let stateValue = prevData.state;
+    if (statesData && statesData.length > 0) {
+      const selectedState = statesData.find(state => state.id === prevData.state);
+      // Use state_code (2 chars) instead of state_name for database
+      stateValue = selectedState ? selectedState.state_code : prevData.state;
+      console.log("Submitting with state code:", stateValue, "from ID:", prevData.state);
+    } else {
+      console.log("States data not loaded, submitting state ID:", prevData.state);
+    }
+    
     const data = {
       name: prevData.name,
       email: prevData.email,
@@ -321,7 +334,7 @@ const StudentForm = () => {
       gps_long: prevData.gps_long,
       partner_refer: prevData.partner_refer,
       qualification: prevData.qualification,
-      state: prevData.state,
+      state: stateValue, // Send 2-character state code (e.g., "AP", "MH")
       district: prevData.district,
       city: prevData.city,
       current_status: prevData.current_status,
@@ -348,7 +361,7 @@ const StudentForm = () => {
           gps_long: prevData.gps_long,
           partner_refer: prevData.partner_refer,
           qualification: prevData.qualification,
-          state: prevData.state,
+          state: stateValue, // Send 2-character state code
           district: prevData.district,
           city: prevData.city,
           current_status: prevData.current_status,
@@ -367,9 +380,11 @@ const StudentForm = () => {
           });
         });
     } else {
+      console.log("Submitting student details:", data); // Debug log
       axios
         .post(`${baseUrl}on_assessment/details/${enrollmentKey}`, data)
         .then((res) => {
+          console.log("Student details submitted successfully:", res.data);
           dispatch(setStudentId(res.data.details.id));
           navigate(`/test/finalinstruction/`, {
             // state: {
@@ -379,10 +394,13 @@ const StudentForm = () => {
             // },
           });
         })
-        .catch(() => {
-          enqueueSnackbar("Please fill all the fields properly", {
-            variant: "error",
-          });
+        .catch((error) => {
+          console.error("Error submitting student details:", error);
+          console.error("Error response:", error.response?.data);
+          enqueueSnackbar(
+            error.response?.data?.message || "Please fill all the fields properly",
+            { variant: "error" }
+          );
         });
     }
   };
@@ -459,6 +477,7 @@ const StudentForm = () => {
               alreadyAUser={alreadyAUser}
               partnerSlug={partner?.slug}
               inputDisabled={alreadyAUser || formDisabled}
+              onStatesLoaded={setStatesData} // Pass callback to get states data
             />
           </React.Suspense>
         );

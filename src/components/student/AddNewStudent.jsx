@@ -23,7 +23,6 @@ import dayjs from "dayjs";
 import { Box } from "@mui/system";
 import { useSnackbar } from "notistack";
 import axios from "axios";
-import { states } from "../../utils/constants";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -37,6 +36,7 @@ const AddNewStudent = () => {
     reset,
   } = useForm();
 
+  const [states, setStates] = React.useState([]);
   const [districts, setDistricts] = React.useState([]);
   const [optionsData, setOptionsData] = React.useState({
     campus: [],
@@ -69,18 +69,33 @@ const AddNewStudent = () => {
     stage: null,
   });
 
-  const getDistrictFromState = async (state) => {
-    const districtRes = await axios.get(
-      `https://api.countrystatecity.in/v1/countries/IN/states/${state}/cities`,
-      {
-        headers: {
-          accept: "application/json",
-          "X-CSCAPI-KEY":
-            "TzZrb2p0emtqa29BOW0zTnpLZHdzOVdjNmlubnRDMmtqOEgxRXpFdw==",
-        },
+  const getDistrictFromState = async (stateId) => {
+    try {
+      const districtRes = await axios.get(
+        `https://dev-new-admissions.navgurukul.org/api/v1/districts/getByState?state_id=${stateId}`
+      );
+      if (districtRes.data && districtRes.data.data) {
+        console.log("Districts fetched in AddNewStudent:", districtRes.data.data); // Debug log
+        setDistricts(districtRes.data.data);
       }
-    );
-    setDistricts(districtRes.data);
+    } catch (error) {
+      console.error("Error fetching districts:", error);
+      setDistricts([]);
+    }
+  };
+
+  const fetchStates = async () => {
+    try {
+      const response = await axios.get(
+        `https://dev-new-admissions.navgurukul.org/api/v1/states/getAll`
+      );
+      if (response.data && response.data.data) {
+        console.log("States fetched in AddNewStudent:", response.data.data); // Debug log
+        setStates(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching states:", error);
+    }
   };
 
   const fetchLists = async () => {
@@ -110,13 +125,17 @@ const AddNewStudent = () => {
   };
 
   const onSubmit = (data) => {
+    // Find the state name from the state ID
+    const selectedState = states.find(state => state.id === data.state);
+    const stateName = selectedState ? selectedState.state_name : data.state;
+    
     const finalData = {
       name: data.name,
       gender: data.gender,
       dob: data.dob,
       stage: data.stage,
       whatsapp: data.whatsapp,
-      state: data.state,
+      state: stateName, // Send state name instead of ID
       district: data.district,
       qualification: data.qualification,
       current_status: data.currentStatus,
@@ -152,6 +171,7 @@ const AddNewStudent = () => {
 
   useEffect(() => {
     (async () => {
+      await fetchStates();
       await fetchLists();
     })();
   }, []);
@@ -536,9 +556,9 @@ const AddNewStudent = () => {
                   <MenuItem value="" disabled>
                     Select State
                   </MenuItem>
-                  {Object.entries(states).map(([key, value]) => (
-                    <MenuItem key={key} value={key}>
-                      {value}
+                  {states.map((state) => (
+                    <MenuItem key={state.id} value={state.id}>
+                      {state.state_name}
                     </MenuItem>
                   ))}
                 </Select>
@@ -590,9 +610,12 @@ const AddNewStudent = () => {
                   <MenuItem value="" disabled>
                     Select District
                   </MenuItem>
-                  {districts.map(({ name }) => (
-                    <MenuItem key={name} value={name}>
-                      {name}
+                  {districts.map((district) => (
+                    <MenuItem 
+                      key={district.id || district.name || district.district_name} 
+                      value={district.district_name || district.name}
+                    >
+                      {district.district_name || district.name}
                     </MenuItem>
                   ))}
                 </Select>
